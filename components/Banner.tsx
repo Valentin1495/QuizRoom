@@ -2,7 +2,7 @@
 
 import { InformationCircleIcon, PlayIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
-import { Movie } from '../typing';
+import { Movie } from '../typings';
 
 interface Props {
   netflixOriginals: Movie[];

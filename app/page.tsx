@@ -1,32 +1,21 @@
+'use client';
+
 import Banner from '../components/Banner';
 import Header from '../components/Header';
 import HomeScreen from '../components/HomeScreen';
 import Row from '../components/Row';
-import { Movie } from '../typing';
+import { Movie } from '../typings';
 import { Provider } from 'react-redux';
 import { store } from '../store';
 import requests from '../pages/api/requests';
 import { useSelector, useDispatch } from 'react-redux';
 import { signin, signout } from '../slices/userSlice';
 import type { RootState } from '../store';
-import { auth } from '../firebase';
-
-import { onAuthStateChanged } from 'firebase/auth';
-
-// interface Props {
-//   netflixOriginals: Movie[];
-//   trendingNow: Movie[];
-//   topRated: Movie[];
-//   actionMovies: Movie[];
-//   comedyMovies: Movie[];
-//   horrorMovies: Movie[];
-//   romanceMovies: Movie[];
-//   documentaries: Movie[];
-// }
+import { useAuth } from '../contexts/AuthContext';
 
 export default async function Home() {
-  try {
-  } catch (error) {}
+  // const { isSignedIn } = useAuth();
+
   const [
     netflixOriginals,
     trendingNow,
@@ -67,38 +56,3 @@ export default async function Home() {
     </div>
   );
 }
-
-// export const getServerSideProps = async () => {
-//   const [
-//     netflixOriginals,
-//     trendingNow,
-//     topRated,
-//     actionMovies,
-//     comedyMovies,
-//     horrorMovies,
-//     romanceMovies,
-//     documentaries,
-//   ] = await Promise.all([
-//     fetch(requests.fetchNetflixOriginals).then(res => res.json()),
-//     fetch(requests.fetchTrending).then(res => res.json()),
-//     fetch(requests.fetchTopRated).then(res => res.json()),
-//     fetch(requests.fetchActionMovies).then(res => res.json()),
-//     fetch(requests.fetchComedyMovies).then(res => res.json()),
-//     fetch(requests.fetchHorrorMovies).then(res => res.json()),
-//     fetch(requests.fetchRomanceMovies).then(res => res.json()),
-//     fetch(requests.fetchDocumentaries).then(res => res.json()),
-//   ])
-
-//   return {
-//     props: {
-//       netflixOriginals: netflixOriginals.results,
-//       trendingNow: trendingNow.results,
-//       topRated: topRated.results,
-//       actionMovies: actionMovies.results,
-//       comedyMovies: comedyMovies.results,
-//       horrorMovies: horrorMovies.results,
-//       romanceMovies: romanceMovies.results,
-//       documentaries: documentaries.results,
-//     }
-//   }
-// }
