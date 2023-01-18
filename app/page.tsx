@@ -1,5 +1,3 @@
-'use client';
-
 import Banner from '../components/Banner';
 import Header from '../components/Header';
 import HomeScreen from '../components/HomeScreen';
@@ -11,11 +9,10 @@ import requests from '../pages/api/requests';
 import { useSelector, useDispatch } from 'react-redux';
 import { signin, signout } from '../slices/userSlice';
 import type { RootState } from '../store';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth, AuthProvider } from '../contexts/AuthContext';
+import SignInScreen from './SignInScreen';
 
 export default async function Home() {
-  // const { isSignedIn } = useAuth();
-
   const [
     netflixOriginals,
     trendingNow,
@@ -41,6 +38,8 @@ export default async function Home() {
       <Header />
 
       <main>
+        <RequireAuth>
+
         <Banner netflixOriginals={netflixOriginals.results} />
 
         <section className='absolute top-2/3 sm:top-[60%] space-y-10 pb-10 px-5 sm:px-10'>
@@ -52,6 +51,7 @@ export default async function Home() {
           <Row title='Romance Movies' movies={romanceMovies.results} />
           <Row title='Documentaries' movies={documentaries.results} />
         </section>
+        </RequireAuth>
       </main>
     </div>
   );

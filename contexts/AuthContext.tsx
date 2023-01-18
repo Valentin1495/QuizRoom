@@ -4,12 +4,12 @@ import { User } from 'firebase/auth';
 import { useContext, useState, useEffect, createContext } from 'react';
 import { auth } from '../firebase';
 
-interface Authentication {
+interface AuthState {
   currentUser: User | null;
   isSignedIn: boolean;
 }
 
-const AuthContext = createContext<Authentication | null>(null);
+const AuthContext = createContext<AuthState | null>(null);
 
 export const useAuth = () => {
   return useContext(AuthContext);
@@ -35,9 +35,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isSignedIn,
   };
 
-  //   return (
-  // <AuthContext.Provider value={value}>
-  //   {!loading && children}
-  // </AuthContext.Provider>
-  //   );
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 };
