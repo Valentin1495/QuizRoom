@@ -61,14 +61,11 @@ export default function SignInScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
+        <Image source={require('@/assets/images/coins2.png')} />
         <Image source={require('@/assets/images/Book-Globe.png')} />
         <Image
           source={require('@/assets/images/Education-Book.png')}
           style={{ position: 'absolute', top: 0, left: 0 }}
-        />
-        <Image
-          source={require('@/assets/images/coins2.png')}
-          style={{ position: 'absolute', top: 36, left: 180 }}
         />
         <Image
           source={require('@/assets/images/coins1.png')}
@@ -76,18 +73,18 @@ export default function SignInScreen() {
         />
         <Image
           source={require('@/assets/images/coins4.png')}
-          style={{ position: 'absolute', top: 480, left: 60 }}
+          style={{ position: 'absolute', top: 500, left: 60 }}
         />
         <Image
           source={require('@/assets/images/Book-Stacks.png')}
-          style={{ position: 'absolute', top: 480, right: 50 }}
+          style={{ position: 'absolute', top: 500, right: 50 }}
         />
       </View>
 
       <View style={styles.bottomContainer}>
         <Text style={styles.h1}>퀴즈로 뇌를 깨워볼 시간!</Text>
         <Text style={styles.h2}>
-          <Text style={styles.appName}>Mindshot</Text>과 함께 성장해보세요!
+          <Text style={styles.appName}>Mindshot</Text>과 함께 성장하세요!
         </Text>
 
         <TouchableOpacity
@@ -99,7 +96,7 @@ export default function SignInScreen() {
             source={require('@/assets/images/google-logo.png')}
             style={styles.googleLogo}
           />
-          <Text style={styles.buttonText}>구글 로그인</Text>
+          <Text style={styles.buttonText}>시작하기</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -113,7 +110,7 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
