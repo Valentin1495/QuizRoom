@@ -98,7 +98,7 @@ export default function DifficultySelector() {
     //   selectedStyle: styles.selectedExpert,
     // },
   ];
-  console.log(setup);
+
   return (
     <View style={styles.container}>
       <GradientText text='난이도 선택' style={styles.title} />
@@ -122,7 +122,11 @@ export default function DifficultySelector() {
             >
               {difficulty === option.value && (
                 <View style={styles.checkIcon}>
-                  <CheckCircle width={20} height={20} color='#6366f1' />
+                  <CheckCircle
+                    width={20}
+                    height={20}
+                    color={option.colors[1]}
+                  />
                 </View>
               )}
               <View style={styles.optionContent}>

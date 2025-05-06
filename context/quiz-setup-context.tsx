@@ -1,8 +1,17 @@
-import { Id } from '@/convex/_generated/dataModel';
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 
+export type Category =
+  | 'kpop-music'
+  | 'movies-drama'
+  | 'world-knowledge'
+  | 'trivia-tmi'
+  | 'memes-trends'
+  | 'sports'
+  | 'science-tech'
+  | 'math-logic';
+
 type QuizSetup = {
-  categoryId: Id<'categories'> | null;
+  category: Category | null;
   difficulty: 'easy' | 'medium' | 'hard' | null;
   type: 'multiple' | 'short' | null;
 };
@@ -18,7 +27,7 @@ const QuizSetupContext = createContext<QuizSetupContextType | undefined>(
 
 export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
   const [setup, setSetup] = useState<QuizSetup>({
-    categoryId: null,
+    category: null,
     difficulty: null,
     type: null,
   });

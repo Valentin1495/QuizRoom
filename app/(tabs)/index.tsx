@@ -1,4 +1,4 @@
-import Category from '@/components/category';
+import CategorySelector from '@/components/category-selector';
 import { Colors } from '@/constants/Colors';
 import { api } from '@/convex/_generated/api';
 import { useQuery } from 'convex/react';
@@ -16,7 +16,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.greeting}>안녕, {fullName}!</Text>
+        <Text style={styles.greeting}>반가워요, {fullName}님!</Text>
 
         <View style={styles.coinContainer}>
           <Text style={styles.coinText}>{coins}</Text>
@@ -31,8 +31,7 @@ export default function HomeScreen() {
 
       <Text style={styles.question}>오늘은 어떤 퀴즈를 풀어볼까요?</Text>
 
-      <View>
-        {categories?.map((category) => (
+      {/* {categories?.map((category) => (
           <Category
             key={category._id}
             id={category._id}
@@ -40,8 +39,8 @@ export default function HomeScreen() {
             kr={category.korName}
             icon={category.iconName}
           />
-        ))}
-      </View>
+        ))} */}
+      <CategorySelector />
     </SafeAreaView>
   );
 }
