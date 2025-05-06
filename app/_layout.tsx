@@ -1,3 +1,4 @@
+import { QuizSetupProvider } from '@/context/quiz-setup-context';
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { ConvexReactClient } from 'convex/react';
@@ -13,9 +14,11 @@ export default function RootLayout() {
   return (
     <ClerkProvider tokenCache={tokenCache}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-        <SafeAreaProvider>
-          <Stack screenOptions={{ headerShown: false }} />
-        </SafeAreaProvider>
+        <QuizSetupProvider>
+          <SafeAreaProvider>
+            <Stack screenOptions={{ headerShown: false }} />
+          </SafeAreaProvider>
+        </QuizSetupProvider>
       </ConvexProviderWithClerk>
     </ClerkProvider>
   );

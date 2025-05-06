@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { internalMutation, QueryCtx } from './_generated/server';
+import { internalMutation, query, QueryCtx } from './_generated/server';
 
 export const createUser = internalMutation({
   args: {
@@ -52,6 +52,10 @@ export const createUser = internalMutation({
 
     await ctx.db.insert('users', userAttributes);
   },
+});
+
+export const getCurrentUserByClerkId = query({
+  handler: async (ctx) => await getCurrentUserOrThrow(ctx),
 });
 
 export async function getCurrentUserOrThrow(ctx: QueryCtx) {

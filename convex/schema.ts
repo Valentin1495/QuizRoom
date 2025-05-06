@@ -24,25 +24,23 @@ export default defineSchema({
   }).index('byClerkId', ['clerkId']),
 
   categories: defineTable({
-    name: v.string(),
+    engName: v.string(),
+    korName: v.string(),
     description: v.string(),
-    iconUrl: v.optional(v.string()), // 카테고리 아이콘 URL
+    iconName: v.string(), // 카테고리 아이콘 URL
     order: v.number(), // 표시 순서
     isActive: v.boolean(), // 활성화 여부
   }),
 
   quizzes: defineTable({
-    categoryId: v.id('categories'),
-    question: v.string(),
-    options: v.array(v.string()),
-    correctOptionIndex: v.number(),
-    explanation: v.optional(v.string()), // 정답 설명
-    difficulty: v.number(), // 난이도 (1-5)
-    timeLimit: v.number(), // 제한 시간 (초)
-    points: v.number(), // 기본 점수
-    imageUrl: v.optional(v.string()), // 이미지 URL (문제에 사용)
-    createdBy: v.optional(v.id('users')), // 생성자 ID (어드민 또는 사용자)
-    isApproved: v.boolean(), // 승인 여부 (사용자 생성 퀴즈에 사용)
-    tags: v.optional(v.array(v.string())), // 태그 (검색용)
-  }),
+    categoryId: v.id('categories'), // 연결된 카테고리
+    question: v.string(), // 문제 내용
+    type: v.union(v.literal('multiple'), v.literal('short')), // 문제 유형
+    options: v.optional(v.array(v.string())), // 객관식 선택지
+    answer: v.string(), // 객관식 정답 or 주관식 정답
+    explanation: v.optional(v.string()), // 해설
+    difficulty: v.optional(
+      v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
+    ),
+  }).index('byCategoryId', ['categoryId']),
 });

@@ -1,6 +1,7 @@
 import { Colors } from '@/constants/Colors';
 import { useSSO } from '@clerk/clerk-expo';
 import * as AuthSession from 'expo-auth-session';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useCallback, useEffect } from 'react';
@@ -59,55 +60,63 @@ export default function SignInScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topContainer}>
-        <Image source={require('@/assets/images/coins2.png')} />
-        <Image source={require('@/assets/images/Book-Globe.png')} />
-        <Image
-          source={require('@/assets/images/Education-Book.png')}
-          style={{ position: 'absolute', top: 0, left: 0 }}
-        />
-        <Image
-          source={require('@/assets/images/coins1.png')}
-          style={{ position: 'absolute', top: -18, right: 0 }}
-        />
-        <Image
-          source={require('@/assets/images/coins4.png')}
-          style={{ position: 'absolute', top: 500, left: 60 }}
-        />
-        <Image
-          source={require('@/assets/images/Book-Stacks.png')}
-          style={{ position: 'absolute', top: 500, right: 50 }}
-        />
-      </View>
-
-      <View style={styles.bottomContainer}>
-        <Text style={styles.h1}>퀴즈로 뇌를 깨워볼 시간!</Text>
-        <Text style={styles.h2}>
-          <Text style={styles.appName}>Mindshot</Text>과 함께 성장하세요!
-        </Text>
-
-        <TouchableOpacity
-          onPress={signInWithGoogle}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
+    <LinearGradient
+      colors={['#272052', '#AF7EE7']}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 0, y: 0 }}
+      style={{ flex: 1 }}
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.topContainer}>
+          <Image source={require('@/assets/images/coins2.png')} />
+          <Image source={require('@/assets/images/Book-Globe.png')} />
           <Image
-            source={require('@/assets/images/google-logo.png')}
-            style={styles.googleLogo}
+            source={require('@/assets/images/Education-Book.png')}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            }}
           />
-          <Text style={styles.buttonText}>시작하기</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+          <Image
+            source={require('@/assets/images/coins1.png')}
+            style={{ position: 'absolute', top: 0, right: 0 }}
+          />
+        </View>
+
+        <View style={styles.bottomContainer}>
+          <Image
+            source={require('@/assets/images/coins4.png')}
+            style={{ position: 'absolute', top: -130, left: 60 }}
+          />
+          <Image
+            source={require('@/assets/images/Book-Stacks.png')}
+            style={{ position: 'absolute', top: -130, right: 50 }}
+          />
+
+          <Text style={styles.h1}>퀴즈로 뇌를 깨워볼 시간!</Text>
+          <Text style={styles.h2}>
+            <Text style={styles.appName}>Mindshot</Text>과 함께 성장하세요!
+          </Text>
+
+          <TouchableOpacity
+            onPress={signInWithGoogle}
+            style={styles.button}
+            activeOpacity={0.8}
+          >
+            <Image
+              source={require('@/assets/images/google-logo.png')}
+              style={styles.googleLogo}
+            />
+            <Text style={styles.buttonText}>시작하기</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.primary,
-  },
   topContainer: {
     flex: 1,
     flexDirection: 'column',
@@ -119,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     gap: 24,
-    marginBottom: 40,
+    position: 'relative',
   },
   h1: {
     color: '#fff',
