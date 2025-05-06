@@ -1,4 +1,4 @@
-import QuizTypeSelector from '@/components/quiz-type-selector';
+import TypeSelector from '@/components/type-selector';
 import { Colors } from '@/constants/Colors';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +7,7 @@ export default function TypeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
-        <QuizTypeSelector />
+        <TypeSelector />
       </View>
     </SafeAreaView>
   );

@@ -1,20 +1,38 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import DifficultySelector from '@/components/difficulty-selector';
+import { Colors } from '@/constants/Colors';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function DifficultyScreen() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <TouchableOpacity>
-        <Text>쉬움</Text>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <Text>보통</Text>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <Text>어려움</Text>
-      </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.card}>
+        <DifficultySelector />
+      </View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.light.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 400,
+    backgroundColor: Colors.light.background,
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(229, 231, 235, 0.5)',
+  },
+});

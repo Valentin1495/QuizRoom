@@ -19,7 +19,7 @@ import GradientText from './gradient-text';
 const { width } = Dimensions.get('window');
 const isTablet = width > 768;
 
-export default function QuizTypeSelector() {
+export default function TypeSelector() {
   const { setup, setSetup } = useQuizSetup();
   const { type } = setup;
   const router = useRouter();
