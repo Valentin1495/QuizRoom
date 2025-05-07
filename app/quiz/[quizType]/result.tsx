@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function QuizScreen() {
+export default function ResultScreen() {
   return (
     <View>
-      <Text>index</Text>
+      <Text>result</Text>
     </View>
   );
 }

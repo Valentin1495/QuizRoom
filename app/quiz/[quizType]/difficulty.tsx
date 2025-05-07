@@ -1,13 +1,16 @@
-import TypeSelector from '@/components/type-selector';
+import DifficultySelector from '@/components/difficulty-selector';
 import { Colors } from '@/constants/Colors';
+import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function TypeScreen() {
+export default function DifficultyScreen() {
+  const { quizType } = useLocalSearchParams();
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
-        <TypeSelector />
+        {quizType === 'knowledge' && <DifficultySelector />}
       </View>
     </SafeAreaView>
   );

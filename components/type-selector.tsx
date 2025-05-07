@@ -1,6 +1,6 @@
 import { useQuizSetup } from '@/context/quiz-setup-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
   Dimensions,
   StyleSheet,
@@ -23,9 +23,13 @@ export default function TypeSelector() {
   const { setup, setSetup } = useQuizSetup();
   const { type } = setup;
   const router = useRouter();
+  const { quizType } = useLocalSearchParams();
 
   const handleSelect = (type: 'multiple' | 'short') => {
-    setSetup((prev) => ({ ...prev, type }));
+    setSetup((prev) => ({
+      ...prev,
+      type,
+    }));
   };
 
   const multipleChoiceScale = useSharedValue(1);
@@ -137,7 +141,7 @@ export default function TypeSelector() {
         style={[styles.nextButton, { opacity: type === null ? 0.5 : 1 }]}
         activeOpacity={0.8}
         disabled={type === null}
-        onPress={() => router.push('/(quiz)/difficulty')}
+        onPress={() => router.push(`/quiz/${quizType}/difficulty`)}
       >
         <LinearGradient
           colors={['#ec4899', '#a855f7', '#6366f1']}

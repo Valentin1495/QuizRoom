@@ -1,6 +1,6 @@
-import { useQuizSetup } from '@/context/quiz-setup-context';
+import { Difficulty, useQuizSetup } from '@/context/quiz-setup-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
   ColorValue,
   Dimensions,
@@ -19,16 +19,17 @@ import GradientText from './gradient-text';
 
 const { width } = Dimensions.get('window');
 
-type Difficulty = 'easy' | 'medium' | 'hard';
-// | 'expert';
-
 export default function DifficultySelector() {
   const { setup, setSetup } = useQuizSetup();
   const { difficulty } = setup;
   const router = useRouter();
+  const { quizType } = useLocalSearchParams();
 
   const handleSelect = (difficulty: Difficulty) => {
-    setSetup((prev) => ({ ...prev, difficulty }));
+    setSetup((prev) => ({
+      ...prev,
+      difficulty,
+    }));
   };
 
   // Animation values for each difficulty option
@@ -152,7 +153,7 @@ export default function DifficultySelector() {
         style={[styles.nextButton, { opacity: difficulty === null ? 0.5 : 1 }]}
         activeOpacity={0.8}
         disabled={difficulty === null}
-        onPress={() => router.push('/(quiz)/content')}
+        onPress={() => router.push(`/quiz/${quizType}/content`)}
       >
         <LinearGradient
           colors={['#ec4899', '#a855f7', '#6366f1']}
