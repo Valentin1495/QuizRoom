@@ -1,7 +1,7 @@
 import { v } from 'convex/values';
 import { query } from './_generated/server';
 
-export const getQuizzesByQuizType = query({
+export const getQuestionsByQuizType = query({
   args: {
     quizType: v.union(
       v.literal('knowledge'),
@@ -10,42 +10,51 @@ export const getQuizzesByQuizType = query({
       v.literal('movie-chain'),
       v.literal('proverb-chain'),
       v.literal('slang'),
-      v.literal('logo')
+      v.literal('logo'),
+      v.literal('nonsense')
     ),
-    type: v.optional(v.union(v.literal('multiple'), v.literal('short'))),
+    category: v.optional(
+      v.union(
+        v.literal('kpop-music'),
+        v.literal('world-knowledge'),
+        v.literal('trivia-tmi'),
+        v.literal('memes-trends'),
+        v.literal('sports'),
+        v.literal('science-tech'),
+        v.literal('math-logic'),
+        v.literal('movies-drama'),
+        v.literal('korean-movie'),
+        v.literal('foreign-movie'),
+        v.literal('korean-celebrity'),
+        v.literal('foreign-celebrity')
+      )
+    ),
+    questionFormat: v.optional(
+      v.union(v.literal('multiple'), v.literal('short'))
+    ),
     difficulty: v.optional(
       v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
     ),
   },
   handler: async (ctx, args) => {
-    // 1. 해당 quizType의 카테고리 목록 조회
-    const categories = await ctx.db
-      .query('categories')
+    // quizType 기준으로 먼저 가져오고
+    const quizzes = await ctx.db
+      .query('quizzes')
       .withIndex('byQuizType', (q) => q.eq('quizType', args.quizType))
       .collect();
 
-    const categoryIds = categories.map((cat) => cat._id);
-
-    // 2. 해당 카테고리들에 속한 quiz 가져오기
-    const allQuizzes = await Promise.all(
-      categoryIds.map(async (categoryId) => {
-        const quizzes = await ctx.db
-          .query('quizzes')
-          .withIndex('byCategoryId', (q) => q.eq('categoryId', categoryId))
-          .collect();
-        return quizzes;
-      })
-    );
-
-    const flatQuizzes = allQuizzes.flat();
-
-    // 3. type, difficulty로 필터링
-    return flatQuizzes.filter((quiz) => {
-      const typeMatches = args.type ? quiz.type === args.type : true;
-      const diffMatches = args.difficulty
+    // 나머지 조건 필터링
+    return quizzes.filter((quiz) => {
+      const matchCategory = args.category
+        ? quiz.category === args.category
+        : true;
+      const matchType = args.questionFormat
+        ? quiz.questionFormat === args.questionFormat
+        : true;
+      const matchDifficulty = args.difficulty
         ? quiz.difficulty === args.difficulty
         : true;
-      return typeMatches && diffMatches;
+      return matchCategory && matchType && matchDifficulty;
     });
   },
 });

@@ -8,7 +8,8 @@ export type QuizType =
   | 'movie-chain'
   | 'proverb-chain'
   | 'slang'
-  | 'logo';
+  | 'logo'
+  | 'nonsense';
 
 // 2. 퀴즈별 카테고리
 export type KnowledgeCategory =
@@ -33,7 +34,7 @@ type CategoryByQuizType<T extends QuizType> = T extends 'knowledge'
       : never;
 
 // 3. 퀴즈 유형
-type TypeByQuizType<T extends QuizType> = T extends 'knowledge'
+type QuestionFormatByQuizType<T extends QuizType> = T extends 'knowledge'
   ? 'multiple' | 'short'
   : T extends 'movie-chain'
     ? 'short'
@@ -49,7 +50,7 @@ type QuizSetup<T extends QuizType = QuizType> = {
   quizType: T;
   category: CategoryByQuizType<T> | null;
   difficulty: Difficulty | null;
-  type: TypeByQuizType<T> | null;
+  type: QuestionFormatByQuizType<T> | null;
 };
 
 // 6. Context 타입

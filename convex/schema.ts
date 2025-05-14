@@ -31,9 +31,25 @@ export default defineSchema({
       v.literal('movie-chain'),
       v.literal('proverb-chain'),
       v.literal('slang'),
-      v.literal('logo')
+      v.literal('logo'),
+      v.literal('nonsense')
     ),
-    value: v.string(),
+    value: v.optional(
+      v.union(
+        v.literal('kpop-music'),
+        v.literal('world-knowledge'),
+        v.literal('trivia-tmi'),
+        v.literal('memes-trends'),
+        v.literal('sports'),
+        v.literal('science-tech'),
+        v.literal('math-logic'),
+        v.literal('movies-drama'),
+        v.literal('korean-movie'),
+        v.literal('foreign-movie'),
+        v.literal('korean-celebrity'),
+        v.literal('foreign-celebrity')
+      )
+    ),
     label: v.string(),
     icon: v.string(),
     colors: v.array(v.string()),
@@ -47,16 +63,34 @@ export default defineSchema({
       v.literal('movie-chain'),
       v.literal('proverb-chain'),
       v.literal('slang'),
-      v.literal('logo')
+      v.literal('logo'),
+      v.literal('nonsense')
     ),
-    categoryId: v.id('categories'),
+    category: v.optional(
+      v.union(
+        v.literal('kpop-music'),
+        v.literal('world-knowledge'),
+        v.literal('trivia-tmi'),
+        v.literal('memes-trends'),
+        v.literal('sports'),
+        v.literal('science-tech'),
+        v.literal('math-logic'),
+        v.literal('movies-drama'),
+        v.literal('korean-movie'),
+        v.literal('foreign-movie'),
+        v.literal('korean-celebrity'),
+        v.literal('foreign-celebrity')
+      )
+    ),
     question: v.string(),
-    type: v.union(v.literal('multiple'), v.literal('short')),
+    questionFormat: v.union(v.literal('multiple'), v.literal('short')),
     options: v.optional(v.array(v.string())),
     answer: v.string(),
     explanation: v.optional(v.string()),
     difficulty: v.optional(
       v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
     ),
-  }).index('byCategoryId', ['categoryId']),
+  })
+    .index('byQuizType', ['quizType'])
+    .index('byCategory', ['category']),
 });

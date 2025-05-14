@@ -24,6 +24,7 @@ import {
   Film,
   HelpCircle,
   MessageSquare,
+  Smile,
   Type,
   User,
 } from 'react-native-feather';
@@ -100,6 +101,14 @@ const quizTypes = [
     icon: Award,
     colors: ['#facc15', '#eab308'],
     image: require('@/assets/images/logo-quiz.jpg'),
+  },
+  {
+    id: 'nonsense',
+    title: '넌센스 퀴즈',
+    description: '기발한 발상과 창의력이 필요한 넌센스 문제',
+    icon: Smile,
+    colors: ['#f43f5e', '#d946ef'],
+    image: require('@/assets/images/nonsense-quiz.jpg'),
   },
 ];
 
@@ -240,7 +249,7 @@ export default function HomeScreen() {
   });
 
   const { setSetup } = useQuizSetup();
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSelect = (quizType: QuizType) => {
     setSetup((prev) => ({
