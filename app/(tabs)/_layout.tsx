@@ -28,7 +28,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name='quiz'
         options={{
           title: 'Quiz',
@@ -36,7 +36,7 @@ export default function TabLayout() {
             <Ionicons name='extension-puzzle' size={size} color={color} />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
         name='progress'
         options={{

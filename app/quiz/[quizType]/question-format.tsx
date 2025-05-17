@@ -1,16 +1,16 @@
-import TypeSelector from '@/components/type-selector';
+import QuestionFormatSelector from '@/components/question-format-selector';
 import { Colors } from '@/constants/Colors';
 import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function TypeScreen() {
+export default function QuestionFormatScreen() {
   const { quizType } = useLocalSearchParams();
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
-        {quizType === 'knowledge' && <TypeSelector />}
+        {quizType === 'knowledge' && <QuestionFormatSelector />}
       </View>
     </SafeAreaView>
   );

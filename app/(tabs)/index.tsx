@@ -64,8 +64,8 @@ const quizTypes = [
   },
   {
     id: 'four-character',
-    title: '네 글자 퀴즈',
-    description: '네 글자로 이루어진 단어나 문구를 맞추는 퀴즈',
+    title: '4글자 퀴즈',
+    description: '4글자로 이루어진 단어나 문구를 맞추는 퀴즈',
     icon: Type,
     colors: ['#34d399', '#10b981'],
     image: require('@/assets/images/four-char-quiz.jpg'),
@@ -276,8 +276,8 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.greeting}>
-          반가워요, {currentUser?.fullName}님 🙌 {'\n'}
-          다양한 퀴즈를 즐겨보세요!
+          {currentUser?.fullName}님 환영해요! 🙌 {'\n'}
+          다양한 퀴즈를 즐겨보세요~
         </Text>
 
         <View style={styles.coinContainer}>

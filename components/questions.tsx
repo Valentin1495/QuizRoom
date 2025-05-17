@@ -1,8 +1,12 @@
+import { useQuizSetup, UserAnswer } from '@/context/quiz-setup-context';
 import { Doc } from '@/convex/_generated/dataModel';
+import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
+  Alert,
   Dimensions,
   ScrollView,
   StyleSheet,
@@ -11,8 +15,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ArrowLeft, ArrowRight, Check, Star } from 'react-native-feather';
+import { ArrowLeft, ArrowRight, Check, Home, Star } from 'react-native-feather';
 import Animated, {
+  Easing,
   FadeIn,
   SlideInLeft,
   SlideInRight,
@@ -20,74 +25,91 @@ import Animated, {
   SlideOutRight,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
+  withTiming,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
-type Props = {
-  questions: Doc<'quizzes'>[];
-  questionFormat: 'multiple' | 'short' | null;
-};
-
-type UserAnswer = {
-  answer: string;
-  isCorrect: boolean;
-};
-
-export default function Questions({ questions, questionFormat }: Props) {
+export default function Questions() {
+  const { setup, setUserAnswers, resetQuizData } = useQuizSetup();
+  const { questions, quizType, questionFormat, userAnswers } = setup;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [userAnswers, setUserAnswers] = useState<(UserAnswer | null)[]>([]);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string>();
   const [textAnswer, setTextAnswer] = useState<string>('');
   const [showFeedback, setShowFeedback] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [slideDirection, setSlideDirection] = useState<'right' | 'left'>(
     'right'
   );
+  const router = useRouter();
 
   // 애니메이션을 위한 값
   const scale = useSharedValue(1);
-  const animatedStyles = useAnimatedStyle(() => {
+  const progressWidth = useSharedValue(0);
+
+  const progressAnimatedStyles = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: scale.value }],
+      width: `${progressWidth.value}%`,
     };
   });
 
   useEffect(() => {
     // 사용자 답변 배열 초기화
-    const initialAnswers: (UserAnswer | null)[] = Array(questions.length).fill(
-      null
+    const initialAnswers: UserAnswer[] = questions.map(
+      ({ _id, question, answer, answers }) => ({
+        questionId: _id,
+        question,
+        correctAnswer: answer || answers,
+        userAnswer: '',
+        isCorrect: false,
+      })
     );
 
     setUserAnswers(initialAnswers);
   }, []);
 
-  const currentQuestion: Doc<'quizzes'> | undefined =
-    questions[currentQuestionIndex];
+  useEffect(() => {
+    // 진행률 업데이트 시 애니메이션
+    const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+    progressWidth.value = withTiming(progress, {
+      duration: 600,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+  }, [currentQuestionIndex, questions.length]);
+
+  const currentQuestion: Doc<'quizzes'> = questions[currentQuestionIndex];
 
   const handleAnswer = (): void => {
-    let answer: string = '';
+    let userAnswer: string = '';
     let correct: boolean = false;
 
     if (questionFormat === 'multiple') {
-      answer = selectedOption || '';
+      userAnswer = selectedOption || '';
       correct = selectedOption === currentQuestion?.answer;
     } else {
-      answer = textAnswer.trim();
-      correct = answer.toLowerCase() === currentQuestion?.answer.toLowerCase();
+      userAnswer = textAnswer.trim();
+      correct = currentQuestion
+        ?.answers!.map((a) => a.toLowerCase())
+        .includes(userAnswer.toLowerCase());
     }
 
     // 애니메이션 효과
-    scale.value = withSpring(1.05, { damping: 10 }, () => {
-      scale.value = withSpring(1);
-    });
+    scale.value = withTiming(
+      1.05,
+      { duration: 200, easing: Easing.bounce },
+      () => {
+        scale.value = withTiming(1, { duration: 200 });
+      }
+    );
 
     // 사용자 답변 업데이트
     const newUserAnswers = [...userAnswers];
     newUserAnswers[currentQuestionIndex] = {
-      answer: answer,
+      questionId: currentQuestion._id,
+      question: currentQuestion.question,
+      correctAnswer: currentQuestion.answer,
+      userAnswer,
       isCorrect: correct,
     };
 
@@ -103,49 +125,104 @@ export default function Questions({ questions, questionFormat }: Props) {
       setSlideDirection('left');
 
       // 이전 답변이 있으면 복원
-      const previousAnswer = userAnswers[currentQuestionIndex - 1];
+      const previousAnswer = userAnswers[currentQuestionIndex - 1]?.userAnswer;
       if (previousAnswer) {
         if (questionFormat === 'multiple') {
-          setSelectedOption(previousAnswer.answer);
+          setSelectedOption(previousAnswer);
         } else {
-          setTextAnswer(previousAnswer.answer);
+          setTextAnswer(previousAnswer);
         }
-        setIsCorrect(previousAnswer.isCorrect);
+        setIsCorrect(userAnswers[currentQuestionIndex - 1].isCorrect);
         setShowFeedback(true);
       } else {
-        setSelectedOption(null);
+        setSelectedOption('');
         setTextAnswer('');
       }
     }
+  };
+
+  const checkUnansweredQuestions = (): boolean => {
+    return userAnswers.some((answer) => {
+      if (currentQuestionIndex === questions.length - 1) {
+        return answer.userAnswer === '' || !showFeedback;
+      }
+      answer.userAnswer === '';
+    });
   };
 
   const goToNextQuestion = (): void => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setShowFeedback(false);
-      setSelectedOption(null);
+      setSelectedOption('');
       setTextAnswer('');
       setSlideDirection('right');
 
       // 다음 답변이 있으면 복원
-      const nextAnswer = userAnswers[currentQuestionIndex + 1];
+      const nextAnswer = userAnswers[currentQuestionIndex + 1]?.userAnswer;
       if (nextAnswer) {
         if (questionFormat === 'multiple') {
-          setSelectedOption(nextAnswer.answer);
+          setSelectedOption(nextAnswer);
         } else {
-          setTextAnswer(nextAnswer.answer);
+          setTextAnswer(nextAnswer);
         }
-        setIsCorrect(nextAnswer.isCorrect);
+        setIsCorrect(userAnswers[currentQuestionIndex + 1].isCorrect);
         setShowFeedback(true);
       }
     } else {
-      // 결과 화면으로 이동
-      console.log('테스트 완료');
+      // 결과 화면으로 이동하기 전에 모든 문제가 답변되었는지 확인
+      if (checkUnansweredQuestions()) {
+        Alert.alert(
+          '답변하지 않은 문제가 있어요',
+          '확인을 누르면 답변하지 않은 문제는 오답 처리돼요.',
+          [
+            {
+              text: '취소',
+              style: 'cancel',
+            },
+            {
+              text: '확인',
+              onPress: () => {
+                // 답변하지 않은 문제 오답 처리
+                const finalAnswers = userAnswers.map((answer) =>
+                  answer?.userAnswer === ''
+                    ? { ...answer, isCorrect: false }
+                    : answer
+                );
+                setUserAnswers(finalAnswers);
+                router.push(`/quiz/${quizType}/result`);
+              },
+            },
+          ]
+        );
+      } else {
+        // 결과 화면으로 이동
+        router.push(`/quiz/${quizType}/result`);
+      }
     }
   };
 
-  // 진행률 계산
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+  const goToHome = (): void => {
+    Alert.alert(
+      '퀴즈 종료',
+      '퀴즈를 종료하고 홈으로 돌아가시겠어요?\n현재 진행 상황은 저장되지 않아요.',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: () => {
+            resetQuizData();
+            router.push('/');
+          },
+        },
+      ]
+    );
+  };
+
+  useBlockNavigation();
 
   if (!currentQuestion) {
     // 로딩 상태나 질문이 없는 경우
@@ -170,28 +247,29 @@ export default function Questions({ questions, questionFormat }: Props) {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <SafeAreaView>
+      <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.header}>
             <View style={styles.progressContainer}>
               <View style={styles.progressBarBackground}>
                 <Animated.View
-                  style={[
-                    styles.progressBar,
-                    { width: `${progress}%` },
-                    animatedStyles,
-                  ]}
+                  style={[styles.progressBar, progressAnimatedStyles]}
                 />
               </View>
               <Text style={styles.questionCount}>
                 {currentQuestionIndex + 1}/{questions.length}
               </Text>
             </View>
-            <View style={styles.categoryContainer}>
-              <Star width={16} height={16} color='#fff' />
-              <Text style={styles.category}>
-                {switchCategoryToLabel(currentQuestion.category)}
-              </Text>
+            <View style={styles.topButtons}>
+              <View style={styles.categoryContainer}>
+                <Star width={16} height={16} color='#fff' />
+                <Text style={styles.category}>
+                  {switchCategoryToLabel(currentQuestion.category)}
+                </Text>
+              </View>
+              <TouchableOpacity style={styles.homeButton} onPress={goToHome}>
+                <Home width={20} height={20} color='#fff' />
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -213,9 +291,9 @@ export default function Questions({ questions, questionFormat }: Props) {
 
             {questionFormat === 'multiple' ? (
               <View style={styles.optionsContainer}>
-                {currentQuestion.options?.map((option, index) => (
+                {currentQuestion.options?.map((option) => (
                   <TouchableOpacity
-                    key={index}
+                    key={option}
                     style={[
                       styles.optionButton,
                       selectedOption === option && styles.selectedOption,
@@ -361,6 +439,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  safeArea: {
+    flex: 1,
+  },
   scrollContainer: {
     flexGrow: 1,
     padding: 20,
@@ -391,10 +472,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  topButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   categoryContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-start',
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -405,6 +490,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginLeft: 6,
     fontWeight: '500',
+  },
+  homeButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 10,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   questionContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -525,12 +617,12 @@ const styles = StyleSheet.create({
     color: '#ff4757',
   },
   submitButton: {
-    backgroundColor: '#F27121',
+    backgroundColor: '#8A2387',
     paddingVertical: 16,
     borderRadius: 50,
     alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#F27121',
+    shadowColor: '#8A2387',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -560,12 +652,12 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 50,
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+    backgroundColor: '#E94057',
     marginHorizontal: 5,
   },
   nextButton: {
-    backgroundColor: '#8A2387',
-    shadowColor: '#8A2387',
+    backgroundColor: '#F27121',
+    shadowColor: '#F27121',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 5,

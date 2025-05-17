@@ -10,7 +10,9 @@ export const getKnowledgeCategories = query({
       v.literal('movie-chain'),
       v.literal('proverb-chain'),
       v.literal('slang'),
-      v.literal('logo')
+      v.literal('logo'),
+      v.literal('nonsense'),
+      v.null()
     ),
   },
   handler: async (ctx, args) => {

@@ -57,11 +57,11 @@ export default function DifficultySelector() {
   };
 
   const handlePressIn = (difficulty: Difficulty) => {
-    scaleValues[difficulty].value = withSpring(0.98);
+    scaleValues[difficulty!].value = withSpring(0.98);
   };
 
   const handlePressOut = (difficulty: Difficulty) => {
-    scaleValues[difficulty].value = withSpring(1);
+    scaleValues[difficulty!].value = withSpring(1);
   };
 
   // Difficulty options configuration
@@ -110,7 +110,7 @@ export default function DifficultySelector() {
             key={option.value}
             style={[
               styles.optionCard,
-              animatedStyles[option.value],
+              animatedStyles[option.value!],
               difficulty === option.value ? option.selectedStyle : {},
             ]}
           >

@@ -135,7 +135,7 @@ export default function KnowledgeCategorySelector({
         style={[styles.nextButton, { opacity: category === null ? 0.5 : 1 }]}
         activeOpacity={0.8}
         disabled={category === null}
-        onPress={() => router.push(`/quiz/${quizType}/type`)}
+        onPress={() => router.push(`/quiz/${quizType}/question-format`)}
       >
         <LinearGradient
           colors={['#ec4899', '#a855f7', '#6366f1']}

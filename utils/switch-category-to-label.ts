@@ -1,4 +1,4 @@
-export const switchCategoryToLabel = (category?: string) => {
+export function switchCategoryToLabel(category?: string | null) {
   switch (category) {
     case 'kpop-music':
       return 'K-pop & 음악';
@@ -27,4 +27,4 @@ export const switchCategoryToLabel = (category?: string) => {
     default:
       break;
   }
-};
+}

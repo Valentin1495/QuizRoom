@@ -19,16 +19,16 @@ import GradientText from './gradient-text';
 const { width } = Dimensions.get('window');
 const isTablet = width > 768;
 
-export default function TypeSelector() {
+export default function QuestionFormatSelector() {
   const { setup, setSetup } = useQuizSetup();
-  const { type } = setup;
+  const { questionFormat } = setup;
   const router = useRouter();
   const { quizType } = useLocalSearchParams();
 
-  const handleSelect = (type: 'multiple' | 'short') => {
+  const handleSelect = (questionFormat: 'multiple' | 'short') => {
     setSetup((prev) => ({
       ...prev,
-      type,
+      questionFormat,
     }));
   };
 
@@ -47,16 +47,16 @@ export default function TypeSelector() {
     };
   });
 
-  const handlePressIn = (type: 'multiple' | 'short') => {
-    if (type === 'multiple') {
+  const handlePressIn = (questionFormat: 'multiple' | 'short') => {
+    if (questionFormat === 'multiple') {
       multipleChoiceScale.value = withSpring(0.98);
     } else {
       shortAnswerScale.value = withSpring(0.98);
     }
   };
 
-  const handlePressOut = (type: 'multiple' | 'short') => {
-    if (type === 'multiple') {
+  const handlePressOut = (questionFormat: 'multiple' | 'short') => {
+    if (questionFormat === 'multiple') {
       multipleChoiceScale.value = withSpring(1);
     } else {
       shortAnswerScale.value = withSpring(1);
@@ -65,14 +65,14 @@ export default function TypeSelector() {
 
   return (
     <View style={styles.container}>
-      <GradientText text='퀴즈 유형 선택' style={styles.title} />
+      <GradientText text='문제 형식 선택' style={styles.title} />
 
       <View style={styles.optionsContainer}>
         <Animated.View
           style={[
             styles.optionCard,
             multipleChoiceAnimatedStyle,
-            type === 'multiple' ? styles.selectedMultipleChoice : {},
+            questionFormat === 'multiple' ? styles.selectedMultipleChoice : {},
           ]}
         >
           <TouchableOpacity
@@ -82,7 +82,7 @@ export default function TypeSelector() {
             onPressOut={() => handlePressOut('multiple')}
             activeOpacity={0.8}
           >
-            {type === 'multiple' && (
+            {questionFormat === 'multiple' && (
               <View style={styles.checkIcon}>
                 <CheckCircle width={20} height={20} color='#a855f7' />
               </View>
@@ -106,7 +106,7 @@ export default function TypeSelector() {
           style={[
             styles.optionCard,
             shortAnswerAnimatedStyle,
-            type === 'short' ? styles.selectedShortAnswer : {},
+            questionFormat === 'short' ? styles.selectedShortAnswer : {},
           ]}
         >
           <TouchableOpacity
@@ -116,7 +116,7 @@ export default function TypeSelector() {
             onPressOut={() => handlePressOut('short')}
             activeOpacity={0.8}
           >
-            {type === 'short' && (
+            {questionFormat === 'short' && (
               <View style={styles.checkIcon}>
                 <CheckCircle width={20} height={20} color='#6366f1' />
               </View>
@@ -138,9 +138,12 @@ export default function TypeSelector() {
       </View>
 
       <TouchableOpacity
-        style={[styles.nextButton, { opacity: type === null ? 0.5 : 1 }]}
+        style={[
+          styles.nextButton,
+          { opacity: questionFormat === null ? 0.5 : 1 },
+        ]}
         activeOpacity={0.8}
-        disabled={type === null}
+        disabled={questionFormat === null}
         onPress={() => router.push(`/quiz/${quizType}/difficulty`)}
       >
         <LinearGradient

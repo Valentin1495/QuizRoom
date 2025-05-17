@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { query } from './_generated/server';
+import { mutation, query } from './_generated/server';
 
 export const getQuestionsByQuizType = query({
   args: {
@@ -11,7 +11,8 @@ export const getQuestionsByQuizType = query({
       v.literal('proverb-chain'),
       v.literal('slang'),
       v.literal('logo'),
-      v.literal('nonsense')
+      v.literal('nonsense'),
+      v.null()
     ),
     category: v.optional(
       v.union(
@@ -26,14 +27,20 @@ export const getQuestionsByQuizType = query({
         v.literal('korean-movie'),
         v.literal('foreign-movie'),
         v.literal('korean-celebrity'),
-        v.literal('foreign-celebrity')
+        v.literal('foreign-celebrity'),
+        v.null()
       )
     ),
-    questionFormat: v.optional(
-      v.union(v.literal('multiple'), v.literal('short'))
+    questionFormat: v.union(
+      v.literal('multiple'),
+      v.literal('short'),
+      v.null()
     ),
-    difficulty: v.optional(
-      v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
+    difficulty: v.union(
+      v.literal('easy'),
+      v.literal('medium'),
+      v.literal('hard'),
+      v.null()
     ),
   },
   handler: async (ctx, args) => {
@@ -56,5 +63,56 @@ export const getQuestionsByQuizType = query({
         : true;
       return matchCategory && matchType && matchDifficulty;
     });
+  },
+});
+
+export const insertQuiz = mutation({
+  args: {
+    quizType: v.union(
+      v.literal('knowledge'),
+      v.literal('celebrity'),
+      v.literal('four-character'),
+      v.literal('movie-chain'),
+      v.literal('proverb-chain'),
+      v.literal('slang'),
+      v.literal('logo'),
+      v.literal('nonsense'),
+      v.null()
+    ),
+    category: v.optional(
+      v.union(
+        v.literal('kpop-music'),
+        v.literal('world-knowledge'),
+        v.literal('trivia-tmi'),
+        v.literal('memes-trends'),
+        v.literal('sports'),
+        v.literal('science-tech'),
+        v.literal('math-logic'),
+        v.literal('movies-drama'),
+        v.literal('korean-movie'),
+        v.literal('foreign-movie'),
+        v.literal('korean-celebrity'),
+        v.literal('foreign-celebrity'),
+        v.null()
+      )
+    ),
+    questionFormat: v.union(
+      v.literal('multiple'),
+      v.literal('short'),
+      v.null()
+    ),
+    difficulty: v.union(
+      v.literal('easy'),
+      v.literal('medium'),
+      v.literal('hard'),
+      v.null()
+    ),
+    answer: v.optional(v.string()),
+    answers: v.optional(v.array(v.string())),
+    options: v.optional(v.array(v.string())),
+    question: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.insert('quizzes', args);
   },
 });

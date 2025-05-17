@@ -9,10 +9,13 @@ export default function QuizLayout() {
         contentStyle: { backgroundColor: Colors.light.background },
       }}
     >
-      <Stack.Screen name='difficulty' options={{ title: 'Difficulty' }} />
-      <Stack.Screen name='type' options={{ title: 'Type' }} />
-      <Stack.Screen name='content' options={{ title: 'Content' }} />
-      <Stack.Screen name='result' options={{ title: 'Result' }} />
+      <Stack.Screen name='[quizType]/difficulty' />
+      <Stack.Screen name='[quizType]/question-format' />
+      <Stack.Screen name='[quizType]/question' />
+      <Stack.Screen
+        name='[quizType]/result'
+        options={{ gestureEnabled: false }}
+      />
     </Stack>
   );
 }

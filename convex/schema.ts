@@ -32,7 +32,8 @@ export default defineSchema({
       v.literal('proverb-chain'),
       v.literal('slang'),
       v.literal('logo'),
-      v.literal('nonsense')
+      v.literal('nonsense'),
+      v.null()
     ),
     value: v.optional(
       v.union(
@@ -64,7 +65,8 @@ export default defineSchema({
       v.literal('proverb-chain'),
       v.literal('slang'),
       v.literal('logo'),
-      v.literal('nonsense')
+      v.literal('nonsense'),
+      v.null()
     ),
     category: v.optional(
       v.union(
@@ -79,17 +81,30 @@ export default defineSchema({
         v.literal('korean-movie'),
         v.literal('foreign-movie'),
         v.literal('korean-celebrity'),
-        v.literal('foreign-celebrity')
+        v.literal('foreign-celebrity'),
+        v.null()
       )
     ),
     question: v.string(),
-    questionFormat: v.union(v.literal('multiple'), v.literal('short')),
-    options: v.optional(v.array(v.string())),
-    answer: v.string(),
-    explanation: v.optional(v.string()),
-    difficulty: v.optional(
-      v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
+    questionFormat: v.union(
+      v.literal('multiple'),
+      v.literal('short'),
+      v.null()
     ),
+    explanation: v.optional(v.string()),
+    difficulty: v.union(
+      v.literal('easy'),
+      v.literal('medium'),
+      v.literal('hard'),
+      v.null()
+    ),
+
+    // 객관식일 때만 사용
+    options: v.optional(v.array(v.string())),
+    answer: v.optional(v.string()),
+
+    // 주관식일 때만 사용
+    answers: v.optional(v.array(v.string())),
   })
     .index('byQuizType', ['quizType'])
     .index('byCategory', ['category']),
