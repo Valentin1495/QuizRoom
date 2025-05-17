@@ -23,39 +23,6 @@ export default defineSchema({
     ),
   }).index('byClerkId', ['clerkId']),
 
-  categories: defineTable({
-    quizType: v.union(
-      v.literal('knowledge'),
-      v.literal('celebrity'),
-      v.literal('four-character'),
-      v.literal('movie-chain'),
-      v.literal('proverb-chain'),
-      v.literal('slang'),
-      v.literal('logo'),
-      v.literal('nonsense'),
-      v.null()
-    ),
-    value: v.optional(
-      v.union(
-        v.literal('kpop-music'),
-        v.literal('world-knowledge'),
-        v.literal('trivia-tmi'),
-        v.literal('memes-trends'),
-        v.literal('sports'),
-        v.literal('science-tech'),
-        v.literal('math-logic'),
-        v.literal('movies-drama'),
-        v.literal('korean-movie'),
-        v.literal('foreign-movie'),
-        v.literal('korean-celebrity'),
-        v.literal('foreign-celebrity')
-      )
-    ),
-    label: v.string(),
-    icon: v.string(),
-    colors: v.array(v.string()),
-  }).index('byQuizType', ['quizType']),
-
   quizzes: defineTable({
     quizType: v.union(
       v.literal('knowledge'),
@@ -71,13 +38,13 @@ export default defineSchema({
     category: v.optional(
       v.union(
         v.literal('kpop-music'),
-        v.literal('world-knowledge'),
-        v.literal('trivia-tmi'),
-        v.literal('memes-trends'),
+        v.literal('general'),
+        v.literal('history-culture'),
+        v.literal('arts-literature'),
         v.literal('sports'),
         v.literal('science-tech'),
         v.literal('math-logic'),
-        v.literal('movies-drama'),
+        v.literal('entertainment'),
         v.literal('korean-movie'),
         v.literal('foreign-movie'),
         v.literal('korean-celebrity'),

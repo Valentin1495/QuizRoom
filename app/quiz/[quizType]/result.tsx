@@ -31,7 +31,7 @@ const { width } = Dimensions.get('window');
 
 export default function QuizResultScreen() {
   // 정답 개수 계산
-  const { setup } = useQuizSetup();
+  const { setup, resetQuizData } = useQuizSetup();
   const { userAnswers, quizType, category, difficulty, questionFormat } = setup;
   const correctCount = userAnswers.filter((a) => a?.isCorrect).length;
   const totalCount = userAnswers.length;
@@ -47,9 +47,9 @@ export default function QuizResultScreen() {
 
   // 결과 메시지 생성
   const getResultMessage = () => {
-    if (percentage >= 90) return '훌륭해요! 당신은 전문가에요!';
+    if (percentage >= 90) return '훌륭해요! 당신은 전문가시네요!';
     if (percentage >= 70) return '잘했어요! 거의 다 맞췄네요!';
-    if (percentage >= 50) return '좋은 시도였어요! 다시 도전해보세요.';
+    if (percentage >= 50) return '좋은 시도였어요! 다시 도전해 보세요.';
     return '다음에는 더 잘할 수 있을 거예요!';
   };
 
@@ -174,7 +174,7 @@ export default function QuizResultScreen() {
         <View style={styles.statCard}>
           <View style={styles.statIconContainer}>
             <LinearGradient
-              colors={['#60a5fa', '#3b82f6']}
+              colors={['#22c55e', '#16a34a']}
               style={styles.statIcon}
             >
               <Check width={20} height={20} color='white' />
@@ -327,28 +327,14 @@ export default function QuizResultScreen() {
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.footerButton}
-          onPress={() => router.push('/')}
+          onPress={() => {
+            router.push('/');
+            resetQuizData();
+          }}
         >
           <Home width={20} height={20} color='#6b7280' />
           <Text style={styles.footerButtonText}>홈으로</Text>
         </TouchableOpacity>
-
-        {/* {wrongCount > 0 && onReviewWrongAnswers && (
-          <TouchableOpacity
-            style={styles.reviewButton}
-            onPress={onReviewWrongAnswers}
-          >
-            <LinearGradient
-              colors={['#f43f5e', '#e11d48']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.reviewGradient}
-            >
-              <BookOpen width={20} height={20} color='white' />
-              <Text style={styles.reviewButtonText}>오답 복습</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        )} */}
 
         <TouchableOpacity
           style={styles.restartButton}
@@ -398,11 +384,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(147, 51, 234, 0.3)', // 보라색 테두리
   },
   scoreGradient: {
     padding: 24,
@@ -440,15 +423,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   infoCard: {
-    backgroundColor: 'white',
     borderRadius: 16,
     padding: 16,
     marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
   infoRow: {
     flexDirection: 'row',
@@ -475,16 +455,13 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: 'white',
     borderRadius: 16,
     padding: 16,
     marginHorizontal: 4,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
   statIconContainer: {
     marginBottom: 8,
@@ -516,15 +493,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   questionCard: {
-    backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderLeftWidth: 4,
+    borderLeftColor: '#6366f1', // 왼쪽 테두리 강조
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
   questionHeader: {
     flexDirection: 'row',
@@ -568,6 +544,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafb',
     borderRadius: 8,
     padding: 12,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
   },
   answerRow: {
     flexDirection: 'row',
@@ -612,6 +590,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 24,
   },
   footerButtonText: {
     fontSize: 16,
@@ -621,6 +602,8 @@ const styles = StyleSheet.create({
   restartButton: {
     borderRadius: 24,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#3b82f6',
   },
   restartGradient: {
     flexDirection: 'row',
@@ -638,6 +621,8 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     overflow: 'hidden',
     marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#6366f1',
   },
   reviewGradient: {
     flexDirection: 'row',

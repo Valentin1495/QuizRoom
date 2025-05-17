@@ -9,9 +9,7 @@ export default function QuizLayout() {
         contentStyle: { backgroundColor: Colors.light.background },
       }}
     >
-      <Stack.Screen name='[quizType]/difficulty' />
-      <Stack.Screen name='[quizType]/question-format' />
-      <Stack.Screen name='[quizType]/question' />
+      <Stack.Screen name='[quizType]/index' />
       <Stack.Screen
         name='[quizType]/result'
         options={{ gestureEnabled: false }}

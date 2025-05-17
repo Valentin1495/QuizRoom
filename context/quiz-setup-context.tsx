@@ -24,14 +24,14 @@ export type QuizType =
 
 // 2. 퀴즈별 카테고리
 export type KnowledgeCategory =
+  | 'general'
   | 'kpop-music'
-  | 'movies-drama'
-  | 'world-knowledge'
-  | 'trivia-tmi'
-  | 'memes-trends'
+  | 'entertainment'
+  | 'history-culture'
   | 'sports'
   | 'science-tech'
-  | 'math-logic';
+  | 'math-logic'
+  | 'arts-literature';
 
 export type MovieCategory = 'korean-movie' | 'foreign-movie';
 export type CelebrityCategory = 'korean-celebrity' | 'foreign-celebrity';
@@ -45,7 +45,7 @@ type CategoryByQuizType<T extends QuizType> = T extends 'knowledge'
       : null;
 
 // 3. 퀴즈 유형
-type QuestionFormatByQuizType<T extends QuizType> = T extends 'knowledge'
+export type QuestionFormatByQuizType<T extends QuizType> = T extends 'knowledge'
   ? 'multiple' | 'short'
   : T extends 'movie-chain'
     ? 'short'
@@ -84,7 +84,7 @@ const QuizSetupContext = createContext<QuizSetupContextType | undefined>(
 
 export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
   const [setup, setSetup] = useState<QuizSetup>({
-    quizType: null,
+    quizType: 'knowledge',
     category: null,
     difficulty: null,
     questionFormat: null,

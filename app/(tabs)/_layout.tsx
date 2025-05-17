@@ -28,15 +28,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* <Tabs.Screen
-        name='quiz'
-        options={{
-          title: 'Quiz',
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name='extension-puzzle' size={size} color={color} />
-          ),
-        }}
-      /> */}
       <Tabs.Screen
         name='progress'
         options={{

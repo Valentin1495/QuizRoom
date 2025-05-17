@@ -3,14 +3,14 @@ export function switchCategoryToLabel(category?: string | null) {
     case 'kpop-music':
       return 'K-pop & 음악';
 
-    case 'world-knowledge':
-      return '세계 상식';
+    case 'history-culture':
+      return '역사 & 문화';
 
-    case 'trivia-tmi':
-      return '잡학 & TMI';
+    case 'general':
+      return '일반 상식';
 
-    case 'memes-trends':
-      return '인터넷 밈 & 트렌드';
+    case 'arts & literature':
+      return '예술 & 문학';
 
     case 'sports':
       return '스포츠';
@@ -21,8 +21,8 @@ export function switchCategoryToLabel(category?: string | null) {
     case 'math-logic':
       return '수학 & 논리';
 
-    case 'movies-drama':
-      return '영화 & 드라마';
+    case 'entertainment':
+      return '영화 & TV';
 
     default:
       break;
