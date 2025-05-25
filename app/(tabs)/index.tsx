@@ -5,11 +5,12 @@ import {
   useQuizSetup,
 } from '@/context/quiz-setup-context';
 import { api } from '@/convex/_generated/api';
+import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Dimensions,
   ImageBackground,
@@ -367,6 +368,12 @@ const DifficultyCard = React.memo(
 export default function HomeScreen() {
   const { setSetup, setup } = useQuizSetup();
   const { category, difficulty, questionFormat, quizType } = setup;
+  const { resetQuizData } = useQuizGamification();
+
+  useEffect(() => {
+    resetQuizData();
+  }, []);
+
   const router = useRouter();
 
   const handleSelectCategory = (category: KnowledgeCategory) => {
@@ -383,14 +390,17 @@ export default function HomeScreen() {
     setSetup((prev) => ({ ...prev, difficulty }));
   };
 
+  // 모든 선택이 완료되었는지 확인
+  const isSelectionComplete =
+    category && difficulty && questionFormat && quizType;
+
   const handleStartQuiz = () => {
-    router.push(`/quiz/${quizType}`);
+    router.push(
+      `/quiz?quizType=${quizType}&category=${category}&difficulty=${difficulty}&questionFormat=${questionFormat}`
+    );
   };
 
   const currentUser = useQuery(api.users.getCurrentUserByClerkId);
-
-  // 모든 선택이 완료되었는지 확인
-  const isSelectionComplete = category && difficulty && questionFormat;
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -406,7 +416,7 @@ export default function HomeScreen() {
           <Text style={styles.headerTitle}>상식 퀴즈</Text>
           <Text style={styles.headerSubtitle}>
             {currentUser?.fullName}님 환영해요! 🙌 {'\n'}
-            다양한 분야의 지식을 테스트해보세요.
+            다양한 분야의 지식을 테스트해 보세요.
           </Text>
         </Animated.View>
 

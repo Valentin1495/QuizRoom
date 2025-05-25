@@ -1,14 +1,20 @@
-import { Doc, Id } from '@/convex/_generated/dataModel';
+import { Doc } from '@/convex/_generated/dataModel';
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 
 // 사용자 응답 타입
-export type UserAnswer = {
-  questionId: Id<'quizzes'>;
+export interface UserAnswer {
+  questionId: string;
   question: string;
-  correctAnswer?: string | string[];
+  correctAnswer: string | string[] | undefined;
   userAnswer: string;
   isCorrect: boolean;
-};
+  pointsEarned: number;
+  streakCount: number;
+
+  // 업적 추적을 위한 새 필드들 (선택적)
+  answerTime?: number; // 답변에 걸린 시간 (초)
+  questionIndex?: number; // 문제 순서 (처음 3문제 추적용)
+}
 
 // 1. 퀴즈 타입
 export type QuizType =
@@ -36,7 +42,7 @@ export type KnowledgeCategory =
 export type MovieCategory = 'korean-movie' | 'foreign-movie';
 export type CelebrityCategory = 'korean-celebrity' | 'foreign-celebrity';
 
-type CategoryByQuizType<T extends QuizType> = T extends 'knowledge'
+export type CategoryByQuizType<T extends QuizType> = T extends 'knowledge'
   ? KnowledgeCategory
   : T extends 'movie-chain'
     ? MovieCategory
@@ -76,6 +82,7 @@ type QuizSetupContextType = {
   setUserAnswers: (userAnswers: UserAnswer[]) => void;
   addUserAnswer: (userAnswer: UserAnswer) => void;
   resetQuizData: () => void;
+  restartQuiz: () => void;
 };
 
 const QuizSetupContext = createContext<QuizSetupContextType | undefined>(
@@ -88,7 +95,6 @@ export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
     category: null,
     difficulty: null,
     questionFormat: null,
-    // 새로운 필드 초기화
     questions: [],
     userAnswers: [],
   });
@@ -110,14 +116,21 @@ export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetQuizData = () => {
-    setSetup({
-      quizType: null,
+    setSetup((prev) => ({
+      ...prev,
+      quizType: 'knowledge',
       category: null,
       difficulty: null,
       questionFormat: null,
       questions: [],
-      userAnswers: [],
-    });
+    }));
+  };
+
+  const restartQuiz = () => {
+    setSetup((prev) => ({
+      ...prev,
+      questions: [],
+    }));
   };
 
   return (
@@ -129,6 +142,7 @@ export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
         setUserAnswers,
         addUserAnswer,
         resetQuizData,
+        restartQuiz,
       }}
     >
       {children}

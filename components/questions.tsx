@@ -1,6 +1,8 @@
-import { useQuizSetup, UserAnswer } from '@/context/quiz-setup-context';
+import { GamificationHUD } from '@/context/gamification-HUD';
+import { PointsAnimation } from '@/context/points-animation';
 import { Doc } from '@/convex/_generated/dataModel';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
+import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -28,20 +30,38 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LevelUpModal } from './level-up-modal';
 
 const { width } = Dimensions.get('window');
 
 export default function Questions() {
-  const { setup, setUserAnswers, resetQuizData } = useQuizSetup();
-  const { questions, quizType, questionFormat, userAnswers } = setup;
+  const {
+    totalPoints,
+    level,
+    streak,
+    pointsToNextLevel,
+    setup,
+    handleAnswer,
+    handleQuizCompletion,
+    handlePointsAnimationComplete,
+    currentStreak,
+    showPointsAnimation,
+    earnedPoints,
+    initializeQuizTracking, // 새로 추가된 함수
+    quizStats, // 디버깅용 (선택사항)
+  } = useQuizGamification();
+
+  const { questions, questionFormat, userAnswers } = setup;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [selectedOption, setSelectedOption] = useState<string>();
+  const [selectedOption, setSelectedOption] = useState<string>('');
   const [textAnswer, setTextAnswer] = useState<string>('');
   const [showFeedback, setShowFeedback] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [slideDirection, setSlideDirection] = useState<'right' | 'left'>(
     'right'
   );
+  const [prevLevel, setPrevLevel] = useState(level);
+  const [showLevelUp, setShowLevelUp] = useState(false);
   const router = useRouter();
 
   // 애니메이션을 위한 값
@@ -54,20 +74,18 @@ export default function Questions() {
     };
   });
 
+  // 퀴즈 시작 시 업적 추적 초기화
   useEffect(() => {
-    // 사용자 답변 배열 초기화
-    const initialAnswers: UserAnswer[] = questions.map(
-      ({ _id, question, answer, answers }) => ({
-        questionId: _id,
-        question,
-        correctAnswer: answer || answers,
-        userAnswer: '',
-        isCorrect: false,
-      })
-    );
+    initializeQuizTracking();
+  }, []); // 컴포넌트 마운트 시 한 번만 실행
 
-    setUserAnswers(initialAnswers);
-  }, []);
+  useEffect(() => {
+    if (level > prevLevel) {
+      setShowLevelUp(true);
+      setTimeout(() => setShowLevelUp(false), 2000);
+      setPrevLevel(level);
+    }
+  }, [level]);
 
   useEffect(() => {
     // 진행률 업데이트 시 애니메이션
@@ -80,18 +98,14 @@ export default function Questions() {
 
   const currentQuestion: Doc<'quizzes'> = questions[currentQuestionIndex];
 
-  const handleAnswer = (): void => {
+  // 답변 처리 (통합된 훅 사용)
+  const onSubmitAnswer = (): void => {
     let userAnswer: string = '';
-    let correct: boolean = false;
 
     if (questionFormat === 'multiple') {
-      userAnswer = selectedOption || '';
-      correct = selectedOption === currentQuestion?.answer;
+      userAnswer = selectedOption;
     } else {
       userAnswer = textAnswer.trim();
-      correct = currentQuestion
-        ?.answers!.map((a) => a.toLowerCase())
-        .includes(userAnswer.toLowerCase());
     }
 
     // 애니메이션 효과
@@ -103,18 +117,15 @@ export default function Questions() {
       }
     );
 
-    // 사용자 답변 업데이트
-    const newUserAnswers = [...userAnswers];
-    newUserAnswers[currentQuestionIndex] = {
-      questionId: currentQuestion._id,
-      question: currentQuestion.question,
-      correctAnswer: currentQuestion.answer,
+    // 통합된 answer 핸들러 사용
+    const result = handleAnswer(
+      currentQuestion,
+      currentQuestionIndex,
       userAnswer,
-      isCorrect: correct,
-    };
+      questionFormat
+    );
 
-    setUserAnswers(newUserAnswers);
-    setIsCorrect(correct);
+    setIsCorrect(result.isCorrect);
     setShowFeedback(true);
   };
 
@@ -125,32 +136,35 @@ export default function Questions() {
       setSlideDirection('left');
 
       // 이전 답변이 있으면 복원
-      const previousAnswer = userAnswers[currentQuestionIndex - 1]?.userAnswer;
-      if (previousAnswer) {
+      const previousAnswer = userAnswers[currentQuestionIndex - 1];
+      if (previousAnswer && previousAnswer.userAnswer) {
         if (questionFormat === 'multiple') {
-          setSelectedOption(previousAnswer);
+          setSelectedOption(previousAnswer.userAnswer);
         } else {
-          setTextAnswer(previousAnswer);
+          setTextAnswer(previousAnswer.userAnswer);
         }
-        setIsCorrect(userAnswers[currentQuestionIndex - 1].isCorrect);
+        setIsCorrect(previousAnswer.isCorrect);
         setShowFeedback(true);
       } else {
         setSelectedOption('');
         setTextAnswer('');
+        setShowFeedback(false);
       }
     }
   };
 
   const checkUnansweredQuestions = (): boolean => {
     return userAnswers.some((answer) => {
-      if (currentQuestionIndex === questions.length - 1) {
-        return answer.userAnswer === '' || !showFeedback;
+      // 현재 문제가 마지막이고 아직 답변하지 않은 경우 체크
+      if (currentQuestionIndex === questions.length - 1 && !showFeedback) {
+        return true;
       }
-      answer.userAnswer === '';
+      // 다른 문제들 중 답변하지 않은 문제가 있는지 체크
+      return answer.userAnswer === '';
     });
   };
 
-  const goToNextQuestion = (): void => {
+  const goToNextQuestion = async (): Promise<void> => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setShowFeedback(false);
@@ -159,14 +173,14 @@ export default function Questions() {
       setSlideDirection('right');
 
       // 다음 답변이 있으면 복원
-      const nextAnswer = userAnswers[currentQuestionIndex + 1]?.userAnswer;
-      if (nextAnswer) {
+      const nextAnswer = userAnswers[currentQuestionIndex + 1];
+      if (nextAnswer && nextAnswer.userAnswer) {
         if (questionFormat === 'multiple') {
-          setSelectedOption(nextAnswer);
+          setSelectedOption(nextAnswer.userAnswer);
         } else {
-          setTextAnswer(nextAnswer);
+          setTextAnswer(nextAnswer.userAnswer);
         }
-        setIsCorrect(userAnswers[currentQuestionIndex + 1].isCorrect);
+        setIsCorrect(nextAnswer.isCorrect);
         setShowFeedback(true);
       }
     } else {
@@ -182,22 +196,20 @@ export default function Questions() {
             },
             {
               text: '확인',
-              onPress: () => {
-                // 답변하지 않은 문제 오답 처리
-                const finalAnswers = userAnswers.map((answer) =>
-                  answer?.userAnswer === ''
-                    ? { ...answer, isCorrect: false }
-                    : answer
-                );
-                setUserAnswers(finalAnswers);
-                router.push(`/quiz/${quizType}/result`);
+              onPress: async () => {
+                // 퀴즈 완료 (업적 자동 체크됨) 처리 후 결과 화면으로 이동
+                const completionResult = await handleQuizCompletion();
+                // 필요시 완료 결과 활용
+                console.log('퀴즈 완료 결과:', completionResult);
+                router.push('/quiz/result');
               },
             },
           ]
         );
       } else {
-        // 결과 화면으로 이동
-        router.push(`/quiz/${quizType}/result`);
+        const completionResult = await handleQuizCompletion();
+        console.log('퀴즈 완료 결과:', completionResult);
+        router.push('/quiz/result');
       }
     }
   };
@@ -214,7 +226,6 @@ export default function Questions() {
         {
           text: '확인',
           onPress: () => {
-            resetQuizData();
             router.push('/');
           },
         },
@@ -225,7 +236,6 @@ export default function Questions() {
   useBlockNavigation();
 
   if (!currentQuestion) {
-    // 로딩 상태나 질문이 없는 경우
     return (
       <LinearGradient
         colors={['#FF416C', '#FF4B2B']}
@@ -240,6 +250,10 @@ export default function Questions() {
     );
   }
 
+  // 현재 문제에 대한 답변 상태 확인
+  const canSubmit =
+    questionFormat === 'multiple' ? selectedOption : textAnswer.trim();
+
   return (
     <LinearGradient
       colors={['#8A2387', '#E94057', '#F27121']}
@@ -247,7 +261,26 @@ export default function Questions() {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
+      <LevelUpModal visible={showLevelUp} level={level} />
+
       <SafeAreaView style={styles.safeArea}>
+        {/* 포인트 애니메이션 */}
+        {showPointsAnimation && (
+          <View style={styles.pointsAnimationContainer}>
+            <PointsAnimation
+              points={earnedPoints}
+              visible={showPointsAnimation}
+              onComplete={handlePointsAnimationComplete}
+            />
+          </View>
+        )}
+
+        {/* 게임화 HUD */}
+        <GamificationHUD
+          visible={true}
+          gamification={{ totalPoints, level, streak, pointsToNextLevel }}
+        />
+
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.header}>
             <View style={styles.progressContainer}>
@@ -274,7 +307,7 @@ export default function Questions() {
           </View>
 
           <Animated.View
-            key={currentQuestionIndex}
+            key={`${currentQuestion._id}-${currentQuestionIndex}`}
             entering={
               slideDirection === 'right'
                 ? SlideInRight.duration(300)
@@ -370,9 +403,16 @@ export default function Questions() {
                   ]}
                 >
                   {isCorrect
-                    ? '정답이에요! 🔥'
-                    : `오답이에요. 정답은 "${currentQuestion.answer}" 입니다`}
+                    ? `정답이에요! ${earnedPoints > 0 ? `+${earnedPoints}xp` : ''}`
+                    : questionFormat === 'multiple'
+                      ? `오답이에요. 정답은 "${currentQuestion.answer}" 입니다`
+                      : `오답이에요. 정답은 "${currentQuestion.answers![0]}" 입니다`}
                 </Text>
+                {isCorrect && currentStreak > 1 && (
+                  <Text style={styles.streakText}>
+                    🔥 {currentStreak}연속 정답!
+                  </Text>
+                )}
               </Animated.View>
             )}
 
@@ -380,17 +420,10 @@ export default function Questions() {
               <TouchableOpacity
                 style={[
                   styles.submitButton,
-                  (questionFormat === 'multiple' && !selectedOption) ||
-                  (questionFormat === 'short' && !textAnswer.trim())
-                    ? styles.disabledButton
-                    : {},
+                  !canSubmit && styles.disabledButton,
                 ]}
-                onPress={handleAnswer}
-                disabled={
-                  questionFormat === 'multiple'
-                    ? !selectedOption
-                    : !textAnswer.trim()
-                }
+                onPress={onSubmitAnswer}
+                disabled={!canSubmit}
               >
                 <View style={styles.submitButtonContent}>
                   <Text style={styles.submitButtonText}>제출하기</Text>
@@ -441,6 +474,16 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+  },
+  pointsAnimationContainer: {
+    position: 'absolute',
+    top: '40%', // 더 위쪽으로 위치 조정
+    left: 0,
+    right: 0,
+    zIndex: 9999, // zIndex 값 증가
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 100, // 명시적 높이 설정
   },
   scrollContainer: {
     flexGrow: 1,
@@ -615,6 +658,18 @@ const styles = StyleSheet.create({
   },
   wrongFeedback: {
     color: '#ff4757',
+  },
+  streakText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4CAF50',
+    marginTop: 4,
+    textAlign: 'center',
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   submitButton: {
     backgroundColor: '#8A2387',

@@ -75,4 +75,68 @@ export default defineSchema({
   })
     .index('byQuizType', ['quizType'])
     .index('byCategory', ['category']),
+
+  gamificationData: defineTable({
+    userId: v.string(), // Clerk 유저 ID
+
+    // 포인트 & 레벨
+    totalPoints: v.number(),
+    level: v.number(),
+    pointsToNextLevel: v.number(),
+    expInCurrentLevel: v.number(),
+
+    // 스트릭
+    currentStreak: v.number(),
+    longestStreak: v.number(),
+    lastQuizDate: v.optional(v.string()), // ISO 날짜 문자열
+
+    // 퀴즈 통계
+    totalQuizzes: v.number(),
+    totalCorrectAnswers: v.number(),
+    currentPerfectStreak: v.number(),
+
+    // 메타데이터
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index('by_user', ['userId']),
+
+  categoryStats: defineTable({
+    userId: v.string(),
+    category: v.string(),
+    totalQuestions: v.number(),
+    correctAnswers: v.number(),
+    masteryLevel: v.number(),
+    initialAccuracy: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index('by_user_category', ['userId', 'category']),
+
+  achievements: defineTable({
+    userId: v.string(),
+    achievementId: v.string(), // 업적의 고유 ID
+    unlockedAt: v.optional(v.number()), // timestamp, null이면 미해금
+    progress: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_user', ['userId'])
+    .index('by_user_achievement', ['userId', 'achievementId']),
+
+  quizHistory: defineTable({
+    id: v.string(), // UUID
+    userId: v.string(),
+    date: v.string(), // ISO 날짜 (YYYY-MM-DD)
+    completedAt: v.string(), // ISO 날짜시간
+    category: v.string(),
+    total: v.number(),
+    correct: v.number(),
+    averageTime: v.optional(v.number()),
+    comebackVictory: v.optional(v.boolean()),
+    luckyStreak: v.optional(v.number()),
+    withFriend: v.optional(v.boolean()),
+    relearnedMistakes: v.optional(v.boolean()),
+    createdAt: v.number(),
+  })
+    .index('by_user', ['userId'])
+    .index('by_user_date', ['userId', 'date']),
 });

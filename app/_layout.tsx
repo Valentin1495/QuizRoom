@@ -1,3 +1,4 @@
+import { GamificationProvider } from '@/context/gamification-context';
 import { QuizSetupProvider } from '@/context/quiz-setup-context';
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
@@ -15,9 +16,11 @@ export default function RootLayout() {
     <ClerkProvider tokenCache={tokenCache}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         <QuizSetupProvider>
-          <SafeAreaProvider>
-            <Stack screenOptions={{ headerShown: false }} />
-          </SafeAreaProvider>
+          <GamificationProvider>
+            <SafeAreaProvider>
+              <Stack screenOptions={{ headerShown: false }} />
+            </SafeAreaProvider>
+          </GamificationProvider>
         </QuizSetupProvider>
       </ConvexProviderWithClerk>
     </ClerkProvider>

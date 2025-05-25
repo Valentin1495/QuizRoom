@@ -7,13 +7,11 @@ export default function QuizLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: Colors.light.background },
+        gestureEnabled: false,
       }}
     >
-      <Stack.Screen name='[quizType]/index' />
-      <Stack.Screen
-        name='[quizType]/result'
-        options={{ gestureEnabled: false }}
-      />
+      <Stack.Screen name='index' />
+      <Stack.Screen name='result' />
     </Stack>
   );
 }
