@@ -55,14 +55,8 @@ export const createUser = internalMutation({
 });
 
 export const getCurrentUserByClerkId = query({
-  handler: async (ctx) => await getCurrentUserOrThrow(ctx),
+  handler: async (ctx) => await getCurrentUser(ctx),
 });
-
-export async function getCurrentUserOrThrow(ctx: QueryCtx) {
-  const userRecord = await getCurrentUser(ctx);
-  if (!userRecord) throw new Error("Can't get current user");
-  return userRecord;
-}
 
 export async function getCurrentUser(ctx: QueryCtx) {
   const identity = await ctx.auth.getUserIdentity();
@@ -77,4 +71,10 @@ async function userByClerkId(ctx: QueryCtx, clerkId: string) {
     .query('users')
     .withIndex('byClerkId', (q) => q.eq('clerkId', clerkId))
     .unique();
+}
+
+export async function getCurrentUserOrThrow(ctx: QueryCtx) {
+  const userRecord = await getCurrentUser(ctx);
+  if (!userRecord) throw new Error("Can't get current user");
+  return userRecord;
 }

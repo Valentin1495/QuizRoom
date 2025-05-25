@@ -6,6 +6,7 @@ import {
 } from '@/context/quiz-setup-context';
 import { api } from '@/convex/_generated/api';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
+import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -369,6 +370,7 @@ export default function HomeScreen() {
   const { setSetup, setup } = useQuizSetup();
   const { category, difficulty, questionFormat, quizType } = setup;
   const { resetQuizData } = useQuizGamification();
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     resetQuizData();
