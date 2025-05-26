@@ -3,7 +3,7 @@ import { mutation, query } from './_generated/server';
 
 // 게이미피케이션 데이터 초기화 또는 가져오기
 export const getOrCreateGamificationData = query({
-  args: { userId: v.string() },
+  args: { userId: v.string(), _refresh: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const existing = await ctx.db
       .query('gamificationData')
@@ -76,7 +76,7 @@ export const updateGamificationData = mutation({
 
 // 카테고리 통계 가져오기
 export const getCategoryStats = query({
-  args: { userId: v.string() },
+  args: { userId: v.string(), _refresh: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const stats = await ctx.db
       .query('categoryStats')

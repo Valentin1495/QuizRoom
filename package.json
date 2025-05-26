@@ -14,7 +14,6 @@
     "@clerk/backend": "^1.31.2",
     "@clerk/clerk-expo": "^2.10.7",
     "@expo/vector-icons": "^14.1.0",
-    "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-masked-view/masked-view": "0.3.2",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",

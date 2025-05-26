@@ -29,9 +29,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='progress'
+        name='stats'
         options={{
-          title: 'Progress',
+          title: 'Stats',
           tabBarIcon: ({ size, color }) => (
             <Ionicons name='stats-chart' size={size} color={color} />
           ),
