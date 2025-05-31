@@ -1,4 +1,4 @@
-import { useUser } from '@clerk/clerk-react'; // Clerk 사용 가정
+import { useUser } from '@clerk/clerk-react';
 import { useMutation, useQuery } from 'convex/react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import 'react-native-get-random-values';
@@ -780,17 +780,17 @@ export function GamificationProvider({
               progress = prev.currentPerfectStreak;
               done = progress >= 5;
               break;
-            case 'accuracy_king':
-              const totalCorrect = prev.totalCorrectAnswers;
-              const totalQuestions = prev.quizzesHistory.reduce(
-                (sum, q) => sum + q.total,
-                0
-              );
-              const accuracy =
-                totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
-              progress = Math.floor(accuracy);
-              done = accuracy >= 95;
-              break;
+            // case 'accuracy_king':
+            //   const totalCorrect = prev.totalCorrectAnswers;
+            //   const totalQuestions = prev.quizzesHistory.reduce(
+            //     (sum, q) => sum + q.total,
+            //     0
+            //   );
+            //   const accuracy =
+            //     totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
+            //   progress = Math.floor(accuracy);
+            //   done = accuracy >= 95;
+            //   break;
 
             // 수량 기반 업적들
             case 'quiz_beginner':
@@ -852,16 +852,16 @@ export function GamificationProvider({
               done = categoriesWithQuizzes === ALL_CATEGORIES.length;
               break;
 
-            case 'balanced_learner':
-              // 모든 카테고리에서 최소 10개 이상의 문제 풀기
-              const balancedCategories = ALL_CATEGORIES.filter((category) => {
-                const stats = prev.categoryStats[category];
-                return stats && stats.totalQuestions >= 10;
-              }).length;
+            // case 'balanced_learner':
+            //   // 모든 카테고리에서 최소 10개 이상의 문제 풀기
+            //   const balancedCategories = ALL_CATEGORIES.filter((category) => {
+            //     const stats = prev.categoryStats[category];
+            //     return stats && stats.totalQuestions >= 10;
+            //   }).length;
 
-              progress = balancedCategories;
-              done = balancedCategories === ALL_CATEGORIES.length;
-              break;
+            //   progress = balancedCategories;
+            //   done = balancedCategories === ALL_CATEGORIES.length;
+            //   break;
 
             // 속도 관련 업적들
             case 'speed_demon':

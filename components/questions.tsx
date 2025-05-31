@@ -2,8 +2,10 @@ import { GamificationHUD } from '@/context/gamification-HUD';
 import { PointsAnimation } from '@/context/points-animation';
 import { Doc } from '@/convex/_generated/dataModel';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
+import { useChallenges } from '@/hooks/use-challenges';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
+import { useAuth } from '@clerk/clerk-expo';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -63,6 +65,11 @@ export default function Questions() {
   const [prevLevel, setPrevLevel] = useState(level);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const router = useRouter();
+  const { userId } = useAuth();
+  const c = useChallenges(userId);
+  const perfectScore = userAnswers
+    .map((a) => a.isCorrect)
+    .every((a) => a === true);
 
   // 애니메이션을 위한 값
   const scale = useSharedValue(1);
@@ -199,6 +206,7 @@ export default function Questions() {
               onPress: async () => {
                 // 퀴즈 완료 (업적 자동 체크됨) 처리 후 결과 화면으로 이동
                 const completionResult = await handleQuizCompletion();
+                await c?.onQuizCompleted(perfectScore);
                 // 필요시 완료 결과 활용
                 console.log('퀴즈 완료 결과:', completionResult);
                 router.push('/quiz/result');
@@ -208,6 +216,7 @@ export default function Questions() {
         );
       } else {
         const completionResult = await handleQuizCompletion();
+        await c?.onQuizCompleted(perfectScore);
         console.log('퀴즈 완료 결과:', completionResult);
         router.push('/quiz/result');
       }

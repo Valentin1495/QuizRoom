@@ -139,4 +139,41 @@ export default defineSchema({
   })
     .index('by_user', ['userId'])
     .index('by_user_date', ['userId', 'date']),
+
+  // 도전과제 관련 새로운 테이블들
+  challenges: defineTable({
+    userId: v.string(),
+    type: v.union(v.literal('daily'), v.literal('weekly')),
+    title: v.string(),
+    description: v.string(),
+    targetCount: v.number(),
+    currentCount: v.number(),
+    reward: v.object({
+      type: v.union(
+        v.literal('points'),
+        v.literal('badge'),
+        v.literal('streak')
+      ),
+      value: v.number(),
+      name: v.optional(v.string()),
+    }),
+    completed: v.boolean(),
+    expiresAt: v.number(),
+    createdAt: v.number(),
+  })
+    .index('by_user', ['userId'])
+    .index('by_user_type', ['userId', 'type'])
+    .index('by_expiry', ['expiresAt']),
+
+  dailyChallengeProgress: defineTable({
+    userId: v.string(),
+    date: v.string(), // YYYY-MM-DD 형식
+    quizCount: v.number(),
+    perfectQuizCount: v.number(),
+    streakDays: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_user', ['userId'])
+    .index('by_user_date', ['userId', 'date']),
 });

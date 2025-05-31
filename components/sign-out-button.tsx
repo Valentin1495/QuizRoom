@@ -1,8 +1,6 @@
-import { Colors } from '@/constants/Colors';
 import { useClerk } from '@clerk/clerk-expo';
 import * as Linking from 'expo-linking';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Settings() {
   const { signOut } = useClerk();
@@ -20,17 +18,10 @@ export default function Settings() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={handleSignOut}>
-        <Text>로그아웃</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    <TouchableOpacity onPress={handleSignOut}>
+      <Text>로그아웃</Text>
+    </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-});
+const styles = StyleSheet.create({});

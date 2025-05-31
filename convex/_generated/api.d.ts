@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as challenges from "../challenges.js";
 import type * as gamification from "../gamification.js";
 import type * as http from "../http.js";
 import type * as quizzes from "../quizzes.js";
@@ -27,6 +28,7 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  challenges: typeof challenges;
   gamification: typeof gamification;
   http: typeof http;
   quizzes: typeof quizzes;
