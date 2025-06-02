@@ -181,6 +181,7 @@ export default function ChallengesScreen() {
     const progressWidth = `${progress * 100}%`;
     const timeInfo = getTimeRemainingInfo(challenge.expiresAt);
     const progressColors = getProgressColor(progress, challenge.completed);
+    const isLastCard = index === currentChallenges.length - 1;
 
     const cardTransform = {
       transform: [
@@ -202,6 +203,7 @@ export default function ChallengesScreen() {
           styles.challengeCard,
           cardTransform,
           shouldPulse && { transform: [{ scale: pulseAnim }] },
+          isLastCard && { marginBottom: 0 },
         ]}
       >
         <LinearGradient
@@ -286,7 +288,7 @@ export default function ChallengesScreen() {
       >
         <View style={styles.header}>
           <Text style={styles.headerTitle}>🏆 도전과제</Text>
-          <Text style={styles.headerSubtitle}>오늘도 힘내세요! 💪</Text>
+          <Text style={styles.headerSubtitle}>오늘도 힘내요! 💪</Text>
         </View>
       </LinearGradient>
 
@@ -305,7 +307,7 @@ export default function ChallengesScreen() {
                 {
                   translateX: slideAnim.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [0, tabWidth ? (tabWidth - 8) / 2 : 0],
+                    outputRange: [0, tabWidth ? tabWidth / 2 : 0],
                   }),
                 },
               ],
@@ -398,7 +400,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: -15,
     borderRadius: 25,
-    padding: 4,
     position: 'relative',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -408,13 +409,13 @@ const styles = StyleSheet.create({
   },
   tabIndicator: {
     position: 'absolute',
-    top: 4,
-    bottom: 4,
-    left: 2,
+    top: 0,
+    bottom: 0,
+    left: 0,
     width: '50%',
     marginRight: 4,
     backgroundColor: '#667eea',
-    borderRadius: 21,
+    borderRadius: 25,
     shadowColor: '#667eea',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -426,7 +427,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 20,
     alignItems: 'center',
-    borderRadius: 21,
+    borderRadius: 25,
+    zIndex: 1,
   },
   activeTab: {},
   tabText: {
@@ -443,7 +445,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   scrollContent: {
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
   challengeCard: {
     marginBottom: 20,
@@ -563,7 +565,7 @@ const styles = StyleSheet.create({
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 80,
+    paddingVertical: 40,
     paddingHorizontal: 40,
   },
   emptyStateEmoji: {

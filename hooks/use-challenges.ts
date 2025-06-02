@@ -7,12 +7,20 @@ export const useChallenges = (userId?: string | null) => {
 
   const updateProgress = useMutation(api.challenges.updateChallengeProgress);
 
-  const onQuizCompleted = async (perfectScore: boolean) => {
+  const onQuizCompleted = async (
+    isCorrect: boolean,
+    category?: string,
+    answerTime?: number, // 초 단위
+    perfectStreak?: number
+  ) => {
     try {
       const updatedChallenges = await updateProgress({
         userId,
         quizCompleted: true,
-        perfectScore,
+        isCorrect, // perfectScore → isCorrect로 변경
+        category, // 새로 추가
+        answerTime, // 새로 추가 (초 단위)
+        perfectStreak, // 새로 추가
       });
 
       // 완료된 도전과제가 있으면 알림 표시
@@ -30,5 +38,26 @@ export const useChallenges = (userId?: string | null) => {
     }
   };
 
-  return { onQuizCompleted };
+  // 개별 문제 완료 시 호출하는 함수 (더 세밀한 추적용)
+  const onQuestionAnswered = async (
+    isCorrect: boolean,
+    category: string,
+    answerTime: number, // 초 단위
+    currentPerfectStreak: number
+  ) => {
+    try {
+      await updateProgress({
+        userId,
+        quizCompleted: false, // 개별 문제는 퀴즈 완료가 아님
+        isCorrect,
+        category,
+        answerTime,
+        perfectStreak: currentPerfectStreak,
+      });
+    } catch (error) {
+      console.error('문제 완료 업데이트 실패:', error);
+    }
+  };
+
+  return { onQuizCompleted, onQuestionAnswered };
 };

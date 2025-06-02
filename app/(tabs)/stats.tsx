@@ -1,5 +1,3 @@
-import CategoryBar from '@/components/category-bar';
-import EmptyCategoryStats from '@/components/empty-category-stats';
 import EmptyStatsCard from '@/components/empty-stat-card';
 import LevelProgress from '@/components/level-progress';
 import StatCard from '@/components/stat-card';
@@ -16,11 +14,7 @@ export default function StatsScreen() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const gamificationData = useQuery(
     api.gamification.getOrCreateGamificationData,
-    userId ? { userId, _refresh: refreshTrigger } : 'skip'
-  );
-  const categoryStats = useQuery(
-    api.gamification.getCategoryStats,
-    userId ? { userId, _refresh: refreshTrigger } : 'skip'
+    userId ? { userId } : 'skip'
   );
 
   // 화면이 포커스될 때마다 데이터 새로고침
@@ -32,7 +26,7 @@ export default function StatsScreen() {
     }, [userId])
   );
 
-  if (!gamificationData || !categoryStats) {
+  if (!gamificationData) {
     return null;
   }
 
@@ -55,7 +49,6 @@ export default function StatsScreen() {
             100
         );
   const hasQuizData = gamificationData.totalQuizzes > 0;
-  const hasCategoryData = Object.keys(categoryStats).length > 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -133,26 +126,6 @@ export default function StatsScreen() {
             <EmptyStatsCard delay={200} />
           </View>
         )}
-        {/* Category Analysis */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>카테고리별 실력 분석</Text>
-          <Text style={styles.sectionSubtitle}>
-            각 분야별 수준과 정답률을 확인해보세요
-          </Text>
-
-          {hasCategoryData ? (
-            Object.entries(categoryStats).map(([category, stats], index) => (
-              <CategoryBar
-                key={category}
-                category={category}
-                stats={stats}
-                delay={800 + index * 100}
-              />
-            ))
-          ) : (
-            <EmptyCategoryStats delay={800} />
-          )}
-        </View>
 
         {/* Bottom Padding */}
         <View style={styles.bottomPadding} />
@@ -183,23 +156,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     paddingHorizontal: 10,
     marginBottom: 30,
-  },
-
-  section: {
-    paddingHorizontal: 20,
-    marginBottom: 30,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-    marginBottom: 8,
-  },
-  sectionSubtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 20,
-    lineHeight: 22,
   },
   masteryText: {
     fontSize: 14,

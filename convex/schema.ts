@@ -103,13 +103,88 @@ export default defineSchema({
   categoryStats: defineTable({
     userId: v.string(),
     category: v.string(),
+
+    // 전체 통계
     totalQuestions: v.number(),
     correctAnswers: v.number(),
     masteryLevel: v.number(),
     initialAccuracy: v.optional(v.number()),
+
+    // 난이도별 상세 통계
+    difficultyStats: v.object({
+      easy: v.object({
+        total: v.number(),
+        correct: v.number(),
+        accuracy: v.number(),
+        avgTime: v.optional(v.number()),
+      }),
+      medium: v.object({
+        total: v.number(),
+        correct: v.number(),
+        accuracy: v.number(),
+        avgTime: v.optional(v.number()),
+      }),
+      hard: v.object({
+        total: v.number(),
+        correct: v.number(),
+        accuracy: v.number(),
+        avgTime: v.optional(v.number()),
+      }),
+    }),
+
+    // 가중 점수 (난이도별 가중치 적용)
+    weightedScore: v.number(), // easy: 1점, medium: 2점, hard: 3점
+    maxWeightedScore: v.number(),
+
+    // 실력 레벨 분석
+    skillLevel: v.union(
+      v.literal('beginner'), // 0-30%
+      v.literal('novice'), // 30-50%
+      v.literal('intermediate'), // 50-70%
+      v.literal('advanced'), // 70-85%
+      v.literal('expert') // 85-100%
+    ),
+
+    // 추천 난이도
+    recommendedDifficulty: v.union(
+      v.literal('easy'),
+      v.literal('medium'),
+      v.literal('hard')
+    ),
+
+    // 성장 추세
+    growthTrend: v.object({
+      last7Days: v.number(), // 최근 7일간 정답률 변화
+      last30Days: v.number(), // 최근 30일간 정답률 변화
+      isImproving: v.boolean(), // 향상 중인지 여부
+    }),
+
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index('by_user_category', ['userId', 'category']),
+
+  // 퀴즈 결과에 난이도 정보 추가
+  quizResults: defineTable({
+    id: v.string(),
+    userId: v.string(),
+    quizId: v.string(),
+    category: v.string(),
+    difficulty: v.union(
+      v.literal('easy'),
+      v.literal('medium'),
+      v.literal('hard')
+    ),
+    isCorrect: v.boolean(),
+    timeSpent: v.number(), // 밀리초
+    attemptedAt: v.number(),
+
+    // 추가 메타데이터
+    hintsUsed: v.optional(v.number()),
+    confidenceLevel: v.optional(v.number()), // 1-5 스케일
+  })
+    .index('by_user', ['userId'])
+    .index('by_user_category', ['userId', 'category'])
+    .index('by_user_difficulty', ['userId', 'difficulty']),
 
   achievements: defineTable({
     userId: v.string(),
@@ -136,6 +211,10 @@ export default defineSchema({
     withFriend: v.optional(v.boolean()),
     relearnedMistakes: v.optional(v.boolean()),
     createdAt: v.number(),
+    difficulty: v.optional(
+      v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
+    ),
+    timeSpent: v.optional(v.number()),
   })
     .index('by_user', ['userId'])
     .index('by_user_date', ['userId', 'date']),

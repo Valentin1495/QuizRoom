@@ -49,8 +49,8 @@ export default function Questions() {
     currentStreak,
     showPointsAnimation,
     earnedPoints,
-    initializeQuizTracking, // 새로 추가된 함수
-    quizStats, // 디버깅용 (선택사항)
+    initializeQuizTracking,
+    quizStats,
   } = useQuizGamification();
 
   const { questions, questionFormat, userAnswers } = setup;
@@ -64,12 +64,17 @@ export default function Questions() {
   );
   const [prevLevel, setPrevLevel] = useState(level);
   const [showLevelUp, setShowLevelUp] = useState(false);
+
+  // 퀴즈 시작 시간과 각 문제별 시간 추적
+  const [quizStartTime] = useState<number>(Date.now());
+  const [questionStartTime, setQuestionStartTime] = useState<number>(
+    Date.now()
+  );
+  const [totalAnswerTime, setTotalAnswerTime] = useState<number>(0);
+
   const router = useRouter();
   const { userId } = useAuth();
-  const c = useChallenges(userId);
-  const perfectScore = userAnswers
-    .map((a) => a.isCorrect)
-    .every((a) => a === true);
+  const { onQuizCompleted } = useChallenges(userId) || {};
 
   // 애니메이션을 위한 값
   const scale = useSharedValue(1);
@@ -84,7 +89,7 @@ export default function Questions() {
   // 퀴즈 시작 시 업적 추적 초기화
   useEffect(() => {
     initializeQuizTracking();
-  }, []); // 컴포넌트 마운트 시 한 번만 실행
+  }, []);
 
   useEffect(() => {
     if (level > prevLevel) {
@@ -103,6 +108,11 @@ export default function Questions() {
     });
   }, [currentQuestionIndex, questions.length]);
 
+  // 새 문제 시작 시 시간 기록
+  useEffect(() => {
+    setQuestionStartTime(Date.now());
+  }, [currentQuestionIndex]);
+
   const currentQuestion: Doc<'quizzes'> = questions[currentQuestionIndex];
 
   // 답변 처리 (통합된 훅 사용)
@@ -114,6 +124,10 @@ export default function Questions() {
     } else {
       userAnswer = textAnswer.trim();
     }
+
+    // 이 문제에 소요된 시간 계산 (초 단위)
+    const questionTime = (Date.now() - questionStartTime) / 1000;
+    setTotalAnswerTime((prev) => prev + questionTime);
 
     // 애니메이션 효과
     scale.value = withTiming(
@@ -171,6 +185,35 @@ export default function Questions() {
     });
   };
 
+  // 퀴즈 완료 처리 함수
+  const completeQuiz = async () => {
+    // 게이미피케이션 퀴즈 완료 처리
+    const completionResult = await handleQuizCompletion();
+
+    // 퀴즈 통계 계산
+    const correctCount = userAnswers.filter(
+      (answer) => answer.isCorrect
+    ).length;
+    const totalTime = (Date.now() - quizStartTime) / 1000; // 전체 소요 시간 (초)
+    const avgTimePerQuestion = totalTime / questions.length;
+
+    // 도전과제 업데이트 (마지막 정답 여부와 현재 스트릭 사용)
+    const lastAnswerCorrect =
+      userAnswers[userAnswers.length - 1]?.isCorrect || false;
+
+    if (onQuizCompleted) {
+      await onQuizCompleted(
+        lastAnswerCorrect, // 마지막 답변의 정답 여부
+        currentQuestion.category ?? undefined, // 카테고리, null이나 undefined일 때 기본값 사용
+        avgTimePerQuestion, // 평균 답변 시간 (초)
+        currentStreak // 현재 연속 정답 수
+      );
+    }
+
+    console.log('퀴즈 완료 결과:', completionResult);
+    router.push('/quiz/result');
+  };
+
   const goToNextQuestion = async (): Promise<void> => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -203,22 +246,12 @@ export default function Questions() {
             },
             {
               text: '확인',
-              onPress: async () => {
-                // 퀴즈 완료 (업적 자동 체크됨) 처리 후 결과 화면으로 이동
-                const completionResult = await handleQuizCompletion();
-                await c?.onQuizCompleted(perfectScore);
-                // 필요시 완료 결과 활용
-                console.log('퀴즈 완료 결과:', completionResult);
-                router.push('/quiz/result');
-              },
+              onPress: completeQuiz,
             },
           ]
         );
       } else {
-        const completionResult = await handleQuizCompletion();
-        await c?.onQuizCompleted(perfectScore);
-        console.log('퀴즈 완료 결과:', completionResult);
-        router.push('/quiz/result');
+        await completeQuiz();
       }
     }
   };

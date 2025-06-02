@@ -17,6 +17,8 @@ export interface QuizHistoryItem {
   luckyStreak?: number; // 연속 맞힌 문제 수 (행운의 추측용)
   withFriend?: boolean; // 친구와 함께했는지
   relearnedMistakes?: boolean; // 틀린 문제 재학습했는지
+  difficulty?: 'easy' | 'medium' | 'hard'; // 새로 추가된 필수 매개변수
+  timeSpent?: number; // 새로 추가된 필수 매개변수
 }
 
 interface GamificationState {
@@ -79,6 +81,8 @@ interface GamificationContextType {
     category: string,
     correctAnswers: number,
     totalQuestions: number,
+    difficulty: 'easy' | 'medium' | 'hard', // 새로 추가된 필수 매개변수
+    timeSpent: number, // 새로 추가된 필수 매개변수 (밀리초)
     options?: {
       averageTime?: number;
       comebackVictory?: boolean;
@@ -391,7 +395,7 @@ export function GamificationProvider({
     user?.id ? { userId: user.id } : 'skip'
   );
   const categoryStats = useQuery(
-    api.gamification.getCategoryStats,
+    api.gamification.getCategoryStatsWithDifficulty,
     user?.id ? { userId: user.id } : 'skip'
   );
   const achievements = useQuery(
@@ -406,7 +410,9 @@ export function GamificationProvider({
   const updateGamificationData = useMutation(
     api.gamification.updateGamificationData
   );
-  const updateCategoryStats = useMutation(api.gamification.updateCategoryStats);
+  const updateCategoryStats = useMutation(
+    api.gamification.updateCategoryStatsWithDifficulty
+  );
   const updateAchievement = useMutation(api.gamification.updateAchievement);
   const addQuizHistory = useMutation(api.gamification.addQuizHistory);
   const resetGamificationData = useMutation(
@@ -584,6 +590,8 @@ export function GamificationProvider({
     category: string,
     correctAnswers: number,
     totalQuestions: number,
+    difficulty: 'easy' | 'medium' | 'hard', // 새로 추가된 필수 매개변수
+    timeSpent: number, // 새로 추가된 필수 매개변수 (밀리초)
     options?: {
       averageTime?: number;
       comebackVictory?: boolean;
@@ -644,6 +652,8 @@ export function GamificationProvider({
         category,
         total: totalQuestions,
         correct: correctAnswers,
+        difficulty, // 난이도 정보 추가
+        timeSpent, // 소요 시간 정보 추가
         ...options,
       };
 
@@ -693,15 +703,20 @@ export function GamificationProvider({
         },
       });
 
-      // 2. 카테고리 통계 업데이트
-      updateCategoryStats({
-        userId: user.id,
-        category,
-        totalQuestions: totQ,
-        correctAnswers: totC,
-        masteryLevel: newMasteryLevel,
-        initialAccuracy,
-      });
+      // 2. 각 문제별로 개별 카테고리 통계 업데이트
+      // 모든 문제가 같은 난이도라고 가정하고 각각 업데이트
+      for (let i = 0; i < totalQuestions; i++) {
+        const isCorrect = i < correctAnswers; // 처음 correctAnswers개는 맞다고 가정
+        const avgTimePerQuestion = timeSpent / totalQuestions;
+
+        updateCategoryStats({
+          userId: user.id,
+          category,
+          difficulty,
+          isCorrect,
+          timeSpent: avgTimePerQuestion,
+        });
+      }
 
       // 3. 퀴즈 히스토리 추가
       addQuizHistory({
@@ -712,6 +727,8 @@ export function GamificationProvider({
         category: historyItem.category,
         total: historyItem.total,
         correct: historyItem.correct,
+        difficulty: historyItem.difficulty,
+        timeSpent: historyItem.timeSpent,
         averageTime: historyItem.averageTime,
         comebackVictory: historyItem.comebackVictory,
         luckyStreak: historyItem.luckyStreak,

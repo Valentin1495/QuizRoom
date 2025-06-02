@@ -1,7 +1,7 @@
 export function switchCategoryKey(categoryKey: string) {
   switch (categoryKey) {
     case 'knowledge-kpop-music':
-      return 'k팝 & 음악';
+      return 'k-pop & 음악';
 
     case 'knowledge-history-culture':
       return '역사 & 문화';

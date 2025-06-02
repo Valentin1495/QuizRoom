@@ -28,7 +28,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='stats'
+        name='analysis'
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name='stats-chart' size={size} color={color} />
@@ -40,6 +40,14 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name='trophy' size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='stats'
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <Ionicons name='person' size={size} color={color} />
           ),
         }}
       />

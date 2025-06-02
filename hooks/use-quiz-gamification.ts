@@ -186,14 +186,25 @@ export const useQuizGamification = () => {
           allAnswerTimes.current.length
         : 0;
 
+    // 총 소요 시간 계산 (밀리초)
+    const totalTimeSpent = allAnswerTimes.current.reduce(
+      (sum, time) => sum + time * 1000,
+      0
+    );
+
     // 역전승 체크 (처음 3문제를 틀렸지만 나머지는 모두 정답)
     const comebackVictory = isComebackVictory(userAnswers);
 
-    // 업적 시스템에 퀴즈 완료 기록 (강화된 옵션)
+    // 난이도 결정 로직 (quizSetup에서 가져오거나 기본값 설정)
+    const difficulty = quizSetup.setup.difficulty || 'medium'; // 기본값을 'medium'으로 설정
+
+    // 업적 시스템에 퀴즈 완료 기록 (수정된 매개변수)
     const wasPerfect = gamification.recordQuizCompletion(
       categoryKey,
       correct,
       total,
+      difficulty, // 필수 매개변수 추가
+      totalTimeSpent, // 필수 매개변수 추가 (밀리초)
       {
         averageTime,
         comebackVictory,
@@ -231,6 +242,7 @@ export const useQuizGamification = () => {
       comebackVictory,
       maxStreak: maxStreakInQuiz.current,
       accuracy,
+      totalTimeSpent, // 반환값에 총 소요 시간 추가
     };
   }, [quizSetup, gamification]);
 

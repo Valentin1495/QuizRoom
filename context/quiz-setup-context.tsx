@@ -1,5 +1,5 @@
 import { Doc } from '@/convex/_generated/dataModel';
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useState } from 'react';
 
 // 사용자 응답 타입
 export interface UserAnswer {
