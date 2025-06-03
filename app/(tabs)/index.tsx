@@ -7,8 +7,9 @@ import {
 } from '@/context/quiz-setup-context';
 import { api } from '@/convex/_generated/api';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
+import { uploadQuiz } from '@/utils/upload-quiz';
 import { Ionicons } from '@expo/vector-icons';
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
@@ -370,6 +371,10 @@ export default function HomeScreen() {
   const { setSetup, setup } = useQuizSetup();
   const { category, difficulty, questionFormat, quizType } = setup;
   const { resetQuizData } = useQuizGamification();
+  const insertQuiz = useMutation(api.quizzes.insertQuiz);
+  const handleUpload = async () => {
+    await uploadQuiz(insertQuiz);
+  };
 
   useEffect(() => {
     resetQuizData();
@@ -402,6 +407,12 @@ export default function HomeScreen() {
   };
 
   const currentUser = useQuery(api.users.getCurrentUserByClerkId);
+  // const quizzes = useQuery(api.quizzes.getQuestionsByQuizType, {
+  //   category: 'kpop-music',
+  //   quizType: 'knowledge',
+  //   questionFormat: 'multiple',
+  //   difficulty: 'hard',
+  // });
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -423,6 +434,9 @@ export default function HomeScreen() {
               </Text>
             </View>
             <SignOutButton />
+            <Pressable onPress={handleUpload}>
+              <Text>생성</Text>
+            </Pressable>
           </View>
         </Animated.View>
 

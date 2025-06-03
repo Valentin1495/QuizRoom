@@ -257,7 +257,7 @@ export const generateWeeklyChallenges = mutation({
       {
         type: 'weekly' as const,
         title: '💎 완벽한 한 주',
-        description: '이번 주 연속 정답 기록 10개 달성',
+        description: '이번 주 연속 정답 기록 10문제 달성',
         targetCount: 10,
         currentCount: 0,
         reward: { type: 'badge' as const, value: 1, name: '완벽한 주' },
