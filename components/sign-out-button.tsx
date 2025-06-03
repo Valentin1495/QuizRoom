@@ -1,8 +1,9 @@
 import { useClerk } from '@clerk/clerk-expo';
+import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function Settings() {
+export default function SignOutButton() {
   const { signOut } = useClerk();
 
   const handleSignOut = async () => {
@@ -18,10 +19,18 @@ export default function Settings() {
   };
 
   return (
-    <TouchableOpacity onPress={handleSignOut}>
-      <Text>로그아웃</Text>
+    <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
+      <Ionicons name='log-out-outline' size={24} color='#6b7280' />
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  signOutButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: 'rgba(107, 114, 128, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(107, 114, 128, 0.2)',
+  },
+});

@@ -1,3 +1,4 @@
+import SignOutButton from '@/components/sign-out-button';
 import {
   Difficulty,
   KnowledgeCategory,
@@ -6,7 +7,6 @@ import {
 } from '@/context/quiz-setup-context';
 import { api } from '@/convex/_generated/api';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
-import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -370,7 +370,6 @@ export default function HomeScreen() {
   const { setSetup, setup } = useQuizSetup();
   const { category, difficulty, questionFormat, quizType } = setup;
   const { resetQuizData } = useQuizGamification();
-  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     resetQuizData();
@@ -415,11 +414,16 @@ export default function HomeScreen() {
           entering={FadeInDown.duration(600).delay(100)}
           style={styles.header}
         >
-          <Text style={styles.headerTitle}>상식 퀴즈</Text>
-          <Text style={styles.headerSubtitle}>
-            {currentUser?.fullName}님 환영해요! 🙌 {'\n'}
-            다양한 분야의 지식을 테스트해 보세요.
-          </Text>
+          <View style={styles.headerTop}>
+            <View style={styles.headerContent}>
+              <Text style={styles.headerTitle}>상식 퀴즈</Text>
+              <Text style={styles.headerSubtitle}>
+                {currentUser?.fullName}님 환영해요! 🙌 {'\n'}
+                다양한 분야의 지식을 테스트해 보세요.
+              </Text>
+            </View>
+            <SignOutButton />
+          </View>
         </Animated.View>
 
         {/* 카테고리 섹션 */}
@@ -520,6 +524,15 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     paddingTop: 24,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  headerContent: {
+    flex: 1,
+    marginRight: 16,
   },
   headerTitle: {
     fontSize: 28,
