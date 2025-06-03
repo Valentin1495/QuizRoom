@@ -407,13 +407,13 @@ export default function HomeScreen() {
   };
 
   const currentUser = useQuery(api.users.getCurrentUserByClerkId);
-  //   const quizzes = useQuery(api.quizzes.getQuestionsByQuizType, {
-  //     category: 'kpop-music',
-  //     quizType: 'knowledge',
-  //     questionFormat: 'short',
-  //     difficulty: 'hard',
-  //   });
-  // console.log(quizzes?.length)
+  // const quizzes = useQuery(api.quizzes.getQuestionsByQuizType, {
+  //   category: 'kpop-music',
+  //   quizType: 'knowledge',
+  //   questionFormat: 'multiple',
+  //   difficulty: 'hard',
+  // });
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView
