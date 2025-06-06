@@ -1,173 +1,24 @@
 const quizzes = [
   {
-    answers: ['BTS', '방탄소년단'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘DNA’를 부른 보이그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['블랙핑크', 'BLACKPINK'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘How You Like That’으로 글로벌 히트를 친 걸그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['트와이스', 'TWICE'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘Cheer Up’, ‘TT’ 등으로 사랑받은 걸그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['엑소', 'EXO'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘으르렁’, ‘Love Shot’ 등의 히트곡을 낸 보이그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['아이유', 'IU'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘좋은 날’, ‘밤편지’ 등을 부른 여성 솔로 가수는?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['레드벨벳', 'Red Velvet'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘Psycho’, ‘빨간 맛’ 등으로 활동한 걸그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['엔하이픈', 'ENHYPEN'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '아이랜드(I-LAND) 프로그램을 통해 데뷔한 보이그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['에스파', 'aespa'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘Next Level’, ‘Spicy’ 등의 곡으로 활동한 걸그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['세븐틴', 'Seventeen'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '13인조 구성으로 유명한 K-pop 보이그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['뉴진스', 'NewJeans'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘Attention’, ‘Hype Boy’ 등으로 데뷔한 걸그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['있지', 'ITZY'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘달라달라’, ‘WANNABE’ 등으로 알려진 걸그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['투모로우바이투게더', 'TXT'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘CROWN’, ‘0X1=LOVESONG’ 등을 발표한 빅히트의 보이그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['마마무', 'MAMAMOO'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘HIP’, ‘음오아예’ 등으로 활동한 4인조 걸그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['태연', 'Taeyeon'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '소녀시대 멤버이자 솔로 가수로 활동 중인 인물은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['위너', 'WINNER'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘REALLY REALLY’, ‘공허해’ 등을 부른 YG 소속 보이그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['아이브', 'IVE'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘LOVE DIVE’, ‘After LIKE’ 등의 곡을 낸 걸그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['장원영', 'Wonyoung'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '아이즈원과 아이브에서 활동한 K-pop 여성 아이돌은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['스트레이 키즈', 'Stray Kids'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘God’s Menu’, ‘Back Door’ 등으로 유명한 보이그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['케플러', 'Kep1er'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '걸스플래닛999를 통해 결성된 걸그룹은?',
-    questionFormat: 'short',
-    quizType: 'knowledge',
-  },
-  {
-    answers: ['카라', 'KARA'],
-    category: 'kpop-music',
-    difficulty: 'easy',
-    question: '‘미스터’, ‘STEP’ 등으로 제2의 한류 붐을 일으킨 2세대 걸그룹은?',
+    answers: ['에드거 앨런 포', 'Edgar Allan Poe'],
+    category: 'arts-literature',
+    difficulty: 'hard',
+    question:
+      "'검은 고양이', '우울한 곰' 등의 작품으로 유명한 미국 고딕 문학 작가는 누구인가요?",
     questionFormat: 'short',
     quizType: 'knowledge',
   },
 ];
 
-export const uploadQuiz = async (insertQuiz: any) => {
-  for (const quiz of quizzes) {
-    try {
-      await insertQuiz(quiz as any);
-      console.log(`✅ Uploaded: ${quiz.question}`);
-    } catch (error) {
-      console.error(`❌ Failed: ${quiz.question}`, error);
-    }
+console.log(quizzes.length);
+
+export const uploadQuizBatch = async (insertQuizBatch: any) => {
+  try {
+    const result = await insertQuizBatch({ quizzes });
+    console.log(`✅ Successfully uploaded ${result.count} quizzes in batch`);
+    return result;
+  } catch (error) {
+    console.error('❌ Batch upload failed:', error);
+    throw error;
   }
 };

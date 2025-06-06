@@ -95,7 +95,7 @@ export default function AnalysisScreen() {
           <Ionicons name='bar-chart-outline' size={80} color='#ccc' />
           <Text style={styles.emptyTitle}>아직 퀴즈 기록이 없습니다</Text>
           <Text style={styles.emptySubtitle}>
-            퀴즈를 풀고 난이도별 실력 분석을 확인해보세요!
+            퀴즈를 풀고 실력을 분석해 보세요!
           </Text>
         </View>
       </SafeAreaView>

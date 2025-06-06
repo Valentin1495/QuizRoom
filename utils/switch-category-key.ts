@@ -16,7 +16,7 @@ export function switchCategoryKey(categoryKey: string) {
       return '스포츠';
 
     case 'knowledge-science-tech':
-      return '과학 & 테크';
+      return '과학 & 기술';
 
     case 'knowledge-math-logic':
       return '수학 & 논리';
