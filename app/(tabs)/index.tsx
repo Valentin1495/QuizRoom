@@ -434,9 +434,9 @@ export default function HomeScreen() {
               </Text>
             </View>
             <SignOutButton />
-            <Pressable onPress={handleBatchUpload}>
+            {/* <Pressable onPress={handleBatchUpload}>
               <Text>생성</Text>
-            </Pressable>
+            </Pressable> */}
           </View>
         </Animated.View>
 
