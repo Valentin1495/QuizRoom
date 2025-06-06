@@ -3,10 +3,11 @@ import OverallAnalysisCard from '@/components/overall-analysis-card';
 import QuizRecommendationCard from '@/components/quiz-recommendation-card';
 import { api } from '@/convex/_generated/api';
 import { Doc } from '@/convex/_generated/dataModel';
+import { useRefresh } from '@/hooks/use-refresh';
 import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from 'convex/react';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -37,7 +38,7 @@ export type UpdatedKnowledgeCategory =
 
 export default function AnalysisScreen() {
   const { userId } = useAuth();
-  const [refreshing, setRefreshing] = useState(false);
+  const { onRefresh, refreshing } = useRefresh();
   const categoryStatsData = useQuery(
     api.gamification.getCategoryStatsWithDifficulty,
     userId ? { userId } : 'skip'
@@ -59,15 +60,6 @@ export default function AnalysisScreen() {
         }
       : 'skip'
   );
-
-  // 새로고침 핸들러
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    // Convex는 자동으로 실시간 업데이트되므로 단순히 상태만 리셋
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
-  }, []);
 
   // 로딩 상태
   if (

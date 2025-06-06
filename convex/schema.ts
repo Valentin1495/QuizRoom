@@ -9,7 +9,7 @@ export default defineSchema({
     email: v.string(),
     profileImage: v.string(),
     level: v.number(), // 사용자 레벨
-    experience: v.number(), // 경험치
+    experience: v.number(), // 점수
     coins: v.number(), // 인앱 화폐
     streak: v.number(), // 연속 참여 일수
     settings: v.optional(

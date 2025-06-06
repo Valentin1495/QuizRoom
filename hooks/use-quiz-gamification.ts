@@ -38,7 +38,7 @@ export const useQuizGamification = () => {
     return firstThreeWrong && restAllCorrect;
   };
 
-  // 포인트 계산 로직 (기존 유지)
+  // 포인트 계산 로직 (난이도 + 카테고리 보너스 개선)
   const calculatePoints = useCallback(
     (
       isCorrect: boolean,
@@ -47,26 +47,114 @@ export const useQuizGamification = () => {
     ): number => {
       if (!isCorrect) return 0;
 
-      let points = 10; // 기본 점수
+      let points = 0;
 
-      // 카테고리별 보너스
+      // 1. 난이도별 기본 점수
+      switch (question.difficulty) {
+        case 'easy':
+          points = 10;
+          break;
+        case 'medium':
+          points = 15;
+          break;
+        case 'hard':
+          points = 25;
+          break;
+        default:
+          points = 10; // null일 경우 기본값
+          break;
+      }
+
+      // 2. 카테고리별 보너스 (기존보다 세분화)
       switch (question.category) {
+        // 고난이도 카테고리 (높은 보너스)
         case 'math-logic':
-          points += 5;
+          points += 8;
           break;
         case 'science-tech':
+          points += 6;
+          break;
+
+        // 중간 난이도 카테고리 (중간 보너스)
+        case 'history-culture':
+          points += 4;
+          break;
+        case 'arts-literature':
+          points += 4;
+          break;
+        case 'foreign-movie':
           points += 3;
           break;
-        case 'history-culture':
+        case 'foreign-celebrity':
+          points += 3;
+          break;
+
+        // 일반 카테고리 (낮은 보너스)
+        case 'kpop-music':
           points += 2;
           break;
+        case 'entertainment':
+          points += 2;
+          break;
+        case 'korean-movie':
+          points += 2;
+          break;
+        case 'korean-celebrity':
+          points += 2;
+          break;
+        case 'sports':
+          points += 1;
+          break;
+
+        // 기본 카테고리 (보너스 없음)
+        case 'general':
         default:
           break;
       }
 
-      // 연속 정답 보너스 (3문제부터 보너스 시작)
+      // 3. 퀴즈 타입별 보너스 (새로 추가)
+      switch (question.quizType) {
+        case 'four-character':
+        case 'proverb-chain':
+          points += 3; // 한국어 지식 보너스
+          break;
+        case 'movie-chain':
+          points += 2; // 연상 능력 보너스
+          break;
+        case 'nonsense':
+          points += 4; // 창의성 보너스
+          break;
+        case 'logo':
+          points += 2; // 시각적 인식 보너스
+          break;
+        case 'slang':
+          points += 2; // 현대 언어 보너스
+          break;
+        case 'knowledge':
+        case 'celebrity':
+        default:
+          break;
+      }
+
+      // 4. 주관식 문제 보너스
+      if (question.questionFormat === 'short') {
+        points += 3; // 주관식은 더 어려우므로 보너스
+      }
+
+      // 5. 연속 정답 보너스 (기존 유지하되 개선)
       if (streakCount >= 3) {
-        points += Math.floor(streakCount / 3) * 2;
+        const streakBonus = Math.floor(streakCount / 3) * 3; // 3문제마다 3점씩
+        points += Math.min(streakBonus, 15); // 최대 15점까지만 보너스
+      }
+
+      // 6. 특별 콤보 보너스 (새로 추가)
+      // 어려운 난이도 + 고난이도 카테고리 조합
+      if (
+        question.difficulty === 'hard' &&
+        question.category &&
+        ['math-logic', 'science-tech'].includes(question.category)
+      ) {
+        points += 5; // 콤보 보너스
       }
 
       return points;

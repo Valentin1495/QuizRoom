@@ -47,7 +47,7 @@ export function GamificationHUD({
         {/* 레벨 진행도 */}
         <View style={styles.progressContainer}>
           <Text style={styles.progressText}>
-            {pointsToNextLevel}xp to Lv.{level + 1}
+            {pointsToNextLevel}점 to Lv.{level + 1}
           </Text>
         </View>
       </Animated.View>

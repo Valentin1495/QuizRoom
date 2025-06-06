@@ -9,14 +9,14 @@ export function switchCategoryToLabel(category?: string | null) {
     case 'general':
       return '일반 상식';
 
-    case 'arts & literature':
+    case 'arts-literature':
       return '예술 & 문학';
 
     case 'sports':
       return '스포츠';
 
     case 'science-tech':
-      return '과학 & 테크';
+      return '과학 & 기술';
 
     case 'math-logic':
       return '수학 & 논리';

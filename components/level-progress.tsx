@@ -50,7 +50,7 @@ export default function LevelProgress({
           <Text style={styles.levelText}>Lv.{currentLevel}</Text>
         </View>
         <Text style={styles.levelExp}>
-          {currentExp}/{currentExp + nextLevelExp}xp ({nextLevelExp}xp to Lv.
+          {currentExp}/{currentExp + nextLevelExp}점 ({nextLevelExp}점 to Lv.
           {currentLevel + 1})
         </Text>
       </View>

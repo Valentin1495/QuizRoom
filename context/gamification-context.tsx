@@ -360,7 +360,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'lucky_guess',
     title: '행운의 추측',
-    description: '연속으로 5문제 맞히기 (각 문제당 25% 확률)',
+    description: '연속으로 5문제 맞히기',
     icon: '🍀',
     unlockedAt: null,
     progress: 0,
@@ -627,7 +627,7 @@ export function GamificationProvider({
       const bonus = isPerfect ? 20 : 0;
       const newTotalPoints = prev.totalPoints + base + bonus;
 
-      /* 레벨·경험치 재계산 */
+      /* 레벨·점수 재계산 */
       const { level, expInCurrentLevel, pointsToNextLevel } =
         calculateLevel(newTotalPoints);
 

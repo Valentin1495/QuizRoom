@@ -445,7 +445,7 @@ export default function Questions() {
                   ]}
                 >
                   {isCorrect
-                    ? `정답이에요! ${earnedPoints > 0 ? `+${earnedPoints}xp` : ''}`
+                    ? `정답이에요! ${earnedPoints > 0 ? `+${earnedPoints}점` : ''}`
                     : questionFormat === 'multiple'
                       ? `오답이에요. 정답은 "${currentQuestion.answer}" 입니다`
                       : `오답이에요. 정답은 "${currentQuestion.answers![0]}" 입니다`}

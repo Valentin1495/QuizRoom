@@ -1,5 +1,6 @@
 import { api } from '@/convex/_generated/api';
 import { Doc } from '@/convex/_generated/dataModel';
+import { useRefresh } from '@/hooks/use-refresh';
 import { useAuth } from '@clerk/clerk-expo';
 import { useMutation, useQuery } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,6 +9,7 @@ import {
   Animated,
   DimensionValue,
   Easing,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -21,6 +23,7 @@ type Challenge = Doc<'challenges'>;
 export default function ChallengesScreen() {
   const [selectedTab, setSelectedTab] = useState<'daily' | 'weekly'>('daily');
   const [currentTime, setCurrentTime] = useState(Date.now());
+  const { onRefresh, refreshing } = useRefresh();
   const { userId } = useAuth();
   const challenges =
     useQuery(api.challenges.getChallenges, userId ? { userId } : 'skip') || [];
@@ -346,6 +349,9 @@ export default function ChallengesScreen() {
         style={styles.challengesList}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         {currentChallenges.length > 0 ? (
           currentChallenges.map((challenge, index) =>

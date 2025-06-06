@@ -3,27 +3,16 @@ import LevelProgress from '@/components/level-progress';
 import StatCard from '@/components/stat-card';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@clerk/clerk-expo';
-import { useFocusEffect } from '@react-navigation/native';
 import { useQuery } from 'convex/react';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function StatsScreen() {
   const { userId } = useAuth();
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const gamificationData = useQuery(
     api.gamification.getOrCreateGamificationData,
     userId ? { userId } : 'skip'
-  );
-
-  // 화면이 포커스될 때마다 데이터 새로고침
-  useFocusEffect(
-    useCallback(() => {
-      if (userId) {
-        setRefreshTrigger((prev) => prev + 1);
-      }
-    }, [userId])
   );
 
   if (!gamificationData) {
@@ -107,7 +96,7 @@ export default function StatsScreen() {
             <StatCard
               title='총 포인트'
               value={totalPoints.toLocaleString()}
-              subtitle='xp'
+              subtitle='점'
               icon='diamond-outline'
               color={['#fa709a', '#fee140']}
               delay={600}

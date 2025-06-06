@@ -1,4 +1,4 @@
-import { UserAnswer } from '@/context/quiz-setup-context';
+import { Difficulty, UserAnswer } from '@/context/quiz-setup-context';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
@@ -8,7 +8,7 @@ import { switchQuizType } from '@/utils/switch-quiz-type';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -18,7 +18,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Check, Home, RefreshCw, Star, X } from 'react-native-feather';
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Home,
+  Info,
+  RefreshCw,
+  Star,
+  X,
+} from 'react-native-feather';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -30,6 +39,34 @@ import Animated, {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
+
+// 타입 정의
+type CategoryType =
+  | 'kpop-music'
+  | 'general'
+  | 'history-culture'
+  | 'arts-literature'
+  | 'sports'
+  | 'science-tech'
+  | 'math-logic'
+  | 'entertainment'
+  | 'korean-movie'
+  | 'foreign-movie'
+  | 'korean-celebrity'
+  | 'foreign-celebrity'
+  | null
+  | undefined;
+
+type QuizType =
+  | 'knowledge'
+  | 'celebrity'
+  | 'four-character'
+  | 'movie-chain'
+  | 'proverb-chain'
+  | 'slang'
+  | 'logo'
+  | 'nonsense'
+  | null;
 
 export default function QuizResultScreen() {
   const {
@@ -43,8 +80,110 @@ export default function QuizResultScreen() {
     getPointsForNextLevel,
   } = useQuizGamification();
 
+  const [showPointsBreakdown, setShowPointsBreakdown] = useState(false);
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<
+    number | null
+  >(null);
+
   /* ------------------------------------------------------------------
-   * 2. 기본 통계 계산
+   * 포인트 계산 로직
+   * ----------------------------------------------------------------*/
+  const getCategoryBonus = useCallback((category: CategoryType): number => {
+    const bonusMap: Record<string, number> = {
+      'math-logic': 8,
+      'science-tech': 6,
+      'history-culture': 4,
+      'arts-literature': 4,
+      'foreign-movie': 3,
+      'foreign-celebrity': 3,
+      'kpop-music': 2,
+      entertainment: 2,
+      'korean-movie': 2,
+      'korean-celebrity': 2,
+      sports: 1,
+      general: 0,
+    };
+    return (category && bonusMap[category]) || 0;
+  }, []);
+
+  const getTypeBonus = useCallback((quizType: QuizType): number => {
+    const bonusMap: Record<string, number> = {
+      nonsense: 4,
+      'four-character': 3,
+      'proverb-chain': 3,
+      'movie-chain': 2,
+      logo: 2,
+      slang: 2,
+      knowledge: 0,
+      celebrity: 0,
+    };
+    return (quizType && bonusMap[quizType]) || 0;
+  }, []);
+
+  const getPointsBreakdown = useCallback(
+    (
+      difficulty: Difficulty,
+      category: CategoryType,
+      quizType: QuizType,
+      questionFormat: string | null,
+      streakCount: number
+    ): { items: string[]; total: number } => {
+      const breakdown: string[] = [];
+      let total = 0;
+
+      // 기본 점수
+      const basePoints =
+        difficulty === 'easy' ? 10 : difficulty === 'medium' ? 15 : 25;
+      breakdown.push(
+        `기본 점수 (${'난이도 ' + switchDifficulty(difficulty)}): ${basePoints}점`
+      );
+      total += basePoints;
+
+      // 카테고리 보너스
+      const categoryBonus = getCategoryBonus(category);
+      if (categoryBonus > 0) {
+        breakdown.push(`카테고리 보너스: +${categoryBonus}점`);
+        total += categoryBonus;
+      }
+
+      // 퀴즈 타입 보너스
+      const typeBonus = getTypeBonus(quizType);
+      if (typeBonus > 0) {
+        breakdown.push(`퀴즈 타입 보너스: +${typeBonus}점`);
+        total += typeBonus;
+      }
+
+      // 주관식 보너스
+      if (questionFormat === 'short') {
+        breakdown.push(`주관식 보너스: +3점`);
+        total += 3;
+      }
+
+      // 연속 정답 보너스
+      if (streakCount >= 3) {
+        const streakBonus = Math.min(Math.floor(streakCount / 3) * 3, 15);
+        breakdown.push(
+          `연속 정답 보너스 (${streakCount}연속): +${streakBonus}점`
+        );
+        total += streakBonus;
+      }
+
+      // 특별 콤보 보너스
+      if (
+        difficulty === 'hard' &&
+        ['math-logic', 'science-tech'].includes(category as string)
+      ) {
+        breakdown.push(`콤보 보너스 (고난이도): +5점`);
+        total += 5;
+      }
+
+      return { items: breakdown, total };
+    },
+    [getCategoryBonus, getTypeBonus]
+  );
+
+  /* ------------------------------------------------------------------
+   * 기본 통계 계산
    * ----------------------------------------------------------------*/
   const { userAnswers, quizType, category, difficulty, questionFormat } = setup;
   const correctCount = userAnswers.filter((a) => a.isCorrect).length;
@@ -53,7 +192,7 @@ export default function QuizResultScreen() {
   const wrongCount = totalCount - correctCount;
 
   /* ------------------------------------------------------------------
-   * 3. 추가 게임화 값
+   * 추가 게임화 값
    * ----------------------------------------------------------------*/
   const totalEarnedPoints = userAnswers.reduce(
     (sum, a) => sum + (a as UserAnswer).pointsEarned,
@@ -65,7 +204,7 @@ export default function QuizResultScreen() {
   );
 
   /* ------------------------------------------------------------------
-   * 4. 애니메이션용 shared values
+   * 애니메이션용 shared values
    * ----------------------------------------------------------------*/
   const scoreOpacity = useSharedValue(0);
   const scoreScale = useSharedValue(0.8);
@@ -75,7 +214,7 @@ export default function QuizResultScreen() {
   const expProgress = useSharedValue(0);
 
   /* ------------------------------------------------------------------
-   * 5. 컴포넌트 마운트 애니메이션
+   * 컴포넌트 마운트 애니메이션
    * ----------------------------------------------------------------*/
   useEffect(() => {
     scoreOpacity.value = withSequence(
@@ -96,7 +235,6 @@ export default function QuizResultScreen() {
         easing: Easing.out(Easing.quad),
       })
     );
-    /* 포인트 카운트업 */
     pointsCountUp.value = withDelay(
       1200,
       withTiming(totalEarnedPoints, {
@@ -104,8 +242,6 @@ export default function QuizResultScreen() {
         easing: Easing.out(Easing.quad),
       })
     );
-    /* 경험치 게이지 */
-
     expProgress.value = withDelay(
       1800,
       withTiming((totalPoints % 1000) / 1000, { duration: 1000 })
@@ -114,7 +250,7 @@ export default function QuizResultScreen() {
   }, []);
 
   /* ------------------------------------------------------------------
-   * 6. 애니메이션 style
+   * 애니메이션 style
    * ----------------------------------------------------------------*/
   const scoreCardStyle = useAnimatedStyle(() => ({
     opacity: scoreOpacity.value,
@@ -128,7 +264,7 @@ export default function QuizResultScreen() {
   }));
 
   /* ------------------------------------------------------------------
-   * 7. 결과 메시지 / 등급
+   * 결과 메시지 / 등급
    * ----------------------------------------------------------------*/
   const getResultMessage = () => {
     if (percentage >= 90) {
@@ -149,13 +285,224 @@ export default function QuizResultScreen() {
   };
 
   /* ------------------------------------------------------------------
-   * 8. 하위 UI 렌더러 – 게임화 섹션
+   * 점수 계산 예시 섹션 렌더링
    * ----------------------------------------------------------------*/
+  const renderPointsExample = () => {
+    // 실제 정답 문제들 중에서 가장 높은 점수를 받은 문제 찾기
+    const correctAnswers = userAnswers.filter((answer) => answer.isCorrect);
+    const highestPointQuestion = correctAnswers.reduce(
+      (prev, current) =>
+        prev.pointsEarned > current.pointsEarned ? prev : current,
+      correctAnswers[0]
+    );
 
-  /************  점수 & 레벨 카드  ************/
+    // 평균 점수 계산
+    const averagePoints =
+      correctAnswers.length > 0
+        ? Math.round(
+            correctAnswers.reduce(
+              (sum, answer) => sum + answer.pointsEarned,
+              0
+            ) / correctAnswers.length
+          )
+        : 0;
+
+    // 대표 예시로 사용할 문제 (높은 점수 문제 또는 첫 번째 정답 문제)
+    const exampleQuestion = highestPointQuestion || correctAnswers[0];
+
+    // 예시 문제가 없으면 현재 설정 기반으로 계산
+    const breakdown = exampleQuestion
+      ? getPointsBreakdown(
+          difficulty,
+          category,
+          quizType,
+          questionFormat,
+          exampleQuestion.streakCount
+        )
+      : getPointsBreakdown(
+          difficulty,
+          category,
+          quizType,
+          questionFormat,
+          maxStreak
+        );
+
+    return (
+      <View style={styles.exampleCard}>
+        <TouchableOpacity
+          style={styles.exampleHeader}
+          onPress={() => setShowPointsBreakdown(!showPointsBreakdown)}
+        >
+          <View style={styles.exampleTitleContainer}>
+            <Info width={20} height={20} color='#6366f1' />
+            <Text style={styles.exampleTitle}>점수 계산 분석</Text>
+          </View>
+          {showPointsBreakdown ? (
+            <ChevronUp width={20} height={20} color='#6b7280' />
+          ) : (
+            <ChevronDown width={20} height={20} color='#6b7280' />
+          )}
+        </TouchableOpacity>
+
+        {showPointsBreakdown && (
+          <View style={styles.exampleContent}>
+            {/* 실제 퀴즈 점수 통계 */}
+            <View style={styles.statisticsContainer}>
+              <Text style={styles.exampleSubtitle}>📊 이번 퀴즈 점수 통계</Text>
+              <View style={styles.statsRow}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>{totalEarnedPoints}</Text>
+                  <Text style={styles.statText}>총 획득</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>{averagePoints}</Text>
+                  <Text style={styles.statText}>평균 점수</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>
+                    {highestPointQuestion?.pointsEarned || 0}
+                  </Text>
+                  <Text style={styles.statText}>최고 점수</Text>
+                </View>
+              </View>
+            </View>
+
+            {/* 점수 계산 방식 설명 */}
+            <Text style={styles.exampleSubtitle}>
+              🔍 점수 계산 방식 ({exampleQuestion ? '실제 예시' : '설정 기준'}):
+            </Text>
+
+            {exampleQuestion && (
+              <View style={styles.exampleQuestionContainer}>
+                <Text style={styles.exampleQuestionText}>
+                  예시 문제: "
+                  {exampleQuestion.question.length > 50
+                    ? exampleQuestion.question.substring(0, 50) + '...'
+                    : exampleQuestion.question}
+                  "
+                </Text>
+                <Text style={styles.exampleQuestionInfo}>
+                  {exampleQuestion.streakCount}연속 정답 시 →{' '}
+                  {exampleQuestion.pointsEarned}점 획득
+                </Text>
+              </View>
+            )}
+
+            <View style={styles.breakdownContainer}>
+              {breakdown.items.map((item, index) => (
+                <View key={index} style={styles.breakdownItem}>
+                  <Text style={styles.breakdownText}>• {item}</Text>
+                </View>
+              ))}
+              <View style={styles.breakdownTotal}>
+                <Text style={styles.breakdownTotalText}>
+                  = 총 {breakdown.total}점 (정답 시)
+                </Text>
+              </View>
+            </View>
+
+            {/* 개선된 팁 섹션 */}
+            <View style={styles.exampleNote}>
+              <Text style={styles.exampleNoteText}>
+                💡{' '}
+                <Text style={styles.exampleNoteTitle}>
+                  다음 퀴즈에서 더 높은 점수를 받으려면:
+                </Text>
+                {'\n'}• 연속 정답을 유지하세요 (3연속마다 보너스 +3점)
+                {correctAnswers.some((a, i) => i >= 2 && a.streakCount < 3) &&
+                  '\n• 이번에 놓친 연속 보너스가 있었어요!'}
+                {difficulty !== 'hard' &&
+                  '\n• 어려운 난이도에 도전해보세요 (최대 +10점 추가)'}
+                {!['math-logic', 'science-tech'].includes(category as string) &&
+                  '\n• 수학·논리, 과학·기술 카테고리는 높은 보너스를 제공해요'}
+                {questionFormat !== 'short' &&
+                  '\n• 주관식 문제는 추가 +3점 보너스가 있어요'}
+              </Text>
+            </View>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  /* ------------------------------------------------------------------
+   * 개별 문제 점수 상세 보기
+   * ----------------------------------------------------------------*/
+  const renderQuestionPointsDetail = (item: UserAnswer, index: number) => {
+    if (!item.isCorrect || selectedQuestionIndex !== index) return null;
+
+    // 해당 문제의 실제 점수 계산 내역
+    const breakdown = getPointsBreakdown(
+      difficulty || 'medium',
+      category,
+      quizType,
+      questionFormat,
+      item.streakCount
+    );
+
+    // 실제 획득 점수와 계산된 점수의 차이 확인
+    const calculatedPoints = breakdown.total;
+    const actualPoints = item.pointsEarned;
+    const pointsDifference = actualPoints - calculatedPoints;
+
+    return (
+      <View style={styles.questionPointsDetail}>
+        <Text style={styles.pointsDetailTitle}>📊 점수 상세 내역</Text>
+
+        {/* 문제 정보 */}
+        <View style={styles.questionInfoContainer}>
+          <Text style={styles.questionInfoText}>
+            문제:{' '}
+            {item.question.length > 60
+              ? item.question.substring(0, 60) + '...'
+              : item.question}
+          </Text>
+          <Text style={styles.questionInfoText}>
+            연속 정답: {item.streakCount}회 연속
+          </Text>
+        </View>
+
+        {/* 점수 계산 내역 */}
+        {breakdown.items.map((breakdownItem, idx) => (
+          <Text key={idx} style={styles.pointsDetailItem}>
+            • {breakdownItem}
+          </Text>
+        ))}
+
+        <View style={styles.pointsDetailTotal}>
+          <Text style={styles.pointsDetailCalculated}>
+            계산된 점수: {calculatedPoints}점
+          </Text>
+          <Text style={styles.pointsDetailTotalText}>
+            실제 획득: {actualPoints}점
+          </Text>
+          {pointsDifference !== 0 && (
+            <Text style={styles.pointsDetailDifference}>
+              {pointsDifference > 0 ? '추가 보너스' : '차이'}:{' '}
+              {pointsDifference > 0 ? '+' : ''}
+              {pointsDifference}점
+            </Text>
+          )}
+        </View>
+
+        {/* 성과 분석 */}
+        {item.streakCount >= 6 && (
+          <View style={styles.achievementNote}>
+            <Text style={styles.achievementText}>
+              🔥 연속 정답 달성! 높은 보너스를 받았어요!
+            </Text>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  /* ------------------------------------------------------------------
+   * 레벨 카드 렌더링
+   * ----------------------------------------------------------------*/
   const renderLevelCard = () => {
     const expToNext = getPointsForNextLevel();
-    const progress = totalPoints / (totalPoints + expToNext); // 0~1
+    const progress = totalPoints / (totalPoints + expToNext);
 
     return (
       <View style={styles.levelCard}>
@@ -163,16 +510,15 @@ export default function QuizResultScreen() {
         <Text style={styles.levelPoints}>
           <Text style={styles.levelPointsLabel}>다음 레벨까지</Text>{' '}
           <Text style={{ fontStyle: 'italic' }}>
-            {expToNext.toLocaleString()} xp
+            {expToNext.toLocaleString()}점
           </Text>{' '}
           💪
         </Text>
-        {/* exp bar */}
         <View style={styles.expBarBg}>
           <View style={[styles.expBarFill, { width: `${progress * 100}%` }]} />
         </View>
         <Text style={styles.expLabel}>
-          {totalPoints}/{totalPoints + expToNext} xp
+          {totalPoints}/{totalPoints + expToNext}점
         </Text>
 
         {streak >= 1 && (
@@ -192,12 +538,12 @@ export default function QuizResultScreen() {
     );
   };
 
-  /************  스트릭 & 업적 요약  ************/
+  /* ------------------------------------------------------------------
+   * 스트릭 & 업적 요약
+   * ----------------------------------------------------------------*/
   const renderStreakAndAchievements = () => {
-    // 이번 퀴즈에서 새로 획득한 배지만 표시
     const recentBadges = newlyUnlockedAchievements;
 
-    // 스트릭이나 새 배지가 없으면 렌더링하지 않음
     if (recentBadges.length === 0) {
       return null;
     }
@@ -314,9 +660,8 @@ export default function QuizResultScreen() {
   };
 
   /* ------------------------------------------------------------------
-   * 10. 문제 리뷰 아이템 (points / streak 뱃지 추가)
+   * 문제 리뷰 아이템 (점수 상세 토글 기능 추가)
    * ----------------------------------------------------------------*/
-
   const renderQuestionItem = ({
     item,
     index,
@@ -340,12 +685,17 @@ export default function QuizResultScreen() {
             </View>
           )}
           {item.pointsEarned > 0 && (
-            <View style={styles.pointsBadge}>
+            <TouchableOpacity
+              style={styles.pointsBadge}
+              onPress={() =>
+                setSelectedQuestionIndex(
+                  selectedQuestionIndex === index ? null : index
+                )
+              }
+            >
               <Star width={14} height={14} color='white' />
-              <Text style={styles.pointsBadgeText}>
-                +{item.pointsEarned} xp
-              </Text>
-            </View>
+              <Text style={styles.pointsBadgeText}>+{item.pointsEarned}점</Text>
+            </TouchableOpacity>
           )}
           {item.streakCount > 1 && (
             <View style={styles.streakBadge}>
@@ -389,13 +739,15 @@ export default function QuizResultScreen() {
           </View>
         )}
       </View>
+
+      {/* 점수 상세 내역 */}
+      {renderQuestionPointsDetail(item, index)}
     </View>
   );
 
   /* ------------------------------------------------------------------
-   * 11. 화면 구성
+   * 화면 구성
    * ----------------------------------------------------------------*/
-
   useBlockNavigation();
   const router = useRouter();
 
@@ -427,12 +779,11 @@ export default function QuizResultScreen() {
               </View>
             </View>
 
-            {/* 간단한 게임화 숫자 요약 */}
             <View style={styles.scoreGameInfo}>
               <View style={styles.scoreGameItem}>
-                <Text style={styles.scoreGameLabel}>획득 경험치</Text>
+                <Text style={styles.scoreGameLabel}>획득 점수</Text>
                 <Text style={styles.scoreGameValue}>
-                  +{totalEarnedPoints} xp
+                  +{totalEarnedPoints}점
                 </Text>
               </View>
               {maxStreak > 1 && (
@@ -445,11 +796,14 @@ export default function QuizResultScreen() {
           </LinearGradient>
         </Animated.View>
 
-        {/* ★ NEW : 레벨 카드 */}
+        {/* ② 레벨 카드 */}
         {renderLevelCard()}
 
-        {/* ★ NEW : 스트릭 & 업적 */}
+        {/* ③ 스트릭 & 업적 */}
         {renderStreakAndAchievements()}
+
+        {/* ★ NEW: 점수 계산 예시 섹션 */}
+        {renderPointsExample()}
 
         {/* ④ 퀴즈 설정 정보 / 결과 요약 / 문제 리뷰 */}
         {renderQuizInfo()}
@@ -457,6 +811,9 @@ export default function QuizResultScreen() {
 
         <Animated.View style={[styles.reviewSection, detailsStyle]}>
           <Text style={styles.sectionTitle}>📝 문제 리뷰</Text>
+          <Text style={styles.reviewSubtitle}>
+            💡 점수 배지를 터치하면 상세 내역을 볼 수 있어요
+          </Text>
 
           <FlatList
             data={userAnswers}
@@ -479,14 +836,6 @@ export default function QuizResultScreen() {
           <Home width={20} height={20} color='#6b7280' />
           <Text style={styles.footerButtonText}>홈으로</Text>
         </TouchableOpacity>
-
-        {/* <TouchableOpacity
-          style={styles.footerButton}
-          onPress={() => router.push('/')}
-        >
-          <TrendingUp width={20} height={20} color='#6b7280' />
-          <Text style={styles.footerButtonText}>리더보드</Text>
-        </TouchableOpacity> */}
 
         <TouchableOpacity
           style={styles.restartButton}
@@ -577,6 +926,209 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 4,
   },
+
+  // 점수 계산 예시 섹션 스타일
+  exampleCard: {
+    borderRadius: 16,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    marginBottom: 24,
+    overflow: 'hidden',
+  },
+  exampleHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#f8fafc',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  exampleTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  exampleTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
+    marginLeft: 8,
+  },
+  exampleContent: {
+    padding: 16,
+  },
+  exampleSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 12,
+  },
+  breakdownContainer: {
+    backgroundColor: '#f9fafb',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+  },
+  breakdownItem: {
+    marginBottom: 4,
+  },
+  breakdownText: {
+    fontSize: 13,
+    color: '#374151',
+    lineHeight: 18,
+  },
+  breakdownTotal: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+  },
+  breakdownTotalText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1f2937',
+  },
+  exampleNote: {
+    backgroundColor: '#eff6ff',
+    borderRadius: 8,
+    padding: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#3b82f6',
+  },
+  exampleNoteText: {
+    fontSize: 12,
+    color: '#1e40af',
+    lineHeight: 16,
+  },
+  exampleNoteTitle: {
+    fontWeight: '600',
+  },
+  statisticsContainer: {
+    backgroundColor: '#f8fafc',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 12,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#6366f1',
+  },
+  statText: {
+    fontSize: 12,
+    color: '#6b7280',
+    marginTop: 4,
+  },
+  exampleQuestionContainer: {
+    backgroundColor: '#eff6ff',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    borderLeftColor: '#3b82f6',
+    borderLeftWidth: 4,
+  },
+  exampleQuestionText: {
+    fontSize: 14,
+    color: '#1e40af',
+    fontWeight: '500',
+  },
+  exampleQuestionInfo: {
+    fontSize: 12,
+    color: '#3730a3',
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
+  questionInfoContainer: {
+    backgroundColor: '#f1f5f9',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  questionInfoText: {
+    fontSize: 12,
+    color: '#475569',
+    marginBottom: 2,
+  },
+  pointsDetailCalculated: {
+    fontSize: 13,
+    color: '#6b7280',
+    marginBottom: 4,
+  },
+  pointsDetailDifference: {
+    fontSize: 12,
+    color: '#059669',
+    fontStyle: 'italic',
+  },
+  achievementNote: {
+    backgroundColor: '#fef3c7',
+    padding: 8,
+    borderRadius: 6,
+    marginTop: 8,
+  },
+  achievementText: {
+    fontSize: 12,
+    color: '#92400e',
+    textAlign: 'center',
+  },
+
+  // 문제별 점수 상세 스타일
+  questionPointsDetail: {
+    marginTop: 12,
+    backgroundColor: '#f0f9ff',
+    borderRadius: 8,
+    padding: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#0ea5e9',
+  },
+  pointsDetailTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0c4a6e',
+    marginBottom: 8,
+  },
+  pointsDetailItem: {
+    fontSize: 12,
+    color: '#075985',
+    marginBottom: 4,
+    lineHeight: 16,
+  },
+  pointsDetailTotal: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#bae6fd',
+  },
+  pointsDetailTotalText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#0c4a6e',
+  },
+
+  // 리뷰 섹션 스타일
+  reviewSection: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  reviewSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 16,
+    fontStyle: 'italic',
+  },
+
   infoCard: {
     borderRadius: 16,
     padding: 16,
@@ -637,15 +1189,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6b7280',
     marginTop: 4,
-  },
-  reviewSection: {
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#111827',
-    marginBottom: 16,
   },
   questionCard: {
     borderRadius: 12,
@@ -803,7 +1346,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  levelTitle: { fontSize: 22, fontWeight: '700', color: '#4f46e5' },
+  levelTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#4f46e5',
+  },
   levelPoints: {
     fontSize: 18,
     fontWeight: '600',
@@ -828,7 +1375,12 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#4f46e5',
   },
-  expLabel: { marginTop: 4, marginBottom: 20, fontSize: 12, color: '#6b7280' },
+  expLabel: {
+    marginTop: 4,
+    marginBottom: 20,
+    fontSize: 12,
+    color: '#6b7280',
+  },
 
   /* ───────── 스트릭 & 업적 ───────── */
   // 배지 컨테이너
@@ -965,6 +1517,7 @@ const styles = StyleSheet.create({
   scoreGameItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 8,
   },
 
   scoreGameLabel: {
