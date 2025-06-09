@@ -122,12 +122,11 @@ export default function AnalysisScreen() {
         {/* 카테고리별 상세 분석 */}
         <View style={styles.categorySection}>
           <Text style={styles.sectionTitle}>카테고리별 상세 분석</Text>
-          {Object.entries(categoryStatsData).map(([category, stats], index) => (
+          {Object.entries(categoryStatsData).map(([category, stats]) => (
             <DifficultyAnalysisCard
               key={category}
               category={category as UpdatedKnowledgeCategory}
               stats={stats as Doc<'categoryStats'>}
-              delay={index * 100}
             />
           ))}
         </View>

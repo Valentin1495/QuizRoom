@@ -280,7 +280,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'balanced_learner',
     title: '균형잡힌 학습자',
-    description: '모든 카테고리에서 최소 10개 이상의 문제 풀기',
+    description: '모든 카테고리에서 최소 3개 이상의 퀴즈 완료',
     icon: '⚖️',
     unlockedAt: null,
     progress: 0,
@@ -366,15 +366,15 @@ const defaultAchievements: Achievement[] = [
     progress: 0,
     target: 1,
   },
-  {
-    id: 'persistent_player',
-    title: '끈기의 승부사',
-    description: '한 번에 20문제 이상 연속 풀기',
-    icon: '🎯',
-    unlockedAt: null,
-    progress: 0,
-    target: 1,
-  },
+  // {
+  //   id: 'persistent_player',
+  //   title: '끈기의 승부사',
+  //   description: '한 번에 20문제 이상 연속 풀기',
+  //   icon: '🎯',
+  //   unlockedAt: null,
+  //   progress: 0,
+  //   target: 1,
+  // },
 ];
 
 export function GamificationProvider({
@@ -797,17 +797,17 @@ export function GamificationProvider({
               progress = prev.currentPerfectStreak;
               done = progress >= 5;
               break;
-            // case 'accuracy_king':
-            //   const totalCorrect = prev.totalCorrectAnswers;
-            //   const totalQuestions = prev.quizzesHistory.reduce(
-            //     (sum, q) => sum + q.total,
-            //     0
-            //   );
-            //   const accuracy =
-            //     totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
-            //   progress = Math.floor(accuracy);
-            //   done = accuracy >= 95;
-            //   break;
+            case 'accuracy_king':
+              const totalCorrect = prev.totalCorrectAnswers;
+              const totalQuestions = prev.quizzesHistory.reduce(
+                (sum, q) => sum + q.total,
+                0
+              );
+              const accuracy =
+                totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
+              progress = Math.floor(accuracy);
+              done = accuracy >= 95;
+              break;
 
             // 수량 기반 업적들
             case 'quiz_beginner':
@@ -869,16 +869,16 @@ export function GamificationProvider({
               done = categoriesWithQuizzes === ALL_CATEGORIES.length;
               break;
 
-            // case 'balanced_learner':
-            //   // 모든 카테고리에서 최소 10개 이상의 문제 풀기
-            //   const balancedCategories = ALL_CATEGORIES.filter((category) => {
-            //     const stats = prev.categoryStats[category];
-            //     return stats && stats.totalQuestions >= 10;
-            //   }).length;
+            case 'balanced_learner':
+              // 모든 카테고리에서 최소 3개 이상의 퀴즈 완료
+              const balancedCategories = ALL_CATEGORIES.filter((category) => {
+                const stats = prev.categoryStats[category];
+                return stats && stats.totalQuestions >= 30;
+              }).length;
 
-            //   progress = balancedCategories;
-            //   done = balancedCategories === ALL_CATEGORIES.length;
-            //   break;
+              progress = balancedCategories;
+              done = balancedCategories === ALL_CATEGORIES.length;
+              break;
 
             // 속도 관련 업적들
             case 'speed_demon':
@@ -890,7 +890,7 @@ export function GamificationProvider({
               break;
             case 'quick_thinker':
               const quickQuizzes = prev.quizzesHistory.filter(
-                (q) => q.total >= 10 && q.averageTime && q.averageTime <= 5
+                (q) => q.averageTime && q.averageTime <= 5
               );
               progress = quickQuizzes.length > 0 ? 1 : 0;
               done = progress === 1;
@@ -907,7 +907,7 @@ export function GamificationProvider({
             case 'night_owl':
               const nightQuizzes = prev.quizzesHistory.filter((q) => {
                 const hour = new Date(q.completedAt).getHours();
-                return hour >= 0 && hour < 6;
+                return hour >= 0 && hour < 5;
               }).length;
               progress = nightQuizzes;
               done = progress >= 10;
@@ -915,7 +915,7 @@ export function GamificationProvider({
             case 'early_bird':
               const earlyQuizzes = prev.quizzesHistory.filter((q) => {
                 const hour = new Date(q.completedAt).getHours();
-                return hour >= 5 && hour < 8;
+                return hour >= 5 && hour < 10;
               }).length;
               progress = earlyQuizzes;
               done = progress >= 10;
@@ -951,13 +951,13 @@ export function GamificationProvider({
               progress = luckyQuizzes.length > 0 ? 1 : 0;
               done = progress === 1;
               break;
-            case 'persistent_player':
-              const longQuizzes = prev.quizzesHistory.filter(
-                (q) => q.total >= 20
-              );
-              progress = longQuizzes.length > 0 ? 1 : 0;
-              done = progress === 1;
-              break;
+            // case 'persistent_player':
+            //   const longQuizzes = prev.quizzesHistory.filter(
+            //     (q) => q.total >= 20
+            //   );
+            //   progress = longQuizzes.length > 0 ? 1 : 0;
+            //   done = progress === 1;
+            //   break;
           }
 
           const updatedAchievement = {
@@ -973,7 +973,7 @@ export function GamificationProvider({
               userId: user.id,
               achievementId: ach.id,
               progress: Math.min(progress, ach.target),
-              unlockedAt: Date.now(),
+              maxProgress: ach.target,
             });
           } else if (ach.progress !== progress) {
             // 진행도가 변경된 경우에도 저장
@@ -981,7 +981,7 @@ export function GamificationProvider({
               userId: user.id,
               achievementId: ach.id,
               progress: Math.min(progress, ach.target),
-              unlockedAt: undefined,
+              maxProgress: ach.target,
             });
           }
 

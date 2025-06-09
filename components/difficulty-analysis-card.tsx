@@ -24,14 +24,6 @@ type SkillLevel =
   | 'advanced'
   | 'expert';
 
-// 난이도별 통계 데이터
-interface DifficultyStats {
-  total: number;
-  correct: number;
-  accuracy: number;
-  avgTime?: number; // 밀리초 단위
-}
-
 // 스킬 레벨 정보 타입 (내부 사용)
 interface SkillLevelInfo {
   text: string;
@@ -64,9 +56,9 @@ interface DifficultyAnalysisCardProps {
 export default function DifficultyAnalysisCard({
   category,
   stats,
-  delay = 0,
 }: DifficultyAnalysisCardProps) {
   const [expanded, setExpanded] = useState<boolean>(false);
+  const DIFFICULTY_ORDER: Difficulty[] = ['easy', 'medium', 'hard'];
 
   const getCategoryDisplayName = useCallback(
     (category: UpdatedKnowledgeCategory): string => {
@@ -155,7 +147,7 @@ export default function DifficultyAnalysisCard({
   };
 
   return (
-    <View style={[styles.analysisCard, { opacity: delay > 0 ? 0 : 1 }]}>
+    <View style={styles.analysisCard}>
       <LinearGradient
         colors={['#ffffff', '#f8f9ff']}
         style={styles.cardGradient}
@@ -193,12 +185,10 @@ export default function DifficultyAnalysisCard({
         {expanded && (
           <View style={styles.detailsContainer}>
             {stats.difficultyStats &&
-              (
-                Object.entries(stats.difficultyStats) as [
-                  Difficulty,
-                  DifficultyStats,
-                ][]
-              ).map(([difficulty, diffStats]) => {
+              DIFFICULTY_ORDER.map((difficulty) => {
+                const diffStats = stats.difficultyStats[difficulty];
+                if (!diffStats) return null;
+
                 const avgTimeInSeconds = diffStats.avgTime
                   ? Math.round(diffStats.avgTime / 1000)
                   : 0;

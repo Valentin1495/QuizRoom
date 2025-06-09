@@ -36,7 +36,7 @@ import { LevelUpModal } from './level-up-modal';
 
 const { width } = Dimensions.get('window');
 
-export default function Questions() {
+export default function QuestionList() {
   const {
     totalPoints,
     level,

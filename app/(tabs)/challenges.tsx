@@ -97,9 +97,7 @@ export default function ChallengesScreen() {
   const getRewardText = (reward: Challenge['reward']) => {
     switch (reward.type) {
       case 'points':
-        return `🏆 ${reward.value} 포인트`;
-      case 'badge':
-        return `🎖️ ${reward.name}`;
+        return `🏆 ${reward.value}점`;
       case 'streak':
         return `🔥 ${reward.value}일 연속`;
     }

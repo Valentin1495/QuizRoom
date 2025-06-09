@@ -83,7 +83,7 @@ export const generateDailyChallenges = mutation({
         description: '연속으로 퀴즈 10문제 정답 맞히기',
         targetCount: 10,
         currentCount: 0,
-        reward: { type: 'badge' as const, value: 1, name: '완벽주의자' },
+        reward: { type: 'points' as const, value: 150 },
         completed: false,
         expiresAt: endOfTodayKST(),
         createdAt: now,
@@ -121,7 +121,7 @@ export const generateDailyChallenges = mutation({
         description: '오늘 퀴즈 정답률 90% 이상 달성',
         targetCount: 1,
         currentCount: 0,
-        reward: { type: 'badge' as const, value: 1, name: '명사수' },
+        reward: { type: 'points' as const, value: 120 },
         completed: false,
         expiresAt: endOfTodayKST(),
         createdAt: now,
@@ -209,7 +209,7 @@ export const generateWeeklyChallenges = mutation({
         description: '7일 연속 퀴즈 풀기',
         targetCount: 7,
         currentCount: 0,
-        reward: { type: 'streak' as const, value: 7, name: '일주일 연속' },
+        reward: { type: 'points' as const, value: 300 },
         completed: false,
         expiresAt: endOfNextWeekKST(),
         createdAt: now,
@@ -222,7 +222,7 @@ export const generateWeeklyChallenges = mutation({
         description: '이번 주 전체 정답률 80% 이상 유지하기',
         targetCount: 1,
         currentCount: 0,
-        reward: { type: 'badge' as const, value: 1, name: '정확도 마스터' },
+        reward: { type: 'points' as const, value: 250 },
         completed: false,
         expiresAt: endOfNextWeekKST(),
         createdAt: now,
@@ -248,7 +248,7 @@ export const generateWeeklyChallenges = mutation({
         description: '이번 주 퀴즈 50개 완료하기',
         targetCount: 50,
         currentCount: 0,
-        reward: { type: 'badge' as const, value: 1, name: '퀴즈 애호가' },
+        reward: { type: 'points' as const, value: 400 },
         completed: false,
         expiresAt: endOfNextWeekKST(),
         createdAt: now,
@@ -260,7 +260,7 @@ export const generateWeeklyChallenges = mutation({
         description: '이번 주 연속 정답 기록 10문제 달성',
         targetCount: 10,
         currentCount: 0,
-        reward: { type: 'badge' as const, value: 1, name: '완벽한 주' },
+        reward: { type: 'points' as const, value: 350 },
         completed: false,
         expiresAt: endOfNextWeekKST(),
         createdAt: now,
@@ -272,7 +272,7 @@ export const generateWeeklyChallenges = mutation({
         description: '이번 주 평균 답변 시간 20초 이하 유지',
         targetCount: 1,
         currentCount: 0,
-        reward: { type: 'badge' as const, value: 1, name: '스피드 마스터' },
+        reward: { type: 'points' as const, value: 280 },
         completed: false,
         expiresAt: endOfNextWeekKST(),
         createdAt: now,
@@ -621,29 +621,5 @@ async function grantReward(ctx: any, userId: string, reward: any) {
       currentStreak: Math.max(gamificationData.currentStreak, reward.value),
       updatedAt: Date.now(),
     });
-  }
-
-  // 배지는 achievements 테이블에 추가
-  if (reward.type === 'badge' && reward.name) {
-    const existingAchievement = await ctx.db
-      .query('achievements')
-      .filter((q: any) =>
-        q.and(
-          q.eq(q.field('userId'), userId),
-          q.eq(q.field('achievementId'), reward.name)
-        )
-      )
-      .first();
-
-    if (!existingAchievement) {
-      await ctx.db.insert('achievements', {
-        userId,
-        achievementId: reward.name,
-        unlockedAt: Date.now(),
-        progress: 100,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-      });
-    }
   }
 }

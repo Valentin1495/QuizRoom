@@ -1,46 +1,14 @@
-import EmptyStatsCard from '@/components/empty-stat-card';
-import LevelProgress from '@/components/level-progress';
-import StatCard from '@/components/stat-card';
-import { api } from '@/convex/_generated/api';
+import AchievementList from '@/components/achievement-list';
+import StatCardList from '@/components/stat-card-list';
 import { useAuth } from '@clerk/clerk-expo';
-import { useQuery } from 'convex/react';
-import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function StatsScreen() {
   const { userId } = useAuth();
-  const gamificationData = useQuery(
-    api.gamification.getOrCreateGamificationData,
-    userId ? { userId } : 'skip'
-  );
-
-  if (!gamificationData) {
-    return null;
-  }
-
-  const {
-    level,
-    expInCurrentLevel,
-    pointsToNextLevel,
-    currentStreak,
-    longestStreak,
-    totalQuizzes,
-    totalCorrectAnswers,
-    totalPoints,
-  } = gamificationData;
-  const overallAccuracy =
-    totalQuizzes === 0
-      ? '-'
-      : Math.round(
-          (gamificationData.totalCorrectAnswers /
-            (gamificationData.totalQuizzes * 10)) *
-            100
-        );
-  const hasQuizData = gamificationData.totalQuizzes > 0;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>통계</Text>
@@ -50,71 +18,8 @@ export default function StatsScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* Level Progress */}
-        <LevelProgress
-          currentLevel={level}
-          currentExp={expInCurrentLevel}
-          nextLevelExp={pointsToNextLevel}
-          delay={100}
-        />
-
-        {/* Stats Cards */}
-        {hasQuizData ? (
-          <View style={styles.statsGrid}>
-            <StatCard
-              title='총 퀴즈'
-              value={totalQuizzes.toString()}
-              subtitle='완료'
-              icon='library-outline'
-              color={['#667eea', '#764ba2']}
-              delay={200}
-            />
-            <StatCard
-              title='정답률'
-              value={`${overallAccuracy}%`}
-              subtitle={`${totalCorrectAnswers}/${totalQuizzes * 10}`}
-              icon='checkmark-circle-outline'
-              color={['#f093fb', '#f5576c']}
-              delay={300}
-            />
-            <StatCard
-              title='현재 스트릭'
-              value={`${currentStreak}일`}
-              subtitle='연속 학습'
-              icon='flame-outline'
-              color={['#4facfe', '#00f2fe']}
-              delay={400}
-            />
-            <StatCard
-              title='최장 스트릭'
-              value={`${longestStreak}일`}
-              subtitle='개인 기록'
-              icon='trophy-outline'
-              color={['#43e97b', '#38f9d7']}
-              delay={500}
-            />
-            <StatCard
-              title='총 포인트'
-              value={totalPoints.toLocaleString()}
-              subtitle='점'
-              icon='diamond-outline'
-              color={['#fa709a', '#fee140']}
-              delay={600}
-            />
-            <StatCard
-              title='레벨'
-              value={level.toString()}
-              subtitle='현재 단계'
-              icon='star-outline'
-              color={['#a8edea', '#fed6e3']}
-              delay={700}
-            />
-          </View>
-        ) : (
-          <View style={styles.emptyStatsContainer}>
-            <EmptyStatsCard delay={200} />
-          </View>
-        )}
+        <StatCardList userId={userId} />
+        <AchievementList userId={userId} />
 
         {/* Bottom Padding */}
         <View style={styles.bottomPadding} />
@@ -140,12 +45,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#2c3e50',
   },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 10,
-    marginBottom: 30,
-  },
   masteryText: {
     fontSize: 14,
     fontWeight: '600',
@@ -154,10 +53,5 @@ const styles = StyleSheet.create({
   },
   bottomPadding: {
     height: 20,
-  },
-  // Empty state styles
-  emptyStatsContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 30,
   },
 });

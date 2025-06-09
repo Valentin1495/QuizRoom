@@ -312,7 +312,7 @@ export const useQuizGamification = () => {
     // 완벽한 점수 추가 보너스
     if (wasPerfect) {
       gamification.addPoints(20, 'Perfect Score Bonus');
-      console.log('🎯 완벽한 점수! 보너스 20포인트');
+      console.log('🎯 완벽한 점수! 보너스 20점');
     }
 
     // 새 업적 로그

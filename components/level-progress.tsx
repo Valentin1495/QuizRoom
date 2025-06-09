@@ -1,8 +1,6 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import Animated, {
-  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -27,8 +25,11 @@ export default function LevelProgress({
   const progress = useSharedValue(0);
   const scale = useSharedValue(0);
 
+  const ratio = currentExp / (currentExp + nextLevelExp);
+  const percentage = Math.min(Math.round(ratio * 100), 100);
+
   useEffect(() => {
-    progress.value = withDelay(delay, withSpring(currentExp / nextLevelExp));
+    progress.value = withDelay(delay, withSpring(ratio));
     scale.value = withDelay(delay, withSpring(1));
   }, []);
 
@@ -36,12 +37,34 @@ export default function LevelProgress({
     transform: [{ scale: scale.value }],
   }));
 
-  const progressStyle = useAnimatedStyle(() => {
-    const width = interpolate(progress.value, [0, 1], [0, screenWidth - 80]);
+  const percentageStyle = useAnimatedStyle(() => {
     return {
-      width,
+      transform: [{ scale: scale.value }],
     };
   });
+
+  let percentageColor = '#bdc3c7';
+  let percentageExtra = '✨ 시작이 멋져요';
+
+  if (percentage >= 95) {
+    percentageColor = '#f39c12';
+    percentageExtra = '🚀 마지막 한 걸음!';
+  } else if (percentage >= 90) {
+    percentageColor = '#e67e22';
+    percentageExtra = '🔥 집중력 폭발 중!';
+  } else if (percentage >= 70) {
+    percentageColor = '#27ae60';
+    percentageExtra = '💚 꾸준히 성장 중';
+  } else if (percentage >= 50) {
+    percentageColor = '#3498db';
+    percentageExtra = '💙 중반 돌파!';
+  } else if (percentage >= 20) {
+    percentageColor = '#9b59b6';
+    percentageExtra = '💫 시작이 반!';
+  } else {
+    percentageColor = '#95a5a6';
+    percentageExtra = '🌱 첫걸음 응원해요';
+  }
 
   return (
     <Animated.View style={[styles.levelContainer, animatedStyle]}>
@@ -55,18 +78,15 @@ export default function LevelProgress({
         </Text>
       </View>
 
-      <View style={styles.levelProgressContainer}>
-        <View style={styles.levelProgressBackground}>
-          <Animated.View style={[progressStyle]}>
-            <LinearGradient
-              colors={['#667eea', '#764ba2']}
-              style={styles.levelProgressBar}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-            />
-          </Animated.View>
-        </View>
-      </View>
+      <Animated.Text
+        style={[
+          styles.percentageText,
+          { color: percentageColor },
+          percentageStyle,
+        ]}
+      >
+        {percentage}% {percentageExtra}
+      </Animated.Text>
     </Animated.View>
   );
 }
@@ -76,50 +96,43 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 30,
     backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 24,
+    padding: 24,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 6,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowRadius: 10,
+    elevation: 6,
   },
   levelHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   levelBadge: {
-    backgroundColor: '#667eea',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    backgroundColor: '#6c5ce7',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 24,
   },
   levelText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   levelExp: {
     fontSize: 16,
-    color: '#666',
+    color: '#555',
     fontWeight: '600',
   },
-  levelProgressContainer: {
-    marginTop: 10,
-  },
-  levelProgressBackground: {
-    height: 8,
-    backgroundColor: '#e8eaf6',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  levelProgressBar: {
-    height: '100%',
-    borderRadius: 4,
+  percentageText: {
+    fontSize: 26,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginTop: 14,
   },
 });

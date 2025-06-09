@@ -117,7 +117,7 @@ export const updateGamificationData = mutation({
   },
 });
 
-// 업적 데이터 가져오기
+// 사용자의 모든 업적 조회
 export const getAchievements = query({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
@@ -128,13 +128,13 @@ export const getAchievements = query({
   },
 });
 
-// 업적 업데이트
+// 업적 진행도 업데이트 (자동 해금 포함)
 export const updateAchievement = mutation({
   args: {
     userId: v.string(),
     achievementId: v.string(),
     progress: v.number(),
-    unlockedAt: v.optional(v.number()),
+    maxProgress: v.number(), // 목표값 필수
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -145,23 +145,64 @@ export const updateAchievement = mutation({
       .first();
 
     const now = Date.now();
+    const shouldUnlock = args.progress >= args.maxProgress;
 
     if (existing) {
+      // 기존 기록 업데이트
       await ctx.db.patch(existing._id, {
         progress: args.progress,
-        unlockedAt: args.unlockedAt ?? existing.unlockedAt,
+        maxProgress: args.maxProgress,
+        unlockedAt:
+          shouldUnlock && !existing.unlockedAt ? now : existing.unlockedAt,
         updatedAt: now,
       });
     } else {
+      // 새 기록 생성
       await ctx.db.insert('achievements', {
         userId: args.userId,
         achievementId: args.achievementId,
         progress: args.progress,
-        unlockedAt: args.unlockedAt,
+        maxProgress: args.maxProgress,
+        unlockedAt: shouldUnlock ? now : undefined,
         createdAt: now,
         updatedAt: now,
       });
     }
+
+    return shouldUnlock;
+  },
+});
+
+// 해금된 업적만 조회
+export const getUnlockedAchievements = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query('achievements')
+      .withIndex('by_user_unlocked', (q) =>
+        q.eq('userId', args.userId).gt('unlockedAt', 0)
+      )
+      .collect();
+  },
+});
+
+// 업적 통계 조회
+export const getAchievementStats = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const achievements = await ctx.db
+      .query('achievements')
+      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .collect();
+
+    const unlockedCount = achievements.filter((a) => a.unlockedAt).length;
+    const totalCount = achievements.length;
+
+    return {
+      unlockedCount,
+      totalCount,
+      achievements,
+    };
   },
 });
 

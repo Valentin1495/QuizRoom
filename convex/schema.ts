@@ -189,13 +189,15 @@ export default defineSchema({
   achievements: defineTable({
     userId: v.string(),
     achievementId: v.string(), // 업적의 고유 ID
-    unlockedAt: v.optional(v.number()), // timestamp, null이면 미해금
-    progress: v.number(),
+    unlockedAt: v.optional(v.number()), // timestamp, undefined면 미해금
+    progress: v.number(), // 현재 진행도
+    maxProgress: v.optional(v.number()), // 목표값 (예: streak_30이면 30, first_quiz면 1)
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index('by_user', ['userId'])
-    .index('by_user_achievement', ['userId', 'achievementId']),
+    .index('by_user_achievement', ['userId', 'achievementId'])
+    .index('by_user_unlocked', ['userId', 'unlockedAt']), // 해금된 업적 조회용
 
   quizHistory: defineTable({
     id: v.string(), // UUID

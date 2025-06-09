@@ -1,4 +1,4 @@
-import Questions from '@/components/questions';
+import QuestionList from '@/components/question-list';
 import {
   CategoryByQuizType,
   Difficulty,
@@ -49,5 +49,5 @@ export default function QuestionScreen() {
     );
   }, [questions]);
 
-  return <Questions />;
+  return <QuestionList />;
 }
