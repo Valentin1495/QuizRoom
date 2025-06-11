@@ -5,9 +5,9 @@ import EmptyStatsCard from './empty-stat-card';
 import LevelProgress from './level-progress';
 import StatCard from './stat-card';
 
-type CardListProps = { userId?: string | null };
+type CardListProps = { userId?: string | null; unlockedCount?: number };
 
-export default function StatCardList({ userId }: CardListProps) {
+export default function StatCardList({ userId, unlockedCount }: CardListProps) {
   const gamificationData = useQuery(
     api.gamification.getOrCreateGamificationData,
     userId ? { userId } : 'skip'
@@ -45,6 +45,7 @@ export default function StatCardList({ userId }: CardListProps) {
         currentExp={expInCurrentLevel}
         nextLevelExp={pointsToNextLevel}
         delay={100}
+        unlockedCount={unlockedCount}
       />
 
       {/* Stats Cards */}

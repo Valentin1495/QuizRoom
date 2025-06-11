@@ -1,6 +1,4 @@
-import { api } from '@/convex/_generated/api';
 import { Doc } from '@/convex/_generated/dataModel';
-import { useQuery } from 'convex/react';
 import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -66,7 +64,7 @@ interface AchievementModalProps {
 }
 
 type AchievementListProps = {
-  userId?: string | null;
+  userAchievements?: Doc<'achievements'>[];
 };
 
 const defaultAchievements: Achievement[] = [
@@ -444,11 +442,9 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
   );
 };
 
-export default function AchievementList({ userId }: AchievementListProps) {
-  const userAchievements = useQuery(
-    api.gamification.getAchievements,
-    userId ? { userId } : 'skip'
-  );
+export default function AchievementList({
+  userAchievements,
+}: AchievementListProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedAchievement, setSelectedAchievement] =
     useState<Achievement | null>(null);

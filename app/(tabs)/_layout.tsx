@@ -56,7 +56,7 @@ export default function TabLayout() {
           tabBarIcon: ({ size, color }) => (
             <Ionicons name='person' size={size} color={color} />
           ),
-          tabBarLabel: '통계',
+          tabBarLabel: '내 정보',
         }}
       />
     </Tabs>
