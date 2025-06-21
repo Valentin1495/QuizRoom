@@ -25,6 +25,6 @@ export function switchCategoryKey(categoryKey: string) {
       return '영화 & TV';
 
     default:
-      break;
+      return '';
   }
 }

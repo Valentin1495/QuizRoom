@@ -17,6 +17,10 @@ export default defineSchema({
         language: v.string(), // 언어 설정
       })
     ),
+    coins: v.number(),
+    experience: v.number(),
+    level: v.number(),
+    streak: v.number(),
   }).index('byClerkId', ['clerkId']),
 
   quizzes: defineTable({
@@ -100,66 +104,87 @@ export default defineSchema({
     userId: v.string(),
     category: v.string(),
 
-    // 전체 통계
+    // 기본 통계
     totalQuestions: v.number(),
     correctAnswers: v.number(),
-    masteryLevel: v.number(),
-    initialAccuracy: v.optional(v.number()),
 
-    // 난이도별 상세 통계
+    // 가중 점수 시스템 (코드의 핵심 로직)
+    weightedScore: v.number(),
+    maxWeightedScore: v.number(),
+
+    // 난이도별 상세 통계 (코드의 DifficultyStats 인터페이스와 일치)
     difficultyStats: v.object({
       easy: v.object({
-        total: v.number(),
-        correct: v.number(),
         accuracy: v.number(),
+        totalQuestions: v.number(), // 코드에서 사용하는 필드명
+        correct: v.optional(v.number()), // 추가 통계용
         avgTime: v.optional(v.number()),
       }),
       medium: v.object({
-        total: v.number(),
-        correct: v.number(),
         accuracy: v.number(),
+        totalQuestions: v.number(),
+        correct: v.optional(v.number()),
         avgTime: v.optional(v.number()),
       }),
       hard: v.object({
-        total: v.number(),
-        correct: v.number(),
         accuracy: v.number(),
+        totalQuestions: v.number(),
+        correct: v.optional(v.number()),
         avgTime: v.optional(v.number()),
       }),
     }),
 
-    // 가중 점수 (난이도별 가중치 적용)
-    weightedScore: v.number(), // easy: 1점, medium: 2점, hard: 3점
-    maxWeightedScore: v.number(),
+    // 성장 추세 (코드에서 단일 숫자로 처리)
+    growthTrend: v.number(),
 
-    // 실력 레벨 분석
+    // 평균 시간 (코드의 AnalysisResult에서 사용)
+    averageTime: v.optional(v.number()),
+
+    // 실력 티어 시스템 (게임 스타일 - 기존 유지)
     skillLevel: v.union(
-      v.literal('beginner'), // 0-30%
-      v.literal('novice'), // 30-50%
-      v.literal('intermediate'), // 50-70%
-      v.literal('advanced'), // 70-85%
-      v.literal('expert') // 85-100%
+      v.literal('Unranked'),
+      v.literal('Iron'),
+      v.literal('Bronze'),
+      v.literal('Silver'),
+      v.literal('Gold'),
+      v.literal('Platinum'),
+      v.literal('Diamond')
     ),
 
-    // 추천 난이도
-    recommendedDifficulty: v.union(
-      v.literal('easy'),
-      v.literal('medium'),
-      v.literal('hard')
+    skillScore: v.number(),
+
+    skillLevelNote: v.optional(v.string()), // 선택적으로 변경
+
+    // AI 인사이트 캐싱 (성능 최적화용)
+    aiInsightsCache: v.optional(
+      v.object({
+        overallInsight: v.string(),
+        motivationalMessage: v.string(),
+        nextGoals: v.array(v.string()),
+        cacheExpiry: v.number(), // 캐시 만료 시간 (timestamp)
+      })
     ),
 
-    // 성장 추세
-    growthTrend: v.object({
-      last7Days: v.number(), // 최근 7일간 정답률 변화
-      last30Days: v.number(), // 최근 30일간 정답률 변화
-      isImproving: v.boolean(), // 향상 중인지 여부
-    }),
+    // 진행률 추적을 위한 히스토리
+    progressHistory: v.optional(
+      v.array(
+        v.object({
+          date: v.number(), // timestamp
+          skillScore: v.number(),
+          accuracy: v.number(),
+          questionsAnswered: v.number(),
+        })
+      )
+    ),
 
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index('by_user_category', ['userId', 'category']),
+  })
+    .index('by_user_category', ['userId', 'category'])
+    .index('by_user', ['userId']) // 사용자별 전체 분석용
+    .index('by_skill_level', ['skillLevel']) // 랭킹 시스템용
+    .index('by_updated_at', ['updatedAt']), // 최근 업데이트 조회용
 
-  // 퀴즈 결과에 난이도 정보 추가
   quizResults: defineTable({
     id: v.string(),
     userId: v.string(),
@@ -217,7 +242,6 @@ export default defineSchema({
     .index('by_user', ['userId'])
     .index('by_user_date', ['userId', 'date']),
 
-  // 도전과제 관련 새로운 테이블들
   challenges: defineTable({
     userId: v.string(),
     type: v.union(v.literal('daily'), v.literal('weekly')),

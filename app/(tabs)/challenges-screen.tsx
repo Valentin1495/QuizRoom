@@ -97,7 +97,7 @@ export default function ChallengesScreen() {
   const getRewardText = (reward: Challenge['reward']) => {
     switch (reward.type) {
       case 'points':
-        return `🏆 ${reward.value}점`;
+        return `🏆 ${reward.value}포인트`;
       case 'streak':
         return `🔥 ${reward.value}일 연속`;
     }
@@ -288,8 +288,8 @@ export default function ChallengesScreen() {
         style={styles.headerGradient}
       >
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>🏆 도전과제</Text>
-          <Text style={styles.headerSubtitle}>오늘도 힘내요! 💪</Text>
+          <Text style={styles.headerTitle}>챌린지</Text>
+          <Text style={styles.headerSubtitle}>오늘도 힘내세요!</Text>
         </View>
       </LinearGradient>
 

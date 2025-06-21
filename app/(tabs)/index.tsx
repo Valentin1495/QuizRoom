@@ -23,7 +23,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Award, Check, ChevronRight, Coffee, Zap } from 'react-native-feather';
+import {
+  Activity,
+  AlertTriangle,
+  Check,
+  ChevronRight,
+  Coffee,
+} from 'react-native-feather';
 import Animated, {
   FadeInDown,
   FadeInUp,
@@ -59,14 +65,14 @@ const difficultyLevels: {
     id: 'medium',
     title: '보통',
     description: '약간의 도전이 필요한 중간 난이도 문제',
-    icon: Zap,
+    icon: Activity,
     colors: ['#60a5fa', '#3b82f6'],
   },
   {
     id: 'hard',
     title: '어려움',
     description: '깊은 이해가 필요한 고난도 문제',
-    icon: Award,
+    icon: AlertTriangle,
     colors: ['#f472b6', '#ec4899'],
   },
 ];
@@ -165,7 +171,7 @@ const questionTypes: {
     id: 'short',
     title: '주관식',
     description: '직접 답변을 입력하는 방식',
-    iconName: 'chatbubble-ellipses-outline',
+    iconName: 'chatbox-ellipses-outline',
     colors: ['#3b82f6', '#2563eb'],
   },
 ];

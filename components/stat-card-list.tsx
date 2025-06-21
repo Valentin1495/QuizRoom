@@ -9,7 +9,7 @@ type CardListProps = { userId?: string | null; unlockedCount?: number };
 
 export default function StatCardList({ userId, unlockedCount }: CardListProps) {
   const gamificationData = useQuery(
-    api.gamification.getOrCreateGamificationData,
+    api.gamification.getGamificationData,
     userId ? { userId } : 'skip'
   );
 
@@ -84,9 +84,9 @@ export default function StatCardList({ userId, unlockedCount }: CardListProps) {
             delay={500}
           />
           <StatCard
-            title='총 점수'
+            title='총 포인트'
             value={totalPoints.toLocaleString()}
-            subtitle='점'
+            subtitle='포인트'
             icon='star-outline'
             color={['#fa709a', '#fee140']}
             delay={600}

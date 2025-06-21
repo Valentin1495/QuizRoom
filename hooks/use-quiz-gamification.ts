@@ -49,7 +49,7 @@ export const useQuizGamification = () => {
 
       let points = 0;
 
-      // 1. 난이도별 기본 점수
+      // 1. 난이도별 기본 포인트
       switch (question.difficulty) {
         case 'easy':
           points = 10;
@@ -143,8 +143,8 @@ export const useQuizGamification = () => {
 
       // 5. 연속 정답 보너스 (기존 유지하되 개선)
       if (streakCount >= 3) {
-        const streakBonus = Math.floor(streakCount / 3) * 3; // 3문제마다 3점씩
-        points += Math.min(streakBonus, 15); // 최대 15점까지만 보너스
+        const streakBonus = Math.floor(streakCount / 3) * 3; // 3문제마다 3포인트씩
+        points += Math.min(streakBonus, 15); // 최대 15포인트까지만 보너스
       }
 
       // 6. 특별 콤보 보너스 (새로 추가)
@@ -309,10 +309,10 @@ export const useQuizGamification = () => {
     // 업적 체크
     const newAchievements = await gamification.checkAchievements();
 
-    // 완벽한 점수 추가 보너스
+    // 완벽한 정답률 추가 보너스
     if (wasPerfect) {
       gamification.addPoints(20, 'Perfect Score Bonus');
-      console.log('🎯 완벽한 점수! 보너스 20점');
+      console.log('🎯 완벽한 정답률! 보너스 20포인트');
     }
 
     // 새 업적 로그

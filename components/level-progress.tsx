@@ -18,16 +18,6 @@ interface LevelProgressProps {
   unlockedCount?: number;
 }
 
-// Mock 사용자 데이터
-const mockUserData = {
-  name: '김코딩',
-  profileImage:
-    'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&crop=face',
-  joinDate: '2024.03.15',
-  streak: 12, // 연속 학습 일수
-  totalStudyTime: 48, // 총 학습 시간 (시간)
-};
-
 const { width: screenWidth } = Dimensions.get('window');
 
 export default function LevelProgress({
@@ -41,8 +31,9 @@ export default function LevelProgress({
   const { _creationTime, fullName, profileImage } = currentUser || {};
   const completedChallenges = useQuery(
     api.challenges.getChallengeStats,
-    currentUser ? { userId: currentUser._id } : 'skip'
+    currentUser ? { userId: currentUser.clerkId } : 'skip'
   );
+
   const progress = useSharedValue(0);
   const scale = useSharedValue(0);
   const profileScale = useSharedValue(0);
@@ -118,11 +109,11 @@ export default function LevelProgress({
 
       {/* 기존 레벨 진행도 섹션 */}
       <View style={styles.levelHeader}>
-        <View style={styles.levelBadge}>
-          <Text style={styles.levelText}>Lv.{currentLevel}</Text>
-        </View>
         <Text style={styles.levelExp}>
-          {currentExp}/{currentExp + nextLevelExp}점 ({nextLevelExp}점 to Lv.
+          {currentExp.toLocaleString()}/
+          {(currentExp + nextLevelExp).toLocaleString()}포인트 (
+          {nextLevelExp.toLocaleString()}
+          포인트 to Lv.
           {currentLevel + 1})
         </Text>
       </View>
@@ -179,7 +170,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -2,
     right: -2,
-    backgroundColor: '#e74c3c',
+    backgroundColor: '#6c5ce7',
     borderRadius: 12,
     width: 24,
     height: 24,
@@ -212,21 +203,8 @@ const styles = StyleSheet.create({
     color: '#95a5a6',
   },
   levelHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 20,
-  },
-  levelBadge: {
-    backgroundColor: '#6c5ce7',
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 24,
-  },
-  levelText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
+    alignSelf: 'center',
   },
   levelExp: {
     fontSize: 16,

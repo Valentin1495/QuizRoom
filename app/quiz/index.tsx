@@ -12,6 +12,9 @@ import { useQuery } from 'convex/react';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 
+// 방법 1: NonNullable 유틸리티 타입 사용
+type DifficultyWithoutNull = NonNullable<Difficulty>; // 'easy' | 'medium' | 'hard'
+
 export default function QuestionScreen() {
   const { setQuestions, setUserAnswers } = useQuizSetup();
 
@@ -20,7 +23,7 @@ export default function QuestionScreen() {
       category: CategoryByQuizType<'knowledge'>;
       quizType: 'knowledge';
       questionFormat: QuestionFormatByQuizType<'knowledge'>;
-      difficulty: Exclude<Difficulty, null>;
+      difficulty: DifficultyWithoutNull;
     }>();
 
   const questions = useQuery(api.quizzes.getQuestionsByQuizType, {

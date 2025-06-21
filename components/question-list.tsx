@@ -5,6 +5,7 @@ import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useChallenges } from '@/hooks/use-challenges';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
+import { switchDifficulty } from '@/utils/switch-difficulty';
 import { useAuth } from '@clerk/clerk-expo';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -19,7 +20,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ArrowLeft, ArrowRight, Check, Home, Star } from 'react-native-feather';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Folder,
+  Home,
+} from 'react-native-feather';
 import Animated, {
   Easing,
   FadeIn,
@@ -32,6 +39,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getDifficultyIcon } from './get-difficulty-icon';
 import { LevelUpModal } from './level-up-modal';
 
 const { width } = Dimensions.get('window');
@@ -337,10 +345,18 @@ export default function QuestionList() {
             </View>
             <View style={styles.topButtons}>
               <View style={styles.categoryContainer}>
-                <Star width={16} height={16} color='#fff' />
+                <Folder width={16} height={16} color='#fff' />
                 <Text style={styles.category}>
                   {switchCategoryToLabel(currentQuestion.category)}
                 </Text>
+                {currentQuestion.difficulty && (
+                  <View style={styles.difficultyBadge}>
+                    {getDifficultyIcon(currentQuestion.difficulty)}
+                    <Text style={styles.difficulty}>
+                      {switchDifficulty(currentQuestion.difficulty)}
+                    </Text>
+                  </View>
+                )}
               </View>
               <TouchableOpacity style={styles.homeButton} onPress={goToHome}>
                 <Home width={20} height={20} color='#fff' />
@@ -445,7 +461,7 @@ export default function QuestionList() {
                   ]}
                 >
                   {isCorrect
-                    ? `정답이에요! ${earnedPoints > 0 ? `+${earnedPoints}점` : ''}`
+                    ? `정답이에요! ${earnedPoints > 0 ? `+${earnedPoints}포인트` : ''}`
                     : questionFormat === 'multiple'
                       ? `오답이에요. 정답은 "${currentQuestion.answer}" 입니다`
                       : `오답이에요. 정답은 "${currentQuestion.answers![0]}" 입니다`}
@@ -575,6 +591,21 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginLeft: 6,
     fontWeight: '500',
+  },
+  difficultyBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginLeft: 8,
+  },
+  difficulty: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 4,
   },
   homeButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',

@@ -111,7 +111,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'perfect_streak_5',
     title: '완벽한 연승',
-    description: '5번 연속으로 완벽한 점수 달성',
+    description: '5번 연속으로 완벽한 정답률 달성',
     icon: '💫',
     category: 'accuracy',
     rarity: 'epic',
@@ -471,9 +471,7 @@ export default function AchievementList({
       selectedCategory === 'all' || achievement.category === selectedCategory
   );
 
-  if (!userAchievements) return null;
-
-  const unlockedCount = userAchievements.filter((ua) => ua.unlockedAt).length;
+  const unlockedCount = userAchievements?.filter((ua) => ua.unlockedAt).length;
   const totalCount = defaultAchievements.length;
 
   useEffect(() => {
@@ -529,6 +527,8 @@ export default function AchievementList({
   const handleCategorySelect = (categoryId: string): void => {
     setSelectedCategory(categoryId);
   };
+
+  if (!userAchievements) return null;
 
   return (
     <View>

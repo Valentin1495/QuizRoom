@@ -33,7 +33,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='analysis'
+        name='skill-analysis-screen'
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name='stats-chart' size={size} color={color} />
@@ -42,7 +42,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='challenges'
+        name='challenges-screen'
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name='trophy' size={size} color={color} />
@@ -51,7 +51,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='stats'
+        name='my-stats-screen'
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name='person' size={size} color={color} />

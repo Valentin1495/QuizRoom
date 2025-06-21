@@ -1,6 +1,7 @@
 import { Difficulty, UserAnswer } from '@/context/quiz-setup-context';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
+import { getRandomTwoElements } from '@/utils/get-random-two-elements';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
 import { switchDifficulty } from '@/utils/switch-difficulty';
 import { switchQuestionFormat } from '@/utils/switch-question-format';
@@ -131,31 +132,31 @@ export default function QuizResultScreen() {
       const breakdown: string[] = [];
       let total = 0;
 
-      // 기본 점수
+      // 기본 포인트
       const basePoints =
         difficulty === 'easy' ? 10 : difficulty === 'medium' ? 15 : 25;
       breakdown.push(
-        `기본 점수 (${'난이도 ' + switchDifficulty(difficulty)}): ${basePoints}점`
+        `기본 포인트 (${'난이도 ' + switchDifficulty(difficulty)}): ${basePoints}포인트`
       );
       total += basePoints;
 
       // 카테고리 보너스
       const categoryBonus = getCategoryBonus(category);
       if (categoryBonus > 0) {
-        breakdown.push(`카테고리 보너스: +${categoryBonus}점`);
+        breakdown.push(`카테고리 보너스: +${categoryBonus}포인트`);
         total += categoryBonus;
       }
 
       // 퀴즈 타입 보너스
       const typeBonus = getTypeBonus(quizType);
       if (typeBonus > 0) {
-        breakdown.push(`퀴즈 타입 보너스: +${typeBonus}점`);
+        breakdown.push(`퀴즈 타입 보너스: +${typeBonus}포인트`);
         total += typeBonus;
       }
 
       // 주관식 보너스
       if (questionFormat === 'short') {
-        breakdown.push(`주관식 보너스: +3점`);
+        breakdown.push(`주관식 보너스: +3포인트`);
         total += 3;
       }
 
@@ -163,7 +164,7 @@ export default function QuizResultScreen() {
       if (streakCount >= 3) {
         const streakBonus = Math.min(Math.floor(streakCount / 3) * 3, 15);
         breakdown.push(
-          `연속 정답 보너스 (${streakCount}연속): +${streakBonus}점`
+          `연속 정답 보너스 (${streakCount}연속): +${streakBonus}포인트`
         );
         total += streakBonus;
       }
@@ -173,7 +174,7 @@ export default function QuizResultScreen() {
         difficulty === 'hard' &&
         ['math-logic', 'science-tech'].includes(category as string)
       ) {
-        breakdown.push(`콤보 보너스 (고난이도): +5점`);
+        breakdown.push(`콤보 보너스 (고난이도): +5포인트`);
         total += 5;
       }
 
@@ -202,6 +203,8 @@ export default function QuizResultScreen() {
     (m, a) => Math.max(m, (a as UserAnswer).streakCount),
     0
   );
+
+  const wasPerfect = percentage === 100;
 
   /* ------------------------------------------------------------------
    * 애니메이션용 shared values
@@ -285,10 +288,10 @@ export default function QuizResultScreen() {
   };
 
   /* ------------------------------------------------------------------
-   * 점수 계산 예시 섹션 렌더링
+   * 포인트 계산 예시 섹션 렌더링
    * ----------------------------------------------------------------*/
   const renderPointsExample = () => {
-    // 실제 정답 문제들 중에서 가장 높은 점수를 받은 문제 찾기
+    // 실제 정답 문제들 중에서 가장 높은 포인트를 받은 문제 찾기
     const correctAnswers = userAnswers.filter((answer) => answer.isCorrect);
     const highestPointQuestion = correctAnswers.reduce(
       (prev, current) =>
@@ -296,7 +299,7 @@ export default function QuizResultScreen() {
       correctAnswers[0]
     );
 
-    // 평균 점수 계산
+    // 평균 포인트 계산
     const averagePoints =
       correctAnswers.length > 0
         ? Math.round(
@@ -307,7 +310,7 @@ export default function QuizResultScreen() {
           )
         : 0;
 
-    // 대표 예시로 사용할 문제 (높은 점수 문제 또는 첫 번째 정답 문제)
+    // 대표 예시로 사용할 문제 (높은 포인트 문제 또는 첫 번째 정답 문제)
     const exampleQuestion = highestPointQuestion || correctAnswers[0];
 
     // 예시 문제가 없으면 현재 설정 기반으로 계산
@@ -335,7 +338,7 @@ export default function QuizResultScreen() {
         >
           <View style={styles.exampleTitleContainer}>
             <Info width={20} height={20} color='#6366f1' />
-            <Text style={styles.exampleTitle}>점수 계산 분석</Text>
+            <Text style={styles.exampleTitle}>포인트 계산 분석</Text>
           </View>
           {showPointsBreakdown ? (
             <ChevronUp width={20} height={20} color='#6b7280' />
@@ -346,9 +349,11 @@ export default function QuizResultScreen() {
 
         {showPointsBreakdown && (
           <View style={styles.exampleContent}>
-            {/* 실제 퀴즈 점수 통계 */}
+            {/* 실제 퀴즈 포인트 통계 */}
             <View style={styles.statisticsContainer}>
-              <Text style={styles.exampleSubtitle}>📊 이번 퀴즈 점수 통계</Text>
+              <Text style={styles.exampleSubtitle}>
+                📊 이번 퀴즈 포인트 통계
+              </Text>
               <View style={styles.statsRow}>
                 <View style={styles.statItem}>
                   <Text style={styles.statNumber}>{totalEarnedPoints}</Text>
@@ -356,20 +361,21 @@ export default function QuizResultScreen() {
                 </View>
                 <View style={styles.statItem}>
                   <Text style={styles.statNumber}>{averagePoints}</Text>
-                  <Text style={styles.statText}>평균 점수</Text>
+                  <Text style={styles.statText}>평균 포인트</Text>
                 </View>
                 <View style={styles.statItem}>
                   <Text style={styles.statNumber}>
                     {highestPointQuestion?.pointsEarned || 0}
                   </Text>
-                  <Text style={styles.statText}>최고 점수</Text>
+                  <Text style={styles.statText}>최고 포인트</Text>
                 </View>
               </View>
             </View>
 
-            {/* 점수 계산 방식 설명 */}
+            {/* 포인트 계산 방식 설명 */}
             <Text style={styles.exampleSubtitle}>
-              🔍 점수 계산 방식 ({exampleQuestion ? '실제 예시' : '설정 기준'}):
+              🔍 포인트 계산 방식 ({exampleQuestion ? '실제 예시' : '설정 기준'}
+              ):
             </Text>
 
             {exampleQuestion && (
@@ -383,7 +389,7 @@ export default function QuizResultScreen() {
                 </Text>
                 <Text style={styles.exampleQuestionInfo}>
                   {exampleQuestion.streakCount}연속 정답 시 →{' '}
-                  {exampleQuestion.pointsEarned}점 획득
+                  {exampleQuestion.pointsEarned}포인트 획득
                 </Text>
               </View>
             )}
@@ -396,7 +402,7 @@ export default function QuizResultScreen() {
               ))}
               <View style={styles.breakdownTotal}>
                 <Text style={styles.breakdownTotalText}>
-                  = 총 {breakdown.total}점 (정답 시)
+                  = 총 {breakdown.total}포인트 (정답 시)
                 </Text>
               </View>
             </View>
@@ -406,17 +412,17 @@ export default function QuizResultScreen() {
               <Text style={styles.exampleNoteText}>
                 💡{' '}
                 <Text style={styles.exampleNoteTitle}>
-                  다음 퀴즈에서 더 높은 점수를 받으려면:
+                  다음 퀴즈에서 더 높은 포인트를 받으려면:
                 </Text>
-                {'\n'}• 연속 정답을 유지하세요 (3연속마다 보너스 +3점)
+                {'\n'}• 연속 정답을 유지하세요 (3연속마다 보너스 +3포인트)
                 {correctAnswers.some((a, i) => i >= 2 && a.streakCount < 3) &&
                   '\n• 이번에 놓친 연속 보너스가 있었어요!'}
                 {difficulty !== 'hard' &&
-                  '\n• 어려운 난이도에 도전해보세요 (최대 +10점 추가)'}
+                  '\n• 어려운 난이도에 도전해보세요 (최대 +10포인트 추가)'}
                 {!['math-logic', 'science-tech'].includes(category as string) &&
                   '\n• 수학·논리, 과학·기술 카테고리는 높은 보너스를 제공해요'}
                 {questionFormat !== 'short' &&
-                  '\n• 주관식 문제는 추가 +3점 보너스가 있어요'}
+                  '\n• 주관식 문제는 추가 +3포인트 보너스가 있어요'}
               </Text>
             </View>
           </View>
@@ -426,12 +432,12 @@ export default function QuizResultScreen() {
   };
 
   /* ------------------------------------------------------------------
-   * 개별 문제 점수 상세 보기
+   * 개별 문제 포인트 상세 보기
    * ----------------------------------------------------------------*/
   const renderQuestionPointsDetail = (item: UserAnswer, index: number) => {
     if (!item.isCorrect || selectedQuestionIndex !== index) return null;
 
-    // 해당 문제의 실제 점수 계산 내역
+    // 해당 문제의 실제 포인트 계산 내역
     const breakdown = getPointsBreakdown(
       difficulty || 'medium',
       category,
@@ -440,14 +446,14 @@ export default function QuizResultScreen() {
       item.streakCount
     );
 
-    // 실제 획득 점수와 계산된 점수의 차이 확인
+    // 실제 획득 포인트와 계산된 포인트의 차이 확인
     const calculatedPoints = breakdown.total;
     const actualPoints = item.pointsEarned;
     const pointsDifference = actualPoints - calculatedPoints;
 
     return (
       <View style={styles.questionPointsDetail}>
-        <Text style={styles.pointsDetailTitle}>📊 점수 상세 내역</Text>
+        <Text style={styles.pointsDetailTitle}>📊 포인트 상세 내역</Text>
 
         {/* 문제 정보 */}
         <View style={styles.questionInfoContainer}>
@@ -462,7 +468,7 @@ export default function QuizResultScreen() {
           </Text>
         </View>
 
-        {/* 점수 계산 내역 */}
+        {/* 포인트 계산 내역 */}
         {breakdown.items.map((breakdownItem, idx) => (
           <Text key={idx} style={styles.pointsDetailItem}>
             • {breakdownItem}
@@ -471,16 +477,16 @@ export default function QuizResultScreen() {
 
         <View style={styles.pointsDetailTotal}>
           <Text style={styles.pointsDetailCalculated}>
-            계산된 점수: {calculatedPoints}점
+            계산된 포인트: {calculatedPoints}포인트
           </Text>
           <Text style={styles.pointsDetailTotalText}>
-            실제 획득: {actualPoints}점
+            실제 획득: {actualPoints}포인트
           </Text>
           {pointsDifference !== 0 && (
             <Text style={styles.pointsDetailDifference}>
               {pointsDifference > 0 ? '추가 보너스' : '차이'}:{' '}
               {pointsDifference > 0 ? '+' : ''}
-              {pointsDifference}점
+              {pointsDifference}포인트
             </Text>
           )}
         </View>
@@ -510,15 +516,14 @@ export default function QuizResultScreen() {
         <Text style={styles.levelPoints}>
           <Text style={styles.levelPointsLabel}>다음 레벨까지</Text>{' '}
           <Text style={{ fontStyle: 'italic' }}>
-            {expToNext.toLocaleString()}점
-          </Text>{' '}
-          💪
+            {expToNext.toLocaleString()}포인트
+          </Text>
         </Text>
         <View style={styles.expBarBg}>
           <View style={[styles.expBarFill, { width: `${progress * 100}%` }]} />
         </View>
         <Text style={styles.expLabel}>
-          {totalPoints}/{totalPoints + expToNext}점
+          {totalPoints}/{totalPoints + expToNext}포인트
         </Text>
 
         {streak >= 1 && (
@@ -660,7 +665,7 @@ export default function QuizResultScreen() {
   };
 
   /* ------------------------------------------------------------------
-   * 문제 리뷰 아이템 (점수 상세 토글 기능 추가)
+   * 문제 리뷰 아이템 (포인트 상세 토글 기능 추가)
    * ----------------------------------------------------------------*/
   const renderQuestionItem = ({
     item,
@@ -694,7 +699,9 @@ export default function QuizResultScreen() {
               }
             >
               <Star width={14} height={14} color='white' />
-              <Text style={styles.pointsBadgeText}>+{item.pointsEarned}점</Text>
+              <Text style={styles.pointsBadgeText}>
+                +{item.pointsEarned}포인트
+              </Text>
             </TouchableOpacity>
           )}
           {item.streakCount > 1 && (
@@ -713,7 +720,9 @@ export default function QuizResultScreen() {
           <Text style={styles.answerLabel}>정답:</Text>
           <Text style={styles.correctAnswer}>
             {Array.isArray(item?.correctAnswer)
-              ? item?.correctAnswer.map((answer) => answer).join(' / ')
+              ? getRandomTwoElements(item?.correctAnswer)
+                  .map((answer) => answer)
+                  .join(' | ')
               : item?.correctAnswer}
           </Text>
         </View>
@@ -740,7 +749,7 @@ export default function QuizResultScreen() {
         )}
       </View>
 
-      {/* 점수 상세 내역 */}
+      {/* 포인트 상세 내역 */}
       {renderQuestionPointsDetail(item, index)}
     </View>
   );
@@ -761,7 +770,7 @@ export default function QuizResultScreen() {
         style={styles.content}
         contentContainerStyle={styles.contentContainer}
       >
-        {/* ① 점수 카드 */}
+        {/* ① 포인트 카드 */}
         <Animated.View style={[styles.scoreCard, scoreCardStyle]}>
           <LinearGradient
             colors={['#ec4899', '#a855f7', '#6366f1']}
@@ -780,12 +789,21 @@ export default function QuizResultScreen() {
             </View>
 
             <View style={styles.scoreGameInfo}>
+              {wasPerfect && (
+                <View style={styles.bonusPointsItem}>
+                  <Text style={styles.bonusPointsText}>
+                    🎯 완벽한 정답률! 보너스 20포인트
+                  </Text>
+                </View>
+              )}
+
               <View style={styles.scoreGameItem}>
-                <Text style={styles.scoreGameLabel}>획득 점수</Text>
+                <Text style={styles.scoreGameLabel}>획득 포인트</Text>
                 <Text style={styles.scoreGameValue}>
-                  +{totalEarnedPoints}점
+                  +{totalEarnedPoints}포인트
                 </Text>
               </View>
+
               {maxStreak > 1 && (
                 <View style={styles.scoreGameItem}>
                   <Text style={styles.scoreGameLabel}>최대 연속 정답</Text>
@@ -802,7 +820,7 @@ export default function QuizResultScreen() {
         {/* ③ 스트릭 & 업적 */}
         {renderStreakAndAchievements()}
 
-        {/* ★ NEW: 점수 계산 예시 섹션 */}
+        {/* ★ NEW: 포인트 계산 예시 섹션 */}
         {renderPointsExample()}
 
         {/* ④ 퀴즈 설정 정보 / 결과 요약 / 문제 리뷰 */}
@@ -812,7 +830,7 @@ export default function QuizResultScreen() {
         <Animated.View style={[styles.reviewSection, detailsStyle]}>
           <Text style={styles.sectionTitle}>📝 문제 리뷰</Text>
           <Text style={styles.reviewSubtitle}>
-            💡 점수 배지를 터치하면 상세 내역을 볼 수 있어요
+            💡 포인트 배지를 터치하면 상세 내역을 볼 수 있어요
           </Text>
 
           <FlatList
@@ -927,7 +945,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 
-  // 점수 계산 예시 섹션 스타일
+  // 포인트 계산 예시 섹션 스타일
   exampleCard: {
     borderRadius: 16,
     backgroundColor: '#ffffff',
@@ -1079,7 +1097,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // 문제별 점수 상세 스타일
+  // 문제별 포인트 상세 스타일
   questionPointsDetail: {
     marginTop: 12,
     backgroundColor: '#f0f9ff',
@@ -1504,7 +1522,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
 
-  /* ───────── 결과 점수 요약 카드 ───────── */
+  /* ───────── 결과 포인트 요약 카드 ───────── */
   scoreGameInfo: {
     width: '100%',
     borderRadius: 16,
@@ -1529,5 +1547,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#111827',
+  },
+
+  bonusPointsItem: {
+    alignItems: 'center',
+    marginVertical: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#fef3c7', // 연한 노란색 배경
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#fbbf24', // 노란색 테두리
+  },
+
+  bonusPointsText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#92400e', // 갈색 텍스트
+    textAlign: 'center',
   },
 });

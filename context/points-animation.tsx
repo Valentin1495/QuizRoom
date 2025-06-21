@@ -54,7 +54,7 @@ export function PointsAnimation({
 
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
-      <Text style={styles.pointsText}>+{points}점</Text>
+      <Text style={styles.pointsText}>+{points}포인트</Text>
     </Animated.View>
   );
 }

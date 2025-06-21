@@ -42,7 +42,7 @@ interface GamificationState {
   categoryStats: Record<string, CategoryStats>;
   quizzesHistory: QuizHistoryItem[];
 
-  /* 완벽한 점수 연속 기록 */
+  /* 완벽한 정답률 연속 기록 */
   currentPerfectStreak: number;
 }
 
@@ -186,7 +186,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'perfect_streak_5',
     title: '완벽한 연승',
-    description: '5번 연속으로 완벽한 점수 달성',
+    description: '5번 연속으로 완벽한 정답률 달성',
     icon: '💫',
     unlockedAt: null,
     progress: 0,
@@ -391,7 +391,7 @@ export function GamificationProvider({
 
   // Convex 쿼리 및 뮤테이션
   const gamificationData = useQuery(
-    api.gamification.getOrCreateGamificationData,
+    api.gamification.getGamificationData,
     user?.id ? { userId: user.id } : 'skip'
   );
   const categoryStats = useQuery(
@@ -410,8 +410,8 @@ export function GamificationProvider({
   const updateGamificationData = useMutation(
     api.gamification.updateGamificationData
   );
-  const updateCategoryStats = useMutation(
-    api.gamification.updateCategoryStatsWithDifficulty
+  const updateCategoryStatsFromAnalysis = useMutation(
+    api.gamification.updateCategoryStatsFromAnalysis
   );
   const updateAchievement = useMutation(api.gamification.updateAchievement);
   const addQuizHistory = useMutation(api.gamification.addQuizHistory);
@@ -590,8 +590,8 @@ export function GamificationProvider({
     category: string,
     correctAnswers: number,
     totalQuestions: number,
-    difficulty: 'easy' | 'medium' | 'hard', // 새로 추가된 필수 매개변수
-    timeSpent: number, // 새로 추가된 필수 매개변수 (밀리초)
+    difficulty: 'easy' | 'medium' | 'hard',
+    timeSpent: number,
     options?: {
       averageTime?: number;
       comebackVictory?: boolean;
@@ -604,9 +604,10 @@ export function GamificationProvider({
 
     const isPerfect = correctAnswers === totalQuestions;
     const now = new Date();
+    const today = now.toDateString();
 
     setState((prev) => {
-      /* ── 카테고리 통계 업데이트 ── */
+      // ── 퀴즈 통계 계산
       const prevCat = prev.categoryStats[category] ?? {
         totalQuestions: 0,
         correctAnswers: 0,
@@ -616,23 +617,20 @@ export function GamificationProvider({
       const totC = prevCat.correctAnswers + correctAnswers;
       const newMasteryLevel = Math.round((totC / totQ) * 100);
 
-      // 초기 정답률 설정 (개선 업적용)
       let initialAccuracy = prevCat.initialAccuracy;
       if (initialAccuracy === undefined && prevCat.totalQuestions === 0) {
         initialAccuracy = newMasteryLevel;
       }
 
-      /* ── 포인트 계산 ── */
+      // ── 포인트 계산
       const base = correctAnswers * 10;
       const bonus = isPerfect ? 20 : 0;
       const newTotalPoints = prev.totalPoints + base + bonus;
 
-      /* 레벨·점수 재계산 */
       const { level, expInCurrentLevel, pointsToNextLevel } =
         calculateLevel(newTotalPoints);
 
-      /* 스트릭 처리 */
-      const today = new Date().toDateString();
+      // ── 스트릭
       const newStreak =
         prev.lastQuizDate === today
           ? prev.currentStreak
@@ -641,52 +639,22 @@ export function GamificationProvider({
             ? prev.currentStreak + 1
             : 1;
 
-      /* 완벽한 점수 연속 기록 업데이트 */
       const newPerfectStreak = isPerfect ? prev.currentPerfectStreak + 1 : 0;
 
-      /* ── 히스토리 아이템 생성 ── */
+      // ── 퀴즈 기록 생성
       const historyItem: QuizHistoryItem = {
         id: uuidv4(),
-        date: now.toISOString().split('T')[0], // YYYY-MM-DD
+        date: now.toISOString().split('T')[0],
         completedAt: now.toISOString(),
         category,
         total: totalQuestions,
         correct: correctAnswers,
-        difficulty, // 난이도 정보 추가
-        timeSpent, // 소요 시간 정보 추가
+        difficulty,
+        timeSpent,
         ...options,
       };
 
-      const newState = {
-        ...prev,
-        /* 포인트·레벨 */
-        totalPoints: newTotalPoints,
-        level,
-        expInCurrentLevel,
-        pointsToNextLevel,
-        /* 스트릭 */
-        currentStreak: newStreak,
-        longestStreak: Math.max(newStreak, prev.longestStreak),
-        lastQuizDate: today,
-        /* 완벽한 점수 연속 기록 */
-        currentPerfectStreak: newPerfectStreak,
-        /* 퀴즈 통계 */
-        totalQuizzes: prev.totalQuizzes + 1,
-        totalCorrectAnswers: prev.totalCorrectAnswers + correctAnswers,
-        categoryStats: {
-          ...prev.categoryStats,
-          [category]: {
-            totalQuestions: totQ,
-            correctAnswers: totC,
-            masteryLevel: newMasteryLevel,
-            initialAccuracy,
-          },
-        },
-        quizzesHistory: [...prev.quizzesHistory, historyItem],
-      };
-
-      // Convex에 저장
-      // 1. 게이미피케이션 데이터 업데이트
+      // ── 서버 업데이트 (Convex)
       updateGamificationData({
         userId: user.id,
         data: {
@@ -703,22 +671,27 @@ export function GamificationProvider({
         },
       });
 
-      // 2. 각 문제별로 개별 카테고리 통계 업데이트
-      // 모든 문제가 같은 난이도라고 가정하고 각각 업데이트
-      for (let i = 0; i < totalQuestions; i++) {
-        const isCorrect = i < correctAnswers; // 처음 correctAnswers개는 맞다고 가정
-        const avgTimePerQuestion = timeSpent / totalQuestions;
+      // ── 정확도 및 난이도별 분석
+      const accuracy = (correctAnswers / totalQuestions) * 100;
 
-        updateCategoryStats({
-          userId: user.id,
+      const strengths: string[] = [];
+      const weaknesses: string[] = [];
+
+      if (accuracy >= 80) strengths.push('기초 실력 탄탄');
+      else if (accuracy >= 60) strengths.push('응용 능력 우수');
+      else weaknesses.push('기초 개념 부족');
+
+      updateCategoryStatsFromAnalysis({
+        userId: user.id,
+        analysisData: {
           category,
+          skillScore: Math.round(accuracy),
           difficulty,
-          isCorrect,
-          timeSpent: avgTimePerQuestion,
-        });
-      }
+          accuracy,
+          timeSpent,
+        },
+      });
 
-      // 3. 퀴즈 히스토리 추가
       addQuizHistory({
         id: historyItem.id,
         userId: user.id,
@@ -736,10 +709,32 @@ export function GamificationProvider({
         relearnedMistakes: historyItem.relearnedMistakes,
       });
 
-      return newState;
+      return {
+        ...prev,
+        totalPoints: newTotalPoints,
+        level,
+        expInCurrentLevel,
+        pointsToNextLevel,
+        currentStreak: newStreak,
+        longestStreak: Math.max(newStreak, prev.longestStreak),
+        lastQuizDate: today,
+        currentPerfectStreak: newPerfectStreak,
+        totalQuizzes: prev.totalQuizzes + 1,
+        totalCorrectAnswers: prev.totalCorrectAnswers + correctAnswers,
+        categoryStats: {
+          ...prev.categoryStats,
+          [category]: {
+            totalQuestions: totQ,
+            correctAnswers: totC,
+            masteryLevel: newMasteryLevel,
+            initialAccuracy,
+          },
+        },
+        quizzesHistory: [...prev.quizzesHistory, historyItem],
+      };
     });
 
-    return isPerfect;
+    return correctAnswers === totalQuestions;
   };
 
   const checkAchievements = async (): Promise<Achievement[]> => {

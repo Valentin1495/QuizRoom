@@ -6,7 +6,7 @@ import { useQuery } from 'convex/react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function StatsScreen() {
+export default function MyStatsScreen() {
   const { userId } = useAuth();
   const userAchievements = useQuery(
     api.gamification.getAchievements,

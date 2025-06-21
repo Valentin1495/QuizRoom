@@ -1,51 +1,32 @@
+import { GoogleGenAI } from '@google/genai';
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { Doc } from './_generated/dataModel';
+import { action, mutation, query } from './_generated/server';
 
-// 난이도별 가중치 상수
-const DIFFICULTY_WEIGHTS = {
-  easy: 1,
-  medium: 2,
-  hard: 3,
-} as const;
-
-// 타입 정의
-type DifficultyType = 'easy' | 'medium' | 'hard';
-type SkillLevelType =
-  | 'beginner'
-  | 'novice'
-  | 'intermediate'
-  | 'advanced'
-  | 'expert';
-
-interface DifficultyStats {
-  easy: {
-    total: number;
-    correct: number;
-    accuracy: number;
-    avgTime?: number;
-  };
-  medium: {
-    total: number;
-    correct: number;
-    accuracy: number;
-    avgTime?: number;
-  };
-  hard: {
-    total: number;
-    correct: number;
-    accuracy: number;
-    avgTime?: number;
-  };
+interface LearningPattern {
+  category: string;
+  patterns: string[];
+  preferredDifficulty: 'easy' | 'medium' | 'hard';
+  consistencyScore: number;
+  engagementLevel: 'high' | 'medium' | 'low';
 }
 
-interface GrowthTrend {
-  last7Days: number;
-  last30Days: number;
-  isImproving: boolean;
+interface PersonalizedRecommendation {
+  category: string;
+  recommendation: string;
+  priority: 'high' | 'medium' | 'low';
+}
+
+interface AIInsights {
+  overallInsight: string;
+  personalizedRecommendations: PersonalizedRecommendation[];
+  learningStrategy: string;
+  motivationalMessage: string;
+  nextGoals: string[];
 }
 
 // 게이미피케이션 데이터 초기화 또는 가져오기
-export const getOrCreateGamificationData = query({
+export const getGamificationData = query({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -289,138 +270,145 @@ export const resetGamificationData = mutation({
 });
 
 // 퀴즈 결과 저장 시 난이도별 통계 업데이트
-export const updateCategoryStatsWithDifficulty = mutation({
+export const updateCategoryStatsFromAnalysis = mutation({
   args: {
     userId: v.string(),
-    category: v.string(),
-    difficulty: v.union(
-      v.literal('easy'),
-      v.literal('medium'),
-      v.literal('hard')
-    ),
-    isCorrect: v.boolean(),
-    timeSpent: v.number(),
+    analysisData: v.object({
+      category: v.string(),
+      skillScore: v.number(),
+      difficulty: v.union(
+        v.literal('easy'),
+        v.literal('medium'),
+        v.literal('hard')
+      ),
+      accuracy: v.number(),
+      timeSpent: v.number(),
+    }),
   },
-  handler: async (ctx, args) => {
-    const { userId, category, difficulty, isCorrect, timeSpent } = args;
 
-    // 기존 카테고리 통계 조회
-    const existingStats = await ctx.db
+  handler: async (ctx, { userId, analysisData }) => {
+    const { category, skillScore, difficulty, accuracy, timeSpent } =
+      analysisData;
+    const correct = Math.round((accuracy / 100) * 10);
+
+    const existing = await ctx.db
       .query('categoryStats')
       .withIndex('by_user_category', (q) =>
         q.eq('userId', userId).eq('category', category)
       )
-      .first();
+      .unique();
 
+    const fallbackStats = {
+      easy: { totalQuestions: 0, correct: 0, accuracy: 0, avgTime: 0 },
+      medium: { totalQuestions: 0, correct: 0, accuracy: 0, avgTime: 0 },
+      hard: { totalQuestions: 0, correct: 0, accuracy: 0, avgTime: 0 },
+    };
+
+    const prevStats = existing?.difficultyStats ?? fallbackStats;
+
+    const updatedDifficultyStats = (['easy', 'medium', 'hard'] as const).reduce(
+      (acc, level) => {
+        const prev = prevStats[level] || fallbackStats[level];
+        const isTarget = level === difficulty;
+        const addedCorrect = isTarget ? correct : 0;
+        const addedTime = isTarget ? timeSpent : 0;
+        const addedQuestions = isTarget ? 10 : 0;
+
+        const newTotal = prev.totalQuestions + addedQuestions;
+        const newCorrect = (prev.correct || 0) + addedCorrect;
+        const newAvgTime =
+          newTotal > 0
+            ? Math.round(
+                ((prev.avgTime || 0) * prev.totalQuestions + addedTime) /
+                  newTotal
+              )
+            : 0;
+        const accuracy =
+          newTotal === 0
+            ? -1 // 아예 미응시한 경우를 -1로 구분
+            : Math.round((newCorrect / newTotal) * 100);
+
+        acc[level] = {
+          totalQuestions: newTotal,
+          correct: newCorrect,
+          accuracy,
+          avgTime: newAvgTime,
+        };
+
+        return acc;
+      },
+      {} as Record<
+        'easy' | 'medium' | 'hard',
+        {
+          totalQuestions: number;
+          correct: number;
+          accuracy: number;
+          avgTime: number;
+        }
+      >
+    );
+
+    const updatedCorrectAnswers = (existing?.correctAnswers || 0) + correct;
+    const updatedTotalQuestions = (existing?.totalQuestions || 0) + 10;
+
+    const weightedScore =
+      updatedDifficultyStats.easy.accuracy * 1 +
+      updatedDifficultyStats.medium.accuracy * 2 +
+      updatedDifficultyStats.hard.accuracy * 3;
+
+    const maxWeightedScore = 3 * 100;
+    const updatedSkillScore = skillScore;
     const now = Date.now();
 
-    if (existingStats) {
-      // 기존 통계 업데이트
-      const currentDiffStats = existingStats.difficultyStats[difficulty];
-      const newTotal = currentDiffStats.total + 1;
-      const newCorrect = currentDiffStats.correct + (isCorrect ? 1 : 0);
-      const newAccuracy = (newCorrect / newTotal) * 100;
+    const prevHistory = existing?.progressHistory ?? [];
+    const today = new Date();
+    const todayStamp = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    ).getTime();
+    const filteredHistory = prevHistory.filter((h) => h.date !== todayStamp);
 
-      // 평균 시간 계산
-      const currentAvgTime = currentDiffStats.avgTime || 0;
-      const newAvgTime =
-        (currentAvgTime * currentDiffStats.total + timeSpent) / newTotal;
+    const progressHistory = [
+      ...filteredHistory,
+      {
+        date: todayStamp,
+        skillScore: updatedSkillScore,
+        accuracy: Math.round(
+          (updatedCorrectAnswers / updatedTotalQuestions) * 100
+        ),
+        questionsAnswered: 10,
+      },
+    ];
 
-      // 전체 통계 업데이트
-      const newTotalQuestions = existingStats.totalQuestions + 1;
-      const newCorrectAnswers =
-        existingStats.correctAnswers + (isCorrect ? 1 : 0);
+    const newData = {
+      userId,
+      category,
+      skillScore: updatedSkillScore,
+      totalQuestions: updatedTotalQuestions,
+      correctAnswers: updatedCorrectAnswers,
+      weightedScore,
+      maxWeightedScore,
+      difficultyStats: updatedDifficultyStats,
+      growthTrend: updatedSkillScore - (existing?.skillScore || 0),
+      averageTime: updatedDifficultyStats[difficulty].avgTime,
+      skillLevel: 'Unranked' as const,
+      progressHistory,
+      updatedAt: now,
+    };
 
-      // 가중 점수 계산
-      const updatedDiffStats: DifficultyStats = {
-        ...existingStats.difficultyStats,
-        [difficulty]: {
-          total: newTotal,
-          correct: newCorrect,
-          accuracy: newAccuracy,
-          avgTime: newAvgTime,
-        },
-      };
-
-      // 새로운 가중 점수 계산
-      let newWeightedScore = 0;
-      let newMaxWeightedScore = 0;
-
-      Object.entries(updatedDiffStats).forEach(([diff, stats]) => {
-        const weight = DIFFICULTY_WEIGHTS[diff as DifficultyType];
-        newWeightedScore += stats.correct * weight;
-        newMaxWeightedScore += stats.total * weight;
-      });
-
-      // 실력 레벨 계산
-      const skillLevel = calculateSkillLevel(
-        newWeightedScore,
-        newMaxWeightedScore
-      );
-
-      // 추천 난이도 계산
-      const recommendedDifficulty =
-        calculateRecommendedDifficulty(updatedDiffStats);
-
-      // 성장 추세 계산 (최근 기록들과 비교)
-      const growthTrend = await calculateGrowthTrend(ctx, userId, category);
-
-      await ctx.db.patch(existingStats._id, {
-        totalQuestions: newTotalQuestions,
-        correctAnswers: newCorrectAnswers,
-        difficultyStats: updatedDiffStats,
-        weightedScore: newWeightedScore,
-        maxWeightedScore: newMaxWeightedScore,
-        skillLevel,
-        recommendedDifficulty,
-        growthTrend,
-        updatedAt: now,
-      });
+    if (existing) {
+      await ctx.db.patch(existing._id, newData);
     } else {
-      // 새로운 카테고리 통계 생성
-      const initialDiffStats: DifficultyStats = {
-        easy: { total: 0, correct: 0, accuracy: 0, avgTime: 0 },
-        medium: { total: 0, correct: 0, accuracy: 0, avgTime: 0 },
-        hard: { total: 0, correct: 0, accuracy: 0, avgTime: 0 },
-      };
-
-      // 현재 퀴즈 결과 반영
-      initialDiffStats[difficulty] = {
-        total: 1,
-        correct: isCorrect ? 1 : 0,
-        accuracy: isCorrect ? 100 : 0,
-        avgTime: timeSpent,
-      };
-
-      const weightedScore =
-        (isCorrect ? 1 : 0) * DIFFICULTY_WEIGHTS[difficulty];
-      const maxWeightedScore = DIFFICULTY_WEIGHTS[difficulty];
-      const skillLevel = calculateSkillLevel(weightedScore, maxWeightedScore);
-
       await ctx.db.insert('categoryStats', {
-        userId,
-        category,
-        totalQuestions: 1,
-        correctAnswers: isCorrect ? 1 : 0,
-        masteryLevel: isCorrect ? 25 : 0, // 기존 호환성을 위해 유지
-        difficultyStats: initialDiffStats,
-        weightedScore,
-        maxWeightedScore,
-        skillLevel,
-        recommendedDifficulty: 'easy', // 초기에는 쉬운 난이도부터
-        growthTrend: {
-          last7Days: 0,
-          last30Days: 0,
-          isImproving: false,
-        },
+        ...newData,
         createdAt: now,
-        updatedAt: now,
       });
     }
   },
 });
 
-// 난이도별 카테고리 통계 조회
+// 난이도별 카테고리 통계 조회 (가중 평균 방식)
 export const getCategoryStatsWithDifficulty = query({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
@@ -432,16 +420,35 @@ export const getCategoryStatsWithDifficulty = query({
     const result: Record<string, any> = {};
 
     for (const stat of categoryStats) {
+      const { easy, medium, hard } = stat.difficultyStats;
+
+      // 가중 평균 정확도 계산 (실제 정답 수 기반)
+      const correctSum =
+        (easy.accuracy / 100) * easy.totalQuestions +
+        (medium.accuracy / 100) * medium.totalQuestions +
+        (hard.accuracy / 100) * hard.totalQuestions;
+
+      const totalQuestions =
+        easy.totalQuestions + medium.totalQuestions + hard.totalQuestions;
+
+      const overallAccuracy =
+        totalQuestions > 0
+          ? Math.round((correctSum / totalQuestions) * 100)
+          : 0;
+
+      // 가중치 기반 skillScore (easy:1, medium:2, hard:3)
+      const weightedScore =
+        (easy.accuracy ?? 0) * 1 +
+        (medium.accuracy ?? 0) * 2 +
+        (hard.accuracy ?? 0) * 3;
+
+      const maxWeightedScore = 3 * 100; // 300
+      const skillScore = Math.round((weightedScore / maxWeightedScore) * 100);
+
       result[stat.category] = {
         ...stat,
-        overallAccuracy:
-          stat.totalQuestions > 0
-            ? Math.round((stat.correctAnswers / stat.totalQuestions) * 100)
-            : 0,
-        skillScore:
-          stat.maxWeightedScore > 0
-            ? Math.round((stat.weightedScore / stat.maxWeightedScore) * 100)
-            : 0,
+        overallAccuracy,
+        skillScore,
       };
     }
 
@@ -449,212 +456,283 @@ export const getCategoryStatsWithDifficulty = query({
   },
 });
 
+function hasMinimumDataForBasicAnalysis(
+  categoryStats: Doc<'categoryStats'>[]
+): boolean {
+  return categoryStats.some((stat) => {
+    const { difficultyStats } = stat;
+    return (
+      difficultyStats.easy.totalQuestions >= 10 &&
+      difficultyStats.medium.totalQuestions >= 10 &&
+      difficultyStats.hard.totalQuestions >= 10
+    );
+  });
+}
+
+// 데이터 충분성 검증 함수
+function hasEnoughDataForAIAnalysis(
+  categoryStats: Doc<'categoryStats'>[]
+): boolean {
+  const validCategories = categoryStats.filter(
+    (stat) => stat.totalQuestions >= 30
+  );
+  if (validCategories.length < 2) return false;
+
+  const hasVariedDifficulty = validCategories.some((stat) => {
+    const { difficultyStats } = stat;
+    return (
+      difficultyStats.easy.totalQuestions > 0 &&
+      difficultyStats.medium.totalQuestions > 0 &&
+      difficultyStats.hard.totalQuestions > 0
+    );
+  });
+
+  return hasVariedDifficulty;
+}
+
+// 학습 패턴 분석 함수
+function analyzeLearningPatterns(
+  categoryStats: Doc<'categoryStats'>[]
+): LearningPattern[] {
+  return categoryStats.map((stat) => {
+    const { difficultyStats, category, growthTrend } = stat;
+
+    // 학습 패턴 식별
+    const patterns: string[] = [];
+
+    // 일관성 패턴
+    const accuracyVariance = Math.abs(
+      difficultyStats.easy.accuracy - difficultyStats.hard.accuracy
+    );
+    if (accuracyVariance < 20) patterns.push('일관된 실력');
+    else if (accuracyVariance > 40) patterns.push('실력 편차 큼');
+
+    // 성장 패턴
+    if (growthTrend > 10) patterns.push('빠른 성장');
+    else if (growthTrend < -5) patterns.push('실력 하락');
+    else patterns.push('안정적 유지');
+
+    // 난이도 선호도
+    const maxAccuracy = Math.max(
+      difficultyStats.easy.accuracy,
+      difficultyStats.medium.accuracy,
+      difficultyStats.hard.accuracy
+    );
+
+    let preferredDifficulty: 'easy' | 'medium' | 'hard' = 'easy';
+    if (difficultyStats.medium.accuracy === maxAccuracy)
+      preferredDifficulty = 'medium';
+    if (difficultyStats.hard.accuracy === maxAccuracy)
+      preferredDifficulty = 'hard';
+
+    // 참여도 레벨 계산
+    const totalQuestions = stat.totalQuestions || 0;
+    const engagementLevel: 'high' | 'medium' | 'low' =
+      totalQuestions > 50 ? 'high' : totalQuestions > 20 ? 'medium' : 'low';
+
+    return {
+      category,
+      patterns,
+      preferredDifficulty,
+      consistencyScore: 100 - accuracyVariance,
+      engagementLevel,
+    };
+  });
+}
+
 // 종합 실력 분석 조회
 export const getOverallAnalysis = query({
   args: { userId: v.string() },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { userId }) => {
     const categoryStats = await ctx.db
       .query('categoryStats')
-      .withIndex('by_user_category', (q) => q.eq('userId', args.userId))
+      .withIndex('by_user_category', (q) => q.eq('userId', userId))
       .collect();
 
-    if (categoryStats.length === 0) {
-      return {
-        strongestCategories: [],
-        weakestCategories: [],
-        overallAnalysis: [],
-      };
-    }
+    if (categoryStats.length === 0) return getEmptyAnalysisResponse();
 
-    // 각 카테고리별 실력 점수 계산
-    const analysis = categoryStats.map((stat) => {
-      const skillScore =
-        stat.maxWeightedScore > 0
-          ? (stat.weightedScore / stat.maxWeightedScore) * 100
-          : 0;
+    const now = Date.now();
+    const hasBasicData = hasMinimumDataForBasicAnalysis(categoryStats);
+    const hasEnoughData = hasEnoughDataForAIAnalysis(categoryStats);
 
-      const { difficultyStats } = stat;
+    const analysis = categoryStats.map((stat) => ({
+      category: stat.category,
+      skillScore: stat.skillScore,
+      difficultyAnalysis: stat.difficultyStats,
+      growthTrend: stat.growthTrend,
+      totalQuestions: stat.totalQuestions || 0,
+      averageTime: stat.averageTime || 0,
+    }));
 
-      // 강점/약점 분석
-      const strengths: string[] = [];
-      const weaknesses: string[] = [];
+    const sorted = [...analysis].sort((a, b) => b.skillScore - a.skillScore);
+    const learningPatterns = analyzeLearningPatterns(categoryStats as any);
 
-      if (difficultyStats.easy.accuracy >= 80) strengths.push('기초 실력 탄탄');
-      if (difficultyStats.medium.accuracy >= 70)
-        strengths.push('응용 능력 우수');
-      if (difficultyStats.hard.accuracy >= 60)
-        strengths.push('고난도 문제 해결 능력');
-
-      if (difficultyStats.easy.accuracy < 60) weaknesses.push('기초 개념 부족');
-      if (difficultyStats.medium.accuracy < 50)
-        weaknesses.push('응용 능력 개선 필요');
-      if (difficultyStats.hard.accuracy < 40)
-        weaknesses.push('고난도 문제 연습 필요');
-
-      return {
-        category: stat.category,
-        skillScore,
-        difficultyAnalysis: {
-          easy: difficultyStats.easy.accuracy,
-          medium: difficultyStats.medium.accuracy,
-          hard: difficultyStats.hard.accuracy,
-        },
-        strengths,
-        weaknesses,
-        recommendedDifficulty: stat.recommendedDifficulty,
-        growthTrend: stat.growthTrend,
-      };
-    });
-
-    // 실력 순으로 정렬
-    const sortedBySkill = analysis.sort((a, b) => b.skillScore - a.skillScore);
+    // ✅ 캐시된 AI 인사이트만 사용
+    const cached = categoryStats[0].aiInsightsCache;
+    const aiInsights = cached && cached.cacheExpiry > now ? cached : null;
 
     return {
-      strongestCategories: sortedBySkill.slice(0, 3),
-      weakestCategories: sortedBySkill.slice(-3).reverse(),
+      strongestCategories: sorted.slice(0, 3),
+      weakestCategories: sorted.slice(-3).reverse(),
       overallAnalysis: analysis,
+      learningPatterns,
+      aiInsights,
+      analysisMetadata: {
+        generatedAt: new Date().toISOString(),
+        totalDataPoints: categoryStats.length,
+        hasAIAnalysis: aiInsights !== null,
+        dataStatus: hasBasicData
+          ? hasEnoughData
+            ? 'sufficient'
+            : 'partial'
+          : 'insufficient',
+        currentProgress: {
+          totalQuestions: categoryStats.reduce(
+            (sum, stat) => sum + (stat.totalQuestions || 0),
+            0
+          ),
+          totalCategories: categoryStats.length,
+          categoriesWith30Plus: categoryStats.filter(
+            (s) =>
+              s.difficultyStats.easy.totalQuestions >= 10 &&
+              s.difficultyStats.medium.totalQuestions >= 10 &&
+              s.difficultyStats.hard.totalQuestions >= 10
+          ).length,
+        },
+        dataRequirements: {
+          basicAnalysis: {
+            description: '1개 카테고리에서 난이도별로 10문제 이상',
+            minCategoryCount: 1,
+            minPerDifficultyQuestions: 10,
+          },
+          aiAnalysis: {
+            description: '2개 이상 카테고리에서 난이도별로 10문제 이상',
+            minCategoryCount: 2,
+            minPerDifficultyQuestions: 10,
+            needsVariedDifficulty: true,
+          },
+        },
+      },
     };
   },
 });
 
-// 개인 맞춤 퀴즈 추천
-export const getPersonalizedQuizRecommendation = query({
-  args: { userId: v.string() },
-  handler: async (ctx, args) => {
-    const categoryStats = await ctx.db
-      .query('categoryStats')
-      .withIndex('by_user_category', (q) => q.eq('userId', args.userId))
-      .collect();
-
-    const recommendations = [];
-
-    for (const stat of categoryStats) {
-      const { category, difficultyStats, recommendedDifficulty, skillLevel } =
-        stat;
-
-      // 각 카테고리별 추천 이유 생성
-      let reason = '';
-      let priority = 0;
-
-      if (skillLevel === 'beginner' || skillLevel === 'novice') {
-        reason = '기초 실력 향상을 위해 더 많은 연습이 필요합니다';
-        priority = 3; // 높은 우선순위
-      } else if (
-        difficultyStats.hard.accuracy < 50 &&
-        difficultyStats.medium.accuracy > 70
-      ) {
-        reason = '중급 문제는 잘 풀고 있으니 고난도 문제에 도전해보세요';
-        priority = 2;
-      } else if (stat.growthTrend.isImproving) {
-        reason = '최근 실력이 향상되고 있습니다. 꾸준히 연습하세요';
-        priority = 1;
-      }
-
-      recommendations.push({
-        category,
-        recommendedDifficulty,
-        reason,
-        priority,
-        currentAccuracy: Math.round(
-          (stat.correctAnswers / stat.totalQuestions) * 100
-        ),
-      });
-    }
-
-    // 우선순위 순으로 정렬
-    return recommendations.sort((a, b) => b.priority - a.priority);
-  },
-});
-
-// 헬퍼 함수들
-function calculateSkillLevel(
-  weightedScore: number,
-  maxWeightedScore: number
-): SkillLevelType {
-  if (maxWeightedScore === 0) return 'beginner';
-
-  const percentage = (weightedScore / maxWeightedScore) * 100;
-
-  if (percentage >= 85) return 'expert';
-  if (percentage >= 70) return 'advanced';
-  if (percentage >= 50) return 'intermediate';
-  if (percentage >= 30) return 'novice';
-  return 'beginner';
-}
-
-function calculateRecommendedDifficulty(
-  difficultyStats: DifficultyStats
-): DifficultyType {
-  const { easy, medium, hard } = difficultyStats;
-
-  const easyAccuracy = easy.total > 0 ? easy.accuracy : 0;
-  const mediumAccuracy = medium.total > 0 ? medium.accuracy : 0;
-  const hardAccuracy = hard.total > 0 ? hard.accuracy : 0;
-
-  if (hardAccuracy >= 70) {
-    return 'hard';
-  } else if (mediumAccuracy >= 75) {
-    return 'hard';
-  } else if (easyAccuracy >= 80) {
-    return 'medium';
-  } else {
-    return 'easy';
-  }
-}
-
-async function calculateGrowthTrend(
-  ctx: any,
-  userId: string,
-  category: string
-): Promise<GrowthTrend> {
-  // 최근 7일, 30일간의 퀴즈 기록을 조회하여 성장 추세 계산
-  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-
-  const recentHistory = await ctx.db
-    .query('quizHistory')
-    .withIndex('by_user', (q: any) => q.eq('userId', userId))
-    .filter((q: any) =>
-      q.and(
-        q.eq(q.field('category'), category),
-        q.gte(q.field('createdAt'), thirtyDaysAgo)
-      )
-    )
-    .collect();
-
-  if (recentHistory.length < 2) {
-    return {
-      last7Days: 0,
-      last30Days: 0,
-      isImproving: false,
-    };
-  }
-
-  const last7DaysRecords = recentHistory.filter(
-    (record: any) => record.createdAt >= sevenDaysAgo
-  );
-  const last30DaysRecords = recentHistory;
-
-  const calc7DaysAccuracy =
-    last7DaysRecords.length > 0
-      ? last7DaysRecords.reduce(
-          (sum: number, record: any) => sum + record.correct / record.total,
-          0
-        ) / last7DaysRecords.length
-      : 0;
-
-  const calc30DaysAccuracy =
-    last30DaysRecords.reduce(
-      (sum: number, record: any) => sum + record.correct / record.total,
-      0
-    ) / last30DaysRecords.length;
-
-  // 이전 30일과 비교하여 개선 여부 판단
-  const isImproving = calc7DaysAccuracy > calc30DaysAccuracy;
-
+function getEmptyAnalysisResponse() {
   return {
-    last7Days: Math.round((calc7DaysAccuracy - calc30DaysAccuracy) * 100),
-    last30Days: Math.round(calc30DaysAccuracy * 100),
-    isImproving,
+    strongestCategories: [],
+    weakestCategories: [],
+    overallAnalysis: [],
+    aiInsights: null,
+    learningPatterns: [],
+    analysisMetadata: {
+      generatedAt: new Date().toISOString(),
+      totalDataPoints: 0,
+      hasAIAnalysis: false,
+      dataStatus: 'insufficient',
+      dataRequirements: {
+        minCategories: 2,
+        minQuestionsPerCategory: 10,
+        minTotalQuestions: 30,
+        needsVariedDifficulty: true,
+      },
+    },
   };
 }
+
+export const analyzeWithGemini = action({
+  args: { analysisData: v.any() },
+  handler: async (_, { analysisData }) => {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error('GEMINI_API_KEY is missing');
+
+    const ai = new GoogleGenAI({
+      apiKey,
+    });
+
+    const prompt = `
+다음은 사용자의 퀴즈 실력 데이터입니다. 이 데이터를 분석하여 **Gen Z 및 밀레니얼 세대**를 대상으로 개인화된 학습 인사이트를 작성해주세요.
+
+### 🧠 분석 시 고려사항:
+1. 강점과 약점의 균형
+2. 카테고리별 성장 추세 및 성취도 변화
+3. 난이도별 성취도 분석
+4. 학습 패턴 - 일관성 패턴, 성장 패턴, 난이도 선호도, 참여도
+
+### 🎯 카테고리 이름은 반드시 다음 한국어 이름으로 출력해주세요:
+- knowledge-kpop-music → "K-POP & 음악"
+- knowledge-history-culture → "역사 & 문화"
+- knowledge-general → "일반 상식"
+- knowledge-arts-literature → "예술 & 문학"
+- knowledge-sports → "스포츠"
+- knowledge-science-tech → "과학 & 기술" 
+- knowledge-logic → "수학 & 논리"
+- knowledge-entertainment → "영화 & TV"
+
+### 📊 난이도는 아래와 같이 한글로 표시해주세요:
+- easy → "쉬움"
+- medium → "보통"
+- hard → "어려움"
+
+※ accuracy가 -1인 경우는 "아직 응시하지 않음"으로 간주해주세요. 0%는 시도했지만 모두 틀린 경우입니다. 
+
+### 📦 JSON 형식으로 아래 구조로만 응답해주세요 (Markdown 등 기타 포맷 없이):
+\`\`\`json
+{
+  "overallInsight": "전반적인 학습 상태에 대한 종합 평가",
+  "motivationalMessage": "격려 메시지",
+  "nextGoals": ["목표1", "목표2", "목표3"]
+}
+\`\`\`
+
+### 📂 사용자 데이터:
+${JSON.stringify(analysisData, null, 2)}
+`;
+
+    try {
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents: prompt,
+      });
+      const text = result.text ?? '{}';
+
+      // 마크다운 코드 블록 제거
+      const cleanJSON = text
+        .replace(/^```json\s*/, '')
+        .replace(/```$/, '')
+        .trim();
+
+      try {
+        const parsedResult = JSON.parse(cleanJSON) as AIInsights;
+        return parsedResult;
+      } catch (parseError) {
+        console.error('AI 응답 파싱 오류:', parseError);
+        return null;
+      }
+    } catch (err) {
+      console.error('Gemini API 오류:', err);
+      return null;
+    }
+  },
+});
+
+export const updateAIInsightsCache = mutation({
+  args: {
+    userId: v.string(),
+    insights: v.any(),
+  },
+  handler: async (ctx, { userId, insights }) => {
+    const stats = await ctx.db
+      .query('categoryStats')
+      .withIndex('by_user_category', (q) => q.eq('userId', userId))
+      .collect();
+
+    if (stats.length === 0) return;
+
+    const expiry = Date.now() + 1000 * 60 * 60 * 12; // 12시간 캐시
+    const withExpiry = { ...insights, cacheExpiry: expiry };
+
+    await ctx.db.patch(stats[0]._id, {
+      aiInsightsCache: withExpiry,
+    });
+  },
+});
