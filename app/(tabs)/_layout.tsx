@@ -18,7 +18,7 @@ export default function TabLayout() {
         },
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: '500',
+          fontWeight: '600',
           marginTop: 2,
         },
       }}
@@ -33,21 +33,21 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='skill-analysis-screen'
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name='stats-chart' size={size} color={color} />
-          ),
-          tabBarLabel: '실력 분석',
-        }}
-      />
-      <Tabs.Screen
         name='challenges-screen'
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name='trophy' size={size} color={color} />
           ),
           tabBarLabel: '챌린지',
+        }}
+      />
+      <Tabs.Screen
+        name='skill-analysis-screen'
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <Ionicons name='stats-chart' size={size} color={color} />
+          ),
+          tabBarLabel: '실력 분석',
         }}
       />
       <Tabs.Screen

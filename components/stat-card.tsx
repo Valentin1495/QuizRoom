@@ -96,6 +96,6 @@ const styles = StyleSheet.create({
   statCardSubtitle: {
     color: 'white',
     fontSize: 12,
-    opacity: 0.8,
+    fontWeight: 'bold',
   },
 });

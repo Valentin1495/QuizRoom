@@ -98,9 +98,10 @@ export default function LevelProgress({
         <View style={styles.profileInfo}>
           <Text style={styles.userName}>{fullName}</Text>
           <Text style={styles.userSubInfo}>
-            🏆 {completedChallenges?.totalCompleted}개 챌린지 완료 • 🏅{' '}
-            {unlockedCount}개 배지 획득
+            🏆 {completedChallenges?.totalCompleted}개 챌린지 완료
           </Text>
+          <Text style={styles.userSubInfo}>🏅 {unlockedCount}개 배지 획득</Text>
+
           <Text style={styles.joinDate}>
             {formatDate(_creationTime)}부터 함께하는 중
           </Text>
@@ -148,16 +149,37 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   profileSection: {
-    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 24,
     paddingBottom: 20,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
   profileImageContainer: {
     position: 'relative',
-    marginRight: 16,
+    marginBottom: 16, // 12 → 16
+  },
+  profileInfo: {
+    alignItems: 'center',
+    flex: 1,
+    minWidth: 0,
+  },
+  userName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+    marginBottom: 8, // 4 → 8
+  },
+  userSubInfo: {
+    fontSize: 14,
+    color: '#7f8c8d',
+    marginBottom: 6, // 2 → 6
+  },
+  joinDate: {
+    fontSize: 12,
+    color: '#95a5a6',
+    marginTop: 4, // 추가: 마지막 텍스트 위쪽 여백
   },
   profileImage: {
     width: 60,
@@ -183,24 +205,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     fontWeight: 'bold',
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-    marginBottom: 4,
-  },
-  userSubInfo: {
-    fontSize: 14,
-    color: '#7f8c8d',
-    marginBottom: 2,
-  },
-  joinDate: {
-    fontSize: 12,
-    color: '#95a5a6',
   },
   levelHeader: {
     marginBottom: 20,

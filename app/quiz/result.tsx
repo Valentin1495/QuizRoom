@@ -523,7 +523,8 @@ export default function QuizResultScreen() {
           <View style={[styles.expBarFill, { width: `${progress * 100}%` }]} />
         </View>
         <Text style={styles.expLabel}>
-          {totalPoints}/{totalPoints + expToNext}포인트
+          {totalPoints.toLocaleString()}/
+          {(totalPoints + expToNext).toLocaleString()}포인트
         </Text>
 
         {streak >= 1 && (
