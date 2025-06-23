@@ -8,7 +8,7 @@ export default function Index() {
 
   if (!isLoaded) return <View style={styles.container}></View>;
   if (isSignedIn) return <Redirect href='/(tabs)' />;
-  return <Redirect href='/(auth)/sign-in' />;
+  return <Redirect href='/(auth)/welcome-screen' />;
 }
 
 const styles = StyleSheet.create({
