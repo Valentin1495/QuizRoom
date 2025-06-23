@@ -10,7 +10,7 @@ export default function SignOutButton() {
     try {
       await signOut();
       // Redirect to your desired page
-      Linking.openURL(Linking.createURL('/(auth)/sign-in'));
+      Linking.openURL(Linking.createURL('/(auth)/welcome-screen'));
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
