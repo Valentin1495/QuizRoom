@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mindshot",
-    "slug": "mindshot",
+    "name": "QZY",
+    "slug": "qzy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,8 +13,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/icon-foreground.png",
+        "backgroundColor": "#F9FAFB"
       },
       "edgeToEdgeEnabled": true
     },
@@ -28,9 +28,8 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
+          "image": "./assets/images/splash-screen.png",
+          "resizeMode": "cover",
           "backgroundColor": "#ffffff"
         }
       ]

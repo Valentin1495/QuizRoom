@@ -256,7 +256,7 @@ const WelcomeScreen: React.FC = () => {
                 <Text style={styles.logoText}>QZY</Text>
                 <View style={styles.logoAccent} />
               </View>
-              <Text style={styles.tagline}>퀴즈로 알아보는 나의 진짜 모습</Text>
+              <Text style={styles.tagline}>진짜 나를 찾는 퀴즈, QZY</Text>
             </View>
 
             {/* Features */}
@@ -266,12 +266,12 @@ const WelcomeScreen: React.FC = () => {
                 <Text style={styles.featureText}>다양한 상식 퀴즈</Text>
               </View>
               <View style={styles.feature}>
-                <Ionicons name='analytics' size={24} color='#FF6B6B' />
-                <Text style={styles.featureText}>AI 실력 분석</Text>
-              </View>
-              <View style={styles.feature}>
                 <Ionicons name='flash' size={24} color='#4ECDC4' />
                 <Text style={styles.featureText}>일일/주간 챌린지</Text>
+              </View>
+              <View style={styles.feature}>
+                <Ionicons name='analytics' size={24} color='#FF6B6B' />
+                <Text style={styles.featureText}>AI 실력 분석</Text>
               </View>
               <View style={styles.feature}>
                 <Ionicons name='medal' size={24} color='#FFA500' />
