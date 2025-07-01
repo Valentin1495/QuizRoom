@@ -9,14 +9,18 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "bundleIdentifier": "com.qzy.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon-foreground.png",
         "backgroundColor": "#F9FAFB"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "googleServicesFile": "./google-services.json",
+      "package": "com.qzy.app"
     },
     "web": {
       "bundler": "metro",
@@ -25,17 +29,32 @@
     },
     "plugins": [
       "expo-router",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-google-signin/google-signin",
       [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-screen.png",
           "resizeMode": "cover",
           "backgroundColor": "#ffffff"
+        },
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "753b06bf-2bd8-4121-bf3d-1dfc31abd4c9"
+      }
     }
   }
 }

@@ -3,13 +3,6 @@
     "preview": {
       "developmentClient": true,
       "distribution": "internal",
-      "env": {
-        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_YXJ0aXN0aWMtbXVzdGFuZy03Ny5jbGVyay5hY2NvdW50cy5kZXYk",
-        "EXPO_PUBLIC_CLERK_FRONTEND_API_URL": "https://artistic-mustang-77.clerk.accounts.dev",
-        "CONVEX_DEPLOYMENT": "dev:quick-pika-380",
-        "EXPO_PUBLIC_CONVEX_URL": "https://quick-pika-380.convex.cloud",
-        "GEMINI_API_KEY": "AIzaSyDMYHmnjPKTHjLwyaXWmyRRkpEFhuFSStk"
-      },
       "android": {
         "buildType": "apk"
       },
