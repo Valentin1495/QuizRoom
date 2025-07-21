@@ -11,16 +11,21 @@
     "ios": {
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
-      "bundleIdentifier": "com.qzy.app"
+      "bundleIdentifier": "com.eunho.qzy",
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon-foreground.png",
-        "backgroundColor": "#F9FAFB"
+        "backgroundColor": "#fce3da",
+        "versionCode": 1
       },
       "edgeToEdgeEnabled": true,
       "googleServicesFile": "./google-services.json",
-      "package": "com.qzy.app"
+      "package": "com.eunho.qzy",
+      "statusBar": {
+        "barStyle": "dark-content"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -35,10 +40,12 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-screen.png",
-          "resizeMode": "cover",
-          "backgroundColor": "#ffffff"
-        },
+          "image": "./assets/images/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#fce3da"
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "ios": {
@@ -55,6 +62,10 @@
       "eas": {
         "projectId": "753b06bf-2bd8-4121-bf3d-1dfc31abd4c9"
       }
+    },
+    "updates": {
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
     }
   }
 }

@@ -63,16 +63,22 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255, 215, 0, 0.2)',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)', // 더 밝고 세련된 반투명 흰색
+    padding: 14,
+    borderRadius: 14,
+    shadowColor: '#FFD700', // 골드 그림자
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    elevation: 8,
   },
   pointsText: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#FFD700',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    color: '#FFD700', // 더 밝고 선명한 골드
+    textShadowColor: 'rgba(255, 215, 0, 0.55)', // 더 밝은 골드 그림자
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
+    letterSpacing: 1,
   },
 });

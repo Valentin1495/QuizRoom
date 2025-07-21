@@ -1,7 +1,6 @@
 import { Difficulty, UserAnswer } from '@/context/quiz-setup-context';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
-import { getRandomTwoElements } from '@/utils/get-random-two-elements';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
 import { switchDifficulty } from '@/utils/switch-difficulty';
 import { switchQuestionFormat } from '@/utils/switch-question-format';
@@ -69,6 +68,16 @@ type QuizType =
   | 'nonsense'
   | null;
 
+// Helper to format seconds as mm:ss
+function formatSecondsToMMSS(seconds: number) {
+  const min = Math.floor(seconds / 60);
+  const sec = Math.round(seconds % 60);
+  if (min > 0) {
+    return `${min}분 ${sec}초`;
+  }
+  return `${sec}초`;
+}
+
 export default function QuizResultScreen() {
   const {
     setup,
@@ -79,12 +88,18 @@ export default function QuizResultScreen() {
     streak,
     newlyUnlockedAchievements,
     getPointsForNextLevel,
+    quizStats,
   } = useQuizGamification();
+  const totalTime = setup.totalTime ?? quizStats.totalTimeSpent;
 
   const [showPointsBreakdown, setShowPointsBreakdown] = useState(false);
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<
     number | null
   >(null);
+  // 추가: 각 문제별로 정답 더보기 상태 관리
+  const [expandedAnswers, setExpandedAnswers] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   /* ------------------------------------------------------------------
    * 포인트 계산 로직
@@ -284,6 +299,7 @@ export default function QuizResultScreen() {
     if (percentage >= 80) return 'A';
     if (percentage >= 70) return 'B';
     if (percentage >= 60) return 'C';
+    if (percentage >= 50) return 'D';
     return 'F';
   };
 
@@ -415,8 +431,7 @@ export default function QuizResultScreen() {
                   다음 퀴즈에서 더 높은 포인트를 받으려면:
                 </Text>
                 {'\n'}• 연속 정답을 유지하세요 (3연속마다 보너스 +3포인트)
-                {correctAnswers.some((a, i) => i >= 2 && a.streakCount < 3) &&
-                  '\n• 이번에 놓친 연속 보너스가 있었어요!'}
+                {maxStreak < 9 && '\n• 이번에 놓친 연속 보너스가 있었어요!'}
                 {difficulty !== 'hard' &&
                   '\n• 어려운 난이도에 도전해보세요 (최대 +10포인트 추가)'}
                 {!['math-logic', 'science-tech'].includes(category as string) &&
@@ -674,92 +689,138 @@ export default function QuizResultScreen() {
   }: {
     item: UserAnswer;
     index: number;
-  }) => (
-    <View style={styles.questionCard}>
-      <View style={styles.questionHeader}>
-        <Text style={styles.questionNumber}>문제 {index + 1}</Text>
-        <View style={{ flexDirection: 'row', gap: 4 }}>
-          {item.isCorrect ? (
-            <View style={styles.correctBadge}>
-              <Check width={14} height={14} color='white' />
-              <Text style={styles.badgeText}>정답</Text>
+  }) => {
+    // 정답 배열 처리
+    const correctAnswers = Array.isArray(item?.correctAnswer)
+      ? item?.correctAnswer
+      : [item?.correctAnswer];
+    const isExpanded = expandedAnswers[index];
+    const showMore = correctAnswers.length > 3 && !isExpanded;
+    const showLess = correctAnswers.length > 3 && isExpanded;
+    const answersToShow = showMore
+      ? correctAnswers.slice(0, 3)
+      : correctAnswers;
+
+    return (
+      <View style={styles.questionCard}>
+        <View style={styles.questionHeader}>
+          <Text style={styles.questionNumber}>문제 {index + 1}</Text>
+          <View style={{ flexDirection: 'row', gap: 4 }}>
+            {item.isCorrect ? (
+              <View style={styles.correctBadge}>
+                <Check width={14} height={14} color='white' />
+                <Text style={styles.badgeText}>정답</Text>
+              </View>
+            ) : (
+              <View style={styles.incorrectBadge}>
+                <X width={14} height={14} color='white' />
+                <Text style={styles.badgeText}>오답</Text>
+              </View>
+            )}
+            {item.pointsEarned > 0 && (
+              <TouchableOpacity
+                style={styles.pointsBadge}
+                onPress={() =>
+                  setSelectedQuestionIndex(
+                    selectedQuestionIndex === index ? null : index
+                  )
+                }
+              >
+                <Star width={14} height={14} color='white' />
+                <Text style={styles.pointsBadgeText}>
+                  +{item.pointsEarned}포인트
+                </Text>
+              </TouchableOpacity>
+            )}
+            {item.streakCount > 1 && (
+              <View style={styles.streakBadge}>
+                <Ionicons name='flame-outline' size={14} color='white' />
+                <Text style={styles.streakBadgeText}>
+                  {item.streakCount}연속
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+        <Text style={styles.questionText}>{item.question}</Text>
+
+        <View style={styles.answerContainer}>
+          <View style={styles.answerRow}>
+            <Text style={styles.answerLabel}>정답:</Text>
+            <View style={{ flex: 1 }}>
+              {answersToShow.map((answer, idx) => (
+                <Text key={idx} style={styles.correctAnswer}>
+                  {answer}
+                </Text>
+              ))}
+              {showMore && (
+                <TouchableOpacity
+                  onPress={() =>
+                    setExpandedAnswers((prev) => ({ ...prev, [index]: true }))
+                  }
+                >
+                  <Text
+                    style={{ color: '#2563eb', marginTop: 2, fontSize: 13 }}
+                  >
+                    +{correctAnswers.length - 3}개 더보기
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {showLess && (
+                <TouchableOpacity
+                  onPress={() =>
+                    setExpandedAnswers((prev) => ({ ...prev, [index]: false }))
+                  }
+                >
+                  <Text
+                    style={{ color: '#2563eb', marginTop: 2, fontSize: 13 }}
+                  >
+                    접기
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+
+          {item?.userAnswer ? (
+            <View style={styles.answerRow}>
+              <Text style={styles.answerLabel}>내 답변:</Text>
+              <Text
+                style={[
+                  styles.userAnswer,
+                  item?.isCorrect
+                    ? styles.userAnswerCorrect
+                    : styles.userAnswerIncorrect,
+                ]}
+              >
+                {item?.userAnswer}
+              </Text>
             </View>
           ) : (
-            <View style={styles.incorrectBadge}>
-              <X width={14} height={14} color='white' />
-              <Text style={styles.badgeText}>오답</Text>
-            </View>
-          )}
-          {item.pointsEarned > 0 && (
-            <TouchableOpacity
-              style={styles.pointsBadge}
-              onPress={() =>
-                setSelectedQuestionIndex(
-                  selectedQuestionIndex === index ? null : index
-                )
-              }
-            >
-              <Star width={14} height={14} color='white' />
-              <Text style={styles.pointsBadgeText}>
-                +{item.pointsEarned}포인트
-              </Text>
-            </TouchableOpacity>
-          )}
-          {item.streakCount > 1 && (
-            <View style={styles.streakBadge}>
-              <Ionicons name='flame-outline' size={14} color='white' />
-              <Text style={styles.streakBadgeText}>{item.streakCount}연속</Text>
+            <View style={styles.answerRow}>
+              <Text style={styles.answerLabel}>내 답변:</Text>
+              <Text style={styles.skippedAnswer}>건너뜀</Text>
             </View>
           )}
         </View>
+
+        {/* 포인트 상세 내역 */}
+        {renderQuestionPointsDetail(item, index)}
       </View>
-
-      <Text style={styles.questionText}>{item.question}</Text>
-
-      <View style={styles.answerContainer}>
-        <View style={styles.answerRow}>
-          <Text style={styles.answerLabel}>정답:</Text>
-          <Text style={styles.correctAnswer}>
-            {Array.isArray(item?.correctAnswer)
-              ? getRandomTwoElements(item?.correctAnswer)
-                  .map((answer) => answer)
-                  .join(' | ')
-              : item?.correctAnswer}
-          </Text>
-        </View>
-
-        {item?.userAnswer ? (
-          <View style={styles.answerRow}>
-            <Text style={styles.answerLabel}>내 답변:</Text>
-            <Text
-              style={[
-                styles.userAnswer,
-                item?.isCorrect
-                  ? styles.userAnswerCorrect
-                  : styles.userAnswerIncorrect,
-              ]}
-            >
-              {item?.userAnswer}
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.answerRow}>
-            <Text style={styles.answerLabel}>내 답변:</Text>
-            <Text style={styles.skippedAnswer}>건너뜀</Text>
-          </View>
-        )}
-      </View>
-
-      {/* 포인트 상세 내역 */}
-      {renderQuestionPointsDetail(item, index)}
-    </View>
-  );
+    );
+  };
 
   /* ------------------------------------------------------------------
    * 화면 구성
    * ----------------------------------------------------------------*/
   useBlockNavigation();
   const router = useRouter();
+
+  const averageTime =
+    setup.questions && setup.questions.length > 0
+      ? totalTime / setup.questions.length
+      : 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -808,7 +869,7 @@ export default function QuizResultScreen() {
               {maxStreak > 1 && (
                 <View style={styles.scoreGameItem}>
                   <Text style={styles.scoreGameLabel}>최대 연속 정답</Text>
-                  <Text style={styles.scoreGameValue}>{maxStreak} 연속 🔥</Text>
+                  <Text style={styles.scoreGameValue}>{maxStreak}연속 🔥</Text>
                 </View>
               )}
             </View>
@@ -824,10 +885,21 @@ export default function QuizResultScreen() {
         {/* ★ NEW: 포인트 계산 예시 섹션 */}
         {renderPointsExample()}
 
-        {/* ④ 퀴즈 설정 정보 / 결과 요약 / 문제 리뷰 */}
+        {/* ④ 퀴즈 설정 정보 / 결과 요약 */}
         {renderQuizInfo()}
         {renderSummary()}
 
+        {/* ⑤ 총 소요 시간 */}
+        <View style={{ alignItems: 'center', marginBottom: 16 }}>
+          <Text style={{ fontSize: 15, color: '#374151', fontWeight: '600' }}>
+            🕒 총 소요 시간: {formatSecondsToMMSS(totalTime)}
+          </Text>
+          <Text style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>
+            평균 시간: {formatSecondsToMMSS(averageTime)}
+          </Text>
+        </View>
+
+        {/* ⑥ 문제 리뷰 */}
         <Animated.View style={[styles.reviewSection, detailsStyle]}>
           <Text style={styles.sectionTitle}>📝 문제 리뷰</Text>
           <Text style={styles.reviewSubtitle}>
@@ -849,7 +921,7 @@ export default function QuizResultScreen() {
           style={styles.footerButton}
           onPress={() => {
             resetQuizData();
-            router.push('/');
+            router.push('/(tabs)');
           }}
         >
           <Home width={20} height={20} color='#6b7280' />

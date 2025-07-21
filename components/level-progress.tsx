@@ -1,4 +1,6 @@
+import { Colors } from '@/constants/Colors';
 import { api } from '@/convex/_generated/api';
+import { useMyProfile } from '@/hooks/use-my-profile';
 import { formatDate } from '@/utils/format-date';
 import { useQuery } from 'convex/react';
 import { useEffect } from 'react';
@@ -27,11 +29,11 @@ export default function LevelProgress({
   delay = 0,
   unlockedCount,
 }: LevelProgressProps) {
-  const currentUser = useQuery(api.users.getCurrentUserByClerkId);
-  const { _creationTime, fullName, profileImage } = currentUser || {};
+  const { myProfile } = useMyProfile();
+  const { _creationTime, displayName, photoURL } = myProfile || {};
   const completedChallenges = useQuery(
     api.challenges.getChallengeStats,
-    currentUser ? { userId: currentUser.clerkId } : 'skip'
+    myProfile ? { userId: myProfile.firebaseUid } : 'skip'
   );
 
   const progress = useSharedValue(0);
@@ -89,18 +91,15 @@ export default function LevelProgress({
       {/* 사용자 프로필 섹션 */}
       <Animated.View style={[styles.profileSection, profileAnimatedStyle]}>
         <View style={styles.profileImageContainer}>
-          <Image source={{ uri: profileImage }} style={styles.profileImage} />
-          <View style={styles.levelBadgeSmall}>
-            <Text style={styles.levelTextSmall}>{currentLevel}</Text>
-          </View>
+          <Image source={{ uri: photoURL }} style={styles.profileImage} />
         </View>
 
         <View style={styles.profileInfo}>
-          <Text style={styles.userName}>{fullName}</Text>
+          <Text style={styles.userName}>{displayName}</Text>
           <Text style={styles.userSubInfo}>
-            🏆 {completedChallenges?.totalCompleted}개 챌린지 완료
+            🏆 챌린지 {completedChallenges?.totalCompleted}개 완료
           </Text>
-          <Text style={styles.userSubInfo}>🏅 {unlockedCount}개 배지 획득</Text>
+          <Text style={styles.userSubInfo}>🏅 배지 {unlockedCount}개 획득</Text>
 
           <Text style={styles.joinDate}>
             {formatDate(_creationTime)}부터 함께하는 중
@@ -110,13 +109,31 @@ export default function LevelProgress({
 
       {/* 기존 레벨 진행도 섹션 */}
       <View style={styles.levelHeader}>
-        <Text style={styles.levelExp}>
-          {currentExp.toLocaleString()}/
-          {(currentExp + nextLevelExp).toLocaleString()}포인트 (
-          {nextLevelExp.toLocaleString()}
-          포인트 to Lv.
-          {currentLevel + 1})
-        </Text>
+        <View
+          style={{
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: 'bold',
+              color: Colors.light.primary,
+              marginBottom: 10,
+            }}
+          >
+            Lv.{currentLevel}
+          </Text>
+          <Text style={styles.levelExp}>
+            {currentExp.toLocaleString()}/
+            {(currentExp + nextLevelExp).toLocaleString()}포인트 (
+            {nextLevelExp.toLocaleString()}
+            포인트 to Lv.
+            {currentLevel + 1})
+          </Text>
+        </View>
       </View>
 
       <Animated.Text
@@ -157,8 +174,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f0f0f0',
   },
   profileImageContainer: {
-    position: 'relative',
-    marginBottom: 16, // 12 → 16
+    marginBottom: 16,
+    borderWidth: 3,
+    borderColor: Colors.light.primary,
+    borderRadius: 999, // 완전한 원
+    padding: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
   profileInfo: {
     alignItems: 'center',
@@ -169,12 +192,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#2c3e50',
-    marginBottom: 8, // 4 → 8
+    marginBottom: 8,
   },
   userSubInfo: {
     fontSize: 14,
     color: '#7f8c8d',
-    marginBottom: 6, // 2 → 6
+    marginBottom: 6,
   },
   joinDate: {
     fontSize: 12,
@@ -185,26 +208,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    borderWidth: 3,
-    borderColor: '#6c5ce7',
-  },
-  levelBadgeSmall: {
-    position: 'absolute',
-    bottom: -2,
-    right: -2,
-    backgroundColor: '#6c5ce7',
-    borderRadius: 12,
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'white',
-  },
-  levelTextSmall: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
   },
   levelHeader: {
     marginBottom: 20,

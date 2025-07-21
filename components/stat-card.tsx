@@ -66,14 +66,17 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 20,
     borderRadius: 20,
+    backgroundColor: 'white',
+    // iOS shadow
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.4,
     shadowRadius: 8,
-    elevation: 6,
+    // Android elevation
+    elevation: 8,
   },
   statCardHeader: {
     flexDirection: 'row',

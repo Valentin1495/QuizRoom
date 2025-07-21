@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -12,7 +13,7 @@ import Animated, {
 export default function EmptyStatsCard({ delay = 0 }) {
   const scale = useSharedValue(0);
   const opacity = useSharedValue(0);
-
+  const router = useRouter();
   useEffect(() => {
     scale.value = withDelay(delay, withSpring(1));
     opacity.value = withDelay(delay, withSpring(1));
@@ -41,9 +42,12 @@ export default function EmptyStatsCard({ delay = 0 }) {
         <Text style={styles.emptySubtitle}>
           첫 퀴즈를 완료하면{'\n'}여기에 멋진 통계가 나타날 거예요
         </Text>
-        <View style={styles.emptyButton}>
+        <TouchableOpacity
+          style={styles.emptyButton}
+          onPress={() => router.push('/(tabs)')}
+        >
           <Text style={styles.emptyButtonText}>첫 퀴즈 시작하기 🚀</Text>
-        </View>
+        </TouchableOpacity>
       </LinearGradient>
     </Animated.View>
   );

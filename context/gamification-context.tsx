@@ -1,4 +1,5 @@
-import { useUser } from '@clerk/clerk-react';
+import { hasFiveConsecutivePerfectScores } from '@/utils/has-five-consecutive-perfect-scores';
+import { getAuth } from '@react-native-firebase/auth';
 import { useMutation, useQuery } from 'convex/react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import 'react-native-get-random-values';
@@ -10,11 +11,12 @@ export interface QuizHistoryItem {
   date: string; // ISO 날짜
   completedAt: string; // ISO 날짜 (시간 포함)
   category: string;
+  questionFormat?: 'multiple' | 'short' | null;
   total: number;
   correct: number;
   averageTime?: number; // 평균 답변 시간 (초)
   comebackVictory?: boolean; // 처음 3문제 틀리고 완료했는지
-  luckyStreak?: number; // 연속 맞힌 문제 수 (행운의 추측용)
+  maxPerfectStreak?: number; // 연속 맞힌 문제 수 (행운의 추측용)
   withFriend?: boolean; // 친구와 함께했는지
   relearnedMistakes?: boolean; // 틀린 문제 재학습했는지
   difficulty?: 'easy' | 'medium' | 'hard'; // 새로 추가된 필수 매개변수
@@ -51,6 +53,11 @@ interface CategoryStats {
   correctAnswers: number;
   masteryLevel: number;
   initialAccuracy?: number; // 처음 정답률 (개선 업적용)
+  completedDifficulties?: {
+    easy: boolean;
+    medium: boolean;
+    hard: boolean;
+  };
 }
 
 export interface Achievement {
@@ -79,6 +86,7 @@ interface GamificationContextType {
   updateStreak(): void;
   recordQuizCompletion(
     category: string,
+    questionFormat: 'multiple' | 'short' | null,
     correctAnswers: number,
     totalQuestions: number,
     difficulty: 'easy' | 'medium' | 'hard', // 새로 추가된 필수 매개변수
@@ -86,7 +94,7 @@ interface GamificationContextType {
     options?: {
       averageTime?: number;
       comebackVictory?: boolean;
-      luckyStreak?: number;
+      maxPerfectStreak?: number;
       withFriend?: boolean;
       relearnedMistakes?: boolean;
     }
@@ -186,7 +194,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'perfect_streak_5',
     title: '완벽한 연승',
-    description: '5번 연속으로 완벽한 정답률 달성',
+    description: '5번 연속으로 완벽한 정답률(100%) 달성',
     icon: '💫',
     unlockedAt: null,
     progress: 0,
@@ -199,14 +207,14 @@ const defaultAchievements: Achievement[] = [
     icon: '👑',
     unlockedAt: null,
     progress: 0,
-    target: 1,
+    target: 95,
   },
 
   // 수량 기반 업적들
   {
     id: 'quiz_beginner',
     title: '퀴즈 입문자',
-    description: '10개의 퀴즈 완료',
+    description: '1개의 퀴즈(10문제) 완료',
     icon: '📚',
     unlockedAt: null,
     progress: 0,
@@ -215,7 +223,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'quiz_enthusiast',
     title: '퀴즈 애호가',
-    description: '50개의 퀴즈 완료',
+    description: '5개의 퀴즈(50문제) 완료',
     icon: '🎓',
     unlockedAt: null,
     progress: 0,
@@ -224,7 +232,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'quiz_master',
     title: '퀴즈 마스터',
-    description: '100개의 퀴즈 완료',
+    description: '10개의 퀴즈(100문제) 완료',
     icon: '👑',
     unlockedAt: null,
     progress: 0,
@@ -233,7 +241,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'quiz_legend',
     title: '퀴즈 전설',
-    description: '500개의 퀴즈 완료',
+    description: '50개의 퀴즈(500문제) 완료',
     icon: '🏆',
     unlockedAt: null,
     progress: 0,
@@ -244,7 +252,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'category_expert',
     title: '카테고리 전문가',
-    description: '한 카테고리에서 90% 이상 정답률 달성',
+    description: '한 카테고리에서 모든 난이도 완료하고 90% 이상 정답률 달성',
     icon: '🧠',
     unlockedAt: null,
     progress: 0,
@@ -253,7 +261,8 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'multi_category',
     title: '다재다능',
-    description: '3개 이상 카테고리에서 80% 이상 정답률 달성',
+    description:
+      '3개 이상 카테고리에서 모든 난이도 완료하고 80% 이상 정답률 달성',
     icon: '🌟',
     unlockedAt: null,
     progress: 0,
@@ -262,7 +271,8 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'category_master',
     title: '올라운더',
-    description: '모든 카테고리(8개)에서 70% 이상 정답률 달성',
+    description:
+      '모든 카테고리(8개)에서 모든 난이도 완료하고 70% 이상 정답률 달성',
     icon: '🎭',
     unlockedAt: null,
     progress: 0,
@@ -382,7 +392,7 @@ export function GamificationProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoaded: userLoaded } = useUser();
+  const user = getAuth().currentUser;
   const [state, setState] = useState<GamificationState>(defaultState);
   const [newlyUnlockedAchievements, setNewlyUnlockedAchievements] = useState<
     Achievement[]
@@ -392,19 +402,19 @@ export function GamificationProvider({
   // Convex 쿼리 및 뮤테이션
   const gamificationData = useQuery(
     api.gamification.getGamificationData,
-    user?.id ? { userId: user.id } : 'skip'
+    user ? { userId: user.uid } : 'skip'
   );
   const categoryStats = useQuery(
     api.gamification.getCategoryStatsWithDifficulty,
-    user?.id ? { userId: user.id } : 'skip'
+    user ? { userId: user.uid } : 'skip'
   );
   const achievements = useQuery(
     api.gamification.getAchievements,
-    user?.id ? { userId: user.id } : 'skip'
+    user ? { userId: user.uid } : 'skip'
   );
   const quizHistory = useQuery(
     api.gamification.getQuizHistory,
-    user?.id ? { userId: user.id } : 'skip'
+    user ? { userId: user.uid } : 'skip'
   );
 
   const updateGamificationData = useMutation(
@@ -421,7 +431,7 @@ export function GamificationProvider({
 
   // 데이터 로드
   useEffect(() => {
-    if (!userLoaded || !user?.id) {
+    if (!user) {
       setIsLoading(false);
       return;
     }
@@ -456,7 +466,7 @@ export function GamificationProvider({
         correct: item.correct,
         averageTime: item.averageTime,
         comebackVictory: item.comebackVictory,
-        luckyStreak: item.luckyStreak,
+        maxPerfectStreak: item.maxPerfectStreak,
         withFriend: item.withFriend,
         relearnedMistakes: item.relearnedMistakes,
       }));
@@ -479,24 +489,17 @@ export function GamificationProvider({
 
       setIsLoading(false);
     }
-  }, [
-    userLoaded,
-    user?.id,
-    gamificationData,
-    categoryStats,
-    achievements,
-    quizHistory,
-  ]);
+  }, [user, gamificationData, categoryStats, achievements, quizHistory]);
 
   const addPoints = (points: number) => {
-    if (!user?.id) return;
+    if (!user) return;
 
     setState((prev) => {
       const newTotal = prev.totalPoints + points;
       const { level, expInCurrentLevel, pointsToNextLevel } =
         calculateLevel(newTotal);
 
-      if (level > prev.level) console.log(`🎉 Level-Up → L${level}`);
+      // if (level > prev.level) console.log(`🎉 Level-Up → L${level}`);
 
       const newState = {
         ...prev,
@@ -508,7 +511,7 @@ export function GamificationProvider({
 
       // Convex에 저장
       updateGamificationData({
-        userId: user.id,
+        userId: user.uid,
         data: {
           totalPoints: newTotal,
           level,
@@ -528,7 +531,7 @@ export function GamificationProvider({
   };
 
   const updateStreak = () => {
-    if (!user?.id) return;
+    if (!user) return;
 
     const today = new Date().toDateString();
     const lastDate = state.lastQuizDate;
@@ -567,7 +570,7 @@ export function GamificationProvider({
 
       // Convex에 저장
       updateGamificationData({
-        userId: user.id,
+        userId: user.uid,
         data: {
           totalPoints: prev.totalPoints,
           level: prev.level,
@@ -588,6 +591,7 @@ export function GamificationProvider({
 
   const recordQuizCompletion = (
     category: string,
+    questionFormat: 'multiple' | 'short' | null,
     correctAnswers: number,
     totalQuestions: number,
     difficulty: 'easy' | 'medium' | 'hard',
@@ -595,12 +599,12 @@ export function GamificationProvider({
     options?: {
       averageTime?: number;
       comebackVictory?: boolean;
-      luckyStreak?: number;
+      maxPerfectStreak?: number;
       withFriend?: boolean;
       relearnedMistakes?: boolean;
     }
   ): boolean => {
-    if (!user?.id) return false;
+    if (!user) return false;
 
     const isPerfect = correctAnswers === totalQuestions;
     const now = new Date();
@@ -612,6 +616,11 @@ export function GamificationProvider({
         totalQuestions: 0,
         correctAnswers: 0,
         masteryLevel: 0,
+        completedDifficulties: {
+          easy: false,
+          medium: false,
+          hard: false,
+        },
       };
       const totQ = prevCat.totalQuestions + totalQuestions;
       const totC = prevCat.correctAnswers + correctAnswers;
@@ -621,6 +630,14 @@ export function GamificationProvider({
       if (initialAccuracy === undefined && prevCat.totalQuestions === 0) {
         initialAccuracy = newMasteryLevel;
       }
+
+      // ── 난이도별 완료 상태 업데이트
+      const updatedCompletedDifficulties = {
+        easy: prevCat.completedDifficulties?.easy || false,
+        medium: prevCat.completedDifficulties?.medium || false,
+        hard: prevCat.completedDifficulties?.hard || false,
+        [difficulty]: true,
+      };
 
       // ── 포인트 계산
       const base = correctAnswers * 10;
@@ -639,16 +656,16 @@ export function GamificationProvider({
             ? prev.currentStreak + 1
             : 1;
 
-      const newPerfectStreak = isPerfect ? prev.currentPerfectStreak + 1 : 0;
-
       // ── 퀴즈 기록 생성
       const historyItem: QuizHistoryItem = {
         id: uuidv4(),
         date: now.toISOString().split('T')[0],
         completedAt: now.toISOString(),
         category,
+        questionFormat,
         total: totalQuestions,
         correct: correctAnswers,
+        maxPerfectStreak: options?.maxPerfectStreak,
         difficulty,
         timeSpent,
         ...options,
@@ -656,7 +673,7 @@ export function GamificationProvider({
 
       // ── 서버 업데이트 (Convex)
       updateGamificationData({
-        userId: user.id,
+        userId: user.uid,
         data: {
           totalPoints: newTotalPoints,
           level,
@@ -667,7 +684,7 @@ export function GamificationProvider({
           lastQuizDate: today,
           totalQuizzes: prev.totalQuizzes + 1,
           totalCorrectAnswers: prev.totalCorrectAnswers + correctAnswers,
-          currentPerfectStreak: newPerfectStreak,
+          currentPerfectStreak: options?.maxPerfectStreak || 0,
         },
       });
 
@@ -682,7 +699,7 @@ export function GamificationProvider({
       else weaknesses.push('기초 개념 부족');
 
       updateCategoryStatsFromAnalysis({
-        userId: user.id,
+        userId: user.uid,
         analysisData: {
           category,
           skillScore: Math.round(accuracy),
@@ -694,17 +711,18 @@ export function GamificationProvider({
 
       addQuizHistory({
         id: historyItem.id,
-        userId: user.id,
+        userId: user.uid,
         date: historyItem.date,
         completedAt: historyItem.completedAt,
         category: historyItem.category,
+        questionFormat: historyItem.questionFormat,
         total: historyItem.total,
         correct: historyItem.correct,
         difficulty: historyItem.difficulty,
         timeSpent: historyItem.timeSpent,
         averageTime: historyItem.averageTime,
         comebackVictory: historyItem.comebackVictory,
-        luckyStreak: historyItem.luckyStreak,
+        maxPerfectStreak: historyItem.maxPerfectStreak,
         withFriend: historyItem.withFriend,
         relearnedMistakes: historyItem.relearnedMistakes,
       });
@@ -718,7 +736,7 @@ export function GamificationProvider({
         currentStreak: newStreak,
         longestStreak: Math.max(newStreak, prev.longestStreak),
         lastQuizDate: today,
-        currentPerfectStreak: newPerfectStreak,
+        currentPerfectStreak: options?.maxPerfectStreak || 0,
         totalQuizzes: prev.totalQuizzes + 1,
         totalCorrectAnswers: prev.totalCorrectAnswers + correctAnswers,
         categoryStats: {
@@ -728,6 +746,7 @@ export function GamificationProvider({
             correctAnswers: totC,
             masteryLevel: newMasteryLevel,
             initialAccuracy,
+            completedDifficulties: updatedCompletedDifficulties,
           },
         },
         quizzesHistory: [...prev.quizzesHistory, historyItem],
@@ -738,7 +757,7 @@ export function GamificationProvider({
   };
 
   const checkAchievements = async (): Promise<Achievement[]> => {
-    if (!user?.id) return [];
+    if (!user) return [];
 
     return new Promise((resolve) => {
       const unlocked: Achievement[] = [];
@@ -789,15 +808,18 @@ export function GamificationProvider({
               done = progress === 1;
               break;
             case 'perfect_streak_5':
-              progress = prev.currentPerfectStreak;
-              done = progress >= 5;
+              progress = hasFiveConsecutivePerfectScores(prev.quizzesHistory)
+                ? 1
+                : 0;
+              done = progress === 1;
               break;
             case 'accuracy_king':
-              const totalCorrect = prev.totalCorrectAnswers;
-              const totalQuestions = prev.quizzesHistory.reduce(
-                (sum, q) => sum + q.total,
+              const totalCorrect = prev.quizzesHistory.reduce(
+                (sum, q) => sum + q.correct,
                 0
               );
+              const totalQuestions = prev.totalQuizzes * 10 + 10;
+
               const accuracy =
                 totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
               progress = Math.floor(accuracy);
@@ -824,27 +846,50 @@ export function GamificationProvider({
 
             // 카테고리 관련 업적들
             case 'category_expert':
-              // 한 카테고리에서 90% 이상 정답률 달성
-              progress = Object.values(prev.categoryStats).filter(
-                (s) => s.masteryLevel >= 90
-              ).length;
+              // 한 카테고리에서 모든 난이도 완료하고 90% 이상 정답률 달성
+              progress = ALL_CATEGORIES.filter((category) => {
+                const stats = prev.categoryStats[category];
+                return (
+                  stats &&
+                  stats.masteryLevel >= 90 &&
+                  stats.completedDifficulties &&
+                  stats.completedDifficulties.easy &&
+                  stats.completedDifficulties.medium &&
+                  stats.completedDifficulties.hard
+                );
+              }).length;
               done = progress >= 1;
               break;
 
             case 'multi_category':
-              // 3개 이상 카테고리에서 80% 이상 정답률 달성
-              progress = Object.values(prev.categoryStats).filter(
-                (s) => s.masteryLevel >= 80
-              ).length;
+              // 3개 이상 카테고리에서 모든 난이도 완료하고 80% 이상 정답률 달성
+              progress = ALL_CATEGORIES.filter((category) => {
+                const stats = prev.categoryStats[category];
+                return (
+                  stats &&
+                  stats.masteryLevel >= 80 &&
+                  stats.completedDifficulties &&
+                  stats.completedDifficulties.easy &&
+                  stats.completedDifficulties.medium &&
+                  stats.completedDifficulties.hard
+                );
+              }).length;
               done = progress >= 3;
               break;
 
             case 'category_master':
-              // 모든 카테고리(8개)에서 70% 이상 정답률 달성
+              // 모든 카테고리(8개)에서 모든 난이도 완료하고 70% 이상 정답률 달성
               const totalCategoriesRequired = ALL_CATEGORIES.length; // 8개
               const masteredCategories = ALL_CATEGORIES.filter((category) => {
                 const stats = prev.categoryStats[category];
-                return stats && stats.masteryLevel >= 70;
+                return (
+                  stats &&
+                  stats.masteryLevel >= 70 &&
+                  stats.completedDifficulties &&
+                  stats.completedDifficulties.easy &&
+                  stats.completedDifficulties.medium &&
+                  stats.completedDifficulties.hard
+                );
               }).length;
 
               progress = masteredCategories;
@@ -941,7 +986,7 @@ export function GamificationProvider({
             // 재미있는 업적들
             case 'lucky_guess':
               const luckyQuizzes = prev.quizzesHistory.filter(
-                (q) => q.luckyStreak && q.luckyStreak >= 5
+                (q) => q.maxPerfectStreak && q.maxPerfectStreak >= 5
               );
               progress = luckyQuizzes.length > 0 ? 1 : 0;
               done = progress === 1;
@@ -957,7 +1002,7 @@ export function GamificationProvider({
 
           const updatedAchievement = {
             ...ach,
-            progress: Math.min(progress, ach.target),
+            progress,
             unlockedAt: done && !ach.unlockedAt ? new Date() : ach.unlockedAt,
           };
 
@@ -965,18 +1010,18 @@ export function GamificationProvider({
             unlocked.push(updatedAchievement);
             // Convex에 업적 저장
             updateAchievement({
-              userId: user.id,
+              userId: user.uid,
               achievementId: ach.id,
-              progress: Math.min(progress, ach.target),
-              maxProgress: ach.target,
+              progress,
+              target: ach.target,
             });
           } else if (ach.progress !== progress) {
             // 진행도가 변경된 경우에도 저장
             updateAchievement({
-              userId: user.id,
+              userId: user.uid,
               achievementId: ach.id,
-              progress: Math.min(progress, ach.target),
-              maxProgress: ach.target,
+              progress,
+              target: ach.target,
             });
           }
 
@@ -1010,17 +1055,17 @@ export function GamificationProvider({
   };
 
   const resetData = () => {
-    if (!user?.id) return;
+    if (!user) return;
 
     setState({ ...defaultState, achievements: [...defaultAchievements] });
     setNewlyUnlockedAchievements([]);
 
     // Convex에서 데이터 삭제
-    resetGamificationData({ userId: user.id });
+    resetGamificationData({ userId: user.uid });
   };
 
   // 사용자가 로그인하지 않은 경우 기본값 반환
-  if (!userLoaded || !user?.id) {
+  if (!user) {
     return (
       <GamificationContext.Provider
         value={{
@@ -1032,7 +1077,7 @@ export function GamificationProvider({
           newlyUnlockedAchievements: [],
           pointsToNextLevel: 100,
           getPointsForNextLevel: () => 100,
-          isLoading: !userLoaded,
+          isLoading: !user,
 
           /* ─ 메서드 (빈 함수들) ─ */
           addPoints: () => {},

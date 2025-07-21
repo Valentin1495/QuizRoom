@@ -1,4 +1,5 @@
 import SignOutButton from '@/components/sign-out-button';
+import { Colors } from '@/constants/Colors';
 import {
   Difficulty,
   KnowledgeCategory,
@@ -6,10 +7,12 @@ import {
   useQuizSetup,
 } from '@/context/quiz-setup-context';
 import { api } from '@/convex/_generated/api';
+import { useBlockNavigation } from '@/hooks/use-block-navigation';
+import { useMyProfile } from '@/hooks/use-my-profile';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { uploadQuizBatch } from '@/utils/upload-quiz';
 import { Ionicons } from '@expo/vector-icons';
-import { useMutation, useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
@@ -112,8 +115,8 @@ const categories: {
   },
   {
     id: 'kpop-music',
-    title: 'K-pop & 음악',
-    description: 'K-pop과 음악에 관한 지식',
+    title: 'K팝 & 음악',
+    description: 'K팝과 음악에 관한 지식',
     iconName: 'musical-notes-outline',
     colors: ['#f59e0b', '#d97706'],
     image: require('@/assets/images/music.jpg'),
@@ -378,6 +381,7 @@ export default function HomeScreen() {
   const { category, difficulty, questionFormat, quizType } = setup;
   const { resetQuizData } = useQuizGamification();
   const insertQuizBatch = useMutation(api.quizzes.insertQuizBatch);
+  const { myProfile } = useMyProfile();
   const handleBatchUpload = async () => {
     await uploadQuizBatch(insertQuizBatch);
   };
@@ -387,6 +391,7 @@ export default function HomeScreen() {
   }, []);
 
   const router = useRouter();
+  useBlockNavigation();
 
   const handleSelectCategory = (category: KnowledgeCategory) => {
     setSetup((prev) => ({ ...prev, category }));
@@ -412,7 +417,6 @@ export default function HomeScreen() {
     );
   };
 
-  const currentUser = useQuery(api.users.getCurrentUserByClerkId);
   // const quizzes = useQuery(api.quizzes.getQuestionsByQuizType, {
   //   category: 'kpop-music',
   //   quizType: 'knowledge',
@@ -435,7 +439,27 @@ export default function HomeScreen() {
             <View style={styles.headerContent}>
               <Text style={styles.headerTitle}>상식 퀴즈</Text>
               <Text style={styles.headerSubtitle}>
-                {currentUser?.fullName}님 환영해요! 🙌 {'\n'}
+                {myProfile?.displayName ? (
+                  <Text
+                    style={{
+                      color: Colors.light.primary,
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {myProfile.displayName}
+                  </Text>
+                ) : (
+                  <View
+                    style={{
+                      height: 20,
+                      width: 80,
+                      backgroundColor: '#eee',
+                      borderRadius: 6,
+                      marginTop: 4,
+                    }}
+                  />
+                )}
+                님 환영해요! 🙌 {'\n'}
                 다양한 분야의 지식을 테스트해 보세요.
               </Text>
             </View>
@@ -517,13 +541,17 @@ export default function HomeScreen() {
               onPress={handleStartQuiz}
             >
               <LinearGradient
-                colors={['#8E2DE2', '#4A00E0']}
+                colors={Colors.light.gradientColors}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.startButtonGradient}
               >
                 <Text style={styles.startButtonText}>퀴즈 시작하기</Text>
-                <ChevronRight width={20} height={20} color='white' />
+                <ChevronRight
+                  width={20}
+                  height={20}
+                  color={Colors.light.secondary}
+                />
               </LinearGradient>
             </TouchableOpacity>
           </Animated.View>
@@ -557,7 +585,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#111827',
+    color: Colors.light.secondary,
   },
   headerSubtitle: {
     fontSize: 16,
@@ -570,7 +598,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#111827',
+    color: Colors.light.secondary,
     marginBottom: 16,
     paddingHorizontal: 20,
   },
@@ -653,7 +681,7 @@ const styles = StyleSheet.create({
   typeTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.light.secondary,
     marginBottom: 4,
   },
   typeDescription: {
@@ -687,7 +715,7 @@ const styles = StyleSheet.create({
   difficultyTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.light.secondary,
     marginBottom: 4,
   },
   difficultyDescription: {
@@ -717,19 +745,19 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: Colors.light.secondary,
     marginRight: 8,
   },
   selectedFeaturedCard: {
     borderWidth: 2,
-    borderColor: '#8E2DE2',
-    backgroundColor: 'rgba(142, 45, 226, 0.05)',
+    borderColor: Colors.light.primary,
+    backgroundColor: 'rgba(111, 29, 27, 0.1)',
   },
   selectedCardIndicator: {
     position: 'absolute',
     top: 0,
     right: 0,
-    backgroundColor: '#8E2DE2',
+    backgroundColor: Colors.light.primary,
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -743,7 +771,7 @@ const styles = StyleSheet.create({
   },
   selectedCard: {
     borderWidth: 2,
-    borderColor: '#8E2DE2',
-    backgroundColor: 'rgba(142, 45, 226, 0.05)',
+    borderColor: Colors.light.primary,
+    backgroundColor: 'rgba(111, 29, 27, 0.1)',
   },
 });

@@ -45,7 +45,7 @@ interface RarityColor {
 
 interface AchievementBadgeProps {
   achievement: Achievement;
-  userProgress?: Doc<'achievements'>;
+  userAchievement?: Doc<'achievements'>;
   onPress: (achievement: Achievement) => void;
   animatedValue: Animated.Value;
 }
@@ -58,7 +58,7 @@ interface CategoryFilterProps {
 
 interface AchievementModalProps {
   achievement: Achievement | null;
-  userProgress?: Doc<'achievements'>;
+  userAchievement?: Doc<'achievements'>;
   visible: boolean;
   onClose: () => void;
 }
@@ -111,7 +111,7 @@ const defaultAchievements: Achievement[] = [
   {
     id: 'perfect_streak_5',
     title: '완벽한 연승',
-    description: '5번 연속으로 완벽한 정답률 달성',
+    description: '5번 연속으로 완벽한 정답률(100%) 달성',
     icon: '💫',
     category: 'accuracy',
     rarity: 'epic',
@@ -280,12 +280,11 @@ const RARITY_COLORS: Record<Rarity, RarityColor> = {
 
 const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   achievement,
-  userProgress,
+  userAchievement,
   onPress,
   animatedValue,
 }) => {
-  const isUnlocked = Boolean(userProgress?.unlockedAt);
-  const progress = userProgress?.progress || 0;
+  const isUnlocked = Boolean(userAchievement?.unlockedAt);
   const colors = RARITY_COLORS[achievement.rarity] || RARITY_COLORS.common;
 
   const badgeStyle = [
@@ -334,23 +333,6 @@ const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         >
           {achievement.title}
         </Text>
-
-        {/* 진행도 바 */}
-        {!isUnlocked && progress > 0 && (
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBarBg}>
-              <View
-                style={[
-                  styles.progressBarFill,
-                  {
-                    width: `${Math.min(progress * 10, 100)}%`,
-                    backgroundColor: colors.primary,
-                  },
-                ]}
-              />
-            </View>
-          </View>
-        )}
       </TouchableOpacity>
     </Animated.View>
   );
@@ -400,14 +382,14 @@ const CategoryFilterComponent: React.FC<CategoryFilterProps> = ({
 
 const AchievementModal: React.FC<AchievementModalProps> = ({
   achievement,
-  userProgress,
+  userAchievement,
   visible,
   onClose,
 }) => {
-  const isUnlocked = Boolean(userProgress?.unlockedAt);
+  const isUnlocked = Boolean(userAchievement?.unlockedAt);
   const unlockedDate =
-    isUnlocked && userProgress?.unlockedAt
-      ? new Date(userProgress.unlockedAt).toLocaleDateString('ko-KR')
+    isUnlocked && userAchievement?.unlockedAt
+      ? new Date(userAchievement.unlockedAt).toLocaleDateString('ko-KR')
       : null;
 
   if (!achievement) return null;
@@ -418,6 +400,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
       animationType='fade'
       transparent
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
@@ -538,7 +521,7 @@ export default function AchievementList({
 
         <View style={styles.statsCard}>
           <View style={styles.statsText}>
-            <Text style={styles.statsLabel}>달성한 배지</Text>
+            <Text style={styles.statsLabel}>달성한 업적</Text>
             <Text style={styles.statsValue}>
               {unlockedCount} / {totalCount}
             </Text>
@@ -565,7 +548,7 @@ export default function AchievementList({
       >
         <View style={styles.grid}>
           {filteredAchievements.map((achievement, index) => {
-            const userProgress = userAchievements.find(
+            const userAchievement = userAchievements.find(
               (ua) => ua.achievementId === achievement.id
             );
 
@@ -573,7 +556,7 @@ export default function AchievementList({
               <AchievementBadge
                 key={achievement.id}
                 achievement={achievement}
-                userProgress={userProgress}
+                userAchievement={userAchievement}
                 onPress={handleAchievementPress}
                 animatedValue={animatedValues[index]}
               />
@@ -585,7 +568,7 @@ export default function AchievementList({
       {/* 배지 상세 모달 */}
       <AchievementModal
         achievement={selectedAchievement}
-        userProgress={userAchievements.find(
+        userAchievement={userAchievements.find(
           (ua) => ua.achievementId === selectedAchievement?.id
         )}
         visible={modalVisible}

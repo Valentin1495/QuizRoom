@@ -238,6 +238,14 @@ export const useQuizGamification = () => {
         questionIndex: currentQuestionIndex,
       };
 
+      // 디버깅 로그
+      // console.log('📝 답변 저장:', {
+      //   questionIndex: currentQuestionIndex,
+      //   answerTime,
+      //   isCorrect: correct,
+      //   userAnswer,
+      // });
+
       // 기존 userAnswers 배열 업데이트
       const updatedAnswers = [...quizSetup.setup.userAnswers];
       updatedAnswers[currentQuestionIndex] = newAnswer;
@@ -253,7 +261,8 @@ export const useQuizGamification = () => {
 
   // 퀴즈 완료 처리 (업적 시스템과 완전 연동)
   const handleQuizCompletion = useCallback(async () => {
-    const { questions, userAnswers, category, quizType } = quizSetup.setup;
+    const { questions, userAnswers, category, quizType, questionFormat } =
+      quizSetup.setup;
 
     const correct = userAnswers.filter((a) => a.isCorrect).length;
     const total = questions.length;
@@ -289,6 +298,7 @@ export const useQuizGamification = () => {
     // 업적 시스템에 퀴즈 완료 기록 (수정된 매개변수)
     const wasPerfect = gamification.recordQuizCompletion(
       categoryKey,
+      questionFormat,
       correct,
       total,
       difficulty, // 필수 매개변수 추가
@@ -296,7 +306,7 @@ export const useQuizGamification = () => {
       {
         averageTime,
         comebackVictory,
-        luckyStreak: maxStreakInQuiz.current,
+        maxPerfectStreak: maxStreakInQuiz.current,
         // 향후 확장 가능한 옵션들
         // withFriend: false,
         // relearnedMistakes: false,
@@ -312,15 +322,15 @@ export const useQuizGamification = () => {
     // 완벽한 정답률 추가 보너스
     if (wasPerfect) {
       gamification.addPoints(20, 'Perfect Score Bonus');
-      console.log('🎯 완벽한 정답률! 보너스 20포인트');
+      // console.log('🎯 완벽한 정답률! 보너스 20포인트');
     }
 
     // 새 업적 로그
     if (newAchievements.length > 0) {
-      console.log(
-        '🏆 새로 해금된 업적:',
-        newAchievements.map((a) => a.title)
-      );
+      // console.log(
+      //   '🏆 새로 해금된 업적:',
+      //   newAchievements.map((a) => a.title)
+      // );
     }
 
     return {
@@ -328,7 +338,7 @@ export const useQuizGamification = () => {
       newAchievements,
       averageTime,
       comebackVictory,
-      maxStreak: maxStreakInQuiz.current,
+      maxPerfectStreak: maxStreakInQuiz.current,
       accuracy,
       totalTimeSpent, // 반환값에 총 소요 시간 추가
     };
@@ -392,16 +402,52 @@ export const useQuizGamification = () => {
 
     // 업적 추적 정보 (디버깅/개발용)
     get quizStats() {
-      return {
-        averageTime:
-          allAnswerTimes.current.length > 0
-            ? allAnswerTimes.current.reduce((sum, time) => sum + time, 0) /
-              allAnswerTimes.current.length
-            : 0,
-        maxStreak: maxStreakInQuiz.current,
-        firstThreeCorrect: firstThreeAnswers.current.filter(Boolean).length,
-        totalAnswerTimes: allAnswerTimes.current.length,
+      // 실제 답변 데이터에서 시간 정보 추출
+      const userAnswers = quizSetup.setup.userAnswers;
+      const answerTimes = userAnswers
+        .filter((answer) => answer.answerTime !== undefined)
+        .map((answer) => answer.answerTime!);
+
+      const totalTimeSpent = answerTimes.reduce((sum, time) => sum + time, 0);
+      const averageTime =
+        answerTimes.length > 0
+          ? answerTimes.reduce((sum, time) => sum + time, 0) /
+            answerTimes.length
+          : 0;
+
+      // 연속 정답 계산
+      let maxStreak = 0;
+      let currentStreak = 0;
+      userAnswers.forEach((answer) => {
+        if (answer.isCorrect) {
+          currentStreak++;
+          maxStreak = Math.max(maxStreak, currentStreak);
+        } else {
+          currentStreak = 0;
+        }
+      });
+
+      // 처음 3문제 정답 수 계산
+      const firstThreeCorrect = userAnswers
+        .slice(0, 3)
+        .filter((answer) => answer.isCorrect).length;
+
+      const stats = {
+        averageTime,
+        maxPerfectStreak: maxStreak,
+        firstThreeCorrect,
+        totalAnswerTimes: answerTimes.length,
+        totalTimeSpent, // seconds 문제 사이에 앱을 나갔다 오거나, 화면을 오래 멈춰두면 그 시간은 포함되지 않습니다.
       };
+
+      // 디버깅 로그
+      // console.log('📊 quizStats 계산:', {
+      //   userAnswersLength: userAnswers.length,
+      //   answerTimesLength: answerTimes.length,
+      //   stats,
+      // });
+
+      return stats;
     },
   };
 };

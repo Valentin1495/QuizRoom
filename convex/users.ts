@@ -1,80 +1,69 @@
 import { v } from 'convex/values';
-import { internalMutation, query, QueryCtx } from './_generated/server';
+import { Id } from './_generated/dataModel';
+import { mutation, query } from './_generated/server';
 
-export const createUser = internalMutation({
+// 사용자 생성 또는 업데이트
+export const createOrUpdateUser = mutation({
   args: {
-    clerkId: v.string(),
-    username: v.string(),
-    fullName: v.string(),
+    firebaseUid: v.string(),
     email: v.string(),
-    profileImage: v.string(),
-    level: v.number(),
-    experience: v.number(),
-    coins: v.number(),
-    streak: v.number(),
-    settings: v.optional(
-      v.object({
-        notifications: v.boolean(),
-        sound: v.boolean(),
-        vibration: v.boolean(),
-        darkMode: v.boolean(),
-        language: v.string(),
-      })
-    ),
+    displayName: v.optional(v.string()),
+    photoURL: v.optional(v.string()),
   },
-  async handler(
-    ctx,
-    {
-      clerkId,
-      username,
-      fullName,
-      email,
-      profileImage,
-      level,
-      experience,
-      coins,
-      streak,
-      settings,
+  handler: async (ctx, args): Promise<Id<'users'>> => {
+    // 기존 사용자 확인
+    const existingUser = await ctx.db
+      .query('users')
+      .withIndex('by_firebase_uid', (q) =>
+        q.eq('firebaseUid', args.firebaseUid)
+      )
+      .unique();
+
+    const now = Date.now();
+
+    if (existingUser) {
+      // 기존 사용자 업데이트
+      await ctx.db.patch(existingUser._id, {
+        email: args.email,
+        displayName: args.displayName,
+        photoURL: args.photoURL,
+        lastLoginAt: now,
+      });
+      return existingUser._id;
+    } else {
+      // 새 사용자 생성
+      const userId = await ctx.db.insert('users', {
+        firebaseUid: args.firebaseUid,
+        email: args.email,
+        displayName: args.displayName,
+        photoURL: args.photoURL,
+        lastLoginAt: now,
+        coins: 0,
+        experience: 0,
+        level: 0,
+        streak: 0,
+      });
+      return userId;
     }
-  ) {
-    const userAttributes = {
-      clerkId,
-      username,
-      fullName,
-      email,
-      profileImage,
-      level,
-      experience,
-      coins,
-      streak,
-      settings,
-    };
-
-    await ctx.db.insert('users', userAttributes);
   },
 });
 
-export const getCurrentUserByClerkId = query({
-  handler: async (ctx) => await getCurrentUser(ctx),
+// 사용자 조회
+export const getUserByFirebaseUid = query({
+  args: { firebaseUid: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query('users')
+      .withIndex('by_firebase_uid', (q) =>
+        q.eq('firebaseUid', args.firebaseUid)
+      )
+      .unique();
+  },
 });
 
-export async function getCurrentUser(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (identity === null) {
-    return null;
-  }
-  return await userByClerkId(ctx, identity.subject);
-}
-
-async function userByClerkId(ctx: QueryCtx, clerkId: string) {
-  return await ctx.db
-    .query('users')
-    .withIndex('byClerkId', (q) => q.eq('clerkId', clerkId))
-    .unique();
-}
-
-export async function getCurrentUserOrThrow(ctx: QueryCtx) {
-  const userRecord = await getCurrentUser(ctx);
-  if (!userRecord) throw new Error("Can't get current user");
-  return userRecord;
-}
+// 모든 사용자 조회
+export const getAllUsers = query({
+  handler: async (ctx) => {
+    return await ctx.db.query('users').collect();
+  },
+});

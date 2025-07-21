@@ -1,18 +1,23 @@
+import { Colors } from '@/constants/Colors';
 import { GamificationHUD } from '@/context/gamification-HUD';
 import { PointsAnimation } from '@/context/points-animation';
+import { api } from '@/convex/_generated/api';
 import { Doc } from '@/convex/_generated/dataModel';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useChallenges } from '@/hooks/use-challenges';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
 import { switchDifficulty } from '@/utils/switch-difficulty';
-import { useAuth } from '@clerk/clerk-expo';
+import { getAuth } from '@react-native-firebase/auth';
+import { useMutation } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
+  Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -24,6 +29,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  CheckCircle,
+  Flag,
   Folder,
   Home,
 } from 'react-native-feather';
@@ -58,7 +65,8 @@ export default function QuestionList() {
     showPointsAnimation,
     earnedPoints,
     initializeQuizTracking,
-    quizStats,
+    setQuizStartTime,
+    setTotalTime,
   } = useQuizGamification();
 
   const { questions, questionFormat, userAnswers } = setup;
@@ -72,17 +80,17 @@ export default function QuestionList() {
   );
   const [prevLevel, setPrevLevel] = useState(level);
   const [showLevelUp, setShowLevelUp] = useState(false);
+  const [maxPerfectStreak, setMaxPerfectStreak] = useState(0);
+  const [isCompleting, setIsCompleting] = useState(false);
 
   // 퀴즈 시작 시간과 각 문제별 시간 추적
-  const [quizStartTime] = useState<number>(Date.now());
-  const [questionStartTime, setQuestionStartTime] = useState<number>(
+  const [quizStartTime, setQuizStartTimeLocal] = useState<number>(() =>
     Date.now()
   );
-  const [totalAnswerTime, setTotalAnswerTime] = useState<number>(0);
 
   const router = useRouter();
-  const { userId } = useAuth();
-  const { onQuizCompleted } = useChallenges(userId) || {};
+  const userId = getAuth().currentUser?.uid;
+  const { onQuizCompleted } = useChallenges(userId ? userId : 'skip') || {};
 
   // 애니메이션을 위한 값
   const scale = useSharedValue(1);
@@ -97,6 +105,8 @@ export default function QuestionList() {
   // 퀴즈 시작 시 업적 추적 초기화
   useEffect(() => {
     initializeQuizTracking();
+    setQuizStartTime(quizStartTime); // context의 setQuizStartTime 호출
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -116,12 +126,15 @@ export default function QuestionList() {
     });
   }, [currentQuestionIndex, questions.length]);
 
-  // 새 문제 시작 시 시간 기록
-  useEffect(() => {
-    setQuestionStartTime(Date.now());
-  }, [currentQuestionIndex]);
-
   const currentQuestion: Doc<'quizzes'> = questions[currentQuestionIndex];
+
+  const createReport = useMutation(api.reports.createReport);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState<
+    '정답 오류' | '문제 불명확' | '기타' | ''
+  >('');
+  const [reportDetail, setReportDetail] = useState('');
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
 
   // 답변 처리 (통합된 훅 사용)
   const onSubmitAnswer = (): void => {
@@ -132,10 +145,6 @@ export default function QuestionList() {
     } else {
       userAnswer = textAnswer.trim();
     }
-
-    // 이 문제에 소요된 시간 계산 (초 단위)
-    const questionTime = (Date.now() - questionStartTime) / 1000;
-    setTotalAnswerTime((prev) => prev + questionTime);
 
     // 애니메이션 효과
     scale.value = withTiming(
@@ -194,41 +203,44 @@ export default function QuestionList() {
   };
 
   // 퀴즈 완료 처리 함수
-  const completeQuiz = async () => {
+  const completeQuiz = async (maxStreak: number) => {
     // 게이미피케이션 퀴즈 완료 처리
     const completionResult = await handleQuizCompletion();
 
     // 퀴즈 통계 계산
-    const correctCount = userAnswers.filter(
-      (answer) => answer.isCorrect
-    ).length;
+    // const correctCount = userAnswers.filter(
+    //   (answer) => answer.isCorrect
+    // ).length;
+    // 마지막 정답 여부
+    // const lastAnswerCorrect =
+    // userAnswers[userAnswers.length - 1]?.isCorrect || false;
+
     const totalTime = (Date.now() - quizStartTime) / 1000; // 전체 소요 시간 (초)
+    setTotalTime(totalTime);
     const avgTimePerQuestion = totalTime / questions.length;
 
-    // 도전과제 업데이트 (마지막 정답 여부와 현재 스트릭 사용)
-    const lastAnswerCorrect =
-      userAnswers[userAnswers.length - 1]?.isCorrect || false;
-
+    // 도전과제 업데이트 (최고 연속 정답 수 사용)
     if (onQuizCompleted) {
       await onQuizCompleted(
-        lastAnswerCorrect, // 마지막 답변의 정답 여부
         currentQuestion.category ?? undefined, // 카테고리, null이나 undefined일 때 기본값 사용
         avgTimePerQuestion, // 평균 답변 시간 (초)
-        currentStreak // 현재 연속 정답 수
+        maxPerfectStreak // 최고 연속 정답 수
       );
     }
 
-    console.log('퀴즈 완료 결과:', completionResult);
+    // console.log('퀴즈 완료 결과:', completionResult);
     router.push('/quiz/result');
   };
 
   const goToNextQuestion = async (): Promise<void> => {
+    if (isCompleting) return; // 중복 방지
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setShowFeedback(false);
       setSelectedOption('');
       setTextAnswer('');
       setSlideDirection('right');
+      setMaxPerfectStreak((prev) => Math.max(prev, currentStreak));
 
       // 다음 답변이 있으면 복원
       const nextAnswer = userAnswers[currentQuestionIndex + 1];
@@ -254,12 +266,18 @@ export default function QuestionList() {
             },
             {
               text: '확인',
-              onPress: completeQuiz,
+              onPress: async () => {
+                setIsCompleting(true);
+                await completeQuiz(maxPerfectStreak);
+                setIsCompleting(false);
+              },
             },
           ]
         );
       } else {
-        await completeQuiz();
+        setIsCompleting(true);
+        await completeQuiz(maxPerfectStreak);
+        setIsCompleting(false);
       }
     }
   };
@@ -276,11 +294,68 @@ export default function QuestionList() {
         {
           text: '확인',
           onPress: () => {
-            router.push('/');
+            router.push('/(tabs)');
           },
         },
       ]
     );
+  };
+
+  const goToResult = async (): Promise<void> => {
+    if (isCompleting) return;
+
+    // 답변하지 않은 문제가 있는지 확인
+    if (checkUnansweredQuestions()) {
+      Alert.alert(
+        '답변하지 않은 문제가 있어요',
+        '확인을 누르면 답변하지 않은 문제는 오답 처리돼요.',
+        [
+          {
+            text: '취소',
+            style: 'cancel',
+          },
+          {
+            text: '확인',
+            onPress: async () => {
+              setIsCompleting(true);
+              await completeQuiz(maxPerfectStreak);
+              setIsCompleting(false);
+            },
+          },
+        ]
+      );
+    } else {
+      setIsCompleting(true);
+      await completeQuiz(maxPerfectStreak);
+      setIsCompleting(false);
+    }
+  };
+
+  const handleReportSubmit = async () => {
+    if (!reportReason) return;
+    setIsSubmittingReport(true);
+    try {
+      await createReport({
+        questionId: currentQuestion._id,
+        userId: userId!,
+        reason: reportReason,
+        detail: reportReason === '기타' ? reportDetail : undefined,
+      });
+      setShowReportModal(false);
+      setReportReason('');
+      setReportDetail('');
+      Alert.alert(
+        '신고가 접수되었습니다',
+        '검토 후 조치하겠습니다. 감사합니다!'
+      );
+    } catch (e) {
+      Alert.alert(
+        '신고 실패',
+        '신고 중 오류가 발생했습니다. 다시 시도해 주세요.'
+      );
+    } finally {
+      setIsSubmittingReport(false);
+    }
   };
 
   useBlockNavigation();
@@ -288,7 +363,7 @@ export default function QuestionList() {
   if (!currentQuestion) {
     return (
       <LinearGradient
-        colors={['#FF416C', '#FF4B2B']}
+        colors={Colors.light.gradientColors}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.container}
@@ -306,7 +381,7 @@ export default function QuestionList() {
 
   return (
     <LinearGradient
-      colors={['#8A2387', '#E94057', '#F27121']}
+      colors={Colors.light.gradientColors}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}
@@ -345,7 +420,7 @@ export default function QuestionList() {
             </View>
             <View style={styles.topButtons}>
               <View style={styles.categoryContainer}>
-                <Folder width={16} height={16} color='#fff' />
+                <Folder width={16} height={16} color={Colors.light.secondary} />
                 <Text style={styles.category}>
                   {switchCategoryToLabel(currentQuestion.category)}
                 </Text>
@@ -358,9 +433,28 @@ export default function QuestionList() {
                   </View>
                 )}
               </View>
-              <TouchableOpacity style={styles.homeButton} onPress={goToHome}>
-                <Home width={20} height={20} color='#fff' />
-              </TouchableOpacity>
+              <View style={styles.actionButtons}>
+                <TouchableOpacity
+                  style={styles.reportButton}
+                  onPress={() => setShowReportModal(true)}
+                >
+                  <Flag width={18} height={18} color={Colors.light.secondary} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.resultButton}
+                  onPress={goToResult}
+                  disabled={isCompleting}
+                >
+                  <CheckCircle
+                    width={18}
+                    height={18}
+                    color={Colors.light.secondary}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.homeButton} onPress={goToHome}>
+                  <Home width={20} height={20} color={Colors.light.secondary} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
 
@@ -430,16 +524,14 @@ export default function QuestionList() {
             ) : (
               <View style={styles.shortAnswerContainer}>
                 <TextInput
-                  style={[
-                    styles.textInput,
-                    showFeedback && isCorrect && styles.correctTextInput,
-                    showFeedback && !isCorrect && styles.wrongTextInput,
-                  ]}
+                  style={styles.textInput}
                   placeholder='답변을 입력하세요'
-                  placeholderTextColor='rgba(0, 0, 0, 0.5)'
+                  placeholderTextColor='#888'
                   value={textAnswer}
                   onChangeText={setTextAnswer}
                   editable={!showFeedback}
+                  multiline={false} // 명시적으로 단일 줄
+                  allowFontScaling={false} // (선택)
                 />
               </View>
             )}
@@ -485,7 +577,7 @@ export default function QuestionList() {
               >
                 <View style={styles.submitButtonContent}>
                   <Text style={styles.submitButtonText}>제출하기</Text>
-                  <Check width={20} height={20} color='#fff' />
+                  <Check width={20} height={20} color={'#ffffff'} />
                 </View>
               </TouchableOpacity>
             )}
@@ -497,15 +589,20 @@ export default function QuestionList() {
                   onPress={goToPreviousQuestion}
                 >
                   <View style={styles.navigationButtonContent}>
-                    <ArrowLeft width={16} height={16} color='#fff' />
+                    <ArrowLeft width={16} height={16} color={'#ffffff'} />
                     <Text style={styles.navigationButtonText}>이전</Text>
                   </View>
                 </TouchableOpacity>
               )}
 
               <TouchableOpacity
-                style={[styles.navigationButton, styles.nextButton]}
+                style={[
+                  styles.navigationButton,
+                  styles.nextButton,
+                  isCompleting && styles.disabledButton,
+                ]}
                 onPress={goToNextQuestion}
+                disabled={isCompleting}
               >
                 <View style={styles.navigationButtonContent}>
                   <Text style={styles.navigationButtonText}>
@@ -515,13 +612,130 @@ export default function QuestionList() {
                         ? '다음 문제'
                         : '스킵하기'}
                   </Text>
-                  <ArrowRight width={16} height={16} color='#fff' />
+                  <ArrowRight width={16} height={16} color={'#ffffff'} />
                 </View>
               </TouchableOpacity>
             </View>
           </Animated.View>
         </ScrollView>
       </SafeAreaView>
+
+      {/* 개선된 신고 모달 */}
+      <Modal
+        visible={showReportModal}
+        transparent
+        animationType='fade'
+        onRequestClose={() => setShowReportModal(false)}
+        statusBarTranslucent
+      >
+        <View style={styles.modalOverlay}>
+          <Animated.View
+            entering={FadeIn.duration(200)}
+            style={styles.modalContainer}
+          >
+            <View style={styles.modalHeader}>
+              <Flag width={24} height={24} color={Colors.light.secondary} />
+              <Text style={styles.modalTitle}>문제 신고</Text>
+            </View>
+
+            <Text style={styles.modalSubtitle}>어떤 문제가 있나요?</Text>
+
+            <View style={styles.radioGroup}>
+              {[
+                { key: '정답 오류', label: '정답이 틀렸어요', icon: '❌' },
+                {
+                  key: '문제 불명확',
+                  label: '문제가 이해하기 어려워요',
+                  icon: '❓',
+                },
+                { key: '기타', label: '기타 문제', icon: '💬' },
+              ].map((item) => (
+                <Pressable
+                  key={item.key}
+                  style={[
+                    styles.radioOption,
+                    reportReason === item.key && styles.selectedRadioOption,
+                  ]}
+                  onPress={() => setReportReason(item.key as any)}
+                >
+                  <View style={styles.radioContent}>
+                    <Text style={styles.radioIcon}>{item.icon}</Text>
+                    <Text
+                      style={[
+                        styles.radioLabel,
+                        reportReason === item.key && styles.selectedRadioLabel,
+                      ]}
+                    >
+                      {item.label}
+                    </Text>
+                  </View>
+                  <View style={styles.radioCircle}>
+                    {reportReason === item.key && (
+                      <View style={styles.radioInner} />
+                    )}
+                  </View>
+                </Pressable>
+              ))}
+            </View>
+
+            {reportReason === '기타' && (
+              <TextInput
+                style={styles.modalInput}
+                placeholder='구체적인 문제를 알려주세요'
+                placeholderTextColor='rgba(0, 0, 0, 0.5)'
+                value={reportDetail}
+                onChangeText={setReportDetail}
+                editable={!isSubmittingReport}
+                multiline
+                numberOfLines={3}
+                textAlignVertical='top'
+              />
+            )}
+
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => {
+                  setShowReportModal(false);
+                  setReportReason('');
+                  setReportDetail('');
+                }}
+                disabled={isSubmittingReport}
+              >
+                <Text style={styles.cancelButtonText}>취소</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.submitReportButton,
+                  (!reportReason ||
+                    (reportReason === '기타' && !reportDetail.trim()) ||
+                    isSubmittingReport) &&
+                    styles.disabledSubmitButton,
+                ]}
+                onPress={handleReportSubmit}
+                disabled={
+                  isSubmittingReport ||
+                  !reportReason ||
+                  (reportReason === '기타' && !reportDetail.trim())
+                }
+              >
+                <Text
+                  style={[
+                    styles.submitReportButtonText,
+                    (!reportReason ||
+                      (reportReason === '기타' && !reportDetail.trim()) ||
+                      isSubmittingReport) &&
+                      styles.disabledSubmitButtonText,
+                  ]}
+                >
+                  {isSubmittingReport ? '신고 중...' : '신고하기'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        </View>
+      </Modal>
     </LinearGradient>
   );
 }
@@ -535,17 +749,18 @@ const styles = StyleSheet.create({
   },
   pointsAnimationContainer: {
     position: 'absolute',
-    top: '40%', // 더 위쪽으로 위치 조정
+    top: '40%',
     left: 0,
     right: 0,
-    zIndex: 9999, // zIndex 값 증가
+    zIndex: 9999,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 100, // 명시적 높이 설정
+    height: 100,
   },
   scrollContainer: {
     flexGrow: 1,
     padding: 20,
+    paddingBottom: 40, // 추가 bottom padding
   },
   header: {
     marginBottom: 20,
@@ -565,11 +780,11 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.light.primary,
     borderRadius: 10,
   },
   questionCount: {
-    color: '#fff',
+    color: Colors.light.primary,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -587,7 +802,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   category: {
-    color: '#fff',
+    color: Colors.light.secondary,
     fontSize: 15,
     marginLeft: 6,
     fontWeight: '500',
@@ -602,12 +817,31 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   difficulty: {
-    color: '#fff',
+    color: Colors.light.secondary,
     fontSize: 12,
     fontWeight: '600',
     marginLeft: 4,
   },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  reportButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 10,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   homeButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 10,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  resultButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     padding: 10,
     borderRadius: 50,
@@ -648,8 +882,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   selectedOption: {
-    borderColor: '#8A2387',
-    shadowColor: '#8A2387',
+    borderColor: Colors.light.primary,
+    shadowColor: Colors.light.primary,
     shadowOpacity: 0.2,
     elevation: 3,
   },
@@ -671,42 +905,53 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 0,
   },
+
+  // 옵션 텍스트 스타일들
   optionText: {
-    fontSize: 17,
+    fontSize: 16,
     color: '#333',
+    fontWeight: '500',
+    lineHeight: 22,
   },
   selectedOptionText: {
+    color: Colors.light.primary,
     fontWeight: '600',
-    color: '#8A2387',
   },
   correctOptionText: {
-    fontWeight: '600',
     color: '#2ed573',
+    fontWeight: '600',
   },
   wrongOptionText: {
-    fontWeight: '600',
     color: '#ff4757',
+    fontWeight: '600',
   },
+
+  // 단답형 입력 관련 스타일들
   shortAnswerContainer: {
     marginBottom: 20,
   },
   textInput: {
-    backgroundColor: '#f7f7f7',
-    padding: 16,
+    backgroundColor: '#ececec',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     borderRadius: 16,
     fontSize: 17,
+    lineHeight: 22,
     borderWidth: 2,
-    borderColor: '#f7f7f7',
+    borderColor: '#e0e0e0',
     color: '#333',
+    height: 44, // minHeight 대신 height로 고정
   },
   correctTextInput: {
+    backgroundColor: 'rgba(46, 213, 115, 0.15)',
     borderColor: '#2ed573',
-    backgroundColor: 'rgba(46, 213, 115, 0.08)',
   },
   wrongTextInput: {
+    backgroundColor: 'rgba(255, 71, 87, 0.15)',
     borderColor: '#ff4757',
-    backgroundColor: 'rgba(255, 71, 87, 0.08)',
   },
+
+  // 피드백 관련 스타일들
   feedbackContainer: {
     padding: 16,
     borderRadius: 16,
@@ -722,9 +967,9 @@ const styles = StyleSheet.create({
     borderColor: '#ff4757',
   },
   feedbackText: {
-    fontSize: 17,
-    textAlign: 'center',
+    fontSize: 16,
     fontWeight: '600',
+    textAlign: 'center',
   },
   correctFeedback: {
     color: '#2ed573',
@@ -734,31 +979,29 @@ const styles = StyleSheet.create({
   },
   streakText: {
     fontSize: 14,
+    color: '#ff6b35',
     fontWeight: '600',
-    color: '#4CAF50',
-    marginTop: 4,
     textAlign: 'center',
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-    overflow: 'hidden',
+    marginTop: 8,
   },
+
+  // 제출 버튼 스타일들
   submitButton: {
-    backgroundColor: '#8A2387',
+    backgroundColor: Colors.light.primary,
     paddingVertical: 16,
-    borderRadius: 50,
-    alignItems: 'center',
+    paddingHorizontal: 24,
+    borderRadius: 16,
     marginBottom: 20,
-    shadowColor: '#8A2387',
+    shadowColor: Colors.light.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 6,
+    elevation: 8,
   },
   disabledButton: {
-    backgroundColor: '#bbb',
+    backgroundColor: '#cccccc',
     shadowOpacity: 0.1,
+    elevation: 0,
   },
   submitButtonContent: {
     flexDirection: 'row',
@@ -766,50 +1009,200 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   submitButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
     marginRight: 8,
   },
+
+  // 네비게이션 버튼 스타일들
   navigationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
   },
   navigationButton: {
-    flex: 1,
-    padding: 14,
-    borderRadius: 50,
-    alignItems: 'center',
-    backgroundColor: '#E94057',
-    marginHorizontal: 5,
+    backgroundColor: Colors.light.secondary,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   nextButton: {
-    backgroundColor: '#F27121',
-    shadowColor: '#F27121',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 4,
+    backgroundColor: Colors.light.secondary,
+    shadowColor: Colors.light.secondary,
+    shadowOpacity: 0.3,
   },
   navigationButtonContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   navigationButtonText: {
-    fontSize: 16,
+    color: '#ffffff',
+    fontSize: 14,
     fontWeight: '600',
-    color: '#fff',
-    marginHorizontal: 4,
+    marginHorizontal: 6,
   },
+
+  // 로딩 스타일들
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   loadingText: {
+    color: Colors.light.primary,
     fontSize: 18,
-    color: '#fff',
     fontWeight: '600',
+  },
+
+  // 모달 스타일들
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.light.secondary,
+    marginLeft: 12,
+  },
+  modalSubtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 20,
+    lineHeight: 22,
+  },
+  radioGroup: {
+    marginBottom: 20,
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: '#f8f9fa',
+    marginBottom: 8,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  selectedRadioOption: {
+    backgroundColor: 'rgba(111, 29, 27, 0.1)',
+    borderColor: Colors.light.primary,
+  },
+  radioContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  radioIcon: {
+    fontSize: 20,
+    marginRight: 12,
+  },
+  radioLabel: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '500',
+  },
+  selectedRadioLabel: {
+    color: Colors.light.primary,
+    fontWeight: '600',
+  },
+  radioCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#ddd',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: Colors.light.primary,
+  },
+  modalInput: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    color: '#333',
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    marginBottom: 20,
+    minHeight: 80,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 12,
+  },
+  cancelButton: {
+    backgroundColor: '#e9ecef',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flex: 1,
+  },
+  cancelButtonText: {
+    color: '#6c757d',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  submitReportButton: {
+    backgroundColor: Colors.light.primary,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flex: 1,
+    shadowColor: Colors.light.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  disabledSubmitButton: {
+    backgroundColor: '#e9ecef',
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  submitReportButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  disabledSubmitButtonText: {
+    color: '#6c757d',
   },
 });

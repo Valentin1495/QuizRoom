@@ -71,6 +71,8 @@ type QuizSetup<T extends QuizType = QuizType> = {
   // 새로 추가된 필드
   questions: Doc<'quizzes'>[];
   userAnswers: UserAnswer[];
+  quizStartTime?: number; // 퀴즈 시작 시각 (timestamp)
+  totalTime?: number; // 퀴즈 총 소요 시간 (초)
 };
 
 // 6. Context 타입
@@ -83,6 +85,8 @@ type QuizSetupContextType = {
   addUserAnswer: (userAnswer: UserAnswer) => void;
   resetQuizData: () => void;
   restartQuiz: () => void;
+  setQuizStartTime: (quizStartTime: number) => void;
+  setTotalTime: (totalTime: number) => void;
 };
 
 const QuizSetupContext = createContext<QuizSetupContextType | undefined>(
@@ -97,6 +101,8 @@ export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
     questionFormat: null,
     questions: [],
     userAnswers: [],
+    quizStartTime: undefined,
+    totalTime: undefined,
   });
 
   // 개별 필드 업데이트를 위한 헬퍼 함수들
@@ -133,6 +139,14 @@ export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  const setQuizStartTime = (quizStartTime: number) => {
+    setSetup((prev) => ({ ...prev, quizStartTime }));
+  };
+
+  const setTotalTime = (totalTime: number) => {
+    setSetup((prev) => ({ ...prev, totalTime }));
+  };
+
   return (
     <QuizSetupContext.Provider
       value={{
@@ -143,6 +157,8 @@ export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
         addUserAnswer,
         resetQuizData,
         restartQuiz,
+        setQuizStartTime,
+        setTotalTime,
       }}
     >
       {children}

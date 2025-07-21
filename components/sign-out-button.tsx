@@ -1,21 +1,31 @@
-import { useClerk } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
-import * as Linking from 'expo-linking';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { getAuth, signOut } from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function SignOutButton() {
-  const { signOut } = useClerk();
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      // Redirect to your desired page
-      Linking.openURL(Linking.createURL('/(auth)/welcome-screen'));
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
-    }
+  const handleSignOut = () => {
+    Alert.alert('로그아웃', '정말 로그아웃 하시겠어요?', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '로그아웃',
+        style: 'destructive',
+        onPress: () => {
+          try {
+            signOut(getAuth()).then(() => {
+              // console.log('signed out');
+              GoogleSignin.revokeAccess();
+            });
+          } catch (error) {
+            console.error('로그아웃 중 오류 발생:', error);
+            Alert.alert('오류', '로그아웃 중 문제가 발생했습니다.');
+          }
+        },
+      },
+    ]);
   };
 
   return (

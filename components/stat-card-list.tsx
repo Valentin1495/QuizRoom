@@ -5,7 +5,7 @@ import EmptyStatsCard from './empty-stat-card';
 import LevelProgress from './level-progress';
 import StatCard from './stat-card';
 
-type CardListProps = { userId?: string | null; unlockedCount?: number };
+type CardListProps = { userId?: string; unlockedCount?: number };
 
 export default function StatCardList({ userId, unlockedCount }: CardListProps) {
   const gamificationData = useQuery(

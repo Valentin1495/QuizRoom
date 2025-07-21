@@ -1,10 +1,8 @@
-import { useSSO } from '@clerk/clerk-expo';
+import { Colors } from '@/constants/Colors';
+import { useAuth } from '@/hooks/use-auth';
 import { Ionicons } from '@expo/vector-icons';
-import * as AuthSession from 'expo-auth-session';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -15,21 +13,6 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-export const useWarmUpBrowser = () => {
-  useEffect(() => {
-    // Preloads the browser for Android devices to reduce authentication load time
-    // See: https://docs.expo.dev/guides/authentication/#improving-user-experience
-    void WebBrowser.warmUpAsync();
-    return () => {
-      // Cleanup: closes browser when component unmounts
-      void WebBrowser.coolDownAsync();
-    };
-  }, []);
-};
-
-// Handle any pending authentication sessions
-WebBrowser.maybeCompleteAuthSession();
 
 const { width, height } = Dimensions.get('window');
 
@@ -136,47 +119,14 @@ const demoQuestions: Question[] = [
 type Screen = 'welcome' | 'demo' | 'result';
 
 const WelcomeScreen: React.FC = () => {
-  useWarmUpBrowser();
-  // Use the `useSSO()` hook to access the `startSSOFlow()` method
-  const { startSSOFlow } = useSSO();
-
   const [currentScreen, setCurrentScreen] = useState<Screen>('welcome');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
   const [score, setScore] = useState(0);
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(50));
-  const router = useRouter();
   const DEMO_QUESTION_COUNT = 10; // 데모에서 보여줄 문제 수
-
-  const signInWithGoogle = useCallback(async () => {
-    try {
-      // Start the authentication process by calling `startSSOFlow()`
-      const { createdSessionId, setActive, signIn, signUp } =
-        await startSSOFlow({
-          strategy: 'oauth_google',
-          // For web, defaults to current path
-          // For native, you must pass a scheme, like AuthSession.makeRedirectUri({ scheme, path })
-          // For more info, see https://docs.expo.dev/versions/latest/sdk/auth-session/#authsessionmakeredirecturioptions
-          redirectUrl: AuthSession.makeRedirectUri(),
-        });
-
-      // If sign in was successful, set the active session
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId });
-        router.replace('/(tabs)');
-      } else {
-        // If there is no `createdSessionId`,
-        // there are missing requirements, such as MFA
-        // Use the `signIn` or `signUp` returned from `startSSOFlow`
-        // to handle next steps
-      }
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
-    }
-  }, []);
+  const { handleGoogleButtonPress, isSigningIn } = useAuth();
 
   useEffect(() => {
     Animated.parallel([
@@ -225,10 +175,16 @@ const WelcomeScreen: React.FC = () => {
   };
 
   const GoogleLoginButton = () => (
-    <TouchableOpacity style={styles.googleButton} onPress={signInWithGoogle}>
+    <TouchableOpacity
+      style={styles.googleButton}
+      onPress={handleGoogleButtonPress}
+      disabled={isSigningIn}
+    >
       <View style={styles.googleButtonContent}>
-        <Ionicons name='logo-google' size={20} color='#4285F4' />
-        <Text style={styles.googleButtonText}>Google로 계속하기</Text>
+        <Ionicons name='logo-google' size={20} color='#ffffff' />
+        <Text style={styles.googleButtonText}>
+          {isSigningIn ? '로그인 중...' : 'Google로 시작하기'}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -236,7 +192,7 @@ const WelcomeScreen: React.FC = () => {
   if (currentScreen === 'welcome') {
     return (
       <LinearGradient
-        colors={['#667eea', '#764ba2', '#f093fb']}
+        colors={Colors.light.gradientColors}
         style={styles.container}
       >
         <StatusBar barStyle='light-content' />
@@ -262,7 +218,11 @@ const WelcomeScreen: React.FC = () => {
             {/* Features */}
             <View style={styles.featuresContainer}>
               <View style={styles.feature}>
-                <Ionicons name='library' size={24} color='#FFD700' />
+                <Ionicons
+                  name='library'
+                  size={24}
+                  color={Colors.light.secondary}
+                />
                 <Text style={styles.featureText}>다양한 상식 퀴즈</Text>
               </View>
               <View style={styles.feature}>
@@ -309,8 +269,11 @@ const WelcomeScreen: React.FC = () => {
 
   if (currentScreen === 'demo') {
     return (
-      <LinearGradient colors={['#667eea', '#764ba2']} style={styles.container}>
-        <StatusBar barStyle='light-content' />
+      <LinearGradient
+        colors={Colors.light.gradientColors}
+        style={styles.container}
+      >
+        <StatusBar barStyle='dark-content' />
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.quizContainer}>
             {/* Progress Bar */}
@@ -360,7 +323,7 @@ const WelcomeScreen: React.FC = () => {
   // Result Screen
   return (
     <LinearGradient
-      colors={['#667eea', '#764ba2', '#f093fb']}
+      colors={Colors.light.gradientColors}
       style={styles.container}
     >
       <StatusBar barStyle='light-content' />
@@ -445,19 +408,25 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 48,
     fontWeight: '900',
-    color: '#FFFFFF',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     letterSpacing: 2,
   },
   logoAccent: {
     width: 40,
     height: 4,
-    backgroundColor: '#f093fb',
+    backgroundColor: '#6f1d1b',
     borderRadius: 2,
     marginTop: 8,
   },
   tagline: {
     fontSize: 18,
-    color: '#FFFFFF',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     opacity: 0.9,
     textAlign: 'center',
     fontWeight: '500',
@@ -476,7 +445,10 @@ const styles = StyleSheet.create({
     minWidth: 200,
   },
   featureText: {
-    color: '#FFFFFF',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 12,
@@ -485,14 +457,9 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   googleButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#6f1d1b',
     borderRadius: 12,
     padding: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   googleButtonContent: {
     flexDirection: 'row',
@@ -502,7 +469,7 @@ const styles = StyleSheet.create({
   googleButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#ffffff',
     marginLeft: 12,
   },
   demoInfo: {
@@ -514,30 +481,45 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   demoInfoText: {
-    color: '#FFFFFF',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 4,
   },
   demoInfoSubtext: {
-    color: '#FFFFFF',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     fontSize: 14,
     opacity: 0.9,
   },
   demoButton: {
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     borderRadius: 12,
     paddingVertical: 16,
   },
   demoButtonText: {
-    color: '#FFFFFF',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },
   disclaimer: {
-    color: '#FFFFFF',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     opacity: 0.8,
     fontSize: 12,
     textAlign: 'center',
@@ -563,11 +545,14 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#FFD700',
+    backgroundColor: '#6f1d1b',
     borderRadius: 3,
   },
   progressText: {
-    color: '#FFFFFF',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -578,7 +563,10 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   questionText: {
-    color: '#FFFFFF',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
@@ -594,7 +582,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   optionText: {
-    color: '#333',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
@@ -623,12 +614,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
   },
-  resultScore: {
-    fontSize: 36,
-    fontWeight: '900',
-    color: '#667eea',
-    marginBottom: 16,
-  },
   resultMessage: {
     fontSize: 16,
     color: '#666',
@@ -648,7 +633,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   retryButtonText: {
-    color: '#667eea',
+    color: '#6f1d1b',
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
     fontSize: 16,
     fontWeight: '600',
   },

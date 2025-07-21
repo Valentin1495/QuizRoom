@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: Colors.light.primary,
   },
   row: {
     flexDirection: 'row',
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
   summary: {
     marginTop: 10,
     fontSize: 13,
-    color: '#333',
+    color: '#1a1e2f',
     fontWeight: '600',
   },
 });

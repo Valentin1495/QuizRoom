@@ -3,11 +3,11 @@ import { v } from 'convex/values';
 
 export default defineSchema({
   users: defineTable({
-    clerkId: v.string(),
-    username: v.string(),
-    fullName: v.string(),
+    firebaseUid: v.string(),
+    displayName: v.optional(v.string()),
+    photoURL: v.optional(v.string()),
     email: v.string(),
-    profileImage: v.string(),
+    lastLoginAt: v.number(),
     settings: v.optional(
       v.object({
         notifications: v.boolean(), // 알림 설정
@@ -21,7 +21,7 @@ export default defineSchema({
     experience: v.number(),
     level: v.number(),
     streak: v.number(),
-  }).index('byClerkId', ['clerkId']),
+  }).index('by_firebase_uid', ['firebaseUid']),
 
   quizzes: defineTable({
     quizType: v.union(
@@ -77,7 +77,7 @@ export default defineSchema({
     .index('byCategory', ['category']),
 
   gamificationData: defineTable({
-    userId: v.string(), // Clerk 유저 ID
+    userId: v.string(),
 
     // 포인트 & 레벨
     totalPoints: v.number(),
@@ -96,7 +96,6 @@ export default defineSchema({
     currentPerfectStreak: v.number(),
 
     // 메타데이터
-    createdAt: v.number(),
     updatedAt: v.number(),
   }).index('by_user', ['userId']),
 
@@ -151,7 +150,7 @@ export default defineSchema({
       v.literal('Diamond')
     ),
 
-    skillScore: v.number(),
+    weightedAccuracy: v.number(),
 
     skillLevelNote: v.optional(v.string()), // 선택적으로 변경
 
@@ -170,14 +169,13 @@ export default defineSchema({
       v.array(
         v.object({
           date: v.number(), // timestamp
-          skillScore: v.number(),
+          weightedAccuracy: v.number(),
           accuracy: v.number(),
           questionsAnswered: v.number(),
         })
       )
     ),
 
-    createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index('by_user_category', ['userId', 'category'])
@@ -185,35 +183,12 @@ export default defineSchema({
     .index('by_skill_level', ['skillLevel']) // 랭킹 시스템용
     .index('by_updated_at', ['updatedAt']), // 최근 업데이트 조회용
 
-  quizResults: defineTable({
-    id: v.string(),
-    userId: v.string(),
-    quizId: v.string(),
-    category: v.string(),
-    difficulty: v.union(
-      v.literal('easy'),
-      v.literal('medium'),
-      v.literal('hard')
-    ),
-    isCorrect: v.boolean(),
-    timeSpent: v.number(), // 밀리초
-    attemptedAt: v.number(),
-
-    // 추가 메타데이터
-    hintsUsed: v.optional(v.number()),
-    confidenceLevel: v.optional(v.number()), // 1-5 스케일
-  })
-    .index('by_user', ['userId'])
-    .index('by_user_category', ['userId', 'category'])
-    .index('by_user_difficulty', ['userId', 'difficulty']),
-
   achievements: defineTable({
     userId: v.string(),
     achievementId: v.string(), // 업적의 고유 ID
     unlockedAt: v.optional(v.number()), // timestamp, undefined면 미해금
     progress: v.number(), // 현재 진행도
-    maxProgress: v.optional(v.number()), // 목표값 (예: streak_30이면 30, first_quiz면 1)
-    createdAt: v.number(),
+    target: v.optional(v.number()), // 목표값 (예: streak_30이면 30, first_quiz면 1)
     updatedAt: v.number(),
   })
     .index('by_user', ['userId'])
@@ -230,12 +205,14 @@ export default defineSchema({
     correct: v.number(),
     averageTime: v.optional(v.number()),
     comebackVictory: v.optional(v.boolean()),
-    luckyStreak: v.optional(v.number()),
+    maxPerfectStreak: v.optional(v.number()),
     withFriend: v.optional(v.boolean()),
     relearnedMistakes: v.optional(v.boolean()),
-    createdAt: v.number(),
     difficulty: v.optional(
       v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
+    ),
+    questionFormat: v.optional(
+      v.union(v.literal('multiple'), v.literal('short'), v.null())
     ),
     timeSpent: v.optional(v.number()),
   })
@@ -260,21 +237,22 @@ export default defineSchema({
     }),
     completed: v.boolean(),
     expiresAt: v.number(),
-    createdAt: v.number(),
   })
     .index('by_user', ['userId'])
     .index('by_user_type', ['userId', 'type'])
     .index('by_expiry', ['expiresAt']),
 
-  dailyChallengeProgress: defineTable({
+  // 문제 오류 신고 테이블
+  reports: defineTable({
+    questionId: v.id('quizzes'), // 신고된 문제 ID
     userId: v.string(),
-    date: v.string(), // YYYY-MM-DD 형식
-    quizCount: v.number(),
-    perfectQuizCount: v.number(),
-    streakDays: v.number(),
-    createdAt: v.number(),
-    updatedAt: v.number(),
+    reason: v.union(
+      v.literal('정답 오류'),
+      v.literal('문제 불명확'),
+      v.literal('기타')
+    ), // 신고 사유 선택지
+    detail: v.optional(v.string()), // 기타 입력란
   })
-    .index('by_user', ['userId'])
-    .index('by_user_date', ['userId', 'date']),
+    .index('by_question', ['questionId'])
+    .index('by_user', ['userId']),
 });

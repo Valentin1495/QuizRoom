@@ -51,7 +51,7 @@ export const getGamificationData = query({
       totalQuizzes: 0,
       totalCorrectAnswers: 0,
       currentPerfectStreak: 0,
-      createdAt: Date.now(),
+      _creationTime: Date.now(),
       updatedAt: Date.now(),
     };
   },
@@ -91,7 +91,6 @@ export const updateGamificationData = mutation({
       await ctx.db.insert('gamificationData', {
         userId: args.userId,
         ...args.data,
-        createdAt: now,
         updatedAt: now,
       });
     }
@@ -115,7 +114,7 @@ export const updateAchievement = mutation({
     userId: v.string(),
     achievementId: v.string(),
     progress: v.number(),
-    maxProgress: v.number(), // 목표값 필수
+    target: v.number(), // 목표값 필수
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -126,13 +125,13 @@ export const updateAchievement = mutation({
       .first();
 
     const now = Date.now();
-    const shouldUnlock = args.progress >= args.maxProgress;
+    const shouldUnlock = args.progress >= args.target;
 
     if (existing) {
       // 기존 기록 업데이트
       await ctx.db.patch(existing._id, {
         progress: args.progress,
-        maxProgress: args.maxProgress,
+        target: args.target,
         unlockedAt:
           shouldUnlock && !existing.unlockedAt ? now : existing.unlockedAt,
         updatedAt: now,
@@ -143,9 +142,8 @@ export const updateAchievement = mutation({
         userId: args.userId,
         achievementId: args.achievementId,
         progress: args.progress,
-        maxProgress: args.maxProgress,
+        target: args.target,
         unlockedAt: shouldUnlock ? now : undefined,
-        createdAt: now,
         updatedAt: now,
       });
     }
@@ -195,11 +193,14 @@ export const addQuizHistory = mutation({
     date: v.string(),
     completedAt: v.string(),
     category: v.string(),
+    questionFormat: v.optional(
+      v.union(v.literal('multiple'), v.literal('short'), v.null())
+    ),
     total: v.number(),
     correct: v.number(),
     averageTime: v.optional(v.number()),
     comebackVictory: v.optional(v.boolean()),
-    luckyStreak: v.optional(v.number()),
+    maxPerfectStreak: v.optional(v.number()),
     withFriend: v.optional(v.boolean()),
     relearnedMistakes: v.optional(v.boolean()),
     difficulty: v.optional(
@@ -208,10 +209,7 @@ export const addQuizHistory = mutation({
     timeSpent: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert('quizHistory', {
-      ...args,
-      createdAt: Date.now(),
-    });
+    await ctx.db.insert('quizHistory', args);
   },
 });
 
@@ -351,13 +349,27 @@ export const updateCategoryStatsFromAnalysis = mutation({
     const updatedCorrectAnswers = (existing?.correctAnswers || 0) + correct;
     const updatedTotalQuestions = (existing?.totalQuestions || 0) + 10;
 
-    const weightedScore =
-      updatedDifficultyStats.easy.accuracy * 1 +
-      updatedDifficultyStats.medium.accuracy * 2 +
-      updatedDifficultyStats.hard.accuracy * 3;
+    // 가중 평균 정확도 계산 (문제 수 기반 가중치)
+    const weights = { easy: 1, medium: 2, hard: 3 };
+    let weightedSum = 0;
+    let totalWeight = 0;
 
-    const maxWeightedScore = 3 * 100;
-    const updatedSkillScore = skillScore;
+    for (const [level, weight] of Object.entries(weights)) {
+      const stats = updatedDifficultyStats[level as 'easy' | 'medium' | 'hard'];
+      const questions = stats.totalQuestions;
+      const accuracy = stats.accuracy;
+
+      weightedSum += (accuracy / 100) * questions * weight;
+      totalWeight += questions * weight;
+    }
+
+    const updatedWeightedAccuracy =
+      totalWeight > 0 ? Math.round((weightedSum / totalWeight) * 100) : 0;
+
+    // 스키마 호환성을 위한 필드들 (기존 방식 유지하되 의미 변경)
+    const weightedScore = weightedSum;
+    const maxWeightedScore = totalWeight;
+
     const now = Date.now();
 
     const prevHistory = existing?.progressHistory ?? [];
@@ -373,7 +385,7 @@ export const updateCategoryStatsFromAnalysis = mutation({
       ...filteredHistory,
       {
         date: todayStamp,
-        skillScore: updatedSkillScore,
+        weightedAccuracy: updatedWeightedAccuracy,
         accuracy: Math.round(
           (updatedCorrectAnswers / updatedTotalQuestions) * 100
         ),
@@ -384,13 +396,13 @@ export const updateCategoryStatsFromAnalysis = mutation({
     const newData = {
       userId,
       category,
-      skillScore: updatedSkillScore,
+      weightedAccuracy: updatedWeightedAccuracy,
       totalQuestions: updatedTotalQuestions,
       correctAnswers: updatedCorrectAnswers,
       weightedScore,
       maxWeightedScore,
       difficultyStats: updatedDifficultyStats,
-      growthTrend: updatedSkillScore - (existing?.skillScore || 0),
+      growthTrend: updatedWeightedAccuracy - (existing?.weightedAccuracy || 0),
       averageTime: updatedDifficultyStats[difficulty].avgTime,
       skillLevel: 'Unranked' as const,
       progressHistory,
@@ -402,7 +414,6 @@ export const updateCategoryStatsFromAnalysis = mutation({
     } else {
       await ctx.db.insert('categoryStats', {
         ...newData,
-        createdAt: now,
       });
     }
   },
@@ -436,19 +447,27 @@ export const getCategoryStatsWithDifficulty = query({
           ? Math.round((correctSum / totalQuestions) * 100)
           : 0;
 
-      // 가중치 기반 skillScore (easy:1, medium:2, hard:3)
-      const weightedScore =
-        (easy.accuracy ?? 0) * 1 +
-        (medium.accuracy ?? 0) * 2 +
-        (hard.accuracy ?? 0) * 3;
+      // 가중 평균 정확도 계산 (문제 수 기반 가중치)
+      const weights = { easy: 1, medium: 2, hard: 3 };
+      let weightedSum = 0;
+      let totalWeight = 0;
 
-      const maxWeightedScore = 3 * 100; // 300
-      const skillScore = Math.round((weightedScore / maxWeightedScore) * 100);
+      for (const [level, weight] of Object.entries(weights)) {
+        const stats = stat.difficultyStats[level as 'easy' | 'medium' | 'hard'];
+        const questions = stats.totalQuestions;
+        const accuracy = stats.accuracy;
+
+        weightedSum += (accuracy / 100) * questions * weight;
+        totalWeight += questions * weight;
+      }
+
+      const weightedAccuracy =
+        totalWeight > 0 ? Math.round((weightedSum / totalWeight) * 100) : 0;
 
       result[stat.category] = {
         ...stat,
         overallAccuracy,
-        skillScore,
+        weightedAccuracy,
       };
     }
 
@@ -557,14 +576,16 @@ export const getOverallAnalysis = query({
 
     const analysis = categoryStats.map((stat) => ({
       category: stat.category,
-      skillScore: stat.skillScore,
+      weightedAccuracy: stat.weightedAccuracy,
       difficultyAnalysis: stat.difficultyStats,
       growthTrend: stat.growthTrend,
       totalQuestions: stat.totalQuestions || 0,
       averageTime: stat.averageTime || 0,
     }));
 
-    const sorted = [...analysis].sort((a, b) => b.skillScore - a.skillScore);
+    const sorted = [...analysis].sort(
+      (a, b) => b.weightedAccuracy - a.weightedAccuracy
+    );
     const learningPatterns = analyzeLearningPatterns(categoryStats as any);
 
     // ✅ 캐시된 AI 인사이트만 사용
@@ -659,7 +680,7 @@ export const analyzeWithGemini = action({
 4. 학습 패턴 - 일관성 패턴, 성장 패턴, 난이도 선호도, 참여도
 
 ### 🎯 카테고리 이름은 반드시 다음 한국어 이름으로 출력해주세요:
-- knowledge-kpop-music → "K-POP & 음악"
+- knowledge-kpop-music → "K팝 & 음악"
 - knowledge-history-culture → "역사 & 문화"
 - knowledge-general → "일반 상식"
 - knowledge-arts-literature → "예술 & 문학"
@@ -680,7 +701,7 @@ export const analyzeWithGemini = action({
 {
   "overallInsight": "전반적인 학습 상태에 대한 종합 평가",
   "motivationalMessage": "격려 메시지",
-  "nextGoals": ["목표1", "목표2", "목표3"]
+  "nextGoals": ["목표1", "목표2", "목표3", ...]
 }
 \`\`\`
 

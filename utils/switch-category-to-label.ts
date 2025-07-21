@@ -1,7 +1,7 @@
 export function switchCategoryToLabel(category?: string | null) {
   switch (category) {
     case 'kpop-music':
-      return 'K-pop & 음악';
+      return 'K팝 & 음악';
 
     case 'history-culture':
       return '역사 & 문화';

@@ -1,6 +1,7 @@
+import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
-import { Award, Star } from 'react-native-feather';
+import { Star } from 'react-native-feather';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 interface GamificationHUDProps {
@@ -33,7 +34,7 @@ export function GamificationHUD({
 
           {/* 레벨 */}
           <View style={styles.statContainer}>
-            <Award width={16} height={16} color='#FF6B6B' />
+            <Ionicons name='diamond-outline' size={16} color='#FF6B6B' />
             <Text style={styles.statValue}>Lv.{level}</Text>
           </View>
 
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   progressText: {
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: Colors.light.primary,
     fontSize: 12,
     marginTop: 4,
   },
