@@ -1,9 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { getAuth, signOut } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useRouter } from 'expo-router';
 import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function SignOutButton() {
+  const router = useRouter();
   const handleSignOut = () => {
     Alert.alert('로그아웃', '정말 로그아웃 하시겠어요?', [
       {
@@ -16,8 +18,8 @@ export default function SignOutButton() {
         onPress: () => {
           try {
             signOut(getAuth()).then(() => {
-              // console.log('signed out');
               GoogleSignin.revokeAccess();
+              router.push('/(auth)/welcome-screen'); // 로그아웃 후 강제 이동
             });
           } catch (error) {
             console.error('로그아웃 중 오류 발생:', error);

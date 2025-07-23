@@ -212,7 +212,7 @@ const WelcomeScreen: React.FC = () => {
                 <Text style={styles.logoText}>QZY</Text>
                 <View style={styles.logoAccent} />
               </View>
-              <Text style={styles.tagline}>진짜 나를 찾는 퀴즈, QZY</Text>
+              <Text style={styles.tagline}>진짜 나를 찾는 퀴즈</Text>
             </View>
 
             {/* Features */}
@@ -251,11 +251,11 @@ const WelcomeScreen: React.FC = () => {
 
             {/* CTA Buttons */}
             <View style={styles.buttonContainer}>
-              <GoogleLoginButton />
-
               <TouchableOpacity style={styles.demoButton} onPress={startDemo}>
                 <Text style={styles.demoButtonText}>테스트 해보기</Text>
               </TouchableOpacity>
+
+              <GoogleLoginButton />
             </View>
 
             <Text style={styles.disclaimer}>

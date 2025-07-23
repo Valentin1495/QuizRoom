@@ -28,11 +28,13 @@ export default function RootLayout() {
   );
 
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null | undefined>(
+    undefined
+  );
 
   // Firebase 유저 상태 변경 핸들링
   function handleAuthStateChanged(user: FirebaseAuthTypes.User | null) {
-    setUser(user);
+    setUser(user ? user : null);
     setInitializing(false);
   }
 
@@ -43,7 +45,7 @@ export default function RootLayout() {
 
   // ✅ 초기화 끝난 후에만 router.replace 실행
   useEffect(() => {
-    if (user === undefined || initializing) return;
+    if (initializing) return;
     if (user) {
       router.replace('/(tabs)');
     } else {
