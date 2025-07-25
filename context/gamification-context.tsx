@@ -1,4 +1,5 @@
 import { hasFiveConsecutivePerfectScores } from '@/utils/has-five-consecutive-perfect-scores';
+import { log } from '@/utils/log';
 import { getAuth } from '@react-native-firebase/auth';
 import { useMutation, useQuery } from 'convex/react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -499,7 +500,7 @@ export function GamificationProvider({
       const { level, expInCurrentLevel, pointsToNextLevel } =
         calculateLevel(newTotal);
 
-      // if (level > prev.level) console.log(`🎉 Level-Up → L${level}`);
+      if (level > prev.level) log(`🎉 Level-Up → L${level}`);
 
       const newState = {
         ...prev,
@@ -1035,7 +1036,7 @@ export function GamificationProvider({
 
         // 새로 해금된 업적이 있으면 상태 업데이트
         if (unlocked.length > 0) {
-          console.log(
+          log(
             '✅ 새로 해금된 업적:',
             unlocked.map((a) => a.title)
           );

@@ -6,6 +6,7 @@ import { Doc } from '@/convex/_generated/dataModel';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useChallenges } from '@/hooks/use-challenges';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
+import { log } from '@/utils/log';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
 import { switchDifficulty } from '@/utils/switch-difficulty';
 import { getAuth } from '@react-native-firebase/auth';
@@ -228,7 +229,7 @@ export default function QuestionList() {
       );
     }
 
-    // console.log('퀴즈 완료 결과:', completionResult);
+    log('퀴즈 완료 결과:', completionResult);
     router.push('/quiz/result');
   };
 

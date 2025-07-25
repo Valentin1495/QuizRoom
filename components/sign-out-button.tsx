@@ -1,3 +1,4 @@
+import { logError } from '@/utils/log-error';
 import { Ionicons } from '@expo/vector-icons';
 import { getAuth, signOut } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -22,7 +23,7 @@ export default function SignOutButton() {
               router.push('/(auth)/welcome-screen'); // 로그아웃 후 강제 이동
             });
           } catch (error) {
-            console.error('로그아웃 중 오류 발생:', error);
+            logError('로그아웃 중 오류 발생:', error);
             Alert.alert('오류', '로그아웃 중 문제가 발생했습니다.');
           }
         },

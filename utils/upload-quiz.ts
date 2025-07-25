@@ -1,3 +1,6 @@
+import { log } from './log';
+import { logError } from './log-error';
+
 const quizzes = [
   {
     answer: '무리수',
@@ -513,15 +516,15 @@ const quizzes = [
     quizType: 'knowledge',
   },
 ];
-// console.log(quizzes.length);
+log(quizzes.length);
 
 export const uploadQuizBatch = async (insertQuizBatch: any) => {
   try {
     const result = await insertQuizBatch({ quizzes });
-    // console.log(`✅ Successfully uploaded ${result.count} quizzes in batch`);
+    log(`✅ Successfully uploaded ${result.count} quizzes in batch`);
     return result;
   } catch (error) {
-    console.error('❌ Batch upload failed:', error);
+    logError('❌ Batch upload failed:', error);
     throw error;
   }
 };

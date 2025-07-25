@@ -1,3 +1,4 @@
+import { logError } from '@/utils/log-error';
 import { useMutation } from 'convex/react';
 import { Alert } from 'react-native';
 import { api } from '../convex/_generated/api';
@@ -32,7 +33,7 @@ export const useChallenges = (userId?: string | null) => {
         ]);
       }
     } catch (error) {
-      console.error('도전과제 업데이트 실패:', error);
+      logError('도전과제 업데이트 실패:', error);
     }
   };
 
@@ -52,7 +53,7 @@ export const useChallenges = (userId?: string | null) => {
         maxPerfectStreak,
       });
     } catch (error) {
-      console.error('문제 완료 업데이트 실패:', error);
+      logError('문제 완료 업데이트 실패:', error);
     }
   };
 

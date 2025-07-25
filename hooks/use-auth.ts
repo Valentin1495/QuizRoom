@@ -1,3 +1,5 @@
+import { log } from '@/utils/log';
+import { logError } from '@/utils/log-error';
 import {
   getAuth,
   GoogleAuthProvider,
@@ -19,20 +21,20 @@ export const useAuth = () => {
 
   const handleGoogleButtonPress = async () => {
     if (isSigningIn) {
-      // console.log('⏳ Already signing in...');
+      log('⏳ Already signing in...');
       return;
     }
     setIsSigningIn(true);
 
     try {
-      // console.log('🔍 Checking Google Play Services...');
+      log('🔍 Checking Google Play Services...');
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
       });
 
-      // console.log('🔐 Signing in with Google...');
+      log('🔐 Signing in with Google...');
       const signInResult = await GoogleSignin.signIn();
-      // console.log('✅ Google sign-in result:', signInResult);
+      log('✅ Google sign-in result:', signInResult);
 
       const idToken = signInResult.data?.idToken;
       if (!idToken) {
@@ -45,7 +47,7 @@ export const useAuth = () => {
         googleCredential
       );
 
-      // console.log('🎉 Firebase sign-in successful:', userCredential);
+      log('🎉 Firebase sign-in successful:', userCredential);
 
       // Convex DB에 사용자 정보 저장
       const user = userCredential.user;
@@ -56,10 +58,10 @@ export const useAuth = () => {
         photoURL: user.photoURL || undefined,
       });
 
-      // console.log('💾 User saved to Convex DB');
+      log('💾 User saved to Convex DB');
       return userCredential;
     } catch (error) {
-      console.error('❌ Google Sign-In Error:', error);
+      logError('❌ Google Sign-In Error:', error);
       throw error;
     } finally {
       setIsSigningIn(false);

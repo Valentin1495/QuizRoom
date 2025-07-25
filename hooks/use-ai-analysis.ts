@@ -1,4 +1,5 @@
 import { api } from '@/convex/_generated/api';
+import { logError } from '@/utils/log-error';
 import { useAction, useMutation } from 'convex/react';
 import { useCallback, useState } from 'react';
 
@@ -46,7 +47,7 @@ export function useAIAnalysis(
           await saveInsights({ userId, insights: result });
         }
       } catch (err) {
-        console.error(err);
+        logError('오류:', err);
         setError('AI 분석에 실패했습니다.');
       } finally {
         setLoading(false);

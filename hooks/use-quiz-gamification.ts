@@ -6,6 +6,7 @@ import {
   UserAnswer,
 } from '@/context/quiz-setup-context';
 import { Doc } from '@/convex/_generated/dataModel';
+import { log } from '@/utils/log';
 import { useCallback, useRef, useState } from 'react';
 
 export const useQuizGamification = () => {
@@ -239,12 +240,12 @@ export const useQuizGamification = () => {
       };
 
       // 디버깅 로그
-      // console.log('📝 답변 저장:', {
-      //   questionIndex: currentQuestionIndex,
-      //   answerTime,
-      //   isCorrect: correct,
-      //   userAnswer,
-      // });
+      log('📝 답변 저장:', {
+        questionIndex: currentQuestionIndex,
+        answerTime,
+        isCorrect: correct,
+        userAnswer,
+      });
 
       // 기존 userAnswers 배열 업데이트
       const updatedAnswers = [...quizSetup.setup.userAnswers];
@@ -322,15 +323,15 @@ export const useQuizGamification = () => {
     // 완벽한 정답률 추가 보너스
     if (wasPerfect) {
       gamification.addPoints(20, 'Perfect Score Bonus');
-      // console.log('🎯 완벽한 정답률! 보너스 20포인트');
+      log('🎯 완벽한 정답률! 보너스 20포인트');
     }
 
     // 새 업적 로그
     if (newAchievements.length > 0) {
-      // console.log(
-      //   '🏆 새로 해금된 업적:',
-      //   newAchievements.map((a) => a.title)
-      // );
+      log(
+        '🏆 새로 해금된 업적:',
+        newAchievements.map((a) => a.title)
+      );
     }
 
     return {
@@ -441,11 +442,11 @@ export const useQuizGamification = () => {
       };
 
       // 디버깅 로그
-      // console.log('📊 quizStats 계산:', {
-      //   userAnswersLength: userAnswers.length,
-      //   answerTimesLength: answerTimes.length,
-      //   stats,
-      // });
+      log('📊 quizStats 계산:', {
+        userAnswersLength: userAnswers.length,
+        answerTimesLength: answerTimes.length,
+        stats,
+      });
 
       return stats;
     },
