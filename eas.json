@@ -28,7 +28,8 @@
       "env": {
         "CONVEX_DEPLOYMENT": "prod:rightful-firefly-855",
         "EXPO_PUBLIC_CONVEX_URL": "https://rightful-firefly-855.convex.cloud"
-      }
+      },
+      "channel": "production"
     }
   }
 }
