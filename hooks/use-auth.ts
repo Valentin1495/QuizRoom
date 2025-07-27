@@ -10,11 +10,6 @@ import { useMutation } from 'convex/react';
 import { useState } from 'react';
 import { api } from '../convex/_generated/api';
 
-GoogleSignin.configure({
-  webClientId:
-    '819818280538-emjirg8e17j6cc4qhbe98dcsgmshk586.apps.googleusercontent.com',
-});
-
 export const useAuth = () => {
   const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
   const createOrUpdateUser = useMutation(api.users.createOrUpdateUser);

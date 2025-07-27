@@ -592,10 +592,10 @@ export default function SkillAnalysisScreen() {
               />
               <Text style={styles.trendText}>
                 {a.growthTrend > 0
-                  ? `성장: +${a.growthTrend}%`
+                  ? `성장률: +${a.growthTrend}%`
                   : a.growthTrend < 0
-                    ? `성장: ${a.growthTrend}%`
-                    : `성장: 변화 없음`}
+                    ? `성장률: ${a.growthTrend}%`
+                    : `성장률: 변화 없음`}
               </Text>
             </View>
           </View>
