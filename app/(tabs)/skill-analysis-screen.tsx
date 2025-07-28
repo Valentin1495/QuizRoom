@@ -798,7 +798,7 @@ export default function SkillAnalysisScreen() {
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <ActivityIndicator
           size='large'
-          color='#3b82f6'
+          color={Colors.light.secondary}
           style={{ marginTop: 20 }}
         />
       </SafeAreaView>

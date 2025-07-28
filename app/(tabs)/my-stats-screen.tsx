@@ -4,7 +4,13 @@ import { Colors } from '@/constants/Colors';
 import { api } from '@/convex/_generated/api';
 import { getAuth } from '@react-native-firebase/auth';
 import { useQuery } from 'convex/react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function MyStatsScreen() {
@@ -15,6 +21,9 @@ export default function MyStatsScreen() {
     userId ? { userId } : 'skip'
   );
   const unlockedCount = userAchievements?.filter((ua) => ua.unlockedAt).length;
+
+  if (!userAchievements)
+    return <ActivityIndicator size='large' color={Colors.light.secondary} />;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
