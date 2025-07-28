@@ -1,6 +1,7 @@
 import { Difficulty, UserAnswer } from '@/context/quiz-setup-context';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
+import { formatSecondsToMMSS } from '@/utils/format-seconds-to-mmss';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
 import { switchDifficulty } from '@/utils/switch-difficulty';
 import { switchQuestionFormat } from '@/utils/switch-question-format';
@@ -67,16 +68,6 @@ type QuizType =
   | 'logo'
   | 'nonsense'
   | null;
-
-// Helper to format seconds as mm:ss
-function formatSecondsToMMSS(seconds: number) {
-  const min = Math.floor(seconds / 60);
-  const sec = Math.round(seconds % 60);
-  if (min > 0) {
-    return `${min}분 ${sec}초`;
-  }
-  return `${sec}초`;
-}
 
 export default function QuizResultScreen() {
   const {
@@ -530,9 +521,7 @@ export default function QuizResultScreen() {
         <Text style={styles.levelTitle}>Lv. {level}</Text>
         <Text style={styles.levelPoints}>
           <Text style={styles.levelPointsLabel}>다음 레벨까지</Text>{' '}
-          <Text style={{ fontStyle: 'italic' }}>
-            {expToNext.toLocaleString()}포인트
-          </Text>
+          <Text>{expToNext.toLocaleString()}포인트</Text>
         </Text>
         <View style={styles.expBarBg}>
           <View style={[styles.expBarFill, { width: `${progress * 100}%` }]} />
@@ -1640,3 +1629,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+// {
+//   "policy": "appVersion"
+// },

@@ -9,13 +9,12 @@ import {
 import { api } from '@/convex/_generated/api';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useMyProfile } from '@/hooks/use-my-profile';
-import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { uploadQuizBatch } from '@/utils/upload-quiz';
 import { Ionicons } from '@expo/vector-icons';
 import { useMutation } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Dimensions,
   ImageBackground,
@@ -379,16 +378,11 @@ const DifficultyCard = React.memo(
 export default function HomeScreen() {
   const { setSetup, setup } = useQuizSetup();
   const { category, difficulty, questionFormat, quizType } = setup;
-  const { resetQuizData } = useQuizGamification();
   const insertQuizBatch = useMutation(api.quizzes.insertQuizBatch);
   const { myProfile } = useMyProfile();
   const handleBatchUpload = async () => {
     await uploadQuizBatch(insertQuizBatch);
   };
-
-  useEffect(() => {
-    resetQuizData();
-  }, []);
 
   const router = useRouter();
   useBlockNavigation();
