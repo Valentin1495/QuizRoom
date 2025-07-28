@@ -66,11 +66,11 @@
         "projectId": "753b06bf-2bd8-4121-bf3d-1dfc31abd4c9"
       }
     },
-    "updates": {
-      "enabled": true,
-      "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/753b06bf-2bd8-4121-bf3d-1dfc31abd4c9"
+    "runtimeVersion": {
+      "policy": "appVersion"
     },
-    "runtimeVersion": "1.0.0"
+    "updates": {
+      "url": "https://u.expo.dev/753b06bf-2bd8-4121-bf3d-1dfc31abd4c9"
+    }
   }
 }

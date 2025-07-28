@@ -16,7 +16,8 @@
       "env": {
         "CONVEX_DEPLOYMENT": "dev:quick-pika-380",
         "EXPO_PUBLIC_CONVEX_URL": "https://quick-pika-380.convex.cloud"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "android": {
