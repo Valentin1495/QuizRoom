@@ -22,9 +22,6 @@ export default function MyStatsScreen() {
   );
   const unlockedCount = userAchievements?.filter((ua) => ua.unlockedAt).length;
 
-  if (!userAchievements)
-    return <ActivityIndicator size='large' color={Colors.light.secondary} />;
-
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
@@ -32,16 +29,20 @@ export default function MyStatsScreen() {
         <Text style={styles.headerTitle}>내 정보</Text>
       </View>
 
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        <StatCardList userId={userId} unlockedCount={unlockedCount} />
-        <AchievementList userAchievements={userAchievements} />
+      {userAchievements ? (
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          <StatCardList userId={userId} unlockedCount={unlockedCount} />
+          <AchievementList userAchievements={userAchievements} />
 
-        {/* Bottom Padding */}
-        <View style={styles.bottomPadding} />
-      </ScrollView>
+          {/* Bottom Padding */}
+          <View style={styles.bottomPadding} />
+        </ScrollView>
+      ) : (
+        <ActivityIndicator size='large' color={Colors.light.secondary} />
+      )}
     </View>
   );
 }
