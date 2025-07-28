@@ -237,12 +237,8 @@ export default function SkillAnalysisScreen() {
       <Text style={styles.requirementsTitle}>실력 분석 미션 가이드 🧭</Text>
       <View style={styles.requirementsList}>
         <Text style={styles.requirementItem}>
-          • <Text style={styles.requirementValue}>기본 분석</Text>: 카테고리 1개
-          완성 (난이도별 1세트 × 3)
-        </Text>
-        <Text style={styles.requirementItem}>
-          • <Text style={styles.requirementValue}>AI 분석</Text>: 카테고리 2개
-          이상 완성 🌈
+          • <Text style={styles.requirementValue}>기본/AI 분석</Text>: 카테고리
+          1개 완성 🌈 (난이도별 1세트 × 3)
         </Text>
       </View>
     </View>
@@ -273,7 +269,7 @@ export default function SkillAnalysisScreen() {
                   </Text>
                   <Text style={styles.insufficientText}>
                     관심 있는 카테고리 하나만 먼저 마스터해볼까요? 🎯{'\n'}
-                    난이도별 1세트(10문제)씩, 총 3세트(30문제)만 풀면 기본
+                    난이도별 1세트(10문제)씩, 총 3세트(30문제)만 풀면 기본/AI
                     분석을 시작할 수 있어요!
                   </Text>
 
@@ -289,7 +285,7 @@ export default function SkillAnalysisScreen() {
                   </Text>
                   <Text style={styles.insufficientText}>
                     한 카테고리에서 쉬움 / 보통 / 어려움 각 1세트(10문제)씩만
-                    풀면 기본 실력 분석을 바로 보여드릴게요! 🔍
+                    풀면 기본/AI 실력 분석을 바로 보여드릴게요! 🔍
                   </Text>
 
                   {renderRequirementMission()}
@@ -703,74 +699,54 @@ export default function SkillAnalysisScreen() {
 
     return (
       <View style={styles.tabContent}>
-        {analysis.aiInsights ? (
-          <>
-            {/* AI 종합 평가 */}
-            <BlurView intensity={20} tint='light' style={styles.aiCard}>
-              <LinearGradient
-                colors={[
-                  'rgba(99, 102, 241, 0.9)',
-                  'rgba(139, 92, 246, 0.9)',
-                  'rgba(168, 85, 247, 0.9)',
-                ]}
-                style={styles.aiGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <View style={styles.aiHeader}>
-                  <Ionicons name='sparkles' size={24} color='white' />
-                  <Text style={styles.aiTitle}>AI 종합 분석</Text>
-                </View>
-                <Text style={styles.aiInsight}>
-                  {analysis.aiInsights.overallInsight}
-                </Text>
-              </LinearGradient>
-            </BlurView>
-
-            {/* 동기부여 메시지 */}
-            <LinearGradient
-              colors={['#f472b6', '#ec4899', '#db2777']}
-              style={styles.motivationCard}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <View style={styles.motivationHeader}>
-                <Ionicons name='heart' size={24} color='white' />
-                <Text style={styles.motivationTitle}>학습 피드백</Text>
-              </View>
-              <Text style={styles.motivationText}>
-                {analysis.aiInsights.motivationalMessage}
-              </Text>
-            </LinearGradient>
-
-            {/* 다음 목표 */}
-            <View style={styles.goalsContainer}>
-              <Text style={styles.goalsTitle}>🎯 다음 목표</Text>
-              {analysis.aiInsights.nextGoals.map((goal, index) => (
-                <View key={index} style={styles.goalItem}>
-                  <Ionicons name='checkbox-outline' size={20} color='#3b82f6' />
-                  <Text style={styles.goalText}>{goal}</Text>
-                </View>
-              ))}
+        {/* AI 종합 평가 */}
+        <BlurView intensity={20} tint='light' style={styles.aiCard}>
+          <LinearGradient
+            colors={[
+              'rgba(99, 102, 241, 0.9)',
+              'rgba(139, 92, 246, 0.9)',
+              'rgba(168, 85, 247, 0.9)',
+            ]}
+            style={styles.aiGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <View style={styles.aiHeader}>
+              <Ionicons name='sparkles' size={24} color='white' />
+              <Text style={styles.aiTitle}>AI 종합 분석</Text>
             </View>
-          </>
-        ) : (
-          <View style={styles.noAIContainer}>
-            <Ionicons
-              name='sparkles'
-              size={50}
-              color='rgba(99, 102, 241, 0.9)'
-            />
-            <Text style={styles.insufficientTitle}>
-              AI 분석까지는 한 걸음 남았어요 🚀
+            <Text style={styles.aiInsight}>
+              {analysis.aiInsights!.overallInsight}
             </Text>
-            <Text style={styles.insufficientText}>
-              기본 분석은 완료했어요! 이제 다른 카테고리도 하나만 더 마스터하면
-              AI가 당신의 강점과 성장 방향까지 분석해드려요 🌟
-            </Text>
-            {renderRequirementMission()}
+          </LinearGradient>
+        </BlurView>
+
+        {/* 동기부여 메시지 */}
+        <LinearGradient
+          colors={['#f472b6', '#ec4899', '#db2777']}
+          style={styles.motivationCard}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <View style={styles.motivationHeader}>
+            <Ionicons name='heart' size={24} color='white' />
+            <Text style={styles.motivationTitle}>학습 피드백</Text>
           </View>
-        )}
+          <Text style={styles.motivationText}>
+            {analysis.aiInsights!.motivationalMessage}
+          </Text>
+        </LinearGradient>
+
+        {/* 다음 목표 */}
+        <View style={styles.goalsContainer}>
+          <Text style={styles.goalsTitle}>🎯 다음 목표</Text>
+          {analysis.aiInsights!.nextGoals.map((goal, index) => (
+            <View key={index} style={styles.goalItem}>
+              <Ionicons name='checkbox-outline' size={20} color='#3b82f6' />
+              <Text style={styles.goalText}>{goal}</Text>
+            </View>
+          ))}
+        </View>
 
         {aiError && (
           <>
