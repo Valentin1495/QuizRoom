@@ -13,7 +13,7 @@ import { uploadQuizBatch } from '@/utils/upload-quiz';
 import { Ionicons } from '@expo/vector-icons';
 import { useMutation } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import React from 'react';
 import {
   Dimensions,
@@ -419,139 +419,142 @@ export default function HomeScreen() {
   // });
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <ScrollView
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* 헤더 */}
-        <Animated.View
-          entering={FadeInDown.duration(600).delay(100)}
-          style={styles.header}
+    <>
+      <Stack.Screen options={{ gestureEnabled: false, headerShown: false }} />
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+        <ScrollView
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
         >
-          <View style={styles.headerTop}>
-            <View style={styles.headerContent}>
-              <Text style={styles.headerTitle}>상식 퀴즈</Text>
-              <Text style={styles.headerSubtitle}>
-                {myProfile?.displayName ? (
-                  <Text
-                    style={{
-                      color: Colors.light.primary,
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {myProfile.displayName}
-                  </Text>
-                ) : (
-                  <View
-                    style={{
-                      height: 20,
-                      width: 80,
-                      backgroundColor: '#eee',
-                      borderRadius: 6,
-                      marginTop: 4,
-                    }}
-                  />
-                )}
-                님 환영해요! 🙌 {'\n'}
-                다양한 분야의 지식을 테스트해 보세요.
-              </Text>
-            </View>
-            <SignOutButton />
-            {/* <Pressable onPress={handleBatchUpload}>
-              <Text>생성</Text>
-            </Pressable> */}
-          </View>
-        </Animated.View>
-
-        {/* 카테고리 섹션 */}
-        <Animated.View
-          entering={FadeInDown.duration(600).delay(200)}
-          style={styles.sectionContainer}
-        >
-          <Text style={styles.sectionTitle}>카테고리 선택</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.featuredList}
-            decelerationRate='fast'
-            snapToInterval={cardWidth + 16}
-          >
-            {categories.map((item) => (
-              <FeaturedCard
-                key={item.id}
-                item={item}
-                onSelect={handleSelectCategory}
-                isSelected={category === item.id}
-              />
-            ))}
-          </ScrollView>
-        </Animated.View>
-
-        {/* 문제 형식 섹션 */}
-        <Animated.View
-          entering={FadeInDown.duration(600).delay(250)}
-          style={styles.sectionContainer}
-        >
-          <Text style={styles.sectionTitle}>문제 형식 선택</Text>
-          <View style={styles.typeContainer}>
-            {questionTypes.map((item) => (
-              <QuestionTypeCard
-                key={item.id}
-                item={item}
-                onSelect={handleSelectQuestionType}
-                isSelected={questionFormat === item.id}
-              />
-            ))}
-          </View>
-        </Animated.View>
-
-        {/* 난이도 섹션 */}
-        <Animated.View
-          entering={FadeInDown.duration(600).delay(300)}
-          style={styles.sectionContainer}
-        >
-          <Text style={styles.sectionTitle}>난이도 선택</Text>
-          <View style={styles.difficultyContainer}>
-            {difficultyLevels.map((item) => (
-              <DifficultyCard
-                key={item.id}
-                item={item}
-                onSelect={handleSelectDifficulty}
-                isSelected={difficulty === item.id}
-              />
-            ))}
-          </View>
-        </Animated.View>
-
-        {/* 시작 버튼 */}
-        {isSelectionComplete && (
+          {/* 헤더 */}
           <Animated.View
-            entering={FadeInUp.duration(600)}
-            style={styles.startButtonContainer}
+            entering={FadeInDown.duration(600).delay(100)}
+            style={styles.header}
           >
-            <TouchableOpacity
-              style={styles.startButton}
-              onPress={handleStartQuiz}
-            >
-              <LinearGradient
-                colors={Colors.light.gradientColors}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.startButtonGradient}
-              >
-                <Text style={styles.startButtonText}>퀴즈 시작하기</Text>
-                <ChevronRight
-                  width={20}
-                  height={20}
-                  color={Colors.light.secondary}
-                />
-              </LinearGradient>
-            </TouchableOpacity>
+            <View style={styles.headerTop}>
+              <View style={styles.headerContent}>
+                <Text style={styles.headerTitle}>상식 퀴즈</Text>
+                <Text style={styles.headerSubtitle}>
+                  {myProfile?.displayName ? (
+                    <Text
+                      style={{
+                        color: Colors.light.primary,
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {myProfile.displayName}
+                    </Text>
+                  ) : (
+                    <View
+                      style={{
+                        height: 20,
+                        width: 80,
+                        backgroundColor: '#eee',
+                        borderRadius: 6,
+                        marginTop: 4,
+                      }}
+                    />
+                  )}
+                  님 환영해요! 🙌 {'\n'}
+                  다양한 분야의 지식을 테스트해 보세요.
+                </Text>
+              </View>
+              <SignOutButton />
+              {/* <Pressable onPress={handleBatchUpload}>
+                <Text>생성</Text>
+              </Pressable> */}
+            </View>
           </Animated.View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+
+          {/* 카테고리 섹션 */}
+          <Animated.View
+            entering={FadeInDown.duration(600).delay(200)}
+            style={styles.sectionContainer}
+          >
+            <Text style={styles.sectionTitle}>카테고리 선택</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.featuredList}
+              decelerationRate='fast'
+              snapToInterval={cardWidth + 16}
+            >
+              {categories.map((item) => (
+                <FeaturedCard
+                  key={item.id}
+                  item={item}
+                  onSelect={handleSelectCategory}
+                  isSelected={category === item.id}
+                />
+              ))}
+            </ScrollView>
+          </Animated.View>
+
+          {/* 문제 형식 섹션 */}
+          <Animated.View
+            entering={FadeInDown.duration(600).delay(250)}
+            style={styles.sectionContainer}
+          >
+            <Text style={styles.sectionTitle}>문제 형식 선택</Text>
+            <View style={styles.typeContainer}>
+              {questionTypes.map((item) => (
+                <QuestionTypeCard
+                  key={item.id}
+                  item={item}
+                  onSelect={handleSelectQuestionType}
+                  isSelected={questionFormat === item.id}
+                />
+              ))}
+            </View>
+          </Animated.View>
+
+          {/* 난이도 섹션 */}
+          <Animated.View
+            entering={FadeInDown.duration(600).delay(300)}
+            style={styles.sectionContainer}
+          >
+            <Text style={styles.sectionTitle}>난이도 선택</Text>
+            <View style={styles.difficultyContainer}>
+              {difficultyLevels.map((item) => (
+                <DifficultyCard
+                  key={item.id}
+                  item={item}
+                  onSelect={handleSelectDifficulty}
+                  isSelected={difficulty === item.id}
+                />
+              ))}
+            </View>
+          </Animated.View>
+
+          {/* 시작 버튼 */}
+          {isSelectionComplete && (
+            <Animated.View
+              entering={FadeInUp.duration(600)}
+              style={styles.startButtonContainer}
+            >
+              <TouchableOpacity
+                style={styles.startButton}
+                onPress={handleStartQuiz}
+              >
+                <LinearGradient
+                  colors={Colors.light.gradientColors}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.startButtonGradient}
+                >
+                  <Text style={styles.startButtonText}>퀴즈 시작하기</Text>
+                  <ChevronRight
+                    width={20}
+                    height={20}
+                    color={Colors.light.secondary}
+                  />
+                </LinearGradient>
+              </TouchableOpacity>
+            </Animated.View>
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 }
 

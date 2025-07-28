@@ -68,6 +68,7 @@ export default function QuestionList() {
     initializeQuizTracking,
     setQuizStartTime,
     setTotalTime,
+    resetQuizData,
   } = useQuizGamification();
 
   const { questions, questionFormat, userAnswers } = setup;
@@ -295,6 +296,7 @@ export default function QuestionList() {
         {
           text: '확인',
           onPress: () => {
+            resetQuizData();
             router.push('/(tabs)');
           },
         },
