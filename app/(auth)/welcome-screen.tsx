@@ -330,8 +330,8 @@ const WelcomeScreen: React.FC = () => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.resultContainer}>
           <View style={styles.resultCard}>
-            <Text style={styles.kangkangEmoji}>🤪</Text>
-            <Text style={styles.resultTitle}>깡깡이 테스트 완료!</Text>
+            <Text style={styles.kangkangEmoji}>🧠</Text>
+            <Text style={styles.resultTitle}>테스트 완료!</Text>
 
             {/* 깡깡 지수 계산 (틀린 문제 수 기반) */}
             {(() => {
@@ -358,7 +358,7 @@ const WelcomeScreen: React.FC = () => {
               return (
                 <>
                   <Text style={styles.kangkangIndex}>
-                    깡깡 지수: {kangkangIndex}%
+                    정답률: {kangkangIndex}%
                   </Text>
 
                   <Text style={styles.resultMessage}>{message}</Text>
