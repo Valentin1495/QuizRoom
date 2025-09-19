@@ -3,7 +3,7 @@ import { mutation } from './_generated/server';
 
 export const createReport = mutation({
   args: {
-    questionId: v.id('quizzes'),
+    questionId: v.id('testQuestions'),
     userId: v.string(),
     reason: v.union(
       v.literal('정답 오류'),

@@ -23,59 +23,6 @@ export default defineSchema({
     streak: v.number(),
   }).index('by_firebase_uid', ['firebaseUid']),
 
-  quizzes: defineTable({
-    quizType: v.union(
-      v.literal('knowledge'),
-      v.literal('celebrity'),
-      v.literal('four-character'),
-      v.literal('movie-chain'),
-      v.literal('proverb-chain'),
-      v.literal('slang'),
-      v.literal('logo'),
-      v.literal('nonsense'),
-      v.null()
-    ),
-    category: v.optional(
-      v.union(
-        v.literal('kpop-music'),
-        v.literal('general'),
-        v.literal('history-culture'),
-        v.literal('arts-literature'),
-        v.literal('sports'),
-        v.literal('science-tech'),
-        v.literal('math-logic'),
-        v.literal('entertainment'),
-        v.literal('korean-movie'),
-        v.literal('foreign-movie'),
-        v.literal('korean-celebrity'),
-        v.literal('foreign-celebrity'),
-        v.null()
-      )
-    ),
-    question: v.string(),
-    questionFormat: v.union(
-      v.literal('multiple'),
-      v.literal('short'),
-      v.null()
-    ),
-    explanation: v.optional(v.string()),
-    difficulty: v.union(
-      v.literal('easy'),
-      v.literal('medium'),
-      v.literal('hard'),
-      v.null()
-    ),
-
-    // 객관식일 때만 사용
-    options: v.optional(v.array(v.string())),
-    answer: v.optional(v.string()),
-
-    // 주관식일 때만 사용
-    answers: v.optional(v.array(v.string())),
-  })
-    .index('byQuizType', ['quizType'])
-    .index('byCategory', ['category']),
-
   gamificationData: defineTable({
     userId: v.string(),
 
@@ -212,7 +159,13 @@ export default defineSchema({
       v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
     ),
     questionFormat: v.optional(
-      v.union(v.literal('multiple'), v.literal('short'), v.null())
+      v.union(
+        v.literal('multiple'),
+        v.literal('short'),
+        v.literal('true_false'),
+        v.literal('filmography'),
+        v.null()
+      )
     ),
     timeSpent: v.optional(v.number()),
   })
@@ -242,9 +195,54 @@ export default defineSchema({
     .index('by_user_type', ['userId', 'type'])
     .index('by_expiry', ['expiresAt']),
 
+  // 신규 문제 테이블: testQuestions
+  testQuestions: defineTable({
+    answer: v.optional(v.string()),
+    answers: v.optional(v.array(v.string())),
+    category: v.union(
+      v.literal('general'),
+      v.literal('entertainment'),
+      v.literal('slang'),
+      v.literal('capitals'),
+      v.literal('four-character-idioms')
+    ),
+    difficulty: v.union(
+      v.literal('easy'),
+      v.literal('medium'),
+      v.literal('hard'),
+      v.null()
+    ),
+    explanation: v.optional(v.string()),
+    options: v.optional(v.array(v.string())),
+    question: v.string(),
+    questionFormat: v.union(
+      v.literal('multiple'),
+      v.literal('short'),
+      v.literal('true_false'),
+      v.literal('filmography'),
+      v.null()
+    ),
+    subcategory: v.optional(
+      v.union(
+        v.literal('kpop-music'),
+        v.literal('general'),
+        v.literal('history-culture'),
+        v.literal('arts-literature'),
+        v.literal('sports'),
+        v.literal('science-tech'),
+        v.literal('math-logic'),
+        v.literal('movies'),
+        v.literal('drama-variety'),
+        v.null()
+      )
+    ),
+  })
+    .index('byCategory', ['category'])
+    .index('bySubcategory', ['category', 'subcategory']),
+
   // 문제 오류 신고 테이블
   reports: defineTable({
-    questionId: v.id('quizzes'), // 신고된 문제 ID
+    questionId: v.id('testQuestions'), // 신고된 문제 ID
     userId: v.string(),
     reason: v.union(
       v.literal('정답 오류'),
@@ -256,3 +254,6 @@ export default defineSchema({
     .index('by_question', ['questionId'])
     .index('by_user', ['userId']),
 });
+
+
+

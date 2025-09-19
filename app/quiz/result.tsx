@@ -1,4 +1,5 @@
 import { Difficulty, UserAnswer } from '@/context/quiz-setup-context';
+import { api } from '@/convex/_generated/api';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { formatSecondsToMMSS } from '@/utils/format-seconds-to-mmss';
@@ -7,35 +8,36 @@ import { switchDifficulty } from '@/utils/switch-difficulty';
 import { switchQuestionFormat } from '@/utils/switch-question-format';
 import { switchQuizType } from '@/utils/switch-quiz-type';
 import { Ionicons } from '@expo/vector-icons';
+import { useAction } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
-  Dimensions,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Dimensions,
+    FlatList,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import {
-  Check,
-  ChevronDown,
-  ChevronUp,
-  Home,
-  Info,
-  RefreshCw,
-  Star,
-  X,
+    Check,
+    ChevronDown,
+    ChevronUp,
+    Home,
+    Info,
+    RefreshCw,
+    Star,
+    X,
 } from 'react-native-feather';
 import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSequence,
-  withTiming,
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withDelay,
+    withSequence,
+    withTiming,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -440,6 +442,32 @@ export default function QuizResultScreen() {
   /* ------------------------------------------------------------------
    * 개별 문제 포인트 상세 보기
    * ----------------------------------------------------------------*/
+  // AI 해설 상태
+  const explain = useAction(api.gamification.explainAnswerWithGemini);
+  const [explainLoading, setExplainLoading] = useState<Record<number, boolean>>({});
+  const [explainData, setExplainData] = useState<Record<number, { explanation: string; keyPoints: string[] }>>({});
+
+  const handleExplain = async (item: UserAnswer, index: number) => {
+    try {
+      setExplainLoading((p) => ({ ...p, [index]: true }));
+      const correctAnswers = Array.isArray(item.correctAnswer)
+        ? item.correctAnswer.filter(Boolean).map(String)
+        : [String(item.correctAnswer ?? '')].filter(Boolean);
+      const res = await explain({
+        question: item.question,
+        correctAnswers,
+        userAnswer: item.userAnswer ?? '',
+        category: (category as string) ?? undefined,
+        difficulty: (difficulty as Difficulty) ?? undefined,
+      });
+      setExplainData((p) => ({ ...p, [index]: res ?? { explanation: '', keyPoints: [] } }));
+    } catch (e) {
+      setExplainData((p) => ({ ...p, [index]: { explanation: '해설 생성에 실패했습니다.', keyPoints: [] } }));
+    } finally {
+      setExplainLoading((p) => ({ ...p, [index]: false }));
+    }
+  };
+
   const renderQuestionPointsDetail = (item: UserAnswer, index: number) => {
     if (!item.isCorrect || selectedQuestionIndex !== index) return null;
 
@@ -503,6 +531,42 @@ export default function QuizResultScreen() {
             <Text style={styles.achievementText}>
               🔥 연속 정답 달성! 높은 보너스를 받았어요!
             </Text>
+          </View>
+        )}
+
+        {/* 해설/힌트 */}
+        {!item.isCorrect && (
+          <View style={{ marginTop: 10 }}>
+            {explainData[index] ? (
+              <View style={styles.explainCard}>
+                <Text style={styles.explainTitle}>🧠 해설</Text>
+                <Text style={styles.explainText}>{explainData[index].explanation}</Text>
+                {explainData[index].keyPoints?.length > 0 && (
+                  <View style={{ marginTop: 8 }}>
+                    {explainData[index].keyPoints.map((k, i) => (
+                      <Text key={i} style={styles.explainBullet}>• {k}</Text>
+                    ))}
+                  </View>
+                )}
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={styles.explainButton}
+                disabled={!!explainLoading[index]}
+                onPress={() => handleExplain(item, index)}
+              >
+                <LinearGradient
+                  colors={['#60a5fa', '#3b82f6']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.explainGradient}
+                >
+                  <Text style={styles.explainButtonText}>
+                    {explainLoading[index] ? '해설 생성 중...' : '해설 보기'}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
@@ -1167,6 +1231,45 @@ const styles = StyleSheet.create({
     padding: 12,
     borderLeftWidth: 4,
     borderLeftColor: '#0ea5e9',
+  },
+  explainCard: {
+    marginTop: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  explainTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 6,
+  },
+  explainText: {
+    fontSize: 13,
+    color: '#374151',
+    lineHeight: 18,
+  },
+  explainBullet: {
+    fontSize: 12,
+    color: '#334155',
+    marginTop: 2,
+  },
+  explainButton: {
+    borderRadius: 8,
+    overflow: 'hidden',
+    alignSelf: 'flex-start',
+  },
+  explainGradient: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  explainButtonText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '600',
   },
   pointsDetailTitle: {
     fontSize: 14,

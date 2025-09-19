@@ -757,3 +757,70 @@ export const updateAIInsightsCache = mutation({
     });
   },
 });
+
+// 질문 해설/힌트 생성 액션
+export const explainAnswerWithGemini = action({
+  args: {
+    question: v.string(),
+    correctAnswers: v.array(v.string()),
+    userAnswer: v.optional(v.string()),
+    category: v.optional(v.string()),
+    difficulty: v.optional(
+      v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
+    ),
+  },
+  handler: async (_, args) => {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error('GEMINI_API_KEY is missing');
+
+    const ai = new GoogleGenAI({ apiKey });
+
+    const prompt = `아래 퀴즈 문항에 대해 간단하고 정확한 해설과 핵심 포인트를 한국어로 제공하세요.
+
+요구사항:
+- 해설은 2~3문장으로 간결하게
+- 핵심 포인트(keyPoints)는 2~3개 불릿
+- 사실성 유지. 과도한 추측 금지
+- JSON만 반환 (마크다운 금지)
+
+출력 예시(JSON):
+{
+  "explanation": "...",
+  "keyPoints": ["...", "..."]
+}
+
+질문: ${args.question}
+정답 후보: ${JSON.stringify(args.correctAnswers)}
+사용자 답변: ${JSON.stringify(args.userAnswer ?? '')}
+카테고리: ${args.category ?? '-'}
+난이도: ${args.difficulty ?? '-'}
+`;
+
+    try {
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents: prompt,
+      });
+      const text = result.text ?? '{}';
+      const cleanJSON = text
+        .replace(/^```json\s*/, '')
+        .replace(/```$/, '')
+        .trim();
+      try {
+        const parsed = JSON.parse(cleanJSON) as {
+          explanation: string;
+          keyPoints?: string[];
+        };
+        return {
+          explanation: parsed.explanation ?? '',
+          keyPoints: Array.isArray(parsed.keyPoints) ? parsed.keyPoints : [],
+        };
+      } catch {
+        return { explanation: text, keyPoints: [] };
+      }
+    } catch (err) {
+      console.error('Gemini explain API 오류:', err);
+      return { explanation: '해설 생성에 실패했습니다.', keyPoints: [] };
+    }
+  },
+});

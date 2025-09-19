@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as challenges from "../challenges.js";
 import type * as gamification from "../gamification.js";
+import type * as migrations from "../migrations.js";
 import type * as quizzes from "../quizzes.js";
 import type * as reports from "../reports.js";
 import type * as users from "../users.js";
@@ -30,6 +31,7 @@ import type * as users from "../users.js";
 declare const fullApi: ApiFromModules<{
   challenges: typeof challenges;
   gamification: typeof gamification;
+  migrations: typeof migrations;
   quizzes: typeof quizzes;
   reports: typeof reports;
   users: typeof users;

@@ -9,10 +9,9 @@ import { switchCategoryKey } from '@/utils/switch-category-key';
 import { Ionicons } from '@expo/vector-icons';
 import { getAuth } from '@react-native-firebase/auth';
 import { useQuery } from 'convex/react';
-import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -55,6 +54,82 @@ export default function SkillAnalysisScreen() {
   );
 
   const router = useRouter();
+
+  // 약점 추천 계산 - 훅 규칙을 지키기 위해 최상위에서 실행
+  type WeaknessPick = {
+    categoryKey: string;
+    rawCategory: string;
+    label: string;
+    difficulty: 'easy' | 'medium' | 'hard';
+    accuracy: number;
+  } | null;
+
+  const weakness = useMemo<WeaknessPick>(() => {
+    const oa = analysis.overallAnalysis as any[];
+    if (!oa || oa.length === 0) return null;
+
+    let best: WeaknessPick = null;
+
+    for (const a of oa) {
+      const categoryKey: string = a.category;
+      const rawCategory = categoryKey.replace(/^knowledge-/, '');
+      const label = switchCategoryKey(categoryKey);
+      const fallback = {
+        easy: { totalQuestions: 0, accuracy: 0 },
+        medium: { totalQuestions: 0, accuracy: 0 },
+        hard: { totalQuestions: 0, accuracy: 0 },
+      };
+      const diff: {
+        easy: { totalQuestions: number; accuracy: number };
+        medium: { totalQuestions: number; accuracy: number };
+        hard: { totalQuestions: number; accuracy: number };
+      } = (a?.difficultyAnalysis as any) ?? fallback;
+      (['easy', 'medium', 'hard'] as const).forEach((level) => {
+        const stats = diff[level];
+        const attempted = stats && stats.totalQuestions > 0;
+        const acc = attempted ? stats.accuracy : 101;
+        if (best === null || acc < ((best as any)?.accuracy ?? 999)) {
+          best = {
+            categoryKey,
+            rawCategory,
+            label,
+            difficulty: level,
+            accuracy: acc,
+          };
+        }
+      });
+    }
+
+    if (best === null) return null;
+    if ((best as any).accuracy === 101) {
+      const sorted = [...(oa || [])].sort(
+        (x, y) => (x.weightedAccuracy ?? 999) - (y.weightedAccuracy ?? 999)
+      );
+      const pick = sorted[0];
+      if (!pick) return null;
+      const rawCategory = String(pick.category).replace(/^knowledge-/, '');
+      const pickWeak: WeaknessPick = {
+        categoryKey: pick.category,
+        rawCategory,
+        label: switchCategoryKey(pick.category),
+        difficulty: 'medium' as const,
+        accuracy: pick.weightedAccuracy ?? 0,
+      };
+      return pickWeak;
+    }
+    return best;
+  }, [analysis.overallAnalysis]);
+
+  const handleStartWeaknessPractice = () => {
+    if (!weakness) return;
+    const params = new URLSearchParams({
+      quizType: 'knowledge',
+      category: weakness.rawCategory,
+      difficulty: weakness.difficulty,
+      questionFormat: 'multiple',
+    } as any);
+    router.push(`/quiz?${params.toString()}`);
+  };
 
   // 분석 완료 체크
   useEffect(() => {
@@ -699,54 +774,36 @@ export default function SkillAnalysisScreen() {
 
     return (
       <View style={styles.tabContent}>
-        {/* AI 종합 평가 */}
-        <BlurView intensity={20} tint='light' style={styles.aiCard}>
-          <LinearGradient
-            colors={[
-              'rgba(99, 102, 241, 0.9)',
-              'rgba(139, 92, 246, 0.9)',
-              'rgba(168, 85, 247, 0.9)',
-            ]}
-            style={styles.aiGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <View style={styles.aiHeader}>
-              <Ionicons name='sparkles' size={24} color='white' />
-              <Text style={styles.aiTitle}>AI 종합 분석</Text>
-            </View>
-            <Text style={styles.aiInsight}>
-              {analysis.aiInsights!.overallInsight}
-            </Text>
-          </LinearGradient>
-        </BlurView>
 
-        {/* 동기부여 메시지 */}
-        <LinearGradient
-          colors={['#f472b6', '#ec4899', '#db2777']}
-          style={styles.motivationCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <View style={styles.motivationHeader}>
-            <Ionicons name='heart' size={24} color='white' />
-            <Text style={styles.motivationTitle}>학습 피드백</Text>
+        {/* 약점 보완 세트 CTA */}
+        {weakness && (
+          <View style={{ marginBottom: 16 }}>
+            <TouchableOpacity
+              onPress={handleStartWeaknessPractice}
+              activeOpacity={0.9}
+              style={{ borderRadius: 16, overflow: 'hidden' }}
+            >
+              <LinearGradient
+                colors={['#22c55e', '#16a34a']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ padding: 16 }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Ionicons name='flash' size={22} color='#fff' />
+                  <Text style={{ color: '#fff', fontSize: 16, fontWeight: '800', marginLeft: 8 }}>
+                    약점 보완 10문제 시작
+                  </Text>
+                </View>
+                <Text style={{ color: '#ecfdf5', marginTop: 8, fontWeight: '600' }}>
+                  {weakness.label} · {weakness.difficulty === 'easy' ? '쉬움' : weakness.difficulty === 'medium' ? '보통' : '어려움'}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.motivationText}>
-            {analysis.aiInsights!.motivationalMessage}
-          </Text>
-        </LinearGradient>
+        )}
 
-        {/* 다음 목표 */}
-        <View style={styles.goalsContainer}>
-          <Text style={styles.goalsTitle}>🎯 다음 목표</Text>
-          {analysis.aiInsights!.nextGoals.map((goal, index) => (
-            <View key={index} style={styles.goalItem}>
-              <Ionicons name='checkbox-outline' size={20} color='#3b82f6' />
-              <Text style={styles.goalText}>{goal}</Text>
-            </View>
-          ))}
-        </View>
+        {/* 제거됨: AI 종합 평가 / 동기부여 메시지 / 다음 목표 */}
 
         {aiError && (
           <>
