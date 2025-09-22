@@ -1,6 +1,6 @@
 import { Difficulty } from '@/context/quiz-setup-context';
 
-export function switchDifficulty(difficulty: Difficulty) {
+export function switchDifficulty(difficulty: Difficulty | undefined | null) {
   switch (difficulty) {
     case 'easy':
       return '쉬움';
@@ -9,6 +9,6 @@ export function switchDifficulty(difficulty: Difficulty) {
     case 'hard':
       return '어려움';
     default:
-      break;
+      return '';
   }
 }

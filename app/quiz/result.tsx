@@ -5,41 +5,56 @@ import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { formatSecondsToMMSS } from '@/utils/format-seconds-to-mmss';
 import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
 import { switchDifficulty } from '@/utils/switch-difficulty';
-import { switchQuestionFormat } from '@/utils/switch-question-format';
-import { switchQuizType } from '@/utils/switch-quiz-type';
+// import { switchQuestionFormat } from '@/utils/switch-question-format';
 import { Ionicons } from '@expo/vector-icons';
 import { useAction } from 'convex/react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
-    Dimensions,
-    FlatList,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {
-    Check,
-    ChevronDown,
-    ChevronUp,
-    Home,
-    Info,
-    RefreshCw,
-    Star,
-    X,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Home,
+  Info,
+  RefreshCw,
+  Star,
+  X,
 } from 'react-native-feather';
 import Animated, {
-    Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withDelay,
-    withSequence,
-    withTiming,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withTiming,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+function switchQuestionFormatLabel(format?: string | null): string {
+  switch (format) {
+    case 'multiple':
+      return '객관식';
+    case 'short':
+      return '주관식';
+    case 'true_false':
+      return 'O/X';
+    case 'filmography':
+      return '필모그래피';
+    default:
+      return '';
+  }
+}
 
 const { width } = Dimensions.get('window');
 
@@ -52,24 +67,10 @@ type CategoryType =
   | 'sports'
   | 'science-tech'
   | 'math-logic'
-  | 'entertainment'
-  | 'korean-movie'
-  | 'foreign-movie'
-  | 'korean-celebrity'
-  | 'foreign-celebrity'
+  | 'movies'
+  | 'drama-variety'
   | null
   | undefined;
-
-type QuizType =
-  | 'knowledge'
-  | 'celebrity'
-  | 'four-character'
-  | 'movie-chain'
-  | 'proverb-chain'
-  | 'slang'
-  | 'logo'
-  | 'nonsense'
-  | null;
 
 export default function QuizResultScreen() {
   const {
@@ -103,37 +104,19 @@ export default function QuizResultScreen() {
       'science-tech': 6,
       'history-culture': 4,
       'arts-literature': 4,
-      'foreign-movie': 3,
-      'foreign-celebrity': 3,
+      movies: 2,
+      'drama-variety': 2,
       'kpop-music': 2,
-      entertainment: 2,
-      'korean-movie': 2,
-      'korean-celebrity': 2,
       sports: 1,
       general: 0,
     };
     return (category && bonusMap[category]) || 0;
   }, []);
 
-  const getTypeBonus = useCallback((quizType: QuizType): number => {
-    const bonusMap: Record<string, number> = {
-      nonsense: 4,
-      'four-character': 3,
-      'proverb-chain': 3,
-      'movie-chain': 2,
-      logo: 2,
-      slang: 2,
-      knowledge: 0,
-      celebrity: 0,
-    };
-    return (quizType && bonusMap[quizType]) || 0;
-  }, []);
-
   const getPointsBreakdown = useCallback(
     (
       difficulty: Difficulty,
       category: CategoryType,
-      quizType: QuizType,
       questionFormat: string | null,
       streakCount: number
     ): { items: string[]; total: number } => {
@@ -141,10 +124,19 @@ export default function QuizResultScreen() {
       let total = 0;
 
       // 기본 포인트
+      const label = switchDifficulty(difficulty);
       const basePoints =
-        difficulty === 'easy' ? 10 : difficulty === 'medium' ? 15 : 25;
+        difficulty === 'easy'
+          ? 10
+          : difficulty === 'medium'
+          ? 15
+          : difficulty === 'hard'
+          ? 25
+          : 10; // default when difficulty is null/undefined
       breakdown.push(
-        `기본 포인트 (${'난이도 ' + switchDifficulty(difficulty)}): ${basePoints}포인트`
+        label
+          ? `기본 포인트 (난이도 ${label}): ${basePoints}포인트`
+          : `기본 포인트: ${basePoints}포인트`
       );
       total += basePoints;
 
@@ -153,13 +145,6 @@ export default function QuizResultScreen() {
       if (categoryBonus > 0) {
         breakdown.push(`카테고리 보너스: +${categoryBonus}포인트`);
         total += categoryBonus;
-      }
-
-      // 퀴즈 타입 보너스
-      const typeBonus = getTypeBonus(quizType);
-      if (typeBonus > 0) {
-        breakdown.push(`퀴즈 타입 보너스: +${typeBonus}포인트`);
-        total += typeBonus;
       }
 
       // 주관식 보너스
@@ -188,14 +173,15 @@ export default function QuizResultScreen() {
 
       return { items: breakdown, total };
     },
-    [getCategoryBonus, getTypeBonus]
+    [getCategoryBonus]
   );
 
   /* ------------------------------------------------------------------
    * 기본 통계 계산
    * ----------------------------------------------------------------*/
-  const { userAnswers, quizType, category, difficulty, questionFormat } = setup;
-  const correctCount = userAnswers.filter((a) => a.isCorrect).length;
+  const { userAnswers, topCategory, subcategory, difficulty, questionFormat } = setup as any;
+  const category = (subcategory || topCategory) as CategoryType;
+  const correctCount = userAnswers.filter((a: any) => a.isCorrect).length;
   const totalCount = userAnswers.length;
   const percentage = Math.round((correctCount / totalCount) * 100);
   const wrongCount = totalCount - correctCount;
@@ -204,11 +190,11 @@ export default function QuizResultScreen() {
    * 추가 게임화 값
    * ----------------------------------------------------------------*/
   const totalEarnedPoints = userAnswers.reduce(
-    (sum, a) => sum + (a as UserAnswer).pointsEarned,
+    (sum: number, a: any) => sum + (a as UserAnswer).pointsEarned,
     0
   );
   const maxStreak = userAnswers.reduce(
-    (m, a) => Math.max(m, (a as UserAnswer).streakCount),
+    (m: number, a: any) => Math.max(m, (a as UserAnswer).streakCount),
     0
   );
 
@@ -301,11 +287,13 @@ export default function QuizResultScreen() {
    * ----------------------------------------------------------------*/
   const renderPointsExample = () => {
     // 실제 정답 문제들 중에서 가장 높은 포인트를 받은 문제 찾기
-    const correctAnswers = userAnswers.filter((answer) => answer.isCorrect);
+    const correctAnswers = userAnswers.filter((answer: any) => answer.isCorrect);
     const highestPointQuestion = correctAnswers.reduce(
-      (prev, current) =>
-        prev.pointsEarned > current.pointsEarned ? prev : current,
-      correctAnswers[0]
+      (prev: any, current: any) =>
+        (prev as UserAnswer).pointsEarned > (current as UserAnswer).pointsEarned
+          ? prev
+          : current,
+      correctAnswers[0] as any
     );
 
     // 평균 포인트 계산
@@ -313,7 +301,7 @@ export default function QuizResultScreen() {
       correctAnswers.length > 0
         ? Math.round(
             correctAnswers.reduce(
-              (sum, answer) => sum + answer.pointsEarned,
+              (sum: number, answer: any) => sum + (answer as UserAnswer).pointsEarned,
               0
             ) / correctAnswers.length
           )
@@ -327,14 +315,12 @@ export default function QuizResultScreen() {
       ? getPointsBreakdown(
           difficulty,
           category,
-          quizType,
           questionFormat,
           exampleQuestion.streakCount
         )
       : getPointsBreakdown(
           difficulty,
           category,
-          quizType,
           questionFormat,
           maxStreak
         );
@@ -423,14 +409,14 @@ export default function QuizResultScreen() {
                 <Text style={styles.exampleNoteTitle}>
                   다음 퀴즈에서 더 높은 포인트를 받으려면:
                 </Text>
-                {'\n'}• 연속 정답을 유지하세요 (3연속마다 보너스 +3포인트)
-                {maxStreak < 9 && '\n• 이번에 놓친 연속 보너스가 있었어요!'}
+                {'\n\n'}• 연속 정답을 유지하세요 (3연속마다 보너스 +3포인트)
+                {maxStreak < 9 && '\n\n• 이번에 놓친 연속 보너스가 있었어요!'}
                 {difficulty !== 'hard' &&
-                  '\n• 어려운 난이도에 도전해보세요 (최대 +10포인트 추가)'}
+                  '\n\n• 어려운 난이도에 도전해보세요 (최대 +10포인트 추가)'}
                 {!['math-logic', 'science-tech'].includes(category as string) &&
-                  '\n• 수학·논리, 과학·기술 카테고리는 높은 보너스를 제공해요'}
+                  '\n\n• 수학·논리, 과학·기술 카테고리는 높은 보너스를 제공해요'}
                 {questionFormat !== 'short' &&
-                  '\n• 주관식 문제는 추가 +3포인트 보너스가 있어요'}
+                  '\n\n• 주관식 문제는 추가 +3포인트 보너스가 있어요'}
               </Text>
             </View>
           </View>
@@ -451,7 +437,7 @@ export default function QuizResultScreen() {
     try {
       setExplainLoading((p) => ({ ...p, [index]: true }));
       const correctAnswers = Array.isArray(item.correctAnswer)
-        ? item.correctAnswer.filter(Boolean).map(String)
+        ? (item.correctAnswer as any[]).filter(Boolean).map(String)
         : [String(item.correctAnswer ?? '')].filter(Boolean);
       const res = await explain({
         question: item.question,
@@ -475,7 +461,6 @@ export default function QuizResultScreen() {
     const breakdown = getPointsBreakdown(
       difficulty || 'medium',
       category,
-      quizType,
       questionFormat,
       item.streakCount
     );
@@ -573,44 +558,118 @@ export default function QuizResultScreen() {
     );
   };
 
-  /* ------------------------------------------------------------------
-   * 레벨 카드 렌더링
+/* ------------------------------------------------------------------
+   * 젠지 감성 레벨 카드 렌더링
    * ----------------------------------------------------------------*/
-  const renderLevelCard = () => {
-    const expToNext = getPointsForNextLevel();
-    const progress = totalPoints / (totalPoints + expToNext);
+const LevelCard = ({
+  level,
+  totalPoints,
+  expToNext,
+  streak,
+}: {
+  level: number;
+  totalPoints: number;
+  expToNext: number;
+  streak: number;
+}) => {
+  const denom = totalPoints + expToNext;
+  const progress = denom > 0 ? totalPoints / denom : 1;
+  const progressPercent = Math.max(0, Math.min(100, Math.round(progress * 100)));
 
-    return (
-      <View style={styles.levelCard}>
-        <Text style={styles.levelTitle}>Lv. {level}</Text>
-        <Text style={styles.levelPoints}>
-          <Text style={styles.levelPointsLabel}>다음 레벨까지</Text>{' '}
-          <Text>{expToNext.toLocaleString()}포인트</Text>
-        </Text>
-        <View style={styles.expBarBg}>
-          <View style={[styles.expBarFill, { width: `${progress * 100}%` }]} />
-        </View>
-        <Text style={styles.expLabel}>
-          {totalPoints.toLocaleString()}/
-          {(totalPoints + expToNext).toLocaleString()}포인트
-        </Text>
+  // Reanimated shared values
+  const cardOpacity = useSharedValue(0);
+  const cardScale = useSharedValue(0.95);
+  const streakPulse = useSharedValue(0);
+  const badgeBounce = useSharedValue(0);
 
-        {streak >= 1 && (
-          <LinearGradient
-            colors={['#f59e0b', '#ef4444']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.streakGradient}
-          >
-            <Text style={styles.streakText}>
-              {streak}일 {streak > 1 && '연속'} 참여
-            </Text>
-            <Ionicons name='flame-outline' size={24} color='#fff' />
-          </LinearGradient>
-        )}
-      </View>
+  useEffect(() => {
+    // 카드 등장 애니메이션
+    cardOpacity.value = withTiming(1, {
+      duration: 600,
+      easing: Easing.out(Easing.cubic),
+    });
+    cardScale.value = withTiming(1, {
+      duration: 600,
+      easing: Easing.out(Easing.back(1.5)),
+    });
+
+    // 배지 바운스 애니메이션 (지연)
+    badgeBounce.value = withDelay(
+      400,
+      withSequence(
+        withTiming(1, { duration: 200, easing: Easing.out(Easing.cubic) }),
+        withTiming(0, { duration: 200, easing: Easing.out(Easing.cubic) })
+      )
     );
-  };
+
+    // 스트릭 펄스 애니메이션 (반복)
+    if (streak >= 1) {
+      streakPulse.value = withRepeat(
+        withSequence(
+          withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+          withTiming(0, { duration: 1000, easing: Easing.inOut(Easing.ease) })
+        ),
+        -1,
+        false
+      );
+    }
+  }, [streak]);
+
+  // Animated styles
+  const cardAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: cardOpacity.value,
+    transform: [{ scale: cardScale.value }],
+  }));
+  const badgeAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 + badgeBounce.value * 0.1 }],
+  }));
+  const streakPulseAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: streakPulse.value * 0.3,
+  }));
+
+  return (
+    <View style={styles.levelCardContainer}>
+      <Animated.View style={[styles.levelCard, cardAnimatedStyle]}>
+        {/* 헤더 영역 */}
+        <View style={styles.levelHeader}>
+          <Animated.View style={[styles.levelBadge, badgeAnimatedStyle]}>
+            <Text style={styles.levelTitle}>Lv. {level}</Text>
+          </Animated.View>
+          <View style={styles.levelInfo}>
+            <Text style={styles.levelSubtitle}>다음 레벨까지</Text>
+            <Text style={styles.levelPoints}>
+              {expToNext.toLocaleString()}
+              <Text style={styles.pointsUnit}>pt</Text>
+            </Text>
+          </View>
+        </View>
+
+        {/* 퍼센트 텍스트만 표시 */}
+        <Text style={styles.levelProgressText}>{progressPercent}%</Text>
+
+        {/* 스트릭 영역 */}
+        {streak >= 1 && (
+          <View style={styles.streakContainer}>
+            <LinearGradient
+              colors={['#DC2626', '#EF4444', '#F87171']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.streakGradient}
+            >
+              <View style={styles.streakContent}>
+                <Ionicons name='flame' size={20} color='#fff' />
+                <Text style={styles.streakText}>
+                  {streak}일 {streak > 1 && '연속'}
+                </Text>
+              </View>
+              <Animated.View style={[styles.streakPulse, streakPulseAnimatedStyle]} />
+            </LinearGradient>
+          </View>
+        )}
+      </Animated.View>
+    </View>
+  );
+};
 
   /* ------------------------------------------------------------------
    * 스트릭 & 업적 요약
@@ -650,8 +709,8 @@ export default function QuizResultScreen() {
       <View style={styles.infoCard}>
         <View style={styles.infoRow}>
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>퀴즈 유형</Text>
-            <Text style={styles.infoValue}>{switchQuizType(quizType)}</Text>
+            <Text style={styles.infoLabel}>총 문제 수</Text>
+            <Text style={styles.infoValue}>{totalCount}문제</Text>
           </View>
 
           {category && (
@@ -669,7 +728,7 @@ export default function QuizResultScreen() {
             <View style={styles.infoItem}>
               <Text style={styles.infoLabel}>문제 형식</Text>
               <Text style={styles.infoValue}>
-                {switchQuestionFormat(questionFormat) || ''}
+                {switchQuestionFormatLabel(questionFormat) || ''}
               </Text>
             </View>
           )}
@@ -930,7 +989,12 @@ export default function QuizResultScreen() {
         </Animated.View>
 
         {/* ② 레벨 카드 */}
-        {renderLevelCard()}
+        <LevelCard
+          level={level}
+          totalPoints={totalPoints}
+          expToNext={getPointsForNextLevel()}
+          streak={streak}
+        />
 
         {/* ③ 스트릭 & 업적 */}
         {renderStreakAndAchievements()}
@@ -986,7 +1050,7 @@ export default function QuizResultScreen() {
           onPress={() => {
             restartQuiz();
             router.push(
-              `/quiz?quizType=${quizType}&category=${category}&difficulty=${difficulty}&questionFormat=${questionFormat}`
+              `/quiz?category=${category}&difficulty=${difficulty}&questionFormat=${questionFormat}`
             );
           }}
         >
@@ -1188,7 +1252,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#3730a3',
     marginTop: 4,
-    fontStyle: 'italic',
   },
   questionInfoContainer: {
     backgroundColor: '#f1f5f9',
@@ -1209,7 +1272,6 @@ const styles = StyleSheet.create({
   pointsDetailDifference: {
     fontSize: 12,
     color: '#059669',
-    fontStyle: 'italic',
   },
   achievementNote: {
     backgroundColor: '#fef3c7',
@@ -1309,7 +1371,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6b7280',
     marginBottom: 16,
-    fontStyle: 'italic',
   },
 
   infoCard: {
@@ -1459,7 +1520,6 @@ const styles = StyleSheet.create({
   },
   skippedAnswer: {
     fontSize: 14,
-    fontStyle: 'italic',
     color: '#9ca3af',
   },
   footer: {
@@ -1520,49 +1580,188 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 8,
   },
-  levelCard: {
-    borderRadius: 16,
-    padding: 20,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    alignItems: 'center',
+  
+  levelCardContainer: {
     marginBottom: 24,
   },
-  levelTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#4f46e5',
-  },
-  levelPoints: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginVertical: 6,
-    color: '#111827',
-  },
-  levelPointsLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginVertical: 6,
-    color: '#111827',
-  },
-  expBarBg: {
-    width: '100%',
-    height: 10,
-    backgroundColor: '#e5e7eb',
-    borderRadius: 5,
+  
+  levelCard: {
+    borderRadius: 24,
+    padding: 24,
+    backgroundColor: 'rgba(248, 250, 252, 0.95)',
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 32,
+    elevation: 8,
+    position: 'relative',
     overflow: 'hidden',
-    marginTop: 4,
   },
-  expBarFill: {
-    height: '100%',
-    backgroundColor: '#4f46e5',
-  },
-  expLabel: {
-    marginTop: 4,
+
+  // 헤더 영역
+  levelHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
+    gap: 16,
+  },
+  
+  levelBadge: {
+    backgroundColor: 'rgba(71, 85, 105, 0.12)',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(71, 85, 105, 0.2)',
+  },
+  
+  levelTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#475569',
+    letterSpacing: 0.5,
+  },
+  
+  levelInfo: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  
+  levelSubtitle: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: 'rgba(100, 116, 139, 0.7)',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    marginBottom: 2,
+  },
+  
+  levelPoints: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#334155',
+    letterSpacing: -0.5,
+  },
+  
+  pointsUnit: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'rgba(100, 116, 139, 0.6)',
+    letterSpacing: 0,
+  },
+
+  // 프로그레스 바 영역
+  progressContainer2: {
+    marginBottom: 20,
+  },
+  
+  progressTrack: {
+    height: 8,
+    backgroundColor: 'rgba(148, 163, 184, 0.15)',
+    borderRadius: 12,
+    overflow: 'hidden',
+    position: 'relative',
+    marginBottom: 12,
+  },
+  
+  progressFill: {
+    height: '100%',
+    borderRadius: 12,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  },
+
+  progressGradient: {
+    height: '100%',
+    borderRadius: 12,
+  },
+  
+  progressGlow: {
+    height: '100%',
+    borderRadius: 12,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    backgroundColor: 'rgba(100, 116, 139, 0.2)',
+  },
+  
+  progressInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  
+  currentExp: {
     fontSize: 12,
-    color: '#6b7280',
+    fontWeight: '600',
+    color: '#475569',
+    letterSpacing: 0.3,
+  },
+  
+  progressBadge: {
+    backgroundColor: 'rgba(71, 85, 105, 0.1)',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(71, 85, 105, 0.2)',
+  },
+  
+  progressPercent: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#64748B',
+    letterSpacing: 0.5,
+  },
+  
+  maxExp: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'rgba(148, 163, 184, 0.8)',
+    letterSpacing: 0.3,
+  },
+
+  // 스트릭 영역
+  streakContainer: {
+    marginTop: 4,
+  },
+  
+  streakGradient: {
+    borderRadius: 16,
+    padding: 12,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  
+  streakContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    zIndex: 1,
+  },
+  
+  streakText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#fff',
+    letterSpacing: 0.3,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  
+  streakPulse: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    borderRadius: 16,
   },
 
   /* ───────── 스트릭 & 업적 ───────── */
@@ -1635,23 +1834,6 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: 'center',
     marginBottom: 24,
-  },
-
-  // 스트릭 그라디언트
-  streakGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-
-  // 스트릭 텍스트
-  streakText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-    marginRight: 8,
   },
 
   /* ───────── 포인트/스트릭 뱃지 ───────── */
@@ -1730,5 +1912,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#92400e', // 갈색 텍스트
     textAlign: 'center',
+  },
+
+  levelProgressText: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#111827',
+    textAlign: 'center',
+    marginTop: 16,
   },
 });

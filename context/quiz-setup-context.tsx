@@ -16,70 +16,48 @@ export interface UserAnswer {
   questionIndex?: number; // 문제 순서 (처음 3문제 추적용)
 }
 
-// 1. 퀴즈 타입
-export type QuizType =
-  | 'knowledge'
-  | 'celebrity'
-  | 'four-character'
-  | 'movie-chain'
-  | 'proverb-chain'
-  | 'slang'
-  | 'logo'
-  | 'nonsense'
-  | null;
-
-// 2. 퀴즈별 카테고리
-export type KnowledgeCategory =
+// 카테고리 모델
+export type TopCategory =
   | 'general'
-  | 'kpop-music'
   | 'entertainment'
+  | 'slang'
+  | 'capitals'
+  | 'four-character-idioms';
+
+export type Subcategory =
+  | 'general'
   | 'history-culture'
+  | 'arts-literature'
   | 'sports'
   | 'science-tech'
   | 'math-logic'
-  | 'arts-literature';
+  | 'kpop-music'
+  | 'movies'
+  | 'drama-variety'
+  | null;
 
-export type MovieCategory = 'korean-movie' | 'foreign-movie';
-export type CelebrityCategory = 'korean-celebrity' | 'foreign-celebrity';
+// 문제 형식
+export type QuestionFormat = 'multiple' | 'short' | 'true_false' | 'filmography' | null;
 
-export type CategoryByQuizType<T extends QuizType> = T extends 'knowledge'
-  ? KnowledgeCategory
-  : T extends 'movie-chain'
-    ? MovieCategory
-    : T extends 'celebrity'
-      ? CelebrityCategory
-      : null;
+// 난이도
+export type Difficulty = 'easy' | 'medium' | 'hard' | null;
 
-// 3. 퀴즈 유형
-export type QuestionFormatByQuizType<T extends QuizType> = T extends 'knowledge'
-  ? 'multiple' | 'short'
-  : T extends 'movie-chain'
-    ? 'short'
-    : T extends 'celebrity'
-      ? 'short'
-      : null;
-
-// 4. 난이도 (공통으로 가정)
-export type Difficulty = 'easy' | 'medium' | 'hard' | null; // expert
-
-// 5. 상태 타입
-type QuizSetup<T extends QuizType = QuizType> = {
-  quizType: T;
-  category: CategoryByQuizType<T>;
+// 상태 타입
+type QuizSetup = {
+  topCategory: TopCategory | null;
+  subcategory: Subcategory;
   difficulty: Difficulty;
-  questionFormat: QuestionFormatByQuizType<T>;
-  // 새로 추가된 필드
+  questionFormat: QuestionFormat;
   questions: Doc<'quizzes'>[];
   userAnswers: UserAnswer[];
-  quizStartTime?: number; // 퀴즈 시작 시각 (timestamp)
-  totalTime?: number; // 퀴즈 총 소요 시간 (초)
+  quizStartTime?: number;
+  totalTime?: number;
 };
 
-// 6. Context 타입
+// Context 타입
 type QuizSetupContextType = {
   setup: QuizSetup;
   setSetup: React.Dispatch<React.SetStateAction<QuizSetup>>;
-  // 개별 필드에 대한 업데이트 함수들
   setQuestions: (questions: Doc<'quizzes'>[]) => void;
   setUserAnswers: (userAnswers: UserAnswer[]) => void;
   addUserAnswer: (userAnswer: UserAnswer) => void;
@@ -95,8 +73,8 @@ const QuizSetupContext = createContext<QuizSetupContextType | undefined>(
 
 export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
   const [setup, setSetup] = useState<QuizSetup>({
-    quizType: 'knowledge',
-    category: null,
+    topCategory: null,
+    subcategory: null,
     difficulty: null,
     questionFormat: null,
     questions: [],
@@ -124,8 +102,8 @@ export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
   const resetQuizData = () => {
     setSetup((prev) => ({
       ...prev,
-      quizType: 'knowledge',
-      category: null,
+      topCategory: null,
+      subcategory: null,
       difficulty: null,
       questionFormat: null,
       questions: [],

@@ -2,8 +2,9 @@ import SignOutButton from '@/components/sign-out-button';
 import { Colors } from '@/constants/Colors';
 import {
   Difficulty,
-  KnowledgeCategory,
-  QuestionFormatByQuizType,
+  QuestionFormat,
+  Subcategory,
+  TopCategory,
   useQuizSetup,
 } from '@/context/quiz-setup-context';
 import { api } from '@/convex/_generated/api';
@@ -79,104 +80,78 @@ const difficultyLevels: {
   },
 ];
 
-// 카테고리 정보
+// 1차 카테고리 (testQuestions.category)
 const categories: {
-  id: KnowledgeCategory;
+  id: TopCategory;
   title: string;
   description: string;
   iconName: any;
   colors: any;
   image: any;
+  disabled?: boolean;
 }[] = [
   {
     id: 'general',
-    title: '일반 상식',
+    title: '상식',
     description: '다양한 분야의 기본 지식',
-    iconName: 'book-outline',
+    iconName: 'book',
     colors: ['#a78bfa', '#8b5cf6'],
     image: require('@/assets/images/knowledge.jpg'),
   },
   {
-    id: 'science-tech',
-    title: '과학 & 기술',
-    description: '과학, 기술, 발명에 관한 지식',
-    iconName: 'bulb-outline',
-    colors: ['#60a5fa', '#3b82f6'],
-    image: require('@/assets/images/science.jpg'),
-  },
-  {
-    id: 'history-culture',
-    title: '역사 & 문화',
-    description: '역사적 사건과 문화 지식',
-    iconName: 'hourglass-outline',
-    colors: ['#f97316', '#ea580c'],
-    image: require('@/assets/images/history.jpg'),
-  },
-  {
-    id: 'kpop-music',
-    title: 'K팝 & 음악',
-    description: 'K팝과 음악에 관한 지식',
-    iconName: 'musical-notes-outline',
-    colors: ['#f59e0b', '#d97706'],
-    image: require('@/assets/images/music.jpg'),
-  },
-  {
-    id: 'arts-literature',
-    title: '예술 & 문학',
-    description: '예술 작품과 문학 작품에 관한 지식',
-    iconName: 'brush-outline',
-    colors: ['#ec4899', '#db2777'],
-    image: require('@/assets/images/arts.jpg'),
-  },
-  {
-    id: 'sports',
-    title: '스포츠',
-    description: '다양한 스포츠와 경기에 관한 지식',
-    iconName: 'basketball-outline',
-    colors: ['#10b981', '#059669'],
-    image: require('@/assets/images/sports.jpg'),
-  },
-  {
     id: 'entertainment',
-    title: '영화 & TV',
-    description: '영화, 드라마, 연예인에 관한 지식',
-    iconName: 'film-outline',
+    title: '연예',
+    description: '영화, 드라마, 예능',
+    iconName: 'film',
     colors: ['#6366f1', '#4f46e5'],
     image: require('@/assets/images/entertainment.jpg'),
   },
-  {
-    id: 'math-logic',
-    title: '수학 & 논리',
-    description: '수학 문제와 논리적 사고력을 테스트하는 문제',
-    iconName: 'calculator-outline',
-    colors: ['#9333ea', '#7e22ce'],
-    image: require('@/assets/images/math.jpg'),
-  },
+  { id: 'slang', title: '신조어', description: '곧 제공 예정', iconName: 'chatbubbles', colors: ['#22d3ee', '#06b6d4'], image: require('@/assets/images/blah.jpg'), disabled: true },
+  { id: 'capitals', title: '수도', description: '곧 제공 예정', iconName: 'earth', colors: ['#34d399', '#10b981'], image: require('@/assets/images/knowledge.jpg'), disabled: true },
+  { id: 'four-character-idioms', title: '사자성어', description: '곧 제공 예정', iconName: 'document-text', colors: ['#f472b6', '#ec4899'], image: require('@/assets/images/four.jpg'), disabled: true },
 ];
 
 // 문제 형식 정보
-const questionTypes: {
-  id: QuestionFormatByQuizType<'knowledge'>;
-  title: string;
-  description: string;
-  iconName: any;
-  colors: any;
-}[] = [
-  {
-    id: 'multiple',
-    title: '객관식',
-    description: '여러 선택지 중에서 정답을 고르는 방식',
-    iconName: 'list-outline',
-    colors: ['#a855f7', '#8b5cf6'],
-  },
-  {
-    id: 'short',
-    title: '주관식',
-    description: '직접 답변을 입력하는 방식',
-    iconName: 'chatbox-ellipses-outline',
-    colors: ['#3b82f6', '#2563eb'],
-  },
-];
+const questionTypesByTopCategory: Record<
+  TopCategory,
+  { id: QuestionFormat; title: string; description: string; iconName: any; colors: any }[]
+> = {
+  general: [
+    {
+      id: 'multiple',
+      title: '객관식',
+      description: '여러 선택지 중에서 정답을 고르는 방식',
+      iconName: 'list-outline',
+      colors: ['#a855f7', '#8b5cf6'],
+    },
+    {
+      id: 'short',
+      title: '주관식',
+      description: '직접 답변을 입력하는 방식',
+      iconName: 'chatbox-ellipses-outline',
+      colors: ['#3b82f6', '#2563eb'],
+    },
+  ],
+  entertainment: [
+    {
+      id: 'true_false',
+      title: 'O / X',
+      description: '맞으면 O, 틀리면 X',
+      iconName: 'checkmark-done-outline',
+      colors: ['#22c55e', '#16a34a'],
+    },
+    {
+      id: 'filmography',
+      title: '필모그래피',
+      description: '작품 이력으로 맞히기',
+      iconName: 'videocam-outline',
+      colors: ['#f59e0b', '#d97706'],
+    },
+  ],
+  slang: [],
+  capitals: [],
+  'four-character-idioms': [],
+};
 
 // 추천 퀴즈 카드 컴포넌트
 const FeaturedCard = React.memo(
@@ -186,7 +161,7 @@ const FeaturedCard = React.memo(
     isSelected,
   }: {
     item: (typeof categories)[0];
-    onSelect: (category: KnowledgeCategory) => void;
+    onSelect: (category: TopCategory) => void;
     isSelected: boolean;
   }) => {
     const scale = useSharedValue(1);
@@ -211,8 +186,12 @@ const FeaturedCard = React.memo(
           styles.featuredCard,
           animatedStyle,
           isSelected && styles.selectedFeaturedCard,
+          item.disabled && { opacity: 0.5 },
         ]}
-        onPress={() => onSelect(item.id)}
+        onPress={() => {
+          if (item.disabled) return;
+          onSelect(item.id);
+        }}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
@@ -236,7 +215,7 @@ const FeaturedCard = React.memo(
                     <Ionicons name={item.iconName} size={24} color='white' />
                   </LinearGradient>
                 </View>
-                <Text style={styles.cardTitle}>{item.title}</Text>
+                <Text style={styles.cardTitle}>{item.title}{item.disabled ? ' (Coming soon)' : ''}</Text>
                 {isSelected && (
                   <View style={styles.selectedCardIndicator}>
                     <Check width={20} height={20} color='white' />
@@ -258,8 +237,8 @@ const QuestionTypeCard = React.memo(
     onSelect,
     isSelected,
   }: {
-    item: (typeof questionTypes)[0];
-    onSelect: (type: QuestionFormatByQuizType<'knowledge'>) => void;
+    item: (typeof questionTypesByTopCategory)['general'][0];
+    onSelect: (type: QuestionFormat) => void;
     isSelected: boolean;
   }) => {
     const scale = useSharedValue(1);
@@ -377,7 +356,7 @@ const DifficultyCard = React.memo(
 
 export default function HomeScreen() {
   const { setSetup, setup } = useQuizSetup();
-  const { category, difficulty, questionFormat, quizType } = setup;
+  const { topCategory, subcategory, difficulty, questionFormat } = setup;
   const insertQuizBatch = useMutation(api.quizzes.insertQuizBatch);
   const { myProfile } = useMyProfile();
   const handleBatchUpload = async () => {
@@ -387,13 +366,18 @@ export default function HomeScreen() {
   const router = useRouter();
   useBlockNavigation();
 
-  const handleSelectCategory = (category: KnowledgeCategory) => {
-    setSetup((prev) => ({ ...prev, category }));
+  const handleSelectCategory = (category: TopCategory) => {
+    setSetup((prev) => ({
+      ...prev,
+      topCategory: category,
+      subcategory: null,
+      questionFormat: null,
+      difficulty: null,
+    }));
   };
 
-  const handleSelectQuestionType = (
-    type: QuestionFormatByQuizType<'knowledge'>
-  ) => {
+  const handleSelectQuestionType = (type: QuestionFormat) => {
+    if (!topCategory) return;
     setSetup((prev) => ({ ...prev, questionFormat: type }));
   };
 
@@ -401,22 +385,19 @@ export default function HomeScreen() {
     setSetup((prev) => ({ ...prev, difficulty }));
   };
 
-  // 모든 선택이 완료되었는지 확인
-  const isSelectionComplete =
-    category && difficulty && questionFormat && quizType;
+  const requiresSubcategory = topCategory === 'general' || topCategory === 'entertainment';
+  const requiresDifficulty = topCategory === 'general';
+  const isSelectionComplete = !!topCategory && (!requiresSubcategory || !!subcategory) && (!requiresDifficulty || !!difficulty) && !!questionFormat;
 
   const handleStartQuiz = () => {
-    router.push(
-      `/quiz?quizType=${quizType}&category=${category}&difficulty=${difficulty}&questionFormat=${questionFormat}`
-    );
+    if (!topCategory) return;
+    const params = new URLSearchParams();
+    if (subcategory) params.set('category', subcategory);
+    if (topCategory === 'general' && difficulty) params.set('difficulty', difficulty);
+    if (questionFormat) params.set('questionFormat', questionFormat);
+    params.set('dev', '1'); // ← 이 한 줄 추가
+    router.push(`/quiz?${params.toString()}`);
   };
-
-  // const quizzes = useQuery(api.quizzes.getQuestionsByQuizType, {
-  //   category: 'kpop-music',
-  //   quizType: 'knowledge',
-  //   questionFormat: 'multiple',
-  //   difficulty: 'hard',
-  // });
 
   return (
     <>
@@ -433,7 +414,13 @@ export default function HomeScreen() {
           >
             <View style={styles.headerTop}>
               <View style={styles.headerContent}>
-                <Text style={styles.headerTitle}>상식 퀴즈</Text>
+                <Text style={styles.headerTitle}>
+                  {topCategory === 'general'
+                    ? '상식 퀴즈'
+                    : topCategory === 'entertainment'
+                      ? '연예 퀴즈'
+                      : '퀴즈 선택'}
+                </Text>
                 <Text style={styles.headerSubtitle}>
                   {myProfile?.displayName ? (
                     <Text
@@ -484,47 +471,98 @@ export default function HomeScreen() {
                   key={item.id}
                   item={item}
                   onSelect={handleSelectCategory}
-                  isSelected={category === item.id}
+                  isSelected={topCategory === item.id}
                 />
               ))}
             </ScrollView>
           </Animated.View>
 
-          {/* 문제 형식 섹션 */}
-          <Animated.View
-            entering={FadeInDown.duration(600).delay(250)}
-            style={styles.sectionContainer}
-          >
-            <Text style={styles.sectionTitle}>문제 형식 선택</Text>
-            <View style={styles.typeContainer}>
-              {questionTypes.map((item) => (
-                <QuestionTypeCard
-                  key={item.id}
-                  item={item}
-                  onSelect={handleSelectQuestionType}
-                  isSelected={questionFormat === item.id}
-                />
-              ))}
-            </View>
-          </Animated.View>
+          {/* 서브카테고리 섹션 (상식/연예만) */}
+          {!!topCategory && (topCategory === 'general' || topCategory === 'entertainment') && (
+            <Animated.View
+              entering={FadeInDown.duration(600).delay(230)}
+              style={styles.sectionContainer}
+            >
+              <Text style={styles.sectionTitle}>서브카테고리 선택</Text>
+              <View style={styles.typeContainer}>
+                {(
+                  topCategory === 'general'
+                    ? [
+                        { id: 'general', title: '일반 상식' },
+                        { id: 'history-culture', title: '역사 & 문화' },
+                        { id: 'arts-literature', title: '예술 & 문학' },
+                        { id: 'sports', title: '스포츠' },
+                        { id: 'science-tech', title: '과학 & 기술' },
+                        { id: 'math-logic', title: '수학 & 논리' },
+                        { id: 'kpop-music', title: 'K팝 & 음악' },
+                      ]
+                    : [
+                        { id: 'movies', title: '영화' },
+                        { id: 'drama-variety', title: '드라마 & 예능' },
+                      ]
+                ).map((sc) => (
+                  <TouchableOpacity
+                    key={sc.id}
+                    style={[styles.typeCard, subcategory === (sc.id as Subcategory) && styles.selectedCard]}
+                    onPress={() => setSetup((prev) => ({ ...prev, subcategory: sc.id as Subcategory }))}
+                  >
+                    <View style={styles.typeContent}>
+                      <Text style={styles.typeTitle}>{sc.title}</Text>
+                    </View>
+                    {subcategory === (sc.id as Subcategory) && (
+                      <View style={[styles.selectedIndicator, { backgroundColor: Colors.light.primary }]}>
+                        <Check width={16} height={16} color='white' />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </Animated.View>
+          )}
 
-          {/* 난이도 섹션 */}
-          <Animated.View
-            entering={FadeInDown.duration(600).delay(300)}
-            style={styles.sectionContainer}
-          >
-            <Text style={styles.sectionTitle}>난이도 선택</Text>
-            <View style={styles.difficultyContainer}>
-              {difficultyLevels.map((item) => (
-                <DifficultyCard
-                  key={item.id}
-                  item={item}
-                  onSelect={handleSelectDifficulty}
-                  isSelected={difficulty === item.id}
-                />
-              ))}
-            </View>
-          </Animated.View>
+          {/* 문제 형식 섹션 (카테고리 선택 후 노출) */}
+          {topCategory && (
+            <Animated.View
+              entering={FadeInDown.duration(600).delay(250)}
+              style={styles.sectionContainer}
+            >
+              <Text style={styles.sectionTitle}>문제 형식 선택</Text>
+              <View style={styles.typeContainer}>
+                {questionTypesByTopCategory[topCategory].length === 0 && (
+                  <Text style={styles.typeDescription}>곧 제공 예정입니다.</Text>
+                )}
+                {questionTypesByTopCategory[topCategory].length > 0 &&
+                  questionTypesByTopCategory[topCategory].map((item) => (
+                    <QuestionTypeCard
+                      key={item.id}
+                      item={item}
+                      onSelect={handleSelectQuestionType}
+                      isSelected={questionFormat === item.id}
+                    />
+                  ))}
+              </View>
+            </Animated.View>
+          )}
+
+          {/* 난이도 섹션 (상식에서만 노출) */}
+          {topCategory === 'general' && (
+            <Animated.View
+              entering={FadeInDown.duration(600).delay(300)}
+              style={styles.sectionContainer}
+            >
+              <Text style={styles.sectionTitle}>난이도 선택</Text>
+              <View style={styles.difficultyContainer}>
+                {difficultyLevels.map((item) => (
+                  <DifficultyCard
+                    key={item.id}
+                    item={item}
+                    onSelect={handleSelectDifficulty}
+                    isSelected={difficulty === item.id}
+                  />
+                ))}
+              </View>
+            </Animated.View>
+          )}
 
           {/* 시작 버튼 */}
           {isSelectionComplete && (

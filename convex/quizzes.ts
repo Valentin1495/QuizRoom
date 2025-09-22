@@ -1,19 +1,8 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 
-export const getQuestionsByQuizType = query({
+export const getQuestions = query({
   args: {
-    quizType: v.union(
-      v.literal('knowledge'),
-      v.literal('celebrity'),
-      v.literal('four-character'),
-      v.literal('movie-chain'),
-      v.literal('proverb-chain'),
-      v.literal('slang'),
-      v.literal('logo'),
-      v.literal('nonsense'),
-      v.null()
-    ),
     category: v.optional(
       v.union(
         v.literal('general'),
@@ -23,17 +12,16 @@ export const getQuestionsByQuizType = query({
         v.literal('sports'),
         v.literal('science-tech'),
         v.literal('math-logic'),
-        v.literal('entertainment'),
-        v.literal('korean-movie'),
-        v.literal('foreign-movie'),
-        v.literal('korean-celebrity'),
-        v.literal('foreign-celebrity'),
+        v.literal('movies'),
+        v.literal('drama-variety'),
         v.null()
       )
     ),
     questionFormat: v.union(
       v.literal('multiple'),
       v.literal('short'),
+      v.literal('true_false'),
+      v.literal('filmography'),
       v.null()
     ),
     difficulty: v.union(
@@ -44,31 +32,32 @@ export const getQuestionsByQuizType = query({
     ),
   },
   handler: async (ctx, args) => {
-    // map quizType → testQuestions.category
-    const mapQuizTypeToCategory = (qt: any) => {
-      switch (qt) {
-        case 'knowledge':
-          return 'general';
-        case 'celebrity':
-          return 'entertainment';
-        case 'four-character':
-          return 'four-character-idioms';
-        case 'movie-chain':
-          return 'entertainment';
-        case 'proverb-chain':
-          return 'general';
-        case 'slang':
-          return 'slang';
-        case 'logo':
-          return 'general';
-        case 'nonsense':
-          return 'slang';
-        default:
-          return null;
-      }
+    const inferTopCategory = (cat?: string | null) => {
+      if (!cat) return null as any;
+      const entertainmentSubs = new Set(['movies', 'drama-variety']);
+      const knowledgeSubs = new Set([
+        'general',
+        'history-culture',
+        'arts-literature',
+        'kpop-music',
+        'sports',
+        'science-tech',
+        'math-logic',
+      ]);
+      if (entertainmentSubs.has(cat)) return 'entertainment' as const;
+      if (knowledgeSubs.has(cat)) return 'general' as const;
+      return null as any;
     };
-    // map legacy quizzes.category → testQuestions.subcategory
-    const mapLegacyCategoryToSubcategory = (cat?: string | null) => {
+
+    const topCategory = inferTopCategory(args.category as any);
+    if (!topCategory) return [];
+
+    const all = await ctx.db
+      .query('testQuestions')
+      .withIndex('byCategory', (q) => q.eq('category', topCategory))
+      .collect();
+
+    const normalizeSubcategory = (cat?: string | null) => {
       switch (cat) {
         case 'kpop-music':
         case 'general':
@@ -77,54 +66,28 @@ export const getQuestionsByQuizType = query({
         case 'sports':
         case 'science-tech':
         case 'math-logic':
+        case 'movies':
+        case 'drama-variety':
           return cat;
-        case 'entertainment':
-        case 'korean-movie':
-        case 'foreign-movie':
-          return 'movies';
         default:
           return null;
       }
     };
 
-    const targetCategory = mapQuizTypeToCategory(args.quizType);
-    if (!targetCategory) return [];
-
-    const all = await ctx.db
-      .query('testQuestions')
-      .withIndex('byCategory', (q) => q.eq('category', targetCategory))
-      .collect();
-
-    return all.filter((q) => {
-      const mappedSub = mapLegacyCategoryToSubcategory(args.category as any);
-      const matchSubcategory = args.category ? q.subcategory === mappedSub : true;
-      const matchType = args.questionFormat
-        ? q.questionFormat === args.questionFormat
-        : true;
-      const matchDifficulty = args.difficulty
-        ? q.difficulty === args.difficulty
-        : true;
+    return all.filter((q: any) => {
+      const normalizedSub = normalizeSubcategory(args.category as any);
+      const matchSubcategory = args.category ? q.subcategory === normalizedSub : true;
+      const matchType = args.questionFormat ? q.questionFormat === args.questionFormat : true;
+      const matchDifficulty = args.difficulty ? q.difficulty === args.difficulty : true;
       return matchSubcategory && matchType && matchDifficulty;
     }) as any[];
   },
 });
 
-// 방법 1: 배치 삽입 mutation (가장 추천)
 export const insertQuizBatch = mutation({
   args: {
     quizzes: v.array(
       v.object({
-        quizType: v.union(
-          v.literal('knowledge'),
-          v.literal('celebrity'),
-          v.literal('four-character'),
-          v.literal('movie-chain'),
-          v.literal('proverb-chain'),
-          v.literal('slang'),
-          v.literal('logo'),
-          v.literal('nonsense'),
-          v.null()
-        ),
         category: v.optional(
           v.union(
             v.literal('kpop-music'),
@@ -135,10 +98,8 @@ export const insertQuizBatch = mutation({
             v.literal('science-tech'),
             v.literal('math-logic'),
             v.literal('entertainment'),
-            v.literal('korean-movie'),
-            v.literal('foreign-movie'),
-            v.literal('korean-celebrity'),
-            v.literal('foreign-celebrity'),
+            v.literal('movies'),
+            v.literal('drama-variety'),
             v.null()
           )
         ),
@@ -161,29 +122,24 @@ export const insertQuizBatch = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    const mapQuizTypeToCategory = (qt: any) => {
-      switch (qt) {
-        case 'knowledge':
-          return 'general';
-        case 'celebrity':
-          return 'entertainment';
-        case 'four-character':
-          return 'four-character-idioms';
-        case 'movie-chain':
-          return 'entertainment';
-        case 'proverb-chain':
-          return 'general';
-        case 'slang':
-          return 'slang';
-        case 'logo':
-          return 'general';
-        case 'nonsense':
-          return 'slang';
-        default:
-          return null;
-      }
+    const inferTopCategory = (cat?: string | null) => {
+      if (!cat) return null as any;
+      const entertainmentSubs = new Set(['movies', 'drama-variety']);
+      const knowledgeSubs = new Set([
+        'general',
+        'history-culture',
+        'arts-literature',
+        'kpop-music',
+        'sports',
+        'science-tech',
+        'math-logic',
+      ]);
+      if (entertainmentSubs.has(cat)) return 'entertainment' as const;
+      if (knowledgeSubs.has(cat)) return 'general' as const;
+      return null as any;
     };
-    const mapLegacyCategoryToSubcategory = (cat?: string | null) => {
+
+    const normalizeSubcategory = (cat?: string | null) => {
       switch (cat) {
         case 'kpop-music':
         case 'general':
@@ -192,45 +148,32 @@ export const insertQuizBatch = mutation({
         case 'sports':
         case 'science-tech':
         case 'math-logic':
+        case 'movies':
+        case 'drama-variety':
           return cat;
-        case 'entertainment':
-        case 'korean-movie':
-        case 'foreign-movie':
-          return 'movies';
         default:
           return null;
       }
     };
 
-    const docs = args.quizzes
-      .map((q) => {
-        const category = mapQuizTypeToCategory(q.quizType);
-        if (!category) return null;
-        const subcategory = mapLegacyCategoryToSubcategory(q.category as any);
-        return {
-          category, // testQuestions.category
-          subcategory: subcategory ?? undefined,
-          question: q.question,
-          questionFormat: q.questionFormat,
-          difficulty: q.difficulty,
-          options: q.options ?? undefined,
-          answer: q.answer ?? undefined,
-          answers: q.answers ?? undefined,
-        } as const;
-      })
-      .filter(Boolean) as Array<{
-        category: 'general' | 'entertainment' | 'slang' | 'capitals' | 'four-character-idioms';
-        subcategory?: 'kpop-music' | 'general' | 'history-culture' | 'arts-literature' | 'sports' | 'science-tech' | 'math-logic' | 'movies' | 'drama-variety';
-        question: string;
-        questionFormat: 'multiple' | 'short' | null;
-        difficulty: 'easy' | 'medium' | 'hard' | null;
-        options?: string[];
-        answer?: string;
-        answers?: string[];
-      }>;
+    const docs = args.quizzes.map((q) => {
+      const category = inferTopCategory(q.category as any);
+      const subcategory = normalizeSubcategory(q.category as any);
+      return {
+        category,
+        subcategory: subcategory ?? undefined,
+        question: q.question,
+        questionFormat: q.questionFormat,
+        difficulty: q.difficulty,
+        options: q.options ?? undefined,
+        answer: q.answer ?? undefined,
+        answers: q.answers ?? undefined,
+      } as const;
+    });
 
     try {
       for (const doc of docs) {
+        if (!doc.category) continue;
         await ctx.db.insert('testQuestions', doc as any);
       }
       return { success: true, count: docs.length };

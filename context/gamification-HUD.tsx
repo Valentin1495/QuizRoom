@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     zIndex: 1000,
+    paddingBottom: 10,
   },
   hudRow: {
     flexDirection: 'row',

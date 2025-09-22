@@ -2,12 +2,10 @@ import { Colors } from '@/constants/Colors';
 import { GamificationHUD } from '@/context/gamification-HUD';
 import { PointsAnimation } from '@/context/points-animation';
 import { api } from '@/convex/_generated/api';
-import { Doc } from '@/convex/_generated/dataModel';
 import { useBlockNavigation } from '@/hooks/use-block-navigation';
 import { useChallenges } from '@/hooks/use-challenges';
 import { useQuizGamification } from '@/hooks/use-quiz-gamification';
 import { log } from '@/utils/log';
-import { switchCategoryToLabel } from '@/utils/switch-category-to-label';
 import { switchDifficulty } from '@/utils/switch-difficulty';
 import { getAuth } from '@react-native-firebase/auth';
 import { useMutation } from 'convex/react';
@@ -32,8 +30,7 @@ import {
   Check,
   CheckCircle,
   Flag,
-  Folder,
-  Home,
+  Home
 } from 'react-native-feather';
 import Animated, {
   Easing,
@@ -47,7 +44,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getDifficultyIcon } from './get-difficulty-icon';
 import { LevelUpModal } from './level-up-modal';
 
 const { width } = Dimensions.get('window');
@@ -84,6 +80,7 @@ export default function QuestionList() {
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [maxPerfectStreak, setMaxPerfectStreak] = useState(0);
   const [isCompleting, setIsCompleting] = useState(false);
+  const [pressedOX, setPressedOX] = useState<'O' | 'X' | null>(null);
 
   // 퀴즈 시작 시간과 각 문제별 시간 추적
   const [quizStartTime, setQuizStartTimeLocal] = useState<number>(() =>
@@ -128,7 +125,56 @@ export default function QuestionList() {
     });
   }, [currentQuestionIndex, questions.length]);
 
-  const currentQuestion: Doc<'quizzes'> = questions[currentQuestionIndex];
+  const currentQuestion: any = questions[currentQuestionIndex];
+
+  // 카테고리/서브카테고리 메타(레이블)
+  const getCategoryMeta = (
+    category?: string | null
+  ): { label: string } => {
+    switch (category) {
+      case 'general':
+        return { label: '상식' };
+      case 'entertainment':
+        return { label: '연예' };
+      case 'slang':
+        return { label: '신조어' };
+      case 'capitals':
+        return { label: '수도' };
+      case 'four-character-idioms':
+        return { label: '사자성어' };
+      default:
+        return { label: '카테고리' };
+    }
+  };
+
+  const getSubcategoryMeta = (
+    sub?: string | null
+  ): { label: string } => {
+    switch (sub) {
+      case 'general':
+        return { label: '일반 상식' };
+      case 'history-culture':
+        return { label: '역사&문화' };
+      case 'arts-literature':
+        return { label: '예술&문학' };
+      case 'sports':
+        return { label: '스포츠' };
+      case 'science-tech':
+          return { label: '과학&기술' };
+      case 'math-logic':
+        return { label: '수학&논리' };
+      case 'kpop-music':
+        return { label: 'K팝&음악' };
+      case 'movies':
+        return { label: '영화' };
+      case 'drama-variety':
+        return { label: '드라마&예능' };
+      default:
+        return { label: '' };
+    }
+  };
+
+  // (이전 배경 오버레이 기능 제거됨)
 
   const createReport = useMutation(api.reports.createReport);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -142,7 +188,11 @@ export default function QuestionList() {
   const onSubmitAnswer = (): void => {
     let userAnswer: string = '';
 
-    if (questionFormat === 'multiple') {
+    if (
+      questionFormat === 'multiple' ||
+      questionFormat === 'true_false' ||
+      questionFormat === 'filmography'
+    ) {
       userAnswer = selectedOption;
     } else {
       userAnswer = textAnswer.trim();
@@ -178,7 +228,11 @@ export default function QuestionList() {
       // 이전 답변이 있으면 복원
       const previousAnswer = userAnswers[currentQuestionIndex - 1];
       if (previousAnswer && previousAnswer.userAnswer) {
-        if (questionFormat === 'multiple') {
+        if (
+          questionFormat === 'multiple' ||
+          questionFormat === 'true_false' ||
+          questionFormat === 'filmography'
+        ) {
           setSelectedOption(previousAnswer.userAnswer);
         } else {
           setTextAnswer(previousAnswer.userAnswer);
@@ -247,7 +301,11 @@ export default function QuestionList() {
       // 다음 답변이 있으면 복원
       const nextAnswer = userAnswers[currentQuestionIndex + 1];
       if (nextAnswer && nextAnswer.userAnswer) {
-        if (questionFormat === 'multiple') {
+        if (
+          questionFormat === 'multiple' ||
+          questionFormat === 'true_false' ||
+          questionFormat === 'filmography'
+        ) {
           setSelectedOption(nextAnswer.userAnswer);
         } else {
           setTextAnswer(nextAnswer.userAnswer);
@@ -371,16 +429,30 @@ export default function QuestionList() {
         end={{ x: 1, y: 1 }}
         style={styles.container}
       >
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>불러오는 중...</Text>
-        </View>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.skeletonHeader}>
+            <View style={styles.skeletonProgress} />
+            <View style={styles.skeletonInfo} />
+          </View>
+          <View style={styles.skeletonCard}>
+            <View style={styles.skeletonQuestion} />
+            <View style={styles.skeletonOption} />
+            <View style={styles.skeletonOption} />
+            <View style={styles.skeletonOption} />
+            <View style={styles.skeletonOption} />
+          </View>
+        </SafeAreaView>
       </LinearGradient>
     );
   }
 
   // 현재 문제에 대한 답변 상태 확인
   const canSubmit =
-    questionFormat === 'multiple' ? selectedOption : textAnswer.trim();
+    questionFormat === 'multiple' ||
+    questionFormat === 'true_false' ||
+    questionFormat === 'filmography'
+      ? selectedOption
+      : textAnswer.trim();
 
   return (
     <LinearGradient
@@ -422,20 +494,20 @@ export default function QuestionList() {
               </Text>
             </View>
             <View style={styles.topButtons}>
-              <View style={styles.categoryContainer}>
-                <Folder width={16} height={16} color={Colors.light.secondary} />
-                <Text style={styles.category}>
-                  {switchCategoryToLabel(currentQuestion.category)}
-                </Text>
-                {currentQuestion.difficulty && (
-                  <View style={styles.difficultyBadge}>
-                    {getDifficultyIcon(currentQuestion.difficulty)}
-                    <Text style={styles.difficulty}>
-                      {switchDifficulty(currentQuestion.difficulty)}
+              {(() => {
+                const cat = getCategoryMeta(currentQuestion.category);
+                const sub = getSubcategoryMeta(currentQuestion.subcategory);
+                const hasDiff = !!currentQuestion.difficulty;
+                return (
+                  <View style={[styles.categoryContainer, styles.inlineInfoContainer]}>
+                    <Text style={styles.inlineInfoText} numberOfLines={2}>
+                      {cat.label}
+                      {sub.label ? ` • ${sub.label}` : ''}
+                      {hasDiff ? ` • ${switchDifficulty(currentQuestion.difficulty)}` : ''}
                     </Text>
                   </View>
-                )}
-              </View>
+                );
+              })()}
               <View style={styles.actionButtons}>
                 <TouchableOpacity
                   style={styles.reportButton}
@@ -477,9 +549,9 @@ export default function QuestionList() {
           >
             <Text style={styles.question}>{currentQuestion.question}</Text>
 
-            {questionFormat === 'multiple' ? (
+            {questionFormat === 'multiple' || questionFormat === 'filmography' ? (
               <View style={styles.optionsContainer}>
-                {currentQuestion.options?.map((option) => (
+                {currentQuestion.options?.map((option: string) => (
                   <TouchableOpacity
                     key={option}
                     style={[
@@ -524,17 +596,72 @@ export default function QuestionList() {
                   </TouchableOpacity>
                 ))}
               </View>
+            ) : questionFormat === 'true_false' ? (
+              <View style={styles.oxOptionsContainer}>
+                {(['O', 'X'] as const).map((ox) => (
+                  <TouchableOpacity
+                    key={ox}
+                    style={[
+                      styles.oxOptionButton,
+                      selectedOption === ox && styles.oxSelected,
+                    ]}
+                    onPress={() => {
+                      if (!showFeedback) {
+                        setSelectedOption(ox);
+                        const result = handleAnswer(
+                          currentQuestion,
+                          currentQuestionIndex,
+                          ox,
+                          questionFormat
+                        );
+                        setIsCorrect(result.isCorrect);
+                        setShowFeedback(true);
+                      }
+                    }}
+                    onPressIn={() => setPressedOX(ox)}
+                    onPressOut={() => setPressedOX(null)}
+                    disabled={showFeedback}
+                  >
+                    <LinearGradient
+                      colors={
+                        ox === 'O'
+                          ? pressedOX === 'O'
+                            ? ['#36CFCF', '#2A9BEF']
+                            : ['#4ADEDE', '#3AB0FF']
+                          : pressedOX === 'X'
+                            ? ['#E85A5A', '#E01E75']
+                            : ['#FF6B6B', '#F72585']
+                      }
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={[
+                        styles.oxGradient,
+                        pressedOX === ox && styles.oxGradientPressed,
+                      ]}
+                    >
+                      {selectedOption === ox && (
+                        <View
+                          style={[
+                            styles.oxChosenBadge,
+                            ox === 'O' ? styles.oxBadgeO : styles.oxBadgeX,
+                          ]}
+                        >
+                          <Check width={12} height={12} color={ox === 'O' ? '#3AB0FF' : '#F72585'} />
+                        </View>
+                      )}
+                      <Text style={styles.oxText}>{ox}</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                ))}
+              </View>
             ) : (
               <View style={styles.shortAnswerContainer}>
                 <TextInput
                   style={styles.textInput}
-                  placeholder='답변을 입력하세요'
-                  placeholderTextColor='#888'
+                  placeholder='정답을 입력하세요'
                   value={textAnswer}
                   onChangeText={setTextAnswer}
-                  editable={!showFeedback}
-                  multiline={false} // 명시적으로 단일 줄
-                  allowFontScaling={false} // (선택)
+                  autoCapitalize='none'
                 />
               </View>
             )}
@@ -557,19 +684,24 @@ export default function QuestionList() {
                 >
                   {isCorrect
                     ? `정답이에요! ${earnedPoints > 0 ? `+${earnedPoints}포인트` : ''}`
-                    : questionFormat === 'multiple'
+                    : questionFormat === 'multiple' || questionFormat === 'true_false' || questionFormat === 'filmography'
                       ? `오답이에요. 정답은 "${currentQuestion.answer}" 입니다`
-                      : `오답이에요. 정답은 "${currentQuestion.answers![0]}" 입니다`}
+                      : `오답이에요. 정답은 "${currentQuestion.answers?.[0] ?? ''}" 입니다`}
                 </Text>
                 {isCorrect && currentStreak > 1 && (
                   <Text style={styles.streakText}>
                     🔥 {currentStreak}연속 정답!
                   </Text>
                 )}
+                {currentQuestion.category === 'entertainment' && !!currentQuestion.explanation && (
+                  <Text style={styles.explanationText}>
+                    {currentQuestion.explanation}
+                  </Text>
+                )}
               </Animated.View>
             )}
 
-            {!showFeedback && (
+            {!showFeedback && questionFormat !== 'true_false' && (
               <TouchableOpacity
                 style={[
                   styles.submitButton,
@@ -799,31 +931,54 @@ const styles = StyleSheet.create({
   categoryContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
+    borderWidth: 1,
+    gap: 6,
+    flexWrap: 'wrap',
+  },
+  inlineInfoContainer: {
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    borderColor: 'rgba(0,0,0,0.06)',
+  },
+  inlineInfoText: {
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.2,
+    color: Colors.light.secondary,
   },
   category: {
-    color: Colors.light.secondary,
-    fontSize: 15,
-    marginLeft: 6,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  subcategoryChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 10,
+    marginLeft: 8,
+    borderWidth: 1,
+  },
+  subcategoryText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   difficultyBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
     marginLeft: 8,
+    borderWidth: 1,
   },
   difficulty: {
-    color: Colors.light.secondary,
     fontSize: 12,
-    fontWeight: '600',
-    marginLeft: 4,
+    fontWeight: '700',
   },
   actionButtons: {
     flexDirection: 'row',
@@ -875,19 +1030,85 @@ const styles = StyleSheet.create({
     backgroundColor: '#f7f7f7',
     padding: 16,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
     marginBottom: 12,
-    borderWidth: 2,
-    borderColor: '#f7f7f7',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
   },
   selectedOption: {
+    backgroundColor: 'rgba(111, 29, 27, 0.08)',
     borderColor: Colors.light.primary,
-    shadowColor: Colors.light.primary,
-    shadowOpacity: 0.2,
+  },
+  optionText: {
+    color: Colors.light.secondary,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  // O/X 전용 스타일
+  oxOptionsContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 20,
+  },
+  oxOptionButton: {
+    flex: 1,
+    paddingVertical: 20,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  oxGradient: {
+    width: '100%',
+    paddingVertical: 20,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  oxChosenBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    paddingHorizontal: 8,
+    height: 22,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  oxBadgeO: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#3AB0FF',
+  },
+  oxBadgeX: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#FF6B6B',
+  },
+  // 그라디언트 적용으로 기본 배경/테두리 제거
+  oxButtonO: {},
+  oxButtonX: {},
+  oxSelected: {
+    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
+  },
+  oxText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '800',
+  },
+  oxGradientPressed: {
+    transform: [{ scale: 0.98 }],
+    shadowOpacity: 0.16,
     elevation: 3,
   },
   correctOption: {
@@ -910,12 +1131,6 @@ const styles = StyleSheet.create({
   },
 
   // 옵션 텍스트 스타일들
-  optionText: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
-    lineHeight: 22,
-  },
   selectedOptionText: {
     color: Colors.light.primary,
     fontWeight: '600',
@@ -972,6 +1187,13 @@ const styles = StyleSheet.create({
   feedbackText: {
     fontSize: 16,
     fontWeight: '600',
+    textAlign: 'center',
+  },
+  explanationText: {
+    marginTop: 8,
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
     textAlign: 'center',
   },
   correctFeedback: {
@@ -1062,6 +1284,43 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
     fontSize: 18,
     fontWeight: '600',
+  },
+  // Skeleton styles
+  skeletonHeader: {
+    padding: 20,
+    gap: 12,
+  },
+  skeletonProgress: {
+    height: 10,
+    width: '100%',
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,0.35)',
+  },
+  skeletonInfo: {
+    height: 22,
+    width: '60%',
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+  },
+  skeletonCard: {
+    marginHorizontal: 20,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderRadius: 24,
+    padding: 20,
+    gap: 12,
+  },
+  skeletonQuestion: {
+    height: 28,
+    width: '80%',
+    borderRadius: 10,
+    backgroundColor: '#ececec',
+    marginBottom: 8,
+  },
+  skeletonOption: {
+    height: 48,
+    width: '100%',
+    borderRadius: 14,
+    backgroundColor: '#f2f2f2',
   },
 
   // 모달 스타일들
