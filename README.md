@@ -48,3 +48,33 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+# QZY
+
+This is an Expo Router app with Convex backend.
+
+## Development
+
+- `npm start` to run the app.
+- Configure Convex URL via `EXPO_PUBLIC_CONVEX_URL` (see `eas.json`).
+
+## Strangler (Greenfield) Rollout
+
+We run legacy and greenfield UIs side-by-side and route users by feature flags.
+
+- Route groups: `/(tabs)` = legacy, `/(greenfield)` = new app.
+- Feature flag helper: `utils/feature-flags.ts` exposes `getAppVariant()`.
+- Root redirect in `app/_layout.tsx` chooses destination after auth.
+
+### How to toggle
+
+- Local override: set env `EXPO_PUBLIC_APP_VARIANT=greenfield` (or `legacy`) before `expo start`.
+- EAS channels:
+  - `preview` channel sets `EXPO_PUBLIC_APP_VARIANT=greenfield`.
+  - `production` channel sets `EXPO_PUBLIC_APP_VARIANT=legacy`.
+- You can also switch by EAS Update channel name (`preview`, `beta`, `staging` enable greenfield by default).
+
+### Data compatibility
+
+- Backend (Convex) remains shared; schema and endpoints are compatible.
+- Both apps read/write the same user and quiz documents.

@@ -15,7 +15,8 @@
       },
       "env": {
         "CONVEX_DEPLOYMENT": "dev:quick-pika-380",
-        "EXPO_PUBLIC_CONVEX_URL": "https://quick-pika-380.convex.cloud"
+        "EXPO_PUBLIC_CONVEX_URL": "https://quick-pika-380.convex.cloud",
+        "EXPO_PUBLIC_APP_VARIANT": "greenfield"
       },
       "channel": "preview"
     },
@@ -28,7 +29,8 @@
       },
       "env": {
         "CONVEX_DEPLOYMENT": "prod:rightful-firefly-855",
-        "EXPO_PUBLIC_CONVEX_URL": "https://rightful-firefly-855.convex.cloud"
+        "EXPO_PUBLIC_CONVEX_URL": "https://rightful-firefly-855.convex.cloud",
+        "EXPO_PUBLIC_APP_VARIANT": "legacy"
       },
       "channel": "production",
       "autoIncrement": true

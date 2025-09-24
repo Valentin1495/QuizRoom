@@ -14,10 +14,7 @@ interface AchievementNotificationProps {
   onComplete: () => void;
 }
 
-export function AchievementNotification({
-  achievement,
-  onComplete,
-}: AchievementNotificationProps) {
+export function AchievementNotification({ achievement, onComplete }: AchievementNotificationProps) {
   const translateY = useSharedValue(-100);
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.9);
@@ -56,9 +53,7 @@ export function AchievementNotification({
         <View style={styles.textContainer}>
           <Text style={styles.achievementTitle}>업적 달성!</Text>
           <Text style={styles.achievementName}>{achievement.title}</Text>
-          <Text style={styles.achievementDescription}>
-            {achievement.description}
-          </Text>
+          <Text style={styles.achievementDescription}>{achievement.description}</Text>
         </View>
       </View>
     </Animated.View>

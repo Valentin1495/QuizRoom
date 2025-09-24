@@ -27,11 +27,7 @@ export const useQuizGamification = () => {
   };
 
   const calculatePoints = useCallback(
-    (
-      isCorrect: boolean,
-      question: any,
-      streakCount: number
-    ): number => {
+    (isCorrect: boolean, question: any, streakCount: number): number => {
       if (!isCorrect) return 0;
 
       let points = 0;
@@ -95,7 +91,7 @@ export const useQuizGamification = () => {
 
       return points;
     },
-    []
+    [],
   );
 
   const handleAnswer = useCallback(
@@ -103,7 +99,7 @@ export const useQuizGamification = () => {
       currentQuestion: any,
       currentQuestionIndex: number,
       userAnswer: string,
-      questionFormat: QuestionFormat
+      questionFormat: QuestionFormat,
     ): { isCorrect: boolean; pointsEarned: number; newStreak: number } => {
       const endTime = Date.now();
       const answerTime = (endTime - questionStartTime.current) / 1000;
@@ -113,7 +109,9 @@ export const useQuizGamification = () => {
 
       if (questionFormat === 'true_false') {
         const normalizeBool = (val: any): boolean | null => {
-          const s = String(val ?? '').trim().toLowerCase();
+          const s = String(val ?? '')
+            .trim()
+            .toLowerCase();
           if (['o', 'true', 't', '1', '예', '맞다', '맞아요', 'yes'].includes(s)) return true;
           if (['x', 'false', 'f', '0', '아니오', '아니다', 'no'].includes(s)) return false;
           return null;
@@ -179,7 +177,7 @@ export const useQuizGamification = () => {
 
       return { isCorrect: correct, pointsEarned, newStreak };
     },
-    [currentStreak, calculatePoints, gamification, quizSetup]
+    [currentStreak, calculatePoints, gamification, quizSetup],
   );
 
   const handleQuizCompletion = useCallback(async () => {
@@ -198,18 +196,17 @@ export const useQuizGamification = () => {
           allAnswerTimes.current.length
         : 0;
 
-    const totalTimeSpent = allAnswerTimes.current.reduce(
-      (sum, time) => sum + time * 1000,
-      0
-    );
+    const totalTimeSpent = allAnswerTimes.current.reduce((sum, time) => sum + time * 1000, 0);
 
     const comebackVictory = isComebackVictory(userAnswers);
 
     const difficulty = (quizSetup.setup.difficulty || 'medium') as any;
 
     const wasPerfect = gamification.recordQuizCompletion(
-      (subcategory || topCategory) || 'general',
-      (questionFormat === 'true_false' || questionFormat === 'filmography') ? 'multiple' : (questionFormat as any),
+      subcategory || topCategory || 'general',
+      questionFormat === 'true_false' || questionFormat === 'filmography'
+        ? 'multiple'
+        : (questionFormat as any),
       correct,
       total,
       difficulty,
@@ -218,7 +215,7 @@ export const useQuizGamification = () => {
         averageTime,
         comebackVictory,
         maxPerfectStreak: maxStreakInQuiz.current,
-      }
+      },
     );
 
     gamification.updateStreak();
@@ -305,9 +302,7 @@ export const useQuizGamification = () => {
         }
       });
 
-      const firstThreeCorrect = userAnswers
-        .slice(0, 3)
-        .filter((answer) => answer.isCorrect).length;
+      const firstThreeCorrect = userAnswers.slice(0, 3).filter((answer) => answer.isCorrect).length;
 
       const stats = {
         averageTime,

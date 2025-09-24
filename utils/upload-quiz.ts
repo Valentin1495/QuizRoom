@@ -47,8 +47,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['미분', '적분', '극한', '수열'],
-    question:
-      '함수의 그래프와 x축 사이의 넓이를 구하는 계산법을 무엇이라고 하나요?',
+    question: '함수의 그래프와 x축 사이의 넓이를 구하는 계산법을 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -56,8 +55,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['미분', '적분', '극한', '수열'],
-    question:
-      '변수가 특정 값에 한없이 가까워질 때 함수의 값이 가까워지는 값을 무엇이라고 하나요?',
+    question: '변수가 특정 값에 한없이 가까워질 때 함수의 값이 가까워지는 값을 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -65,8 +63,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['벡터', '텐서', '스칼라', '행렬'],
-    question:
-      '숫자나 기호를 직사각형 모양으로 배열한 것을 무엇이라고 부르나요?',
+    question: '숫자나 기호를 직사각형 모양으로 배열한 것을 무엇이라고 부르나요?',
     questionFormat: 'multiple',
   },
   {
@@ -82,8 +79,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['선형대수', '확률론', '미분방정식', '정수론'],
-    question:
-      '미지 함수와 그 미분들의 관계를 나타내는 방정식을 무엇이라고 하나요?',
+    question: '미지 함수와 그 미분들의 관계를 나타내는 방정식을 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -91,8 +87,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['라플라스 변환', '푸리에 변환', '웨이블릿 변환', '코사인 변환'],
-    question:
-      '시간 영역의 신호를 주파수 영역의 신호로 변환하는 수학적 기법을 무엇이라고 하나요?',
+    question: '시간 영역의 신호를 주파수 영역의 신호로 변환하는 수학적 기법을 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -125,8 +120,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['통계학', '미적분학', '확률론', '집합론'],
-    question:
-      '불확실한 사건의 발생 가능성을 수치화하고 분석하는 수학 분야는 무엇인가요?',
+    question: '불확실한 사건의 발생 가능성을 수치화하고 분석하는 수학 분야는 무엇인가요?',
     questionFormat: 'multiple',
   },
   {
@@ -134,8 +128,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['기하학', '해석학', '대수학', '위상수학'],
-    question:
-      '연속적인 변형에도 변하지 않는 공간의 성질을 연구하는 수학 분야는 무엇인가요?',
+    question: '연속적인 변형에도 변하지 않는 공간의 성질을 연구하는 수학 분야는 무엇인가요?',
     questionFormat: 'multiple',
   },
   {
@@ -169,12 +162,7 @@ const quizzes = [
     answer: '리만 가설',
     category: 'math-logic',
     difficulty: 'hard',
-    options: [
-      '골드바흐의 추측',
-      '페르마의 마지막 정리',
-      '리만 가설',
-      '푸앵카레 추측',
-    ],
+    options: ['골드바흐의 추측', '페르마의 마지막 정리', '리만 가설', '푸앵카레 추측'],
     question:
       '소수의 분포에 대한 미해결 문제 중 하나로, 리만 제타 함수의 비자명 근이 모두 임계선 위에 있다는 가설은 무엇인가요?',
     questionFormat: 'multiple',
@@ -183,12 +171,7 @@ const quizzes = [
     answer: '푸앵카레 추측',
     category: 'math-logic',
     difficulty: 'hard',
-    options: [
-      '리만 가설',
-      '푸앵카레 추측',
-      'P-NP 문제',
-      '나비에-스토크스 방정식',
-    ],
+    options: ['리만 가설', '푸앵카레 추측', 'P-NP 문제', '나비에-스토크스 방정식'],
     question:
       '3차원 다양체에서 단순 연결이 구와 동치라는 위상수학의 추측으로, 2002년 그리고리 페렐만에 의해 증명된 것은 무엇인가요?',
     questionFormat: 'multiple',
@@ -197,12 +180,7 @@ const quizzes = [
     answer: '페르마의 마지막 정리',
     category: 'math-logic',
     difficulty: 'hard',
-    options: [
-      '피타고라스의 정리',
-      '페르마의 마지막 정리',
-      '디오판토스 방정식',
-      '오일러의 공식',
-    ],
+    options: ['피타고라스의 정리', '페르마의 마지막 정리', '디오판토스 방정식', '오일러의 공식'],
     question:
       'n이 2보다 큰 정수일 때, $a^n + b^n = c^n$을 만족하는 양의 정수 $a, b, c$는 존재하지 않는다는 정리는 무엇인가요?',
     questionFormat: 'multiple',
@@ -211,12 +189,7 @@ const quizzes = [
     answer: '골드바흐의 추측',
     category: 'math-logic',
     difficulty: 'hard',
-    options: [
-      '쌍둥이 소수 추측',
-      '골드바흐의 추측',
-      '카탈란의 추측',
-      '비베르바흐의 추측',
-    ],
+    options: ['쌍둥이 소수 추측', '골드바흐의 추측', '카탈란의 추측', '비베르바흐의 추측'],
     question:
       '2보다 큰 모든 짝수는 두 소수의 합으로 나타낼 수 있다는 정수론의 미해결 추측은 무엇인가요?',
     questionFormat: 'multiple',
@@ -258,8 +231,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['공리', '정의', '정리', '가설'],
-    question:
-      '공리나 다른 정리들로부터 논리적으로 증명된 명제를 무엇이라고 하나요?',
+    question: '공리나 다른 정리들로부터 논리적으로 증명된 명제를 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -267,8 +239,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['동치', '함의', '모순', '대우'],
-    question:
-      '어떤 명제와 그 명제의 부정이 동시에 참일 수 없는 논리적 관계를 무엇이라고 하나요?',
+    question: '어떤 명제와 그 명제의 부정이 동시에 참일 수 없는 논리적 관계를 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -276,8 +247,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['필요조건', '충분조건', '필요충분조건', '상관관계'],
-    question:
-      '두 명제 P와 Q에 대해 P가 Q이면 Q가 P인 관계를 무엇이라고 부르나요?',
+    question: '두 명제 P와 Q에 대해 P가 Q이면 Q가 P인 관계를 무엇이라고 부르나요?',
     questionFormat: 'multiple',
   },
   {
@@ -285,8 +255,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['술어 논리', '양상 논리', '명제 논리', '비고전 논리'],
-    question:
-      '명제를 기본 단위로 하여 논리적 관계를 다루는 논리 체계를 무엇이라고 하나요?',
+    question: '명제를 기본 단위로 하여 논리적 관계를 다루는 논리 체계를 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -338,12 +307,7 @@ const quizzes = [
     answer: '오일러의 공식',
     category: 'math-logic',
     difficulty: 'hard',
-    options: [
-      '피타고라스의 정리',
-      '페르마의 정리',
-      '오일러의 공식',
-      '가우스의 정리',
-    ],
+    options: ['피타고라스의 정리', '페르마의 정리', '오일러의 공식', '가우스의 정리'],
     question:
       '복소 지수 함수와 삼각 함수 사이의 관계를 나타내는 $e^{ix} = \cos x + i \sin x$는 무엇인가요?',
     questionFormat: 'multiple',
@@ -353,8 +317,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['일차방정식', '이차방정식', '삼차방정식', '사차방정식'],
-    question:
-      '최고차항의 차수가 2인 다항식으로 이루어진 방정식을 무엇이라고 하나요?',
+    question: '최고차항의 차수가 2인 다항식으로 이루어진 방정식을 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -362,8 +325,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['급수', '함수의 극한', '수열의 극한', '미분계수'],
-    question:
-      '수열의 항의 번호가 한없이 커질 때, 그 항들이 가까워지는 값을 무엇이라고 하나요?',
+    question: '수열의 항의 번호가 한없이 커질 때, 그 항들이 가까워지는 값을 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -371,8 +333,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['원함수', '역함수', '도함수', '부정적분'],
-    question:
-      '미분 가능한 함수의 미분계수를 나타내는 새로운 함수를 무엇이라고 부르나요?',
+    question: '미분 가능한 함수의 미분계수를 나타내는 새로운 함수를 무엇이라고 부르나요?',
     questionFormat: 'multiple',
   },
   {
@@ -380,8 +341,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['전미분', '상미분', '편미분', '방향 미분'],
-    question:
-      '다변수 함수에서 하나의 변수에 대해서만 미분하는 것을 무엇이라고 하나요?',
+    question: '다변수 함수에서 하나의 변수에 대해서만 미분하는 것을 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -398,8 +358,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['연속 함수', '미분 가능 함수', '해석 함수', '정칙 함수'],
-    question:
-      '복소평면의 한 영역에서 미분 가능한 복소 함수를 무엇이라고 부르나요?',
+    question: '복소평면의 한 영역에서 미분 가능한 복소 함수를 무엇이라고 부르나요?',
     questionFormat: 'multiple',
   },
   {
@@ -416,8 +375,7 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['르베그 적분', '스틸체스 적분', '리만 적분', '확률 적분'],
-    question:
-      '함수의 넓이를 구하기 위해 직사각형 근사를 사용하는 적분 방법을 무엇이라고 하나요?',
+    question: '함수의 넓이를 구하기 위해 직사각형 근사를 사용하는 적분 방법을 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
@@ -425,34 +383,22 @@ const quizzes = [
     category: 'math-logic',
     difficulty: 'hard',
     options: ['리만 적분', '르베그 적분', '다중 적분', '선적분'],
-    question:
-      '함수의 값을 기준으로 분할하여 적분하는 현대적인 적분 방법을 무엇이라고 하나요?',
+    question: '함수의 값을 기준으로 분할하여 적분하는 현대적인 적분 방법을 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
     answer: '확률 밀도 함수',
     category: 'math-logic',
     difficulty: 'hard',
-    options: [
-      '누적 분포 함수',
-      '확률 질량 함수',
-      '확률 밀도 함수',
-      '모멘트 생성 함수',
-    ],
-    question:
-      '연속 확률 변수가 특정 값을 가질 확률을 나타내는 함수를 무엇이라고 하나요?',
+    options: ['누적 분포 함수', '확률 질량 함수', '확률 밀도 함수', '모멘트 생성 함수'],
+    question: '연속 확률 변수가 특정 값을 가질 확률을 나타내는 함수를 무엇이라고 하나요?',
     questionFormat: 'multiple',
   },
   {
     answer: '베이즈 정리',
     category: 'math-logic',
     difficulty: 'hard',
-    options: [
-      '중심 극한 정리',
-      '큰 수의 법칙',
-      '베이즈 정리',
-      '체비쇼프 부등식',
-    ],
+    options: ['중심 극한 정리', '큰 수의 법칙', '베이즈 정리', '체비쇼프 부등식'],
     question:
       '새로운 정보를 얻었을 때 어떤 사건의 확률을 갱신하는 방법을 제시하는 정리는 무엇인가요?',
     questionFormat: 'multiple',

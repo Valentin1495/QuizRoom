@@ -1,10 +1,6 @@
 import { log } from '@/utils/log';
 import { logError } from '@/utils/log-error';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithCredential,
-} from '@react-native-firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithCredential } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useMutation } from 'convex/react';
 import { useState } from 'react';
@@ -37,10 +33,7 @@ export const useAuth = () => {
       }
 
       const googleCredential = GoogleAuthProvider.credential(idToken);
-      const userCredential = await signInWithCredential(
-        getAuth(),
-        googleCredential
-      );
+      const userCredential = await signInWithCredential(getAuth(), googleCredential);
 
       log('🎉 Firebase sign-in successful:', userCredential);
 

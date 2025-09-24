@@ -33,7 +33,7 @@ export default function LevelProgress({
   const { _creationTime, displayName, photoURL } = myProfile || {};
   const completedChallenges = useQuery(
     api.challenges.getChallengeStats,
-    myProfile ? { userId: myProfile.firebaseUid } : 'skip'
+    myProfile ? { userId: myProfile.firebaseUid } : 'skip',
   );
 
   const progress = useSharedValue(0);
@@ -101,9 +101,7 @@ export default function LevelProgress({
           </Text>
           <Text style={styles.userSubInfo}>🏅 배지 {unlockedCount}개 획득</Text>
 
-          <Text style={styles.joinDate}>
-            {formatDate(_creationTime)}부터 함께하는 중
-          </Text>
+          <Text style={styles.joinDate}>{formatDate(_creationTime)}부터 함께하는 중</Text>
         </View>
       </Animated.View>
 
@@ -127,8 +125,7 @@ export default function LevelProgress({
             Lv.{currentLevel}
           </Text>
           <Text style={styles.levelExp}>
-            {currentExp.toLocaleString()}/
-            {(currentExp + nextLevelExp).toLocaleString()}포인트 (
+            {currentExp.toLocaleString()}/{(currentExp + nextLevelExp).toLocaleString()}포인트 (
             {nextLevelExp.toLocaleString()}
             포인트 to Lv.
             {currentLevel + 1})
@@ -136,13 +133,7 @@ export default function LevelProgress({
         </View>
       </View>
 
-      <Animated.Text
-        style={[
-          styles.percentageText,
-          { color: percentageColor },
-          percentageStyle,
-        ]}
-      >
+      <Animated.Text style={[styles.percentageText, { color: percentageColor }, percentageStyle]}>
         {percentage}% {percentageExtra}
       </Animated.Text>
     </Animated.View>

@@ -4,22 +4,13 @@ import { Colors } from '@/constants/Colors';
 import { api } from '@/convex/_generated/api';
 import { getAuth } from '@react-native-firebase/auth';
 import { useQuery } from 'convex/react';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function MyStatsScreen() {
   const userId = getAuth().currentUser?.uid;
   const insets = useSafeAreaInsets();
-  const userAchievements = useQuery(
-    api.gamification.getAchievements,
-    userId ? { userId } : 'skip'
-  );
+  const userAchievements = useQuery(api.gamification.getAchievements, userId ? { userId } : 'skip');
   const unlockedCount = userAchievements?.filter((ua) => ua.unlockedAt).length;
 
   return (
@@ -30,10 +21,7 @@ export default function MyStatsScreen() {
       </View>
 
       {userAchievements ? (
-        <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           <StatCardList userId={userId} unlockedCount={unlockedCount} />
           <AchievementList userAchievements={userAchievements} />
 
@@ -41,7 +29,7 @@ export default function MyStatsScreen() {
           <View style={styles.bottomPadding} />
         </ScrollView>
       ) : (
-        <ActivityIndicator size='large' color={Colors.light.secondary} />
+        <ActivityIndicator size="large" color={Colors.light.secondary} />
       )}
     </View>
   );

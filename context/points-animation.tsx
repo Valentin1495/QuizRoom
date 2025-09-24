@@ -15,11 +15,7 @@ interface PointsAnimationProps {
   onComplete: () => void;
 }
 
-export function PointsAnimation({
-  points,
-  visible,
-  onComplete,
-}: PointsAnimationProps) {
+export function PointsAnimation({ points, visible, onComplete }: PointsAnimationProps) {
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.8);
@@ -40,7 +36,7 @@ export function PointsAnimation({
               runOnJS(onComplete)();
             });
           }
-        })
+        }),
       );
     }
   }, [visible]);

@@ -14,9 +14,7 @@ export const createOrUpdateUser = mutation({
     // 기존 사용자 확인
     const existingUser = await ctx.db
       .query('users')
-      .withIndex('by_firebase_uid', (q) =>
-        q.eq('firebaseUid', args.firebaseUid)
-      )
+      .withIndex('by_firebase_uid', (q) => q.eq('firebaseUid', args.firebaseUid))
       .unique();
 
     const now = Date.now();
@@ -54,9 +52,7 @@ export const getUserByFirebaseUid = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query('users')
-      .withIndex('by_firebase_uid', (q) =>
-        q.eq('firebaseUid', args.firebaseUid)
-      )
+      .withIndex('by_firebase_uid', (q) => q.eq('firebaseUid', args.firebaseUid))
       .unique();
   },
 });

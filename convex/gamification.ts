@@ -120,7 +120,7 @@ export const updateAchievement = mutation({
     const existing = await ctx.db
       .query('achievements')
       .withIndex('by_user_achievement', (q) =>
-        q.eq('userId', args.userId).eq('achievementId', args.achievementId)
+        q.eq('userId', args.userId).eq('achievementId', args.achievementId),
       )
       .first();
 
@@ -132,8 +132,7 @@ export const updateAchievement = mutation({
       await ctx.db.patch(existing._id, {
         progress: args.progress,
         target: args.target,
-        unlockedAt:
-          shouldUnlock && !existing.unlockedAt ? now : existing.unlockedAt,
+        unlockedAt: shouldUnlock && !existing.unlockedAt ? now : existing.unlockedAt,
         updatedAt: now,
       });
     } else {
@@ -158,9 +157,7 @@ export const getUnlockedAchievements = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query('achievements')
-      .withIndex('by_user_unlocked', (q) =>
-        q.eq('userId', args.userId).gt('unlockedAt', 0)
-      )
+      .withIndex('by_user_unlocked', (q) => q.eq('userId', args.userId).gt('unlockedAt', 0))
       .collect();
   },
 });
@@ -193,9 +190,7 @@ export const addQuizHistory = mutation({
     date: v.string(),
     completedAt: v.string(),
     category: v.string(),
-    questionFormat: v.optional(
-      v.union(v.literal('multiple'), v.literal('short'), v.null())
-    ),
+    questionFormat: v.optional(v.union(v.literal('multiple'), v.literal('short'), v.null())),
     total: v.number(),
     correct: v.number(),
     averageTime: v.optional(v.number()),
@@ -203,9 +198,7 @@ export const addQuizHistory = mutation({
     maxPerfectStreak: v.optional(v.number()),
     withFriend: v.optional(v.boolean()),
     relearnedMistakes: v.optional(v.boolean()),
-    difficulty: v.optional(
-      v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
-    ),
+    difficulty: v.optional(v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))),
     timeSpent: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
@@ -274,26 +267,19 @@ export const updateCategoryStatsFromAnalysis = mutation({
     analysisData: v.object({
       category: v.string(),
       skillScore: v.number(),
-      difficulty: v.union(
-        v.literal('easy'),
-        v.literal('medium'),
-        v.literal('hard')
-      ),
+      difficulty: v.union(v.literal('easy'), v.literal('medium'), v.literal('hard')),
       accuracy: v.number(),
       timeSpent: v.number(),
     }),
   },
 
   handler: async (ctx, { userId, analysisData }) => {
-    const { category, skillScore, difficulty, accuracy, timeSpent } =
-      analysisData;
+    const { category, skillScore, difficulty, accuracy, timeSpent } = analysisData;
     const correct = Math.round((accuracy / 100) * 10);
 
     const existing = await ctx.db
       .query('categoryStats')
-      .withIndex('by_user_category', (q) =>
-        q.eq('userId', userId).eq('category', category)
-      )
+      .withIndex('by_user_category', (q) => q.eq('userId', userId).eq('category', category))
       .unique();
 
     const fallbackStats = {
@@ -316,10 +302,7 @@ export const updateCategoryStatsFromAnalysis = mutation({
         const newCorrect = (prev.correct || 0) + addedCorrect;
         const newAvgTime =
           newTotal > 0
-            ? Math.round(
-                ((prev.avgTime || 0) * prev.totalQuestions + addedTime) /
-                  newTotal
-              )
+            ? Math.round(((prev.avgTime || 0) * prev.totalQuestions + addedTime) / newTotal)
             : 0;
         const accuracy =
           newTotal === 0
@@ -343,7 +326,7 @@ export const updateCategoryStatsFromAnalysis = mutation({
           accuracy: number;
           avgTime: number;
         }
-      >
+      >,
     );
 
     const updatedCorrectAnswers = (existing?.correctAnswers || 0) + correct;
@@ -374,11 +357,7 @@ export const updateCategoryStatsFromAnalysis = mutation({
 
     const prevHistory = existing?.progressHistory ?? [];
     const today = new Date();
-    const todayStamp = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    ).getTime();
+    const todayStamp = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
     const filteredHistory = prevHistory.filter((h) => h.date !== todayStamp);
 
     const progressHistory = [
@@ -386,9 +365,7 @@ export const updateCategoryStatsFromAnalysis = mutation({
       {
         date: todayStamp,
         weightedAccuracy: updatedWeightedAccuracy,
-        accuracy: Math.round(
-          (updatedCorrectAnswers / updatedTotalQuestions) * 100
-        ),
+        accuracy: Math.round((updatedCorrectAnswers / updatedTotalQuestions) * 100),
         questionsAnswered: 10,
       },
     ];
@@ -439,13 +416,10 @@ export const getCategoryStatsWithDifficulty = query({
         (medium.accuracy / 100) * medium.totalQuestions +
         (hard.accuracy / 100) * hard.totalQuestions;
 
-      const totalQuestions =
-        easy.totalQuestions + medium.totalQuestions + hard.totalQuestions;
+      const totalQuestions = easy.totalQuestions + medium.totalQuestions + hard.totalQuestions;
 
       const overallAccuracy =
-        totalQuestions > 0
-          ? Math.round((correctSum / totalQuestions) * 100)
-          : 0;
+        totalQuestions > 0 ? Math.round((correctSum / totalQuestions) * 100) : 0;
 
       // 가중 평균 정확도 계산 (문제 수 기반 가중치)
       const weights = { easy: 1, medium: 2, hard: 3 };
@@ -461,8 +435,7 @@ export const getCategoryStatsWithDifficulty = query({
         totalWeight += questions * weight;
       }
 
-      const weightedAccuracy =
-        totalWeight > 0 ? Math.round((weightedSum / totalWeight) * 100) : 0;
+      const weightedAccuracy = totalWeight > 0 ? Math.round((weightedSum / totalWeight) * 100) : 0;
 
       result[stat.category] = {
         ...stat,
@@ -475,9 +448,7 @@ export const getCategoryStatsWithDifficulty = query({
   },
 });
 
-function hasMinimumDataForBasicAnalysis(
-  categoryStats: Doc<'categoryStats'>[]
-): boolean {
+function hasMinimumDataForBasicAnalysis(categoryStats: Doc<'categoryStats'>[]): boolean {
   return categoryStats.some((stat) => {
     const { difficultyStats } = stat;
     return (
@@ -489,12 +460,8 @@ function hasMinimumDataForBasicAnalysis(
 }
 
 // 데이터 충분성 검증 함수
-function hasEnoughDataForAIAnalysis(
-  categoryStats: Doc<'categoryStats'>[]
-): boolean {
-  const validCategories = categoryStats.filter(
-    (stat) => stat.totalQuestions >= 30
-  );
+function hasEnoughDataForAIAnalysis(categoryStats: Doc<'categoryStats'>[]): boolean {
+  const validCategories = categoryStats.filter((stat) => stat.totalQuestions >= 30);
   if (validCategories.length < 2) return false;
 
   const hasVariedDifficulty = validCategories.some((stat) => {
@@ -510,9 +477,7 @@ function hasEnoughDataForAIAnalysis(
 }
 
 // 학습 패턴 분석 함수
-function analyzeLearningPatterns(
-  categoryStats: Doc<'categoryStats'>[]
-): LearningPattern[] {
+function analyzeLearningPatterns(categoryStats: Doc<'categoryStats'>[]): LearningPattern[] {
   return categoryStats.map((stat) => {
     const { difficultyStats, category, growthTrend } = stat;
 
@@ -521,7 +486,7 @@ function analyzeLearningPatterns(
 
     // 일관성 패턴
     const accuracyVariance = Math.abs(
-      difficultyStats.easy.accuracy - difficultyStats.hard.accuracy
+      difficultyStats.easy.accuracy - difficultyStats.hard.accuracy,
     );
     if (accuracyVariance < 20) patterns.push('일관된 실력');
     else if (accuracyVariance > 40) patterns.push('실력 편차 큼');
@@ -535,14 +500,12 @@ function analyzeLearningPatterns(
     const maxAccuracy = Math.max(
       difficultyStats.easy.accuracy,
       difficultyStats.medium.accuracy,
-      difficultyStats.hard.accuracy
+      difficultyStats.hard.accuracy,
     );
 
     let preferredDifficulty: 'easy' | 'medium' | 'hard' = 'easy';
-    if (difficultyStats.medium.accuracy === maxAccuracy)
-      preferredDifficulty = 'medium';
-    if (difficultyStats.hard.accuracy === maxAccuracy)
-      preferredDifficulty = 'hard';
+    if (difficultyStats.medium.accuracy === maxAccuracy) preferredDifficulty = 'medium';
+    if (difficultyStats.hard.accuracy === maxAccuracy) preferredDifficulty = 'hard';
 
     // 참여도 레벨 계산
     const totalQuestions = stat.totalQuestions || 0;
@@ -583,9 +546,7 @@ export const getOverallAnalysis = query({
       averageTime: stat.averageTime || 0,
     }));
 
-    const sorted = [...analysis].sort(
-      (a, b) => b.weightedAccuracy - a.weightedAccuracy
-    );
+    const sorted = [...analysis].sort((a, b) => b.weightedAccuracy - a.weightedAccuracy);
     const learningPatterns = analyzeLearningPatterns(categoryStats as any);
 
     // ✅ 캐시된 AI 인사이트만 사용
@@ -602,22 +563,15 @@ export const getOverallAnalysis = query({
         generatedAt: new Date().toISOString(),
         totalDataPoints: categoryStats.length,
         hasAIAnalysis: aiInsights !== null,
-        dataStatus: hasBasicData
-          ? hasEnoughData
-            ? 'sufficient'
-            : 'partial'
-          : 'insufficient',
+        dataStatus: hasBasicData ? (hasEnoughData ? 'sufficient' : 'partial') : 'insufficient',
         currentProgress: {
-          totalQuestions: categoryStats.reduce(
-            (sum, stat) => sum + (stat.totalQuestions || 0),
-            0
-          ),
+          totalQuestions: categoryStats.reduce((sum, stat) => sum + (stat.totalQuestions || 0), 0),
           totalCategories: categoryStats.length,
           categoriesWith30Plus: categoryStats.filter(
             (s) =>
               s.difficultyStats.easy.totalQuestions >= 10 &&
               s.difficultyStats.medium.totalQuestions >= 10 &&
-              s.difficultyStats.hard.totalQuestions >= 10
+              s.difficultyStats.hard.totalQuestions >= 10,
           ).length,
         },
         dataRequirements: {
@@ -765,9 +719,7 @@ export const explainAnswerWithGemini = action({
     correctAnswers: v.array(v.string()),
     userAnswer: v.optional(v.string()),
     category: v.optional(v.string()),
-    difficulty: v.optional(
-      v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
-    ),
+    difficulty: v.optional(v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))),
   },
   handler: async (_, args) => {
     const apiKey = process.env.GEMINI_API_KEY;

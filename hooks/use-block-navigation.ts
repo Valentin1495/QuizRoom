@@ -10,10 +10,7 @@ export function useBlockNavigation(block: boolean = true) {
     if (!block || Platform.OS !== 'android') return;
 
     const onBackPress = () => true;
-    const subscription = BackHandler.addEventListener(
-      'hardwareBackPress',
-      onBackPress
-    );
+    const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
     return () => subscription.remove();
   }, [block]);

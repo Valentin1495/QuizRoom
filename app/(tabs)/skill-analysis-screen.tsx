@@ -36,10 +36,7 @@ export default function SkillAnalysisScreen() {
   const [animatedValue] = useState(new Animated.Value(0));
   const [tierGuideExpanded, setTierGuideExpanded] = useState(false);
   const { onRefresh, refreshing } = useRefresh();
-  const analysisData = useQuery(
-    api.gamification.getOverallAnalysis,
-    userId ? { userId } : 'skip'
-  );
+  const analysisData = useQuery(api.gamification.getOverallAnalysis, userId ? { userId } : 'skip');
   const {
     analysis,
     loading: aiLoading,
@@ -50,7 +47,7 @@ export default function SkillAnalysisScreen() {
 
   const categoryStats = useQuery(
     api.gamification.getCategoryStatsWithDifficulty,
-    userId ? { userId } : 'skip'
+    userId ? { userId } : 'skip',
   );
 
   const router = useRouter();
@@ -103,7 +100,7 @@ export default function SkillAnalysisScreen() {
     if (best === null) return null;
     if ((best as any).accuracy === 101) {
       const sorted = [...(oa || [])].sort(
-        (x, y) => (x.weightedAccuracy ?? 999) - (y.weightedAccuracy ?? 999)
+        (x, y) => (x.weightedAccuracy ?? 999) - (y.weightedAccuracy ?? 999),
       );
       const pick = sorted[0];
       if (!pick) return null;
@@ -164,7 +161,7 @@ export default function SkillAnalysisScreen() {
               duration: 0,
               useNativeDriver: true,
             }),
-          ])
+          ]),
         ).start();
       };
 
@@ -191,10 +188,7 @@ export default function SkillAnalysisScreen() {
 
       <LinearGradient
         colors={['#1e3a8a', '#1e40af', '#3b82f6']} // 다크 네이비 → 블루 그라디언트
-        style={[
-          styles.loadingCard,
-          Platform.OS === 'android' && styles.androidLoadingCard,
-        ]}
+        style={[styles.loadingCard, Platform.OS === 'android' && styles.androidLoadingCard]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
@@ -229,7 +223,7 @@ export default function SkillAnalysisScreen() {
           ]}
         >
           <View style={styles.iconBackground}>
-            <Ionicons name='analytics' size={56} color='#ffffff' />
+            <Ionicons name="analytics" size={56} color="#ffffff" />
           </View>
           <View style={styles.iconRing} />
         </Animated.View>
@@ -294,11 +288,7 @@ export default function SkillAnalysisScreen() {
             },
           ]}
         >
-          <Ionicons
-            name='bulb-outline'
-            size={20}
-            color='rgba(255, 255, 255, 0.8)'
-          />
+          <Ionicons name="bulb-outline" size={20} color="rgba(255, 255, 255, 0.8)" />
           <Text style={styles.hintText}>
             분석이 완료되면{'\n'}맞춤형 학습 조언을 받을 수 있어요
           </Text>
@@ -312,8 +302,8 @@ export default function SkillAnalysisScreen() {
       <Text style={styles.requirementsTitle}>실력 분석 미션 가이드 🧭</Text>
       <View style={styles.requirementsList}>
         <Text style={styles.requirementItem}>
-          • <Text style={styles.requirementValue}>기본/AI 분석</Text>: 카테고리
-          1개 완성 🌈 (난이도별 1세트 × 3)
+          • <Text style={styles.requirementValue}>기본/AI 분석</Text>: 카테고리 1개 완성 🌈
+          (난이도별 1세트 × 3)
         </Text>
       </View>
     </View>
@@ -326,77 +316,57 @@ export default function SkillAnalysisScreen() {
     return (
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <LinearGradient
-            colors={Colors.light.gradientColors}
-            style={styles.insufficientCard}
-          >
-            <Ionicons
-              name='trending-up'
-              size={60}
-              color={Colors.light.primary}
-            />
+          <LinearGradient colors={Colors.light.gradientColors} style={styles.insufficientCard}>
+            <Ionicons name="trending-up" size={60} color={Colors.light.primary} />
 
-            {dataStatus === 'insufficient' &&
-              isEmptyObject(categoryStats ?? {}) && (
-                <>
-                  <Text style={styles.insufficientTitle}>
-                    아직 푼 퀴즈가 없어요 🐣
-                  </Text>
-                  <Text style={styles.insufficientText}>
-                    관심 있는 카테고리 하나만 먼저 마스터해볼까요? 🎯{'\n'}
-                    난이도별 1세트(10문제)씩, 총 3세트(30문제)만 풀면 기본/AI
-                    분석을 시작할 수 있어요!
-                  </Text>
+            {dataStatus === 'insufficient' && isEmptyObject(categoryStats ?? {}) && (
+              <>
+                <Text style={styles.insufficientTitle}>아직 푼 퀴즈가 없어요 🐣</Text>
+                <Text style={styles.insufficientText}>
+                  관심 있는 카테고리 하나만 먼저 마스터해볼까요? 🎯{'\n'}
+                  난이도별 1세트(10문제)씩, 총 3세트(30문제)만 풀면 기본/AI 분석을 시작할 수 있어요!
+                </Text>
 
-                  {renderRequirementMission()}
-                </>
-              )}
+                {renderRequirementMission()}
+              </>
+            )}
 
-            {dataStatus === 'insufficient' &&
-              !isEmptyObject(categoryStats ?? {}) && (
-                <>
-                  <Text style={styles.insufficientTitle}>
-                    조금만 더 풀어볼까요? 🏃‍♂️
-                  </Text>
-                  <Text style={styles.insufficientText}>
-                    한 카테고리에서 쉬움 / 보통 / 어려움 각 1세트(10문제)씩만
-                    풀면 기본/AI 실력 분석을 바로 보여드릴게요! 🔍
-                  </Text>
+            {dataStatus === 'insufficient' && !isEmptyObject(categoryStats ?? {}) && (
+              <>
+                <Text style={styles.insufficientTitle}>조금만 더 풀어볼까요? 🏃‍♂️</Text>
+                <Text style={styles.insufficientText}>
+                  한 카테고리에서 쉬움 / 보통 / 어려움 각 1세트(10문제)씩만 풀면 기본/AI 실력 분석을
+                  바로 보여드릴게요! 🔍
+                </Text>
 
-                  {renderRequirementMission()}
-                </>
-              )}
+                {renderRequirementMission()}
+              </>
+            )}
 
-            {dataStatus !== 'sufficient' &&
-              !isEmptyObject(categoryStats ?? {}) && (
-                <View style={{ marginTop: 20 }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      color: Colors.light.primary,
-                      marginBottom: 8,
-                    }}
-                  >
-                    📊 카테고리별 퀴즈 진행 현황
-                  </Text>
-                  {Object.entries(categoryStats ?? {}).map(
-                    ([category, stats]) => (
-                      <CategoryProgressCard
-                        key={category}
-                        categoryLabel={switchCategoryKey(category)}
-                        difficultyStats={stats.difficultyStats}
-                      />
-                    )
-                  )}
-                </View>
-              )}
+            {dataStatus !== 'sufficient' && !isEmptyObject(categoryStats ?? {}) && (
+              <View style={{ marginTop: 20 }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    color: Colors.light.primary,
+                    marginBottom: 8,
+                  }}
+                >
+                  📊 카테고리별 퀴즈 진행 현황
+                </Text>
+                {Object.entries(categoryStats ?? {}).map(([category, stats]) => (
+                  <CategoryProgressCard
+                    key={category}
+                    categoryLabel={switchCategoryKey(category)}
+                    difficultyStats={stats.difficultyStats}
+                  />
+                ))}
+              </View>
+            )}
 
             {/* CTA */}
-            <TouchableOpacity
-              style={styles.ctaButton}
-              onPress={() => router.push('/(tabs)')}
-            >
+            <TouchableOpacity style={styles.ctaButton} onPress={() => router.push('/(tabs)')}>
               <Text style={styles.ctaButtonText}>도전하러 가기 🚀</Text>
             </TouchableOpacity>
           </LinearGradient>
@@ -421,12 +391,7 @@ export default function SkillAnalysisScreen() {
             size={18}
             color={selectedTab === tab.key ? '#ffffff' : '#666'}
           />
-          <Text
-            style={[
-              styles.tabText,
-              selectedTab === tab.key && styles.activeTabText,
-            ]}
-          >
+          <Text style={[styles.tabText, selectedTab === tab.key && styles.activeTabText]}>
             {tab.label}
           </Text>
         </TouchableOpacity>
@@ -442,13 +407,13 @@ export default function SkillAnalysisScreen() {
         activeOpacity={0.7}
       >
         <View style={styles.tierGuideHeaderLeft}>
-          <Ionicons name='information-circle' size={20} color='#667eea' />
+          <Ionicons name="information-circle" size={20} color="#667eea" />
           <Text style={styles.tierGuideTitle}>깡깡이 등급 기준</Text>
         </View>
         <Ionicons
           name={tierGuideExpanded ? 'chevron-up' : 'chevron-down'}
           size={20}
-          color='#667eea'
+          color="#667eea"
         />
       </TouchableOpacity>
 
@@ -467,9 +432,8 @@ export default function SkillAnalysisScreen() {
           ]}
         >
           <Text style={styles.tierGuideSubtitle}>
-            가중 평균 정답률은 어려운 문제를 더 중요하게 평가하는 방식이에요.
-            쉬움(1배), 보통(2배), 어려움(3배) 가중치를 적용하여 어려운 문제를 잘
-            푸는 진짜 실력자에게 더 높은 점수를 줘요!
+            가중 평균 정답률은 어려운 문제를 더 중요하게 평가하는 방식이에요. 쉬움(1배), 보통(2배),
+            어려움(3배) 가중치를 적용하여 어려운 문제를 잘 푸는 진짜 실력자에게 더 높은 점수를 줘요!
           </Text>
           {[
             {
@@ -508,10 +472,7 @@ export default function SkillAnalysisScreen() {
               bgColor: '#fdf4ff',
             },
           ].map((item, index) => (
-            <View
-              key={index}
-              style={[styles.tierGuideItem, { backgroundColor: item.bgColor }]}
-            >
+            <View key={index} style={[styles.tierGuideItem, { backgroundColor: item.bgColor }]}>
               <View style={styles.tierGuideTop}>
                 <Text style={styles.tierGuideTier}>{item.tier}</Text>
                 <Text
@@ -523,9 +484,7 @@ export default function SkillAnalysisScreen() {
                   {item.range}
                 </Text>
               </View>
-              <Text style={styles.tierGuideDescription}>
-                {item.description}
-              </Text>
+              <Text style={styles.tierGuideDescription}>{item.description}</Text>
             </View>
           ))}
         </Animated.View>
@@ -540,9 +499,7 @@ export default function SkillAnalysisScreen() {
           {/* 헤더 - 그라데이션 배경 */}
           <View style={styles.detailHeader}>
             <View style={styles.titleSection}>
-              <Text style={styles.detailTitle}>
-                {switchCategoryKey(a.category)}
-              </Text>
+              <Text style={styles.detailTitle}>{switchCategoryKey(a.category)}</Text>
               <View style={styles.scoreBadge}>
                 <Text style={styles.scoreBadgeText}>{a.weightedAccuracy}%</Text>
                 <TouchableOpacity
@@ -556,12 +513,12 @@ export default function SkillAnalysisScreen() {
                         '• 보통: 10문제, 70% 정답률 → 10×70×2 = 1,400\n' +
                         '• 어려움: 5문제, 60% 정답률 → 5×60×3 = 900\n\n' +
                         '가중 평균 = (1,600+1,400+900) ÷ (20×1+10×2+5×3) = 3,900 ÷ 55 = 70.9%\n\n' +
-                        '어려운 문제를 잘 푸는 진짜 실력자에게 더 높은 점수를 줘요!'
+                        '어려운 문제를 잘 푸는 진짜 실력자에게 더 높은 점수를 줘요!',
                     )
                   }
                   style={{ marginLeft: 6 }}
                 >
-                  <Ionicons name='help-circle-outline' size={16} color='#fff' />
+                  <Ionicons name="help-circle-outline" size={16} color="#fff" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -570,36 +527,21 @@ export default function SkillAnalysisScreen() {
           {/* 난이도 분석 - 카드형 */}
           <View style={styles.difficultySection}>
             <View style={styles.sectionHeader}>
-              <Ionicons name='bar-chart' size={20} color='#000' />
+              <Ionicons name="bar-chart" size={20} color="#000" />
               <Text style={styles.sectionTitle}>난이도별 정답률</Text>
             </View>
             <View style={styles.difficultyCards}>
               {(['easy', 'medium', 'hard'] as const).map((level) => {
-                const label =
-                  level === 'easy'
-                    ? '쉬움'
-                    : level === 'medium'
-                      ? '보통'
-                      : '어려움';
+                const label = level === 'easy' ? '쉬움' : level === 'medium' ? '보통' : '어려움';
 
                 const stats = a.difficultyAnalysis?.[level];
                 const hasAttempted = stats && stats.totalQuestions > 0;
-                const displayText = hasAttempted
-                  ? `${stats.accuracy}%`
-                  : '미응시';
+                const displayText = hasAttempted ? `${stats.accuracy}%` : '미응시';
 
                 const iconName =
-                  level === 'easy'
-                    ? 'happy'
-                    : level === 'medium'
-                      ? 'help-circle'
-                      : 'flame';
+                  level === 'easy' ? 'happy' : level === 'medium' ? 'help-circle' : 'flame';
                 const iconColor =
-                  level === 'easy'
-                    ? '#22c55e'
-                    : level === 'medium'
-                      ? '#fbbf24'
-                      : '#ef4444';
+                  level === 'easy' ? '#22c55e' : level === 'medium' ? '#fbbf24' : '#ef4444';
 
                 return (
                   <View
@@ -613,12 +555,7 @@ export default function SkillAnalysisScreen() {
                   >
                     <Ionicons name={iconName} size={24} color={iconColor} />
                     <Text style={styles.difficultyLabel}>{label}</Text>
-                    <Text
-                      style={[
-                        styles.difficultyPercent,
-                        !hasAttempted && { color: '#9ca3af' },
-                      ]}
-                    >
+                    <Text style={[styles.difficultyPercent, !hasAttempted && { color: '#9ca3af' }]}>
                       {displayText}
                     </Text>
                   </View>
@@ -630,14 +567,12 @@ export default function SkillAnalysisScreen() {
           {/* 통계 정보 - 모던한 아이콘 */}
           <View style={styles.statsSection}>
             <View style={styles.statItem}>
-              <Ionicons name='fitness' size={20} color='#2563eb' />
+              <Ionicons name="fitness" size={20} color="#2563eb" />
               <Text style={styles.statText}>총 {a.totalQuestions}문제</Text>
             </View>
             <View style={styles.statItem}>
-              <Ionicons name='alarm' size={20} color='#f59e0b' />
-              <Text style={styles.statText}>
-                평균 {Math.round(a.averageTime / 1000)}초
-              </Text>
+              <Ionicons name="alarm" size={20} color="#f59e0b" />
+              <Text style={styles.statText}>평균 {Math.round(a.averageTime / 1000)}초</Text>
             </View>
           </View>
 
@@ -652,14 +587,10 @@ export default function SkillAnalysisScreen() {
             <View style={styles.trendHeader}>
               <Ionicons
                 name={
-                  a.growthTrend > 0
-                    ? 'trending-up'
-                    : a.growthTrend < 0
-                      ? 'trending-down'
-                      : 'remove'
+                  a.growthTrend > 0 ? 'trending-up' : a.growthTrend < 0 ? 'trending-down' : 'remove'
                 }
                 size={20}
-                color='#1a1a1a'
+                color="#1a1a1a"
               />
               <Text style={styles.trendText}>
                 {a.growthTrend > 0
@@ -674,57 +605,49 @@ export default function SkillAnalysisScreen() {
           {/* 스킬 레벨 - 게이미피케이션 */}
           <View style={styles.skillSection}>
             <View style={styles.skillHeader}>
-              <Ionicons name='trophy' size={20} color='#f59e0b' />
+              <Ionicons name="trophy" size={20} color="#f59e0b" />
               <Text style={styles.skillTitle}>현재 수준</Text>
             </View>
             <View
               style={[
                 styles.skillBadge,
-                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy).includes(
-                  '등급 미부여'
-                ) && styles.unrankedBadge,
-                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
-                  '🤪 완전 깡깡이' && styles.completeGgBadge,
-                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
-                  '😅 여전히 깡깡이' && styles.stillGgBadge,
-                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
-                  '🤔 깡깡이 벗어나는 중' && styles.escapeGgBadge,
-                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
-                  '🧠 이제 깡깡이 아님' && styles.notGgBadge,
-                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
-                  '🚀 깡깡이 완전 극복' && styles.overcomeGgBadge,
+                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy).includes('등급 미부여') &&
+                  styles.unrankedBadge,
+                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) === '🤪 완전 깡깡이' &&
+                  styles.completeGgBadge,
+                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) === '😅 여전히 깡깡이' &&
+                  styles.stillGgBadge,
+                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) === '🤔 깡깡이 벗어나는 중' &&
+                  styles.escapeGgBadge,
+                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) === '🧠 이제 깡깡이 아님' &&
+                  styles.notGgBadge,
+                getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) === '🚀 깡깡이 완전 극복' &&
+                  styles.overcomeGgBadge,
               ]}
             >
               <Text
                 style={[
                   styles.skillText,
-                  getSkillLevelFromWeightedAccuracy(
-                    a.weightedAccuracy
-                  ).includes('등급 미부여') && styles.unrankedText,
-                  getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
-                    '🤪 완전 깡깡이' && styles.completeGgText,
-                  getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
-                    '😅 여전히 깡깡이' && styles.stillGgText,
+                  getSkillLevelFromWeightedAccuracy(a.weightedAccuracy).includes('등급 미부여') &&
+                    styles.unrankedText,
+                  getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) === '🤪 완전 깡깡이' &&
+                    styles.completeGgText,
+                  getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) === '😅 여전히 깡깡이' &&
+                    styles.stillGgText,
                   getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
                     '🤔 깡깡이 벗어나는 중' && styles.escapeGgText,
-                  getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
-                    '🧠 이제 깡깡이 아님' && styles.notGgText,
-                  getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) ===
-                    '🚀 깡깡이 완전 극복' && styles.overcomeGgText,
+                  getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) === '🧠 이제 깡깡이 아님' &&
+                    styles.notGgText,
+                  getSkillLevelFromWeightedAccuracy(a.weightedAccuracy) === '🚀 깡깡이 완전 극복' &&
+                    styles.overcomeGgText,
                 ]}
               >
-                {getSkillLevelFromWeightedAccuracy(a.weightedAccuracy).includes(
-                  '등급 미부여'
-                )
+                {getSkillLevelFromWeightedAccuracy(a.weightedAccuracy).includes('등급 미부여')
                   ? '등급 미부여'
                   : getSkillLevelFromWeightedAccuracy(a.weightedAccuracy)}
               </Text>
-              {getSkillLevelFromWeightedAccuracy(a.weightedAccuracy).includes(
-                '등급 미부여'
-              ) && (
-                <Text style={styles.unrankedSubtext}>
-                  더 많은 문제를 풀어보세요! 💪
-                </Text>
+              {getSkillLevelFromWeightedAccuracy(a.weightedAccuracy).includes('등급 미부여') && (
+                <Text style={styles.unrankedSubtext}>더 많은 문제를 풀어보세요! 💪</Text>
               )}
             </View>
           </View>
@@ -774,7 +697,6 @@ export default function SkillAnalysisScreen() {
 
     return (
       <View style={styles.tabContent}>
-
         {/* 약점 보완 세트 CTA */}
         {weakness && (
           <View style={{ marginBottom: 16 }}>
@@ -790,13 +712,18 @@ export default function SkillAnalysisScreen() {
                 style={{ padding: 16 }}
               >
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Ionicons name='flash' size={22} color='#fff' />
+                  <Ionicons name="flash" size={22} color="#fff" />
                   <Text style={{ color: '#fff', fontSize: 16, fontWeight: '800', marginLeft: 8 }}>
                     약점 보완 10문제 시작
                   </Text>
                 </View>
                 <Text style={{ color: '#ecfdf5', marginTop: 8, fontWeight: '600' }}>
-                  {weakness.label} · {weakness.difficulty === 'easy' ? '쉬움' : weakness.difficulty === 'medium' ? '보통' : '어려움'}
+                  {weakness.label} ·{' '}
+                  {weakness.difficulty === 'easy'
+                    ? '쉬움'
+                    : weakness.difficulty === 'medium'
+                      ? '보통'
+                      : '어려움'}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -808,7 +735,7 @@ export default function SkillAnalysisScreen() {
         {aiError && (
           <>
             <View style={styles.errorBanner}>
-              <Ionicons name='warning' size={20} color='#fff' />
+              <Ionicons name="warning" size={20} color="#fff" />
               <Text style={styles.errorText}>{aiError}</Text>
             </View>
             <TouchableOpacity
@@ -817,7 +744,7 @@ export default function SkillAnalysisScreen() {
                 refreshAI(true);
               }}
             >
-              <Ionicons name='refresh' size={18} color='#3b82f6' />
+              <Ionicons name="refresh" size={18} color="#3b82f6" />
               <Text style={styles.refreshButtonText}>AI 재분석 시도</Text>
             </TouchableOpacity>
           </>
@@ -829,11 +756,7 @@ export default function SkillAnalysisScreen() {
   if (!analysisData || !categoryStats) {
     return (
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-        <ActivityIndicator
-          size='large'
-          color={Colors.light.secondary}
-          style={{ marginTop: 20 }}
-        />
+        <ActivityIndicator size="large" color={Colors.light.secondary} style={{ marginTop: 20 }} />
       </SafeAreaView>
     );
   }

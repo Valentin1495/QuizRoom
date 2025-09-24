@@ -15,9 +15,7 @@ interface DifficultyStats {
 type DifficultyAnalysis = Record<Difficulty, DifficultyStats>;
 
 // 통일된 가중 평균 정확도 계산 함수 (문제 수 기반)
-export function calculateWeightedAccuracy(
-  difficultyStats: DifficultyAnalysis
-): number {
+export function calculateWeightedAccuracy(difficultyStats: DifficultyAnalysis): number {
   const weights: Record<Difficulty, number> = {
     easy: 1,
     medium: 2,
@@ -42,7 +40,7 @@ export function calculateWeightedAccuracy(
 // 스킬 레벨 결정 함수 (weightedAccuracy 기반)
 export function getSkillLevelFromWeightedAccuracy(
   weightedAccuracy: number,
-  minTotalQuestions?: number
+  minTotalQuestions?: number,
 ): SkillLevelType {
   // 티어 산정 기준
   if (weightedAccuracy < 40) return '🤪 완전 깡깡이';

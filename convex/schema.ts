@@ -15,7 +15,7 @@ export default defineSchema({
         vibration: v.boolean(), // 진동 설정
         darkMode: v.boolean(), // 다크 모드 설정
         language: v.string(), // 언어 설정
-      })
+      }),
     ),
     coins: v.number(),
     experience: v.number(),
@@ -94,7 +94,7 @@ export default defineSchema({
       v.literal('Silver'),
       v.literal('Gold'),
       v.literal('Platinum'),
-      v.literal('Diamond')
+      v.literal('Diamond'),
     ),
 
     weightedAccuracy: v.number(),
@@ -108,7 +108,7 @@ export default defineSchema({
         motivationalMessage: v.string(),
         nextGoals: v.array(v.string()),
         cacheExpiry: v.number(), // 캐시 만료 시간 (timestamp)
-      })
+      }),
     ),
 
     // 진행률 추적을 위한 히스토리
@@ -119,8 +119,8 @@ export default defineSchema({
           weightedAccuracy: v.number(),
           accuracy: v.number(),
           questionsAnswered: v.number(),
-        })
-      )
+        }),
+      ),
     ),
 
     updatedAt: v.number(),
@@ -155,17 +155,15 @@ export default defineSchema({
     maxPerfectStreak: v.optional(v.number()),
     withFriend: v.optional(v.boolean()),
     relearnedMistakes: v.optional(v.boolean()),
-    difficulty: v.optional(
-      v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))
-    ),
+    difficulty: v.optional(v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'))),
     questionFormat: v.optional(
       v.union(
         v.literal('multiple'),
         v.literal('short'),
         v.literal('true_false'),
         v.literal('filmography'),
-        v.null()
-      )
+        v.null(),
+      ),
     ),
     timeSpent: v.optional(v.number()),
   })
@@ -180,11 +178,7 @@ export default defineSchema({
     targetCount: v.number(),
     currentCount: v.number(),
     reward: v.object({
-      type: v.union(
-        v.literal('points'),
-        v.literal('badge'),
-        v.literal('streak')
-      ),
+      type: v.union(v.literal('points'), v.literal('badge'), v.literal('streak')),
       value: v.number(),
       name: v.optional(v.string()),
     }),
@@ -204,14 +198,9 @@ export default defineSchema({
       v.literal('entertainment'),
       v.literal('slang'),
       v.literal('capitals'),
-      v.literal('four-character-idioms')
+      v.literal('four-character-idioms'),
     ),
-    difficulty: v.union(
-      v.literal('easy'),
-      v.literal('medium'),
-      v.literal('hard'),
-      v.null()
-    ),
+    difficulty: v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'), v.null()),
     explanation: v.optional(v.string()),
     options: v.optional(v.array(v.string())),
     question: v.string(),
@@ -220,7 +209,7 @@ export default defineSchema({
       v.literal('short'),
       v.literal('true_false'),
       v.literal('filmography'),
-      v.null()
+      v.null(),
     ),
     subcategory: v.optional(
       v.union(
@@ -233,8 +222,8 @@ export default defineSchema({
         v.literal('math-logic'),
         v.literal('movies'),
         v.literal('drama-variety'),
-        v.null()
-      )
+        v.null(),
+      ),
     ),
   })
     .index('byCategory', ['category'])
@@ -244,16 +233,51 @@ export default defineSchema({
   reports: defineTable({
     questionId: v.id('testQuestions'), // 신고된 문제 ID
     userId: v.string(),
-    reason: v.union(
-      v.literal('정답 오류'),
-      v.literal('문제 불명확'),
-      v.literal('기타')
-    ), // 신고 사유 선택지
+    reason: v.union(v.literal('정답 오류'), v.literal('문제 불명확'), v.literal('기타')), // 신고 사유 선택지
     detail: v.optional(v.string()), // 기타 입력란
   })
     .index('by_question', ['questionId'])
     .index('by_user', ['userId']),
+
+  // === MVP: Daily set flow tables ===
+  questionBank: defineTable({
+    stem: v.string(),
+    choices: v.array(v.object({ id: v.string(), text: v.string() })),
+    answerId: v.string(),
+    subject: v.string(), // math|science|history|language|etc
+    difficulty: v.number(), // 0~1
+    locale: v.string(), // ko|en
+    reviewed: v.boolean(),
+  }).index('by_locale_diff', ['locale', 'difficulty']),
+
+  dailySets: defineTable({
+    date: v.string(), // YYYY-MM-DD
+    questionIds: v.array(v.id('questionBank')),
+    locale: v.string(),
+  }).index('by_date_locale', ['date', 'locale']),
+
+  sessions: defineTable({
+    userId: v.id('users'),
+    setId: v.id('dailySets'),
+    answers: v.array(
+      v.object({
+        qid: v.id('questionBank'),
+        choiceId: v.string(),
+        elapsedMs: v.number(),
+        correct: v.boolean(),
+      }),
+    ),
+    score: v.number(),
+    hintsUsed: v.number(),
+    status: v.string(), // active|done
+    startedAt: v.number(),
+    finishedAt: v.optional(v.number()),
+  }).index('by_user', ['userId']),
+
+  leaderboards: defineTable({
+    date: v.string(),
+    userId: v.id('users'),
+    score: v.number(),
+    handle: v.string(),
+  }).index('by_date_score', ['date', 'score']),
 });
-
-
-

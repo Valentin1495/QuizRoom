@@ -28,8 +28,8 @@ export const generateDailyChallenges = mutation({
         q.and(
           q.eq(q.field('userId'), userId),
           q.eq(q.field('type'), 'daily'),
-          q.gte(q.field('expiresAt'), now)
-        )
+          q.gte(q.field('expiresAt'), now),
+        ),
       )
       .collect();
 
@@ -172,8 +172,8 @@ export const generateWeeklyChallenges = mutation({
         q.and(
           q.eq(q.field('userId'), userId),
           q.eq(q.field('type'), 'weekly'),
-          q.gte(q.field('expiresAt'), now)
-        )
+          q.gte(q.field('expiresAt'), now),
+        ),
       )
       .collect();
 
@@ -256,8 +256,7 @@ export const generateWeeklyChallenges = mutation({
       {
         type: 'weekly' as const,
         title: '⚡ 스피드 마스터',
-        description:
-          '이번 주 150문제(15퀴즈) 이상 풀고 평균 답변 시간 20초 이하',
+        description: '이번 주 150문제(15퀴즈) 이상 풀고 평균 답변 시간 20초 이하',
         targetCount: 1,
         currentCount: 0,
         reward: { type: 'points' as const, value: 280 },
@@ -269,8 +268,7 @@ export const generateWeeklyChallenges = mutation({
       {
         type: 'weekly' as const,
         title: '🌅 아침형 인간',
-        description:
-          '이번 주 5일 이상 오전(9시-12시)에 10문제(1퀴즈) 이상 풀기',
+        description: '이번 주 5일 이상 오전(9시-12시)에 10문제(1퀴즈) 이상 풀기',
         targetCount: 5,
         currentCount: 0,
         reward: { type: 'points' as const, value: 180 },
@@ -317,9 +315,7 @@ export const getChallenges = query({
 
     let query = ctx.db
       .query('challenges')
-      .filter((q) =>
-        q.and(q.eq(q.field('userId'), userId), q.gte(q.field('expiresAt'), now))
-      );
+      .filter((q) => q.and(q.eq(q.field('userId'), userId), q.gte(q.field('expiresAt'), now)));
 
     // 타입 필터
     if (type) {
@@ -341,9 +337,7 @@ export const getChallengeStats = query({
     // 전체 완료된 도전과제
     const completedChallenges = await ctx.db
       .query('challenges')
-      .filter((q) =>
-        q.and(q.eq(q.field('userId'), userId), q.eq(q.field('completed'), true))
-      )
+      .filter((q) => q.and(q.eq(q.field('userId'), userId), q.eq(q.field('completed'), true)))
       .collect();
 
     // 현재 활성 도전과제
@@ -353,8 +347,8 @@ export const getChallengeStats = query({
         q.and(
           q.eq(q.field('userId'), userId),
           q.eq(q.field('completed'), false),
-          q.gte(q.field('expiresAt'), now)
-        )
+          q.gte(q.field('expiresAt'), now),
+        ),
       )
       .collect();
 
@@ -365,7 +359,7 @@ export const getChallengeStats = query({
         acc[type] = (acc[type] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     return {
@@ -377,7 +371,7 @@ export const getChallengeStats = query({
           ? Math.round(
               (completedChallenges.length /
                 (completedChallenges.length + activeChallenges.length)) *
-                100
+                100,
             )
           : 100,
     };
@@ -396,14 +390,7 @@ export const updateChallengeProgress = mutation({
   },
   handler: async (
     ctx,
-    {
-      userId,
-      quizCompleted,
-      category,
-      answerTime,
-      maxPerfectStreak = 0,
-      questionCount = 10,
-    }
+    { userId, quizCompleted, category, answerTime, maxPerfectStreak = 0, questionCount = 10 },
   ) => {
     const now = Date.now();
     const today = new Date().toISOString().split('T')[0];
@@ -421,8 +408,8 @@ export const updateChallengeProgress = mutation({
         q.and(
           q.eq(q.field('userId'), userId),
           q.eq(q.field('completed'), false),
-          q.gte(q.field('expiresAt'), now)
-        )
+          q.gte(q.field('expiresAt'), now),
+        ),
       )
       .collect();
 
@@ -435,8 +422,7 @@ export const updateChallengeProgress = mutation({
       if (quizCompleted) {
         // 기본 문제 수 완료 도전과제 (퀴즈/문제)
         if (
-          (challenge.description.includes('퀴즈') ||
-            challenge.description.includes('문제')) &&
+          (challenge.description.includes('퀴즈') || challenge.description.includes('문제')) &&
           !challenge.description.includes('정답') &&
           !challenge.description.includes('연속') &&
           !challenge.description.includes('카테고리') &&
@@ -449,10 +435,7 @@ export const updateChallengeProgress = mutation({
         }
 
         // 연속 정답 도전과제
-        if (
-          challenge.description.includes('연속') &&
-          challenge.description.includes('정답')
-        ) {
+        if (challenge.description.includes('연속') && challenge.description.includes('정답')) {
           newCount = Math.max(newCount, maxPerfectStreak);
           shouldUpdate = true;
         }
@@ -462,12 +445,7 @@ export const updateChallengeProgress = mutation({
           // 오늘 시도한 카테고리 수를 계산하기 위해 quizHistory 확인
           const todayHistory = await ctx.db
             .query('quizHistory')
-            .filter((q) =>
-              q.and(
-                q.eq(q.field('userId'), userId),
-                q.eq(q.field('date'), today)
-              )
-            )
+            .filter((q) => q.and(q.eq(q.field('userId'), userId), q.eq(q.field('date'), today)))
             .collect();
 
           // 챌린지 기간 내 quizHistory만 사용 (주간)
@@ -479,26 +457,17 @@ export const updateChallengeProgress = mutation({
             .collect();
           const filteredHistory = challengePeriodHistory.filter((h) => {
             const completedAtMs = new Date(h.completedAt).getTime();
-            return (
-              completedAtMs >= startTimestamp && completedAtMs <= endTimestamp
-            );
+            return completedAtMs >= startTimestamp && completedAtMs <= endTimestamp;
           });
 
           // 주간 카테고리 다양성
-          const thisWeekUniqueCategories = [
-            ...new Set(filteredHistory.map((h) => h.category)),
-          ];
+          const thisWeekUniqueCategories = [...new Set(filteredHistory.map((h) => h.category))];
 
           // 도전과제 설명에 따라 일일 또는 주간 카테고리 수 사용
-          if (
-            challenge.description.includes('이번 주') ||
-            challenge.description.includes('주간')
-          ) {
+          if (challenge.description.includes('이번 주') || challenge.description.includes('주간')) {
             newCount = thisWeekUniqueCategories.length;
           } else {
-            const todayUniqueCategories = [
-              ...new Set(todayHistory.map((h) => h.category)),
-            ];
+            const todayUniqueCategories = [...new Set(todayHistory.map((h) => h.category))];
             newCount = todayUniqueCategories.length;
           }
 
@@ -506,10 +475,7 @@ export const updateChallengeProgress = mutation({
         }
 
         // 정답률 기반 도전과제 (주간 유지)
-        if (
-          challenge.description.includes('이번 주') &&
-          challenge.description.includes('정답률')
-        ) {
+        if (challenge.description.includes('이번 주') && challenge.description.includes('정답률')) {
           if (gamificationData && !challenge.completed) {
             // 챌린지 기간 내 quizHistory만 사용
             const startTimestamp = challenge._creationTime;
@@ -520,35 +486,21 @@ export const updateChallengeProgress = mutation({
               .collect();
             const filteredHistory = challengePeriodHistory.filter((h) => {
               const completedAtMs = new Date(h.completedAt).getTime();
-              return (
-                completedAtMs >= startTimestamp && completedAtMs <= endTimestamp
-              );
+              return completedAtMs >= startTimestamp && completedAtMs <= endTimestamp;
             });
 
             if (filteredHistory.length > 0) {
-              const weekTotalQuestions = filteredHistory.reduce(
-                (sum, h) => sum + h.total,
-                0
-              );
-              const weekTotalCorrect = filteredHistory.reduce(
-                (sum, h) => sum + h.correct,
-                0
-              );
-              const weekAccuracy =
-                (weekTotalCorrect / weekTotalQuestions) * 100;
+              const weekTotalQuestions = filteredHistory.reduce((sum, h) => sum + h.total, 0);
+              const weekTotalCorrect = filteredHistory.reduce((sum, h) => sum + h.correct, 0);
+              const weekAccuracy = (weekTotalCorrect / weekTotalQuestions) * 100;
 
               const targetAccuracy = 80;
 
               // 최소 문제 수 조건 확인 (200문제 이상)
-              const minQuestions = challenge.description.includes('200문제')
-                ? 200
-                : 0;
+              const minQuestions = challenge.description.includes('200문제') ? 200 : 0;
 
               // 주간 정답률이 기준을 만족하고 최소 문제 수도 만족하면 1
-              if (
-                weekAccuracy >= targetAccuracy &&
-                weekTotalQuestions >= minQuestions
-              ) {
+              if (weekAccuracy >= targetAccuracy && weekTotalQuestions >= minQuestions) {
                 newCount = 1;
               } else {
                 newCount = 0;
@@ -574,16 +526,11 @@ export const updateChallengeProgress = mutation({
               .collect();
             const filteredHistory = challengePeriodHistory.filter((h) => {
               const completedAtMs = new Date(h.completedAt).getTime();
-              return (
-                completedAtMs >= startTimestamp && completedAtMs <= endTimestamp
-              );
+              return completedAtMs >= startTimestamp && completedAtMs <= endTimestamp;
             });
 
             if (filteredHistory.length > 0) {
-              const totalTime = filteredHistory.reduce(
-                (sum, h) => sum + (h.averageTime || 0),
-                0
-              );
+              const totalTime = filteredHistory.reduce((sum, h) => sum + (h.averageTime || 0), 0);
               const avgTime = totalTime / filteredHistory.length;
 
               const targetTime = challenge.description.includes('30초')
@@ -593,13 +540,8 @@ export const updateChallengeProgress = mutation({
                   : 999;
 
               // 최소 문제 수 조건 확인 (150문제 이상)
-              const minQuestions = challenge.description.includes('150문제')
-                ? 150
-                : 0;
-              const weekTotalQuestions = filteredHistory.reduce(
-                (sum, h) => sum + h.total,
-                0
-              );
+              const minQuestions = challenge.description.includes('150문제') ? 150 : 0;
+              const weekTotalQuestions = filteredHistory.reduce((sum, h) => sum + h.total, 0);
 
               // 주간 평균 시간이 기준을 만족하고 최소 문제 수도 만족하면 1
               if (avgTime <= targetTime && weekTotalQuestions >= minQuestions) {
@@ -624,23 +566,12 @@ export const updateChallengeProgress = mutation({
             // 오늘의 quizHistory에서 문제 수와 평균 시간 계산
             const todayHistory = await ctx.db
               .query('quizHistory')
-              .filter((q) =>
-                q.and(
-                  q.eq(q.field('userId'), userId),
-                  q.eq(q.field('date'), today)
-                )
-              )
+              .filter((q) => q.and(q.eq(q.field('userId'), userId), q.eq(q.field('date'), today)))
               .collect();
 
             if (todayHistory.length > 0) {
-              const totalQuestions = todayHistory.reduce(
-                (sum, h) => sum + h.total,
-                0
-              );
-              const totalTime = todayHistory.reduce(
-                (sum, h) => sum + (h.averageTime || 0),
-                0
-              );
+              const totalQuestions = todayHistory.reduce((sum, h) => sum + h.total, 0);
+              const totalTime = todayHistory.reduce((sum, h) => sum + (h.averageTime || 0), 0);
               const avgTime = totalTime / todayHistory.length;
 
               // 최소 문제 수 조건 (50문제)
@@ -668,9 +599,7 @@ export const updateChallengeProgress = mutation({
               .collect();
             const filteredHistory = challengePeriodHistory.filter((h) => {
               const completedAtMs = new Date(h.completedAt).getTime();
-              return (
-                completedAtMs >= startTimestamp && completedAtMs <= endTimestamp
-              );
+              return completedAtMs >= startTimestamp && completedAtMs <= endTimestamp;
             });
 
             // 날짜별 오전(KST) 문제 수 집계
@@ -685,9 +614,9 @@ export const updateChallengeProgress = mutation({
             }
 
             // 오전에 10문제 이상 푼 날의 개수
-            const daysWith10PlusQuestions = Object.values(
-              morningQuestionsPerDay
-            ).filter((count) => count >= 10).length;
+            const daysWith10PlusQuestions = Object.values(morningQuestionsPerDay).filter(
+              (count) => count >= 10,
+            ).length;
 
             newCount = daysWith10PlusQuestions;
             shouldUpdate = true;
@@ -695,10 +624,7 @@ export const updateChallengeProgress = mutation({
         }
 
         // 퀴즈 파티 도전과제 (하루에 5개 이상 퀴즈 푸는 날 3일)
-        if (
-          challenge.description ===
-          '하루에 50문제(5퀴즈) 이상 푸는 날 3일 만들기'
-        ) {
+        if (challenge.description === '하루에 50문제(5퀴즈) 이상 푸는 날 3일 만들기') {
           if (!challenge.completed) {
             // 챌린지 기간 내 quizHistory만 사용
             const startTimestamp = challenge._creationTime;
@@ -709,22 +635,19 @@ export const updateChallengeProgress = mutation({
               .collect();
             const filteredHistory = challengePeriodHistory.filter((h) => {
               const completedAtMs = new Date(h.completedAt).getTime();
-              return (
-                completedAtMs >= startTimestamp && completedAtMs <= endTimestamp
-              );
+              return completedAtMs >= startTimestamp && completedAtMs <= endTimestamp;
             });
 
             // 날짜별 퀴즈 수 집계
             const dailyQuizCounts: Record<string, number> = {};
             for (const history of filteredHistory) {
-              dailyQuizCounts[history.date] =
-                (dailyQuizCounts[history.date] || 0) + history.total;
+              dailyQuizCounts[history.date] = (dailyQuizCounts[history.date] || 0) + history.total;
             }
 
             // 하루에 50문제 이상 푼 날 수 계산
-            const daysWith50PlusQuestions = Object.values(
-              dailyQuizCounts
-            ).filter((count) => count >= 50).length;
+            const daysWith50PlusQuestions = Object.values(dailyQuizCounts).filter(
+              (count) => count >= 50,
+            ).length;
 
             newCount = daysWith50PlusQuestions;
             shouldUpdate = true;
@@ -746,15 +669,11 @@ export const updateChallengeProgress = mutation({
             .collect();
           const filteredHistory = challengePeriodHistory.filter((h) => {
             const completedAtMs = new Date(h.completedAt).getTime();
-            return (
-              completedAtMs >= startTimestamp && completedAtMs <= endTimestamp
-            );
+            return completedAtMs >= startTimestamp && completedAtMs <= endTimestamp;
           });
 
           // 챌린지 기간 내 퀴즈를 푼 고유한 일수 계산
-          const uniqueDaysThisWeek = [
-            ...new Set(filteredHistory.map((h) => h.date)),
-          ];
+          const uniqueDaysThisWeek = [...new Set(filteredHistory.map((h) => h.date))];
 
           newCount = uniqueDaysThisWeek.length;
           shouldUpdate = true;
@@ -774,9 +693,7 @@ export const updateChallengeProgress = mutation({
           // 기간 내 기록만 필터링
           const filteredHistory = challengePeriodHistory.filter((h) => {
             const completedAtMs = new Date(h.completedAt).getTime();
-            return (
-              completedAtMs >= startTimestamp && completedAtMs <= endTimestamp
-            );
+            return completedAtMs >= startTimestamp && completedAtMs <= endTimestamp;
           });
 
           // 날짜별로 그룹화
@@ -791,41 +708,24 @@ export const updateChallengeProgress = mutation({
         }
 
         // 정답률 기반 도전과제 (일일)
-        if (
-          challenge.description.includes('오늘') &&
-          challenge.description.includes('정답률')
-        ) {
+        if (challenge.description.includes('오늘') && challenge.description.includes('정답률')) {
           if (gamificationData && !challenge.completed) {
             // 오늘의 quizHistory만 사용
             const todayHistory = await ctx.db
               .query('quizHistory')
-              .filter((q) =>
-                q.and(
-                  q.eq(q.field('userId'), userId),
-                  q.eq(q.field('date'), today)
-                )
-              )
+              .filter((q) => q.and(q.eq(q.field('userId'), userId), q.eq(q.field('date'), today)))
               .collect();
 
             if (todayHistory.length > 0) {
-              const totalQuestions = todayHistory.reduce(
-                (sum, h) => sum + h.total,
-                0
-              );
-              const totalCorrect = todayHistory.reduce(
-                (sum, h) => sum + h.correct,
-                0
-              );
+              const totalQuestions = todayHistory.reduce((sum, h) => sum + h.total, 0);
+              const totalCorrect = todayHistory.reduce((sum, h) => sum + h.correct, 0);
               const accuracy = (totalCorrect / totalQuestions) * 100;
 
               const targetAccuracy = 90;
               // 최소 문제 수 조건 (10문제 이상)
               const minQuestions = 10;
 
-              if (
-                accuracy >= targetAccuracy &&
-                totalQuestions >= minQuestions
-              ) {
+              if (accuracy >= targetAccuracy && totalQuestions >= minQuestions) {
                 newCount = 1;
               } else {
                 newCount = 0;

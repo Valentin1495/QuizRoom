@@ -1,8 +1,6 @@
 import { QuizHistoryItem } from '@/context/gamification-context';
 
-export function hasFiveConsecutivePerfectScores(
-  quizzes: QuizHistoryItem[]
-): boolean {
+export function hasFiveConsecutivePerfectScores(quizzes: QuizHistoryItem[]): boolean {
   let count = 0;
 
   for (const quiz of quizzes) {

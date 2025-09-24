@@ -14,10 +14,7 @@ interface GamificationHUDProps {
   };
 }
 
-export function GamificationHUD({
-  visible = true,
-  gamification,
-}: GamificationHUDProps) {
+export function GamificationHUD({ visible = true, gamification }: GamificationHUDProps) {
   const { totalPoints, level, streak, pointsToNextLevel } = gamification;
 
   if (!visible) return null;
@@ -28,19 +25,19 @@ export function GamificationHUD({
         <View style={styles.hudRow}>
           {/* 포인트 */}
           <View style={styles.statContainer}>
-            <Star width={16} height={16} color='#FFD700' />
+            <Star width={16} height={16} color="#FFD700" />
             <Text style={styles.statValue}>{totalPoints.toLocaleString()}</Text>
           </View>
 
           {/* 레벨 */}
           <View style={styles.statContainer}>
-            <Ionicons name='diamond-outline' size={16} color='#FF6B6B' />
+            <Ionicons name="diamond-outline" size={16} color="#FF6B6B" />
             <Text style={styles.statValue}>Lv.{level}</Text>
           </View>
 
           {/* 스트릭 */}
           <View style={styles.statContainer}>
-            <Ionicons name='flame-outline' size={16} color='#FF4757' />
+            <Ionicons name="flame-outline" size={16} color="#FF4757" />
             <Text style={styles.statValue}>{streak}</Text>
           </View>
         </View>

@@ -24,14 +24,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  CheckCircle,
-  Flag,
-  Home
-} from 'react-native-feather';
+import { ArrowLeft, ArrowRight, Check, CheckCircle, Flag, Home } from 'react-native-feather';
 import Animated, {
   Easing,
   FadeIn,
@@ -73,9 +66,7 @@ export default function QuestionList() {
   const [textAnswer, setTextAnswer] = useState<string>('');
   const [showFeedback, setShowFeedback] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
-  const [slideDirection, setSlideDirection] = useState<'right' | 'left'>(
-    'right'
-  );
+  const [slideDirection, setSlideDirection] = useState<'right' | 'left'>('right');
   const [prevLevel, setPrevLevel] = useState(level);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [maxPerfectStreak, setMaxPerfectStreak] = useState(0);
@@ -83,9 +74,7 @@ export default function QuestionList() {
   const [pressedOX, setPressedOX] = useState<'O' | 'X' | null>(null);
 
   // 퀴즈 시작 시간과 각 문제별 시간 추적
-  const [quizStartTime, setQuizStartTimeLocal] = useState<number>(() =>
-    Date.now()
-  );
+  const [quizStartTime, setQuizStartTimeLocal] = useState<number>(() => Date.now());
 
   const router = useRouter();
   const userId = getAuth().currentUser?.uid;
@@ -128,9 +117,7 @@ export default function QuestionList() {
   const currentQuestion: any = questions[currentQuestionIndex];
 
   // 카테고리/서브카테고리 메타(레이블)
-  const getCategoryMeta = (
-    category?: string | null
-  ): { label: string } => {
+  const getCategoryMeta = (category?: string | null): { label: string } => {
     switch (category) {
       case 'general':
         return { label: '상식' };
@@ -147,9 +134,7 @@ export default function QuestionList() {
     }
   };
 
-  const getSubcategoryMeta = (
-    sub?: string | null
-  ): { label: string } => {
+  const getSubcategoryMeta = (sub?: string | null): { label: string } => {
     switch (sub) {
       case 'general':
         return { label: '일반 상식' };
@@ -160,7 +145,7 @@ export default function QuestionList() {
       case 'sports':
         return { label: '스포츠' };
       case 'science-tech':
-          return { label: '과학&기술' };
+        return { label: '과학&기술' };
       case 'math-logic':
         return { label: '수학&논리' };
       case 'kpop-music':
@@ -178,9 +163,7 @@ export default function QuestionList() {
 
   const createReport = useMutation(api.reports.createReport);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [reportReason, setReportReason] = useState<
-    '정답 오류' | '문제 불명확' | '기타' | ''
-  >('');
+  const [reportReason, setReportReason] = useState<'정답 오류' | '문제 불명확' | '기타' | ''>('');
   const [reportDetail, setReportDetail] = useState('');
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
 
@@ -199,21 +182,12 @@ export default function QuestionList() {
     }
 
     // 애니메이션 효과
-    scale.value = withTiming(
-      1.05,
-      { duration: 200, easing: Easing.bounce },
-      () => {
-        scale.value = withTiming(1, { duration: 200 });
-      }
-    );
+    scale.value = withTiming(1.05, { duration: 200, easing: Easing.bounce }, () => {
+      scale.value = withTiming(1, { duration: 200 });
+    });
 
     // 통합된 answer 핸들러 사용
-    const result = handleAnswer(
-      currentQuestion,
-      currentQuestionIndex,
-      userAnswer,
-      questionFormat
-    );
+    const result = handleAnswer(currentQuestion, currentQuestionIndex, userAnswer, questionFormat);
 
     setIsCorrect(result.isCorrect);
     setShowFeedback(true);
@@ -280,7 +254,7 @@ export default function QuestionList() {
       await onQuizCompleted(
         currentQuestion.category ?? undefined, // 카테고리, null이나 undefined일 때 기본값 사용
         avgTimePerQuestion, // 평균 답변 시간 (초)
-        maxPerfectStreak // 최고 연속 정답 수
+        maxPerfectStreak, // 최고 연속 정답 수
       );
     }
 
@@ -332,7 +306,7 @@ export default function QuestionList() {
                 setIsCompleting(false);
               },
             },
-          ]
+          ],
         );
       } else {
         setIsCompleting(true);
@@ -358,7 +332,7 @@ export default function QuestionList() {
             router.push('/(tabs)');
           },
         },
-      ]
+      ],
     );
   };
 
@@ -383,7 +357,7 @@ export default function QuestionList() {
               setIsCompleting(false);
             },
           },
-        ]
+        ],
       );
     } else {
       setIsCompleting(true);
@@ -405,15 +379,9 @@ export default function QuestionList() {
       setShowReportModal(false);
       setReportReason('');
       setReportDetail('');
-      Alert.alert(
-        '신고가 접수되었습니다',
-        '검토 후 조치하겠습니다. 감사합니다!'
-      );
+      Alert.alert('신고가 접수되었습니다', '검토 후 조치하겠습니다. 감사합니다!');
     } catch (e) {
-      Alert.alert(
-        '신고 실패',
-        '신고 중 오류가 발생했습니다. 다시 시도해 주세요.'
-      );
+      Alert.alert('신고 실패', '신고 중 오류가 발생했습니다. 다시 시도해 주세요.');
     } finally {
       setIsSubmittingReport(false);
     }
@@ -485,9 +453,7 @@ export default function QuestionList() {
           <View style={styles.header}>
             <View style={styles.progressContainer}>
               <View style={styles.progressBarBackground}>
-                <Animated.View
-                  style={[styles.progressBar, progressAnimatedStyles]}
-                />
+                <Animated.View style={[styles.progressBar, progressAnimatedStyles]} />
               </View>
               <Text style={styles.questionCount}>
                 {currentQuestionIndex + 1}/{questions.length}
@@ -520,11 +486,7 @@ export default function QuestionList() {
                   onPress={goToResult}
                   disabled={isCompleting}
                 >
-                  <CheckCircle
-                    width={18}
-                    height={18}
-                    color={Colors.light.secondary}
-                  />
+                  <CheckCircle width={18} height={18} color={Colors.light.secondary} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.homeButton} onPress={goToHome}>
                   <Home width={20} height={20} color={Colors.light.secondary} />
@@ -536,14 +498,10 @@ export default function QuestionList() {
           <Animated.View
             key={`${currentQuestion._id}-${currentQuestionIndex}`}
             entering={
-              slideDirection === 'right'
-                ? SlideInRight.duration(300)
-                : SlideInLeft.duration(300)
+              slideDirection === 'right' ? SlideInRight.duration(300) : SlideInLeft.duration(300)
             }
             exiting={
-              slideDirection === 'right'
-                ? SlideOutLeft.duration(300)
-                : SlideOutRight.duration(300)
+              slideDirection === 'right' ? SlideOutLeft.duration(300) : SlideOutRight.duration(300)
             }
             style={styles.questionContainer}
           >
@@ -561,10 +519,7 @@ export default function QuestionList() {
                         selectedOption === option &&
                         isCorrect &&
                         styles.correctOption,
-                      showFeedback &&
-                        selectedOption === option &&
-                        !isCorrect &&
-                        styles.wrongOption,
+                      showFeedback && selectedOption === option && !isCorrect && styles.wrongOption,
                       showFeedback &&
                         selectedOption !== option &&
                         option === currentQuestion.answer &&
@@ -601,10 +556,7 @@ export default function QuestionList() {
                 {(['O', 'X'] as const).map((ox) => (
                   <TouchableOpacity
                     key={ox}
-                    style={[
-                      styles.oxOptionButton,
-                      selectedOption === ox && styles.oxSelected,
-                    ]}
+                    style={[styles.oxOptionButton, selectedOption === ox && styles.oxSelected]}
                     onPress={() => {
                       if (!showFeedback) {
                         setSelectedOption(ox);
@@ -612,7 +564,7 @@ export default function QuestionList() {
                           currentQuestion,
                           currentQuestionIndex,
                           ox,
-                          questionFormat
+                          questionFormat,
                         );
                         setIsCorrect(result.isCorrect);
                         setShowFeedback(true);
@@ -634,10 +586,7 @@ export default function QuestionList() {
                       }
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
-                      style={[
-                        styles.oxGradient,
-                        pressedOX === ox && styles.oxGradientPressed,
-                      ]}
+                      style={[styles.oxGradient, pressedOX === ox && styles.oxGradientPressed]}
                     >
                       {selectedOption === ox && (
                         <View
@@ -646,7 +595,11 @@ export default function QuestionList() {
                             ox === 'O' ? styles.oxBadgeO : styles.oxBadgeX,
                           ]}
                         >
-                          <Check width={12} height={12} color={ox === 'O' ? '#3AB0FF' : '#F72585'} />
+                          <Check
+                            width={12}
+                            height={12}
+                            color={ox === 'O' ? '#3AB0FF' : '#F72585'}
+                          />
                         </View>
                       )}
                       <Text style={styles.oxText}>{ox}</Text>
@@ -658,10 +611,10 @@ export default function QuestionList() {
               <View style={styles.shortAnswerContainer}>
                 <TextInput
                   style={styles.textInput}
-                  placeholder='정답을 입력하세요'
+                  placeholder="정답을 입력하세요"
                   value={textAnswer}
                   onChangeText={setTextAnswer}
-                  autoCapitalize='none'
+                  autoCapitalize="none"
                 />
               </View>
             )}
@@ -671,9 +624,7 @@ export default function QuestionList() {
                 entering={FadeIn.duration(300)}
                 style={[
                   styles.feedbackContainer,
-                  isCorrect
-                    ? styles.correctFeedbackContainer
-                    : styles.wrongFeedbackContainer,
+                  isCorrect ? styles.correctFeedbackContainer : styles.wrongFeedbackContainer,
                 ]}
               >
                 <Text
@@ -684,29 +635,24 @@ export default function QuestionList() {
                 >
                   {isCorrect
                     ? `정답이에요! ${earnedPoints > 0 ? `+${earnedPoints}포인트` : ''}`
-                    : questionFormat === 'multiple' || questionFormat === 'true_false' || questionFormat === 'filmography'
+                    : questionFormat === 'multiple' ||
+                        questionFormat === 'true_false' ||
+                        questionFormat === 'filmography'
                       ? `오답이에요. 정답은 "${currentQuestion.answer}" 입니다`
                       : `오답이에요. 정답은 "${currentQuestion.answers?.[0] ?? ''}" 입니다`}
                 </Text>
                 {isCorrect && currentStreak > 1 && (
-                  <Text style={styles.streakText}>
-                    🔥 {currentStreak}연속 정답!
-                  </Text>
+                  <Text style={styles.streakText}>🔥 {currentStreak}연속 정답!</Text>
                 )}
                 {currentQuestion.category === 'entertainment' && !!currentQuestion.explanation && (
-                  <Text style={styles.explanationText}>
-                    {currentQuestion.explanation}
-                  </Text>
+                  <Text style={styles.explanationText}>{currentQuestion.explanation}</Text>
                 )}
               </Animated.View>
             )}
 
             {!showFeedback && questionFormat !== 'true_false' && (
               <TouchableOpacity
-                style={[
-                  styles.submitButton,
-                  !canSubmit && styles.disabledButton,
-                ]}
+                style={[styles.submitButton, !canSubmit && styles.disabledButton]}
                 onPress={onSubmitAnswer}
                 disabled={!canSubmit}
               >
@@ -719,10 +665,7 @@ export default function QuestionList() {
 
             <View style={styles.navigationContainer}>
               {currentQuestionIndex > 0 && (
-                <TouchableOpacity
-                  style={styles.navigationButton}
-                  onPress={goToPreviousQuestion}
-                >
+                <TouchableOpacity style={styles.navigationButton} onPress={goToPreviousQuestion}>
                   <View style={styles.navigationButtonContent}>
                     <ArrowLeft width={16} height={16} color={'#ffffff'} />
                     <Text style={styles.navigationButtonText}>이전</Text>
@@ -759,15 +702,12 @@ export default function QuestionList() {
       <Modal
         visible={showReportModal}
         transparent
-        animationType='fade'
+        animationType="fade"
         onRequestClose={() => setShowReportModal(false)}
         statusBarTranslucent
       >
         <View style={styles.modalOverlay}>
-          <Animated.View
-            entering={FadeIn.duration(200)}
-            style={styles.modalContainer}
-          >
+          <Animated.View entering={FadeIn.duration(200)} style={styles.modalContainer}>
             <View style={styles.modalHeader}>
               <Flag width={24} height={24} color={Colors.light.secondary} />
               <Text style={styles.modalTitle}>문제 신고</Text>
@@ -805,9 +745,7 @@ export default function QuestionList() {
                     </Text>
                   </View>
                   <View style={styles.radioCircle}>
-                    {reportReason === item.key && (
-                      <View style={styles.radioInner} />
-                    )}
+                    {reportReason === item.key && <View style={styles.radioInner} />}
                   </View>
                 </Pressable>
               ))}
@@ -816,14 +754,14 @@ export default function QuestionList() {
             {reportReason === '기타' && (
               <TextInput
                 style={styles.modalInput}
-                placeholder='구체적인 문제를 알려주세요'
-                placeholderTextColor='rgba(0, 0, 0, 0.5)'
+                placeholder="구체적인 문제를 알려주세요"
+                placeholderTextColor="rgba(0, 0, 0, 0.5)"
                 value={reportDetail}
                 onChangeText={setReportDetail}
                 editable={!isSubmittingReport}
                 multiline
                 numberOfLines={3}
-                textAlignVertical='top'
+                textAlignVertical="top"
               />
             )}
 

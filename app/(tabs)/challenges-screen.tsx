@@ -26,8 +26,7 @@ export default function ChallengesScreen() {
   const [currentTime, setCurrentTime] = useState(Date.now());
   const { onRefresh, refreshing } = useRefresh();
   const userId = getAuth().currentUser?.uid;
-  const challenges =
-    useQuery(api.challenges.getChallenges, userId ? { userId } : 'skip') || [];
+  const challenges = useQuery(api.challenges.getChallenges, userId ? { userId } : 'skip') || [];
   const generateDaily = useMutation(api.challenges.generateDailyChallenges);
   const generateWeekly = useMutation(api.challenges.generateWeeklyChallenges);
 
@@ -37,7 +36,7 @@ export default function ChallengesScreen() {
   const cardAnimations = useRef(
     Array(10)
       .fill(0)
-      .map(() => new Animated.Value(0))
+      .map(() => new Animated.Value(0)),
   ).current;
 
   // 탭 컨테이너의 너비를 계산하기 위한 상태
@@ -79,7 +78,7 @@ export default function ChallengesScreen() {
         delay: index * 100,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
-      })
+      }),
     );
 
     Animated.stagger(50, animations).start();
@@ -102,7 +101,7 @@ export default function ChallengesScreen() {
             easing: Easing.inOut(Easing.sin),
             useNativeDriver: true,
           }),
-        ])
+        ]),
       ).start();
     };
 
@@ -112,8 +111,7 @@ export default function ChallengesScreen() {
   const dailyChallenges = challenges.filter((c) => c.type === 'daily');
   const weeklyChallenges = challenges.filter((c) => c.type === 'weekly');
 
-  const currentChallenges =
-    selectedTab === 'daily' ? dailyChallenges : weeklyChallenges;
+  const currentChallenges = selectedTab === 'daily' ? dailyChallenges : weeklyChallenges;
 
   const getRewardText = (reward: Challenge['reward']) => {
     switch (reward.type) {
@@ -193,10 +191,7 @@ export default function ChallengesScreen() {
     return { text, emoji, color, urgency, backgroundColor };
   };
 
-  const getProgressColor = (
-    progress: number,
-    completed: boolean
-  ): [string, string] => {
+  const getProgressColor = (progress: number, completed: boolean): [string, string] => {
     if (completed) return ['#00D4AA', '#00C29A'];
     if (progress >= 0.8) return ['#FF6B6B', '#FF5252'];
     if (progress >= 0.5) return ['#FFD93D', '#FFC107'];
@@ -204,10 +199,7 @@ export default function ChallengesScreen() {
   };
 
   const renderChallenge = (challenge: Challenge, index: number) => {
-    const progress = Math.min(
-      challenge.currentCount / challenge.targetCount,
-      1
-    );
+    const progress = Math.min(challenge.currentCount / challenge.targetCount, 1);
     const progressWidth = `${progress * 100}%`;
     const timeInfo = getTimeRemainingInfo(challenge.expiresAt);
     const progressColors = getProgressColor(progress, challenge.completed);
@@ -235,11 +227,7 @@ export default function ChallengesScreen() {
         ]}
       >
         <LinearGradient
-          colors={
-            challenge.completed
-              ? ['#E8FFF4', '#F0FFF8']
-              : ['#FFFFFF', '#FAFBFF']
-          }
+          colors={challenge.completed ? ['#E8FFF4', '#F0FFF8'] : ['#FFFFFF', '#FAFBFF']}
           style={styles.cardGradient}
         >
           {/* 상단 헤더 */}
@@ -249,17 +237,13 @@ export default function ChallengesScreen() {
               <View
                 style={[
                   styles.statusChip,
-                  challenge.completed
-                    ? styles.completedChip
-                    : styles.activeChip,
+                  challenge.completed ? styles.completedChip : styles.activeChip,
                 ]}
               >
                 <Text
                   style={[
                     styles.statusText,
-                    challenge.completed
-                      ? styles.completedText
-                      : styles.activeText,
+                    challenge.completed ? styles.completedText : styles.activeText,
                   ]}
                 >
                   {challenge.completed ? '✨ 완료' : '진행중'}
@@ -269,16 +253,12 @@ export default function ChallengesScreen() {
 
             <View style={styles.timeContainer}>
               <Text style={styles.timeEmoji}>{timeInfo.emoji}</Text>
-              <Text style={[styles.timeText, { color: timeInfo.color }]}>
-                {timeInfo.text}
-              </Text>
+              <Text style={[styles.timeText, { color: timeInfo.color }]}>{timeInfo.text}</Text>
             </View>
           </View>
 
           {/* 설명 */}
-          <Text style={styles.challengeDescription}>
-            {challenge.description}
-          </Text>
+          <Text style={styles.challengeDescription}>{challenge.description}</Text>
 
           {/* 진행률 섹션 */}
           <View style={styles.progressSection}>
@@ -293,17 +273,12 @@ export default function ChallengesScreen() {
               <View style={styles.progressBar}>
                 <LinearGradient
                   colors={progressColors}
-                  style={[
-                    styles.progressFill,
-                    { width: progressWidth as DimensionValue },
-                  ]}
+                  style={[styles.progressFill, { width: progressWidth as DimensionValue }]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                 />
               </View>
-              <Text style={styles.progressPercentage}>
-                {Math.round(progress * 100)}%
-              </Text>
+              <Text style={styles.progressPercentage}>{Math.round(progress * 100)}%</Text>
             </View>
           </View>
 
@@ -315,9 +290,7 @@ export default function ChallengesScreen() {
                 <Text style={styles.rewardIcon}>
                   {challenge.reward.type === 'points' ? '🏆' : '🔥'}
                 </Text>
-                <Text style={styles.rewardText}>
-                  {getRewardText(challenge.reward)}
-                </Text>
+                <Text style={styles.rewardText}>{getRewardText(challenge.reward)}</Text>
               </View>
             </View>
 
@@ -335,15 +308,10 @@ export default function ChallengesScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       {/* 헤더 */}
-      <LinearGradient
-        colors={Colors.light.gradientColors}
-        style={styles.headerGradient}
-      >
+      <LinearGradient colors={Colors.light.gradientColors} style={styles.headerGradient}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>챌린지</Text>
-          <Text style={styles.headerSubtitle}>
-            매일 성장하는 당신을 응원해요! 💪
-          </Text>
+          <Text style={styles.headerSubtitle}>매일 성장하는 당신을 응원해요! 💪</Text>
         </View>
       </LinearGradient>
 
@@ -371,29 +339,13 @@ export default function ChallengesScreen() {
               },
             ]}
           />
-          <TouchableOpacity
-            style={styles.tab}
-            onPress={() => setSelectedTab('daily')}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                selectedTab === 'daily' && styles.activeTabText,
-              ]}
-            >
+          <TouchableOpacity style={styles.tab} onPress={() => setSelectedTab('daily')}>
+            <Text style={[styles.tabText, selectedTab === 'daily' && styles.activeTabText]}>
               🌅 일일 도전
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.tab}
-            onPress={() => setSelectedTab('weekly')}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                selectedTab === 'weekly' && styles.activeTabText,
-              ]}
-            >
+          <TouchableOpacity style={styles.tab} onPress={() => setSelectedTab('weekly')}>
+            <Text style={[styles.tabText, selectedTab === 'weekly' && styles.activeTabText]}>
               📅 주간 도전
             </Text>
           </TouchableOpacity>
@@ -405,23 +357,14 @@ export default function ChallengesScreen() {
         style={styles.challengesList}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         {currentChallenges.length > 0 ? (
-          currentChallenges.map((challenge, index) =>
-            renderChallenge(challenge, index)
-          )
+          currentChallenges.map((challenge, index) => renderChallenge(challenge, index))
         ) : (
           <View style={styles.emptyState}>
-            <LinearGradient
-              colors={Colors.light.gradientColors}
-              style={styles.emptyStateIcon}
-            >
-              <Text style={styles.emptyStateEmoji}>
-                {selectedTab === 'daily' ? '🌱' : '🗓️'}
-              </Text>
+            <LinearGradient colors={Colors.light.gradientColors} style={styles.emptyStateIcon}>
+              <Text style={styles.emptyStateEmoji}>{selectedTab === 'daily' ? '🌱' : '🗓️'}</Text>
             </LinearGradient>
             <Text style={styles.emptyStateTitle}>
               {selectedTab === 'daily'

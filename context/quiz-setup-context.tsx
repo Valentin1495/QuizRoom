@@ -67,9 +67,7 @@ type QuizSetupContextType = {
   setTotalTime: (totalTime: number) => void;
 };
 
-const QuizSetupContext = createContext<QuizSetupContextType | undefined>(
-  undefined
-);
+const QuizSetupContext = createContext<QuizSetupContextType | undefined>(undefined);
 
 export const QuizSetupProvider = ({ children }: { children: ReactNode }) => {
   const [setup, setSetup] = useState<QuizSetup>({

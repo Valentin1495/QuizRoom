@@ -31,9 +31,7 @@ const QuizSetRow = ({
         color={complete ? '#4caf50' : '#f44336'}
         style={styles.icon}
       />
-      <Text
-        style={[styles.difficultyLabel, complete ? styles.done : styles.todo]}
-      >
+      <Text style={[styles.difficultyLabel, complete ? styles.done : styles.todo]}>
         {label}: {sets}세트 / {required}세트
       </Text>
     </View>
@@ -43,14 +41,10 @@ const QuizSetRow = ({
 const CategoryProgressCard = ({ categoryLabel, difficultyStats }: Props) => {
   const requiredSets = 1;
   const easySets = Math.floor((difficultyStats.easy?.totalQuestions || 0) / 10);
-  const mediumSets = Math.floor(
-    (difficultyStats.medium?.totalQuestions || 0) / 10
-  );
+  const mediumSets = Math.floor((difficultyStats.medium?.totalQuestions || 0) / 10);
   const hardSets = Math.floor((difficultyStats.hard?.totalQuestions || 0) / 10);
 
-  const allComplete = [easySets, mediumSets, hardSets].every(
-    (s) => s >= requiredSets
-  );
+  const allComplete = [easySets, mediumSets, hardSets].every((s) => s >= requiredSets);
   const totalQuestions =
     (difficultyStats.easy?.totalQuestions || 0) +
     (difficultyStats.medium?.totalQuestions || 0) +
@@ -62,9 +56,9 @@ const CategoryProgressCard = ({ categoryLabel, difficultyStats }: Props) => {
     <View style={styles.card}>
       <Text style={styles.categoryTitle}>🎓 {categoryLabel}</Text>
 
-      <QuizSetRow label='쉬움' sets={easySets} required={requiredSets} />
-      <QuizSetRow label='보통' sets={mediumSets} required={requiredSets} />
-      <QuizSetRow label='어려움' sets={hardSets} required={requiredSets} />
+      <QuizSetRow label="쉬움" sets={easySets} required={requiredSets} />
+      <QuizSetRow label="보통" sets={mediumSets} required={requiredSets} />
+      <QuizSetRow label="어려움" sets={hardSets} required={requiredSets} />
 
       <Text style={styles.summary}>
         {aiAnalysisReady

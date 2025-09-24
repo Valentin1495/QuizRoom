@@ -13,7 +13,7 @@ const UserProfile: React.FC<UserProfileProps> = () => {
   const [user, loading, error] = useAuthState(getAuth());
   const userData = useQuery(
     api.users.getUserByFirebaseUid,
-    user ? { firebaseUid: user.uid } : 'skip'
+    user ? { firebaseUid: user.uid } : 'skip',
   );
 
   if (loading) return <Text>인증 확인 중...</Text>;
@@ -26,9 +26,7 @@ const UserProfile: React.FC<UserProfileProps> = () => {
     <View>
       <Text>이름: {userData.displayName || '이름 없음'}</Text>
       <Text>이메일: {userData.email}</Text>
-      <Text>
-        마지막 로그인: {new Date(userData.lastLoginAt).toLocaleString()}
-      </Text>
+      <Text>마지막 로그인: {new Date(userData.lastLoginAt).toLocaleString()}</Text>
       <Text>가입일: {new Date(userData._creationTime).toLocaleString()}</Text>
     </View>
   );

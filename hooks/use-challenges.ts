@@ -11,7 +11,7 @@ export const useChallenges = (userId?: string | null) => {
   const onQuizCompleted = async (
     category?: string,
     answerTime?: number, // 초 단위
-    maxPerfectStreak?: number
+    maxPerfectStreak?: number,
   ) => {
     try {
       const updatedChallenges = await updateProgress({
@@ -24,7 +24,7 @@ export const useChallenges = (userId?: string | null) => {
 
       // 완료된 도전과제가 있으면 알림 표시
       const completedChallenges = updatedChallenges?.filter(
-        (c) => c.completed && c.currentCount === c.targetCount
+        (c) => c.completed && c.currentCount === c.targetCount,
       );
       if (completedChallenges && completedChallenges.length > 0) {
         const titles = completedChallenges.map((c) => c.title).join(', ');
@@ -42,7 +42,7 @@ export const useChallenges = (userId?: string | null) => {
     isCorrect: boolean,
     category: string,
     answerTime: number, // 초 단위
-    maxPerfectStreak: number
+    maxPerfectStreak: number,
   ) => {
     try {
       await updateProgress({

@@ -26,13 +26,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  Activity,
-  AlertTriangle,
-  Check,
-  ChevronRight,
-  Coffee,
-} from 'react-native-feather';
+import { Activity, AlertTriangle, Check, ChevronRight, Coffee } from 'react-native-feather';
 import Animated, {
   FadeInDown,
   FadeInUp,
@@ -106,9 +100,33 @@ const categories: {
     colors: ['#6366f1', '#4f46e5'],
     image: require('@/assets/images/entertainment.jpg'),
   },
-  { id: 'slang', title: '신조어', description: '곧 제공 예정', iconName: 'chatbubbles', colors: ['#22d3ee', '#06b6d4'], image: require('@/assets/images/blah.jpg'), disabled: true },
-  { id: 'capitals', title: '수도', description: '곧 제공 예정', iconName: 'earth', colors: ['#34d399', '#10b981'], image: require('@/assets/images/knowledge.jpg'), disabled: true },
-  { id: 'four-character-idioms', title: '사자성어', description: '곧 제공 예정', iconName: 'document-text', colors: ['#f472b6', '#ec4899'], image: require('@/assets/images/four.jpg'), disabled: true },
+  {
+    id: 'slang',
+    title: '신조어',
+    description: '곧 제공 예정',
+    iconName: 'chatbubbles',
+    colors: ['#22d3ee', '#06b6d4'],
+    image: require('@/assets/images/blah.jpg'),
+    disabled: true,
+  },
+  {
+    id: 'capitals',
+    title: '수도',
+    description: '곧 제공 예정',
+    iconName: 'earth',
+    colors: ['#34d399', '#10b981'],
+    image: require('@/assets/images/knowledge.jpg'),
+    disabled: true,
+  },
+  {
+    id: 'four-character-idioms',
+    title: '사자성어',
+    description: '곧 제공 예정',
+    iconName: 'document-text',
+    colors: ['#f472b6', '#ec4899'],
+    image: require('@/assets/images/four.jpg'),
+    disabled: true,
+  },
 ];
 
 // 문제 형식 정보
@@ -212,13 +230,16 @@ const FeaturedCard = React.memo(
               <View style={styles.cardContent}>
                 <View style={styles.cardIconContainer}>
                   <LinearGradient colors={item.colors} style={styles.cardIcon}>
-                    <Ionicons name={item.iconName} size={24} color='white' />
+                    <Ionicons name={item.iconName} size={24} color="white" />
                   </LinearGradient>
                 </View>
-                <Text style={styles.cardTitle}>{item.title}{item.disabled ? ' (Coming soon)' : ''}</Text>
+                <Text style={styles.cardTitle}>
+                  {item.title}
+                  {item.disabled ? ' (Coming soon)' : ''}
+                </Text>
                 {isSelected && (
                   <View style={styles.selectedCardIndicator}>
-                    <Check width={20} height={20} color='white' />
+                    <Check width={20} height={20} color="white" />
                   </View>
                 )}
               </View>
@@ -227,7 +248,7 @@ const FeaturedCard = React.memo(
         </View>
       </AnimatedPressable>
     );
-  }
+  },
 );
 
 // 문제 형식 카드 컴포넌트
@@ -259,17 +280,13 @@ const QuestionTypeCard = React.memo(
 
     return (
       <AnimatedPressable
-        style={[
-          styles.typeCard,
-          animatedStyle,
-          isSelected && styles.selectedCard,
-        ]}
+        style={[styles.typeCard, animatedStyle, isSelected && styles.selectedCard]}
         onPress={() => onSelect(item.id)}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
         <LinearGradient colors={item.colors} style={styles.typeIcon}>
-          <Ionicons name={item.iconName} size={24} color='white' />
+          <Ionicons name={item.iconName} size={24} color="white" />
         </LinearGradient>
         <View style={styles.typeContent}>
           <Text style={styles.typeTitle}>{item.title}</Text>
@@ -278,18 +295,13 @@ const QuestionTypeCard = React.memo(
           </Text>
         </View>
         {isSelected && (
-          <View
-            style={[
-              styles.selectedIndicator,
-              { backgroundColor: item.colors[1] },
-            ]}
-          >
-            <Check width={16} height={16} color='white' />
+          <View style={[styles.selectedIndicator, { backgroundColor: item.colors[1] }]}>
+            <Check width={16} height={16} color="white" />
           </View>
         )}
       </AnimatedPressable>
     );
-  }
+  },
 );
 
 // 난이도 카드 컴포넌트
@@ -321,17 +333,13 @@ const DifficultyCard = React.memo(
 
     return (
       <AnimatedPressable
-        style={[
-          styles.difficultyCard,
-          animatedStyle,
-          isSelected && styles.selectedCard,
-        ]}
+        style={[styles.difficultyCard, animatedStyle, isSelected && styles.selectedCard]}
         onPress={() => onSelect(item.id)}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
         <LinearGradient colors={item.colors} style={styles.difficultyIcon}>
-          <item.icon width={24} height={24} color='white' />
+          <item.icon width={24} height={24} color="white" />
         </LinearGradient>
         <View style={styles.difficultyContent}>
           <Text style={styles.difficultyTitle}>{item.title}</Text>
@@ -340,18 +348,13 @@ const DifficultyCard = React.memo(
           </Text>
         </View>
         {isSelected && (
-          <View
-            style={[
-              styles.selectedIndicator,
-              { backgroundColor: item.colors[1] },
-            ]}
-          >
-            <Check width={16} height={16} color='white' />
+          <View style={[styles.selectedIndicator, { backgroundColor: item.colors[1] }]}>
+            <Check width={16} height={16} color="white" />
           </View>
         )}
       </AnimatedPressable>
     );
-  }
+  },
 );
 
 export default function HomeScreen() {
@@ -387,7 +390,11 @@ export default function HomeScreen() {
 
   const requiresSubcategory = topCategory === 'general' || topCategory === 'entertainment';
   const requiresDifficulty = topCategory === 'general';
-  const isSelectionComplete = !!topCategory && (!requiresSubcategory || !!subcategory) && (!requiresDifficulty || !!difficulty) && !!questionFormat;
+  const isSelectionComplete =
+    !!topCategory &&
+    (!requiresSubcategory || !!subcategory) &&
+    (!requiresDifficulty || !!difficulty) &&
+    !!questionFormat;
 
   const handleStartQuiz = () => {
     if (!topCategory) return;
@@ -408,10 +415,7 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* 헤더 */}
-          <Animated.View
-            entering={FadeInDown.duration(600).delay(100)}
-            style={styles.header}
-          >
+          <Animated.View entering={FadeInDown.duration(600).delay(100)} style={styles.header}>
             <View style={styles.headerTop}>
               <View style={styles.headerContent}>
                 <Text style={styles.headerTitle}>
@@ -463,7 +467,7 @@ export default function HomeScreen() {
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.featuredList}
-              decelerationRate='fast'
+              decelerationRate="fast"
               snapToInterval={cardWidth + 16}
             >
               {categories.map((item) => (
@@ -485,33 +489,42 @@ export default function HomeScreen() {
             >
               <Text style={styles.sectionTitle}>서브카테고리 선택</Text>
               <View style={styles.typeContainer}>
-                {(
-                  topCategory === 'general'
-                    ? [
-                        { id: 'general', title: '일반 상식' },
-                        { id: 'history-culture', title: '역사 & 문화' },
-                        { id: 'arts-literature', title: '예술 & 문학' },
-                        { id: 'sports', title: '스포츠' },
-                        { id: 'science-tech', title: '과학 & 기술' },
-                        { id: 'math-logic', title: '수학 & 논리' },
-                        { id: 'kpop-music', title: 'K팝 & 음악' },
-                      ]
-                    : [
-                        { id: 'movies', title: '영화' },
-                        { id: 'drama-variety', title: '드라마 & 예능' },
-                      ]
+                {(topCategory === 'general'
+                  ? [
+                      { id: 'general', title: '일반 상식' },
+                      { id: 'history-culture', title: '역사 & 문화' },
+                      { id: 'arts-literature', title: '예술 & 문학' },
+                      { id: 'sports', title: '스포츠' },
+                      { id: 'science-tech', title: '과학 & 기술' },
+                      { id: 'math-logic', title: '수학 & 논리' },
+                      { id: 'kpop-music', title: 'K팝 & 음악' },
+                    ]
+                  : [
+                      { id: 'movies', title: '영화' },
+                      { id: 'drama-variety', title: '드라마 & 예능' },
+                    ]
                 ).map((sc) => (
                   <TouchableOpacity
                     key={sc.id}
-                    style={[styles.typeCard, subcategory === (sc.id as Subcategory) && styles.selectedCard]}
-                    onPress={() => setSetup((prev) => ({ ...prev, subcategory: sc.id as Subcategory }))}
+                    style={[
+                      styles.typeCard,
+                      subcategory === (sc.id as Subcategory) && styles.selectedCard,
+                    ]}
+                    onPress={() =>
+                      setSetup((prev) => ({ ...prev, subcategory: sc.id as Subcategory }))
+                    }
                   >
                     <View style={styles.typeContent}>
                       <Text style={styles.typeTitle}>{sc.title}</Text>
                     </View>
                     {subcategory === (sc.id as Subcategory) && (
-                      <View style={[styles.selectedIndicator, { backgroundColor: Colors.light.primary }]}>
-                        <Check width={16} height={16} color='white' />
+                      <View
+                        style={[
+                          styles.selectedIndicator,
+                          { backgroundColor: Colors.light.primary },
+                        ]}
+                      >
+                        <Check width={16} height={16} color="white" />
                       </View>
                     )}
                   </TouchableOpacity>
@@ -566,14 +579,8 @@ export default function HomeScreen() {
 
           {/* 시작 버튼 */}
           {isSelectionComplete && (
-            <Animated.View
-              entering={FadeInUp.duration(600)}
-              style={styles.startButtonContainer}
-            >
-              <TouchableOpacity
-                style={styles.startButton}
-                onPress={handleStartQuiz}
-              >
+            <Animated.View entering={FadeInUp.duration(600)} style={styles.startButtonContainer}>
+              <TouchableOpacity style={styles.startButton} onPress={handleStartQuiz}>
                 <LinearGradient
                   colors={Colors.light.gradientColors}
                   start={{ x: 0, y: 0 }}
@@ -581,11 +588,7 @@ export default function HomeScreen() {
                   style={styles.startButtonGradient}
                 >
                   <Text style={styles.startButtonText}>퀴즈 시작하기</Text>
-                  <ChevronRight
-                    width={20}
-                    height={20}
-                    color={Colors.light.secondary}
-                  />
+                  <ChevronRight width={20} height={20} color={Colors.light.secondary} />
                 </LinearGradient>
               </TouchableOpacity>
             </Animated.View>

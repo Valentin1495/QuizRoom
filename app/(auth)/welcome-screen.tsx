@@ -181,7 +181,7 @@ const WelcomeScreen: React.FC = () => {
       disabled={isSigningIn}
     >
       <View style={styles.googleButtonContent}>
-        <Ionicons name='logo-google' size={20} color='#ffffff' />
+        <Ionicons name="logo-google" size={20} color="#ffffff" />
         <Text style={styles.googleButtonText}>
           {isSigningIn ? '로그인 중...' : 'Google로 시작하기'}
         </Text>
@@ -191,11 +191,8 @@ const WelcomeScreen: React.FC = () => {
 
   if (currentScreen === 'welcome') {
     return (
-      <LinearGradient
-        colors={Colors.light.gradientColors}
-        style={styles.container}
-      >
-        <StatusBar barStyle='light-content' />
+      <LinearGradient colors={Colors.light.gradientColors} style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <SafeAreaView style={styles.safeArea}>
           <Animated.View
             style={[
@@ -218,32 +215,26 @@ const WelcomeScreen: React.FC = () => {
             {/* Features */}
             <View style={styles.featuresContainer}>
               <View style={styles.feature}>
-                <Ionicons
-                  name='library'
-                  size={24}
-                  color={Colors.light.secondary}
-                />
+                <Ionicons name="library" size={24} color={Colors.light.secondary} />
                 <Text style={styles.featureText}>다양한 상식 퀴즈</Text>
               </View>
               <View style={styles.feature}>
-                <Ionicons name='flash' size={24} color='#4ECDC4' />
+                <Ionicons name="flash" size={24} color="#4ECDC4" />
                 <Text style={styles.featureText}>일일/주간 챌린지</Text>
               </View>
               <View style={styles.feature}>
-                <Ionicons name='analytics' size={24} color='#FF6B6B' />
+                <Ionicons name="analytics" size={24} color="#FF6B6B" />
                 <Text style={styles.featureText}>AI 실력 분석</Text>
               </View>
               <View style={styles.feature}>
-                <Ionicons name='medal' size={24} color='#FFA500' />
+                <Ionicons name="medal" size={24} color="#FFA500" />
                 <Text style={styles.featureText}>통계 & 배지</Text>
               </View>
             </View>
 
             {/* Demo Info */}
             <View style={styles.demoInfo}>
-              <Text style={styles.demoInfoText}>
-                🎯 {DEMO_QUESTION_COUNT}문제 테스트
-              </Text>
+              <Text style={styles.demoInfoText}>🎯 {DEMO_QUESTION_COUNT}문제 테스트</Text>
               <Text style={styles.demoInfoSubtext}>
                 최신 트렌드와 상식을 반영한 문제로 랜덤 출제!
               </Text>
@@ -269,11 +260,8 @@ const WelcomeScreen: React.FC = () => {
 
   if (currentScreen === 'demo') {
     return (
-      <LinearGradient
-        colors={Colors.light.gradientColors}
-        style={styles.container}
-      >
-        <StatusBar barStyle='dark-content' />
+      <LinearGradient colors={Colors.light.gradientColors} style={styles.container}>
+        <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.quizContainer}>
             {/* Progress Bar */}
@@ -302,17 +290,15 @@ const WelcomeScreen: React.FC = () => {
 
             {/* Options */}
             <View style={styles.optionsContainer}>
-              {selectedQuestions[currentQuestion]?.options.map(
-                (option, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.optionButton}
-                    onPress={() => handleAnswer(index)}
-                  >
-                    <Text style={styles.optionText}>{option}</Text>
-                  </TouchableOpacity>
-                )
-              )}
+              {selectedQuestions[currentQuestion]?.options.map((option, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.optionButton}
+                  onPress={() => handleAnswer(index)}
+                >
+                  <Text style={styles.optionText}>{option}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
         </SafeAreaView>
@@ -322,11 +308,8 @@ const WelcomeScreen: React.FC = () => {
 
   // Result Screen
   return (
-    <LinearGradient
-      colors={Colors.light.gradientColors}
-      style={styles.container}
-    >
-      <StatusBar barStyle='light-content' />
+    <LinearGradient colors={Colors.light.gradientColors} style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.resultContainer}>
           <View style={styles.resultCard}>
@@ -336,9 +319,7 @@ const WelcomeScreen: React.FC = () => {
             {/* 깡깡 지수 계산 (틀린 문제 수 기반) */}
             {(() => {
               const wrongAnswers = selectedQuestions.length - score;
-              const kangkangIndex = Math.round(
-                (wrongAnswers / selectedQuestions.length) * 100
-              );
+              const kangkangIndex = Math.round((wrongAnswers / selectedQuestions.length) * 100);
               const correctRate = (score / selectedQuestions.length) * 100;
 
               let message = '';
@@ -357,9 +338,7 @@ const WelcomeScreen: React.FC = () => {
 
               return (
                 <>
-                  <Text style={styles.kangkangIndex}>
-                    정답률: {kangkangIndex}%
-                  </Text>
+                  <Text style={styles.kangkangIndex}>정답률: {kangkangIndex}%</Text>
 
                   <Text style={styles.resultMessage}>{message}</Text>
                 </>

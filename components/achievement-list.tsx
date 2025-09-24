@@ -15,14 +15,7 @@ const { width: screenWidth } = Dimensions.get('window');
 
 // 타입 정의
 type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
-type Category =
-  | 'basic'
-  | 'streak'
-  | 'accuracy'
-  | 'progress'
-  | 'mastery'
-  | 'special'
-  | 'speed';
+type Category = 'basic' | 'streak' | 'accuracy' | 'progress' | 'mastery' | 'special' | 'speed';
 
 interface Achievement {
   id: string;
@@ -300,23 +293,14 @@ const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   ];
 
   return (
-    <Animated.View
-      style={[
-        { transform: [{ scale: animatedValue }], opacity: animatedValue },
-      ]}
-    >
+    <Animated.View style={[{ transform: [{ scale: animatedValue }], opacity: animatedValue }]}>
       <TouchableOpacity onPress={() => onPress(achievement)} style={badgeStyle}>
         {/* 희귀도 표시 */}
         <View style={[styles.rarityDot, { backgroundColor: colors.primary }]} />
 
         {/* 언락 글로우 효과 */}
         {isUnlocked && (
-          <View
-            style={[
-              styles.glowEffect,
-              { backgroundColor: `${colors.primary}20` },
-            ]}
-          />
+          <View style={[styles.glowEffect, { backgroundColor: `${colors.primary}20` }]} />
         )}
 
         {/* 아이콘 */}
@@ -325,12 +309,7 @@ const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         </Text>
 
         {/* 제목 */}
-        <Text
-          style={[
-            styles.badgeTitle,
-            { color: isUnlocked ? '#1F2937' : '#9CA3AF' },
-          ]}
-        >
+        <Text style={[styles.badgeTitle, { color: isUnlocked ? '#1F2937' : '#9CA3AF' }]}>
           {achievement.title}
         </Text>
       </TouchableOpacity>
@@ -357,10 +336,8 @@ const CategoryFilterComponent: React.FC<CategoryFilterProps> = ({
           style={[
             styles.categoryButton,
             {
-              backgroundColor:
-                selectedCategory === category.id ? '#3B82F6' : '#F3F4F6',
-              borderColor:
-                selectedCategory === category.id ? '#3B82F6' : '#E5E7EB',
+              backgroundColor: selectedCategory === category.id ? '#3B82F6' : '#F3F4F6',
+              borderColor: selectedCategory === category.id ? '#3B82F6' : '#E5E7EB',
             },
           ]}
         >
@@ -397,7 +374,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
   return (
     <Modal
       visible={visible}
-      animationType='fade'
+      animationType="fade"
       transparent
       onRequestClose={onClose}
       statusBarTranslucent
@@ -425,15 +402,12 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
   );
 };
 
-export default function AchievementList({
-  userAchievements,
-}: AchievementListProps) {
+export default function AchievementList({ userAchievements }: AchievementListProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedAchievement, setSelectedAchievement] =
-    useState<Achievement | null>(null);
+  const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [animatedValues] = useState<Animated.Value[]>(
-    defaultAchievements.map(() => new Animated.Value(0))
+    defaultAchievements.map(() => new Animated.Value(0)),
   );
   // 애니메이션 실행 여부를 추적하는 ref
   const hasAnimatedRef = useRef<boolean>(false);
@@ -450,8 +424,7 @@ export default function AchievementList({
   ];
 
   const filteredAchievements = defaultAchievements.filter(
-    (achievement) =>
-      selectedCategory === 'all' || achievement.category === selectedCategory
+    (achievement) => selectedCategory === 'all' || achievement.category === selectedCategory,
   );
 
   const unlockedCount = userAchievements?.filter((ua) => ua.unlockedAt).length;
@@ -549,7 +522,7 @@ export default function AchievementList({
         <View style={styles.grid}>
           {filteredAchievements.map((achievement, index) => {
             const userAchievement = userAchievements.find(
-              (ua) => ua.achievementId === achievement.id
+              (ua) => ua.achievementId === achievement.id,
             );
 
             return (
@@ -569,7 +542,7 @@ export default function AchievementList({
       <AchievementModal
         achievement={selectedAchievement}
         userAchievement={userAchievements.find(
-          (ua) => ua.achievementId === selectedAchievement?.id
+          (ua) => ua.achievementId === selectedAchievement?.id,
         )}
         visible={modalVisible}
         onClose={handleModalClose}

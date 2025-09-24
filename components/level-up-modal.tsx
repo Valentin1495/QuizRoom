@@ -3,20 +3,9 @@ import Animated, { BounceIn } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
 
-export function LevelUpModal({
-  visible,
-  level,
-}: {
-  visible: boolean;
-  level: number;
-}) {
+export function LevelUpModal({ visible, level }: { visible: boolean; level: number }) {
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType='fade'
-      statusBarTranslucent
-    >
+    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent>
       <View style={styles.overlay}>
         <Animated.View entering={BounceIn} style={styles.modal}>
           <Text style={styles.levelUpText}>🎉 레벨 업!</Text>

@@ -87,9 +87,7 @@ export default function QuizResultScreen() {
   const totalTime = setup.totalTime ?? quizStats.totalTimeSpent;
 
   const [showPointsBreakdown, setShowPointsBreakdown] = useState(false);
-  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<
-    number | null
-  >(null);
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
   // 추가: 각 문제별로 정답 더보기 상태 관리
   const [expandedAnswers, setExpandedAnswers] = useState<{
     [key: number]: boolean;
@@ -118,7 +116,7 @@ export default function QuizResultScreen() {
       difficulty: Difficulty,
       category: CategoryType,
       questionFormat: string | null,
-      streakCount: number
+      streakCount: number,
     ): { items: string[]; total: number } => {
       const breakdown: string[] = [];
       let total = 0;
@@ -126,17 +124,11 @@ export default function QuizResultScreen() {
       // 기본 포인트
       const label = switchDifficulty(difficulty);
       const basePoints =
-        difficulty === 'easy'
-          ? 10
-          : difficulty === 'medium'
-          ? 15
-          : difficulty === 'hard'
-          ? 25
-          : 10; // default when difficulty is null/undefined
+        difficulty === 'easy' ? 10 : difficulty === 'medium' ? 15 : difficulty === 'hard' ? 25 : 10; // default when difficulty is null/undefined
       breakdown.push(
         label
           ? `기본 포인트 (난이도 ${label}): ${basePoints}포인트`
-          : `기본 포인트: ${basePoints}포인트`
+          : `기본 포인트: ${basePoints}포인트`,
       );
       total += basePoints;
 
@@ -156,24 +148,19 @@ export default function QuizResultScreen() {
       // 연속 정답 보너스
       if (streakCount >= 3) {
         const streakBonus = Math.min(Math.floor(streakCount / 3) * 3, 15);
-        breakdown.push(
-          `연속 정답 보너스 (${streakCount}연속): +${streakBonus}포인트`
-        );
+        breakdown.push(`연속 정답 보너스 (${streakCount}연속): +${streakBonus}포인트`);
         total += streakBonus;
       }
 
       // 특별 콤보 보너스
-      if (
-        difficulty === 'hard' &&
-        ['math-logic', 'science-tech'].includes(category as string)
-      ) {
+      if (difficulty === 'hard' && ['math-logic', 'science-tech'].includes(category as string)) {
         breakdown.push(`콤보 보너스 (고난이도): +5포인트`);
         total += 5;
       }
 
       return { items: breakdown, total };
     },
-    [getCategoryBonus]
+    [getCategoryBonus],
   );
 
   /* ------------------------------------------------------------------
@@ -191,11 +178,11 @@ export default function QuizResultScreen() {
    * ----------------------------------------------------------------*/
   const totalEarnedPoints = userAnswers.reduce(
     (sum: number, a: any) => sum + (a as UserAnswer).pointsEarned,
-    0
+    0,
   );
   const maxStreak = userAnswers.reduce(
     (m: number, a: any) => Math.max(m, (a as UserAnswer).streakCount),
-    0
+    0,
   );
 
   const wasPerfect = percentage === 100;
@@ -216,32 +203,29 @@ export default function QuizResultScreen() {
   useEffect(() => {
     scoreOpacity.value = withSequence(
       withTiming(0), // start hidden
-      withDelay(300, withTiming(1, { duration: 800 }))
+      withDelay(300, withTiming(1, { duration: 800 })),
     );
     scoreScale.value = withSequence(
       withTiming(0.8),
-      withDelay(
-        300,
-        withTiming(1, { duration: 800, easing: Easing.out(Easing.ease) })
-      )
+      withDelay(300, withTiming(1, { duration: 800, easing: Easing.out(Easing.ease) })),
     );
     chartProgress.value = withDelay(
       1000,
       withTiming(percentage / 100, {
         duration: 1500,
         easing: Easing.out(Easing.quad),
-      })
+      }),
     );
     pointsCountUp.value = withDelay(
       1200,
       withTiming(totalEarnedPoints, {
         duration: 1500,
         easing: Easing.out(Easing.quad),
-      })
+      }),
     );
     expProgress.value = withDelay(
       1800,
-      withTiming((totalPoints % 1000) / 1000, { duration: 1000 })
+      withTiming((totalPoints % 1000) / 1000, { duration: 1000 }),
     );
     detailsOpacity.value = withDelay(2000, withTiming(1, { duration: 800 }));
   }, []);
@@ -265,8 +249,7 @@ export default function QuizResultScreen() {
    * ----------------------------------------------------------------*/
   const getResultMessage = () => {
     if (percentage >= 90) {
-      if (maxStreak >= 5)
-        return '🔥 완벽한 연속 정답! 당신은 진정한 퀴즈 마스터!';
+      if (maxStreak >= 5) return '🔥 완벽한 연속 정답! 당신은 진정한 퀴즈 마스터!';
       return '🏆 훌륭해요! 전문가시네요!';
     }
     if (percentage >= 70) return '👍 잘했어요! 거의 다 맞췄네요!';
@@ -290,10 +273,8 @@ export default function QuizResultScreen() {
     const correctAnswers = userAnswers.filter((answer: any) => answer.isCorrect);
     const highestPointQuestion = correctAnswers.reduce(
       (prev: any, current: any) =>
-        (prev as UserAnswer).pointsEarned > (current as UserAnswer).pointsEarned
-          ? prev
-          : current,
-      correctAnswers[0] as any
+        (prev as UserAnswer).pointsEarned > (current as UserAnswer).pointsEarned ? prev : current,
+      correctAnswers[0] as any,
     );
 
     // 평균 포인트 계산
@@ -302,8 +283,8 @@ export default function QuizResultScreen() {
         ? Math.round(
             correctAnswers.reduce(
               (sum: number, answer: any) => sum + (answer as UserAnswer).pointsEarned,
-              0
-            ) / correctAnswers.length
+              0,
+            ) / correctAnswers.length,
           )
         : 0;
 
@@ -312,18 +293,8 @@ export default function QuizResultScreen() {
 
     // 예시 문제가 없으면 현재 설정 기반으로 계산
     const breakdown = exampleQuestion
-      ? getPointsBreakdown(
-          difficulty,
-          category,
-          questionFormat,
-          exampleQuestion.streakCount
-        )
-      : getPointsBreakdown(
-          difficulty,
-          category,
-          questionFormat,
-          maxStreak
-        );
+      ? getPointsBreakdown(difficulty, category, questionFormat, exampleQuestion.streakCount)
+      : getPointsBreakdown(difficulty, category, questionFormat, maxStreak);
 
     return (
       <View style={styles.exampleCard}>
@@ -332,13 +303,13 @@ export default function QuizResultScreen() {
           onPress={() => setShowPointsBreakdown(!showPointsBreakdown)}
         >
           <View style={styles.exampleTitleContainer}>
-            <Info width={20} height={20} color='#6366f1' />
+            <Info width={20} height={20} color="#6366f1" />
             <Text style={styles.exampleTitle}>포인트 계산 분석</Text>
           </View>
           {showPointsBreakdown ? (
-            <ChevronUp width={20} height={20} color='#6b7280' />
+            <ChevronUp width={20} height={20} color="#6b7280" />
           ) : (
-            <ChevronDown width={20} height={20} color='#6b7280' />
+            <ChevronDown width={20} height={20} color="#6b7280" />
           )}
         </TouchableOpacity>
 
@@ -346,9 +317,7 @@ export default function QuizResultScreen() {
           <View style={styles.exampleContent}>
             {/* 실제 퀴즈 포인트 통계 */}
             <View style={styles.statisticsContainer}>
-              <Text style={styles.exampleSubtitle}>
-                📊 이번 퀴즈 포인트 통계
-              </Text>
+              <Text style={styles.exampleSubtitle}>📊 이번 퀴즈 포인트 통계</Text>
               <View style={styles.statsRow}>
                 <View style={styles.statItem}>
                   <Text style={styles.statNumber}>{totalEarnedPoints}</Text>
@@ -359,9 +328,7 @@ export default function QuizResultScreen() {
                   <Text style={styles.statText}>평균 포인트</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>
-                    {highestPointQuestion?.pointsEarned || 0}
-                  </Text>
+                  <Text style={styles.statNumber}>{highestPointQuestion?.pointsEarned || 0}</Text>
                   <Text style={styles.statText}>최고 포인트</Text>
                 </View>
               </View>
@@ -383,8 +350,8 @@ export default function QuizResultScreen() {
                   "
                 </Text>
                 <Text style={styles.exampleQuestionInfo}>
-                  {exampleQuestion.streakCount}연속 정답 시 →{' '}
-                  {exampleQuestion.pointsEarned}포인트 획득
+                  {exampleQuestion.streakCount}연속 정답 시 → {exampleQuestion.pointsEarned}포인트
+                  획득
                 </Text>
               </View>
             )}
@@ -415,8 +382,7 @@ export default function QuizResultScreen() {
                   '\n\n• 어려운 난이도에 도전해보세요 (최대 +10포인트 추가)'}
                 {!['math-logic', 'science-tech'].includes(category as string) &&
                   '\n\n• 수학·논리, 과학·기술 카테고리는 높은 보너스를 제공해요'}
-                {questionFormat !== 'short' &&
-                  '\n\n• 주관식 문제는 추가 +3포인트 보너스가 있어요'}
+                {questionFormat !== 'short' && '\n\n• 주관식 문제는 추가 +3포인트 보너스가 있어요'}
               </Text>
             </View>
           </View>
@@ -431,7 +397,9 @@ export default function QuizResultScreen() {
   // AI 해설 상태
   const explain = useAction(api.gamification.explainAnswerWithGemini);
   const [explainLoading, setExplainLoading] = useState<Record<number, boolean>>({});
-  const [explainData, setExplainData] = useState<Record<number, { explanation: string; keyPoints: string[] }>>({});
+  const [explainData, setExplainData] = useState<
+    Record<number, { explanation: string; keyPoints: string[] }>
+  >({});
 
   const handleExplain = async (item: UserAnswer, index: number) => {
     try {
@@ -448,7 +416,10 @@ export default function QuizResultScreen() {
       });
       setExplainData((p) => ({ ...p, [index]: res ?? { explanation: '', keyPoints: [] } }));
     } catch (e) {
-      setExplainData((p) => ({ ...p, [index]: { explanation: '해설 생성에 실패했습니다.', keyPoints: [] } }));
+      setExplainData((p) => ({
+        ...p,
+        [index]: { explanation: '해설 생성에 실패했습니다.', keyPoints: [] },
+      }));
     } finally {
       setExplainLoading((p) => ({ ...p, [index]: false }));
     }
@@ -462,7 +433,7 @@ export default function QuizResultScreen() {
       difficulty || 'medium',
       category,
       questionFormat,
-      item.streakCount
+      item.streakCount,
     );
 
     // 실제 획득 포인트와 계산된 포인트의 차이 확인
@@ -478,13 +449,9 @@ export default function QuizResultScreen() {
         <View style={styles.questionInfoContainer}>
           <Text style={styles.questionInfoText}>
             문제:{' '}
-            {item.question.length > 60
-              ? item.question.substring(0, 60) + '...'
-              : item.question}
+            {item.question.length > 60 ? item.question.substring(0, 60) + '...' : item.question}
           </Text>
-          <Text style={styles.questionInfoText}>
-            연속 정답: {item.streakCount}회 연속
-          </Text>
+          <Text style={styles.questionInfoText}>연속 정답: {item.streakCount}회 연속</Text>
         </View>
 
         {/* 포인트 계산 내역 */}
@@ -495,16 +462,11 @@ export default function QuizResultScreen() {
         ))}
 
         <View style={styles.pointsDetailTotal}>
-          <Text style={styles.pointsDetailCalculated}>
-            계산된 포인트: {calculatedPoints}포인트
-          </Text>
-          <Text style={styles.pointsDetailTotalText}>
-            실제 획득: {actualPoints}포인트
-          </Text>
+          <Text style={styles.pointsDetailCalculated}>계산된 포인트: {calculatedPoints}포인트</Text>
+          <Text style={styles.pointsDetailTotalText}>실제 획득: {actualPoints}포인트</Text>
           {pointsDifference !== 0 && (
             <Text style={styles.pointsDetailDifference}>
-              {pointsDifference > 0 ? '추가 보너스' : '차이'}:{' '}
-              {pointsDifference > 0 ? '+' : ''}
+              {pointsDifference > 0 ? '추가 보너스' : '차이'}: {pointsDifference > 0 ? '+' : ''}
               {pointsDifference}포인트
             </Text>
           )}
@@ -513,9 +475,7 @@ export default function QuizResultScreen() {
         {/* 성과 분석 */}
         {item.streakCount >= 6 && (
           <View style={styles.achievementNote}>
-            <Text style={styles.achievementText}>
-              🔥 연속 정답 달성! 높은 보너스를 받았어요!
-            </Text>
+            <Text style={styles.achievementText}>🔥 연속 정답 달성! 높은 보너스를 받았어요!</Text>
           </View>
         )}
 
@@ -529,7 +489,9 @@ export default function QuizResultScreen() {
                 {explainData[index].keyPoints?.length > 0 && (
                   <View style={{ marginTop: 8 }}>
                     {explainData[index].keyPoints.map((k, i) => (
-                      <Text key={i} style={styles.explainBullet}>• {k}</Text>
+                      <Text key={i} style={styles.explainBullet}>
+                        • {k}
+                      </Text>
                     ))}
                   </View>
                 )}
@@ -558,118 +520,118 @@ export default function QuizResultScreen() {
     );
   };
 
-/* ------------------------------------------------------------------
+  /* ------------------------------------------------------------------
    * 젠지 감성 레벨 카드 렌더링
    * ----------------------------------------------------------------*/
-const LevelCard = ({
-  level,
-  totalPoints,
-  expToNext,
-  streak,
-}: {
-  level: number;
-  totalPoints: number;
-  expToNext: number;
-  streak: number;
-}) => {
-  const denom = totalPoints + expToNext;
-  const progress = denom > 0 ? totalPoints / denom : 1;
-  const progressPercent = Math.max(0, Math.min(100, Math.round(progress * 100)));
+  const LevelCard = ({
+    level,
+    totalPoints,
+    expToNext,
+    streak,
+  }: {
+    level: number;
+    totalPoints: number;
+    expToNext: number;
+    streak: number;
+  }) => {
+    const denom = totalPoints + expToNext;
+    const progress = denom > 0 ? totalPoints / denom : 1;
+    const progressPercent = Math.max(0, Math.min(100, Math.round(progress * 100)));
 
-  // Reanimated shared values
-  const cardOpacity = useSharedValue(0);
-  const cardScale = useSharedValue(0.95);
-  const streakPulse = useSharedValue(0);
-  const badgeBounce = useSharedValue(0);
+    // Reanimated shared values
+    const cardOpacity = useSharedValue(0);
+    const cardScale = useSharedValue(0.95);
+    const streakPulse = useSharedValue(0);
+    const badgeBounce = useSharedValue(0);
 
-  useEffect(() => {
-    // 카드 등장 애니메이션
-    cardOpacity.value = withTiming(1, {
-      duration: 600,
-      easing: Easing.out(Easing.cubic),
-    });
-    cardScale.value = withTiming(1, {
-      duration: 600,
-      easing: Easing.out(Easing.back(1.5)),
-    });
+    useEffect(() => {
+      // 카드 등장 애니메이션
+      cardOpacity.value = withTiming(1, {
+        duration: 600,
+        easing: Easing.out(Easing.cubic),
+      });
+      cardScale.value = withTiming(1, {
+        duration: 600,
+        easing: Easing.out(Easing.back(1.5)),
+      });
 
-    // 배지 바운스 애니메이션 (지연)
-    badgeBounce.value = withDelay(
-      400,
-      withSequence(
-        withTiming(1, { duration: 200, easing: Easing.out(Easing.cubic) }),
-        withTiming(0, { duration: 200, easing: Easing.out(Easing.cubic) })
-      )
-    );
-
-    // 스트릭 펄스 애니메이션 (반복)
-    if (streak >= 1) {
-      streakPulse.value = withRepeat(
+      // 배지 바운스 애니메이션 (지연)
+      badgeBounce.value = withDelay(
+        400,
         withSequence(
-          withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
-          withTiming(0, { duration: 1000, easing: Easing.inOut(Easing.ease) })
+          withTiming(1, { duration: 200, easing: Easing.out(Easing.cubic) }),
+          withTiming(0, { duration: 200, easing: Easing.out(Easing.cubic) }),
         ),
-        -1,
-        false
       );
-    }
-  }, [streak]);
 
-  // Animated styles
-  const cardAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: cardOpacity.value,
-    transform: [{ scale: cardScale.value }],
-  }));
-  const badgeAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: 1 + badgeBounce.value * 0.1 }],
-  }));
-  const streakPulseAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: streakPulse.value * 0.3,
-  }));
+      // 스트릭 펄스 애니메이션 (반복)
+      if (streak >= 1) {
+        streakPulse.value = withRepeat(
+          withSequence(
+            withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+            withTiming(0, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+          ),
+          -1,
+          false,
+        );
+      }
+    }, [streak]);
 
-  return (
-    <View style={styles.levelCardContainer}>
-      <Animated.View style={[styles.levelCard, cardAnimatedStyle]}>
-        {/* 헤더 영역 */}
-        <View style={styles.levelHeader}>
-          <Animated.View style={[styles.levelBadge, badgeAnimatedStyle]}>
-            <Text style={styles.levelTitle}>Lv. {level}</Text>
-          </Animated.View>
-          <View style={styles.levelInfo}>
-            <Text style={styles.levelSubtitle}>다음 레벨까지</Text>
-            <Text style={styles.levelPoints}>
-              {expToNext.toLocaleString()}
-              <Text style={styles.pointsUnit}>pt</Text>
-            </Text>
+    // Animated styles
+    const cardAnimatedStyle = useAnimatedStyle(() => ({
+      opacity: cardOpacity.value,
+      transform: [{ scale: cardScale.value }],
+    }));
+    const badgeAnimatedStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: 1 + badgeBounce.value * 0.1 }],
+    }));
+    const streakPulseAnimatedStyle = useAnimatedStyle(() => ({
+      opacity: streakPulse.value * 0.3,
+    }));
+
+    return (
+      <View style={styles.levelCardContainer}>
+        <Animated.View style={[styles.levelCard, cardAnimatedStyle]}>
+          {/* 헤더 영역 */}
+          <View style={styles.levelHeader}>
+            <Animated.View style={[styles.levelBadge, badgeAnimatedStyle]}>
+              <Text style={styles.levelTitle}>Lv. {level}</Text>
+            </Animated.View>
+            <View style={styles.levelInfo}>
+              <Text style={styles.levelSubtitle}>다음 레벨까지</Text>
+              <Text style={styles.levelPoints}>
+                {expToNext.toLocaleString()}
+                <Text style={styles.pointsUnit}>pt</Text>
+              </Text>
+            </View>
           </View>
-        </View>
 
-        {/* 퍼센트 텍스트만 표시 */}
-        <Text style={styles.levelProgressText}>{progressPercent}%</Text>
+          {/* 퍼센트 텍스트만 표시 */}
+          <Text style={styles.levelProgressText}>{progressPercent}%</Text>
 
-        {/* 스트릭 영역 */}
-        {streak >= 1 && (
-          <View style={styles.streakContainer}>
-            <LinearGradient
-              colors={['#DC2626', '#EF4444', '#F87171']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.streakGradient}
-            >
-              <View style={styles.streakContent}>
-                <Ionicons name='flame' size={20} color='#fff' />
-                <Text style={styles.streakText}>
-                  {streak}일 {streak > 1 && '연속'}
-                </Text>
-              </View>
-              <Animated.View style={[styles.streakPulse, streakPulseAnimatedStyle]} />
-            </LinearGradient>
-          </View>
-        )}
-      </Animated.View>
-    </View>
-  );
-};
+          {/* 스트릭 영역 */}
+          {streak >= 1 && (
+            <View style={styles.streakContainer}>
+              <LinearGradient
+                colors={['#DC2626', '#EF4444', '#F87171']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.streakGradient}
+              >
+                <View style={styles.streakContent}>
+                  <Ionicons name="flame" size={20} color="#fff" />
+                  <Text style={styles.streakText}>
+                    {streak}일 {streak > 1 && '연속'}
+                  </Text>
+                </View>
+                <Animated.View style={[styles.streakPulse, streakPulseAnimatedStyle]} />
+              </LinearGradient>
+            </View>
+          )}
+        </Animated.View>
+      </View>
+    );
+  };
 
   /* ------------------------------------------------------------------
    * 스트릭 & 업적 요약
@@ -691,9 +653,7 @@ const LevelCard = ({
                 <View key={badge.id} style={styles.badge}>
                   <Text style={styles.badgeIcon}>{badge.icon}</Text>
                   <Text style={styles.badgeTitle}>{badge.title}</Text>
-                  <Text style={styles.badgeDescription}>
-                    {badge.description}
-                  </Text>
+                  <Text style={styles.badgeDescription}>{badge.description}</Text>
                 </View>
               ))}
             </View>
@@ -716,9 +676,7 @@ const LevelCard = ({
           {category && (
             <View style={styles.infoItem}>
               <Text style={styles.infoLabel}>카테고리</Text>
-              <Text style={styles.infoValue}>
-                {switchCategoryToLabel(category) || ''}
-              </Text>
+              <Text style={styles.infoValue}>{switchCategoryToLabel(category) || ''}</Text>
             </View>
           )}
         </View>
@@ -736,9 +694,7 @@ const LevelCard = ({
           {difficulty && (
             <View style={styles.infoItem}>
               <Text style={styles.infoLabel}>난이도</Text>
-              <Text style={styles.infoValue}>
-                {switchDifficulty(difficulty) || ''}
-              </Text>
+              <Text style={styles.infoValue}>{switchDifficulty(difficulty) || ''}</Text>
             </View>
           )}
         </View>
@@ -752,11 +708,8 @@ const LevelCard = ({
       <View style={styles.summaryContainer}>
         <View style={styles.statCard}>
           <View style={styles.statIconContainer}>
-            <LinearGradient
-              colors={['#22c55e', '#16a34a']}
-              style={styles.statIcon}
-            >
-              <Check width={20} height={20} color='white' />
+            <LinearGradient colors={['#22c55e', '#16a34a']} style={styles.statIcon}>
+              <Check width={20} height={20} color="white" />
             </LinearGradient>
           </View>
           <Text style={styles.statValue}>{correctCount}</Text>
@@ -765,11 +718,8 @@ const LevelCard = ({
 
         <View style={styles.statCard}>
           <View style={styles.statIconContainer}>
-            <LinearGradient
-              colors={['#f43f5e', '#e11d48']}
-              style={styles.statIcon}
-            >
-              <X width={20} height={20} color='white' />
+            <LinearGradient colors={['#f43f5e', '#e11d48']} style={styles.statIcon}>
+              <X width={20} height={20} color="white" />
             </LinearGradient>
           </View>
           <Text style={styles.statValue}>{wrongCount}</Text>
@@ -778,11 +728,8 @@ const LevelCard = ({
 
         <View style={styles.statCard}>
           <View style={styles.statIconContainer}>
-            <LinearGradient
-              colors={['#a855f7', '#8b5cf6']}
-              style={styles.statIcon}
-            >
-              <Star width={20} height={20} color='white' />
+            <LinearGradient colors={['#a855f7', '#8b5cf6']} style={styles.statIcon}>
+              <Star width={20} height={20} color="white" />
             </LinearGradient>
           </View>
           <Text style={styles.statValue}>{getGrade()}</Text>
@@ -795,13 +742,7 @@ const LevelCard = ({
   /* ------------------------------------------------------------------
    * 문제 리뷰 아이템 (포인트 상세 토글 기능 추가)
    * ----------------------------------------------------------------*/
-  const renderQuestionItem = ({
-    item,
-    index,
-  }: {
-    item: UserAnswer;
-    index: number;
-  }) => {
+  const renderQuestionItem = ({ item, index }: { item: UserAnswer; index: number }) => {
     // 정답 배열 처리
     const correctAnswers = Array.isArray(item?.correctAnswer)
       ? item?.correctAnswer
@@ -809,9 +750,7 @@ const LevelCard = ({
     const isExpanded = expandedAnswers[index];
     const showMore = correctAnswers.length > 3 && !isExpanded;
     const showLess = correctAnswers.length > 3 && isExpanded;
-    const answersToShow = showMore
-      ? correctAnswers.slice(0, 3)
-      : correctAnswers;
+    const answersToShow = showMore ? correctAnswers.slice(0, 3) : correctAnswers;
 
     return (
       <View style={styles.questionCard}>
@@ -820,12 +759,12 @@ const LevelCard = ({
           <View style={{ flexDirection: 'row', gap: 4 }}>
             {item.isCorrect ? (
               <View style={styles.correctBadge}>
-                <Check width={14} height={14} color='white' />
+                <Check width={14} height={14} color="white" />
                 <Text style={styles.badgeText}>정답</Text>
               </View>
             ) : (
               <View style={styles.incorrectBadge}>
-                <X width={14} height={14} color='white' />
+                <X width={14} height={14} color="white" />
                 <Text style={styles.badgeText}>오답</Text>
               </View>
             )}
@@ -833,23 +772,17 @@ const LevelCard = ({
               <TouchableOpacity
                 style={styles.pointsBadge}
                 onPress={() =>
-                  setSelectedQuestionIndex(
-                    selectedQuestionIndex === index ? null : index
-                  )
+                  setSelectedQuestionIndex(selectedQuestionIndex === index ? null : index)
                 }
               >
-                <Star width={14} height={14} color='white' />
-                <Text style={styles.pointsBadgeText}>
-                  +{item.pointsEarned}포인트
-                </Text>
+                <Star width={14} height={14} color="white" />
+                <Text style={styles.pointsBadgeText}>+{item.pointsEarned}포인트</Text>
               </TouchableOpacity>
             )}
             {item.streakCount > 1 && (
               <View style={styles.streakBadge}>
-                <Ionicons name='flame-outline' size={14} color='white' />
-                <Text style={styles.streakBadgeText}>
-                  {item.streakCount}연속
-                </Text>
+                <Ionicons name="flame-outline" size={14} color="white" />
+                <Text style={styles.streakBadgeText}>{item.streakCount}연속</Text>
               </View>
             )}
           </View>
@@ -868,28 +801,18 @@ const LevelCard = ({
               ))}
               {showMore && (
                 <TouchableOpacity
-                  onPress={() =>
-                    setExpandedAnswers((prev) => ({ ...prev, [index]: true }))
-                  }
+                  onPress={() => setExpandedAnswers((prev) => ({ ...prev, [index]: true }))}
                 >
-                  <Text
-                    style={{ color: '#2563eb', marginTop: 2, fontSize: 13 }}
-                  >
+                  <Text style={{ color: '#2563eb', marginTop: 2, fontSize: 13 }}>
                     +{correctAnswers.length - 3}개 더보기
                   </Text>
                 </TouchableOpacity>
               )}
               {showLess && (
                 <TouchableOpacity
-                  onPress={() =>
-                    setExpandedAnswers((prev) => ({ ...prev, [index]: false }))
-                  }
+                  onPress={() => setExpandedAnswers((prev) => ({ ...prev, [index]: false }))}
                 >
-                  <Text
-                    style={{ color: '#2563eb', marginTop: 2, fontSize: 13 }}
-                  >
-                    접기
-                  </Text>
+                  <Text style={{ color: '#2563eb', marginTop: 2, fontSize: 13 }}>접기</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -901,9 +824,7 @@ const LevelCard = ({
               <Text
                 style={[
                   styles.userAnswer,
-                  item?.isCorrect
-                    ? styles.userAnswerCorrect
-                    : styles.userAnswerIncorrect,
+                  item?.isCorrect ? styles.userAnswerCorrect : styles.userAnswerIncorrect,
                 ]}
               >
                 {item?.userAnswer}
@@ -930,9 +851,7 @@ const LevelCard = ({
   const router = useRouter();
 
   const averageTime =
-    setup.questions && setup.questions.length > 0
-      ? totalTime / setup.questions.length
-      : 0;
+    setup.questions && setup.questions.length > 0 ? totalTime / setup.questions.length : 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -940,10 +859,7 @@ const LevelCard = ({
         <Text style={styles.headerTitle}>퀴즈 결과</Text>
       </View>
 
-      <ScrollView
-        style={styles.content}
-        contentContainerStyle={styles.contentContainer}
-      >
+      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         {/* ① 포인트 카드 */}
         <Animated.View style={[styles.scoreCard, scoreCardStyle]}>
           <LinearGradient
@@ -965,17 +881,13 @@ const LevelCard = ({
             <View style={styles.scoreGameInfo}>
               {wasPerfect && (
                 <View style={styles.bonusPointsItem}>
-                  <Text style={styles.bonusPointsText}>
-                    🎯 완벽한 정답률! 보너스 20포인트
-                  </Text>
+                  <Text style={styles.bonusPointsText}>🎯 완벽한 정답률! 보너스 20포인트</Text>
                 </View>
               )}
 
               <View style={styles.scoreGameItem}>
                 <Text style={styles.scoreGameLabel}>획득 포인트</Text>
-                <Text style={styles.scoreGameValue}>
-                  +{totalEarnedPoints}포인트
-                </Text>
+                <Text style={styles.scoreGameValue}>+{totalEarnedPoints}포인트</Text>
               </View>
 
               {maxStreak > 1 && (
@@ -1041,7 +953,7 @@ const LevelCard = ({
             router.push('/(tabs)');
           }}
         >
-          <Home width={20} height={20} color='#6b7280' />
+          <Home width={20} height={20} color="#6b7280" />
           <Text style={styles.footerButtonText}>홈으로</Text>
         </TouchableOpacity>
 
@@ -1050,7 +962,7 @@ const LevelCard = ({
           onPress={() => {
             restartQuiz();
             router.push(
-              `/quiz?category=${category}&difficulty=${difficulty}&questionFormat=${questionFormat}`
+              `/quiz?category=${category}&difficulty=${difficulty}&questionFormat=${questionFormat}`,
             );
           }}
         >
@@ -1060,7 +972,7 @@ const LevelCard = ({
             end={{ x: 1, y: 0 }}
             style={styles.restartGradient}
           >
-            <RefreshCw width={20} height={20} color='white' />
+            <RefreshCw width={20} height={20} color="white" />
             <Text style={styles.restartButtonText}>다시 도전</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -1580,11 +1492,11 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 8,
   },
-  
+
   levelCardContainer: {
     marginBottom: 24,
   },
-  
+
   levelCard: {
     borderRadius: 24,
     padding: 24,
@@ -1607,7 +1519,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     gap: 16,
   },
-  
+
   levelBadge: {
     backgroundColor: 'rgba(71, 85, 105, 0.12)',
     borderRadius: 20,
@@ -1616,19 +1528,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(71, 85, 105, 0.2)',
   },
-  
+
   levelTitle: {
     fontSize: 18,
     fontWeight: '800',
     color: '#475569',
     letterSpacing: 0.5,
   },
-  
+
   levelInfo: {
     flex: 1,
     alignItems: 'flex-end',
   },
-  
+
   levelSubtitle: {
     fontSize: 11,
     fontWeight: '500',
@@ -1637,14 +1549,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: 2,
   },
-  
+
   levelPoints: {
     fontSize: 24,
     fontWeight: '900',
     color: '#334155',
     letterSpacing: -0.5,
   },
-  
+
   pointsUnit: {
     fontSize: 14,
     fontWeight: '600',
@@ -1656,7 +1568,7 @@ const styles = StyleSheet.create({
   progressContainer2: {
     marginBottom: 20,
   },
-  
+
   progressTrack: {
     height: 8,
     backgroundColor: 'rgba(148, 163, 184, 0.15)',
@@ -1665,7 +1577,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     marginBottom: 12,
   },
-  
+
   progressFill: {
     height: '100%',
     borderRadius: 12,
@@ -1678,7 +1590,7 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 12,
   },
-  
+
   progressGlow: {
     height: '100%',
     borderRadius: 12,
@@ -1687,20 +1599,20 @@ const styles = StyleSheet.create({
     top: 0,
     backgroundColor: 'rgba(100, 116, 139, 0.2)',
   },
-  
+
   progressInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  
+
   currentExp: {
     fontSize: 12,
     fontWeight: '600',
     color: '#475569',
     letterSpacing: 0.3,
   },
-  
+
   progressBadge: {
     backgroundColor: 'rgba(71, 85, 105, 0.1)',
     borderRadius: 12,
@@ -1709,14 +1621,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(71, 85, 105, 0.2)',
   },
-  
+
   progressPercent: {
     fontSize: 11,
     fontWeight: '700',
     color: '#64748B',
     letterSpacing: 0.5,
   },
-  
+
   maxExp: {
     fontSize: 12,
     fontWeight: '600',
@@ -1728,14 +1640,14 @@ const styles = StyleSheet.create({
   streakContainer: {
     marginTop: 4,
   },
-  
+
   streakGradient: {
     borderRadius: 16,
     padding: 12,
     position: 'relative',
     overflow: 'hidden',
   },
-  
+
   streakContent: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1743,7 +1655,7 @@ const styles = StyleSheet.create({
     gap: 8,
     zIndex: 1,
   },
-  
+
   streakText: {
     fontSize: 14,
     fontWeight: '700',
@@ -1753,7 +1665,7 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
-  
+
   streakPulse: {
     position: 'absolute',
     top: 0,

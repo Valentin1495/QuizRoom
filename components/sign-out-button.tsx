@@ -33,7 +33,7 @@ export default function SignOutButton() {
 
   return (
     <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
-      <Ionicons name='log-out-outline' size={24} color='#6b7280' />
+      <Ionicons name="log-out-outline" size={24} color="#6b7280" />
     </TouchableOpacity>
   );
 }

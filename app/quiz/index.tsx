@@ -48,7 +48,7 @@ export default function QuestionScreen() {
         isCorrect: false,
         pointsEarned: 0,
         streakCount: 0,
-      }))
+      })),
     );
   }, [questions]);
 

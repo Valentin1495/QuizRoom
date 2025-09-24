@@ -10,9 +10,7 @@ interface GradientTextProps {
 export default function GradientText({ text, style }: GradientTextProps) {
   return (
     <MaskedView
-      maskElement={
-        <Text style={[style, { backgroundColor: 'transparent' }]}>{text}</Text>
-      }
+      maskElement={<Text style={[style, { backgroundColor: 'transparent' }]}>{text}</Text>}
     >
       <LinearGradient
         colors={['#ec4899', '#a855f7', '#6366f1']}

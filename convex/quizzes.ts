@@ -14,22 +14,17 @@ export const getQuestions = query({
         v.literal('math-logic'),
         v.literal('movies'),
         v.literal('drama-variety'),
-        v.null()
-      )
+        v.null(),
+      ),
     ),
     questionFormat: v.union(
       v.literal('multiple'),
       v.literal('short'),
       v.literal('true_false'),
       v.literal('filmography'),
-      v.null()
+      v.null(),
     ),
-    difficulty: v.union(
-      v.literal('easy'),
-      v.literal('medium'),
-      v.literal('hard'),
-      v.null()
-    ),
+    difficulty: v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'), v.null()),
   },
   handler: async (ctx, args) => {
     const inferTopCategory = (cat?: string | null) => {
@@ -100,25 +95,16 @@ export const insertQuizBatch = mutation({
             v.literal('entertainment'),
             v.literal('movies'),
             v.literal('drama-variety'),
-            v.null()
-          )
+            v.null(),
+          ),
         ),
-        questionFormat: v.union(
-          v.literal('multiple'),
-          v.literal('short'),
-          v.null()
-        ),
-        difficulty: v.union(
-          v.literal('easy'),
-          v.literal('medium'),
-          v.literal('hard'),
-          v.null()
-        ),
+        questionFormat: v.union(v.literal('multiple'), v.literal('short'), v.null()),
+        difficulty: v.union(v.literal('easy'), v.literal('medium'), v.literal('hard'), v.null()),
         answer: v.optional(v.string()),
         answers: v.optional(v.array(v.string())),
         options: v.optional(v.array(v.string())),
         question: v.string(),
-      })
+      }),
     ),
   },
   handler: async (ctx, args) => {

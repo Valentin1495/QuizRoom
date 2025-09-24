@@ -32,20 +32,12 @@ export default function EmptyStatsCard({ delay = 0 }) {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        <Ionicons
-          name='school-outline'
-          size={48}
-          color='#065f46'
-          style={styles.emptyIcon}
-        />
+        <Ionicons name="school-outline" size={48} color="#065f46" style={styles.emptyIcon} />
         <Text style={styles.emptyTitle}>아직 데이터가 없어요!</Text>
         <Text style={styles.emptySubtitle}>
           첫 퀴즈를 완료하면{'\n'}여기에 멋진 통계가 나타날 거예요
         </Text>
-        <TouchableOpacity
-          style={styles.emptyButton}
-          onPress={() => router.push('/(tabs)')}
-        >
+        <TouchableOpacity style={styles.emptyButton} onPress={() => router.push('/(tabs)')}>
           <Text style={styles.emptyButtonText}>첫 퀴즈 시작하기 🚀</Text>
         </TouchableOpacity>
       </LinearGradient>

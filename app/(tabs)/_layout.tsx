@@ -24,38 +24,32 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name='index'
+        name="index"
         options={{
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name='home' size={size} color={color} />
-          ),
+          tabBarIcon: ({ size, color }) => <Ionicons name="home" size={size} color={color} />,
           tabBarLabel: '홈',
         }}
       />
       <Tabs.Screen
-        name='challenges-screen'
+        name="challenges-screen"
         options={{
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name='trophy' size={size} color={color} />
-          ),
+          tabBarIcon: ({ size, color }) => <Ionicons name="trophy" size={size} color={color} />,
           tabBarLabel: '챌린지',
         }}
       />
       <Tabs.Screen
-        name='skill-analysis-screen'
+        name="skill-analysis-screen"
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Ionicons name='stats-chart' size={size} color={color} />
+            <Ionicons name="stats-chart" size={size} color={color} />
           ),
           tabBarLabel: '실력 분석',
         }}
       />
       <Tabs.Screen
-        name='my-stats-screen'
+        name="my-stats-screen"
         options={{
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name='person' size={size} color={color} />
-          ),
+          tabBarIcon: ({ size, color }) => <Ionicons name="person" size={size} color={color} />,
           tabBarLabel: '내 정보',
         }}
       />

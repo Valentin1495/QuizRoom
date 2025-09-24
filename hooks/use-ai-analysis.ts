@@ -21,10 +21,7 @@ type UseAIAnalysisResult = {
   refresh: (force?: boolean) => Promise<void>;
 };
 
-export function useAIAnalysis(
-  userId: string,
-  baseAnalysis: any
-): UseAIAnalysisResult {
+export function useAIAnalysis(userId: string, baseAnalysis: any): UseAIAnalysisResult {
   const runAnalysis = useAction(api.gamification.analyzeWithGemini);
   const saveInsights = useMutation(api.gamification.updateAIInsightsCache);
 
@@ -53,7 +50,7 @@ export function useAIAnalysis(
         setLoading(false);
       }
     },
-    [baseAnalysis, runAnalysis, saveInsights, loading, userId]
+    [baseAnalysis, runAnalysis, saveInsights, loading, userId],
   );
 
   return {

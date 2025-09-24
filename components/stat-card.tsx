@@ -50,7 +50,7 @@ export default function StatCard({
         end={{ x: 1, y: 1 }}
       >
         <View style={styles.statCardHeader}>
-          <Ionicons name={icon} size={24} color='white' />
+          <Ionicons name={icon} size={24} color="white" />
           <Text style={styles.statCardTitle}>{title}</Text>
         </View>
         <Text style={styles.statCardValue}>{value}</Text>

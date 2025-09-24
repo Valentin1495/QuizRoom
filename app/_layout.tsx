@@ -1,10 +1,7 @@
 import { GamificationProvider } from '@/context/gamification-context';
 import { QuizSetupProvider } from '@/context/quiz-setup-context';
-import {
-  FirebaseAuthTypes,
-  getAuth,
-  onAuthStateChanged,
-} from '@react-native-firebase/auth';
+import { getAppVariant } from '@/utils/feature-flags';
+import { FirebaseAuthTypes, getAuth, onAuthStateChanged } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { ConvexProvider, ConvexReactClient } from 'convex/react';
 import { Stack, useRouter } from 'expo-router';
@@ -14,25 +11,18 @@ import { Platform, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 GoogleSignin.configure({
-  webClientId:
-    '819818280538-emjirg8e17j6cc4qhbe98dcsgmshk586.apps.googleusercontent.com',
+  webClientId: '819818280538-emjirg8e17j6cc4qhbe98dcsgmshk586.apps.googleusercontent.com',
 });
 
 export default function RootLayout() {
   const router = useRouter();
-  const convex = new ConvexReactClient(
-    process.env.EXPO_PUBLIC_CONVEX_URL as string,
-    {
-      unsavedChangesWarning: false,
-    }
-  );
+  const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL as string, {
+    unsavedChangesWarning: false,
+  });
 
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null | undefined>(
-    undefined
-  );
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null | undefined>(undefined);
 
-  // Firebase 유저 상태 변경 핸들링
   function handleAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     setUser(user ? user : null);
     setInitializing(false);
@@ -43,17 +33,20 @@ export default function RootLayout() {
     return subscriber;
   }, []);
 
-  // ✅ 초기화 끝난 후에만 router.replace 실행
   useEffect(() => {
     if (initializing) return;
     if (user) {
-      router.replace('/(tabs)');
+      const variant = getAppVariant();
+      if (variant === 'greenfield') {
+        router.replace('/(greenfield)');
+      } else {
+        router.replace('/(tabs)');
+      }
     } else {
       router.replace('/(auth)/welcome-screen');
     }
   }, [initializing, user]);
 
-  // ✅ initializing 중엔 아무것도 렌더하지 않음
   if (initializing) return null;
 
   return (

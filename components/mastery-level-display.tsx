@@ -17,9 +17,7 @@ export const MasteryLevelBadge = ({ score }: MasteryLevelBadgeProps) => {
         borderRadius: 8,
       }}
     >
-      <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 14 }}>
-        {rank}
-      </Text>
+      <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 14 }}>{rank}</Text>
     </View>
   );
 };

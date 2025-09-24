@@ -68,7 +68,13 @@ export const stripTypeFromTestQuestions = mutation({
 export const normalizeTestQuestionsCategories = mutation({
   args: { dryRun: v.optional(v.boolean()) },
   handler: async (ctx, { dryRun = true }) => {
-    const allowed = new Set(['general', 'entertainment', 'slang', 'capitals', 'four-character-idioms']);
+    const allowed = new Set([
+      'general',
+      'entertainment',
+      'slang',
+      'capitals',
+      'four-character-idioms',
+    ]);
     const docs = await ctx.db.query('testQuestions').collect();
     let fixed = 0;
     for (const d of docs as any[]) {
@@ -82,5 +88,3 @@ export const normalizeTestQuestionsCategories = mutation({
     return { fixed, dryRun };
   },
 });
-
-

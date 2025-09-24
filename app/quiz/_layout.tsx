@@ -10,8 +10,8 @@ export default function QuizLayout() {
         gestureEnabled: false,
       }}
     >
-      <Stack.Screen name='index' />
-      <Stack.Screen name='result' />
+      <Stack.Screen name="index" />
+      <Stack.Screen name="result" />
     </Stack>
   );
 }
