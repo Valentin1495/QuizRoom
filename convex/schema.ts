@@ -8,6 +8,19 @@ export default defineSchema({
     photoURL: v.optional(v.string()),
     email: v.string(),
     lastLoginAt: v.number(),
+    helperInventory: v.optional(
+      v.object({
+        hint: v.number(),
+        pass: v.number(),
+        lastDailyGrant: v.optional(v.string()), // YYYY-MM-DD
+        rewardCooldowns: v.optional(
+          v.object({
+            hint: v.optional(v.number()),
+            pass: v.optional(v.number()),
+          }),
+        ),
+      }),
+    ),
     settings: v.optional(
       v.object({
         notifications: v.boolean(), // 알림 설정
@@ -265,11 +278,19 @@ export default defineSchema({
         choiceId: v.string(),
         elapsedMs: v.number(),
         correct: v.boolean(),
+        helperType: v.optional(v.union(v.literal('hint'), v.literal('pass'))),
       }),
     ),
     score: v.number(),
     hintsUsed: v.number(),
+    passesUsed: v.optional(v.number()),
     status: v.string(), // active|done
+    helperAllowance: v.optional(
+      v.object({
+        hint: v.number(),
+        pass: v.number(),
+      }),
+    ),
     startedAt: v.number(),
     finishedAt: v.optional(v.number()),
   }).index('by_user', ['userId']),

@@ -18,14 +18,28 @@ export const createOrUpdateUser = mutation({
       .unique();
 
     const now = Date.now();
+    const today = new Date(now).toISOString().slice(0, 10);
+    const defaultInventory = { hint: 0, pass: 0, lastDailyGrant: today } as const;
+    const inventory = existingUser?.helperInventory ?? defaultInventory;
 
     if (existingUser) {
       // 기존 사용자 업데이트
+      const shouldGrantDaily = inventory.lastDailyGrant !== today;
+      const grantTarget = inventory.hint <= inventory.pass ? 'hint' : 'pass';
+      const nextInventory = shouldGrantDaily
+        ? {
+          hint: inventory.hint + (grantTarget === 'hint' ? 1 : 0),
+          pass: inventory.pass + (grantTarget === 'pass' ? 1 : 0),
+          lastDailyGrant: today,
+          ...(inventory.rewardCooldowns ? { rewardCooldowns: inventory.rewardCooldowns } : {}),
+        }
+        : inventory;
       await ctx.db.patch(existingUser._id, {
         email: args.email,
         displayName: args.displayName,
         photoURL: args.photoURL,
         lastLoginAt: now,
+        helperInventory: nextInventory,
       });
       return existingUser._id;
     } else {
@@ -40,6 +54,7 @@ export const createOrUpdateUser = mutation({
         experience: 0,
         level: 0,
         streak: 0,
+        helperInventory: defaultInventory,
       });
       return userId;
     }

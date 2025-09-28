@@ -4,15 +4,43 @@ import { mutation } from './_generated/server';
 export const startSession = mutation({
   args: { setId: v.id('dailySets'), userId: v.id('users') },
   handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error('User not found');
+
+    const baseAllowance = { hint: 1, pass: 1 } as const;
+    const inventory = user.helperInventory ?? {
+      hint: 0,
+      pass: 0,
+      lastDailyGrant: undefined,
+      rewardCooldowns: undefined,
+    };
+
+    const allowance = {
+      hint: baseAllowance.hint + Math.max(0, inventory.hint ?? 0),
+      pass: baseAllowance.pass + Math.max(0, inventory.pass ?? 0),
+    } as const;
+
     const sid = await ctx.db.insert('sessions', {
       ...args,
       answers: [],
       score: 0,
       hintsUsed: 0,
+      passesUsed: 0,
+      helperAllowance: allowance,
       status: 'active',
       startedAt: Date.now(),
     });
-    return sid;
+
+    await ctx.db.patch(args.userId, {
+      helperInventory: {
+        hint: Math.max(0, (inventory.hint ?? 0) - (allowance.hint - baseAllowance.hint)),
+        pass: Math.max(0, (inventory.pass ?? 0) - (allowance.pass - baseAllowance.pass)),
+        lastDailyGrant: inventory.lastDailyGrant,
+        rewardCooldowns: inventory.rewardCooldowns,
+      },
+    });
+
+    return { sessionId: sid, allowance } as const;
   },
 });
 
@@ -22,21 +50,45 @@ export const submitAnswer = mutation({
     qid: v.id('questionBank'),
     choiceId: v.string(),
     elapsedMs: v.number(),
+    usedHint: v.optional(v.boolean()),
   },
-  handler: async (ctx, { sessionId, qid, choiceId, elapsedMs }) => {
+  handler: async (ctx, { sessionId, qid, choiceId, elapsedMs, usedHint }) => {
     const s = await ctx.db.get(sessionId);
     if (!s || s.status !== 'active') throw new Error('Invalid session');
     const q = await ctx.db.get(qid);
     if (!q) throw new Error('Invalid question');
-    const correct = (q as any).answerId === choiceId;
+
+    const allowance = s.helperAllowance ?? { hint: 1, pass: 1 };
+    const passesUsed = s.passesUsed ?? 0;
+
+    if (choiceId === '__PASS__') {
+      if (passesUsed >= allowance.pass) throw new Error('No pass cards remaining');
+      const updatedAnswers = [...s.answers, { qid, choiceId: 'pass', elapsedMs, correct: false, helperType: 'pass' as const }];
+      await ctx.db.patch(sessionId, {
+        answers: updatedAnswers,
+        passesUsed: passesUsed + 1,
+      });
+      return { correct: false, score: s.score, helperType: 'pass' as const } as const;
+    }
+
+    let correct = (q as any).answerId === choiceId;
     const base = correct ? 100 : 0;
     const bonus = correct ? Math.max(0, Math.floor((10000 - elapsedMs) / 200)) : 0; // ~0..50
-    const newScore = (s as any).score + base + bonus;
+    const newScore = s.score + base + bonus;
     await ctx.db.patch(sessionId, {
       score: newScore,
-      answers: [...(s as any).answers, { qid, choiceId, elapsedMs, correct }],
+      answers: [
+        ...s.answers,
+        {
+          qid,
+          choiceId,
+          elapsedMs,
+          correct,
+          helperType: usedHint ? ('hint' as const) : undefined,
+        },
+      ],
     });
-    return { correct, score: newScore } as const;
+    return { correct, score: newScore, helperType: usedHint ? ('hint' as const) : undefined } as const;
   },
 });
 
@@ -72,5 +124,18 @@ export const finalize = mutation({
     });
 
     return { final } as const;
+  },
+});
+
+export const consumeHint = mutation({
+  args: { sessionId: v.id('sessions') },
+  handler: async (ctx, { sessionId }) => {
+    const s = await ctx.db.get(sessionId);
+    if (!s || s.status !== 'active') throw new Error('Invalid session');
+    const allowance = s.helperAllowance ?? { hint: 1, pass: 1 };
+    const hintsUsed = s.hintsUsed ?? 0;
+    if (hintsUsed >= allowance.hint) throw new Error('No hint cards remaining');
+    await ctx.db.patch(sessionId, { hintsUsed: hintsUsed + 1 });
+    return { remaining: allowance.hint - (hintsUsed + 1), total: allowance.hint } as const;
   },
 });
