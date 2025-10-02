@@ -14,6 +14,8 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as daily from "../daily.js";
+import type * as gamification from "../gamification.js";
+import type * as inventories from "../inventories.js";
 import type * as leaderboards from "../leaderboards.js";
 import type * as questions from "../questions.js";
 import type * as reports from "../reports.js";
@@ -30,6 +32,8 @@ import type * as sessions from "../sessions.js";
  */
 declare const fullApi: ApiFromModules<{
   daily: typeof daily;
+  gamification: typeof gamification;
+  inventories: typeof inventories;
   leaderboards: typeof leaderboards;
   questions: typeof questions;
   reports: typeof reports;

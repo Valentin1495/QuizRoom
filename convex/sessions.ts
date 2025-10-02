@@ -1,22 +1,29 @@
 import { action, internalMutation, mutation, query } from './_generated/server';
+import type { ActionCtx, MutationCtx, QueryCtx } from './_generated/server';
+import type { Doc, Id } from './_generated/dataModel';
 import { v } from 'convex/values';
 import { api, internal } from './_generated/api';
+import { shuffle } from 'lodash';
 
-// NOTE: This is a placeholder for a real user authentication system.
-// In a real app, you'd get the user ID from the session.
-const getUserId = async (ctx: any) => {
-  // For now, we'll create a dummy user if one doesn't exist.
-  const user = await ctx.db.query('users').first();
-  if (user) return user._id;
-  return await ctx.db.insert('users', {
-    // In a real app, you'd get these from the auth provider.
-    authId: 'dummy-user-' + Math.random().toString(36).slice(2),
-    nickname: 'Guest',
-    avatar: 'avatar_url',
-    country: 'KR',
-    createdAt: Date.now(),
-  });
-};
+// This internal mutation replaces the flawed `getUserId` helper.
+// It can safely access the database to find or create a user.
+export const getOrCreateDummyUser = internalMutation({
+  handler: async (ctx: MutationCtx) => {
+    // For now, we'll create a dummy user if one doesn't exist.
+    const user = await ctx.db.query('users').first();
+    if (user) {
+      return user._id;
+    }
+    return await ctx.db.insert('users', {
+      // In a real app, you'd get these from the auth provider.
+      authId: 'dummy-user-' + Math.random().toString(36).slice(2),
+      nickname: 'Guest',
+      avatar: 'avatar_url',
+      country: 'KR',
+      createdAt: Date.now(),
+    });
+  },
+});
 
 const calcScore = (msLeft: number, streak: number) => {
   const base = 100;
@@ -25,45 +32,91 @@ const calcScore = (msLeft: number, streak: number) => {
   return Math.round((base + timeBonus) * streakMul);
 };
 
+const GRADE_BANDS: Doc<'questions'>['gradeBand'][] = [
+  'kinder',
+  'elem_low',
+  'elem_high',
+  'middle',
+  'high',
+  'college',
+];
+
 export const startSession = action({
   args: { category: v.string() },
-  handler: async (ctx, { category }) => {
-    const userId = await getUserId(ctx);
+  handler: async (ctx: ActionCtx, { category }) => {
+    const userId = await ctx.runMutation(internal.sessions.getOrCreateDummyUser);
 
-    // Fetch a pool of questions for the given category.
-    // In a real app, you might have more sophisticated logic for question selection.
-    const pool = await ctx.runQuery(api.questions.getQuestionsByCategory, { category });
+    const questionsPerGrade = {
+      kinder: 2,
+      elem_low: 2,
+      elem_high: 2,
+      middle: 2,
+      high: 2,
+      college: 1,
+    };
 
-    if (pool.length === 0) {
-      throw new Error(`No questions found for category: ${category}`);
+    const questionPromises = GRADE_BANDS.map((gradeBand) =>
+      ctx.runQuery(api.questions.getQuestionsByCategory, {
+        category,
+        gradeBand,
+      })
+    );
+    const questionsByGrade = await Promise.all(questionPromises);
+
+    const selectedQuestions: Doc<'questions'>[] = [];
+    for (let i = 0; i < GRADE_BANDS.length; i++) {
+      const gradeBand = GRADE_BANDS[i];
+      const count = questionsPerGrade[gradeBand];
+      const pool = questionsByGrade[i];
+
+      if (pool.length < count) {
+        throw new Error(
+          `Not enough questions for category ${category} and grade ${gradeBand}. Found ${pool.length}, need ${count}.`
+        );
+      }
+      selectedQuestions.push(...shuffle(pool).slice(0, count));
     }
 
-    // Pick 10 random questions.
-    const pick10 = pool.sort(() => Math.random() - 0.5).slice(0, 10).map(q => q._id);
+    const questionIds = selectedQuestions.map((q) => q._id);
+    const difficultyCurve = selectedQuestions.map((q) => q.gradeBand);
 
-    const sessionId = await ctx.runMutation(api.sessions.createSession, {
-      userId,
-      category,
-      questions: pick10,
-    });
+    const sessionId: Id<'sessions'> = await ctx.runMutation(
+      internal.sessions.createSession,
+      {
+        userId,
+        category,
+        questions: questionIds,
+        difficultyCurve,
+      }
+    );
 
     return { sessionId };
   },
 });
 
-export const createSession = mutation({
+export const createSession = internalMutation({
   args: {
     userId: v.id('users'),
     category: v.string(),
     questions: v.array(v.id('questions')),
+    difficultyCurve: v.array(
+      v.union(
+        v.literal('kinder'),
+        v.literal('elem_low'),
+        v.literal('elem_high'),
+        v.literal('middle'),
+        v.literal('high'),
+        v.literal('college')
+      )
+    ),
   },
-  handler: async (ctx, { userId, category, questions }) => {
+  handler: async (ctx: MutationCtx, { userId, category, questions, difficultyCurve }) => {
     return await ctx.db.insert('sessions', {
       userId,
       status: 'active',
       mode: 'quick',
       category,
-      difficultyCurve: [1, 1, 2, 2, 3, 3, 3, 4, 4, 5], // Example curve
+      difficultyCurve,
       questions,
       answers: [],
       score: 0,
@@ -76,7 +129,7 @@ export const createSession = mutation({
 
 export const getSession = query({
   args: { sessionId: v.id('sessions') },
-  handler: async (ctx, { sessionId }) => {
+  handler: async (ctx: QueryCtx, { sessionId }) => {
     const session = await ctx.db.get(sessionId);
     if (!session) {
       return null;
@@ -101,7 +154,7 @@ export const submitAnswer = mutation({
     choiceIndex: v.number(),
     ms: v.number(),
   },
-  handler: async (ctx, { sessionId, qid, choiceIndex, ms }) => {
+  handler: async (ctx: MutationCtx, { sessionId, qid, choiceIndex, ms }) => {
     const question = await ctx.db.get(qid);
     if (!question) {
       throw new Error('Question not found');
@@ -110,6 +163,9 @@ export const submitAnswer = mutation({
     const session = await ctx.db.get(sessionId);
     if (!session) {
       throw new Error('Session not found');
+    }
+    if (session.status === 'ended') {
+      throw new Error('Session has already ended');
     }
 
     const isCorrect = question.answerIndex === choiceIndex;
@@ -134,11 +190,36 @@ export const submitAnswer = mutation({
       streak = 0;
     }
 
+    const updatedAnswers = [...session.answers, answer];
+
     await ctx.db.patch(sessionId, {
-      answers: [...session.answers, answer],
+      answers: updatedAnswers,
       score,
       streak,
     });
+
+    // Check if it's the end of a difficulty stage
+    const currentQuestionIndex = updatedAnswers.length - 1;
+    const currentGradeBand = session.difficultyCurve[currentQuestionIndex];
+    const nextGradeBand = session.difficultyCurve[currentQuestionIndex + 1]; // undefined if it's the last question
+
+    if (currentGradeBand !== nextGradeBand) {
+      // This is the last question of the current grade band
+      const firstQuestionIndexInStage = session.difficultyCurve.indexOf(currentGradeBand);
+      const answersForCurrentStage = updatedAnswers.slice(firstQuestionIndexInStage);
+
+      const allCorrectInStage = answersForCurrentStage.every((a) => a.correct);
+
+      if (!allCorrectInStage) {
+        // End the session if any answer in the stage is incorrect
+        await ctx.db.patch(sessionId, {
+          status: 'ended',
+          endedAt: Date.now(),
+        });
+        // Note: You might want to update the leaderboard even for failed sessions.
+        // If so, call the leaderboard update logic here.
+      }
+    }
 
     return { correct: isCorrect };
   },
@@ -149,7 +230,7 @@ export const updateSessionStatus = internalMutation({
     sessionId: v.id('sessions'),
     status: v.union(v.literal('active'), v.literal('ended')),
   },
-  handler: async (ctx, { sessionId, status }) => {
+  handler: async (ctx: MutationCtx, { sessionId, status }) => {
     await ctx.db.patch(sessionId, {
       status,
       endedAt: status === 'ended' ? Date.now() : undefined,
@@ -159,7 +240,7 @@ export const updateSessionStatus = internalMutation({
 
 export const endSession = action({
   args: { sessionId: v.id('sessions') },
-  handler: async (ctx, { sessionId }) => {
+  handler: async (ctx: ActionCtx, { sessionId }) => {
     const session = await ctx.runQuery(api.sessions.getSession, { sessionId });
     if (!session) {
       throw new Error("Session not found");

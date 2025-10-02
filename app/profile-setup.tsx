@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Pressable, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useUserStore } from '@/store/userStore';
@@ -16,7 +16,7 @@ export default function ProfileSetupScreen() {
             router.replace('/(tabs)/home');
         } else {
             // Basic validation feedback
-            alert('Please enter a nickname (at least 2 characters).');
+            Alert.alert('Please enter a nickname (at least 2 characters).');
         }
     };
 

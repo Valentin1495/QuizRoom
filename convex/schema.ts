@@ -14,19 +14,36 @@ export default defineSchema({
     status: v.union(v.literal("active"), v.literal("ended")),
     mode: v.string(),
     category: v.string(),
-    difficultyCurve: v.array(v.number()),
+    difficultyCurve: v.array(
+      v.union(
+        v.literal('kinder'),
+        v.literal('elem_low'),
+        v.literal('elem_high'),
+        v.literal('middle'),
+        v.literal('high'),
+        v.literal('college')
+      )
+    ),
     questions: v.array(v.id("questions")),
-          answers: v.array(v.object({ qid: v.id("questions"), choice: v.number(), correct: v.boolean(), ms: v.number() })),
-          score: v.number(),
-          streak: v.number(),
-          streakDelta: v.number(),
-          startedAt: v.number(),
-          endedAt: v.optional(v.number()),  }).index("by_user_status", ["userId", "status"]),
+    answers: v.array(v.object({ qid: v.id("questions"), choice: v.number(), correct: v.boolean(), ms: v.number() })),
+    score: v.number(),
+    streak: v.number(),
+    streakDelta: v.number(),
+    startedAt: v.number(),
+    endedAt: v.optional(v.number()),
+  }).index("by_user_status", ["userId", "status"]),
   questions: defineTable({
     source: v.union(v.literal("curated"), v.literal("ai")),
     locale: v.string(),
     category: v.string(),
-    gradeBand: v.string(),
+    gradeBand: v.union(
+      v.literal('kinder'),
+      v.literal('elem_low'),
+      v.literal('elem_high'),
+      v.literal('middle'),
+      v.literal('high'),
+      v.literal('college')
+    ),
     stem: v.string(),
     choices: v.array(v.string()),
     answerIndex: v.number(),
@@ -35,7 +52,8 @@ export default defineSchema({
     flags: v.array(v.string()),
     quality: v.number(),
     createdAt: v.number(),
-  }).index("by_category", ["category"]),
+  }).index("by_category", ["category"])
+    .index("by_category_gradeBand", ["category", "gradeBand"]),
   leaderboards: defineTable({
     period: v.string(),
     userId: v.id("users"),
