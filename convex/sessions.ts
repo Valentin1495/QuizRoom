@@ -25,14 +25,23 @@ export const getOrCreateDummyUser = internalMutation({
   },
 });
 
-const calcScore = (msLeft: number, streak: number) => {
+const calcScore = (
+  msLeft: number,
+  streak: number,
+  boostUsed?: "skip" | "fifty" | "hint"
+) => {
   const base = 100;
-  const timeBonus = Math.round(Math.min(50, msLeft / 200)); // Max 50
+  let timeBonus = Math.round(Math.min(50, msLeft / 200)); // Max 50
+
+  if (boostUsed === 'hint') {
+    timeBonus = Math.round(timeBonus / 2);
+  }
+
   const streakMul = Math.min(1.5, 1 + 0.1 * Math.max(0, streak - 1));
   return Math.round((base + timeBonus) * streakMul);
 };
 
-const GRADE_BANDS: Doc<'questions'>['gradeBand'][] = [
+const GRADE_BANDS: Exclude<Doc<'questions'>['gradeBand'], 'double_down'>[] = [
   'kinder',
   'elem_low',
   'elem_high',
@@ -46,13 +55,14 @@ export const startSession = action({
   handler: async (ctx: ActionCtx, { category }) => {
     const userId = await ctx.runMutation(internal.sessions.getOrCreateDummyUser);
 
-    const questionsPerGrade = {
+    const questionsPerGrade: Record<Doc<'questions'>['gradeBand'], number> = {
       kinder: 2,
       elem_low: 2,
       elem_high: 2,
       middle: 2,
       high: 2,
-      college: 1,
+      college: 2,
+      double_down: 0, // Not used in a standard session
     };
 
     const questionPromises = GRADE_BANDS.map((gradeBand) =>
@@ -106,7 +116,8 @@ export const createSession = internalMutation({
         v.literal('elem_high'),
         v.literal('middle'),
         v.literal('high'),
-        v.literal('college')
+        v.literal('college'),
+        v.literal('double_down')
       )
     ),
   },
@@ -153,8 +164,11 @@ export const submitAnswer = mutation({
     qid: v.id('questions'),
     choiceIndex: v.number(),
     ms: v.number(),
+    boostUsed: v.optional(
+      v.union(v.literal("skip"), v.literal("fifty"), v.literal("hint"))
+    ),
   },
-  handler: async (ctx: MutationCtx, { sessionId, qid, choiceIndex, ms }) => {
+  handler: async (ctx: MutationCtx, { sessionId, qid, choiceIndex, ms, boostUsed }) => {
     const question = await ctx.db.get(qid);
     if (!question) {
       throw new Error('Question not found');
@@ -170,11 +184,33 @@ export const submitAnswer = mutation({
 
     const isCorrect = question.answerIndex === choiceIndex;
 
+    // End the session immediately if the answer is incorrect
+    if (!isCorrect) {
+      await ctx.db.patch(sessionId, {
+        status: 'ended',
+        endedAt: Date.now(),
+        // Add the incorrect answer to the list before ending
+        answers: [
+          ...session.answers,
+          {
+            qid,
+            choice: choiceIndex,
+            correct: false,
+            ms,
+            boostUsed,
+          },
+        ],
+        streak: 0, // Reset streak
+      });
+      return { correct: false };
+    }
+
     const answer = {
       qid,
       choice: choiceIndex,
       correct: isCorrect,
       ms,
+      boostUsed,
     };
 
     let score = session.score;
@@ -183,7 +219,7 @@ export const submitAnswer = mutation({
     if (isCorrect) {
       // Assuming total time is 20s (20000ms) for time bonus calculation
       const msLeft = Math.max(0, 20000 - ms);
-      const points = calcScore(msLeft, streak);
+      const points = calcScore(msLeft, streak, boostUsed);
       score += points;
       streak += 1;
     } else {
@@ -198,28 +234,9 @@ export const submitAnswer = mutation({
       streak,
     });
 
-    // Check if it's the end of a difficulty stage
-    const currentQuestionIndex = updatedAnswers.length - 1;
-    const currentGradeBand = session.difficultyCurve[currentQuestionIndex];
-    const nextGradeBand = session.difficultyCurve[currentQuestionIndex + 1]; // undefined if it's the last question
-
-    if (currentGradeBand !== nextGradeBand) {
-      // This is the last question of the current grade band
-      const firstQuestionIndexInStage = session.difficultyCurve.indexOf(currentGradeBand);
-      const answersForCurrentStage = updatedAnswers.slice(firstQuestionIndexInStage);
-
-      const allCorrectInStage = answersForCurrentStage.every((a) => a.correct);
-
-      if (!allCorrectInStage) {
-        // End the session if any answer in the stage is incorrect
-        await ctx.db.patch(sessionId, {
-          status: 'ended',
-          endedAt: Date.now(),
-        });
-        // Note: You might want to update the leaderboard even for failed sessions.
-        // If so, call the leaderboard update logic here.
-      }
-    }
+    // The stage-gate logic is no longer needed here,
+    // as any incorrect answer already terminates the session.
+    // We can simply proceed to the next question if correct.
 
     return { correct: isCorrect };
   },
@@ -258,6 +275,165 @@ export const endSession = action({
     await ctx.runMutation(internal.leaderboards.updateLeaderboard, {
       userId: session.userId,
       score: session.score,
+    });
+  },
+});
+
+export const requestDoubleDownQuestion = action({
+  args: { sessionId: v.id('sessions') },
+  handler: async (ctx: ActionCtx, { sessionId }) => {
+    const session: any = await ctx.runQuery(api.sessions.getSession, { sessionId }) as any;
+    if (!session) {
+      throw new Error('Session not found');
+    }
+
+    if (session.status === 'ended') {
+      throw new Error('Session has already ended');
+    }
+
+    if (session.questions.length > session.answers.length) {
+      throw new Error('Double down can only be requested after completing the main quiz.');
+    }
+
+    const lastQuestion: any = session.questions[session.questions.length - 1] as any;
+    if (lastQuestion && lastQuestion.gradeBand === 'double_down') {
+      throw new Error('Double down question has already been added.');
+    }
+
+    const doubleDownQuestions = await ctx.runQuery(
+      api.questions.getQuestionsByCategory,
+      {
+        category: session.category,
+        gradeBand: 'double_down',
+      }
+    ) as Doc<'questions'>[];
+
+    if (doubleDownQuestions.length === 0) {
+      throw new Error('No double down question found for this category.');
+    }
+
+    const question: Doc<'questions'> = shuffle(doubleDownQuestions)[0];
+
+    await ctx.runMutation(internal.sessions.addDoubleDownQuestionToSession, {
+      sessionId,
+      questionId: question._id,
+    });
+
+    return question;
+  },
+});
+
+export const addDoubleDownQuestionToSession = internalMutation({
+  args: { sessionId: v.id('sessions'), questionId: v.id('questions') },
+  handler: async (ctx, { sessionId, questionId }) => {
+    const session = await ctx.db.get(sessionId);
+    if (!session) {
+      throw new Error('Session not found');
+    }
+    await ctx.db.patch(sessionId, {
+      questions: [...session.questions, questionId],
+      difficultyCurve: [...session.difficultyCurve, 'double_down'],
+    });
+  },
+});
+
+export const submitDoubleDownAnswer = action({
+  args: { sessionId: v.id('sessions'), choiceIndex: v.number(), ms: v.number() },
+  handler: async (ctx: ActionCtx, { sessionId, choiceIndex, ms }) => {
+    const session: any = await ctx.runQuery(api.sessions.getSession, { sessionId }) as any;
+    if (!session) {
+      throw new Error('Session not found');
+    }
+
+    const doubleDownQuestion: Doc<'questions'> | undefined = session.questions[session.questions.length - 1] as Doc<'questions'> | undefined;
+    if (!doubleDownQuestion) {
+      throw new Error('Double down question not found in session.');
+    }
+
+    if (doubleDownQuestion.gradeBand !== 'double_down') {
+      throw new Error('Double down question has not been added to this session yet.');
+    }
+
+    const isCorrect: boolean = doubleDownQuestion.answerIndex === choiceIndex;
+    const finalScore: number = isCorrect ? session.score * 2 : Math.round(session.score * 0.5);
+
+    await ctx.runMutation(internal.sessions.endDoubleDownSession, {
+      sessionId,
+      finalScore,
+      isCorrect,
+      choiceIndex,
+      ms
+    });
+
+    return { correct: isCorrect, finalScore };
+  },
+});
+
+export const endDoubleDownSession = internalMutation({
+  args: {
+    sessionId: v.id('sessions'),
+    finalScore: v.number(),
+    isCorrect: v.boolean(),
+    choiceIndex: v.number(),
+    ms: v.number(),
+  },
+  handler: async (ctx, { sessionId, finalScore, isCorrect, choiceIndex, ms }) => {
+    const session = await ctx.db.get(sessionId);
+    if (!session) throw new Error('Session not found');
+
+    const lastQuestionId = session.questions[session.questions.length - 1];
+    const lastQuestion = await ctx.db.get(lastQuestionId);
+
+    if (!lastQuestion || lastQuestion.gradeBand !== 'double_down') {
+      throw new Error('Invalid double down question state.');
+    }
+
+    await ctx.db.patch(sessionId, {
+      score: finalScore,
+      status: 'ended',
+      endedAt: Date.now(),
+      answers: [
+        ...session.answers,
+        {
+          qid: lastQuestionId,
+          choice: choiceIndex,
+          correct: isCorrect,
+          ms,
+        },
+      ],
+    });
+  },
+});
+
+export const skipQuestion = internalMutation({
+  args: {
+    sessionId: v.id("sessions"),
+    questionId: v.id("questions"),
+  },
+  handler: async (ctx, { sessionId, questionId }) => {
+    const session = await ctx.db.get(sessionId);
+    if (!session) {
+      throw new Error("Session not found");
+    }
+
+    // Find the question to get the correct answer index
+    const question = await ctx.db.get(questionId);
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    await ctx.db.patch(session._id, {
+      answers: [
+        ...session.answers,
+        {
+          qid: questionId,
+          choice: question.answerIndex, // Mark correct answer to maintain streak
+          correct: true,
+          ms: 0,
+          boostUsed: "skip",
+        },
+      ],
+      streak: session.streak + 1, // Maintain streak
     });
   },
 });

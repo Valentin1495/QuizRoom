@@ -11,7 +11,8 @@ export const getQuestionsByCategory = query({
       v.literal('elem_high'),
       v.literal('middle'),
       v.literal('high'),
-      v.literal('college')
+      v.literal('college'),
+      v.literal('double_down')
     ),
   },
   handler: async (ctx, { category, gradeBand }) => {
@@ -21,5 +22,15 @@ export const getQuestionsByCategory = query({
         q.eq('category', category).eq('gradeBand', gradeBand)
       )
       .collect();
+  },
+});
+
+export const getQuestion = query({
+  args: {
+    questionId: v.id("questions"),
+  },
+  handler: async (ctx, { questionId }) => {
+    const question = await ctx.db.get(questionId);
+    return question;
   },
 });

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "temp_qzy",
+    "name": "QZY",
     "slug": "qzy",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.temp-qzy"
+      "bundleIdentifier": "com.eunho.qzy"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,10 +23,21 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.tempqzy"
+      "package": "com.eunho.qzy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static",
+            "deploymentTarget": "15.1"
+          }
+        }
+      ]
+    ]
   }
 }

@@ -21,11 +21,26 @@ export default defineSchema({
         v.literal('elem_high'),
         v.literal('middle'),
         v.literal('high'),
-        v.literal('college')
+        v.literal('college'),
+        v.literal('double_down')
       )
     ),
     questions: v.array(v.id("questions")),
-    answers: v.array(v.object({ qid: v.id("questions"), choice: v.number(), correct: v.boolean(), ms: v.number() })),
+    answers: v.array(
+      v.object({
+        qid: v.id("questions"),
+        choice: v.number(),
+        correct: v.boolean(),
+        ms: v.number(),
+        boostUsed: v.optional(
+          v.union(
+            v.literal("skip"),
+            v.literal("fifty"),
+            v.literal("hint")
+          )
+        ),
+      })
+    ),
     score: v.number(),
     streak: v.number(),
     streakDelta: v.number(),
@@ -42,7 +57,8 @@ export default defineSchema({
       v.literal('elem_high'),
       v.literal('middle'),
       v.literal('high'),
-      v.literal('college')
+      v.literal('college'),
+      v.literal('double_down')
     ),
     stem: v.string(),
     choices: v.array(v.string()),
