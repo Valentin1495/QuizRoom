@@ -1,4 +1,4 @@
-import { internalMutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 export const getUser = query({
     handler: async (ctx) => {
@@ -16,7 +16,7 @@ export const getUser = query({
     },
 });
 
-export const storeUser = internalMutation({
+export const storeUser = mutation({
     handler: async (ctx) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {

@@ -1,48 +1,40 @@
-import { useCallback, useEffect, useState } from "react";
-import auth, { FirebaseAuthTypes, onAuthStateChanged, getAuth } from "@react-native-firebase/auth";
+import { useCallback, useState } from "react";
+import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-
-// It's recommended to retrieve this from your google-services.json
-// or configure it in a central place.
-GoogleSignin.configure({
-  webClientId: '819818280538-emjirg8e17j6cc4qhbe98dcsgmshk586.apps.googleusercontent.com',
-});
+import { useMutation } from "convex/react";
+import { api } from "../convex/_generated/api";
 
 export function useAuth() {
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const storeUser = useMutation(api.users.storeUser);
 
+  const handleGoogleButtonPress = useCallback(async () => {
+    if (isSigningIn) return;
+    setIsSigningIn(true);
 
-  function handleAuthStateChanged(user: FirebaseAuthTypes.User | null) {
-    setUser(user ? user : null);
-    setInitializing(false);
-  }
-
-  useEffect(() => {
-    const subscriber = onAuthStateChanged(getAuth(), handleAuthStateChanged);
-    return subscriber;
-  }, []);
-
-
-
-  const signInWithGoogle = useCallback(async () => {
     try {
-      await GoogleSignin.hasPlayServices();
-      // First, sign in to establish a session
-      await GoogleSignin.signIn();
-      // Then, get the tokens for the signed-in user
-      const { idToken } = await GoogleSignin.getTokens();
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const userInfo = await GoogleSignin.signIn();
+      const idToken = userInfo.data?.idToken;
 
       if (!idToken) {
-        throw new Error("Google Sign-In failed: idToken is missing from getTokens().");
+        throw new Error("No ID token found after Google Sign-In.");
       }
 
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCredential);
+      const userCredential = await auth().signInWithCredential(googleCredential);
+
+      // After successful sign in, store the user in Convex.
+      await storeUser();
+
+      return userCredential;
     } catch (error) {
       console.error("Google Sign-In Error:", error);
+      throw error; // Re-throw the error to be handled by the caller if needed
+    } finally {
+      setIsSigningIn(false);
     }
-  }, []);
+  }, [isSigningIn, storeUser]);
 
   const signOut = useCallback(async () => {
     try {
@@ -53,10 +45,5 @@ export function useAuth() {
     }
   }, []);
 
-  const getFirebaseIdToken = useCallback(async () => {
-    const token = await auth().currentUser?.getIdToken();
-    return token ?? null;
-  }, []);
-
-  return { user, initializing, signInWithGoogle, signOut, getFirebaseIdToken };
+  return { isSigningIn, handleGoogleButtonPress, signOut };
 }
