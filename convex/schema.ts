@@ -10,7 +10,8 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_authId", ["authId"]),
   sessions: defineTable({
-    userId: v.id("users"),
+    userId: v.optional(v.id("users")),
+    guestId: v.optional(v.string()),
     status: v.union(v.literal("active"), v.literal("ended")),
     mode: v.string(),
     category: v.string(),
@@ -46,7 +47,8 @@ export default defineSchema({
     streakDelta: v.number(),
     startedAt: v.number(),
     endedAt: v.optional(v.number()),
-  }).index("by_user_status", ["userId", "status"]),
+  }).index("by_user_status", ["userId", "status"])
+    .index("by_guest_status", ["guestId", "status"]),
   questions: defineTable({
     source: v.union(v.literal("curated"), v.literal("ai")),
     locale: v.string(),
@@ -72,37 +74,45 @@ export default defineSchema({
     .index("by_category_gradeBand", ["category", "gradeBand"]),
   leaderboards: defineTable({
     period: v.string(),
-    userId: v.id("users"),
+    userId: v.optional(v.id("users")),
+    guestId: v.optional(v.string()),
     score: v.number(),
     runs: v.number(),
     updatedAt: v.number(),
   }).index("by_period_user", ["period", "userId"])
+    .index("by_period_guest", ["period", "guestId"])
     .index("by_period_score", ["period", "score"]),
   inventories: defineTable({
-    userId: v.id("users"),
+    userId: v.optional(v.id("users")),
+    guestId: v.optional(v.string()),
     coins: v.number(),
     boosts: v.object({
       skip: v.number(), fifty: v.number(), hint: v.number()
     }),
     premium: v.boolean(),
     seasonPass: v.optional(v.string())
-  }),
+  }).index("by_user", ["userId"])
+    .index("by_guest", ["guestId"]),
   purchases: defineTable({
-    userId: v.id("users"),
+    userId: v.optional(v.id("users")),
+    guestId: v.optional(v.string()),
     sku: v.string(),
     priceKRW: v.number(),
     platform: v.string(),
     receipt: v.string(),
     createdAt: v.number(),
-  }),
+  }).index("by_user", ["userId"])
+    .index("by_guest", ["guestId"]),
   reports: defineTable({
-    userId: v.id("users"),
+    userId: v.optional(v.id("users")),
+    guestId: v.optional(v.string()),
     qid: v.id("questions"),
     reason: v.string(),
     note: v.optional(v.string()),
     createdAt: v.number(),
     resolved: v.boolean(),
-  }),
+  }).index("by_user", ["userId"])
+    .index("by_guest", ["guestId"]),
   ai_prompts: defineTable({
     type: v.string(),
     input: v.string(),

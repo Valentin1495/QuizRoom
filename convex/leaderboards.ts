@@ -17,11 +17,13 @@ export const getWeeklyLeaderboard = query({
       .order("desc")
       .take(topN);
 
+    const usersWithScores = leaderboard.filter(entry => entry.userId);
+
     const users = await Promise.all(
-      leaderboard.map((entry) => ctx.db.get(entry.userId))
+      usersWithScores.map((entry) => ctx.db.get(entry.userId!))
     );
 
-    return leaderboard.map((entry, i) => ({
+    return usersWithScores.map((entry, i) => ({
       ...entry,
       user: users[i],
     }));

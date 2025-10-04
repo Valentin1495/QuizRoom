@@ -1,31 +1,49 @@
-import { useCallback, useState } from "react";
-import auth from "@react-native-firebase/auth";
+import { useState } from "react";
+import { getAuth, GoogleAuthProvider, signInWithCredential, signOut } from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { useUserStore } from "@/store/userStore";
+import * as SecureStore from 'expo-secure-store';
 
 export function useAuth() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const storeUser = useMutation(api.users.storeUser);
+  const mergeGuestData = useMutation(api.users.mergeGuestData);
+  const { guestId, login } = useUserStore((s) => ({ guestId: s.guestId, login: s.login }));
 
-  const handleGoogleButtonPress = useCallback(async () => {
+  const handleGoogleButtonPress = async () => {
     if (isSigningIn) return;
     setIsSigningIn(true);
 
     try {
+      // Check if your device supports Google Play
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-      const userInfo = await GoogleSignin.signIn();
-      const idToken = userInfo.data?.idToken;
+      // Get the users ID token
+      const signInResult = await GoogleSignin.signIn();
 
+      // Try the new style of google-sign in result, from v13+ of that module
+      const idToken = signInResult.data?.idToken;
       if (!idToken) {
-        throw new Error("No ID token found after Google Sign-In.");
+        throw new Error('No ID token found');
+      }
+      // Create a Google credential with the token
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+
+      // Sign-in the user with the credential
+      const userCredential = await signInWithCredential(getAuth(), googleCredential);
+
+      // After successful sign-in, store the user in Convex
+      await storeUser();
+
+      // Check if there is guest data to merge
+      if (guestId) {
+        await mergeGuestData({ guestId });
+        // Clear guest data after merging
+        await SecureStore.deleteItemAsync('guestId');
+        login(); // This will clear guestId from Zustand store
       }
 
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      const userCredential = await auth().signInWithCredential(googleCredential);
-
-      // After successful sign in, store the user in Convex.
-      await storeUser();
 
       return userCredential;
     } catch (error) {
@@ -34,16 +52,15 @@ export function useAuth() {
     } finally {
       setIsSigningIn(false);
     }
-  }, [isSigningIn, storeUser]);
+  }
 
-  const signOut = useCallback(async () => {
+  const googleSignOut = async () => {
     try {
-      await GoogleSignin.signOut();
-      await auth().signOut();
+      await signOut(getAuth())
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  };
 
-  return { isSigningIn, handleGoogleButtonPress, signOut };
+  return { isSigningIn, handleGoogleButtonPress, googleSignOut };
 }

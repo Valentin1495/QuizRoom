@@ -5,26 +5,6 @@ import { v } from 'convex/values';
 import { api, internal } from './_generated/api';
 import { shuffle } from 'lodash';
 
-// This internal mutation replaces the flawed `getUserId` helper.
-// It can safely access the database to find or create a user.
-export const getOrCreateDummyUser = internalMutation({
-  handler: async (ctx: MutationCtx) => {
-    // For now, we'll create a dummy user if one doesn't exist.
-    const user = await ctx.db.query('users').first();
-    if (user) {
-      return user._id;
-    }
-    return await ctx.db.insert('users', {
-      // In a real app, you'd get these from the auth provider.
-      authId: 'dummy-user-' + Math.random().toString(36).slice(2),
-      nickname: 'Guest',
-      avatar: 'avatar_url',
-      country: 'KR',
-      createdAt: Date.now(),
-    });
-  },
-});
-
 const calcScore = (
   msLeft: number,
   streak: number,
@@ -51,9 +31,24 @@ const GRADE_BANDS: Exclude<Doc<'questions'>['gradeBand'], 'double_down'>[] = [
 ];
 
 export const startSession = action({
-  args: { category: v.string() },
-  handler: async (ctx: ActionCtx, { category }) => {
-    const userId = await ctx.runMutation(internal.sessions.getOrCreateDummyUser);
+  args: { 
+    category: v.string(),
+    guestId: v.optional(v.string()),
+  },
+  handler: async (ctx: ActionCtx, { category, guestId }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    let player: { userId?: Id<'users'>, guestId?: string } = {};
+
+    if (identity) {
+        const user = await ctx.runQuery(api.users.getUser);
+        if (user) {
+            player.userId = user._id;
+        }
+    } else if (guestId) {
+        player.guestId = guestId;
+    } else {
+        throw new Error("User identity or guest ID is required to start a session.");
+    }
 
     const questionsPerGrade: Record<Doc<'questions'>['gradeBand'], number> = {
       kinder: 2,
@@ -93,7 +88,8 @@ export const startSession = action({
     const sessionId: Id<'sessions'> = await ctx.runMutation(
       internal.sessions.createSession,
       {
-        userId,
+        userId: player.userId,
+        guestId: player.guestId,
         category,
         questions: questionIds,
         difficultyCurve,
@@ -106,7 +102,8 @@ export const startSession = action({
 
 export const createSession = internalMutation({
   args: {
-    userId: v.id('users'),
+    userId: v.optional(v.id('users')),
+    guestId: v.optional(v.string()),
     category: v.string(),
     questions: v.array(v.id('questions')),
     difficultyCurve: v.array(
@@ -121,9 +118,10 @@ export const createSession = internalMutation({
       )
     ),
   },
-  handler: async (ctx: MutationCtx, { userId, category, questions, difficultyCurve }) => {
+  handler: async (ctx: MutationCtx, { userId, guestId, category, questions, difficultyCurve }) => {
     return await ctx.db.insert('sessions', {
       userId,
+      guestId,
       status: 'active',
       mode: 'quick',
       category,
@@ -234,10 +232,6 @@ export const submitAnswer = mutation({
       streak,
     });
 
-    // The stage-gate logic is no longer needed here,
-    // as any incorrect answer already terminates the session.
-    // We can simply proceed to the next question if correct.
-
     return { correct: isCorrect };
   },
 });
@@ -263,7 +257,6 @@ export const endSession = action({
       throw new Error("Session not found");
     }
     if (session.status === 'ended') {
-      // Avoid re-ending a session
       return;
     }
 
@@ -272,10 +265,13 @@ export const endSession = action({
       status: 'ended',
     });
 
-    await ctx.runMutation(internal.leaderboards.updateLeaderboard, {
-      userId: session.userId,
-      score: session.score,
-    });
+    // Only update leaderboard for logged-in users
+    if (session.userId) {
+        await ctx.runMutation(internal.leaderboards.updateLeaderboard, {
+            userId: session.userId,
+            score: session.score,
+        });
+    }
   },
 });
 
