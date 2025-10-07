@@ -1,80 +1,63 @@
 {
   "expo": {
-    "name": "QZY",
-    "slug": "qzy",
+    "name": "Blinko",
+    "slug": "blinko",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "scheme": "qzy",
-    "userInterfaceStyle": "dark",
+    "icon": "./assets/images/icon.png",
+    "scheme": "blinko",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#0B0B14"
-    },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.eunho.qzy",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.eunho.qzy",
-      "googleServicesFile": "./google-services.json"
+      "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
+      "expo-router",
       [
-        "expo-build-properties",
+        "expo-splash-screen",
         {
-          "ios": {
-            "useFrameworks": "static",
-            "extraPods": [
-              {
-                "name": "GoogleUtilities",
-                "modular_headers": true
-              },
-              {
-                "name": "FirebaseCore",
-                "modular_headers": true
-              },
-              {
-                "name": "FirebaseCoreInternal",
-                "modular_headers": true
-              },
-              {
-                "name": "FirebaseAuth",
-                "modular_headers": true
-              },
-              {
-                "name": "FirebaseAuthInterop",
-                "modular_headers": true
-              },
-              {
-                "name": "FirebaseAppCheckInterop",
-                "modular_headers": true
-              },
-              {
-                "name": "FirebaseCoreExtension",
-                "modular_headers": true
-              },
-              {
-                "name": "RecaptchaInterop",
-                "modular_headers": true
-              }
-            ]
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "backgroundColor": "#000000"
           }
         }
-      ]
-    ]
+      ],
+      "expo-secure-store",
+      "expo-apple-authentication"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d0c16cb3-beee-43b2-b3e0-929a71bab461"
+      }
+    },
+    "owner": "eunho_xiv",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d0c16cb3-beee-43b2-b3e0-929a71bab461"
+    }
   }
 }

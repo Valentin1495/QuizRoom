@@ -13,16 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as boosts from "../boosts.js";
-import type * as daily from "../daily.js";
-import type * as gamification from "../gamification.js";
-import type * as inventories from "../inventories.js";
-import type * as leaderboards from "../leaderboards.js";
-import type * as questions from "../questions.js";
-import type * as reports from "../reports.js";
-import type * as rewards from "../rewards.js";
-import type * as seed from "../seed.js";
-import type * as sessions from "../sessions.js";
+import type * as decks from "../decks.js";
+import type * as lib_auth from "../lib/auth.js";
+import type * as matches from "../matches.js";
 import type * as users from "../users.js";
 
 /**
@@ -34,16 +27,9 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  boosts: typeof boosts;
-  daily: typeof daily;
-  gamification: typeof gamification;
-  inventories: typeof inventories;
-  leaderboards: typeof leaderboards;
-  questions: typeof questions;
-  reports: typeof reports;
-  rewards: typeof rewards;
-  seed: typeof seed;
-  sessions: typeof sessions;
+  decks: typeof decks;
+  "lib/auth": typeof lib_auth;
+  matches: typeof matches;
   users: typeof users;
 }>;
 export declare const api: FilterApi<
