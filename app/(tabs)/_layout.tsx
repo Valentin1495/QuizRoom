@@ -1,62 +1,48 @@
-import { Colors } from '@/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import React from 'react';
+
+import { HapticTab } from '@/components/haptic-tab';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
+  const colorScheme = useColorScheme();
+
   return (
     <Tabs
+      initialRouteName="home"
       screenOptions={{
-        tabBarActiveTintColor: Colors.light.tabIconSelected,
-        tabBarInactiveTintColor: Colors.light.tabIconDefault,
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: Colors.light.background,
-          height: 90,
-          borderTopWidth: 0,
-          paddingTop: 5,
-          elevation: 0,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '600',
-          marginTop: 2,
-        },
-      }}
-    >
+        tabBarButton: HapticTab,
+      }}>
       <Tabs.Screen
-        name='index'
+        name="home"
         options={{
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name='home' size={size} color={color} />
-          ),
-          tabBarLabel: '홈',
+          title: '홈',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="sparkles" color={color} />,
         }}
       />
       <Tabs.Screen
-        name='challenges-screen'
+        name="swipe"
         options={{
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name='trophy' size={size} color={color} />
-          ),
-          tabBarLabel: '챌린지',
+          title: '스와이프',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="square.stack.3d.up.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name='skill-analysis-screen'
+        name="party"
         options={{
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name='stats-chart' size={size} color={color} />
-          ),
-          tabBarLabel: '실력 분석',
+          title: '파티',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.3.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name='my-stats-screen'
+        name="profile"
         options={{
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name='person' size={size} color={color} />
-          ),
-          tabBarLabel: '내 정보',
+          title: '프로필',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.crop.circle" color={color} />,
         }}
       />
     </Tabs>
