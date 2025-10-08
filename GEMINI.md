@@ -1,4 +1,4 @@
-# Blinko Build Plan
+# QuizRoom Build Plan
 
 > 기반: React Native (Expo) + TypeScript + Convex + Google Gemini. 현재 Expo/Convex 기본 세팅 완료.
 
