@@ -1,6 +1,5 @@
 import { useMemo, type ReactNode } from 'react';
-import { ActivityIndicator, Platform, Pressable, StyleSheet } from 'react-native';
-import * as AppleAuthentication from 'expo-apple-authentication';
+import { ActivityIndicator, Button, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -12,7 +11,7 @@ type AuthGateProps = {
 };
 
 export function AuthGate({ children }: AuthGateProps) {
-  const { status, user, signInWithGoogle, signInWithApple, error } = useAuth();
+  const { status, user, error, signInWithGoogle } = useAuth();
 
   const { isLoading, headline, helper } = useMemo(() => {
     if (status === 'authenticated' && user) {
@@ -34,12 +33,10 @@ export function AuthGate({ children }: AuthGateProps) {
     }
     return {
       isLoading: false,
-      headline: 'Blinko에 로그인하고 계속하기',
-      helper: 'Google 또는 Apple 계정으로 3초 만에 시작해요.',
+      headline: 'QuizRoom에 로그인하고 계속하기',
+      helper: 'Google 계정으로 간편하게 로그인하세요.',
     } as const;
   }, [status, user, error]);
-
-  const showAppleButton = Boolean(signInWithApple) && Platform.OS === 'ios';
 
   if (status === 'authenticated' && user) {
     return <>{children}</>;
@@ -61,24 +58,14 @@ export function AuthGate({ children }: AuthGateProps) {
         {isLoading ? (
           <ActivityIndicator size="large" color={Palette.purple600} />
         ) : (
-          <>
-            <Pressable onPress={signInWithGoogle} style={styles.googleButton}>
-              <ThemedText style={styles.googleLabel} lightColor="#ffffff" darkColor="#ffffff">
-                Google 계정으로 로그인
-              </ThemedText>
-            </Pressable>
-            {showAppleButton ? (
-              <AppleAuthentication.AppleAuthenticationButton
-                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-                cornerRadius={Radius.md}
-                style={styles.appleButton}
-                onPress={() => {
-                  void signInWithApple?.();
-                }}
-              />
-            ) : null}
-          </>
+          <Button
+            title="Google 계정으로 로그인"
+            onPress={() => {
+              void signInWithGoogle();
+            }}
+            color="#1a73e8"
+            disabled={status === 'authorizing'}
+          />
         )}
       </ThemedView>
     </ThemedView>
@@ -105,19 +92,5 @@ const styles = StyleSheet.create({
   },
   message: {
     textAlign: 'center',
-  },
-  googleButton: {
-    backgroundColor: '#1a73e8',
-    paddingVertical: Spacing.md,
-    borderRadius: Radius.md,
-    alignItems: 'center',
-  },
-  googleLabel: {
-    fontWeight: '600',
-  },
-  appleButton: {
-    width: '100%',
-    height: 44,
-    borderRadius: Radius.md,
   },
 });

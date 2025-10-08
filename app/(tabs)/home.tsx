@@ -73,7 +73,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.headerRow}>
           <View>
-            <ThemedText type="title">Blinko</ThemedText>
+            <ThemedText type="title">QuizRoom</ThemedText>
             <ThemedText style={[styles.subtitle, { color: muted }]}>60초 안에 즐기는 오늘의 퀴즈</ThemedText>
           </View>
           <Link href="/create" asChild>
@@ -87,7 +87,7 @@ export default function HomeScreen() {
 
         <View style={styles.section}>
           <View style={[styles.dailyCard, { backgroundColor: Palette.purple600 }]}
-            >
+          >
             <ThemedText type="subtitle" style={styles.dailyTitle} lightColor="#ffffff" darkColor="#ffffff">
               데일리 블링크
             </ThemedText>
@@ -108,7 +108,7 @@ export default function HomeScreen() {
             </Link>
           </View>
           <View style={[styles.statsRow, { backgroundColor: cardBackground, borderColor }]}
-            >
+          >
             <StatsPill label="스트릭" value="3일" />
             <StatsPill label="XP" value="1,280" />
             <StatsPill label="오늘 정답률" value="82%" />
@@ -120,7 +120,7 @@ export default function HomeScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
             {TRENDING_DECKS.map((deck) => (
               <View key={deck.id} style={[styles.deckCard, { backgroundColor: cardBackground, borderColor }]}
-                >
+              >
                 <ThemedText style={styles.deckTag} lightColor={Palette.pink500} darkColor={Palette.pink200}>
                   {deck.tag}
                 </ThemedText>
@@ -136,7 +136,7 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <SectionHeader title="파티 라이브" tagline="친구들과 붙어보기" />
           <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
-            >
+          >
             <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
             <TextInput
               value={partyCode}

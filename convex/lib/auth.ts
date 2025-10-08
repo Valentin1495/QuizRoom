@@ -2,7 +2,7 @@ import type { MutationCtx, QueryCtx } from "../_generated/server";
 import type { Doc } from "../_generated/dataModel";
 import { ConvexError } from "convex/values";
 
-const DEFAULT_AVATAR = "https://avatars.dicebear.com/api/initials/blinko.png";
+const DEFAULT_AVATAR = "https://avatars.dicebear.com/api/initials/quizroom.png";
 
 type AuthIdentity = {
   identityId: string;
