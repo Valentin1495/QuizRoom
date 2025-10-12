@@ -13,9 +13,10 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as daily from "../daily.js";
 import type * as decks from "../decks.js";
 import type * as lib_auth from "../lib/auth.js";
-import type * as matches from "../matches.js";
+import type * as rooms from "../rooms.js";
 import type * as users from "../users.js";
 
 /**
@@ -27,9 +28,10 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  daily: typeof daily;
   decks: typeof decks;
   "lib/auth": typeof lib_auth;
-  matches: typeof matches;
+  rooms: typeof rooms;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

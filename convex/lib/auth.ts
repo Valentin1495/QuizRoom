@@ -100,6 +100,8 @@ export async function ensureAuthedUser(ctx: MutationCtx): Promise<{ user: Doc<"u
     interests: [],
     streak: 0,
     xp: 0,
+    totalCorrect: 0,
+    totalPlayed: 0,
     cosmetics: [],
     createdAt: now,
   });

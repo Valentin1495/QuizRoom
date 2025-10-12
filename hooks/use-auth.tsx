@@ -46,6 +46,7 @@ type AuthContextValue = {
   error: string | null;
   isConvexReady: boolean;
   refreshUser: () => Promise<void>;
+  resetUser: () => Promise<void>;
 };
 
 type AuthedUser = {
@@ -55,6 +56,8 @@ type AuthedUser = {
   provider: string;
   streak: number;
   xp: number;
+  totalCorrect: number;
+  totalPlayed: number;
   interests: string[];
 };
 
@@ -114,14 +117,13 @@ export function AuthProvider({
   children: ReactNode;
 }) {
   const ensureSelf = useMutation(api.users.ensureSelf);
+  const resetSelf = useMutation(api.users.resetSelf);
   const [status, setStatus] = useState<AuthStatus>("loading");
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<AuthedUser | null>(null);
   const [isConvexReady, setIsConvexReady] = useState(false);
   const tokensRef = useRef<AuthTokens | null>(null);
   const hasEnsuredRef = useRef(false);
-
-
 
   const bumpAuthVersion = useCallback(() => {
     client.setAuth(
@@ -160,6 +162,8 @@ export function AuthProvider({
         streak: payload.streak,
         xp: payload.xp,
         interests: payload.interests,
+        totalCorrect: payload.totalCorrect,
+        totalPlayed: payload.totalPlayed,
       });
       setStatus("authenticated");
       setError(null);
@@ -312,6 +316,16 @@ export function AuthProvider({
     }
   }, [ensureUser]);
 
+  const resetUser = useCallback(async () => {
+    try {
+      await firebaseSignOut(getAuth());
+    } catch (err) {
+      console.error("Firebase signOut failed, proceeding with account deletion", err);
+    }
+    await resetSelf();
+    await clearAuthState();
+  }, [resetSelf, clearAuthState]);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
@@ -324,6 +338,7 @@ export function AuthProvider({
       error,
       isConvexReady,
       refreshUser,
+      resetUser,
     }),
     [
       status,
@@ -336,6 +351,7 @@ export function AuthProvider({
       error,
       isConvexReady,
       refreshUser,
+      resetUser,
     ]
   );
 

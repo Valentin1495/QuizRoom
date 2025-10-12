@@ -25,6 +25,10 @@ export default function RootLayout() {
           <AuthGate>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="daily/index"
+                options={{ title: '데일리 블링크', headerBackButtonDisplayMode: 'minimal' }}
+              />
               <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
             </Stack>
             <StatusBar style="auto" />

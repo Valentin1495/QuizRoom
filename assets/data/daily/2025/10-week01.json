@@ -1,0 +1,954 @@
+[
+    {
+        "availableDate": "2025-10-09",
+        "category": "fashion",
+        "questions": [
+            {
+                "id": "q1",
+                "prompt": "2025년 FW 시즌, 미니멀리즘의 대항마로 떠오른 '이 스타일'은 무엇일까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "놈코어"
+                    },
+                    {
+                        "id": "b",
+                        "text": "맥시멀리즘"
+                    },
+                    {
+                        "id": "c",
+                        "text": "아메카지"
+                    },
+                    {
+                        "id": "d",
+                        "text": "스트릿"
+                    }
+                ],
+                "answerId": "b",
+                "explanation": "정답은 맥시멀리즘입니다. 화려한 패턴과 색상, 과감한 실루엣이 특징입니다.",
+                "difficulty": 0.3
+            },
+            {
+                "id": "q2",
+                "prompt": "지속가능한 패션을 위해, 실제 가죽을 대체하는 '이 소재'가 주목받고 있습니다. 무엇일까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "선인장 가죽"
+                    },
+                    {
+                        "id": "b",
+                        "text": "폴리에스테르"
+                    },
+                    {
+                        "id": "c",
+                        "text": "나일론"
+                    },
+                    {
+                        "id": "d",
+                        "text": "아크릴"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 선인장 가죽입니다. 친환경적이면서도 내구성이 뛰어나 인기를 끌고 있습니다.",
+                "difficulty": 0.5
+            },
+            {
+                "id": "q3",
+                "prompt": "최근 아이돌 공항 패션에서 자주 보이는, 렌즈가 매우 작은 선글라스 스타일은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "보잉 선글라스"
+                    },
+                    {
+                        "id": "b",
+                        "text": "마이크로 선글라스"
+                    },
+                    {
+                        "id": "c",
+                        "text": "오버사이즈 선글라스"
+                    },
+                    {
+                        "id": "d",
+                        "text": "캣츠아이 선글라스"
+                    }
+                ],
+                "answerId": "b",
+                "explanation": "정답은 마이크로 선글라스입니다. 90년대 유행이 돌아온 대표적인 아이템입니다.",
+                "difficulty": 0.6
+            },
+            {
+                "id": "q4",
+                "prompt": "상의와 하의를 같은 소재나 패턴으로 맞춰 입는 패션을 무엇이라고 할까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "셋업"
+                    },
+                    {
+                        "id": "b",
+                        "text": "믹스매치"
+                    },
+                    {
+                        "id": "c",
+                        "text": "톤온톤"
+                    },
+                    {
+                        "id": "d",
+                        "text": "레이어드"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 셋업입니다. 포멀하면서도 스타일리시한 연출이 가능해 인기입니다.",
+                "difficulty": 0.4
+            },
+            {
+                "id": "q5",
+                "prompt": "2025년 패션계에서 기술을 접목한 '이것'이 새로운 트렌드가 되었습니다. 무엇일까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "웨어러블 테크"
+                    },
+                    {
+                        "id": "b",
+                        "text": "패스트 패션"
+                    },
+                    {
+                        "id": "c",
+                        "text": "컨템포러리"
+                    },
+                    {
+                        "id": "d",
+                        "text": "아방가르드"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 웨어러블 테크입니다. LED나 스마트 센서를 탑재한 의류가 대표적입니다.",
+                "difficulty": 0.7
+            }
+        ],
+        "shareTemplate": {
+            "headline": "오늘의 패션 퀴즈, 60초 스피드런!",
+            "cta": "도전?",
+            "emoji": "👗"
+        }
+    },
+    {
+        "availableDate": "2025-10-10",
+        "category": "movie",
+        "questions": [
+            {
+                "id": "q1",
+                "prompt": "2025년 개봉한 마블 영화 '판타스틱 4'에서 '휴먼 토치' 역을 맡은 배우는?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "조셉 퀸"
+                    },
+                    {
+                        "id": "b",
+                        "text": "페드로 파스칼"
+                    },
+                    {
+                        "id": "c",
+                        "text": "에번 모스배크랙"
+                    },
+                    {
+                        "id": "d",
+                        "text": "바네사 커비"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 조셉 퀸입니다. 그는 '기묘한 이야기'의 에디 먼슨 역으로도 유명합니다.",
+                "difficulty": 0.3
+            },
+            {
+                "id": "q2",
+                "prompt": "영화 '파묘'에서 배우 최민식이 연기한 풍수사의 이름은 무엇일까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "김상덕"
+                    },
+                    {
+                        "id": "b",
+                        "text": "고영근"
+                    },
+                    {
+                        "id": "c",
+                        "text": "이화림"
+                    },
+                    {
+                        "id": "d",
+                        "text": "윤봉길"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 김상덕입니다. 그는 대한민국 최고의 풍수사로 등장합니다.",
+                "difficulty": 0.5
+            },
+            {
+                "id": "q3",
+                "prompt": "영화 '듄: 파트 2'에서 폴이 타고 다니는 거대한 사막 생물의 이름은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "크레이트 드래곤"
+                    },
+                    {
+                        "id": "b",
+                        "text": "스캐럽"
+                    },
+                    {
+                        "id": "c",
+                        "text": "샤이 훌루드"
+                    },
+                    {
+                        "id": "d",
+                        "text": "샌드웜"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 샤이 훌루드입니다. 프레멘들은 이를 '사막의 노인'이라 부릅니다.",
+                "difficulty": 0.6
+            },
+            {
+                "id": "q4",
+                "prompt": "다음 중 '범죄도시' 시리즈의 빌런이 아닌 인물은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "장첸"
+                    },
+                    {
+                        "id": "b",
+                        "text": "강해상"
+                    },
+                    {
+                        "id": "c",
+                        "text": "주성철"
+                    },
+                    {
+                        "id": "d",
+                        "text": "장동수"
+                    }
+                ],
+                "answerId": "d",
+                "explanation": "정답은 장동수입니다. 장동수는 영화 '악인전'의 마동석 캐릭터입니다.",
+                "difficulty": 0.4
+            },
+            {
+                "id": "q5",
+                "prompt": "봉준호 감독의 2025년 신작 SF 영화의 제목은 무엇일까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "기생충 2"
+                    },
+                    {
+                        "id": "b",
+                        "text": "미키 17"
+                    },
+                    {
+                        "id": "c",
+                        "text": "옥자 리턴즈"
+                    },
+                    {
+                        "id": "d",
+                        "text": "설국열차: 프리퀄"
+                    }
+                ],
+                "answerId": "b",
+                "explanation": "정답은 '미키 17'입니다. 로버트 패틴슨이 주연을 맡아 기대를 모으고 있습니다.",
+                "difficulty": 0.7
+            }
+        ],
+        "shareTemplate": {
+            "headline": "오늘의 영화 퀴즈, 60초 스피드런!",
+            "cta": "도전?",
+            "emoji": "🎬"
+        }
+    },
+    {
+        "availableDate": "2025-10-11",
+        "category": "sports",
+        "questions": [
+            {
+                "id": "q1",
+                "prompt": "2024 파리 올림픽에서 펜싱 남자 사브르 단체전이 달성한 쾌거는?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "올림픽 3연패"
+                    },
+                    {
+                        "id": "b",
+                        "text": "아시아 최초 금메달"
+                    },
+                    {
+                        "id": "c",
+                        "text": "전 종목 석권"
+                    },
+                    {
+                        "id": "d",
+                        "text": "최연소 금메달"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 올림픽 3연패입니다. 한국 펜싱의 역사를 새로 쓴 순간이었습니다.",
+                "difficulty": 0.3
+            },
+            {
+                "id": "q2",
+                "prompt": "한국인 최초로 MLB 골드 글러브를 수상한 이 선수의 포지션은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "투수"
+                    },
+                    {
+                        "id": "b",
+                        "text": "포수"
+                    },
+                    {
+                        "id": "c",
+                        "text": "외야수"
+                    },
+                    {
+                        "id": "d",
+                        "text": "내야수"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 외야수입니다. 샌프란시스코의 이정후 선수가 그 주인공입니다.",
+                "difficulty": 0.5
+            },
+            {
+                "id": "q3",
+                "prompt": "축구에서 골키퍼를 제외한 선수가 손을 사용할 수 있는 유일한 상황은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "코너킥"
+                    },
+                    {
+                        "id": "b",
+                        "text": "스로인"
+                    },
+                    {
+                        "id": "c",
+                        "text": "프리킥"
+                    },
+                    {
+                        "id": "d",
+                        "text": "페널티킥"
+                    }
+                ],
+                "answerId": "b",
+                "explanation": "정답은 스로인입니다. 공이 터치라인 밖으로 나갔을 때 시행합니다.",
+                "difficulty": 0.6
+            },
+            {
+                "id": "q4",
+                "prompt": "최근 MZ세대 사이에서 인기 있는 '이 운동'은 테니스와 배드민턴을 합친 형태입니다.",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "스쿼시"
+                    },
+                    {
+                        "id": "b",
+                        "text": "피클볼"
+                    },
+                    {
+                        "id": "c",
+                        "text": "클라이밍"
+                    },
+                    {
+                        "id": "d",
+                        "text": "크로스핏"
+                    }
+                ],
+                "answerId": "b",
+                "explanation": "정답은 피클볼입니다. 배우기 쉽고 운동량이 많아 새로운 실내 스포츠로 각광받고 있습니다.",
+                "difficulty": 0.4
+            },
+            {
+                "id": "q5",
+                "prompt": "e스포츠 '리그 오브 레전드'에서 '페이커' 이상혁 선수가 속한 팀은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "Gen.G"
+                    },
+                    {
+                        "id": "b",
+                        "text": "Dplus KIA"
+                    },
+                    {
+                        "id": "c",
+                        "text": "T1"
+                    },
+                    {
+                        "id": "d",
+                        "text": "KT Rolster"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 T1입니다. 페이커는 T1의 프랜차이즈 스타이자 살아있는 전설입니다.",
+                "difficulty": 0.7
+            }
+        ],
+        "shareTemplate": {
+            "headline": "오늘의 스포츠 퀴즈, 60초 스피드런!",
+            "cta": "도전?",
+            "emoji": "🏆"
+        }
+    },
+    {
+        "availableDate": "2025-10-12",
+        "category": "meme",
+        "questions": [
+            {
+                "id": "q1",
+                "prompt": "음식을 아주 맛있게 먹는 상황을 표현하는 신조어 'OOO한다'에서 OOO에 들어갈 말은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "도파민"
+                    },
+                    {
+                        "id": "b",
+                        "text": "단백질"
+                    },
+                    {
+                        "id": "c",
+                        "text": "탄수화물"
+                    },
+                    {
+                        "id": "d",
+                        "text": "글루탐산"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 '도파민'입니다. '도파민 터진다'처럼 자극적이고 즐거운 상황에 사용됩니다.",
+                "difficulty": 0.3
+            },
+            {
+                "id": "q2",
+                "prompt": "'탕후루 옆에 탕후루' 챌린지를 유행시킨 연예인은 누구일까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "이영지"
+                    },
+                    {
+                        "id": "b",
+                        "text": "권은비"
+                    },
+                    {
+                        "id": "c",
+                        "text": "유재석"
+                    },
+                    {
+                        "id": "d",
+                        "text": "기안84"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 이영지입니다. '차린건 쥐뿔도 없지만' 채널에서 시작된 밈입니다.",
+                "difficulty": 0.5
+            },
+            {
+                "id": "q3",
+                "prompt": "상대방의 논리가 막혔을 때 사용하는 밈 '그래서 OOO이 뭔데'의 OOO은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "결론"
+                    },
+                    {
+                        "id": "b",
+                        "text": "본론"
+                    },
+                    {
+                        "id": "c",
+                        "text": "요점"
+                    },
+                    {
+                        "id": "d",
+                        "text": "근거"
+                    }
+                ],
+                "answerId": "b",
+                "explanation": "정답은 '본론'입니다. '그래서 본론이 뭔데'는 핵심을 말하라는 의미로 쓰입니다.",
+                "difficulty": 0.6
+            },
+            {
+                "id": "q4",
+                "prompt": "'~할게'를 귀엽게 표현한 신조어로, 아이돌들이 팬들에게 자주 사용하는 말은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "~할 거"
+                    },
+                    {
+                        "id": "b",
+                        "text": "~할 거용"
+                    },
+                    {
+                        "id": "c",
+                        "text": "~할껭"
+                    },
+                    {
+                        "id": "d",
+                        "text": "~할겜"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 '~할껭'입니다. 애교 섞인 말투로 팬들과 소통할 때 사용됩니다.",
+                "difficulty": 0.4
+            },
+            {
+                "id": "q5",
+                "prompt": "최근 숏폼에서 유행하는 '알파 세대'들이 사용하는 외계어의 특징이 아닌 것은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "받침 생략"
+                    },
+                    {
+                        "id": "b",
+                        "text": "띄어쓰기 무시"
+                    },
+                    {
+                        "id": "c",
+                        "text": "자음과 모음 분리"
+                    },
+                    {
+                        "id": "d",
+                        "text": "한자를 섞어 사용"
+                    }
+                ],
+                "answerId": "d",
+                "explanation": "정답은 '한자를 섞어 사용'입니다. 이는 과거 세대의 통신체 특징 중 하나입니다.",
+                "difficulty": 0.7
+            }
+        ],
+        "shareTemplate": {
+            "headline": "오늘의 밈·신조어 퀴즈, 60초 스피드런!",
+            "cta": "도전?",
+            "emoji": "🤣"
+        }
+    },
+    {
+        "availableDate": "2025-10-13",
+        "category": "tech",
+        "questions": [
+            {
+                "id": "q1",
+                "prompt": "애플이 2025년 새롭게 선보인 개인용 AI 시스템의 이름은 무엇일까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "Apple Intelligence"
+                    },
+                    {
+                        "id": "b",
+                        "text": "Siri Pro"
+                    },
+                    {
+                        "id": "c",
+                        "text": "iAI"
+                    },
+                    {
+                        "id": "d",
+                        "text": "Neural Engine"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 Apple Intelligence입니다. 개인 맞춤형 서비스를 제공하는 것이 특징입니다.",
+                "difficulty": 0.3
+            },
+            {
+                "id": "q2",
+                "prompt": "삼성 갤럭시 스마트폰의 실시간 통역 기능을 무엇이라고 부를까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "빅스비 통역"
+                    },
+                    {
+                        "id": "b",
+                        "text": "갤럭시 통역"
+                    },
+                    {
+                        "id": "c",
+                        "text": "라이브 통역"
+                    },
+                    {
+                        "id": "d",
+                        "text": "AI 통역"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 라이브 통역입니다. 온디바이스 AI를 기반으로 인터넷 없이도 작동합니다.",
+                "difficulty": 0.5
+            },
+            {
+                "id": "q3",
+                "prompt": "현실 세계에 가상 정보를 겹쳐 보여주는 기술을 무엇이라고 할까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "가상현실(VR)"
+                    },
+                    {
+                        "id": "b",
+                        "text": "증강현실(AR)"
+                    },
+                    {
+                        "id": "c",
+                        "text": "혼합현실(MR)"
+                    },
+                    {
+                        "id": "d",
+                        "text": "확장현실(XR)"
+                    }
+                ],
+                "answerId": "b",
+                "explanation": "정답은 증강현실(AR)입니다. '포켓몬 고'가 대표적인 AR 기술 활용 사례입니다.",
+                "difficulty": 0.6
+            },
+            {
+                "id": "q4",
+                "prompt": "다음 중 OpenAI가 개발한 인공지능 모델이 아닌 것은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "GPT-4o"
+                    },
+                    {
+                        "id": "b",
+                        "text": "Sora"
+                    },
+                    {
+                        "id": "c",
+                        "text": "DALL-E 3"
+                    },
+                    {
+                        "id": "d",
+                        "text": "Gemini"
+                    }
+                ],
+                "answerId": "d",
+                "explanation": "정답은 Gemini입니다. Gemini는 구글이 개발한 인공지능 모델입니다.",
+                "difficulty": 0.4
+            },
+            {
+                "id": "q5",
+                "prompt": "기존 와이파이6보다 더 빠르고 안정적인 최신 무선 통신 기술 규격은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "와이파이 5G"
+                    },
+                    {
+                        "id": "b",
+                        "text": "와이파이 6E"
+                    },
+                    {
+                        "id": "c",
+                        "text": "와이파이 7"
+                    },
+                    {
+                        "id": "d",
+                        "text": "와이파이 X"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 와이파이 7입니다. 다중 링크 작동(MLO) 기술로 속도와 안정성을 높였습니다.",
+                "difficulty": 0.7
+            }
+        ],
+        "shareTemplate": {
+            "headline": "오늘의 테크 퀴즈, 60초 스피드런!",
+            "cta": "도전?",
+            "emoji": "💡"
+        }
+    },
+    {
+        "availableDate": "2025-10-14",
+        "category": "series",
+        "questions": [
+            {
+                "id": "q1",
+                "prompt": "2024년 방영되어 큰 인기를 끈 드라마 '선재 업고 튀어'의 남자 주인공 이름은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "백인혁"
+                    },
+                    {
+                        "id": "b",
+                        "text": "류선재"
+                    },
+                    {
+                        "id": "c",
+                        "text": "김태성"
+                    },
+                    {
+                        "id": "d",
+                        "text": "임솔"
+                    }
+                ],
+                "answerId": "b",
+                "explanation": "정답은 류선재입니다. 배우 변우석이 연기하여 '선재앓이' 신드롬을 일으켰습니다.",
+                "difficulty": 0.3
+            },
+            {
+                "id": "q2",
+                "prompt": "넷플릭스 시리즈 '오징어 게임 시즌 2'에 새롭게 합류한 배우가 아닌 사람은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "임시완"
+                    },
+                    {
+                        "id": "b",
+                        "text": "강하늘"
+                    },
+                    {
+                        "id": "c",
+                        "text": "박성훈"
+                    },
+                    {
+                        "id": "d",
+                        "text": "공유"
+                    }
+                ],
+                "answerId": "d",
+                "explanation": "정답은 공유입니다. 공유는 시즌 1에 딱지치기남으로 출연한 기존 멤버입니다.",
+                "difficulty": 0.5
+            },
+            {
+                "id": "q3",
+                "prompt": "나영석 PD의 유튜브 채널 '채널 십오야'에서 진행한 라이브 방송의 이름은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "소통의 시간"
+                    },
+                    {
+                        "id": "b",
+                        "text": "와글와글"
+                    },
+                    {
+                        "id": "c",
+                        "text": "나불나불"
+                    },
+                    {
+                        "id": "d",
+                        "text": "불금불금"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 '나불나불'입니다. 나영석 PD와 게스트의 편안한 토크 방송입니다.",
+                "difficulty": 0.6
+            },
+            {
+                "id": "q4",
+                "prompt": "드라마 '눈물의 여왕'에서 김수현 배우가 맡은 역할의 이름은 무엇일까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "윤은성"
+                    },
+                    {
+                        "id": "b",
+                        "text": "홍수철"
+                    },
+                    {
+                        "id": "c",
+                        "text": "백현우"
+                    },
+                    {
+                        "id": "d",
+                        "text": "홍범준"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 백현우입니다. 퀸즈 그룹의 법무 이사이자 홍해인의 남편 역할입니다.",
+                "difficulty": 0.4
+            },
+            {
+                "id": "q5",
+                "prompt": "최근 종영한 연애 리얼리티 '환승연애3'의 최종 선택에서 커플이 되지 않은 출연자는?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "동진"
+                    },
+                    {
+                        "id": "b",
+                        "text": "다혜"
+                    },
+                    {
+                        "id": "c",
+                        "text": "창진"
+                    },
+                    {
+                        "id": "d",
+                        "text": "서경"
+                    }
+                ],
+                "answerId": "d",
+                "explanation": "정답은 서경입니다. 서경은 최종 선택에서 누구에게도 선택받지 못했습니다.",
+                "difficulty": 0.7
+            }
+        ],
+        "shareTemplate": {
+            "headline": "오늘의 예능·드라마 퀴즈, 60초 스피드런!",
+            "cta": "도전?",
+            "emoji": "🍿"
+        }
+    },
+    {
+        "availableDate": "2025-10-15",
+        "category": "music",
+        "questions": [
+            {
+                "id": "q1",
+                "prompt": "2024년 여름, 'Supernatural'로 컴백하여 큰 인기를 끈 걸그룹은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "에스파"
+                    },
+                    {
+                        "id": "b",
+                        "text": "아이브"
+                    },
+                    {
+                        "id": "c",
+                        "text": "뉴진스"
+                    },
+                    {
+                        "id": "d",
+                        "text": "르세라핌"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 뉴진스입니다. 'Supernatural'은 일본 데뷔 싱글의 타이틀곡입니다.",
+                "difficulty": 0.3
+            },
+            {
+                "id": "q2",
+                "prompt": "에스파의 'Supernova' 안무 중, 양손을 번갈아 돌리는 포인트 안무의 이름은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "까딱춤"
+                    },
+                    {
+                        "id": "b",
+                        "text": "불꽃춤"
+                    },
+                    {
+                        "id": "c",
+                        "text": "회오리춤"
+                    },
+                    {
+                        "id": "d",
+                        "text": "시동춤"
+                    }
+                ],
+                "answerId": "a",
+                "explanation": "정답은 까딱춤입니다. 중독성 있는 멜로디와 안무로 챌린지 열풍을 일으켰습니다.",
+                "difficulty": 0.5
+            },
+            {
+                "id": "q3",
+                "prompt": "다음 중 BTS 멤버가 아닌 사람은 누구일까요?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "RM"
+                    },
+                    {
+                        "id": "b",
+                        "text": "진"
+                    },
+                    {
+                        "id": "c",
+                        "text": "카이"
+                    },
+                    {
+                        "id": "d",
+                        "text": "제이홉"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 카이입니다. 카이는 EXO와 SuperM의 멤버입니다.",
+                "difficulty": 0.6
+            },
+            {
+                "id": "q4",
+                "prompt": "최근 데뷔한 SM엔터테인먼트의 신인 남자 아이돌 그룹의 이름은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "라이즈"
+                    },
+                    {
+                        "id": "b",
+                        "text": "NCT WISH"
+                    },
+                    {
+                        "id": "c",
+                        "text": "보이넥스트도어"
+                    },
+                    {
+                        "id": "d",
+                        "text": "투어스"
+                    }
+                ],
+                "answerId": "b",
+                "explanation": "정답은 NCT WISH입니다. NCT의 마지막 서브 그룹으로 데뷔했습니다.",
+                "difficulty": 0.4
+            },
+            {
+                "id": "q5",
+                "prompt": "지코가 프로듀싱하고 제니가 피처링하여 화제가 된 곡의 제목은?",
+                "choices": [
+                    {
+                        "id": "a",
+                        "text": "아무노래"
+                    },
+                    {
+                        "id": "b",
+                        "text": "새삥"
+                    },
+                    {
+                        "id": "c",
+                        "text": "SPOT!"
+                    },
+                    {
+                        "id": "d",
+                        "text": "괴짜"
+                    }
+                ],
+                "answerId": "c",
+                "explanation": "정답은 'SPOT!'입니다. 두 아티스트의 만남만으로도 큰 화제를 모았습니다.",
+                "difficulty": 0.7
+            }
+        ],
+        "shareTemplate": {
+            "headline": "오늘의 K-POP/음악 퀴즈, 60초 스피드런!",
+            "cta": "도전?",
+            "emoji": "🎵"
+        }
+    }
+]

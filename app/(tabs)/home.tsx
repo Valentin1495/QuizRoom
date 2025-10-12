@@ -1,16 +1,21 @@
+import { useQuery } from 'convex/react';
 import { Link, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
+import { api } from '@/convex/_generated/api';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
@@ -40,6 +45,9 @@ function formatTimeLeft(target: Date) {
 export default function HomeScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
+  const dailyQuiz = useQuery(api.daily.getDailyQuiz, {});
+  const selfStats = useQuery(api.users.getSelfStats);
   const [timeLeft, setTimeLeft] = useState(() => {
     const nextReset = new Date();
     nextReset.setHours(24, 0, 0, 0);
@@ -61,57 +69,94 @@ export default function HomeScreen() {
   const borderColor = palette.border;
   const muted = useThemeColor({}, 'textMuted');
 
-  const isCodeValid = useMemo(() => partyCode.trim().length === 5, [partyCode]);
+  const isCodeValid = useMemo(() => partyCode.trim().length === 6, [partyCode]);
 
   const handleJoinParty = useCallback(() => {
     if (!isCodeValid) return;
     router.push(`/room/${partyCode.trim().toUpperCase()}`);
   }, [isCodeValid, partyCode, router]);
 
+  const handleCreatePress = useCallback(() => {
+    Alert.alert(
+      '크리에이터 모드 준비 중',
+      '퀴즈 만들기는 곧 오픈될 예정이에요. 조금만 기다려주세요!'
+    );
+  }, []);
+
+  const dailyCategoryCopy = useMemo(
+    () => resolveDailyCategoryCopy(dailyQuiz?.category),
+    [dailyQuiz?.category]
+  );
+
+  const dailyTitleLabel = useMemo(() => {
+    const emoji = dailyQuiz?.shareTemplate?.emoji ?? '⚡';
+    const categoryLabel = dailyCategoryCopy?.label ?? '데일리 블링크';
+    return `${emoji} 오늘의 ${categoryLabel}`;
+  }, [dailyCategoryCopy, dailyQuiz?.shareTemplate?.emoji]);
+
+  const dailyHeadline = useMemo(() => {
+    if (dailyQuiz?.shareTemplate?.headline) {
+      return dailyQuiz.shareTemplate.headline;
+    }
+    return '오늘의 5문제, 스트릭을 이어가세요!';
+  }, [dailyQuiz?.shareTemplate?.headline]);
+
+  const dailyCTA = '오늘의 퀴즈 시작';
+  const dailyCaption = dailyQuiz?.category
+    ? `카테고리 · ${dailyCategoryCopy?.label ?? dailyQuiz.category}`
+    : '오늘은 랜덤 카테고리';
+
   return (
     <ThemedView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl + insets.bottom },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.headerRow}>
           <View>
             <ThemedText type="title">QuizRoom</ThemedText>
             <ThemedText style={[styles.subtitle, { color: muted }]}>60초 안에 즐기는 오늘의 퀴즈</ThemedText>
           </View>
-          <Link href="/create" asChild>
-            <Pressable style={styles.createButton}>
-              <ThemedText style={styles.createButtonLabel} lightColor="#fff" darkColor="#fff">
-                퀴즈 만들기
-              </ThemedText>
-            </Pressable>
-          </Link>
+          <Pressable style={[styles.createButton, styles.createButtonDisabled]} onPress={handleCreatePress}>
+            <ThemedText style={styles.createButtonLabel} lightColor="#fff" darkColor="#fff">
+              크리에이터 모드 준비 중
+            </ThemedText>
+          </Pressable>
         </View>
 
         <View style={styles.section}>
           <View style={[styles.dailyCard, { backgroundColor: Palette.purple600 }]}
           >
             <ThemedText type="subtitle" style={styles.dailyTitle} lightColor="#ffffff" darkColor="#ffffff">
-              데일리 블링크
+              {dailyTitleLabel}
             </ThemedText>
             <ThemedText style={styles.dailyHeadline} lightColor="#ffffff" darkColor="#ffffff">
-              오늘의 5문제, 스트릭을 이어가세요!
+              {dailyHeadline}
+            </ThemedText>
+            <ThemedText style={styles.dailyCategory} lightColor="#F5F4FFCC" darkColor="#F5F4FFCC">
+              {dailyCaption}
             </ThemedText>
             <View style={styles.timerPill}>
               <ThemedText style={styles.timerLabel} lightColor={Palette.purple600} darkColor={Palette.purple600}>
                 {timeLeft} 남음
               </ThemedText>
             </View>
-            <Link href="/(tabs)/swipe" asChild>
+            <Link href="/daily" asChild>
               <Pressable style={styles.primaryButton}>
                 <ThemedText style={styles.primaryButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
-                  오늘의 퀴즈 시작
+                  {dailyCTA}
                 </ThemedText>
               </Pressable>
             </Link>
           </View>
           <View style={[styles.statsRow, { backgroundColor: cardBackground, borderColor }]}
           >
-            <StatsPill label="스트릭" value="3일" />
-            <StatsPill label="XP" value="1,280" />
-            <StatsPill label="오늘 정답률" value="82%" />
+            <StatsPill label="스트릭" value={`${selfStats?.streak ?? '-'}일`} />
+            <StatsPill label="XP" value={`${selfStats?.xp ?? 0}`} />
+            <StatsPill label="오늘 정답률" value={`${selfStats?.totalPlayed ? Math.round((selfStats.totalCorrect / selfStats.totalPlayed) * 100) : 0}%`} />
           </View>
         </View>
 
@@ -141,9 +186,9 @@ export default function HomeScreen() {
             <TextInput
               value={partyCode}
               onChangeText={(value) => setPartyCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
-              placeholder="ABCDE"
+              placeholder="ABCDEF"
               autoCapitalize="characters"
-              maxLength={5}
+              maxLength={6}
               style={[styles.partyInput, { borderColor }]}
               placeholderTextColor={muted}
             />
@@ -218,6 +263,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: Radius.pill,
   },
+  createButtonDisabled: {
+    backgroundColor: Palette.slate500,
+    opacity: 0.85,
+  },
   createButtonLabel: {
     fontWeight: '600',
     fontSize: 14,
@@ -237,6 +286,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     lineHeight: 30,
+  },
+  dailyCategory: {
+    fontSize: 13,
+    fontWeight: '500',
   },
   timerPill: {
     backgroundColor: '#FFFFFF',

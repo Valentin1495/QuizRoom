@@ -1,0 +1,868 @@
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Alert, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { resolveDailyCategoryCopy } from '@/constants/daily';
+import { Palette, Radius, Spacing } from '@/constants/theme';
+import { api } from '@/convex/_generated/api';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { useMutation, useQuery } from 'convex/react';
+
+const TOTAL_TIME_LIMIT = 60;
+
+type DailyQuestion = {
+  id: string;
+  prompt: string;
+  choices: { id: string; text: string }[];
+  answerId: string;
+  explanation: string;
+  difficulty: number;
+};
+
+type QuestionResult = {
+  questionId: string;
+  selectedChoiceId: string | null;
+  correctChoiceId: string | null;
+  isCorrect: boolean;
+};
+
+type Phase = 'intro' | 'question' | 'reveal' | 'finished';
+type TimerMode = 'timed' | 'untimed';
+
+function formatSeconds(seconds: number) {
+  const safeSeconds = Math.max(0, seconds);
+  const minutes = Math.floor(safeSeconds / 60);
+  const leftover = safeSeconds % 60;
+  const pad = (value: number) => value.toString().padStart(2, '0');
+  return `${pad(minutes)}:${pad(leftover)}`;
+}
+
+export default function DailyQuizScreen() {
+  const router = useRouter();
+  const params = useLocalSearchParams<{ date?: string | string[] }>();
+  const resolvedDate = Array.isArray(params.date) ? params.date[0] : params.date;
+  const tint = useThemeColor({}, 'tint');
+  const dailyQuiz = useQuery(api.daily.getDailyQuiz, { date: resolvedDate });
+  const insets = useSafeAreaInsets();
+  const [phase, setPhase] = useState<Phase>('intro');
+  const [timerMode, setTimerMode] = useState<TimerMode | null>(null);
+  const [totalTimeLeft, setTotalTimeLeft] = useState<number | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
+  const [results, setResults] = useState<QuestionResult[]>([]);
+  const shareTemplate = dailyQuiz?.shareTemplate ?? null;
+  const updateStats = useMutation(api.users.updateStats);
+  const [skippedQuestionIds, setSkippedQuestionIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!dailyQuiz) {
+      return;
+    }
+    setPhase('intro');
+    setTimerMode(null);
+    setTotalTimeLeft(null);
+    setCurrentIndex(0);
+    setSelectedChoiceId(null);
+    setResults([]);
+    setSkippedQuestionIds([]);
+  }, [dailyQuiz]);
+
+  const questions = useMemo(() => dailyQuiz?.questions ?? [], [dailyQuiz?.questions]);
+  const totalQuestions = questions.length;
+  const currentQuestion = questions[currentIndex];
+  const correctChoiceId = currentQuestion
+    ? currentQuestion.choices.find((choice) => choice.id === currentQuestion.answerId)?.id ?? null
+    : null;
+
+  const recordResult = useCallback((question: DailyQuestion, selection: string | null, isCorrect: boolean) => {
+    const correct = question.choices.find((choice) => choice.id === question.answerId)?.id ?? null;
+    setResults((prev) => {
+      const filtered = prev.filter((entry) => entry.questionId !== question.id);
+      return [...filtered, { questionId: question.id, selectedChoiceId: selection, correctChoiceId: correct, isCorrect }];
+    });
+    setSkippedQuestionIds((prev) => prev.filter((id) => id !== question.id));
+  }, []);
+
+  const handleReveal = useCallback(
+    (question: DailyQuestion, selection: string | null) => {
+      const correct = question.choices.find((choice) => choice.id === question.answerId)?.id ?? null;
+      const isCorrect = selection !== null && selection === correct;
+      recordResult(question, selection, Boolean(isCorrect));
+      setSelectedChoiceId(selection);
+      setPhase('reveal');
+    },
+    [recordResult],
+  );
+
+  useEffect(() => {
+    if (timerMode !== 'timed') return;
+    if (phase === 'intro' || phase === 'finished') return;
+    const timer = setInterval(() => {
+      setTotalTimeLeft((prev) => {
+        if (prev === null) return prev;
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [phase, timerMode]);
+
+  useEffect(() => {
+    if (timerMode !== 'timed') return;
+    if (phase === 'intro' || phase === 'finished') return;
+    if (totalTimeLeft === 0) {
+      Alert.alert('시간 종료', '시간이 만료되었습니다. 결과를 확인해볼까요?');
+      setPhase('finished');
+    }
+  }, [phase, timerMode, totalTimeLeft]);
+
+  const handleChoicePress = useCallback(
+    (choiceId: string) => {
+      if (!currentQuestion || phase !== 'question') return;
+      handleReveal(currentQuestion, choiceId);
+    },
+    [currentQuestion, handleReveal, phase],
+  );
+
+  const goToQuestion = useCallback(
+    (index: number) => {
+      if (index < 0 || index >= totalQuestions) {
+        return;
+      }
+      setCurrentIndex(index);
+      setSelectedChoiceId(null);
+      setPhase('question');
+    },
+    [totalQuestions],
+  );
+
+  const startQuiz = useCallback(
+    (mode: TimerMode) => {
+      if (!dailyQuiz) return;
+      setTimerMode(mode);
+      setTotalTimeLeft(mode === 'timed' ? TOTAL_TIME_LIMIT : null);
+      setResults([]);
+      setSkippedQuestionIds([]);
+      setSelectedChoiceId(null);
+      setCurrentIndex(0);
+      setPhase('question');
+    },
+    [dailyQuiz],
+  );
+
+  const sortedResults = useMemo(() => {
+    if (!dailyQuiz) return results;
+    const order = new Map(dailyQuiz.questions.map((q, index) => [q.id, index]));
+    return [...results].sort((a, b) => {
+      const aIndex = order.get(a.questionId) ?? 0;
+      const bIndex = order.get(b.questionId) ?? 0;
+      return aIndex - bIndex;
+    });
+  }, [dailyQuiz, results]);
+
+  const answeredSet = useMemo(() => new Set(sortedResults.map((entry) => entry.questionId)), [sortedResults]);
+  const correctCount = sortedResults.filter((entry) => entry.isCorrect).length;
+  const totalAnswered = sortedResults.length;
+
+  useEffect(() => {
+    if (phase === 'finished' && correctCount > 0) {
+      updateStats({ correct: correctCount });
+    }
+  }, [phase, correctCount, updateStats]);
+  const unansweredCount = totalQuestions - totalAnswered;
+  const isLastQuestion = currentIndex === totalQuestions - 1;
+  const allAnswered = unansweredCount === 0;
+
+  const findNextUnansweredIndex = useCallback(
+    (startIndex: number, excludeId?: string) => {
+      for (let offset = 1; offset <= questions.length; offset += 1) {
+        const idx = (startIndex + offset) % questions.length;
+        const questionId = questions[idx].id;
+        if (excludeId && questionId === excludeId) {
+          continue;
+        }
+        if (!answeredSet.has(questionId)) {
+          return idx;
+        }
+      }
+      return null;
+    },
+    [answeredSet, questions],
+  );
+
+  const canSkipCurrent = useMemo(() => {
+    if (phase !== 'question' || !currentQuestion) return false;
+    return findNextUnansweredIndex(currentIndex, currentQuestion.id) !== null;
+  }, [currentQuestion, currentIndex, findNextUnansweredIndex, phase]);
+
+  const promptSkippedReview = useCallback(() => {
+    Alert.alert(`미응답 문제가 ${unansweredCount}개 있어요`, '모든 문제를 풀면 결과가 더 정확해요.', [
+      {
+        text: '결과 보기',
+        onPress: () => {
+          setPhase('finished');
+        },
+      },
+      { text: '취소', style: 'cancel' },
+    ]);
+  }, [unansweredCount]);
+
+  const handleNext = useCallback(() => {
+    if (!dailyQuiz) return;
+    const nextIndex = findNextUnansweredIndex(currentIndex);
+    if (nextIndex !== null) {
+      goToQuestion(nextIndex);
+      return;
+    }
+    if (!allAnswered) {
+      promptSkippedReview();
+      return;
+    }
+    setPhase('finished');
+  }, [allAnswered, currentIndex, dailyQuiz, findNextUnansweredIndex, goToQuestion, promptSkippedReview]);
+
+  const handleReset = useCallback(() => {
+    setPhase('intro');
+    setTimerMode(null);
+    setTotalTimeLeft(null);
+    setResults([]);
+    setSkippedQuestionIds([]);
+    setSelectedChoiceId(null);
+    setCurrentIndex(0);
+  }, []);
+
+  const handleSkip = useCallback(() => {
+    if (!currentQuestion || phase !== 'question') return;
+
+    if (!skippedQuestionIds.includes(currentQuestion.id)) {
+      setSkippedQuestionIds((prev) => [...prev, currentQuestion.id]);
+    }
+
+    const nextIndex = findNextUnansweredIndex(currentIndex, currentQuestion.id);
+    if (nextIndex !== null) {
+      goToQuestion(nextIndex);
+      return;
+    }
+    promptSkippedReview();
+  }, [currentIndex, currentQuestion, findNextUnansweredIndex, goToQuestion, phase, promptSkippedReview, skippedQuestionIds]);
+
+  const categoryCopy = useMemo(
+    () => resolveDailyCategoryCopy(dailyQuiz?.category),
+    [dailyQuiz?.category]
+  );
+
+  const headerInfo = useMemo(() => {
+    if (!dailyQuiz) {
+      return null;
+    }
+    const copy = categoryCopy;
+    const emoji = dailyQuiz.shareTemplate?.emoji ?? copy?.emoji ?? '⚡';
+    const label = copy?.label ?? '오늘의 퀴즈';
+    const subtitle = dailyQuiz.shareTemplate?.headline ?? '오늘의 5문제를 시작해요.';
+    const dateLabel = dailyQuiz.availableDate
+      ? new Date(`${dailyQuiz.availableDate}T00:00:00`).toLocaleDateString('ko-KR', {
+        month: 'long',
+        day: 'numeric',
+        weekday: 'short',
+      })
+      : null;
+    return {
+      title: `${emoji} ${label}`,
+      subtitle,
+      dateLabel,
+    };
+  }, [categoryCopy, dailyQuiz]);
+
+  const shareEmoji = shareTemplate?.emoji ?? '⚡';
+  const shareHeadline = shareTemplate?.headline ?? '60초 스피드런!';
+  const shareCta = shareTemplate?.cta ?? '친구 초대';
+
+  const deepLink = useMemo(() => {
+    if (!dailyQuiz?.availableDate) {
+      return 'quizroom://daily';
+    }
+    return `quizroom://daily?date=${dailyQuiz.availableDate}`;
+  }, [dailyQuiz?.availableDate]);
+
+  const handleShare = useCallback(async () => {
+    if (!dailyQuiz) return;
+    const shareMessage =
+      `${shareEmoji} ${shareHeadline}\n` +
+      `오늘 퀴즈에서 ${totalQuestions}문제 중 ${correctCount}문제를 맞췄어요!\n` +
+      `같이 도전해볼래? ${deepLink}`;
+    try {
+      await Share.share({
+        message: shareMessage,
+      });
+    } catch (error) {
+      Alert.alert(
+        '공유에 실패했어요',
+        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
+      );
+    }
+  }, [correctCount, dailyQuiz, deepLink, shareEmoji, shareHeadline, totalQuestions]);
+
+  const handleResultPress = () => {
+    if (!allAnswered || skippedQuestionIds.length > 0) {
+      promptSkippedReview();
+      return;
+    }
+    setPhase('finished');
+  };
+
+  if (dailyQuiz === undefined) {
+    return (
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={tint} />
+        <ThemedText style={styles.loadingLabel}>오늘의 퀴즈를 불러오는 중…</ThemedText>
+      </ThemedView>
+    );
+  }
+
+  if (!dailyQuiz || totalQuestions === 0) {
+    return (
+      <ThemedView style={styles.loadingContainer}>
+        <ThemedText type="title">오늘의 퀴즈가 준비되지 않았어요</ThemedText>
+        <ThemedText style={styles.loadingLabel}>잠시 후 다시 시도해주세요.</ThemedText>
+        <Pressable style={styles.retryButton} onPress={() => router.back()}>
+          <ThemedText style={styles.retryLabel} lightColor="#ffffff" darkColor="#ffffff">
+            돌아가기
+          </ThemedText>
+        </Pressable>
+      </ThemedView>
+    );
+  }
+
+  if (phase === 'intro') {
+    return (
+      <ThemedView style={styles.container}>
+        <ScrollView
+          contentContainerStyle={[
+            styles.content,
+            { paddingTop: insets.top + Spacing.xl, paddingBottom: Spacing.xl + insets.bottom },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.introCard}>
+            <ThemedText type="title">오늘의 퀴즈 시작</ThemedText>
+            <ThemedText style={styles.introSubtitle}>
+              시간 제한을 선택하고 시작해보세요. 타임어택은 60초 안에 모든 문제를 풀어야 합니다.
+            </ThemedText>
+            <View style={styles.introButtons}>
+              <Pressable style={[styles.introButton, styles.introTimed]} onPress={() => startQuiz('timed')}>
+                <ThemedText style={styles.introButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
+                  60초 타임어택
+                </ThemedText>
+                <ThemedText style={styles.introButtonCaption} lightColor="#ffffff" darkColor="#ffffff">
+                  긴장감 넘치는 시간 제한 모드
+                </ThemedText>
+              </Pressable>
+              <Pressable style={styles.introButton} onPress={() => startQuiz('untimed')}>
+                <ThemedText style={styles.introButtonLabel}>시간 제한 없음</ThemedText>
+                <ThemedText style={styles.introButtonCaption}>여유롭게 문제를 풀어보세요</ThemedText>
+              </Pressable>
+            </View>
+          </View>
+        </ScrollView>
+      </ThemedView>
+    );
+  }
+
+  if (phase === 'finished') {
+    return (
+      <ThemedView style={styles.container}>
+        <ScrollView
+          contentContainerStyle={[
+            styles.summaryContent,
+            { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl + insets.bottom },
+          ]}
+        >
+          <ThemedText type="title">오늘의 결과</ThemedText>
+          <ThemedText style={styles.summaryHeadline}>
+            {totalQuestions}문제 중 {correctCount}문제 정답!
+          </ThemedText>
+          <View style={styles.summaryStats}>
+            <View style={styles.summaryStatCard}>
+              <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
+              <ThemedText type="title">
+                {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}%
+              </ThemedText>
+            </View>
+          </View>
+          <View style={styles.summaryList}>
+            {dailyQuiz.questions.map((question, index) => {
+              const result = sortedResults.find((entry) => entry.questionId === question.id);
+              const answerChoice = question.choices.find((choice) => choice.id === question.answerId);
+              return (
+                <View key={question.id} style={styles.summaryRow}>
+                  <ThemedText style={styles.summaryQuestion}>
+                    {index + 1}. {question.prompt}
+                  </ThemedText>
+                  <ThemedText style={styles.summaryAnswer}>
+                    정답: {answerChoice?.text ?? '정보 없음'}
+                  </ThemedText>
+                  <ThemedText
+                    style={[
+                      styles.summaryResult,
+                      result
+                        ? result.isCorrect
+                          ? styles.correctText
+                          : styles.incorrectText
+                        : styles.skippedText,
+                    ]}
+                  >
+                    {result ? (result.isCorrect ? '정답!' : '오답') : '미응답'}
+                  </ThemedText>
+                </View>
+              );
+            })}
+          </View>
+          <View style={styles.shareCard}>
+            <ThemedText style={styles.shareEmoji}>{shareEmoji}</ThemedText>
+            <ThemedText style={styles.shareHeadline}>{shareHeadline}</ThemedText>
+            <ThemedText style={styles.shareBody}>
+              {totalQuestions}문제 중 {correctCount}문제 정답! 링크를 공유하면 친구도 오늘 퀴즈에 참여할 수 있어요.
+            </ThemedText>
+            <Pressable style={styles.shareButton} onPress={handleShare}>
+              <ThemedText style={styles.shareButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
+                {shareCta}
+              </ThemedText>
+            </Pressable>
+          </View>
+        </ScrollView>
+        <View style={styles.footerRow}>
+          <Pressable style={[styles.secondaryButton, styles.flexButton]} onPress={handleReset}>
+            <ThemedText style={styles.secondaryLabel}>다시 풀기</ThemedText>
+          </Pressable>
+          <Link href="/(tabs)/home" asChild>
+            <Pressable style={[styles.primaryButton, styles.flexButton]}>
+              <ThemedText style={styles.primaryLabel} lightColor="#ffffff" darkColor="#ffffff">
+                홈으로
+              </ThemedText>
+            </Pressable>
+          </Link>
+        </View>
+      </ThemedView>
+    );
+  }
+
+  if (!currentQuestion) {
+    Alert.alert('퀴즈를 불러오지 못했습니다.', '잠시 후 다시 시도해주세요.', [
+      { text: '확인', onPress: () => router.back() },
+    ]);
+    return null;
+  }
+
+  return (
+    <ThemedView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          {
+            paddingTop: insets.top + Spacing.md,
+            paddingBottom: Spacing.xxl + insets.bottom,
+          },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {headerInfo ? (
+          <View style={styles.header}>
+            <ThemedText style={styles.headerTitle}>{headerInfo.title}</ThemedText>
+            <ThemedText style={styles.headerSubtitle}>{headerInfo.subtitle}</ThemedText>
+            {headerInfo.dateLabel ? (
+              <ThemedText style={styles.headerMeta}>{headerInfo.dateLabel}</ThemedText>
+            ) : null}
+          </View>
+        ) : null}
+
+        <View style={styles.metaRow}>
+          <View style={styles.badge}>
+            <ThemedText style={styles.badgeText}>Q{currentIndex + 1}/{totalQuestions}</ThemedText>
+          </View>
+          <View style={styles.timerPill}>
+            {timerMode === 'timed' ? (
+              <ThemedText style={styles.timerText} lightColor={Palette.slate900} darkColor={Palette.slate900}>
+                남은 시간 {formatSeconds(totalTimeLeft ?? 0)}
+              </ThemedText>
+            ) : (
+              <ThemedText style={styles.timerText} lightColor={Palette.slate900} darkColor={Palette.slate900}>
+                시간 제한 없음
+              </ThemedText>
+            )}
+          </View>
+        </View>
+
+        <View style={styles.questionCard}>
+          <ThemedText type="subtitle" style={styles.questionPrompt}>
+            {currentQuestion.prompt}
+          </ThemedText>
+          <View style={styles.choiceList}>
+            {currentQuestion.choices.map((choice, index) => {
+              const isSelected = selectedChoiceId === choice.id;
+              const isCorrectChoice = phase !== 'question' && choice.id === correctChoiceId;
+              const isIncorrectSelection =
+                phase !== 'question' && isSelected && choice.id !== correctChoiceId;
+              return (
+                <Pressable
+                  key={choice.id}
+                  onPress={() => handleChoicePress(choice.id)}
+                  disabled={phase !== 'question'}
+                  style={({ pressed }) => [
+                    styles.choiceButton,
+                    pressed && phase === 'question' ? styles.choicePressed : null,
+                    isSelected ? styles.choiceSelected : null,
+                    isCorrectChoice ? styles.choiceCorrect : null,
+                    isIncorrectSelection ? styles.choiceIncorrect : null,
+                  ]}
+                >
+                  <ThemedText style={styles.choiceIndex}>
+                    {String.fromCharCode(65 + index)}
+                  </ThemedText>
+                  <ThemedText style={styles.choiceText}>{choice.text}</ThemedText>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
+        {phase !== 'question' ? (
+          <View style={styles.explanationCard}>
+            <ThemedText style={styles.explanationTitle}>해설</ThemedText>
+            <ThemedText style={styles.explanationBody}>{currentQuestion.explanation}</ThemedText>
+          </View>
+        ) : null}
+      </ScrollView>
+
+      <View style={styles.footerRow}>
+        {phase === 'question' && canSkipCurrent && (
+          <Pressable style={[styles.secondaryButton, styles.flexButton]} onPress={handleSkip}>
+            <ThemedText style={styles.secondaryLabel}>건너뛰기</ThemedText>
+          </Pressable>
+        )}
+        {!isLastQuestion ? (
+          <Pressable
+            style={[styles.primaryButton, styles.flexButton, phase === 'question' ? styles.primaryDisabled : null]}
+            disabled={phase === 'question'}
+            onPress={handleNext}
+          >
+            <ThemedText style={styles.primaryLabel} lightColor="#ffffff" darkColor="#ffffff">
+              다음 문제
+            </ThemedText>
+          </Pressable>
+        ) : null}
+      </View>
+      <Pressable
+        style={
+          styles.resultButton
+        }
+        onPress={handleResultPress}
+      >
+        <ThemedText style={styles.resultButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
+          결과 보기
+        </ThemedText>
+      </Pressable>
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.xl,
+    gap: Spacing.lg,
+  },
+  content: {
+    flexGrow: 1,
+    gap: Spacing.lg,
+    paddingBottom: Spacing.xl,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: Spacing.xl,
+    gap: Spacing.md,
+  },
+  loadingLabel: {
+    textAlign: 'center',
+  },
+  introCard: {
+    gap: Spacing.lg,
+    padding: Spacing.xl,
+    borderRadius: Radius.lg,
+    backgroundColor: 'rgba(91, 46, 255, 0.12)',
+  },
+  introSubtitle: {
+    lineHeight: 22,
+    opacity: 0.9,
+  },
+  introButtons: {
+    gap: Spacing.md,
+  },
+  introButton: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: 'rgba(91,46,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    gap: Spacing.xs,
+  },
+  introTimed: {
+    backgroundColor: Palette.pink500,
+    borderColor: 'transparent',
+  },
+  introButtonLabel: {
+    fontWeight: '700',
+    fontSize: 18,
+  },
+  introButtonCaption: {
+    fontSize: 13,
+    opacity: 0.9,
+  },
+  retryButton: {
+    marginTop: Spacing.lg,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+    borderRadius: Radius.md,
+    backgroundColor: Palette.purple600,
+  },
+  retryLabel: {
+    fontWeight: '600',
+  },
+  header: {
+    gap: Spacing.xs,
+    marginBottom: Spacing.lg,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    lineHeight: 20,
+    opacity: 0.9,
+  },
+  headerMeta: {
+    fontSize: 12,
+    opacity: 0.7,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  badge: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    backgroundColor: Palette.purple200,
+  },
+  badgeText: {
+    fontWeight: '600',
+    color: Palette.purple600,
+  },
+  timerPill: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    backgroundColor: Palette.pink200,
+  },
+  timerText: {
+    fontWeight: '600',
+  },
+  questionCard: {
+    gap: Spacing.lg,
+  },
+  questionPrompt: {
+    fontSize: 20,
+    lineHeight: 28,
+  },
+  choiceList: {
+    gap: Spacing.md,
+  },
+  choiceButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.lg,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
+  choicePressed: {
+    opacity: 0.8,
+  },
+  choiceSelected: {
+    borderColor: Palette.purple600,
+    backgroundColor: 'rgba(91, 46, 255, 0.08)',
+  },
+  choiceCorrect: {
+    borderColor: Palette.success,
+    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+  },
+  choiceIncorrect: {
+    borderColor: Palette.danger,
+    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+  },
+  choiceIndex: {
+    fontWeight: '600',
+    width: 24,
+    textAlign: 'center',
+  },
+  choiceText: {
+    flex: 1,
+  },
+  explanationCard: {
+    padding: Spacing.lg,
+    borderRadius: Radius.lg,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    gap: Spacing.sm,
+  },
+  explanationTitle: {
+    fontWeight: '600',
+  },
+  explanationBody: {
+    lineHeight: 20,
+  },
+  footerRow: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+  },
+  secondaryButton: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: Palette.slate500,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryDisabled: {
+    opacity: 0.6,
+  },
+  secondaryLabel: {
+    fontWeight: '600',
+  },
+  primaryButton: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: Radius.md,
+    backgroundColor: Palette.purple600,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  primaryDisabled: {
+    opacity: 0.6,
+  },
+  primaryLabel: {
+    fontWeight: '600',
+  },
+  flexButton: {
+    flex: 1,
+  },
+  resultButton: {
+    marginTop: Spacing.md,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.md,
+    backgroundColor: Palette.pink500,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  resultButtonLabel: {
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  summaryContent: {
+    flexGrow: 1,
+    gap: Spacing.lg,
+    paddingBottom: Spacing.xl,
+  },
+  summaryHeadline: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  summaryStats: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+  },
+  summaryStatCard: {
+    flex: 1,
+    padding: Spacing.lg,
+    borderRadius: Radius.lg,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    gap: Spacing.xs,
+  },
+  summaryStatLabel: {
+    fontWeight: '600',
+    opacity: 0.8,
+  },
+  summaryList: {
+    gap: Spacing.md,
+  },
+  summaryRow: {
+    gap: Spacing.xs,
+    padding: Spacing.md,
+    borderRadius: Radius.md,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+  },
+  summaryQuestion: {
+    fontWeight: '600',
+    lineHeight: 20,
+  },
+  summaryAnswer: {
+    opacity: 0.9,
+  },
+  summaryResult: {
+    fontWeight: '600',
+  },
+  correctText: {
+    color: Palette.success,
+  },
+  incorrectText: {
+    color: Palette.danger,
+  },
+  skippedText: {
+    color: Palette.slate500,
+  },
+  shareCard: {
+    marginTop: Spacing.lg,
+    padding: Spacing.lg,
+    borderRadius: Radius.lg,
+    backgroundColor: 'rgba(91, 46, 255, 0.12)',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  shareEmoji: {
+    fontSize: 32,
+  },
+  shareHeadline: {
+    fontWeight: '700',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  shareBody: {
+    textAlign: 'center',
+    opacity: 0.85,
+    lineHeight: 20,
+  },
+  shareButton: {
+    marginTop: Spacing.sm,
+    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.pill,
+    backgroundColor: Palette.pink500,
+  },
+  shareButtonLabel: {
+    fontWeight: '600',
+  },
+});
