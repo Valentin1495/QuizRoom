@@ -48,6 +48,7 @@ export default function PartyPlayScreen() {
     const [isPausePending, setIsPausePending] = useState(false);
     const [isResumePending, setIsResumePending] = useState(false);
     const [delayPreset, setDelayPreset] = useState<'rapid' | 'standard' | 'chill'>('standard');
+    const [isGameStalled, setIsGameStalled] = useState(false);
 
     const resolveDelay = useCallback(() => {
         switch (delayPreset) {
@@ -90,11 +91,11 @@ export default function PartyPlayScreen() {
     const status = roomState?.room.status ?? 'lobby';
     const currentRound = roomState?.currentRound ?? null;
     const participants = roomState?.participants ?? [];
+    const hostUserId = roomState?.room.hostId ?? null;
     const hostParticipant = useMemo(
-        () => participants.find((participant) => participant.isHost) ?? null,
-        [participants]
+        () => (hostUserId ? participants.find((p) => p.userId === hostUserId) : null),
+        [participants, hostUserId]
     );
-    const hostUserId = hostParticipant?.userId ?? roomState?.room.hostId ?? null;
     const hostNickname = hostParticipant?.nickname ?? '호스트';
     const hostIsConnected = hostParticipant?.isConnected ?? false;
     const totalRounds = roomState?.room.totalRounds ?? 0;
@@ -117,7 +118,6 @@ export default function PartyPlayScreen() {
         shownForSession: false,
         lastShownAt: null,
     });
-    const WAITING_TOAST_COOLDOWN_MS = 10000;
     const statusRef = useRef<string | null>(null);
 
     useEffect(() => {
@@ -188,14 +188,12 @@ export default function PartyPlayScreen() {
 
     const syncedNow = roomState ? localNowMs - serverOffsetMs : undefined;
     const timeLeft = computeTimeLeft(roomState?.room.phaseEndsAt ?? null, syncedNow);
-    const isHostOffline = hostParticipant?.isHost && !hostParticipant.isConnected;
+    const isHostOffline = !!hostUserId && !hostIsConnected;
     const isHostWaitingPhase =
         ['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(status) &&
         timeLeft !== null &&
         timeLeft <= 0 &&
         !isPaused;
-    const isWaitingForHost =
-        !isHost && isHostOffline && (status === 'results' || isHostWaitingPhase);
 
     useEffect(() => {
         if (!hostUserId) return;
@@ -238,8 +236,6 @@ export default function PartyPlayScreen() {
         const wasConnected = hostConnectivityRef.current;
         if (wasConnected && !hostIsConnected) {
             showToast('호스트 연결이 잠시 끊겼어요. 다른 참가자가 이어받을 때까지 기다려주세요.');
-            waitingToastRef.current.shownForSession = true;
-            waitingToastRef.current.lastShownAt = Date.now();
         } else if (!wasConnected && hostIsConnected) {
             showToast('호스트 연결이 복구됐어요. 진행을 이어가요.');
         }
@@ -259,12 +255,25 @@ export default function PartyPlayScreen() {
     }, [isHost, isPaused, showToast, status]);
 
     useEffect(() => {
-        if (isWaitingForHost) {
+        if (isHost || isPaused) {
+            setIsGameStalled(false);
+            return;
+        }
+        if (isHostWaitingPhase) {
+            const timer = setTimeout(() => {
+                setIsGameStalled(true);
+            }, 1500);
+            return () => clearTimeout(timer);
+        } else {
+            setIsGameStalled(false);
+        }
+    }, [isHost, isHostWaitingPhase, isPaused, status]);
+
+    useEffect(() => {
+        if (isGameStalled) {
             const meta = waitingToastRef.current;
             const now = Date.now();
-            const canShow =
-                !meta.shownForSession &&
-                (meta.lastShownAt === null || now - meta.lastShownAt >= WAITING_TOAST_COOLDOWN_MS);
+            const canShow = !meta.shownForSession;
             if (canShow) {
                 showToast('호스트 연결을 확인하는 중이에요. 잠시만 기다려주세요.');
                 meta.shownForSession = true;
@@ -273,7 +282,7 @@ export default function PartyPlayScreen() {
         } else {
             waitingToastRef.current.shownForSession = false;
         }
-    }, [isWaitingForHost, showToast]);
+    }, [isGameStalled, showToast]);
 
     const handleChoicePress = async (choiceIndex: number) => {
         if (!roomId || status !== 'question' || !currentRound) return;
