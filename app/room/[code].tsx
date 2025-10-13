@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, BackHandler, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -17,11 +17,14 @@ export default function PartyRoomScreen() {
   const params = useLocalSearchParams<{ code?: string }>();
   const roomCode = useMemo(() => (params.code ?? '').toString().toUpperCase(), [params.code]);
 
+  const [hasLeft, setHasLeft] = useState(false);
+  const shouldFetchLobby = !!user && roomCode.length > 0 && !hasLeft;
   const lobby = useQuery(
     api.rooms.getLobby,
-    user ? (roomCode ? { code: roomCode } : 'skip') : 'skip'
+    shouldFetchLobby ? { code: roomCode } : 'skip'
   );
   const joinRoom = useMutation(api.rooms.join);
+  const leaveRoom = useMutation(api.rooms.leave);
   const heartbeat = useMutation(api.rooms.heartbeat);
   const startRoom = useMutation(api.rooms.start);
   const progressRoom = useMutation(api.rooms.progress);
@@ -47,13 +50,34 @@ export default function PartyRoomScreen() {
     }
   }, [selectedDelay]);
 
+  const handleLeave = useCallback(() => {
+    if (hasLeft) return;
+    setHasLeft(true);
+    if (roomId) {
+      leaveRoom({ roomId }).catch((error) => {
+        console.warn('Failed to leave room', error);
+      });
+    }
+    router.replace('/(tabs)/party');
+  }, [hasLeft, leaveRoom, roomId, router]);
+
   useEffect(() => {
+    if (hasLeft) return;
     if (typeof lobby?.now === 'number') {
       setServerOffsetMs(Date.now() - lobby.now);
     }
-  }, [lobby?.now]);
+  }, [hasLeft, lobby?.now]);
 
   useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      handleLeave();
+      return true;
+    });
+    return () => subscription.remove();
+  }, [handleLeave]);
+
+  useEffect(() => {
+    if (hasLeft) return;
     pendingExecutedRef.current = false;
     if (!pendingAction) {
       setPendingMs(0);
@@ -78,17 +102,18 @@ export default function PartyRoomScreen() {
     update();
     const interval = setInterval(update, 200);
     return () => clearInterval(interval);
-  }, [heartbeat, pendingAction, roomId, serverOffsetMs]);
+  }, [hasLeft, heartbeat, pendingAction, roomId, serverOffsetMs]);
 
   useEffect(() => {
-    if (!roomId || !user) return;
+    if (hasLeft || !roomId || !user) return;
     const interval = setInterval(() => {
       void heartbeat({ roomId });
     }, 5000);
     return () => clearInterval(interval);
-  }, [heartbeat, roomId, user]);
+  }, [hasLeft, heartbeat, roomId, user]);
 
   useEffect(() => {
+    if (hasLeft) return;
     if (!roomCode || !user) return;
     if (lobby === undefined) return;
     if (!lobby) return;
@@ -101,14 +126,17 @@ export default function PartyRoomScreen() {
         console.warn('Failed to join room', error);
       }
     })();
-  }, [joinRoom, lobby, roomCode, user]);
+  }, [hasLeft, joinRoom, lobby, roomCode, user]);
 
   useEffect(() => {
+    if (hasLeft) return;
     if (!lobby) return;
     if (lobby.room.status !== 'lobby') {
+      setHasLeft(true);
       router.replace({ pathname: '/party/play', params: { roomId: lobby.room._id } });
+      return;
     }
-  }, [lobby, router]);
+  }, [hasLeft, lobby, router]);
 
   const handleStart = useCallback(async () => {
     if (!roomId) return;
@@ -132,6 +160,10 @@ export default function PartyRoomScreen() {
     }
   }, [cancelPendingAction, roomId]);
 
+  if (hasLeft) {
+    return null;
+  }
+
   if (lobby === undefined) {
     return (
       <ThemedView style={styles.centerContainer}>
@@ -148,7 +180,7 @@ export default function PartyRoomScreen() {
           파티를 찾을 수 없어요
         </ThemedText>
         <ThemedText>코드가 정확한지 확인해주세요.</ThemedText>
-        <Pressable style={styles.button} onPress={() => router.back()}>
+        <Pressable style={styles.button} onPress={handleLeave}>
           <ThemedText style={styles.buttonText}>돌아가기</ThemedText>
         </Pressable>
       </ThemedView>
@@ -160,7 +192,17 @@ export default function PartyRoomScreen() {
 
   return (
     <ThemedView style={[styles.container, { paddingBottom: insets.bottom + Spacing.lg }]}>
-      <Stack.Screen options={{ title: `파티 ${roomCode}` }} />
+      <Stack.Screen
+        options={{
+          title: `파티 ${roomCode}`,
+          headerBackVisible: false,
+          headerLeft: () => (
+            <Pressable style={styles.headerLeaveButton} onPress={handleLeave}>
+              <ThemedText style={styles.headerLeaveLabel}>나가기</ThemedText>
+            </Pressable>
+          ),
+        }}
+      />
       {pendingAction ? (
         <View style={styles.pendingBanner}>
           <ThemedText type="subtitle" style={styles.pendingTitle}>
@@ -256,6 +298,14 @@ const styles = StyleSheet.create({
   },
   statusText: {
     textAlign: 'center',
+  },
+  headerLeaveButton: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+  },
+  headerLeaveLabel: {
+    color: Palette.purple600,
+    fontWeight: '600',
   },
   header: {
     gap: Spacing.sm,

@@ -584,6 +584,23 @@ export const join = mutation({
     },
 });
 
+export const leave = mutation({
+    args: {
+        roomId: v.id("partyRooms"),
+    },
+    handler: async (ctx, args) => {
+        const { user } = await ensureAuthedUser(ctx);
+        const participant = await loadParticipant(ctx, args.roomId, user._id);
+        if (!participant) {
+            return;
+        }
+
+        const room = await loadRoom(ctx, args.roomId);
+        await ctx.db.delete(participant._id);
+        await refreshRoomParticipants(ctx, room);
+    },
+});
+
 export const heartbeat = mutation({
     args: {
         roomId: v.id("partyRooms"),

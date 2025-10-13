@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, BackHandler, InteractionManager, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -25,9 +25,11 @@ export default function PartyPlayScreen() {
     const roomIdParam = useMemo(() => params.roomId?.toString() ?? null, [params.roomId]);
     const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'partyRooms'>) : null), [roomIdParam]);
 
+    const [hasLeft, setHasLeft] = useState(false);
+    const shouldFetchState = !!user && !!roomId && !hasLeft;
     const roomState = useQuery(
         api.rooms.getRoomState,
-        user ? (roomId ? { roomId } : 'skip') : 'skip'
+        shouldFetchState ? { roomId } : 'skip'
     );
     const progressRoom = useMutation(api.rooms.progress);
     const pauseRoom = useMutation(api.rooms.pause);
@@ -36,6 +38,7 @@ export default function PartyPlayScreen() {
     const submitAnswer = useMutation(api.rooms.submitAnswer);
     const resetRoom = useMutation(api.rooms.resetToLobby);
     const rematchRoom = useMutation(api.rooms.rematch);
+    const leaveRoom = useMutation(api.rooms.leave);
     const requestLobby = useMutation(api.rooms.requestLobby);
     const pendingAction = roomState?.room.pendingAction ?? null;
     const cancelPendingAction = useMutation(api.rooms.cancelPendingAction);
@@ -47,8 +50,8 @@ export default function PartyPlayScreen() {
     const [isLobbyPending, setIsLobbyPending] = useState(false);
     const [isPausePending, setIsPausePending] = useState(false);
     const [isResumePending, setIsResumePending] = useState(false);
-    const [delayPreset, setDelayPreset] = useState<'rapid' | 'standard' | 'chill'>('standard');
     const [isGameStalled, setIsGameStalled] = useState(false);
+    const [delayPreset, setDelayPreset] = useState<'rapid' | 'standard' | 'chill'>('standard');
 
     const resolveDelay = useCallback(() => {
         switch (delayPreset) {
@@ -119,12 +122,16 @@ export default function PartyPlayScreen() {
         lastShownAt: null,
     });
     const statusRef = useRef<string | null>(null);
-
-    useEffect(() => {
-        if (status === 'lobby' && roomState?.room.code) {
-            router.replace({ pathname: '/room/[code]', params: { code: roomState.room.code } });
+    const handleLeave = useCallback(() => {
+        if (hasLeft) return;
+        setHasLeft(true);
+        if (roomId) {
+            leaveRoom({ roomId }).catch((err) => {
+                console.warn('Failed to leave room', err);
+            });
         }
-    }, [roomState?.room.code, router, status]);
+        router.navigate('/(tabs)/party');
+    }, [hasLeft, leaveRoom, roomId, router]);
     useEffect(() => {
         return () => {
             if (toastTimerRef.current) {
@@ -133,6 +140,13 @@ export default function PartyPlayScreen() {
             }
         };
     }, []);
+    useEffect(() => {
+        const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+            handleLeave();
+            return true;
+        });
+        return () => subscription.remove();
+    }, [handleLeave]);
     const isHost = roomState?.room.hostId === user?.id;
     useEffect(() => {
         const interval = setInterval(() => {
@@ -148,14 +162,15 @@ export default function PartyPlayScreen() {
     }, [roomState?.now]);
 
     useEffect(() => {
-        if (!roomId || !user) return;
+        if (hasLeft || !roomId || !user) return;
         const interval = setInterval(() => {
             void heartbeat({ roomId });
         }, 5000);
         return () => clearInterval(interval);
-    }, [heartbeat, roomId, user]);
+    }, [hasLeft, heartbeat, roomId, user]);
 
     useEffect(() => {
+        if (hasLeft) return;
         pendingHeartbeatRef.current = false;
         if (!pendingAction) {
             setPendingMs(0);
@@ -180,7 +195,7 @@ export default function PartyPlayScreen() {
         update();
         const interval = setInterval(update, 200);
         return () => clearInterval(interval);
-    }, [heartbeat, pendingAction, roomId, serverOffsetMs]);
+    }, [hasLeft, heartbeat, pendingAction, roomId, serverOffsetMs]);
 
     useEffect(() => {
         setSelectedChoice(null);
@@ -193,9 +208,11 @@ export default function PartyPlayScreen() {
         ['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(status) &&
         timeLeft !== null &&
         timeLeft <= 0 &&
-        !isPaused;
+        !isPaused &&
+        !pendingAction;
 
     useEffect(() => {
+        if (hasLeft) return;
         if (!hostUserId) return;
         const isInitial = previousHostIdRef.current === null;
         if (previousHostIdRef.current !== hostUserId) {
@@ -213,9 +230,10 @@ export default function PartyPlayScreen() {
             previousHostIdRef.current = hostUserId;
             hostConnectivityRef.current = hostIsConnected;
         }
-    }, [hostIsConnected, hostNickname, hostUserId, showToast, user?.id]);
+    }, [hasLeft, hostIsConnected, hostNickname, hostUserId, showToast, user?.id]);
 
     useEffect(() => {
+        if (hasLeft) return;
         if (!hostParticipant) {
             hostConnectivityRef.current = null;
             return;
@@ -240,10 +258,20 @@ export default function PartyPlayScreen() {
             showToast('호스트 연결이 복구됐어요. 진행을 이어가요.');
         }
         hostConnectivityRef.current = hostIsConnected;
-    }, [hostIsConnected, hostParticipant, isHost, isHostWaitingPhase, showToast, status]);
+    }, [hasLeft, hostIsConnected, hostParticipant, isHost, isHostWaitingPhase, showToast, status]);
 
     useEffect(() => {
+        if (hasLeft) return;
         const prevStatus = statusRef.current;
+
+        // Only redirect if the status transitions to 'lobby' from a different state.
+        // This prevents a crash on Android when re-entering the screen with a stale cached state.
+        if (prevStatus && prevStatus !== 'lobby' && status === 'lobby' && roomState?.room.code) {
+            InteractionManager.runAfterInteractions(() => {
+                router.replace({ pathname: '/room/[code]', params: { code: roomState.room.code } });
+            });
+        }
+
         if (prevStatus !== null && prevStatus !== status && !isHost) {
             if (isPaused) {
                 showToast('호스트가 게임을 일시정지했어요');
@@ -252,9 +280,10 @@ export default function PartyPlayScreen() {
             }
         }
         statusRef.current = status;
-    }, [isHost, isPaused, showToast, status]);
+    }, [hasLeft, isHost, isPaused, showToast, status, roomState?.room.code, router]);
 
     useEffect(() => {
+        if (hasLeft) return;
         if (isHost || isPaused) {
             setIsGameStalled(false);
             return;
@@ -267,9 +296,10 @@ export default function PartyPlayScreen() {
         } else {
             setIsGameStalled(false);
         }
-    }, [isHost, isHostWaitingPhase, isPaused, status]);
+    }, [hasLeft, isHost, isHostWaitingPhase, isPaused, status]);
 
     useEffect(() => {
+        if (hasLeft) return;
         if (isGameStalled) {
             const meta = waitingToastRef.current;
             const now = Date.now();
@@ -282,7 +312,7 @@ export default function PartyPlayScreen() {
         } else {
             waitingToastRef.current.shownForSession = false;
         }
-    }, [isGameStalled, showToast]);
+    }, [hasLeft, isGameStalled, showToast]);
 
     const handleChoicePress = async (choiceIndex: number) => {
         if (!roomId || status !== 'question' || !currentRound) return;
@@ -343,6 +373,7 @@ export default function PartyPlayScreen() {
     const autoAdvanceTriggeredRef = useRef(false);
 
     useEffect(() => {
+        if (hasLeft) return;
         const guardKey = `${roomId ?? 'none'}-${status}-${roomState?.room.currentRound ?? 'final'}`;
         if (autoAdvancePhaseRef.current !== guardKey) {
             autoAdvancePhaseRef.current = guardKey;
@@ -355,14 +386,15 @@ export default function PartyPlayScreen() {
         if (autoAdvanceTriggeredRef.current) return;
         autoAdvanceTriggeredRef.current = true;
         handleAdvance();
-    }, [handleAdvance, isHost, roomId, roomState?.room.currentRound, status, timeLeft]);
+    }, [hasLeft, handleAdvance, isHost, roomId, roomState?.room.currentRound, status, timeLeft]);
 
     useEffect(() => {
+        if (hasLeft) return;
         if (status !== 'results') {
             if (isRematchPending) setIsRematchPending(false);
             if (isLobbyPending) setIsLobbyPending(false);
         }
-    }, [isLobbyPending, isRematchPending, status]);
+    }, [hasLeft, isLobbyPending, isRematchPending, status]);
 
     const handleRematch = useCallback(async () => {
         if (!roomId) return;
@@ -417,10 +449,6 @@ export default function PartyPlayScreen() {
         }
     }, [isHost, isLobbyPending, isRematchPending, pendingAction, requestLobby, resetRoom, roomId, showToast, status, resolveDelay]);
 
-    const handleLeave = useCallback(() => {
-        router.replace('/(tabs)/home');
-    }, [router]);
-
     const handleCancelPending = useCallback(async () => {
         if (!roomId || !pendingAction) return;
         try {
@@ -431,7 +459,7 @@ export default function PartyPlayScreen() {
         }
     }, [cancelPendingAction, pendingAction, roomId, showToast]);
 
-    if (!roomId) {
+    if (!roomId || hasLeft) {
         return null;
     }
 
@@ -448,7 +476,7 @@ export default function PartyPlayScreen() {
         return (
             <ThemedView style={styles.loadingContainer}>
                 <ThemedText type="title">게임 정보를 찾을 수 없어요</ThemedText>
-                <Pressable style={styles.retryButton} onPress={() => router.replace('/(tabs)/home')}>
+                <Pressable style={styles.retryButton} onPress={() => router.navigate('/(tabs)/party')}>
                     <ThemedText style={styles.retryLabel}>홈으로 이동</ThemedText>
                 </Pressable>
             </ThemedView>
@@ -459,13 +487,12 @@ export default function PartyPlayScreen() {
         <View style={styles.centerCard}>
             <ThemedText type="title">다음 라운드 준비!</ThemedText>
             <ThemedText style={styles.centerSubtitle}>{timeLeft !== null ? `${timeLeft}s` : '...'} 후 문제를 읽어요.</ThemedText>
-            {isHost ? (
+            {isHost && !hostIsConnected ? (
                 <Pressable
-                    style={[styles.button, styles.secondaryButton, isPaused ? styles.buttonDisabled : null]}
+                    style={[styles.button, styles.secondaryButton]}
                     onPress={handleAdvance}
-                    disabled={isPaused}
                 >
-                    <ThemedText style={styles.secondaryButtonText}>바로 시작</ThemedText>
+                    <ThemedText style={styles.secondaryButtonText}>다음 진행</ThemedText>
                 </Pressable>
             ) : null}
         </View>
@@ -675,6 +702,15 @@ export default function PartyPlayScreen() {
         );
     };
 
+    const renderLeaveButton = () => {
+        if (status === 'results') return null;
+        return (
+            <Pressable style={styles.leaveControl} onPress={handleLeave}>
+                <ThemedText style={styles.leaveControlLabel}>나가기</ThemedText>
+            </Pressable>
+        );
+    };
+
     // const renderDelaySelector = () => (
     //     <View style={styles.delayPresetRow}>
     //         <ThemedText style={styles.delayLabel}>카운트다운</ThemedText>
@@ -783,10 +819,11 @@ export default function PartyPlayScreen() {
 
     return (
         <>
-            <Stack.Screen options={{ title: '파티 퀴즈' }} />
+            <Stack.Screen options={{ title: '파티 퀴즈', headerBackVisible: false }} />
             <ThemedView style={[styles.container, { paddingBottom: insets.bottom + Spacing.lg }]}>
                 {/* {isHost ? renderDelaySelector() : null} */}
                 {renderPendingBanner()}
+                {renderLeaveButton()}
                 {renderPauseControls()}
                 {renderPauseNotice()}
                 {content}
@@ -1036,6 +1073,18 @@ const styles = StyleSheet.create({
     },
     leaderboardRow: {
         backgroundColor: Palette.surfaceMuted,
+    },
+    leaveControl: {
+        alignSelf: 'flex-end',
+        paddingVertical: Spacing.xs,
+        paddingHorizontal: Spacing.md,
+        borderRadius: Radius.pill,
+        backgroundColor: Palette.slate200,
+        marginBottom: Spacing.sm,
+    },
+    leaveControlLabel: {
+        color: Palette.slate900,
+        fontWeight: '600',
     },
     pauseControls: {
         alignSelf: 'flex-end',
