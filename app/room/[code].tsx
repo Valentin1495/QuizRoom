@@ -130,13 +130,15 @@ export default function PartyRoomScreen() {
 
   useEffect(() => {
     if (hasLeft) return;
-    if (!lobby) return;
+    if (!lobby || !user) return;
+    const meInLobby = lobby.participants?.some((participant) => participant.userId === user.id) ?? false;
+    if (!meInLobby) return;
     if (lobby.room.status !== 'lobby') {
       setHasLeft(true);
       router.replace({ pathname: '/party/play', params: { roomId: lobby.room._id } });
       return;
     }
-  }, [hasLeft, lobby, router]);
+  }, [hasLeft, lobby, router, user]);
 
   const handleStart = useCallback(async () => {
     if (!roomId) return;

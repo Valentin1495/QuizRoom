@@ -16,7 +16,8 @@ export default function PartyScreen() {
   const { user } = useAuth();
 
   const [partyCode, setPartyCode] = useState('');
-  const [nickname, setNickname] = useState(user?.handle ?? '');
+  const [joinNickname, setJoinNickname] = useState(user?.handle ?? '');
+  const [hostNickname, setHostNickname] = useState(user?.handle ?? '');
   const [isCreating, setIsCreating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
 
@@ -24,20 +25,21 @@ export default function PartyScreen() {
   const joinRoom = useMutation(api.rooms.join);
 
   const normalizedCode = useMemo(() => partyCode.trim().toUpperCase(), [partyCode]);
-  const normalizedNickname = useMemo(() => nickname.trim(), [nickname]);
+  const normalizedJoinNickname = useMemo(() => joinNickname.trim(), [joinNickname]);
+  const normalizedHostNickname = useMemo(() => hostNickname.trim(), [hostNickname]);
   const isJoinEnabled = normalizedCode.length === 6;
 
   const handleCreateParty = useCallback(async () => {
     setIsCreating(true);
     try {
-      const result = await createRoom({ deckId: undefined, nickname: normalizedNickname || undefined });
-      router.push(`/room/${result.code}`);
+      const result = await createRoom({ deckId: undefined, nickname: normalizedHostNickname || undefined });
+      router.replace(`/room/${result.code}`);
     } catch (err) {
       Alert.alert('파티 생성 실패', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
     } finally {
       setIsCreating(false);
     }
-  }, [createRoom, normalizedNickname, router]);
+  }, [createRoom, normalizedHostNickname, router]);
 
   const handleJoinParty = useCallback(async () => {
     if (!isJoinEnabled) {
@@ -46,21 +48,22 @@ export default function PartyScreen() {
     }
     setIsJoining(true);
     try {
-      await joinRoom({ code: normalizedCode, nickname: normalizedNickname || undefined });
-      router.push(`/room/${normalizedCode}`);
+      await joinRoom({ code: normalizedCode, nickname: normalizedJoinNickname || undefined });
+      router.replace(`/room/${normalizedCode}`);
     } catch (error) {
       let message = '코드를 확인하거나 방이 이미 시작되었는지 확인해주세요.';
       if (error instanceof Error) {
-        message =
-          error.message === 'ROOM_FULL'
-            ? '파티가 가득 찼어요. 다른 방을 찾아주세요.'
+        message = error.message.includes('ROOM_FULL')
+          ? '파티가 가득 찼어요. 다른 방을 찾아주세요.'
+          : error.message.includes('REJOIN_NOT_ALLOWED')
+            ? '퀴즈 진행 중에는 다시 입장할 수 없어요. 게임이 끝난 뒤 다시 시도해 주세요.'
             : error.message;
       }
       Alert.alert('참여 실패', message);
     } finally {
       setIsJoining(false);
     }
-  }, [isJoinEnabled, joinRoom, normalizedCode, normalizedNickname, router]);
+  }, [isJoinEnabled, joinRoom, normalizedCode, normalizedJoinNickname, router]);
 
   return (
     <ThemedView
@@ -84,8 +87,8 @@ export default function PartyScreen() {
           placeholderTextColor={Palette.slate500}
         />
         <TextInput
-          value={nickname}
-          onChangeText={setNickname}
+          value={joinNickname}
+          onChangeText={setJoinNickname}
           placeholder="닉네임 (선택)"
           maxLength={24}
           style={styles.nicknameInput}
@@ -104,18 +107,18 @@ export default function PartyScreen() {
 
       <View style={styles.card}>
         <ThemedText style={styles.cardTitle}>새 파티 만들기</ThemedText>
-      <ThemedText style={styles.cardDescription}>방을 열고 친구들에게 초대 코드를 공유하세요.</ThemedText>
-      <TextInput
-        value={nickname}
-        onChangeText={setNickname}
-        placeholder="호스트 닉네임"
-        maxLength={24}
-        style={styles.nicknameInput}
-        placeholderTextColor={Palette.slate500}
-      />
-      <Pressable
-        onPress={handleCreateParty}
-        disabled={isCreating}
+        <ThemedText style={styles.cardDescription}>방을 열고 친구들에게 초대 코드를 공유하세요.</ThemedText>
+        <TextInput
+          value={hostNickname}
+          onChangeText={setHostNickname}
+          placeholder="호스트 닉네임"
+          maxLength={24}
+          style={styles.nicknameInput}
+          placeholderTextColor={Palette.slate500}
+        />
+        <Pressable
+          onPress={handleCreateParty}
+          disabled={isCreating}
           style={[styles.secondaryButton, isCreating && styles.secondaryButtonDisabled]}
         >
           <ThemedText style={styles.secondaryButtonLabel} lightColor="#ffffff" darkColor="#ffffff">

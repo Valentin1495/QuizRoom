@@ -73,7 +73,7 @@ export default function HomeScreen() {
 
   const handleJoinParty = useCallback(() => {
     if (!isCodeValid) return;
-    router.push(`/room/${partyCode.trim().toUpperCase()}`);
+    router.replace(`/room/${partyCode.trim().toUpperCase()}`);
   }, [isCodeValid, partyCode, router]);
 
   const handleCreatePress = useCallback(() => {

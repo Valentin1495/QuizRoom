@@ -216,6 +216,7 @@ export default defineSchema({
     totalScore: v.number(),
     avgResponseMs: v.number(),
     answers: v.number(),
+    removedAt: v.optional(v.number()),
   })
     .index("by_room", ["roomId"])
     .index("by_room_user", ["roomId", "userId"]),

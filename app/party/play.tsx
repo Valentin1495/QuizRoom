@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, BackHandler, InteractionManager, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, BackHandler, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -122,6 +122,7 @@ export default function PartyPlayScreen() {
         lastShownAt: null,
     });
     const statusRef = useRef<string | null>(null);
+    const isInitialMount = useRef(true);
     const handleLeave = useCallback(() => {
         if (hasLeft) return;
         setHasLeft(true);
@@ -261,17 +262,20 @@ export default function PartyPlayScreen() {
     }, [hasLeft, hostIsConnected, hostParticipant, isHost, isHostWaitingPhase, showToast, status]);
 
     useEffect(() => {
-        if (hasLeft) return;
-        const prevStatus = statusRef.current;
-
-        // Only redirect if the status transitions to 'lobby' from a different state.
-        // This prevents a crash on Android when re-entering the screen with a stale cached state.
-        if (prevStatus && prevStatus !== 'lobby' && status === 'lobby' && roomState?.room.code) {
-            InteractionManager.runAfterInteractions(() => {
-                router.replace({ pathname: '/room/[code]', params: { code: roomState.room.code } });
-            });
+        // This effect should not run on the initial mount to avoid race conditions on Android.
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
         }
 
+        if (status === 'lobby' && roomState?.room.code) {
+            router.replace({ pathname: '/room/[code]', params: { code: roomState.room.code } });
+
+        }
+    }, [status, roomState?.room.code, router]);
+
+    useEffect(() => {
+        const prevStatus = statusRef.current;
         if (prevStatus !== null && prevStatus !== status && !isHost) {
             if (isPaused) {
                 showToast('호스트가 게임을 일시정지했어요');
@@ -280,7 +284,7 @@ export default function PartyPlayScreen() {
             }
         }
         statusRef.current = status;
-    }, [hasLeft, isHost, isPaused, showToast, status, roomState?.room.code, router]);
+    }, [isHost, isPaused, showToast, status]);
 
     useEffect(() => {
         if (hasLeft) return;
@@ -602,13 +606,47 @@ export default function PartyPlayScreen() {
             <ThemedText type="title">리더보드</ThemedText>
             <View style={styles.distributionList}>
                 {currentRound?.leaderboard?.top.length ? (
-                    currentRound.leaderboard.top.map((entry) => (
-                        <View key={entry.userId} style={[styles.distributionRow, styles.leaderboardRow]}>
-                            <ThemedText style={styles.choiceBadgeText}>#{entry.rank}</ThemedText>
-                            <ThemedText style={styles.choiceLabel}>{entry.nickname}</ThemedText>
-                            <ThemedText style={styles.distributionCount}>{entry.totalScore}점</ThemedText>
-                        </View>
-                    ))
+                    currentRound.leaderboard.top.map((entry) => {
+                        const isMe = entry.userId === user?.id;
+                        return (
+                            <View
+                                key={entry.userId}
+                                style={[
+                                    styles.distributionRow,
+                                    styles.leaderboardRow,
+                                    entry.rank === 1 ? styles.leaderboardRankOne : null,
+                                    entry.rank === 2 ? styles.leaderboardRankTwo : null,
+                                    entry.rank === 3 ? styles.leaderboardRankThree : null,
+                                    isMe ? styles.leaderboardMeRow : null,
+                                ]}
+                            >
+                                <View style={styles.leaderboardRankBadge}>
+                                    <ThemedText style={styles.leaderboardRankText}>{entry.rank}</ThemedText>
+                                </View>
+                                <View style={styles.leaderboardNameWrapper}>
+                                    <ThemedText
+                                        style={[
+                                            styles.choiceLabel,
+                                            isMe ? styles.leaderboardMeText : null,
+                                        ]}
+                                    >
+                                        {entry.nickname}
+                                    </ThemedText>
+                                    {isMe ? (
+                                        <ThemedText style={styles.leaderboardMeHint}>나</ThemedText>
+                                    ) : null}
+                                </View>
+                                <ThemedText
+                                    style={[
+                                        styles.distributionCount,
+                                        isMe ? styles.leaderboardMeText : null,
+                                    ]}
+                                >
+                                    {entry.totalScore}점
+                                </ThemedText>
+                            </View>
+                        );
+                    })
                 ) : (
                     <ThemedText style={styles.timerText}>집계 중...</ThemedText>
                 )}
@@ -1044,6 +1082,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: Palette.slate200,
     },
+    leaderboardNameWrapper: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.xs,
+        paddingRight: Spacing.md,
+    },
     resultNameWrapper: {
         flex: 1,
         flexDirection: 'row',
@@ -1073,6 +1118,43 @@ const styles = StyleSheet.create({
     },
     leaderboardRow: {
         backgroundColor: Palette.surfaceMuted,
+        gap: Spacing.sm,
+        paddingHorizontal: Spacing.sm,
+    },
+    leaderboardRankBadge: {
+        width: 32,
+        height: 32,
+        borderRadius: Radius.md,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Palette.slate200,
+    },
+    leaderboardRankText: {
+        fontWeight: '700',
+        color: Palette.slate500,
+    },
+    leaderboardRankOne: {
+        backgroundColor: '#FBE7C6',
+    },
+    leaderboardRankTwo: {
+        backgroundColor: '#E0ECFF',
+    },
+    leaderboardRankThree: {
+        backgroundColor: '#E8E0FF',
+    },
+    leaderboardMeRow: {
+        borderWidth: 2,
+        borderColor: Palette.purple600,
+        backgroundColor: Palette.purple200,
+    },
+    leaderboardMeText: {
+        color: Palette.purple600,
+        fontWeight: '700',
+    },
+    leaderboardMeHint: {
+        fontSize: 12,
+        color: Palette.purple400,
+        fontWeight: '600',
     },
     leaveControl: {
         alignSelf: 'flex-end',
