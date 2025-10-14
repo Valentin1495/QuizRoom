@@ -17,6 +17,9 @@ function computeTimeLeft(expiresAt?: number | null, now?: number) {
     return Math.ceil(diff / 1000);
 }
 
+const FORCED_EXIT_MESSAGE = '연결이 오래 끊겨 게임에서 이탈했어요. 다시 참여하려면 방 코드를 입력해 주세요.';
+const TOAST_COOLDOWN_MS = 10000;
+
 export default function PartyPlayScreen() {
     const router = useRouter();
     const { user } = useAuth();
@@ -26,11 +29,16 @@ export default function PartyPlayScreen() {
     const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'partyRooms'>) : null), [roomIdParam]);
 
     const [hasLeft, setHasLeft] = useState(false);
-    const shouldFetchState = !!user && !!roomId && !hasLeft;
+    const [disconnectReason, setDisconnectReason] = useState<string | null>(null);
+    const shouldFetchState = !!user && !!roomId && !hasLeft && !disconnectReason;
+    const notifyForcedExit = useCallback(() => {
+        setDisconnectReason((prev) => prev ?? FORCED_EXIT_MESSAGE);
+    }, []);
     const roomState = useQuery(
         api.rooms.getRoomState,
         shouldFetchState ? { roomId } : 'skip'
     );
+    const roomData = roomState && roomState.status === 'ok' ? roomState : null;
     const progressRoom = useMutation(api.rooms.progress);
     const pauseRoom = useMutation(api.rooms.pause);
     const resumeRoom = useMutation(api.rooms.resume);
@@ -40,7 +48,13 @@ export default function PartyPlayScreen() {
     const rematchRoom = useMutation(api.rooms.rematch);
     const leaveRoom = useMutation(api.rooms.leave);
     const requestLobby = useMutation(api.rooms.requestLobby);
-    const pendingAction = roomState?.room.pendingAction ?? null;
+    useEffect(() => {
+        if (!disconnectReason && shouldFetchState && roomState?.status === 'not_in_room') {
+            notifyForcedExit();
+        }
+    }, [disconnectReason, notifyForcedExit, roomState?.status, shouldFetchState]);
+
+    const pendingAction = roomData?.room.pendingAction ?? null;
     const cancelPendingAction = useMutation(api.rooms.cancelPendingAction);
 
     const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
@@ -80,7 +94,18 @@ export default function PartyPlayScreen() {
 
     const [toastMessage, setToastMessage] = useState<string | null>(null);
     const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const showToast = useCallback((message: string) => {
+    const lastToastKeyRef = useRef<string | null>(null);
+    const lastToastAtRef = useRef<number>(0);
+    const showToast = useCallback((message: string, key?: string) => {
+        const now = Date.now();
+        const toastKey = key ?? message;
+        const shouldSkip =
+            lastToastKeyRef.current === toastKey && now - lastToastAtRef.current < TOAST_COOLDOWN_MS;
+        if (shouldSkip) {
+            return;
+        }
+        lastToastKeyRef.current = toastKey;
+        lastToastAtRef.current = now;
         if (toastTimerRef.current) {
             clearTimeout(toastTimerRef.current);
         }
@@ -91,20 +116,20 @@ export default function PartyPlayScreen() {
         }, 2000);
     }, []);
 
-    const status = roomState?.room.status ?? 'lobby';
-    const currentRound = roomState?.currentRound ?? null;
-    const participants = roomState?.participants ?? [];
-    const hostUserId = roomState?.room.hostId ?? null;
+    const status = roomData?.room.status ?? 'lobby';
+    const currentRound = roomData?.currentRound ?? null;
+    const participants = roomData?.participants ?? [];
+    const hostUserId = roomData?.room.hostId ?? null;
     const hostParticipant = useMemo(
         () => (hostUserId ? participants.find((p) => p.userId === hostUserId) : null),
         [participants, hostUserId]
     );
     const hostNickname = hostParticipant?.nickname ?? '호스트';
     const hostIsConnected = hostParticipant?.isConnected ?? false;
-    const totalRounds = roomState?.room.totalRounds ?? 0;
+    const totalRounds = roomData?.room.totalRounds ?? 0;
     const isFinalLeaderboard =
-        status === 'leaderboard' && totalRounds > 0 && (roomState?.room.currentRound ?? 0) + 1 >= totalRounds;
-    const pauseState = roomState?.room.pauseState ?? null;
+        status === 'leaderboard' && totalRounds > 0 && (roomData?.room.currentRound ?? 0) + 1 >= totalRounds;
+    const pauseState = roomData?.room.pauseState ?? null;
     const isPaused = status === 'paused';
     const pausedPreviousStatus = pauseState?.previousStatus ?? null;
     const pausedRemainingSeconds =
@@ -121,18 +146,32 @@ export default function PartyPlayScreen() {
         shownForSession: false,
         lastShownAt: null,
     });
+    const participantConnectivityRef = useRef<Map<string, boolean>>(new Map());
+    const wasHostRef = useRef<boolean | null>(null);
+    const [hostBannerVisible, setHostBannerVisible] = useState(false);
     const statusRef = useRef<string | null>(null);
     const isInitialMount = useRef(true);
+    useEffect(() => {
+        if (disconnectReason) {
+            setHostBannerVisible(false);
+        }
+    }, [disconnectReason]);
     const handleLeave = useCallback(() => {
         if (hasLeft) return;
-        setHasLeft(true);
-        if (roomId) {
-            leaveRoom({ roomId }).catch((err) => {
-                console.warn('Failed to leave room', err);
-            });
+        if (!disconnectReason) {
+            if (roomId) {
+                leaveRoom({ roomId }).catch((err) => {
+                    if (err instanceof Error && err.message.includes('NOT_IN_ROOM')) {
+                        // already removed; just continue
+                    } else {
+                        console.warn('Failed to leave room', err);
+                    }
+                });
+            }
         }
+        setHasLeft(true);
         router.navigate('/(tabs)/party');
-    }, [hasLeft, leaveRoom, roomId, router]);
+    }, [disconnectReason, hasLeft, leaveRoom, roomId, router]);
     useEffect(() => {
         return () => {
             if (toastTimerRef.current) {
@@ -148,7 +187,7 @@ export default function PartyPlayScreen() {
         });
         return () => subscription.remove();
     }, [handleLeave]);
-    const isHost = roomState?.room.hostId === user?.id;
+    const isHost = roomData?.room.hostId === user?.id;
     useEffect(() => {
         const interval = setInterval(() => {
             setLocalNowMs(Date.now());
@@ -157,21 +196,27 @@ export default function PartyPlayScreen() {
     }, []);
 
     useEffect(() => {
-        if (roomState?.now) {
-            setServerOffsetMs(Date.now() - roomState.now);
+        if (roomData?.now) {
+            setServerOffsetMs(Date.now() - roomData.now);
         }
-    }, [roomState?.now]);
+    }, [roomData?.now]);
 
     useEffect(() => {
-        if (hasLeft || !roomId || !user) return;
+        if (hasLeft || disconnectReason || !roomId || !user) return;
         const interval = setInterval(() => {
-            void heartbeat({ roomId });
+            void heartbeat({ roomId }).catch((err) => {
+                if (err instanceof Error && err.message.includes('NOT_IN_ROOM')) {
+                    notifyForcedExit();
+                } else {
+                    console.warn('Heartbeat failed', err);
+                }
+            });
         }, 5000);
         return () => clearInterval(interval);
-    }, [hasLeft, heartbeat, roomId, user]);
+    }, [disconnectReason, hasLeft, heartbeat, notifyForcedExit, roomId, user]);
 
     useEffect(() => {
-        if (hasLeft) return;
+        if (hasLeft || disconnectReason) return;
         pendingHeartbeatRef.current = false;
         if (!pendingAction) {
             setPendingMs(0);
@@ -188,6 +233,9 @@ export default function PartyPlayScreen() {
                         await heartbeat({ roomId });
                     } catch (error) {
                         pendingHeartbeatRef.current = false;
+                        if (error instanceof Error && error.message.includes('NOT_IN_ROOM')) {
+                            notifyForcedExit();
+                        }
                     }
                 })();
             }
@@ -196,14 +244,31 @@ export default function PartyPlayScreen() {
         update();
         const interval = setInterval(update, 200);
         return () => clearInterval(interval);
-    }, [hasLeft, heartbeat, pendingAction, roomId, serverOffsetMs]);
+    }, [disconnectReason, hasLeft, heartbeat, notifyForcedExit, pendingAction, roomId, serverOffsetMs]);
 
     useEffect(() => {
         setSelectedChoice(null);
-    }, [roomState?.currentRound?.index]);
+    }, [roomData?.currentRound?.index]);
+
+    useEffect(() => {
+        if (disconnectReason || !roomData?.me) {
+            return;
+        }
+        const currentHost = roomData.me.isHost;
+        const previous = wasHostRef.current;
+        wasHostRef.current = currentHost;
+        if (previous === null) {
+            return;
+        }
+        if (previous && !currentHost) {
+            showToast('연결이 끊긴 동안 다른 참가자가 진행을 이어받았어요.', 'lost_host_role');
+        } else if (!previous && currentHost) {
+            showToast('호스트 권한을 다시 얻었어요. 진행을 이어가 주세요!', 'regained_host_role');
+        }
+    }, [disconnectReason, roomData?.me, showToast]);
 
     const syncedNow = roomState ? localNowMs - serverOffsetMs : undefined;
-    const timeLeft = computeTimeLeft(roomState?.room.phaseEndsAt ?? null, syncedNow);
+    const timeLeft = computeTimeLeft(roomData?.room.phaseEndsAt ?? null, syncedNow);
     const isHostOffline = !!hostUserId && !hostIsConnected;
     const isHostWaitingPhase =
         ['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(status) &&
@@ -213,7 +278,7 @@ export default function PartyPlayScreen() {
         !pendingAction;
 
     useEffect(() => {
-        if (hasLeft) return;
+        if (hasLeft || disconnectReason) return;
         if (!hostUserId) return;
         const isInitial = previousHostIdRef.current === null;
         if (previousHostIdRef.current !== hostUserId) {
@@ -231,10 +296,10 @@ export default function PartyPlayScreen() {
             previousHostIdRef.current = hostUserId;
             hostConnectivityRef.current = hostIsConnected;
         }
-    }, [hasLeft, hostIsConnected, hostNickname, hostUserId, showToast, user?.id]);
+    }, [disconnectReason, hasLeft, hostIsConnected, hostNickname, hostUserId, showToast, user?.id]);
 
     useEffect(() => {
-        if (hasLeft) return;
+        if (hasLeft || disconnectReason) return;
         if (!hostParticipant) {
             hostConnectivityRef.current = null;
             return;
@@ -247,34 +312,80 @@ export default function PartyPlayScreen() {
             hostConnectivityRef.current = hostIsConnected;
             return;
         }
-        const shouldNotify = status === 'results' || isHostWaitingPhase;
-        if (!shouldNotify) {
+        const shouldNotifyHost = hostParticipant.isHost && (status === 'results' || isHostWaitingPhase);
+        if (!shouldNotifyHost) {
             hostConnectivityRef.current = hostIsConnected;
             return;
         }
         const wasConnected = hostConnectivityRef.current;
         if (wasConnected && !hostIsConnected) {
-            showToast('호스트 연결이 잠시 끊겼어요. 다른 참가자가 이어받을 때까지 기다려주세요.');
+            showToast('호스트 연결이 잠시 끊겼어요. 다른 참가자가 이어받을 때까지 기다려주세요.', 'host_disconnect');
+            setHostBannerVisible(true);
         } else if (!wasConnected && hostIsConnected) {
-            showToast('호스트 연결이 복구됐어요. 진행을 이어가요.');
+            showToast('호스트 연결이 복구됐어요. 진행을 이어가요.', 'host_reconnect');
+            setHostBannerVisible(false);
         }
         hostConnectivityRef.current = hostIsConnected;
-    }, [hasLeft, hostIsConnected, hostParticipant, isHost, isHostWaitingPhase, showToast, status]);
+    }, [disconnectReason, hasLeft, hostIsConnected, hostParticipant, isHost, isHostWaitingPhase, showToast, status]);
 
     useEffect(() => {
+        if (hasLeft || disconnectReason) {
+            participantConnectivityRef.current.clear();
+            return;
+        }
+        const map = participantConnectivityRef.current;
+        const currentIds = new Set<string>();
+        participants.forEach((participant) => {
+            currentIds.add(participant.userId);
+            if (participant.userId === hostUserId || participant.userId === user?.id) {
+                map.set(participant.userId, participant.isConnected);
+                return;
+            }
+            const previous = map.get(participant.userId);
+            if (previous === undefined) {
+                map.set(participant.userId, participant.isConnected);
+                return;
+            }
+            if (hostBannerVisible) {
+                map.set(participant.userId, participant.isConnected);
+                return;
+            }
+            if (previous && !participant.isConnected) {
+                showToast(
+                    `${participant.nickname}님이 잠시 연결이 끊겼어요.`,
+                    `participant_disconnect_${participant.userId}`
+                );
+            } else if (!previous && participant.isConnected) {
+                showToast(
+                    `${participant.nickname}님이 다시 연결됐어요.`,
+                    `participant_reconnect_${participant.userId}`
+                );
+            }
+            map.set(participant.userId, participant.isConnected);
+        });
+        Array.from(map.keys()).forEach((key) => {
+            if (!currentIds.has(key)) {
+                map.delete(key);
+            }
+        });
+    }, [disconnectReason, hasLeft, hostBannerVisible, hostUserId, participants, showToast, user?.id]);
+
+    useEffect(() => {
+        if (disconnectReason) return;
         // This effect should not run on the initial mount to avoid race conditions on Android.
         if (isInitialMount.current) {
             isInitialMount.current = false;
             return;
         }
 
-        if (status === 'lobby' && roomState?.room.code) {
-            router.replace({ pathname: '/room/[code]', params: { code: roomState.room.code } });
+        if (status === 'lobby' && roomData?.room.code) {
+            router.replace({ pathname: '/room/[code]', params: { code: roomData.room.code } });
 
         }
-    }, [status, roomState?.room.code, router]);
+    }, [disconnectReason, status, roomData?.room.code, router]);
 
     useEffect(() => {
+        if (disconnectReason) return;
         const prevStatus = statusRef.current;
         if (prevStatus !== null && prevStatus !== status && !isHost) {
             if (isPaused) {
@@ -284,10 +395,10 @@ export default function PartyPlayScreen() {
             }
         }
         statusRef.current = status;
-    }, [isHost, isPaused, showToast, status]);
+    }, [disconnectReason, isHost, isPaused, showToast, status]);
 
     useEffect(() => {
-        if (hasLeft) return;
+        if (hasLeft || disconnectReason) return;
         if (isHost || isPaused) {
             setIsGameStalled(false);
             return;
@@ -300,23 +411,23 @@ export default function PartyPlayScreen() {
         } else {
             setIsGameStalled(false);
         }
-    }, [hasLeft, isHost, isHostWaitingPhase, isPaused, status]);
+    }, [disconnectReason, hasLeft, isHost, isHostWaitingPhase, isPaused, status]);
 
     useEffect(() => {
-        if (hasLeft) return;
+        if (hasLeft || disconnectReason) return;
         if (isGameStalled) {
             const meta = waitingToastRef.current;
             const now = Date.now();
             const canShow = !meta.shownForSession;
             if (canShow) {
-                showToast('호스트 연결을 확인하는 중이에요. 잠시만 기다려주세요.');
+                showToast('호스트 연결을 확인하는 중이에요. 잠시만 기다려주세요.', 'host_waiting');
                 meta.shownForSession = true;
                 meta.lastShownAt = now;
             }
         } else {
             waitingToastRef.current.shownForSession = false;
         }
-    }, [hasLeft, isGameStalled, showToast]);
+    }, [disconnectReason, hasLeft, isGameStalled, showToast]);
 
     const handleChoicePress = async (choiceIndex: number) => {
         if (!roomId || status !== 'question' || !currentRound) return;
@@ -337,9 +448,13 @@ export default function PartyPlayScreen() {
         try {
             await progressRoom({ roomId });
         } catch (err) {
+            if (err instanceof Error && err.message.includes('NOT_AUTHORIZED')) {
+                showToast('지금은 호스트가 아니에요. 다른 참가자가 진행을 이어받았어요.', 'not_authorized_progress');
+                return;
+            }
             Alert.alert('상태 전환 실패', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         }
-    }, [progressRoom, roomId]);
+    }, [progressRoom, roomId, showToast]);
 
     const handlePause = useCallback(async () => {
         if (!roomId || !isHost) return;
@@ -372,13 +487,13 @@ export default function PartyPlayScreen() {
         }
     }, [isHost, isPaused, isResumePending, resumeRoom, roomId]);
 
-    const autoAdvancePhaseKey = `${status}-${roomState?.room.currentRound ?? 'final'}`;
+    const autoAdvancePhaseKey = `${status}-${roomData?.room.currentRound ?? 'final'}`;
     const autoAdvancePhaseRef = useRef<string | null>(null);
     const autoAdvanceTriggeredRef = useRef(false);
 
     useEffect(() => {
         if (hasLeft) return;
-        const guardKey = `${roomId ?? 'none'}-${status}-${roomState?.room.currentRound ?? 'final'}`;
+        const guardKey = `${roomId ?? 'none'}-${status}-${roomData?.room.currentRound ?? 'final'}`;
         if (autoAdvancePhaseRef.current !== guardKey) {
             autoAdvancePhaseRef.current = guardKey;
             autoAdvanceTriggeredRef.current = false;
@@ -390,7 +505,7 @@ export default function PartyPlayScreen() {
         if (autoAdvanceTriggeredRef.current) return;
         autoAdvanceTriggeredRef.current = true;
         handleAdvance();
-    }, [hasLeft, handleAdvance, isHost, roomId, roomState?.room.currentRound, status, timeLeft]);
+    }, [hasLeft, handleAdvance, isHost, roomData?.room.currentRound, roomId, status, timeLeft]);
 
     useEffect(() => {
         if (hasLeft) return;
@@ -463,7 +578,26 @@ export default function PartyPlayScreen() {
         }
     }, [cancelPendingAction, pendingAction, roomId, showToast]);
 
-    if (!roomId || hasLeft) {
+    if (!roomId) {
+        return null;
+    }
+
+    if (disconnectReason) {
+        return (
+            <>
+                <Stack.Screen options={{ title: '연결 끊김', headerBackVisible: false }} />
+                <ThemedView style={styles.loadingContainer}>
+                    <ThemedText type="title">연결이 종료됐어요</ThemedText>
+                    <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>{disconnectReason}</ThemedText>
+                    <Pressable style={styles.retryButton} onPress={handleLeave}>
+                        <ThemedText style={styles.retryLabel}>파티 찾기</ThemedText>
+                    </Pressable>
+                </ThemedView>
+            </>
+        );
+    }
+
+    if (hasLeft) {
         return null;
     }
 
@@ -740,6 +874,20 @@ export default function PartyPlayScreen() {
         );
     };
 
+    const renderHostBanner = () => {
+        if (!hostBannerVisible) return null;
+        return (
+            <View style={styles.hostBanner}>
+                <ThemedText type="subtitle" style={styles.hostBannerTitle}>
+                    호스트 연결 확인 중
+                </ThemedText>
+                <ThemedText style={styles.hostBannerSubtitle}>
+                    호스트가 잠시 오프라인이에요. 연결이 복구되면 자동으로 이어집니다.
+                </ThemedText>
+            </View>
+        );
+    };
+
     const renderLeaveButton = () => {
         if (status === 'results') return null;
         return (
@@ -823,7 +971,7 @@ export default function PartyPlayScreen() {
     );
 
     let content: React.ReactNode | null = null;
-    if (status === 'countdown' && (roomState?.room.currentRound ?? 0) > 0) {
+    if (status === 'countdown' && (roomData?.room.currentRound ?? 0) > 0) {
         content = renderCountdown();
     } else if (status === 'lobby') {
         content = renderReturning();
@@ -844,7 +992,7 @@ export default function PartyPlayScreen() {
             content = renderReveal();
         } else if (pausedPreviousStatus === 'leaderboard') {
             content = renderLeaderboard();
-        } else if (pausedPreviousStatus === 'countdown' && (roomState?.room.currentRound ?? 0) > 0) {
+        } else if (pausedPreviousStatus === 'countdown' && (roomData?.room.currentRound ?? 0) > 0) {
             content = renderCountdown();
         }
     } else if (status === 'results') {
@@ -860,7 +1008,7 @@ export default function PartyPlayScreen() {
             <Stack.Screen options={{ title: '파티 퀴즈', headerBackVisible: false }} />
             <ThemedView style={[styles.container, { paddingBottom: insets.bottom + Spacing.lg }]}>
                 {/* {isHost ? renderDelaySelector() : null} */}
-                {renderPendingBanner()}
+                {hostBannerVisible ? renderHostBanner() : renderPendingBanner()}
                 {renderLeaveButton()}
                 {renderPauseControls()}
                 {renderPauseNotice()}
@@ -918,6 +1066,10 @@ const styles = StyleSheet.create({
     },
     loadingLabel: {
         marginTop: Spacing.md,
+    },
+    disconnectLabel: {
+        textAlign: 'center',
+        marginHorizontal: Spacing.lg,
     },
     retryButton: {
         marginTop: Spacing.md,
@@ -1239,5 +1391,21 @@ const styles = StyleSheet.create({
     },
     pendingCancelLabel: {
         color: Palette.slate900,
+    },
+    hostBanner: {
+        padding: Spacing.md,
+        backgroundColor: Palette.purple200,
+        borderRadius: Radius.md,
+        marginBottom: Spacing.md,
+        borderWidth: 1,
+        borderColor: Palette.purple600,
+    },
+    hostBannerTitle: {
+        color: Palette.purple600,
+        fontWeight: '700',
+    },
+    hostBannerSubtitle: {
+        marginTop: Spacing.xs,
+        color: Palette.slate500,
     },
 });

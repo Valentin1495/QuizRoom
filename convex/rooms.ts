@@ -36,6 +36,7 @@ const ACTION_DELAY_MAX_MS = 10000;
 const ACTION_DELAY_DEFAULT_MS = 3000;
 const PARTICIPANT_LIMIT = 10;
 const PARTICIPANT_TIMEOUT_MS = 30 * 1000;
+const PARTICIPANT_OFFLINE_GRACE_MS = 2 * 60 * 1000;
 
 type PartyRules = typeof DEFAULT_RULES;
 
@@ -212,20 +213,35 @@ async function refreshRoomParticipants(
         if (participant.removedAt) {
             continue;
         }
-        if (!isParticipantConnected(participant, now)) {
-            await ctx.db.patch(participant._id, {
-                removedAt: now,
-                isHost: false,
-            });
+        const isCurrentlyConnected = isParticipantConnected(participant, now);
+        if (isCurrentlyConnected) {
+            if (participant.disconnectedAt) {
+                await ctx.db.patch(participant._id, { disconnectedAt: undefined });
+                participant.disconnectedAt = undefined;
+            }
+            active.push(participant);
             continue;
         }
-        active.push(participant);
+
+        const disconnectedAt = participant.disconnectedAt ?? now;
+        if (!participant.disconnectedAt) {
+            await ctx.db.patch(participant._id, { disconnectedAt });
+        }
+
+        if (now - disconnectedAt > PARTICIPANT_OFFLINE_GRACE_MS) {
+            await ctx.db.patch(participant._id, {
+                removedAt: now,
+                disconnectedAt: undefined,
+                isHost: false,
+            });
+        }
     }
     let activeParticipants = active.sort((a, b) => a.joinedAt - b.joinedAt);
 
     let updatedRoom = room;
     if (activeParticipants.length === 0) {
-        if (room.status !== "lobby") {
+        const hasAnyRemaining = participants.some((participant) => !participant.removedAt);
+        if (!hasAnyRemaining && room.status !== "lobby") {
             const resetNow = Date.now();
             await ctx.db.patch(room._id, {
                 status: "lobby",
@@ -564,6 +580,7 @@ export const create = mutation({
             totalScore: 0,
             avgResponseMs: 0,
             answers: 0,
+            disconnectedAt: undefined,
         });
 
         return { roomId, code, pendingAction: null };
@@ -596,17 +613,26 @@ export const join = mutation({
         const nickname = sanitizeNickname(args.nickname, user.handle);
         const now = Date.now();
 
-        if (existingRecord?.removedAt) {
-            if (room.status !== "lobby") {
-                throw new ConvexError("REJOIN_NOT_ALLOWED");
+        if (existingRecord) {
+            if (existingRecord.removedAt) {
+                if (room.status !== "lobby") {
+                    throw new ConvexError("REJOIN_NOT_ALLOWED");
+                }
+                await ctx.db.patch(existingRecord._id, {
+                    removedAt: undefined,
+                    disconnectedAt: undefined,
+                    nickname,
+                    lastSeenAt: now,
+                    isHost: existingRecord.userId === room.hostId,
+                });
+            } else {
+                await ctx.db.patch(existingRecord._id, {
+                    nickname,
+                    lastSeenAt: now,
+                    disconnectedAt: undefined,
+                });
             }
-            await ctx.db.patch(existingRecord._id, {
-                removedAt: undefined,
-                nickname,
-                lastSeenAt: now,
-                isHost: existingRecord.userId === room.hostId,
-            });
-            const refreshed = await refreshRoomParticipants(ctx, room);
+            await refreshRoomParticipants(ctx, room);
             const refreshedRoom = await loadRoom(ctx, room._id);
             return {
                 roomId: refreshedRoom._id,
@@ -614,34 +640,30 @@ export const join = mutation({
             };
         }
 
-        const existing = participants.find((p) => p.userId === user._id) ?? null;
-
-        if (!existing) {
-            if (participants.length >= PARTICIPANT_LIMIT) {
-                throw new ConvexError("ROOM_FULL");
-            }
+        const totalParticipants = await ctx.db
+            .query("partyParticipants")
+            .withIndex("by_room", (q) => q.eq("roomId", room._id))
+            .collect();
+        const participantCount = totalParticipants.filter((p) => !p.removedAt).length;
+        if (participantCount >= PARTICIPANT_LIMIT) {
+            throw new ConvexError("ROOM_FULL");
         }
 
-        if (!existing) {
-            await ctx.db.insert("partyParticipants", {
-                roomId: room._id,
-                userId: user._id,
-                identityId: auth.identityId,
-                nickname,
-                isHost: user._id === room.hostId,
-                joinedAt: now,
-                lastSeenAt: now,
-                totalScore: 0,
-                avgResponseMs: 0,
-                answers: 0,
-            });
-        } else {
-            await ctx.db.patch(existing._id, {
-                nickname,
-                lastSeenAt: now,
-            });
-        }
-        const refreshAfterJoin = await refreshRoomParticipants(ctx, room);
+        await ctx.db.insert("partyParticipants", {
+            roomId: room._id,
+            userId: user._id,
+            identityId: auth.identityId,
+            nickname,
+            isHost: user._id === room.hostId,
+            joinedAt: now,
+            lastSeenAt: now,
+            totalScore: 0,
+            avgResponseMs: 0,
+            answers: 0,
+            disconnectedAt: undefined,
+        });
+
+        await refreshRoomParticipants(ctx, room);
         const updatedRoom = await loadRoom(ctx, room._id);
 
         return {
@@ -666,6 +688,7 @@ export const leave = mutation({
         await ctx.db.patch(participant._id, {
             removedAt: Date.now(),
             isHost: false,
+            disconnectedAt: undefined,
         });
         await refreshRoomParticipants(ctx, room);
     },
@@ -681,7 +704,7 @@ export const heartbeat = mutation({
         if (!participant) {
             throw new ConvexError("NOT_IN_ROOM");
         }
-        await ctx.db.patch(participant._id, { lastSeenAt: Date.now() });
+        await ctx.db.patch(participant._id, { lastSeenAt: Date.now(), disconnectedAt: undefined });
 
         const roomDoc = await ctx.db.get(args.roomId);
         if (!roomDoc) {
@@ -1194,7 +1217,8 @@ export const getLobby = query({
     },
 });
 
-export type ClientRoomState = {
+type ClientRoomOkState = {
+    status: "ok";
     room: RoomDoc;
     me: ParticipantDoc;
     participants: {
@@ -1242,6 +1266,12 @@ export type ClientRoomState = {
     now: number;
 };
 
+export type ClientRoomState =
+    | {
+        status: "not_in_room";
+    }
+    | ClientRoomOkState;
+
 export const getRoomState = query({
     args: {
         roomId: v.id("partyRooms"),
@@ -1255,7 +1285,7 @@ export const getRoomState = query({
             .withIndex("by_room_user", (q) => q.eq("roomId", room._id).eq("userId", user._id))
             .first();
         if (!meRecord || meRecord.removedAt) {
-            throw new ConvexError("NOT_IN_ROOM");
+            return { status: "not_in_room" };
         }
         const me = meRecord;
 
@@ -1270,7 +1300,7 @@ export const getRoomState = query({
 
         const round = await loadRound(ctx, room._id, room.currentRound);
 
-        let currentRound: ClientRoomState["currentRound"];
+        let currentRound: ClientRoomOkState["currentRound"];
         if (round) {
             const question = await ctx.db.get(round.questionId);
             if (!question) {
@@ -1341,6 +1371,7 @@ export const getRoomState = query({
         }
 
         return {
+            status: "ok",
             room,
             me,
             participants: rankedParticipants.map((p) => ({
