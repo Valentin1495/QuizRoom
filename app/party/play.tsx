@@ -19,6 +19,7 @@ function computeTimeLeft(expiresAt?: number | null, now?: number) {
 
 const FORCED_EXIT_MESSAGE = '연결이 오래 끊겨 게임에서 이탈했어요. 다시 참여하려면 방 코드를 입력해 주세요.';
 const TOAST_COOLDOWN_MS = 10000;
+type ConnectionState = 'online' | 'reconnecting' | 'grace' | 'expired';
 
 export default function PartyPlayScreen() {
     const router = useRouter();
@@ -30,6 +31,9 @@ export default function PartyPlayScreen() {
 
     const [hasLeft, setHasLeft] = useState(false);
     const [disconnectReason, setDisconnectReason] = useState<string | null>(null);
+    const [connectionState, setConnectionState] = useState<ConnectionState>('online');
+    const [graceRemaining, setGraceRemaining] = useState(120);
+    const [isManualReconnectPending, setIsManualReconnectPending] = useState(false);
     const shouldFetchState = !!user && !!roomId && !hasLeft && !disconnectReason;
     const notifyForcedExit = useCallback(() => {
         setDisconnectReason((prev) => prev ?? FORCED_EXIT_MESSAGE);
@@ -115,6 +119,43 @@ export default function PartyPlayScreen() {
             toastTimerRef.current = null;
         }, 2000);
     }, []);
+    const reconnectTransitionRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const graceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const clearConnectionTimers = useCallback(() => {
+        if (reconnectTransitionRef.current) {
+            clearTimeout(reconnectTransitionRef.current);
+            reconnectTransitionRef.current = null;
+        }
+        if (graceTimerRef.current) {
+            clearInterval(graceTimerRef.current);
+            graceTimerRef.current = null;
+        }
+    }, []);
+    const handleConnectionRestored = useCallback(() => {
+        clearConnectionTimers();
+        let shouldAnnounce = false;
+        setConnectionState((prev) => {
+            if (prev !== 'online') {
+                shouldAnnounce = true;
+            }
+            return 'online';
+        });
+        setGraceRemaining(120);
+        setHostBannerVisible(false);
+        if (shouldAnnounce) {
+            showToast('✅ 연결 복구! 마지막 진행 상태로 돌아갑니다.', 'connection_restored');
+        }
+    }, [clearConnectionTimers, showToast]);
+    const beginReconnecting = useCallback(() => {
+        setConnectionState((prev) => {
+            if (prev === 'online') return 'reconnecting';
+            if (prev === 'reconnecting' || prev === 'grace' || prev === 'expired') return prev;
+            return prev;
+        });
+    }, []);
+    useEffect(() => () => {
+        clearConnectionTimers();
+    }, [clearConnectionTimers]);
 
     const status = roomData?.room.status ?? 'lobby';
     const currentRound = roomData?.currentRound ?? null;
@@ -151,6 +192,19 @@ export default function PartyPlayScreen() {
     const [hostBannerVisible, setHostBannerVisible] = useState(false);
     const statusRef = useRef<string | null>(null);
     const isInitialMount = useRef(true);
+    const handleManualReconnect = useCallback(async () => {
+        if (!roomId || isManualReconnectPending) return;
+        setIsManualReconnectPending(true);
+        try {
+            await heartbeat({ roomId });
+            handleConnectionRestored();
+        } catch (err) {
+            beginReconnecting();
+            showToast('아직 연결되지 않았어요. 잠시 후 다시 시도해 주세요.', 'manual_reconnect_failed');
+        } finally {
+            setIsManualReconnectPending(false);
+        }
+    }, [beginReconnecting, handleConnectionRestored, heartbeat, isManualReconnectPending, roomId, showToast]);
     useEffect(() => {
         if (disconnectReason) {
             setHostBannerVisible(false);
@@ -172,6 +226,68 @@ export default function PartyPlayScreen() {
         setHasLeft(true);
         router.navigate('/(tabs)/party');
     }, [disconnectReason, hasLeft, leaveRoom, roomId, router]);
+    useEffect(() => {
+        if (connectionState === 'reconnecting') {
+            if (reconnectTransitionRef.current) return;
+            reconnectTransitionRef.current = setTimeout(() => {
+                setGraceRemaining(120);
+                setConnectionState((state) => (state === 'reconnecting' ? 'grace' : state));
+                reconnectTransitionRef.current = null;
+            }, 5000);
+            return () => {
+                if (reconnectTransitionRef.current) {
+                    clearTimeout(reconnectTransitionRef.current);
+                    reconnectTransitionRef.current = null;
+                }
+            };
+        }
+        if (reconnectTransitionRef.current) {
+            clearTimeout(reconnectTransitionRef.current);
+            reconnectTransitionRef.current = null;
+        }
+    }, [connectionState]);
+    useEffect(() => {
+        if (connectionState !== 'grace') {
+            if (graceTimerRef.current) {
+                clearInterval(graceTimerRef.current);
+                graceTimerRef.current = null;
+            }
+            return;
+        }
+        setGraceRemaining(120);
+        if (graceTimerRef.current) {
+            clearInterval(graceTimerRef.current);
+        }
+        graceTimerRef.current = setInterval(() => {
+            setGraceRemaining((prev) => {
+                if (prev <= 1) {
+                    if (graceTimerRef.current) {
+                        clearInterval(graceTimerRef.current);
+                        graceTimerRef.current = null;
+                    }
+                    setConnectionState('expired');
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+        return () => {
+            if (graceTimerRef.current) {
+                clearInterval(graceTimerRef.current);
+                graceTimerRef.current = null;
+            }
+        };
+    }, [connectionState]);
+    useEffect(() => {
+        if (connectionState === 'expired') {
+            notifyForcedExit();
+        }
+    }, [connectionState, notifyForcedExit]);
+    useEffect(() => {
+        if (roomData && connectionState !== 'online') {
+            handleConnectionRestored();
+        }
+    }, [connectionState, handleConnectionRestored, roomData]);
     useEffect(() => {
         return () => {
             if (toastTimerRef.current) {
@@ -203,17 +319,23 @@ export default function PartyPlayScreen() {
 
     useEffect(() => {
         if (hasLeft || disconnectReason || !roomId || !user) return;
-        const interval = setInterval(() => {
-            void heartbeat({ roomId }).catch((err) => {
+        const tick = async () => {
+            try {
+                await heartbeat({ roomId });
+                handleConnectionRestored();
+            } catch (err) {
                 if (err instanceof Error && err.message.includes('NOT_IN_ROOM')) {
                     notifyForcedExit();
                 } else {
+                    beginReconnecting();
                     console.warn('Heartbeat failed', err);
                 }
-            });
-        }, 5000);
+            }
+        };
+        void tick();
+        const interval = setInterval(tick, 5000);
         return () => clearInterval(interval);
-    }, [disconnectReason, hasLeft, heartbeat, notifyForcedExit, roomId, user]);
+    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, heartbeat, notifyForcedExit, roomId, user]);
 
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
@@ -231,10 +353,13 @@ export default function PartyPlayScreen() {
                 void (async () => {
                     try {
                         await heartbeat({ roomId });
+                        handleConnectionRestored();
                     } catch (error) {
                         pendingHeartbeatRef.current = false;
                         if (error instanceof Error && error.message.includes('NOT_IN_ROOM')) {
                             notifyForcedExit();
+                        } else {
+                            beginReconnecting();
                         }
                     }
                 })();
@@ -244,7 +369,7 @@ export default function PartyPlayScreen() {
         update();
         const interval = setInterval(update, 200);
         return () => clearInterval(interval);
-    }, [disconnectReason, hasLeft, heartbeat, notifyForcedExit, pendingAction, roomId, serverOffsetMs]);
+    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, heartbeat, notifyForcedExit, pendingAction, roomId, serverOffsetMs]);
 
     useEffect(() => {
         setSelectedChoice(null);
@@ -300,6 +425,10 @@ export default function PartyPlayScreen() {
 
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
+        if (connectionState !== 'online') {
+            hostConnectivityRef.current = hostIsConnected;
+            return;
+        }
         if (!hostParticipant) {
             hostConnectivityRef.current = null;
             return;
@@ -326,7 +455,7 @@ export default function PartyPlayScreen() {
             setHostBannerVisible(false);
         }
         hostConnectivityRef.current = hostIsConnected;
-    }, [disconnectReason, hasLeft, hostIsConnected, hostParticipant, isHost, isHostWaitingPhase, showToast, status]);
+    }, [connectionState, disconnectReason, hasLeft, hostIsConnected, hostParticipant, isHost, isHostWaitingPhase, showToast, status]);
 
     useEffect(() => {
         if (hasLeft || disconnectReason) {
@@ -335,6 +464,10 @@ export default function PartyPlayScreen() {
         }
         const map = participantConnectivityRef.current;
         const currentIds = new Set<string>();
+        if (connectionState !== 'online') {
+            map.clear();
+            return;
+        }
         participants.forEach((participant) => {
             currentIds.add(participant.userId);
             if (participant.userId === hostUserId || participant.userId === user?.id) {
@@ -368,7 +501,7 @@ export default function PartyPlayScreen() {
                 map.delete(key);
             }
         });
-    }, [disconnectReason, hasLeft, hostBannerVisible, hostUserId, participants, showToast, user?.id]);
+    }, [connectionState, disconnectReason, hasLeft, hostBannerVisible, hostUserId, participants, showToast, user?.id]);
 
     useEffect(() => {
         if (disconnectReason) return;
@@ -385,7 +518,7 @@ export default function PartyPlayScreen() {
     }, [disconnectReason, status, roomData?.room.code, router]);
 
     useEffect(() => {
-        if (disconnectReason) return;
+        if (disconnectReason || connectionState !== 'online') return;
         const prevStatus = statusRef.current;
         if (prevStatus !== null && prevStatus !== status && !isHost) {
             if (isPaused) {
@@ -399,11 +532,11 @@ export default function PartyPlayScreen() {
 
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
-        if (isHost || isPaused) {
+        if (isHost || isPaused || hostIsConnected) {
             setIsGameStalled(false);
             return;
         }
-        if (isHostWaitingPhase) {
+        if (isHostWaitingPhase && !hostIsConnected) {
             const timer = setTimeout(() => {
                 setIsGameStalled(true);
             }, 1500);
@@ -411,10 +544,10 @@ export default function PartyPlayScreen() {
         } else {
             setIsGameStalled(false);
         }
-    }, [disconnectReason, hasLeft, isHost, isHostWaitingPhase, isPaused, status]);
+    }, [disconnectReason, hasLeft, hostIsConnected, isHost, isHostWaitingPhase, isPaused, status]);
 
     useEffect(() => {
-        if (hasLeft || disconnectReason) return;
+        if (hasLeft || disconnectReason || hostIsConnected) return;
         if (isGameStalled) {
             const meta = waitingToastRef.current;
             const now = Date.now();
@@ -427,7 +560,7 @@ export default function PartyPlayScreen() {
         } else {
             waitingToastRef.current.shownForSession = false;
         }
-    }, [disconnectReason, hasLeft, isGameStalled, showToast]);
+    }, [disconnectReason, hasLeft, hostIsConnected, isGameStalled, showToast]);
 
     const handleChoicePress = async (choiceIndex: number) => {
         if (!roomId || status !== 'question' || !currentRound) return;
@@ -445,6 +578,10 @@ export default function PartyPlayScreen() {
 
     const handleAdvance = useCallback(async () => {
         if (!roomId) return;
+        if (!isHost) {
+            showToast('지금은 호스트가 아니에요. 다른 참가자가 진행을 이어받았어요.', 'not_host_cannot_progress');
+            return;
+        }
         try {
             await progressRoom({ roomId });
         } catch (err) {
@@ -454,7 +591,7 @@ export default function PartyPlayScreen() {
             }
             Alert.alert('상태 전환 실패', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         }
-    }, [progressRoom, roomId, showToast]);
+    }, [isHost, progressRoom, roomId, showToast]);
 
     const handlePause = useCallback(async () => {
         if (!roomId || !isHost) return;
@@ -492,7 +629,7 @@ export default function PartyPlayScreen() {
     const autoAdvanceTriggeredRef = useRef(false);
 
     useEffect(() => {
-        if (hasLeft) return;
+        if (hasLeft || connectionState !== 'online') return;
         const guardKey = `${roomId ?? 'none'}-${status}-${roomData?.room.currentRound ?? 'final'}`;
         if (autoAdvancePhaseRef.current !== guardKey) {
             autoAdvancePhaseRef.current = guardKey;
@@ -888,6 +1025,50 @@ export default function PartyPlayScreen() {
         );
     };
 
+    const renderConnectionBanner = () => {
+        if (connectionState !== 'reconnecting') return null;
+        return (
+            <View style={styles.connectionBanner}>
+                <ThemedText style={styles.connectionBannerText}>⚠️ 연결이 불안정합니다… 다시 연결 중</ThemedText>
+            </View>
+        );
+    };
+
+    const renderGraceOverlay = () => {
+        if (connectionState !== 'grace') return null;
+        const progress = Math.max(0, Math.min(1, graceRemaining / 120));
+        const minutes = Math.floor(graceRemaining / 60);
+        const seconds = graceRemaining % 60;
+        const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        return (
+            <View style={styles.graceOverlay}>
+                <View style={styles.graceBackdrop} />
+                <View style={styles.graceCard}>
+                    <ThemedText style={styles.graceTitle}>연결 대기 중</ThemedText>
+                    <ThemedText style={styles.graceSubtitle}>
+                        연결이 끊겼어요. {graceRemaining}초 안에 복구되면 이어서 진행돼요.
+                    </ThemedText>
+                    <ThemedText style={styles.graceTimer}>{formattedTime}</ThemedText>
+                    <View style={styles.graceProgressBar}>
+                        <View style={[styles.graceProgressFill, { width: `${progress * 100}%` }]} />
+                    </View>
+                    <Pressable
+                        style={[styles.button, styles.primaryButton, isManualReconnectPending ? styles.buttonDisabled : null]}
+                        onPress={handleManualReconnect}
+                        disabled={isManualReconnectPending}
+                    >
+                        <ThemedText style={styles.primaryButtonText}>
+                            {isManualReconnectPending ? '재시도 중...' : '재연결 시도'}
+                        </ThemedText>
+                    </Pressable>
+                    <Pressable style={styles.ghostButton} onPress={handleLeave}>
+                        <ThemedText style={styles.ghostButtonText}>대기실로 돌아가기</ThemedText>
+                    </Pressable>
+                </View>
+            </View>
+        );
+    };
+
     const renderLeaveButton = () => {
         if (status === 'results') return null;
         return (
@@ -1008,11 +1189,14 @@ export default function PartyPlayScreen() {
             <Stack.Screen options={{ title: '파티 퀴즈', headerBackVisible: false }} />
             <ThemedView style={[styles.container, { paddingBottom: insets.bottom + Spacing.lg }]}>
                 {/* {isHost ? renderDelaySelector() : null} */}
-                {hostBannerVisible ? renderHostBanner() : renderPendingBanner()}
-                {renderLeaveButton()}
-                {renderPauseControls()}
-                {renderPauseNotice()}
+                {renderConnectionBanner()}
+                {connectionState === 'online' ? renderPendingBanner() : null}
+                {connectionState === 'online' && hostBannerVisible ? renderHostBanner() : null}
+                {connectionState === 'online' ? renderLeaveButton() : null}
+                {connectionState === 'online' ? renderPauseControls() : null}
+                {connectionState === 'online' ? renderPauseNotice() : null}
                 {content}
+                {renderGraceOverlay()}
                 {toastMessage ? (
                     <View pointerEvents="none" style={[styles.toastWrapper, { bottom: insets.bottom + Spacing.lg }]}>
                         <View style={styles.toastBubble}>
@@ -1407,5 +1591,62 @@ const styles = StyleSheet.create({
     hostBannerSubtitle: {
         marginTop: Spacing.xs,
         color: Palette.slate500,
+    },
+    connectionBanner: {
+        padding: Spacing.sm,
+        backgroundColor: Palette.purple200,
+        borderRadius: Radius.md,
+        marginBottom: Spacing.sm,
+        alignItems: 'center',
+    },
+    connectionBannerText: {
+        color: Palette.purple600,
+        fontWeight: '600',
+    },
+    graceOverlay: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    graceBackdrop: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(18, 13, 36, 0.45)',
+    },
+    graceCard: {
+        width: '85%',
+        padding: Spacing.lg,
+        borderRadius: Radius.lg,
+        backgroundColor: Palette.surface,
+        alignItems: 'center',
+        gap: Spacing.md,
+    },
+    graceTitle: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: Palette.slate900,
+    },
+    graceSubtitle: {
+        textAlign: 'center',
+        color: Palette.slate500,
+    },
+    graceTimer: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: Palette.purple600,
+    },
+    graceProgressBar: {
+        width: '100%',
+        height: 8,
+        borderRadius: Radius.pill,
+        backgroundColor: Palette.slate200,
+        overflow: 'hidden',
+    },
+    graceProgressFill: {
+        height: '100%',
+        backgroundColor: Palette.purple600,
     },
 });
