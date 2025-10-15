@@ -1,5 +1,6 @@
+import * as Haptics from 'expo-haptics';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Alert, BackHandler, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -18,8 +19,13 @@ function computeTimeLeft(expiresAt?: number | null, now?: number) {
 }
 
 const FORCED_EXIT_MESSAGE = '연결이 오래 끊겨 게임에서 이탈했어요. 다시 참여하려면 방 코드를 입력해 주세요.';
+const EXPIRED_MESSAGE = '😢 연결이 오래 끊겼습니다.\n이번 라운드는 종료되었어요.';
 const TOAST_COOLDOWN_MS = 10000;
 type ConnectionState = 'online' | 'reconnecting' | 'grace' | 'expired';
+type HostConnectionState = 'online' | 'waiting' | 'expired';
+const HOST_GRACE_SECONDS = 120;
+const HOST_GRACE_MS = HOST_GRACE_SECONDS * 1000;
+const HOST_HEARTBEAT_GRACE_MS = 7000;
 
 export default function PartyPlayScreen() {
     const router = useRouter();
@@ -30,10 +36,13 @@ export default function PartyPlayScreen() {
     const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'partyRooms'>) : null), [roomIdParam]);
 
     const [hasLeft, setHasLeft] = useState(false);
+    const [isWaitingAfterDisconnect, setIsWaitingAfterDisconnect] = useState(false);
     const [disconnectReason, setDisconnectReason] = useState<string | null>(null);
     const [connectionState, setConnectionState] = useState<ConnectionState>('online');
     const [graceRemaining, setGraceRemaining] = useState(120);
     const [isManualReconnectPending, setIsManualReconnectPending] = useState(false);
+    const [hostConnectionState, setHostConnectionState] = useState<HostConnectionState>('online');
+    const [hostGraceRemaining, setHostGraceRemaining] = useState(HOST_GRACE_SECONDS);
     const shouldFetchState = !!user && !!roomId && !hasLeft && !disconnectReason;
     const notifyForcedExit = useCallback(() => {
         setDisconnectReason((prev) => prev ?? FORCED_EXIT_MESSAGE);
@@ -63,6 +72,7 @@ export default function PartyPlayScreen() {
 
     const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
     const [serverOffsetMs, setServerOffsetMs] = useState(0);
+    const serverOffsetRef = useRef(0);
     const [localNowMs, setLocalNowMs] = useState(() => Date.now());
     const [isRematchPending, setIsRematchPending] = useState(false);
     const [isLobbyPending, setIsLobbyPending] = useState(false);
@@ -121,6 +131,8 @@ export default function PartyPlayScreen() {
     }, []);
     const reconnectTransitionRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const graceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const hostGraceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const hostGraceDeadlineRef = useRef<number | null>(null);
     const clearConnectionTimers = useCallback(() => {
         if (reconnectTransitionRef.current) {
             clearTimeout(reconnectTransitionRef.current);
@@ -131,6 +143,55 @@ export default function PartyPlayScreen() {
             graceTimerRef.current = null;
         }
     }, []);
+    const stopHostGraceTimer = useCallback(() => {
+        if (hostGraceTimerRef.current) {
+            clearInterval(hostGraceTimerRef.current);
+            hostGraceTimerRef.current = null;
+        }
+        hostGraceDeadlineRef.current = null;
+    }, []);
+    const resetHostGraceState = useCallback(() => {
+        stopHostGraceTimer();
+        setHostGraceRemaining(HOST_GRACE_SECONDS);
+        setHostConnectionState('online');
+    }, [stopHostGraceTimer]);
+    const beginHostGraceWait = useCallback(
+        (elapsedMs = 0) => {
+            if (hostConnectionState === 'waiting') {
+                return;
+            }
+            stopHostGraceTimer();
+            const clampedElapsed = Math.min(Math.max(elapsedMs, 0), HOST_GRACE_MS);
+            const serverNow = Date.now() - serverOffsetRef.current;
+            const initialRemainingMs = HOST_GRACE_MS - clampedElapsed;
+            if (initialRemainingMs <= 0) {
+                hostGraceDeadlineRef.current = serverNow;
+                setHostGraceRemaining(0);
+                setHostConnectionState('expired');
+                return;
+            }
+            hostGraceDeadlineRef.current = serverNow + initialRemainingMs;
+            setHostGraceRemaining(Math.max(0, Math.ceil(initialRemainingMs / 1000)));
+            setHostConnectionState('waiting');
+            hostGraceTimerRef.current = setInterval(() => {
+                const deadline = hostGraceDeadlineRef.current;
+                if (deadline === null) {
+                    return;
+                }
+                const now = Date.now() - serverOffsetRef.current;
+                const diff = deadline - now;
+                if (diff <= 0) {
+                    stopHostGraceTimer();
+                    setHostGraceRemaining(0);
+                    setHostConnectionState('expired');
+                    return;
+                }
+                const nextRemaining = Math.ceil(diff / 1000);
+                setHostGraceRemaining((prev) => (prev === nextRemaining ? prev : nextRemaining));
+            }, 1000);
+        },
+        [hostConnectionState, stopHostGraceTimer]
+    );
     const handleConnectionRestored = useCallback(() => {
         clearConnectionTimers();
         let shouldAnnounce = false;
@@ -141,9 +202,9 @@ export default function PartyPlayScreen() {
             return 'online';
         });
         setGraceRemaining(120);
-        setHostBannerVisible(false);
         if (shouldAnnounce) {
             showToast('✅ 연결 복구! 마지막 진행 상태로 돌아갑니다.', 'connection_restored');
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         }
     }, [clearConnectionTimers, showToast]);
     const beginReconnecting = useCallback(() => {
@@ -156,6 +217,9 @@ export default function PartyPlayScreen() {
     useEffect(() => () => {
         clearConnectionTimers();
     }, [clearConnectionTimers]);
+    useEffect(() => () => {
+        stopHostGraceTimer();
+    }, [stopHostGraceTimer]);
 
     const status = roomData?.room.status ?? 'lobby';
     const currentRound = roomData?.currentRound ?? null;
@@ -189,7 +253,6 @@ export default function PartyPlayScreen() {
     });
     const participantConnectivityRef = useRef<Map<string, boolean>>(new Map());
     const wasHostRef = useRef<boolean | null>(null);
-    const [hostBannerVisible, setHostBannerVisible] = useState(false);
     const statusRef = useRef<string | null>(null);
     const isInitialMount = useRef(true);
     const handleManualReconnect = useCallback(async () => {
@@ -205,11 +268,6 @@ export default function PartyPlayScreen() {
             setIsManualReconnectPending(false);
         }
     }, [beginReconnecting, handleConnectionRestored, heartbeat, isManualReconnectPending, roomId, showToast]);
-    useEffect(() => {
-        if (disconnectReason) {
-            setHostBannerVisible(false);
-        }
-    }, [disconnectReason]);
     const handleLeave = useCallback(() => {
         if (hasLeft) return;
         if (!disconnectReason) {
@@ -226,6 +284,10 @@ export default function PartyPlayScreen() {
         setHasLeft(true);
         router.navigate('/(tabs)/party');
     }, [disconnectReason, hasLeft, leaveRoom, roomId, router]);
+    const handleWaitForNextRound = useCallback(() => {
+        resetHostGraceState();
+        setIsWaitingAfterDisconnect(true);
+    }, [resetHostGraceState]);
     useEffect(() => {
         if (connectionState === 'reconnecting') {
             if (reconnectTransitionRef.current) return;
@@ -280,9 +342,9 @@ export default function PartyPlayScreen() {
     }, [connectionState]);
     useEffect(() => {
         if (connectionState === 'expired') {
-            notifyForcedExit();
+            setDisconnectReason(EXPIRED_MESSAGE);
         }
-    }, [connectionState, notifyForcedExit]);
+    }, [connectionState]);
     useEffect(() => {
         if (roomData && connectionState !== 'online') {
             handleConnectionRestored();
@@ -316,6 +378,9 @@ export default function PartyPlayScreen() {
             setServerOffsetMs(Date.now() - roomData.now);
         }
     }, [roomData?.now]);
+    useEffect(() => {
+        serverOffsetRef.current = serverOffsetMs;
+    }, [serverOffsetMs]);
 
     useEffect(() => {
         if (hasLeft || disconnectReason || !roomId || !user) return;
@@ -391,24 +456,43 @@ export default function PartyPlayScreen() {
             showToast('호스트 권한을 다시 얻었어요. 진행을 이어가 주세요!', 'regained_host_role');
         }
     }, [disconnectReason, roomData?.me, showToast]);
+    useEffect(() => {
+        if (disconnectReason || hasLeft) {
+            resetHostGraceState();
+            hostConnectivityRef.current = null;
+        }
+    }, [disconnectReason, hasLeft, resetHostGraceState]);
 
     const syncedNow = roomState ? localNowMs - serverOffsetMs : undefined;
     const timeLeft = computeTimeLeft(roomData?.room.phaseEndsAt ?? null, syncedNow);
-    const isHostOffline = !!hostUserId && !hostIsConnected;
     const isHostWaitingPhase =
         ['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(status) &&
         timeLeft !== null &&
         timeLeft <= 0 &&
         !isPaused &&
         !pendingAction;
+    const hostBannerVisible = hostConnectionState === 'waiting';
+    const isHostOverlayActive = hostConnectionState !== 'online';
+    const hostLastSeenAt = hostParticipant?.lastSeenAt ?? null;
+    const hostDisconnectedAt = hostParticipant?.disconnectedAt ?? null;
+    const hostLagMs = hostLastSeenAt !== null && syncedNow !== undefined ? Math.max(0, syncedNow - hostLastSeenAt) : null;
+    const hostDisconnectedElapsedMs = hostDisconnectedAt !== null && syncedNow !== undefined ? Math.max(0, syncedNow - hostDisconnectedAt) : null;
+    const hostGraceElapsedMs = hostDisconnectedElapsedMs ?? hostLagMs ?? 0;
 
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
-        if (!hostUserId) return;
-        const isInitial = previousHostIdRef.current === null;
-        if (previousHostIdRef.current !== hostUserId) {
+        if (!hostUserId) {
+            previousHostIdRef.current = null;
+            hostConnectivityRef.current = null;
+            resetHostGraceState();
+            return;
+        }
+        const wasHostId = previousHostIdRef.current;
+        const isInitial = wasHostId === null;
+        if (wasHostId !== hostUserId) {
             previousHostIdRef.current = hostUserId;
-            hostConnectivityRef.current = hostIsConnected;
+            hostConnectivityRef.current = null;
+            resetHostGraceState();
             if (!isInitial) {
                 if (hostUserId === user?.id) {
                     showToast('당신이 새로운 호스트가 되었어요. 진행을 이어가 주세요!');
@@ -416,46 +500,95 @@ export default function PartyPlayScreen() {
                     showToast(`${hostNickname}님이 새로운 호스트가 되었어요.`);
                 }
             }
-        }
-        if (previousHostIdRef.current === null) {
+        } else if (wasHostId === null) {
             previousHostIdRef.current = hostUserId;
-            hostConnectivityRef.current = hostIsConnected;
+            hostConnectivityRef.current = null;
         }
-    }, [disconnectReason, hasLeft, hostIsConnected, hostNickname, hostUserId, showToast, user?.id]);
+    }, [disconnectReason, hasLeft, hostIsConnected, hostNickname, hostUserId, resetHostGraceState, showToast, user?.id]);
 
     useEffect(() => {
-        if (hasLeft || disconnectReason) return;
-        if (connectionState !== 'online') {
-            hostConnectivityRef.current = hostIsConnected;
+        if (hasLeft || disconnectReason) {
             return;
         }
         if (!hostParticipant) {
             hostConnectivityRef.current = null;
-            return;
-        }
-        if (hostConnectivityRef.current === null) {
-            hostConnectivityRef.current = hostIsConnected;
+            resetHostGraceState();
             return;
         }
         if (isHost) {
-            hostConnectivityRef.current = hostIsConnected;
+            hostConnectivityRef.current = true;
+            resetHostGraceState();
             return;
         }
-        const shouldNotifyHost = hostParticipant.isHost && (status === 'results' || isHostWaitingPhase);
-        if (!shouldNotifyHost) {
-            hostConnectivityRef.current = hostIsConnected;
+        if (connectionState !== 'online') {
             return;
         }
-        const wasConnected = hostConnectivityRef.current;
-        if (wasConnected && !hostIsConnected) {
-            showToast('호스트 연결이 잠시 끊겼어요. 다른 참가자가 이어받을 때까지 기다려주세요.', 'host_disconnect');
-            setHostBannerVisible(true);
-        } else if (!wasConnected && hostIsConnected) {
-            showToast('호스트 연결이 복구됐어요. 진행을 이어가요.', 'host_reconnect');
-            setHostBannerVisible(false);
+
+        const perceivedOnline = hostIsConnected && (hostLagMs === null || hostLagMs <= HOST_HEARTBEAT_GRACE_MS);
+        const previous = hostConnectivityRef.current;
+
+        if (previous === null) {
+            hostConnectivityRef.current = perceivedOnline;
+            if (!perceivedOnline) {
+                beginHostGraceWait(hostGraceElapsedMs);
+                showToast(`⚠️ ${hostNickname}님 연결이 불안정해 잠시 대기 중이에요.`, 'host_disconnect');
+            }
+            return;
         }
-        hostConnectivityRef.current = hostIsConnected;
-    }, [connectionState, disconnectReason, hasLeft, hostIsConnected, hostParticipant, isHost, isHostWaitingPhase, showToast, status]);
+
+        if (previous && !perceivedOnline) {
+            hostConnectivityRef.current = perceivedOnline;
+            beginHostGraceWait(hostGraceElapsedMs);
+            showToast(`⚠️ ${hostNickname}님 연결이 불안정해 잠시 대기 중이에요.`, 'host_disconnect');
+            return;
+        }
+
+        if (!previous && perceivedOnline) {
+            hostConnectivityRef.current = perceivedOnline;
+            if (hostConnectionState !== 'online') {
+                resetHostGraceState();
+                showToast(`${hostNickname}님 연결이 복구됐어요. 게임을 다시 시작합니다 🚀`, 'host_reconnect');
+                void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
+            } else {
+                resetHostGraceState();
+            }
+            return;
+        }
+
+        hostConnectivityRef.current = perceivedOnline;
+    }, [
+        beginHostGraceWait,
+        connectionState,
+        disconnectReason,
+        hasLeft,
+        hostConnectionState,
+        hostIsConnected,
+        hostGraceElapsedMs,
+        hostLagMs,
+        hostNickname,
+        hostParticipant,
+        isHost,
+        resetHostGraceState,
+        showToast,
+    ]);
+    useEffect(() => {
+        if (hostConnectionState === 'expired') {
+            showToast(`${hostNickname}님 연결이 오래 끊겨 라운드가 종료되었어요.`, 'host_expired');
+        }
+    }, [hostConnectionState, hostNickname, showToast]);
+
+    useEffect(() => {
+        if (hostConnectionState !== 'waiting') return;
+        if (hostGraceDeadlineRef.current === null) return;
+        const clampedElapsed = Math.min(Math.max(hostGraceElapsedMs, 0), HOST_GRACE_MS);
+        const serverNow = syncedNow ?? Date.now() - serverOffsetRef.current;
+        const desiredRemainingMs = Math.max(0, HOST_GRACE_MS - clampedElapsed);
+        const desiredDeadline = serverNow + desiredRemainingMs;
+        if (Math.abs(hostGraceDeadlineRef.current - desiredDeadline) > 1000) {
+            hostGraceDeadlineRef.current = desiredDeadline;
+            setHostGraceRemaining(Math.max(0, Math.ceil(desiredRemainingMs / 1000)));
+        }
+    }, [hostConnectionState, hostGraceElapsedMs, syncedNow]);
 
     useEffect(() => {
         if (hasLeft || disconnectReason) {
@@ -479,7 +612,7 @@ export default function PartyPlayScreen() {
                 map.set(participant.userId, participant.isConnected);
                 return;
             }
-            if (hostBannerVisible) {
+            if (isHostOverlayActive) {
                 map.set(participant.userId, participant.isConnected);
                 return;
             }
@@ -501,7 +634,7 @@ export default function PartyPlayScreen() {
                 map.delete(key);
             }
         });
-    }, [connectionState, disconnectReason, hasLeft, hostBannerVisible, hostUserId, participants, showToast, user?.id]);
+    }, [connectionState, disconnectReason, hasLeft, hostUserId, isHostOverlayActive, participants, showToast, user?.id]);
 
     useEffect(() => {
         if (disconnectReason) return;
@@ -553,14 +686,14 @@ export default function PartyPlayScreen() {
             const now = Date.now();
             const canShow = !meta.shownForSession;
             if (canShow) {
-                showToast('호스트 연결을 확인하는 중이에요. 잠시만 기다려주세요.', 'host_waiting');
+                showToast(`${hostNickname}님 연결을 확인하는 중이에요. 잠시만 기다려주세요.`, 'host_waiting');
                 meta.shownForSession = true;
                 meta.lastShownAt = now;
             }
         } else {
             waitingToastRef.current.shownForSession = false;
         }
-    }, [disconnectReason, hasLeft, hostIsConnected, isGameStalled, showToast]);
+    }, [disconnectReason, hasLeft, hostIsConnected, hostNickname, isGameStalled, showToast]);
 
     const handleChoicePress = async (choiceIndex: number) => {
         if (!roomId || status !== 'question' || !currentRound) return;
@@ -719,7 +852,41 @@ export default function PartyPlayScreen() {
         return null;
     }
 
+    if (isWaitingAfterDisconnect) {
+        return (
+            <>
+                <Stack.Screen options={{ title: '연결 끊김', headerBackVisible: false }} />
+                <ThemedView style={styles.loadingContainer}>
+                    <ThemedText type="title">다음 라운드를 기다리는 중...</ThemedText>
+                    <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>
+                        호스트가 다음 게임을 시작하면 자동으로 참여됩니다.
+                    </ThemedText>
+                    <Pressable style={styles.retryButton} onPress={handleLeave}>
+                        <ThemedText style={styles.retryLabel}>나가기</ThemedText>
+                    </Pressable>
+                </ThemedView>
+            </>
+        );
+    }
+
     if (disconnectReason) {
+        if (disconnectReason === EXPIRED_MESSAGE) {
+            return (
+                <>
+                    <Stack.Screen options={{ title: '연결 끊김', headerBackVisible: false }} />
+                    <ThemedView style={styles.loadingContainer}>
+                        <ThemedText type="title">연결이 종료됐어요</ThemedText>
+                        <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>{disconnectReason}</ThemedText>
+                        <Pressable style={styles.retryButton} onPress={() => setIsWaitingAfterDisconnect(true)}>
+                            <ThemedText style={styles.retryLabel}>다음 라운드 기다리기</ThemedText>
+                        </Pressable>
+                        <Pressable style={[styles.ghostButton, { marginTop: Spacing.sm }]} onPress={handleLeave}>
+                            <ThemedText style={styles.ghostButtonText}>대기실로 돌아가기</ThemedText>
+                        </Pressable>
+                    </ThemedView>
+                </>
+            );
+        }
         return (
             <>
                 <Stack.Screen options={{ title: '연결 끊김', headerBackVisible: false }} />
@@ -1013,25 +1180,41 @@ export default function PartyPlayScreen() {
 
     const renderHostBanner = () => {
         if (!hostBannerVisible) return null;
+        const minutes = Math.floor(hostGraceRemaining / 60);
+        const seconds = hostGraceRemaining % 60;
+        const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         return (
             <View style={styles.hostBanner}>
                 <ThemedText type="subtitle" style={styles.hostBannerTitle}>
-                    호스트 연결 확인 중
+                    ⌛ 재접속 대기 중 ({formattedTime})
                 </ThemedText>
                 <ThemedText style={styles.hostBannerSubtitle}>
-                    호스트가 잠시 오프라인이에요. 연결이 복구되면 자동으로 이어집니다.
+                    {hostNickname}님 연결을 기다리는 중이에요. 복구되면 자동으로 이어집니다.
                 </ThemedText>
             </View>
         );
     };
 
     const renderConnectionBanner = () => {
-        if (connectionState !== 'reconnecting') return null;
-        return (
-            <View style={styles.connectionBanner}>
-                <ThemedText style={styles.connectionBannerText}>⚠️ 연결이 불안정합니다… 다시 연결 중</ThemedText>
-            </View>
-        );
+        const banners: ReactNode[] = [];
+        if (connectionState === 'reconnecting') {
+            banners.push(
+                <View key="self_reconnecting" style={styles.connectionBanner}>
+                    <ThemedText style={styles.connectionBannerText}>⚠️ 연결이 불안정합니다… 다시 연결 중</ThemedText>
+                </View>
+            );
+        }
+        if (!isHost && hostConnectionState === 'waiting') {
+            banners.push(
+                <View key="host_reconnecting" style={styles.connectionBanner}>
+                    <ThemedText style={styles.connectionBannerText}>
+                        ⚠️ 호스트 연결이 불안정합니다… 다시 연결 중
+                    </ThemedText>
+                </View>
+            );
+        }
+        if (banners.length === 0) return null;
+        return <>{banners}</>;
     };
 
     const renderGraceOverlay = () => {
@@ -1060,6 +1243,56 @@ export default function PartyPlayScreen() {
                         <ThemedText style={styles.primaryButtonText}>
                             {isManualReconnectPending ? '재시도 중...' : '재연결 시도'}
                         </ThemedText>
+                    </Pressable>
+                    <Pressable style={styles.ghostButton} onPress={handleLeave}>
+                        <ThemedText style={styles.ghostButtonText}>대기실로 돌아가기</ThemedText>
+                    </Pressable>
+                </View>
+            </View>
+        );
+    };
+
+    const renderHostGraceOverlay = () => {
+        if (connectionState !== 'online') return null;
+        if (hostConnectionState === 'online') return null;
+        if (isHost) return null;
+        if (!hostParticipant) return null;
+        const progress = Math.max(0, Math.min(1, hostGraceRemaining / HOST_GRACE_SECONDS));
+        const minutes = Math.floor(hostGraceRemaining / 60);
+        const seconds = hostGraceRemaining % 60;
+        const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        if (hostConnectionState === 'waiting') {
+            return (
+                <View style={styles.graceOverlay}>
+                    <View style={styles.graceBackdrop} />
+                    <View style={styles.graceCard}>
+                        <ThemedText style={styles.graceTitle}>🔄 호스트 연결이 끊겼습니다.</ThemedText>
+                        <ThemedText style={styles.graceSubtitle}>
+                            {hostNickname}님 연결을 복구 중이에요. {formattedTime} 안에 돌아오면 계속 진행돼요.
+                        </ThemedText>
+                        <View style={styles.graceProgressBar}>
+                            <View style={[styles.graceProgressFill, { width: `${progress * 100}%` }]} />
+                        </View>
+                        <ThemedText style={styles.graceTimer}>{formattedTime}</ThemedText>
+                        <ThemedText style={styles.graceSubtitle}>자동으로 재시도하고 있어요.</ThemedText>
+                        <Pressable style={styles.ghostButton} onPress={handleLeave}>
+                            <ThemedText style={styles.ghostButtonText}>대기실로 돌아가기</ThemedText>
+                        </Pressable>
+                    </View>
+                </View>
+            );
+        }
+        return (
+            <View style={styles.graceOverlay}>
+                <View style={styles.graceBackdrop} />
+                <View style={styles.graceCard}>
+                    <ThemedText style={styles.graceTitle}>😢 호스트 연결이 오래 끊겼습니다.</ThemedText>
+                    <ThemedText style={styles.graceSubtitle}>이번 라운드는 종료되었어요.</ThemedText>
+                    <Pressable
+                        style={[styles.button, styles.primaryButton]}
+                        onPress={handleWaitForNextRound}
+                    >
+                        <ThemedText style={styles.primaryButtonText}>다음 라운드 기다리기</ThemedText>
                     </Pressable>
                     <Pressable style={styles.ghostButton} onPress={handleLeave}>
                         <ThemedText style={styles.ghostButtonText}>대기실로 돌아가기</ThemedText>
@@ -1197,6 +1430,7 @@ export default function PartyPlayScreen() {
                 {connectionState === 'online' ? renderPauseNotice() : null}
                 {content}
                 {renderGraceOverlay()}
+                {renderHostGraceOverlay()}
                 {toastMessage ? (
                     <View pointerEvents="none" style={[styles.toastWrapper, { bottom: insets.bottom + Spacing.lg }]}>
                         <View style={styles.toastBubble}>

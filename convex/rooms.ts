@@ -1230,6 +1230,8 @@ type ClientRoomOkState = {
         avgResponseMs: number;
         rank: number;
         isConnected: boolean;
+        lastSeenAt: number;
+        disconnectedAt: number | null;
     }[];
     currentRound?: {
         index: number;
@@ -1383,6 +1385,8 @@ export const getRoomState = query({
                 avgResponseMs: p.avgResponseMs,
                 rank: p.rank,
                 isConnected: isParticipantConnected(p, now),
+                lastSeenAt: p.lastSeenAt,
+                disconnectedAt: p.disconnectedAt ?? null,
             })),
             currentRound,
             now: Date.now(),
