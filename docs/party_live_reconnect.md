@@ -65,12 +65,11 @@ When a host or participant disconnects during a Party Live match, a **2-minute g
 
   ```
   😢 연결이 오래 끊겼습니다.
-  이번 라운드는 종료되었어요.
+  이번 퀴즈는 종료되었어요.
   ```
 * CTAs:
 
   * `대기실로 돌아가기`
-  * `다음 라운드 기다리기`
 
 ### Host
 
@@ -78,7 +77,6 @@ When a host or participant disconnects during a Party Live match, a **2-minute g
 * Options:
 
   * `참가자 제외 후 계속`
-  * `라운드 재시작`
 
 ---
 
