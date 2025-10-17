@@ -116,11 +116,56 @@ export default defineSchema({
     totalPlayed: v.number(),
     cosmetics: v.array(v.string()),
     createdAt: v.number(),
+    skill: v.optional(
+      v.object({
+        global: v.number(),
+        tags: v.array(
+          v.object({
+            tag: v.string(),
+            rating: v.number(),
+          })
+        ),
+      })
+    ),
+    sessionPref: v.optional(
+      v.object({
+        swipe: v.optional(
+          v.object({
+            lastCursor: v.optional(v.number()),
+            excludeIds: v.optional(v.array(v.id("questions"))),
+            updatedAt: v.optional(v.number()),
+            category: v.optional(v.string()),
+          })
+        ),
+      })
+    ),
   })
     .index("by_identity", ["identityId"])
     .index("by_handle", ["handle"]),
 
+  categories: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    emoji: v.string(),
+    description: v.string(),
+    sampleTags: v.optional(v.array(v.string())),
+    neighbors: v.optional(
+      v.array(
+        v.object({
+          slug: v.string(),
+          weight: v.number(),
+        })
+      )
+    ),
+    isActive: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_createdAt", ["createdAt"]),
+
   decks: defineTable({
+    slug: v.string(),
     title: v.string(),
     description: v.string(),
     tags: v.array(v.string()),
@@ -133,26 +178,39 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   })
+    .index("by_slug", ["slug"])
     .index("by_author", ["authorId"])
     .index("by_status", ["status"])
     .index("by_visibility", ["visibility"]),
 
   questions: defineTable({
     deckId: v.id("decks"),
+    category: v.string(),
     type: questionTypeEnum,
     prompt: v.string(),
+    promptHash: v.string(), // ✅ 추가: 정규화된 prompt 해시 (sha256 hex)
     mediaUrl: v.optional(v.string()),
-    choices: v.array(
-      v.object({
-        id: v.string(),
-        text: v.string(),
-      })
-    ),
+    mediaMeta: v.optional(v.object({
+      aspect: v.optional(v.string()),        // "16:9" | "1:1" 등
+      width: v.optional(v.number()),
+      height: v.optional(v.number()),
+    })),
+    tags: v.optional(v.array(v.string())),
+    choices: v.array(v.object({ id: v.string(), text: v.string() })),
     answerIndex: v.number(),
     explanation: v.optional(v.string()),
     difficulty: v.number(),
     createdAt: v.number(),
-  }).index("by_deck", ["deckId"]),
+    qualityScore: v.optional(v.number()),
+    elo: v.optional(v.number()),
+    choiceShuffleSeed: v.optional(v.number()),
+  })
+    .index("by_deck", ["deckId"])
+    .index("by_category_createdAt", ["category", "createdAt"])
+    .index("by_elo_createdAt", ["elo", "createdAt"])
+    .index("by_createdAt", ["createdAt"])
+    .index("by_promptHash", ["promptHash"]),
+
 
   matches: defineTable({
     mode: matchModeEnum,
@@ -191,17 +249,17 @@ export default defineSchema({
     hostId: v.id("users"),
     status: partyStatusEnum,
     deckId: v.optional(v.id("decks")),
-  rules: partyRules,
-  currentRound: v.number(),
-  totalRounds: v.number(),
-  serverNow: v.optional(v.number()),
-  phaseEndsAt: v.optional(v.number()),
-  expiresAt: v.optional(v.number()),
-  version: v.number(),
-  createdAt: v.number(),
-  pendingAction: v.optional(partyPendingAction),
-  pauseState: v.optional(partyPauseState),
-})
+    rules: partyRules,
+    currentRound: v.number(),
+    totalRounds: v.number(),
+    serverNow: v.optional(v.number()),
+    phaseEndsAt: v.optional(v.number()),
+    expiresAt: v.optional(v.number()),
+    version: v.number(),
+    createdAt: v.number(),
+    pendingAction: v.optional(partyPendingAction),
+    pauseState: v.optional(partyPauseState),
+  })
     .index("by_code", ["code"])
     .index("by_host", ["hostId"]),
 
@@ -258,6 +316,7 @@ export default defineSchema({
     questionId: v.optional(v.id("questions")),
     reporterId: v.id("users"),
     reason: v.string(),
+    note: v.optional(v.string()),
     createdAt: v.number(),
     resolved: v.boolean(),
   })
@@ -271,4 +330,43 @@ export default defineSchema({
     questions: v.array(dailyQuestion),
     shareTemplate: dailyShareTemplate,
   }).index("by_date", ["availableDate"]),
+
+  answers: defineTable({
+    userId: v.id("users"),
+    questionId: v.id("questions"),
+    category: v.string(),
+    tags: v.optional(v.array(v.string())),
+    choiceId: v.string(),
+    answerToken: v.string(),
+    isCorrect: v.boolean(),
+    timeMs: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId", "createdAt"])
+    .index("by_question", ["questionId", "createdAt"])
+    .index("by_user_question", ["userId", "questionId"]),
+
+  user_skill: defineTable({
+    userId: v.id("users"),
+    key: v.string(),          // "category:kpop_music" or "tag:아이브"
+    elo: v.number(),          // 기본 1200
+    updatedAt: v.number(),
+  }).index("by_user_key", ["userId", "key"]),
+
+  bookmarks: defineTable({
+    userId: v.id("users"),
+    questionId: v.id("questions"),
+    createdAt: v.number(),
+  })
+    .index("by_user_question", ["userId", "questionId"])
+    .index("by_user_created", ["userId", "createdAt"]),
+
+  tag_index: defineTable({
+    tag: v.string(),
+    questionId: v.id("questions"),
+    category: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_tag_createdAt", ["tag", "createdAt"])
+    .index("by_tag_category", ["tag", "category"])
 });

@@ -104,6 +104,10 @@ export async function ensureAuthedUser(ctx: MutationCtx): Promise<{ user: Doc<"u
     totalPlayed: 0,
     cosmetics: [],
     createdAt: now,
+    skill: {
+      global: 1200,
+      tags: [],
+    },
   });
 
   const user = await ctx.db.get(newId);

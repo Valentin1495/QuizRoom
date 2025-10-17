@@ -1,0 +1,3696 @@
+[
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 롤드컵(Worlds)에서 압도적인 경기력으로 우승을 차지하며 ‘페이커’의 역대 최다 우승 기록을 다시 쓴 팀은?",
+        "tags": [
+            "LoL",
+            "Worlds",
+            "T1",
+            "페이커"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Gen.G"
+            },
+            {
+                "id": "b",
+                "text": "JD Gaming"
+            },
+            {
+                "id": "c",
+                "text": "T1"
+            },
+            {
+                "id": "d",
+                "text": "Bilibili Gaming"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "2024년 롤드컵에서 T1이 우승하며 미드라이너 페이커 선수의 롤드컵 최다 우승 기록이 갱신되었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 451
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024-2025 시즌, 손흥민 선수가 뛰었던 토트넘 홋스퍼의 감독으로 팀을 이끌었던 인물은 누구인가요?",
+        "tags": [
+            "손흥민",
+            "토트넘",
+            "프리미어리그"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "엔제 포스테코글루"
+            },
+            {
+                "id": "b",
+                "text": "펩 과르디올라"
+            },
+            {
+                "id": "c",
+                "text": "마이클 캐릭"
+            },
+            {
+                "id": "d",
+                "text": "토마스 투헬"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "엔제 포스테코글루 감독은 토트넘을 이끌며 손흥민 선수를 중심으로 팀을 재편했습니다. 그는 2023년 토트넘에 부임하여 2024-2025 시즌 유로파리그 우승을 차지하며 17년 만에 토트넘에 트로피를 안겼습니다. 하지만 프리미어리그에서 17위라는 충격적인 성적을 기록했고, 2025년 6월 구단의 성과 검토 후 경질되었습니다. 이후 토트넘은 2025년 6월 13일 토마스 프랭크 감독을 새 사령탑으로 선임했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 889
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 출시된 프롬 소프트웨어의 대형 RPG 게임 '엘든 링'의 첫 번째 대규모 확장팩 이름은 무엇인가요?",
+        "tags": [
+            "엘든 링",
+            "프롬 소프트웨어",
+            "DLC",
+            "RPG"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "더 블러드 킹"
+            },
+            {
+                "id": "b",
+                "text": "황금 나무의 그림자"
+            },
+            {
+                "id": "c",
+                "text": "불의 시대의 왕"
+            },
+            {
+                "id": "d",
+                "text": "미켈라의 구원"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "엘든 링의 유일한 대규모 확장팩인 '황금 나무의 그림자(Shadow of the Erdtree)'는 2024년 6월에 출시되어 많은 인기를 얻었습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 123
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 KBO 리그에서 이승엽 선수의 기록을 넘어 통산 최다 홈런 신기록을 경신하며 '국민 홈런왕'으로 불리는 선수는 누구인가요?",
+        "tags": [
+            "KBO",
+            "최정",
+            "SSG 랜더스",
+            "홈런"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "이대호"
+            },
+            {
+                "id": "b",
+                "text": "박병호"
+            },
+            {
+                "id": "c",
+                "text": "양의지"
+            },
+            {
+                "id": "d",
+                "text": "최정"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "SSG 랜더스의 최정 선수는 2024년 4월 이승엽의 기록을 넘어 KBO 통산 최다 홈런 신기록을 달성했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 678
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "최근 MZ세대에게 큰 인기를 얻고 있는 '미니 테니스'로 불리며, 테니스와 스쿼시가 결합된 형태의 라켓 스포츠는 무엇인가요?",
+        "tags": [
+            "MZ트렌드",
+            "라켓스포츠",
+            "피클볼"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "피클볼"
+            },
+            {
+                "id": "b",
+                "text": "게이트볼"
+            },
+            {
+                "id": "c",
+                "text": "파크골프"
+            },
+            {
+                "id": "d",
+                "text": "패들"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "피클볼은 배드민턴 코트에서 라켓과 플라스틱 공을 사용하여 즐기는 스포츠로, 접근성이 좋아 빠르게 확산되고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 200
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "오타니 쇼헤이가 LA 다저스와 맺은 대형 계약에서, 연봉의 대부분을 계약 만료 후 받기로 한 조항을 일컫는 용어는?",
+        "tags": [
+            "오타니",
+            "LA다저스",
+            "MLB",
+            "디퍼드페이"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "옵트-아웃 조항"
+            },
+            {
+                "id": "b",
+                "text": "디퍼드 페이 (Deferred Pay)"
+            },
+            {
+                "id": "c",
+                "text": "슈퍼-시니어 조항"
+            },
+            {
+                "id": "d",
+                "text": "연봉 캡 웨이버"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "오타니는 계약금 7억 달러 중 6억 8천만 달러를 계약 만료 후 10년간 나눠 받는 '디퍼드 페이' 조항을 적용했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 147
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "발로란트에서 플레이어의 시야를 완전히 차단하고 순간적으로 이동할 수 있는 고유 능력을 가진 요원은?",
+        "tags": [
+            "발로란트",
+            "에이전트",
+            "FPS",
+            "오멘"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "레이즈"
+            },
+            {
+                "id": "b",
+                "text": "제트"
+            },
+            {
+                "id": "c",
+                "text": "오멘"
+            },
+            {
+                "id": "d",
+                "text": "피닉스"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "오멘은 연막과 순간이동 스킬을 통해 전장을 혼란스럽게 만드는 컨트롤러 요원입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 832
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "F1 역사상 최연소 월드 챔피언 기록을 보유하고 있으며, 2024년 시즌에도 압도적인 활약을 펼친 네덜란드 출신 드라이버는?",
+        "tags": [
+            "F1",
+            "레이싱",
+            "레드불",
+            "막스 베르스타펜"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "루이스 해밀턴"
+            },
+            {
+                "id": "b",
+                "text": "샤를 르클레르"
+            },
+            {
+                "id": "c",
+                "text": "막스 베르스타펜"
+            },
+            {
+                "id": "d",
+                "text": "랜도 노리스"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "막스 베르스타펜은 F1 최연소 기록을 여러 차례 갈아치웠으며, 최근 몇 년간 레드불 소속으로 압도적인 우승을 차지하고 있습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 91
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "'외계인'이라는 별명으로 불리며 NBA에서 뛰어난 활약을 펼치고 있는 샌안토니오 스퍼스 소속의 프랑스 출신 신인 선수는?",
+        "tags": [
+            "NBA",
+            "샌안토니오 스퍼스",
+            "농구",
+            "빅터 웸반야마"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "자이언 윌리엄슨"
+            },
+            {
+                "id": "b",
+                "text": "빅터 웸반야마"
+            },
+            {
+                "id": "c",
+                "text": "루카 돈치치"
+            },
+            {
+                "id": "d",
+                "text": "니콜라 요키치"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "빅터 웸반야마는 2023년 드래프트 1순위로 샌안토니오에 입단하며 새로운 세대의 농구 황제로 주목받고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 333
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 초에 출시된 대전 격투 게임 '철권 8'의 공식 슬로건으로 사용된 문구는 무엇인가요?",
+        "tags": [
+            "철권8",
+            "대전격투",
+            "반다이남코"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "싸움은 계속된다 (The Fight Continues)"
+            },
+            {
+                "id": "b",
+                "text": "파괴를 위한 혁신 (Innovation for Destruction)"
+            },
+            {
+                "id": "c",
+                "text": "내면의 야수를 깨워라 (Awaken the Beast)"
+            },
+            {
+                "id": "d",
+                "text": "철권의 시대가 온다 (The Age of Iron Fist)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "철권 8의 공식 슬로건은 '내면의 야수를 깨워라'이며, 이는 게임의 새로운 시스템인 히트 시스템과 맞물려 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 761
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2023-2024 V-리그에서 김연경 선수의 흥국생명을 꺾고 통합 우승을 차지한 여자 배구팀은?",
+        "tags": [
+            "V리그",
+            "배구",
+            "현대건설",
+            "김연경"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "GS칼텍스"
+            },
+            {
+                "id": "b",
+                "text": "IBK기업은행"
+            },
+            {
+                "id": "c",
+                "text": "한국도로공사"
+            },
+            {
+                "id": "d",
+                "text": "현대건설"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "현대건설은 2023-2024 시즌 정규리그 우승에 이어 챔피언결정전에서 흥국생명을 꺾고 통합 우승을 달성했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 58
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 초 '포켓몬스터 표절 논란'에도 불구하고 엄청난 흥행을 기록한 오픈월드 서바이벌 크래프팅 게임의 이름은?",
+        "tags": [
+            "Palworld",
+            "팰월드",
+            "서바이벌 게임",
+            "크래프팅"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "팰월드 (Palworld)"
+            },
+            {
+                "id": "b",
+                "text": "데드 바이 데이라이트 (Dead by Daylight)"
+            },
+            {
+                "id": "c",
+                "text": "발헤임 (Valheim)"
+            },
+            {
+                "id": "d",
+                "text": "테라리아 (Terraria)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "팰월드는 귀여운 팰(Pal)을 포획하고 함께 생존하는 게임으로, 출시 직후 폭발적인 동시 접속자 수를 기록했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 255
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 LPGA 투어에서 메이저 대회 포함 3승을 기록하며 세계 랭킹 1위 자리를 굳힌 한국계 뉴질랜드 국적의 골프 선수는?",
+        "tags": [
+            "LPGA",
+            "골프",
+            "리디아 고",
+            "세계랭킹"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "고진영"
+            },
+            {
+                "id": "b",
+                "text": "리디아 고"
+            },
+            {
+                "id": "c",
+                "text": "박인비"
+            },
+            {
+                "id": "d",
+                "text": "아타야 티티쿨"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "리디아 고는 2024년 LPGA 투어에서 꾸준히 좋은 성적을 내며 세계 최정상급 기량을 유지했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 401
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "중국 고전 '서유기'를 배경으로 2024년 출시 전부터 큰 기대를 모았으며, '소울라이크' 장르로 분류되는 액션 RPG 게임은?",
+        "tags": [
+            "서유기",
+            "액션RPG",
+            "소울라이크",
+            "흑신화: 오공"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "드래곤즈 도그마 2"
+            },
+            {
+                "id": "b",
+                "text": "라이즈 오브 피시아"
+            },
+            {
+                "id": "c",
+                "text": "흑신화: 오공 (Black Myth: Wukong)"
+            },
+            {
+                "id": "d",
+                "text": "파이널 판타지 16"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "중국 게임 개발사 게임 사이언스의 '흑신화: 오공'은 화려한 그래픽과 서유기 기반의 액션으로 전 세계의 주목을 받았습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 62
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024 파리 올림픽 정식 종목으로 채택되어 MZ세대에게 인기 있는 '볼더링', '리드', '스피드' 세 가지 세부 종목으로 구성된 스포츠는?",
+        "tags": [
+            "파리올림픽",
+            "클라이밍",
+            "볼더링",
+            "스포츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "트램펄린"
+            },
+            {
+                "id": "b",
+                "text": "3x3 농구"
+            },
+            {
+                "id": "c",
+                "text": "스포츠 클라이밍"
+            },
+            {
+                "id": "d",
+                "text": "브레이킹"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "스포츠 클라이밍은 2020 도쿄 올림픽에 이어 파리 올림픽에서도 정식 종목으로 채택되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 709
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 6월, 킬리안 음바페가 자유 계약으로 이적하며 입단한 스페인 프리메라리가의 명문 구단은?",
+        "tags": [
+            "음바페",
+            "레알 마드리드",
+            "프리메라리가"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "레알 마드리드"
+            },
+            {
+                "id": "b",
+                "text": "FC 바르셀로나"
+            },
+            {
+                "id": "c",
+                "text": "파리 생제르맹"
+            },
+            {
+                "id": "d",
+                "text": "바이에른 뮌헨"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "음바페는 2024년 여름 PSG를 떠나 레알 마드리드에 자유 계약으로 합류했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 211
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 메이저리그 복귀 대신 친정팀으로 돌아오며 KBO에 다시 합류한 '괴물 투수' 류현진의 소속팀은?",
+        "tags": [
+            "류현진",
+            "KBO",
+            "한화 이글스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "롯데 자이언츠"
+            },
+            {
+                "id": "b",
+                "text": "LG 트윈스"
+            },
+            {
+                "id": "c",
+                "text": "두산 베어스"
+            },
+            {
+                "id": "d",
+                "text": "한화 이글스"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "류현진 선수는 2024년 8년 만에 친정팀인 한화 이글스로 복귀했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 567
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "인기 오픈월드 RPG 게임 '원신'에서 유저가 선택할 수 있는 쌍둥이 남매 주인공 캐릭터의 통칭은?",
+        "tags": [
+            "원신",
+            "RPG",
+            "게이머",
+            "여행자"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "신왕"
+            },
+            {
+                "id": "b",
+                "text": "여행자 (Traveler)"
+            },
+            {
+                "id": "c",
+                "text": "개척자"
+            },
+            {
+                "id": "d",
+                "text": "운명"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "원신의 주인공은 '여행자(Traveler)'로 불리며, 잃어버린 쌍둥이 남매를 찾는 것이 주된 스토리입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 803
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2023-2024 시즌을 끝으로 9년간 이끌었던 리버풀 FC 감독직에서 사임한 명장은 누구인가요?",
+        "tags": [
+            "리버풀",
+            "클롭",
+            "EPL",
+            "축구감독"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "마이클 아르테타"
+            },
+            {
+                "id": "b",
+                "text": "토마스 투헬"
+            },
+            {
+                "id": "c",
+                "text": "펩 과르디올라"
+            },
+            {
+                "id": "d",
+                "text": "위르겐 클롭"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "위르겐 클롭 감독은 리버풀에서 9년간 수많은 트로피를 들어 올린 후 2024년 팀을 떠났습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 921
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "대학 농구 역대 최다 득점 기록을 갈아치우고 2024년 WNBA에 입성해 큰 인기를 얻고 있는 신인 선수는?",
+        "tags": [
+            "WNBA",
+            "케이틀린 클락",
+            "농구",
+            "인디애나 피버"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "앨리샤 그레이"
+            },
+            {
+                "id": "b",
+                "text": "사브리나 이오네스쿠"
+            },
+            {
+                "id": "c",
+                "text": "케이틀린 클락 (Caitlin Clark)"
+            },
+            {
+                "id": "d",
+                "text": "아리엘 앨링턴"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "인디애나 피버에 입단한 케이틀린 클락은 WNBA의 흥행을 이끌고 있는 스타 플레이어입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 788
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 LCK 스프링과 서머 시즌을 모두 우승하며 LCK 4연속 우승이라는 대기록을 세운 LoL 프로팀은?",
+        "tags": [
+            "LCK",
+            "GenG",
+            "LoL",
+            "e스포츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Gen.G (젠지)"
+            },
+            {
+                "id": "b",
+                "text": "T1"
+            },
+            {
+                "id": "c",
+                "text": "한화생명 e스포츠"
+            },
+            {
+                "id": "d",
+                "text": "KT 롤스터"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "Gen.G는 2023 서머부터 2024 서머까지 LCK 4연속 우승이라는 전례 없는 기록을 달성했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 135
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 앞서 해보기(Early Access)를 시작한 후 로그라이크 장르에서 전작을 뛰어넘는 인기를 구가 중인 게임은?",
+        "tags": [
+            "Hades2",
+            "로그라이크",
+            "인디게임",
+            "Early Access"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "발더스 게이트 3"
+            },
+            {
+                "id": "b",
+                "text": "하데스 2"
+            },
+            {
+                "id": "c",
+                "text": "던전스 4"
+            },
+            {
+                "id": "d",
+                "text": "사이버펑크 2077: 팬텀 리버티"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "Supergiant Games가 개발한 하데스 2는 출시와 동시에 전작을 능가하는 평가와 판매량을 기록하며 큰 성공을 거두었습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 490
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024 파리 올림픽에서 양궁 3관왕(혼성, 단체, 개인)을 달성하며 한국 양궁의 위상을 높인 여성 선수는?",
+        "tags": [
+            "파리올림픽",
+            "양궁",
+            "임시현",
+            "금메달"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "안산"
+            },
+            {
+                "id": "b",
+                "text": "강채영"
+            },
+            {
+                "id": "c",
+                "text": "임시현"
+            },
+            {
+                "id": "d",
+                "text": "최미선"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "임시현 선수는 파리 올림픽 양궁에서 여자 개인, 단체, 혼성전 금메달을 모두 획득하며 한국 양궁 역사를 새로 썼습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 33
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2023년 정든 옥타곤을 떠나며 은퇴를 선언한 '코리안 좀비'라는 별명으로 UFC에서 활약한 대한민국 선수는?",
+        "tags": [
+            "UFC",
+            "정찬성",
+            "코리안좀비",
+            "MMA"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "정찬성"
+            },
+            {
+                "id": "b",
+                "text": "김동현"
+            },
+            {
+                "id": "c",
+                "text": "최두호"
+            },
+            {
+                "id": "d",
+                "text": "박준용"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정찬성 선수는 2023년 8월 싱가포르에서 마지막 경기를 치르고 팬들의 환호 속에 은퇴했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 875
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 EA SPORTS FC 시리즈에서 처음으로 도입된, 선수들의 개별적인 플레이 스타일을 구현하는 새로운 시스템 이름은?",
+        "tags": [
+            "EAFC25",
+            "EAFC",
+            "축구게임",
+            "플레이스타일"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "하이퍼모션 V"
+            },
+            {
+                "id": "b",
+                "text": "퓨어 샷"
+            },
+            {
+                "id": "c",
+                "text": "트레이너 모드"
+            },
+            {
+                "id": "d",
+                "text": "플레이스타일+ (PlayStyles+)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "플레이스타일+는 축구 선수의 시그니처 움직임을 게임 내에서 재현하여 플레이의 다양성을 높인 시스템입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 19
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2023-2024 시즌 해리 케인이 떠난 후 토트넘 홋스퍼 FC에서 공격의 구심점 역할을 맡으며 팀의 주장이 된 한국 선수는?",
+        "tags": [
+            "손흥민",
+            "토트넘",
+            "EPL",
+            "축구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "황희찬"
+            },
+            {
+                "id": "b",
+                "text": "손흥민"
+            },
+            {
+                "id": "c",
+                "text": "이강인"
+            },
+            {
+                "id": "d",
+                "text": "김민재"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "손흥민은 2023-2024 시즌을 앞두고 토트넘의 주장으로 임명되어 팀을 이끌었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 601
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 6월 출시되어 큰 기대를 모은, 프롬 소프트웨어의 액션 RPG '엘든 링'의 첫 번째이자 대규모 확장팩 이름은?",
+        "tags": [
+            "엘든링",
+            "DLC",
+            "프롬소프트웨어",
+            "황금나무의 그림자"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "재의 귀족 (Lord of Cinder)"
+            },
+            {
+                "id": "b",
+                "text": "불의 시대 (Age of Fire)"
+            },
+            {
+                "id": "c",
+                "text": "황금 나무의 그림자 (Shadow of the Erdtree)"
+            },
+            {
+                "id": "d",
+                "text": "미켈라의 계승자 (Miquella's Heir)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "'황금 나무의 그림자'는 엘든 링의 유일한 대규모 확장팩으로, 새로운 스토리와 지역을 추가했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 278
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "LA 다저스에서 외야수였으나, 2024 시즌 팀의 필요에 따라 내야수 포지션 (2루수, 유격수)으로 이동한 리그 최고 선수 중 한 명은?",
+        "tags": [
+            "MLB",
+            "LA다저스",
+            "무키 베츠",
+            "포지션변경"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "무키 베츠 (Mookie Betts)"
+            },
+            {
+                "id": "b",
+                "text": "프레디 프리먼"
+            },
+            {
+                "id": "c",
+                "text": "후안 소토"
+            },
+            {
+                "id": "d",
+                "text": "저스틴 터너"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "무키 베츠는 원래 우익수였으나, 2024 시즌 팀의 내야 공백을 메우기 위해 주로 유격수와 2루수로 출전하고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 945
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 NBA 파이널에서 댈러스 매버릭스를 꺾고 우승을 차지한 동부 컨퍼런스의 강팀은?",
+        "tags": [
+            "NBA",
+            "보스턴 셀틱스",
+            "파이널",
+            "농구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "미네소타 팀버울브스"
+            },
+            {
+                "id": "b",
+                "text": "덴버 너기츠"
+            },
+            {
+                "id": "c",
+                "text": "보스턴 셀틱스"
+            },
+            {
+                "id": "d",
+                "text": "LA 레이커스"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "보스턴 셀틱스는 2024년 우승을 차지하며 구단 통산 18번째 우승 기록을 달성했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 113
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 청두에서 개최된 LoL 미드 시즌 인비테이셔널(MSI)에서 우승을 차지한 LCK 팀은?",
+        "tags": [
+            "LoL",
+            "MSI",
+            "e스포츠",
+            "GenG"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "T1"
+            },
+            {
+                "id": "b",
+                "text": "Gen.G (젠지)"
+            },
+            {
+                "id": "c",
+                "text": "빌리빌리 게이밍 (BLG)"
+            },
+            {
+                "id": "d",
+                "text": "G2 e스포츠"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "Gen.G는 2024 MSI에서 LPL의 빌리빌리 게이밍(BLG)을 꺾고 우승을 차지했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 77
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 시즌에 마스터스 우승을 포함해 PGA 투어에서 압도적인 경기력을 보이며 세계 랭킹 1위를 유지하고 있는 골프 선수는?",
+        "tags": [
+            "PGA",
+            "골프",
+            "마스터스",
+            "스코티 셰플러"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "로리 매킬로이"
+            },
+            {
+                "id": "b",
+                "text": "존 람"
+            },
+            {
+                "id": "c",
+                "text": "스코티 셰플러 (Scottie Scheffler)"
+            },
+            {
+                "id": "d",
+                "text": "타이거 우즈"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "스코티 셰플러는 2024년 압도적인 기량으로 여러 대회를 우승하며 세계 랭킹 1위를 공고히 했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 312
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "LoL e스포츠의 '전설'로 불리며, 2023년 월즈 우승을 포함하여 총 4회의 월드 챔피언십 우승 기록을 보유하고 있는 선수는?",
+        "tags": [
+            "Faker",
+            "LoL",
+            "월즈",
+            "T1"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "쇼메이커"
+            },
+            {
+                "id": "b",
+                "text": "캡스"
+            },
+            {
+                "id": "c",
+                "text": "룰러"
+            },
+            {
+                "id": "d",
+                "text": "Faker (이상혁)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "Faker는 2013, 2015, 2016, 2023년에 월즈 우승을 차지하며 4회 우승 기록을 가진 유일한 선수입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 500
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2020 도쿄 올림픽에서 정식 종목으로 채택되었으며, 스트리트(Street)와 파크(Park) 두 가지 세부 종목으로 구성된 젊은 층에게 인기 있는 스포츠는?",
+        "tags": [
+            "올림픽",
+            "스케이트보드",
+            "익스트림 스포츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "3x3 농구"
+            },
+            {
+                "id": "b",
+                "text": "스포츠 클라이밍"
+            },
+            {
+                "id": "c",
+                "text": "스케이트보드 (Skateboarding)"
+            },
+            {
+                "id": "d",
+                "text": "서핑"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "스케이트보드는 2020 도쿄 올림픽부터 정식 종목으로 채택되어 큰 관심을 받고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 88
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2025년 출시 예정이며, 대규모 오픈월드와 향상된 자유도를 예고하며 몬스터 헌터 팬들에게 큰 기대를 받고 있는 신작의 이름은?",
+        "tags": [
+            "몬스터헌터",
+            "캡콤",
+            "RPG",
+            "와일즈"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "몬스터 헌터 이볼브"
+            },
+            {
+                "id": "b",
+                "text": "몬스터 헌터 와일즈 (Monster Hunter Wilds)"
+            },
+            {
+                "id": "c",
+                "text": "몬스터 헌터 얼티밋"
+            },
+            {
+                "id": "d",
+                "text": "몬스터 헌터 라이즈 2"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "몬스터 헌터 와일즈는 2024년 대규모 트레일러를 공개하며 몬스터 헌터 시리즈의 새로운 시대를 예고했습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 741
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "'바람의 손자'라는 별명으로 불리며, 2024년 시즌 샌프란시스코 자이언츠 소속으로 메이저리그에 데뷔한 한국인 외야수는?",
+        "tags": [
+            "이정후",
+            "MLB",
+            "샌프란시스코 자이언츠",
+            "KBO"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "김하성"
+            },
+            {
+                "id": "b",
+                "text": "최지만"
+            },
+            {
+                "id": "c",
+                "text": "이정후"
+            },
+            {
+                "id": "d",
+                "text": "박병호"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "이정후 선수는 키움 히어로즈를 거쳐 2024년 포스팅을 통해 샌프란시스코 자이언츠에 입단했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 25
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 파리 올림픽 남자 100m 결승에서 9초 79로 우승하며 '세계에서 가장 빠른 사나이' 타이틀을 거머쥔 미국 육상 선수는?",
+        "tags": [
+            "파리올림픽",
+            "육상",
+            "노아 라일스",
+            "100m"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "노아 라일스"
+            },
+            {
+                "id": "b",
+                "text": "크리스천 콜먼"
+            },
+            {
+                "id": "c",
+                "text": "프레드 컬리"
+            },
+            {
+                "id": "d",
+                "text": "마르첼 제이콥스"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "노아 라일스는 2024 파리 올림픽 남자 100m에서 0.005초 차이로 극적인 우승을 차지하며 세계 최고 스프린터로 인정받았습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 642
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024-2025 시즌 맨체스터 유나이티드의 새 감독으로 부임하여 팀 재건을 맡은 포르투갈 출신 명장은?",
+        "tags": [
+            "맨유",
+            "루벤 아모림",
+            "EPL",
+            "프리미어리그"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "루벤 아모림"
+            },
+            {
+                "id": "b",
+                "text": "호세 무리뉴"
+            },
+            {
+                "id": "c",
+                "text": "마우리시오 포체티노"
+            },
+            {
+                "id": "d",
+                "text": "시메오네"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "루벤 아모림은 스포르팅 CP에서의 성공을 바탕으로 2024-2025 시즌 맨유 감독으로 선임되어 팀을 이끌고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 187
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 한국시리즈에서 기아 타이거즈를 꺾고 통합 우승을 차지한 KBO 팀은?",
+        "tags": [
+            "KBO",
+            "한국시리즈",
+            "삼성 라이온즈",
+            "야구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "LG 트윈스"
+            },
+            {
+                "id": "b",
+                "text": "삼성 라이온즈"
+            },
+            {
+                "id": "c",
+                "text": "두산 베어스"
+            },
+            {
+                "id": "d",
+                "text": "KT 위즈"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "삼성 라이온즈는 2024 한국시리즈에서 기아를 4승 2패로 꺾고 우승을 차지했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 923
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2025년 출시 예정인 '그랜드 테프트 오토(GTA)' 시리즈의 최신작 번호는?",
+        "tags": [
+            "GTA",
+            "락스타게임즈",
+            "오픈월드",
+            "게임"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "GTA 5 리마스터"
+            },
+            {
+                "id": "b",
+                "text": "GTA 6"
+            },
+            {
+                "id": "c",
+                "text": "GTA 온라인 2"
+            },
+            {
+                "id": "d",
+                "text": "GTA 바이스 시티 2"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "락스타 게임즈는 2025년 출시 예정인 GTA 6의 첫 트레일러를 2023년 공개하며 게임계에 큰 화제를 모았습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 456
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 발롱도르 수상자로 선정되며 역대 최다 수상 기록을 경신한 맨체스터 시티 소속 미드필더는?",
+        "tags": [
+            "발롱도르",
+            "로드리",
+            "맨시티",
+            "축구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "케빈 더브라위너"
+            },
+            {
+                "id": "b",
+                "text": "로드리"
+            },
+            {
+                "id": "c",
+                "text": "에를링 홀란드"
+            },
+            {
+                "id": "d",
+                "text": "비니시우스 주니어"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "맨체스터 시티의 미드필더 로드리는 2024년 발롱도르를 수상하며 팀과 스페인 대표팀에서의 뛰어난 활약을 인정받았습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 731
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 파리 올림픽 펜싱 사브르 개인전에서 금메달을 획득하며 한국 펜싱의 위상을 높인 남자 선수는?",
+        "tags": [
+            "파리올림픽",
+            "펜싱",
+            "오상욱",
+            "금메달"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "구본길"
+            },
+            {
+                "id": "b",
+                "text": "오상욱"
+            },
+            {
+                "id": "c",
+                "text": "김정환"
+            },
+            {
+                "id": "d",
+                "text": "박상원"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "오상욱 선수는 2024 파리 올림픽 남자 사브르 개인전에서 금메달을 획득하며 한국 펜싱의 새로운 에이스로 떠올랐습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 294
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 월드 베이스볼 클래식(WBC)에서 2연속 우승을 차지한 국가는?",
+        "tags": [
+            "WBC",
+            "야구",
+            "일본",
+            "국제대회"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "미국"
+            },
+            {
+                "id": "b",
+                "text": "일본"
+            },
+            {
+                "id": "c",
+                "text": "도미니카공화국"
+            },
+            {
+                "id": "d",
+                "text": "한국"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "일본은 2023년에 이어 2024년 WBC에서도 우승하며 세계 야구 최강국의 위상을 확고히 했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 568
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "밸브의 인기 FPS 게임 '카운터 스트라이크 2(CS2)'에서 가장 상징적인 맵으로 알려진, 테러리스트가 폭탄을 설치하는 중동 배경의 맵 이름은?",
+        "tags": [
+            "CS2",
+            "카스2",
+            "FPS",
+            "더스트2"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "미라지"
+            },
+            {
+                "id": "b",
+                "text": "인페르노"
+            },
+            {
+                "id": "c",
+                "text": "더스트 2"
+            },
+            {
+                "id": "d",
+                "text": "뉴크"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "더스트 2(Dust II)는 카운터 스트라이크 시리즈의 가장 상징적인 맵으로 20년 넘게 사랑받고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 817
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 UEFA 유로 결승에서 잉글랜드를 꺾고 우승을 차지한 국가는?",
+        "tags": [
+            "유로2024",
+            "스페인",
+            "축구",
+            "유럽축구선수권대회"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "프랑스"
+            },
+            {
+                "id": "b",
+                "text": "이탈리아"
+            },
+            {
+                "id": "c",
+                "text": "스페인"
+            },
+            {
+                "id": "d",
+                "text": "독일"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "스페인은 2024 UEFA 유로 결승에서 잉글랜드를 2-1로 꺾고 우승을 차지하며 유럽 축구의 강자로 복귀했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 352
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 메이저리그 월드시리즈에서 뉴욕 양키스를 꺾고 우승을 차지한 팀은?",
+        "tags": [
+            "MLB",
+            "월드시리즈",
+            "LA다저스",
+            "오타니"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "휴스턴 애스트로스"
+            },
+            {
+                "id": "b",
+                "text": "LA 다저스"
+            },
+            {
+                "id": "c",
+                "text": "애틀랜타 브레이브스"
+            },
+            {
+                "id": "d",
+                "text": "필라델피아 필리스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "LA 다저스는 오타니 쇼헤이와 무키 베츠의 활약으로 2024 월드시리즈에서 양키스를 4승 1패로 꺾고 우승했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 629
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 파리 올림픽 수영 자유형에서 여러 금메달을 획득하며 '물고기'라는 별명을 얻은 프랑스 출신 스타 수영 선수는?",
+        "tags": [
+            "파리올림픽",
+            "수영",
+            "레옹 마르샹",
+            "프랑스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "케일럽 드레슬"
+            },
+            {
+                "id": "b",
+                "text": "레옹 마르샹"
+            },
+            {
+                "id": "c",
+                "text": "아담 피티"
+            },
+            {
+                "id": "d",
+                "text": "던컨 스콧"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "레옹 마르샹은 2024 파리 올림픽에서 자국에서 열린 대회에서 4개의 금메달을 획득하며 프랑스 수영의 전설이 되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 445
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024-2025 시즌 AC 밀란으로 이적하며 세리에 A에 복귀한 미국 국적의 공격수는?",
+        "tags": [
+            "AC밀란",
+            "크리스티안 풀리식",
+            "세리에A",
+            "축구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "지오바니 레이나"
+            },
+            {
+                "id": "b",
+                "text": "크리스티안 풀리식"
+            },
+            {
+                "id": "c",
+                "text": "웨스턴 맥케니"
+            },
+            {
+                "id": "d",
+                "text": "티모시 위아"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "크리스티an 풀리식은 첼시를 떠나 2024-2025 시즌 AC 밀란으로 이적하며 세리에 A에서 새로운 도전을 시작했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 772
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 배틀그라운드 글로벌 챔피언십(PGC)에서 우승을 차지한 한국 e스포츠 팀은?",
+        "tags": [
+            "PUBG",
+            "배틀그라운드",
+            "e스포츠",
+            "젠지"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "DWG KIA"
+            },
+            {
+                "id": "b",
+                "text": "Gen.G"
+            },
+            {
+                "id": "c",
+                "text": "T1"
+            },
+            {
+                "id": "d",
+                "text": "DRX"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "Gen.G는 2024년 배틀그라운드 글로벌 챔피언십에서 뛰어난 팀워크로 우승을 차지했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 238
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 프로 골퍼 타이거 우즈가 사고로 은퇴 위기를 맞았다가 복귀한 후 출전한 메이저 대회는?",
+        "tags": [
+            "타이거우즈",
+            "골프",
+            "마스터스",
+            "PGA"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "US 오픈"
+            },
+            {
+                "id": "b",
+                "text": "PGA 챔피언십"
+            },
+            {
+                "id": "c",
+                "text": "마스터스"
+            },
+            {
+                "id": "d",
+                "text": "디 오픈"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "타이거 우즈는 2024년에도 마스터스에 출전하며 골프 팬들에게 감동을 선사했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 663
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "넥슨의 인기 FPS 게임 '던전앤파이터 듀얼(DNF Duel)'의 장르 분류는?",
+        "tags": [
+            "DNF",
+            "넥슨",
+            "대전격투",
+            "던파"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "RPG"
+            },
+            {
+                "id": "b",
+                "text": "대전 격투 게임"
+            },
+            {
+                "id": "c",
+                "text": "FPS"
+            },
+            {
+                "id": "d",
+                "text": "MOBA"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "DNF Duel은 던전앤파이터의 캐릭터들이 등장하는 2D 대전 격투 게임으로 아크 시스템 웍스가 개발했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 891
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 US 오픈 테니스 남자 단식에서 우승하며 그랜드슬램 통산 24승을 기록한 세르비아 선수는?",
+        "tags": [
+            "테니스",
+            "노박 조코비치",
+            "US오픈",
+            "그랜드슬램"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "라파엘 나달"
+            },
+            {
+                "id": "b",
+                "text": "노박 조코비치"
+            },
+            {
+                "id": "c",
+                "text": "카를로스 알카라스"
+            },
+            {
+                "id": "d",
+                "text": "다닐 메드베데프"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "노박 조코비치는 2024 US 오픈에서 우승하며 그랜드슬램 최다 우승 기록을 경신했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 514
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024-2025 시즌 NBA에서 필라델피아 76ers로 이적한 전 LA 클리퍼스의 올스타 가드는?",
+        "tags": [
+            "NBA",
+            "폴 조지",
+            "필라델피아 76ers",
+            "농구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "제임스 하든"
+            },
+            {
+                "id": "b",
+                "text": "폴 조지"
+            },
+            {
+                "id": "c",
+                "text": "카와이 레너드"
+            },
+            {
+                "id": "d",
+                "text": "러셀 웨스트브룩"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "폴 조지는 2024-2025 시즌 필라델피아 76ers로 이적하며 조엘 엠비드, 타이리스 맥시와 함께 빅3를 구성했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 376
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 발매된 닌텐도 스위치 후속 게임기의 정식 명칭은?",
+        "tags": [
+            "닌텐도",
+            "스위치2",
+            "게임기",
+            "콘솔"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "닌텐도 스위치 2"
+            },
+            {
+                "id": "b",
+                "text": "닌텐도 스위치 프로"
+            },
+            {
+                "id": "c",
+                "text": "닌텐도 넥스트"
+            },
+            {
+                "id": "d",
+                "text": "아직 발매되지 않음"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "2024년 10월 현재 닌텐도 스위치의 후속 게임기는 아직 정식 발매되지 않았으며, 2025년 출시가 예상됩니다.",
+        "difficulty": 0.3,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 159
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 코파 아메리카 결승에서 콜롬비아를 꺾고 우승을 차지한 남미 축구 강국은?",
+        "tags": [
+            "코파아메리카",
+            "아르헨티나",
+            "메시",
+            "축구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "브라질"
+            },
+            {
+                "id": "b",
+                "text": "우루과이"
+            },
+            {
+                "id": "c",
+                "text": "아르헨티나"
+            },
+            {
+                "id": "d",
+                "text": "칠레"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "아르헨티나는 2024 코파 아메리카에서 콜롬비아를 1-0으로 꺾고 연속 우승을 차지했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 827
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "라이엇 게임즈의 전략 카드 게임 '레전드 오브 룬테라'의 배경 세계관을 공유하는 MOBA 게임은?",
+        "tags": [
+            "리그오브레전드",
+            "LoL",
+            "레전드오브룬테라",
+            "라이엇"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "도타 2"
+            },
+            {
+                "id": "b",
+                "text": "리그 오브 레전드"
+            },
+            {
+                "id": "c",
+                "text": "히어로즈 오브 더 스톰"
+            },
+            {
+                "id": "d",
+                "text": "스매시 레전드"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "레전드 오브 룬테라는 리그 오브 레전드의 세계관인 룬테라를 배경으로 하는 카드 게임입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 692
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 파리 올림픽 탁구 혼합 복식에서 금메달을 획득한 한국 대표팀 조합은?",
+        "tags": [
+            "파리올림픽",
+            "탁구",
+            "임종훈",
+            "신유빈"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "이상수-전지희"
+            },
+            {
+                "id": "b",
+                "text": "임종훈-신유빈"
+            },
+            {
+                "id": "c",
+                "text": "장우진-전지희"
+            },
+            {
+                "id": "d",
+                "text": "조대성-신유빈"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "임종훈-신유빈 조는 2024 파리 올림픽 탁구 혼합 복식에서 한국 탁구 역사상 첫 올림픽 금메달을 획득했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 418
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024-2025 시즌 바이에른 뮌헨에서 해리 케인과 함께 공격진을 이루고 있는 전 맨체스터 시티 윙어는?",
+        "tags": [
+            "바이에른뮌헨",
+            "리로이 사네",
+            "분데스리가",
+            "축구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "킹슬리 코망"
+            },
+            {
+                "id": "b",
+                "text": "세르주 그나브리"
+            },
+            {
+                "id": "c",
+                "text": "리로이 사네"
+            },
+            {
+                "id": "d",
+                "text": "자말 무시알라"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "리로이 사네는 맨시티를 떠나 바이에른에서 뛰고 있으며, 2024-2025 시즌 해리 케인과 함께 팀의 핵심 공격수로 활약하고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 753
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 오버워치 리그(OWL)가 공식적으로 종료된 후, 블리자드가 새롭게 시작한 오버워치 2 e스포츠 대회 형식은?",
+        "tags": [
+            "오버워치2",
+            "블리자드",
+            "e스포츠",
+            "OWCS"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오버워치 챔피언스 시리즈"
+            },
+            {
+                "id": "b",
+                "text": "오버워치 월드컵"
+            },
+            {
+                "id": "c",
+                "text": "오버워치 프리미어 리그"
+            },
+            {
+                "id": "d",
+                "text": "오버워치 글로벌 투어"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "블리자드는 OWL 종료 후 오버워치 챔피언스 시리즈(OWCS)를 통해 새로운 e스포츠 생태계를 구축했습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 264
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 UFC 페더급 챔피언 자리를 지키고 있는 조지아 출신의 레슬링 스타일 파이터는?",
+        "tags": [
+            "UFC",
+            "MMA",
+            "일리아 토포우리아",
+            "페더급"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "알렉산더 볼카노프스키"
+            },
+            {
+                "id": "b",
+                "text": "막스 할러웨이"
+            },
+            {
+                "id": "c",
+                "text": "일리아 토포우리아"
+            },
+            {
+                "id": "d",
+                "text": "브라이언 오르테가"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "일리아 토포우리아는 2024년 알렉산더 볼카노프스키를 꺾고 UFC 페더급 챔피언에 올라 벨트를 방어하고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 597
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 출시된 슈퍼 마리오 시리즈의 최신 리메이크작으로, 종이 마리오 시리즈의 전설적인 작품을 닌텐도 스위치로 리메이크한 게임은?",
+        "tags": [
+            "슈퍼마리오",
+            "닌텐도",
+            "종이마리오",
+            "리메이크"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "페이퍼 마리오: 천년의 문"
+            },
+            {
+                "id": "b",
+                "text": "슈퍼 마리오 64 리메이크"
+            },
+            {
+                "id": "c",
+                "text": "마리오 앤 루이지 RPG"
+            },
+            {
+                "id": "d",
+                "text": "슈퍼 마리오 선샤인 HD"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "페이퍼 마리오: 천년의 문 리메이크는 2024년 출시되어 원작의 감동을 현세대 그래픽으로 되살렸습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 831
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 US 오픈 여자 단식에서 우승하며 그랜드슬램 첫 우승을 달성한 벨라루스 출신 선수는?",
+        "tags": [
+            "테니스",
+            "US오픈",
+            "아리나 사발렌카",
+            "그랜드슬램"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "이가 시비옹테크"
+            },
+            {
+                "id": "b",
+                "text": "아리나 사발렌카"
+            },
+            {
+                "id": "c",
+                "text": "코코 가우프"
+            },
+            {
+                "id": "d",
+                "text": "옐레나 리바키나"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "아리나 사발렌카는 2024 US 오픈에서 우승하며 커리어 그랜드슬램을 향한 발걸음을 내디뎠습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 125
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024-2025 시즌 프리미어리그에서 첼시 FC의 새로운 감독으로 부임한 이탈리아 출신 명장은?",
+        "tags": [
+            "첼시",
+            "엔초 마레스카",
+            "EPL",
+            "프리미어리그"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "마우리시오 포체티노"
+            },
+            {
+                "id": "b",
+                "text": "엔초 마레스카"
+            },
+            {
+                "id": "c",
+                "text": "안토니오 콘테"
+            },
+            {
+                "id": "d",
+                "text": "카를로 안첼로티"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "엔초 마레스카는 레스터 시티에서의 성공을 바탕으로 2024-2025 시즌 첼시의 감독으로 선임되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 469
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 인기를 끌고 있는 생존 호러 게임으로, 플레이어가 작은 생명체가 되어 거대한 세계를 탐험하는 옵시디언 엔터테인먼트의 게임은?",
+        "tags": [
+            "Grounded",
+            "옵시디언",
+            "서바이벌",
+            "협동게임"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Grounded"
+            },
+            {
+                "id": "b",
+                "text": "Ark: Survival Evolved"
+            },
+            {
+                "id": "c",
+                "text": "The Forest"
+            },
+            {
+                "id": "d",
+                "text": "Subnautica"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "Grounded는 플레이어가 개미만한 크기로 줄어들어 뒷마당에서 생존해야 하는 독특한 컨셉의 게임입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 702
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 KBO 신인 드래프트 1순위로 LG 트윈스에 입단한 유망주 투수는?",
+        "tags": [
+            "KBO",
+            "LG트윈스",
+            "드래프트",
+            "야구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "김현준"
+            },
+            {
+                "id": "b",
+                "text": "이용찬"
+            },
+            {
+                "id": "c",
+                "text": "정우주"
+            },
+            {
+                "id": "d",
+                "text": "박동원"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "이용찬 투수는 2024 KBO 신인 드래프트에서 1순위로 지명되어 LG 트윈스에 입단했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 336
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 도타 2 인터내셔널(TI)에서 우승을 차지한 팀은?",
+        "tags": [
+            "Dota2",
+            "인터내셔널",
+            "e스포츠",
+            "MOBA"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Team Spirit"
+            },
+            {
+                "id": "b",
+                "text": "Team Liquid"
+            },
+            {
+                "id": "c",
+                "text": "PSG.LGD"
+            },
+            {
+                "id": "d",
+                "text": "Gaimin Gladiators"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "Gaimin Gladiators는 2024년 도타 2 인터내셔널에서 우승을 차지하며 팀 역사상 최고의 성과를 달성했습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1729155600,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 884
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 시즌을 앞두고 르브론 제임스와 함께 레이커스에 입단하며 화제를 모은 신인 드래프트 1순위 선수는?",
+        "tags": [
+            "NBA",
+            "르브론 제임스",
+            "드래프트",
+            "레이커스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "카일 필리포우스키"
+            },
+            {
+                "id": "b",
+                "text": "알렉스 사르"
+            },
+            {
+                "id": "c",
+                "text": "자카리 리사쉐"
+            },
+            {
+                "id": "d",
+                "text": "케네스 로프턴 주니어"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "2024 NBA 드래프트 1순위로 애틀랜타 호크스가 자카리 리사쉐를 지명했으며, 그는 이후 트레이드를 통해 레이커스에서 르브론 제임스와 한 팀이 되었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 441
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024 파리 올림픽에 정식 종목으로 채택된, DJ 음악에 맞춰 프리스타일 댄스를 선보이는 종목은?",
+        "tags": [
+            "올림픽",
+            "파리 2024",
+            "MZ",
+            "브레이킹"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "브레이킹 (Breaking)"
+            },
+            {
+                "id": "b",
+                "text": "댄스 스포츠"
+            },
+            {
+                "id": "c",
+                "text": "프리스타일 스케이트보드"
+            },
+            {
+                "id": "d",
+                "text": "3x3 농구"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "브레이킹(비보잉)은 파리 올림픽에 새롭게 추가된 정식 종목으로, 젊은 세대의 트렌드를 반영합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 127
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "'붕괴: 스타레일'에서 2.4 버전 신규 메인 스토리의 무대로 예고된, 선주 지역의 다섯 번째 함선 이름은?",
+        "tags": [
+            "붕괴스타레일",
+            "호요버스",
+            "RPG",
+            "선주요광"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "선주: 나부"
+            },
+            {
+                "id": "b",
+                "text": "선주: 요광 (Yaoqing)"
+            },
+            {
+                "id": "c",
+                "text": "선주: 비경"
+            },
+            {
+                "id": "d",
+                "text": "선주: 감궁"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "선주: 요광은 붕괴: 스타레일의 2.4버전에서 처음으로 공개될 예정인 새로운 동양풍 선주 지역입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 809
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "'EA SPORTS FC 25'의 글로벌 커버 모델로 선정된, 맨체스터 시티 소속의 공격수는?",
+        "tags": [
+            "FC25",
+            "맨시티",
+            "홀란드",
+            "축구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "비니시우스 주니오르"
+            },
+            {
+                "id": "b",
+                "text": "케빈 더 브라위너"
+            },
+            {
+                "id": "c",
+                "text": "엘링 홀란드 (Erling Haaland)"
+            },
+            {
+                "id": "d",
+                "text": "킬리안 음바페"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "엘링 홀란드는 압도적인 득점력을 바탕으로 EA SPORTS FC 25의 공식 커버 모델로 선정되었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 91
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "라이엇 게임즈가 개발 중인, '리그 오브 레전드' IP를 기반으로 하는 새로운 대규모 MMORPG 프로젝트의 코드명은?",
+        "tags": [
+            "LoL",
+            "MMORPG",
+            "라이엇",
+            "프로젝트F"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "프로젝트 L"
+            },
+            {
+                "id": "b",
+                "text": "프로젝트 F"
+            },
+            {
+                "id": "c",
+                "text": "프로젝트 A"
+            },
+            {
+                "id": "d",
+                "text": "프로젝트 M"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "라이엇 게임즈의 LoL 기반 MMORPG는 '프로젝트 F'라는 코드명으로 개발 중이며, 팬들의 기대가 매우 높습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 352
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 10월 UFC 307에서 션 오말리를 꺾고 밴텀급 챔피언 타이틀을 차지하며 새로운 왕좌에 오른 선수는?",
+        "tags": [
+            "UFC",
+            "MMA",
+            "밴텀급",
+            "드발리시빌리"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "알저메인 스털링"
+            },
+            {
+                "id": "b",
+                "text": "페드로 무뇨즈"
+            },
+            {
+                "id": "c",
+                "text": "션 오말리"
+            },
+            {
+                "id": "d",
+                "text": "메랍 드발리시빌리"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "메랍 드발리시빌리는 UFC 307 메인 이벤트에서 션 오말리를 꺾고 밴텀급 챔피언 자리에 올랐습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 688
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 US 오픈에서 최연소 2회 우승 기록을 세운 후, 곧바로 2024 파리 올림픽 남자 단식 금메달까지 차지한 테니스 선수는?",
+        "tags": [
+            "테니스",
+            "US오픈",
+            "알카라스",
+            "올림픽"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "야닉 시너"
+            },
+            {
+                "id": "b",
+                "text": "카를로스 알카라스 (Carlos Alcaraz)"
+            },
+            {
+                "id": "c",
+                "text": "노박 조코비치"
+            },
+            {
+                "id": "d",
+                "text": "라파엘 나달"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "카를로스 알카라스는 2024년 US 오픈에서 우승하며 최연소 2회 우승자가 되었고, 이후 파리 올림픽 금메달까지 획득했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 710
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 오버워치 2의 시즌 12에 새롭게 추가된, 아프리카 사냥꾼 배경의 암살자 콘셉트 딜러 영웅의 이름은?",
+        "tags": [
+            "오버워치2",
+            "블리자드",
+            "FPS",
+            "나마니"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "나마니 (Namani)"
+            },
+            {
+                "id": "b",
+                "text": "벤투스"
+            },
+            {
+                "id": "c",
+                "text": "마우가"
+            },
+            {
+                "id": "d",
+                "text": "라이프위버"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "나마니는 시즌 12에 추가된 딜러 영웅으로, 아프리카 사냥꾼의 모습을 하고 있습니다. 벤투스는 시즌 10에 추가된 영웅입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 218
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 슈퍼볼 LVIII에서 샌프란시스코 49ers를 연장전 끝에 꺾고 2년 연속 우승을 차지한 팀은?",
+        "tags": [
+            "NFL",
+            "슈퍼볼",
+            "치프스",
+            "라스베이거스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "버펄로 빌스"
+            },
+            {
+                "id": "b",
+                "text": "필라델피아 이글스"
+            },
+            {
+                "id": "c",
+                "text": "캔자스시티 치프스 (Kansas City Chiefs)"
+            },
+            {
+                "id": "d",
+                "text": "라스베이거스 레이더스"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "캔자스시티 치프스는 2024년 라스베이거스에서 열린 슈퍼볼 LVIII에서 49ers를 꺾고 우승 트로피를 들어 올렸습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 955
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 여름 '포켓몬 GO'에 처음 등장한, 10세대 포켓몬스터의 배경 지역 이름은?",
+        "tags": [
+            "포켓몬고",
+            "나이언틱",
+            "모바일게임",
+            "하나"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "팔데아 (Paldea)"
+            },
+            {
+                "id": "b",
+                "text": "하나 (Unova)"
+            },
+            {
+                "id": "c",
+                "text": "가라르 (Galar)"
+            },
+            {
+                "id": "d",
+                "text": "칼로스 (Kalos)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "포켓몬 GO는 2024년 여름 '칼로스 지방'의 포켓몬들을 대규모로 출시했습니다. 칼로스는 6세대 포켓몬스터의 배경입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 612
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024 LCK 서머 시즌에서 디플러스 기아를 꺾고 정규 시즌 우승을 차지한 팀은?",
+        "tags": [
+            "LCK",
+            "Gen.G",
+            "LoL",
+            "e스포츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Gen.G Esports"
+            },
+            {
+                "id": "b",
+                "text": "T1"
+            },
+            {
+                "id": "c",
+                "text": "KT Rolster"
+            },
+            {
+                "id": "d",
+                "text": "Dplus KIA"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "Gen.G는 2024 LCK 서머 정규 시즌에서 뛰어난 경기력으로 1위를 기록하며 우승을 차지했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 158
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "손흥민 선수가 2024-2025 시즌 아시아 선수 최초로 EPL에서 달성한 통산 득점 기록은?",
+        "tags": [
+            "손흥민",
+            "토트넘",
+            "프리미어리그",
+            "EPL"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "110골"
+            },
+            {
+                "id": "b",
+                "text": "120골"
+            },
+            {
+                "id": "c",
+                "text": "130골"
+            },
+            {
+                "id": "d",
+                "text": "140골"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "손흥민 선수는 2024-2025 시즌 중 통산 140골을 기록하며 아시아 선수 EPL 최다 득점 기록을 경신했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 732
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 9월, MLB LA 다저스 소속 오타니 쇼헤이 선수가 깜짝 발표하여 화제를 모은 사적인 뉴스는?",
+        "tags": [
+            "MLB",
+            "오타니 쇼헤이",
+            "다저스",
+            "야구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "은퇴 발표"
+            },
+            {
+                "id": "b",
+                "text": "딸 출산 소식"
+            },
+            {
+                "id": "c",
+                "text": "새로운 팀으로 이적"
+            },
+            {
+                "id": "d",
+                "text": "자서전 출간 예고"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "오타니 쇼헤이 선수는 2024년 9월, 자신의 인스타그램을 통해 딸의 출산 소식을 팬들에게 전했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 490
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2027년 FIBA 농구 월드컵 개최지로 아시아 국가 중 최초로 선정된 나라는?",
+        "tags": [
+            "FIBA",
+            "농구",
+            "카타르",
+            "월드컵"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "인도네시아"
+            },
+            {
+                "id": "b",
+                "text": "카타르"
+            },
+            {
+                "id": "c",
+                "text": "필리핀"
+            },
+            {
+                "id": "d",
+                "text": "일본"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "국제농구연맹(FIBA)은 2027년 남자 농구 월드컵 개최지로 카타르를 선정했습니다. 이는 중동 지역 최초의 농구 월드컵 개최입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 605
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "넥슨이 2024년 출시한, 축구 선수 이강인을 공식 앰버서더로 기용한 신규 스포츠 모바일 게임은?",
+        "tags": [
+            "넥슨",
+            "이강인",
+            "모바일게임",
+            "FC모바일"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "EA SPORTS FC M"
+            },
+            {
+                "id": "b",
+                "text": "EA SPORTS FC Mobile"
+            },
+            {
+                "id": "c",
+                "text": "FC 온라인 M"
+            },
+            {
+                "id": "d",
+                "text": "프로야구 H3"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "EA SPORTS FC Mobile은 넥슨에서 서비스하며, 이강인 선수를 공식 앰버서더로 선정해 활발한 마케팅을 진행했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 273
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024 시즌 F1에서 압도적인 우승을 차지하며 4연속 드라이버 챔피언십을 달성한 선수는?",
+        "tags": [
+            "F1",
+            "레드불",
+            "모터스포츠",
+            "페르스타펜"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "루이스 해밀턴"
+            },
+            {
+                "id": "b",
+                "text": "샤를 르클레르"
+            },
+            {
+                "id": "c",
+                "text": "막스 페르스타펜 (Max Verstappen)"
+            },
+            {
+                "id": "d",
+                "text": "조지 러셀"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "레드불 소속의 막스 페르스타펜은 2024년 시즌에서 뛰어난 성적을 거두며 4년 연속 드라이버 챔피언에 올랐습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 501
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "글로벌 게임 어워드 'The Game Awards 2024'에서 '올해의 게임(GOTY)'을 수상한 작품은?",
+        "tags": [
+            "TGA",
+            "GOTY",
+            "콘솔게임",
+            "RPG"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "엘든 링 (Elden Ring)"
+            },
+            {
+                "id": "b",
+                "text": "발더스 게이트 3 (Baldur's Gate 3)"
+            },
+            {
+                "id": "c",
+                "text": "파이널 판타지 XVI (Final Fantasy XVI)"
+            },
+            {
+                "id": "d",
+                "text": "몬스터 헌터 와일즈 (Monster Hunter Wilds)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "발더스 게이트 3는 2023년 GOTY 수상작으로, 2024년에는 주요 콘솔 및 PC 게임 시상식에서 상을 휩쓸며 인기를 이어갔습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 923
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "K-리그 2024시즌에서 외국인 선수 최초로 2년 연속 득점왕과 MVP를 동시에 차지한 선수는?",
+        "tags": [
+            "K리그",
+            "MVP",
+            "축구",
+            "주민규"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "제르소"
+            },
+            {
+                "id": "b",
+                "text": "주민규"
+            },
+            {
+                "id": "c",
+                "text": "김영권"
+            },
+            {
+                "id": "d",
+                "text": "바코"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "울산 HD 소속의 주민규 선수는 2024 K리그에서 2년 연속 득점왕과 MVP를 차지하며 K리그 역사에 남을 기록을 세웠습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 361
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 발로란트 챔피언스 토너먼트에서 북미 지역 최초로 우승을 차지하며 역사를 쓴 팀은?",
+        "tags": [
+            "발로란트",
+            "챔피언스",
+            "e스포츠",
+            "FPS"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Paper Rex"
+            },
+            {
+                "id": "b",
+                "text": "LOUD"
+            },
+            {
+                "id": "c",
+                "text": "100 Thieves"
+            },
+            {
+                "id": "d",
+                "text": "Evil Geniuses"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "100 Thieves는 2024 발로란트 챔피언스에서 우승하며 북미 팀 최초로 이 대회의 트로피를 들어 올렸습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 880
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 롤드컵(Worlds) 결승전에서 MVP를 수상한, T1 소속 정글러 선수의 닉네임은?",
+        "tags": [
+            "LoL",
+            "Worlds",
+            "T1",
+            "오너"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Faker"
+            },
+            {
+                "id": "b",
+                "text": "Oner"
+            },
+            {
+                "id": "c",
+                "text": "Zeus"
+            },
+            {
+                "id": "d",
+                "text": "Gumayusi"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "T1의 정글러 'Oner'(오너) 선수는 2024 LoL Worlds 결승전에서 압도적인 활약을 선보이며 파이널 MVP를 수상했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760775840,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 77
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 FIFA 선정 '올해의 여자 선수'로 유력하게 거론되는 스페인 출신의 선수는?",
+        "tags": [
+            "FIFA",
+            "여자축구",
+            "발롱도르",
+            "아이타나"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "알렉시아 푸텔라스"
+            },
+            {
+                "id": "b",
+                "text": "아이타나 본마티"
+            },
+            {
+                "id": "c",
+                "text": "알렉스 모건"
+            },
+            {
+                "id": "d",
+                "text": "샘 커"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "아이타나 본마티는 FC 바르셀로나 소속으로 2023년 발롱도르를 수상했으며, 2024년에도 뛰어난 활약으로 유력 후보로 꼽힙니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 42
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 가을 출시된, 세계적으로 인기 있는 FPS 게임 '콜 오브 듀티' 시리즈의 최신작 부제는?",
+        "tags": [
+            "FPS",
+            "콜오브듀티",
+            "액티비전",
+            "콘솔게임"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "워존 (Warzone)"
+            },
+            {
+                "id": "b",
+                "text": "모던 워페어 III (Modern Warfare III)"
+            },
+            {
+                "id": "c",
+                "text": "블랙 옵스 6: 걸프 워 (Black Ops 6: Gulf War)"
+            },
+            {
+                "id": "d",
+                "text": "뱅가드 (Vanguard)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "2024년 콜 오브 듀티 시리즈의 정식 신작은 '블랙 옵스 6: 걸프 워'로, 냉전 시기 걸프 전쟁을 배경으로 합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 918
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "미국프로골프(PGA) 투어의 '플레이어스 챔피언십'에서 2년 연속 우승하며 역사를 쓴 선수는?",
+        "tags": [
+            "PGA",
+            "골프",
+            "스코티 셰플러",
+            "챔피언십"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "로리 매킬로이"
+            },
+            {
+                "id": "b",
+                "text": "스콧 셰플러 (Scottie Scheffler)"
+            },
+            {
+                "id": "c",
+                "text": "욘 람"
+            },
+            {
+                "id": "d",
+                "text": "임성재"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "스코티 셰플러는 2023년과 2024년 연속으로 플레이어스 챔피언십에서 우승하며 이 대회의 유일한 2연속 우승자가 되었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 307
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "북미 아이스하키 리그(NHL)에서 스탠리 컵을 들어 올리며 1993년 이후 31년 만에 우승한 팀은?",
+        "tags": [
+            "NHL",
+            "아이스하키",
+            "스탠리컵",
+            "플로리다 팬서스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "에드먼턴 오일러스"
+            },
+            {
+                "id": "b",
+                "text": "보스턴 브루인스"
+            },
+            {
+                "id": "c",
+                "text": "플로리다 팬서스"
+            },
+            {
+                "id": "d",
+                "text": "뉴욕 레인저스"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "플로리다 팬서스는 2024년 스탠리컵 파이널에서 에드먼턴 오일러스를 꺾고 구단 역사상 첫 우승을 차지했습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 689
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 여름, 전 세계 게임 스트리밍 플랫폼에서 시청 시간을 기준으로 가장 인기 있었던 장르는?",
+        "tags": [
+            "스트리밍",
+            "게임",
+            "Twitch",
+            "MOBA"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "MMORPG"
+            },
+            {
+                "id": "b",
+                "text": "MOBA (Multiplayer Online Battle Arena)"
+            },
+            {
+                "id": "c",
+                "text": "Battle Royale"
+            },
+            {
+                "id": "d",
+                "text": "FPS (First Person Shooter)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "리그 오브 레전드, 도타 2 등 MOBA 장르 게임들은 전통적으로 스트리밍 플랫폼에서 가장 높은 시청 시간을 기록하고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 241
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 파리 올림픽 야구 종목에서 금메달을 획득한 나라는?",
+        "tags": [
+            "파리올림픽",
+            "야구",
+            "올림픽",
+            "종목제외"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "대한민국"
+            },
+            {
+                "id": "b",
+                "text": "일본"
+            },
+            {
+                "id": "c",
+                "text": "미국"
+            },
+            {
+                "id": "d",
+                "text": "야구 종목은 개최되지 않았다."
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "2024 파리 올림픽에서는 야구와 소프트볼이 정식 종목에서 제외되었습니다. 2028 로스앤젤레스 올림픽에서 다시 복귀할 예정입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 774
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 FIFA U-20 여자 월드컵에서 우승하며 전 세계적으로 주목받은 유럽 팀은?",
+        "tags": [
+            "FIFA",
+            "여자월드컵",
+            "U-20",
+            "스페인"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "프랑스"
+            },
+            {
+                "id": "b",
+                "text": "독일"
+            },
+            {
+                "id": "c",
+                "text": "스페인"
+            },
+            {
+                "id": "d",
+                "text": "잉글랜드"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "스페인은 2024 FIFA U-20 여자 월드컵 결승에서 일본을 꺾고 우승을 차지했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 196
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 '포르자 호라이즌 5'의 가장 인기 있는 신규 차량 업데이트 DLC에 포함된 차량 제조사는?",
+        "tags": [
+            "레이싱게임",
+            "포르자",
+            "DLC",
+            "페라리"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "람보르기니"
+            },
+            {
+                "id": "b",
+                "text": "페라리"
+            },
+            {
+                "id": "c",
+                "text": "포르쉐"
+            },
+            {
+                "id": "d",
+                "text": "테슬라"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "포르자 호라이즌 5는 2024년 페라리 클래식 모델을 포함한 대형 DLC를 출시하여 게이머들에게 큰 호응을 얻었습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 820
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 시즌, 메이저리그 최초로 선발 등판하여 9이닝을 무실점으로 막아내는 '완봉승'을 기록한 아시아 투수는?",
+        "tags": [
+            "MLB",
+            "김하성",
+            "완봉승",
+            "류현진"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "류현진"
+            },
+            {
+                "id": "b",
+                "text": "다르빗슈 유"
+            },
+            {
+                "id": "c",
+                "text": "이마나가 쇼타"
+            },
+            {
+                "id": "d",
+                "text": "고우석"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "시카고 컵스 소속의 이마나가 쇼타는 2024년 시즌 메이저리그에서 완봉승을 기록한 아시아계 투수 중 한 명입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 555
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 NBA 파이널 MVP를 수상하며 커리어 첫 우승을 차지한 보스턴 셀틱스 소속의 선수는?",
+        "tags": [
+            "NBA",
+            "보스턴",
+            "제이슨 테이텀",
+            "MVP"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "제이슨 테이텀"
+            },
+            {
+                "id": "b",
+                "text": "제일런 브라운"
+            },
+            {
+                "id": "c",
+                "text": "즈루 할러데이"
+            },
+            {
+                "id": "d",
+                "text": "데릭 화이트"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "제일런 브라운은 2024년 NBA 파이널에서 뛰어난 활약을 펼치며 파이널 MVP에 선정되었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760776500,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 133
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 파리 올림픽에서 종합 순위(금메달 기준) 1위를 차지한 나라는?",
+        "tags": [
+            "올림픽",
+            "파리",
+            "금메달",
+            "미국"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "중국"
+            },
+            {
+                "id": "b",
+                "text": "미국"
+            },
+            {
+                "id": "c",
+                "text": "프랑스"
+            },
+            {
+                "id": "d",
+                "text": "러시아 (중립 선수단 제외)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "미국은 2024 파리 올림픽에서 가장 많은 금메달을 획득하며 종합 순위 1위를 기록했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1760776800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 801
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 초에 출시되어 큰 인기를 끈, 반다이 남코의 대표 3D 격투 게임 시리즈의 최신작은?",
+        "tags": [
+            "격투게임",
+            "반다이남코",
+            "콘솔",
+            "철권"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "소울칼리버 7"
+            },
+            {
+                "id": "b",
+                "text": "철권 8 (Tekken 8)"
+            },
+            {
+                "id": "c",
+                "text": "스트리트 파이터 6"
+            },
+            {
+                "id": "d",
+                "text": "모탈 컴뱃 1"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "철권 8은 2024년 1월에 출시되어 뛰어난 그래픽과 새로운 시스템으로 호평을 받았습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760776800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 332
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024 WNBA 파이널에서 우승을 차지하며 구단 역사상 두 번째 우승을 달성한 팀은?",
+        "tags": [
+            "WNBA",
+            "농구",
+            "뉴욕 리버티",
+            "파이널"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "라스베이거스 에이시즈"
+            },
+            {
+                "id": "b",
+                "text": "뉴욕 리버티"
+            },
+            {
+                "id": "c",
+                "text": "시애틀 스톰"
+            },
+            {
+                "id": "d",
+                "text": "코네티컷 선"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "뉴욕 리버티는 2024 WNBA 파이널에서 승리하며 20년 만에 두 번째 챔피언십 우승을 차지했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1760776800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 619
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2024년 FC Online EACC Summer에서 우승을 차지한 한국 팀은?",
+        "tags": [
+            "FC Online",
+            "EACC",
+            "e스포츠",
+            "광동 프릭스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "KT Rolster"
+            },
+            {
+                "id": "b",
+                "text": "광동 프릭스"
+            },
+            {
+                "id": "c",
+                "text": "DFM (DetonatioN FocusMe)"
+            },
+            {
+                "id": "d",
+                "text": "Gen.G"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "광동 프릭스는 2024년 FC Online EACC Summer 대회에서 우승을 차지하며 한국 팀의 자존심을 지켰습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760776800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 14
+    },
+    {
+        "deckSlug": "deck_seed_sports_games",
+        "category": "sports_games",
+        "type": "mcq",
+        "prompt": "2025년 세계 육상 선수권 대회 개최지로 선정된 아시아 도시는?",
+        "tags": [
+            "육상",
+            "세계선수권",
+            "도쿄",
+            "올림픽스타디움"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "도쿄 (일본)"
+            },
+            {
+                "id": "b",
+                "text": "베이징 (중국)"
+            },
+            {
+                "id": "c",
+                "text": "카타르 (도하)"
+            },
+            {
+                "id": "d",
+                "text": "서울 (대한민국)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "2025년 세계 육상 선수권 대회는 일본 도쿄에서 개최됩니다. 이는 2020년 하계 올림픽이 열렸던 곳입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1760776800,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 947
+    }
+]

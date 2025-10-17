@@ -5,6 +5,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
@@ -19,22 +20,24 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ConvexProvider client={convex}>
-      <AuthProvider client={convex}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <AuthGate>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="daily/index"
-                options={{ title: '데일리 블링크', headerBackButtonDisplayMode: 'minimal' }}
-              />
-              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-            </Stack>
-            <StatusBar style="auto" />
-          </AuthGate>
-        </ThemeProvider>
-      </AuthProvider>
-    </ConvexProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ConvexProvider client={convex}>
+        <AuthProvider client={convex}>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <AuthGate>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="daily/index"
+                  options={{ title: '데일리 블링크', headerBackButtonDisplayMode: 'minimal' }}
+                />
+                <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+              </Stack>
+              <StatusBar style="auto" />
+            </AuthGate>
+          </ThemeProvider>
+        </AuthProvider>
+      </ConvexProvider>
+    </GestureHandlerRootView>
   );
 }
