@@ -15,6 +15,8 @@ const USER_K = 24;
 const QUESTION_K = 16;
 const GLOBAL_TAG = "__global";
 const MAX_RECENT_EXCLUDE = 20;
+const MAX_RECENT_HISTORY = 50;
+const FEED_RESET_MS = 24 * 60 * 60 * 1000;
 const PRIMARY_CATEGORY_WEIGHT = 0.75;
 const SECONDARY_CATEGORY_WEIGHTS = [0.15, 0.1];
 const FALLBACK_CATEGORY_WEIGHT = 0.05;
@@ -482,9 +484,21 @@ export const getSwipeFeed = query({
     const excludeSet = new Set<string>(
       (args.excludeIds ?? []).map((id) => id.toString())
     );
-    const recentExcludes =
-      user.sessionPref?.swipe?.excludeIds?.map((id) => id.toString()) ?? [];
-    recentExcludes.forEach((id) => excludeSet.add(id));
+    const swipePref = user.sessionPref?.swipe;
+    const now = Date.now();
+    const lastResetAt = swipePref?.lastResetAt ?? 0;
+    const feedExpired = lastResetAt === 0 || now - lastResetAt > FEED_RESET_MS;
+
+    // 클라이언트가 excludeIds를 보낸 경우, 서버의 recentHistory는 사용하지 않음
+    // (클라이언트가 이미 모든 본 문항을 추적하고 있음)
+    const useServerHistory = !args.excludeIds || args.excludeIds.length === 0;
+
+    if (useServerHistory && !feedExpired) {
+      const recentHistory = swipePref?.recentQuestionIds ?? [];
+      const recentExcludes = swipePref?.excludeIds ?? [];
+      recentExcludes.forEach((id) => excludeSet.add(id.toString()));
+      recentHistory.forEach((id) => excludeSet.add(id.toString()));
+    }
 
     const rawFilterTags = args.tags ?? [];
     const normalizedFilterTags = rawFilterTags
@@ -499,14 +513,13 @@ export const getSwipeFeed = query({
 
     const filterSet = new Set<string>([categorySlug, ...normalizedFilterTags]);
 
-    let builder = ctx.db
-      .query("questions")
-      .withIndex("by_createdAt", (q) =>
-        cursor ? q.lt("createdAt", cursor) : q
-      )
-      .order("desc");
-
-    const candidates = await builder.take(limit * 4);
+    const PAGE_SIZE = Math.max(limit * 3, 60);
+    const MAX_PAGES = 8;
+    const candidates: QuestionDoc[] = [];
+    let pageCursor: number | undefined = cursor ?? undefined;
+    let pagesFetched = 0;
+    let lastFetchedCursor: number | null = null;
+    let moreCandidatesAvailable = true;
 
     const skill = ensureSkillState(user.skill);
     const sortedSkillTags = [...skill.tags].sort((a, b) => b.rating - a.rating);
@@ -538,66 +551,73 @@ export const getSwipeFeed = query({
       )
     );
 
-    const weighted = candidates
-      .map((question) => {
-        if (excludeSet.has(question._id.toString())) {
-          return null;
-        }
-        const rawTags = question.tags ?? [];
-        const normalizedTags = rawTags
-          .map((tag) => normalizeTag(tag))
-          .filter(Boolean);
-        const questionCategorySlug = question.category
-          ? normalizeTag(question.category)
-          : null;
-        if (questionCategorySlug) {
-          normalizedTags.push(questionCategorySlug);
-        }
+    const weighted: WeightedQuestion[] = [];
 
-        const matchesAllowed = normalizedTags.length === 0
-          ? allowedCategories.has(categorySlug)
-          : (questionCategorySlug && allowedCategories.has(questionCategorySlug)) ||
-            normalizedTags.some((tag) => allowedCategories.has(tag));
-        if (!matchesAllowed) {
-          return null;
-        }
+    while (pagesFetched < MAX_PAGES && weighted.length < limit && moreCandidatesAvailable) {
+      const page = await ctx.db
+        .query("questions")
+        .withIndex("by_createdAt", (q) => (pageCursor ? q.lt("createdAt", pageCursor) : q))
+        .order("desc")
+        .take(PAGE_SIZE);
 
-        const matchesFilter = normalizedTags.some((tag) => filterSet.has(tag));
-        if (!matchesFilter) {
-          return null;
-        }
+      if (page.length === 0) {
+        moreCandidatesAvailable = false;
+        break;
+      }
 
-        const categoryWeight = resolveCategoryWeight(
-          categoryPreference,
-          normalizedTags
-        );
-        const questionElo =
-          question.elo ?? mapDifficultyToElo(question.difficulty);
-        const userTagSkill = estimateUserSkill(skill, rawTags);
-        const tagWeight = computeTagWeight(
-          rawTags,
-          normalizedTags,
-          skill,
-          questionElo,
-          tagAccuracy
-        );
-        const difficultyWeight = computeDifficultyWeight(
-          questionElo,
-          userTagSkill
-        );
-        const recency = computeRecencyWeight(question.createdAt);
-        const quality = clamp(question.qualityScore ?? 0.5, 0, 1);
-        const baseScore =
-          0.35 * categoryWeight +
-          0.3 * tagWeight +
-          0.25 * difficultyWeight +
-          0.05 * recency +
-          0.05 * quality;
-        const variance = 0.85 + Math.random() * 0.3;
-        const weight = Math.max(MIN_WEIGHT, baseScore * variance);
-        return { question, weight };
-      })
-      .filter((entry): entry is WeightedQuestion => entry !== null);
+      const scoredPage = page
+        .map((question) => {
+          if (excludeSet.has(question._id.toString())) {
+            return null;
+          }
+          const rawTags = question.tags ?? [];
+          const normalizedTags = rawTags.map((tag) => normalizeTag(tag)).filter(Boolean);
+          const questionCategorySlug = question.category ? normalizeTag(question.category) : null;
+          if (questionCategorySlug) {
+            normalizedTags.push(questionCategorySlug);
+          }
+
+          const matchesAllowed =
+            normalizedTags.length === 0
+              ? allowedCategories.has(categorySlug)
+              : (questionCategorySlug && allowedCategories.has(questionCategorySlug)) ||
+              normalizedTags.some((tag) => allowedCategories.has(tag));
+          if (!matchesAllowed) {
+            return null;
+          }
+
+          const categoryWeight = resolveCategoryWeight(categoryPreference, normalizedTags);
+          const questionElo = question.elo ?? mapDifficultyToElo(question.difficulty);
+          const userTagSkill = estimateUserSkill(skill, rawTags);
+          const tagWeight = computeTagWeight(
+            rawTags,
+            normalizedTags,
+            skill,
+            questionElo,
+            tagAccuracy,
+          );
+          const difficultyWeight = computeDifficultyWeight(questionElo, userTagSkill);
+          const recency = computeRecencyWeight(question.createdAt);
+          const quality = clamp(question.qualityScore ?? 0.5, 0, 1);
+          const baseScore =
+            0.35 * categoryWeight +
+            0.3 * tagWeight +
+            0.25 * difficultyWeight +
+            0.05 * recency +
+            0.05 * quality;
+          const variance = 0.85 + Math.random() * 0.3;
+          const weight = Math.max(MIN_WEIGHT, baseScore * variance);
+          return { question, weight };
+        })
+        .filter((entry): entry is WeightedQuestion => entry !== null);
+
+      weighted.push(...scoredPage);
+
+      pagesFetched += 1;
+      lastFetchedCursor = page[page.length - 1].createdAt;
+      pageCursor = lastFetchedCursor;
+      moreCandidatesAvailable = page.length === PAGE_SIZE;
+    }
 
     const selected = weightedSample(weighted, limit);
     const feedItems = selected.map(({ question }) => {
@@ -616,15 +636,14 @@ export const getSwipeFeed = query({
     });
     feedItems.sort((a, b) => b.createdAt - a.createdAt);
 
-    const nextCursor =
-      feedItems.length > 0
-        ? feedItems[feedItems.length - 1].createdAt
-        : cursor ?? null;
+    const hasMoreFeed =
+      feedItems.length === limit && moreCandidatesAvailable && lastFetchedCursor !== null;
+    const nextCursor = hasMoreFeed && lastFetchedCursor !== null ? lastFetchedCursor : null;
 
     return {
       items: feedItems.map(({ item }) => item),
       nextCursor,
-      hasMore: candidates.length === limit * 4,
+      hasMore: hasMoreFeed,
     };
   },
 });
@@ -696,13 +715,24 @@ export const submitAnswer = mutation({
       MAX_ELO
     );
 
-    const existingExclude = user.sessionPref?.swipe?.excludeIds ?? [];
+    const swipePref = user.sessionPref?.swipe;
+    const existingExclude = swipePref?.excludeIds ?? [];
     const combined = [...existingExclude, args.questionId];
     const unique = Array.from(
       new Map(combined.map((id) => [id.toString(), id])).values()
     );
     const updatedExclude = unique.slice(-MAX_RECENT_EXCLUDE);
+    const lastResetAt = swipePref?.lastResetAt ?? 0;
+    const resetExpired = lastResetAt === 0 || now - lastResetAt > FEED_RESET_MS;
+    const priorRecent = resetExpired ? [] : swipePref?.recentQuestionIds ?? [];
+    const updatedRecent = Array.from(
+      new Map(
+        [...priorRecent, args.questionId].map((id) => [id.toString(), id])
+      ).values()
+    ).slice(-MAX_RECENT_HISTORY);
+    const nextLastResetAt = resetExpired ? now : lastResetAt || now;
 
+    const existingSwipe = swipePref ?? {};
     await ctx.db.patch(user._id, {
       skill: updatedSkill,
       streak: isCorrect ? user.streak + 1 : 0,
@@ -712,10 +742,13 @@ export const submitAnswer = mutation({
       sessionPref: {
         ...user.sessionPref,
         swipe: {
+          ...existingSwipe,
           lastCursor: question.createdAt,
           excludeIds: updatedExclude,
           updatedAt: now,
           category: categorySlug,
+          recentQuestionIds: updatedRecent,
+          lastResetAt: nextLastResetAt,
         },
       },
     });
@@ -791,5 +824,28 @@ export const toggleBookmark = mutation({
     });
 
     return { bookmarked: true };
+  },
+});
+
+export const resetSession = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const { user } = await ensureAuthedUser(ctx);
+
+    await ctx.db.patch(user._id, {
+      sessionPref: {
+        ...user.sessionPref,
+        swipe: {
+          lastCursor: undefined,
+          excludeIds: [],
+          recentQuestionIds: [],
+          lastResetAt: Date.now(),
+          updatedAt: Date.now(),
+          category: user.sessionPref?.swipe?.category,
+        },
+      },
+    });
+
+    return { success: true };
   },
 });

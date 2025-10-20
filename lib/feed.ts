@@ -5,9 +5,11 @@ import type { Doc, Id } from '@/convex/_generated/dataModel';
 import { useConvex, useMutation } from 'convex/react';
 
 const VISIBLE_CARDS = 3;
-const PREFETCH_THRESHOLD = 3;
-const PREFETCH_TARGET = 8;
-const MAX_BUFFER = 12;
+const PREFETCH_THRESHOLD = 2;
+const PREFETCH_TARGET = 6;
+const DEFAULT_SESSION_LIMIT = 20;
+// MAX_BUFFER는 세션 제한보다 커야 모든 카드를 보관할 수 있음
+const MAX_BUFFER = 30;
 
 type QuestionDoc = Doc<'questions'>;
 
@@ -50,6 +52,8 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const excludeRef = useRef<Set<Id<'questions'>>>(new Set());
+  const loadedCountRef = useRef(0);
+  const sessionLimit = options.limit ?? DEFAULT_SESSION_LIMIT;
 
   const submitAnswerMutation = useMutation(api.swipe.submitAnswer);
   type SubmitArgs = Parameters<typeof submitAnswerMutation>[0];
@@ -61,11 +65,41 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
   const reportMutation = useMutation(api.swipe.createReport);
   type ReportArgs = Parameters<typeof reportMutation>[0];
 
-  const pushPrefetch = useCallback((items: SwipeFeedQuestion[]) => {
-    if (!items.length) return;
-    items.forEach((item) => excludeRef.current.add(item.id));
+  const pushPrefetch = useCallback((items: SwipeFeedQuestion[]): number => {
+    if (!items.length) return 0;
+
+    // 세션 제한 체크: 이미 제한에 도달했으면 추가하지 않음
+    const remaining = sessionLimit - loadedCountRef.current;
+    if (remaining <= 0) {
+      console.log('Session limit reached, ignoring new items');
+      setHasMore(false);
+      setCursor(null);
+      return 0;
+    }
+
+    // 중복 체크: 이미 excludeRef에 있는 문항은 필터링
+    const newItems = items.filter((item) => {
+      if (excludeRef.current.has(item.id)) {
+        console.warn('Duplicate question detected and filtered:', item.id);
+        return false;
+      }
+      return true;
+    });
+
+    if (!newItems.length) {
+      console.warn('All items were duplicates, skipping');
+      return 0;
+    }
+
+    // 세션 제한을 초과하지 않도록 슬라이스
+    const itemsToAdd = newItems.slice(0, remaining);
+    const actualCount = itemsToAdd.length;
+
+    itemsToAdd.forEach((item) => excludeRef.current.add(item.id));
     setState((current) => {
-      const prefetch = [...current.prefetch, ...items].slice(0, MAX_BUFFER);
+      // 세션 제한까지는 모든 아이템을 보관
+      const maxBufferSize = Math.max(MAX_BUFFER, sessionLimit);
+      const prefetch = [...current.prefetch, ...itemsToAdd].slice(0, maxBufferSize);
       const queue = [...current.queue];
 
       while (queue.length < VISIBLE_CARDS && prefetch.length > 0) {
@@ -74,24 +108,42 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
 
       return { queue, prefetch };
     });
-  }, []);
+
+    loadedCountRef.current += actualCount;
+
+    if (loadedCountRef.current >= sessionLimit) {
+      setHasMore(false);
+      setCursor(null);
+    }
+
+    console.log(`PushPrefetch: added=${actualCount}, filtered=${newItems.length - actualCount}, total=${loadedCountRef.current}/${sessionLimit}`);
+
+    return actualCount;
+  }, [sessionLimit]);
 
   const fetchMore = useCallback(async () => {
-    if (isLoading || !hasMore) {
+    if (isLoading || !hasMore || loadedCountRef.current >= sessionLimit) {
       return;
     }
     setIsLoading(true);
     try {
+      const remaining = Math.max(0, sessionLimit - loadedCountRef.current);
+      if (remaining === 0) {
+        setHasMore(false);
+        setCursor(null);
+        return;
+      }
+
+      // 중복을 감안해서 더 많이 요청 (최대 1.5배)
+      const requestLimit = Math.min(Math.ceil(remaining * 1.5), 30);
+
       const response = await convex.query(api.swipe.getSwipeFeed, {
         category: options.category,
         cursor: cursor ?? undefined,
-        limit: options.limit,
+        limit: requestLimit,
         tags: options.tags,
         excludeIds: Array.from(excludeRef.current),
       });
-
-      setHasMore(Boolean(response.hasMore));
-      setCursor(response.nextCursor ?? null);
 
       const items: SwipeFeedQuestion[] = response.items.map((item) => ({
         ...item,
@@ -99,30 +151,65 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
         tags: item.tags ?? [],
       }));
 
-      pushPrefetch(items);
+      const actualAdded = items.length > 0 ? pushPrefetch(items) : 0;
+
+      console.log(`Fetch: requested=${requestLimit}, received=${items.length}, added=${actualAdded}, total=${loadedCountRef.current}/${sessionLimit}`);
+
+      // 세션 제한에 도달했으면 종료
+      if (loadedCountRef.current >= sessionLimit) {
+        console.log('Session limit reached in fetchMore');
+        setHasMore(false);
+        setCursor(null);
+      }
+      // 서버에서 더 이상 데이터가 없으면 종료
+      else if (!response.hasMore) {
+        console.log('No more data from server');
+        setHasMore(false);
+        setCursor(null);
+      }
+      // 아직 더 로드할 수 있음
+      else {
+        setHasMore(true);
+        setCursor(response.nextCursor ?? null);
+      }
+    } catch (error) {
+      console.error('Failed to fetch more:', error);
+      setHasMore(false);
     } finally {
       setIsLoading(false);
     }
-  }, [convex, cursor, hasMore, isLoading, options.category, options.limit, options.tags, pushPrefetch]);
+  }, [convex, cursor, hasMore, isLoading, options.category, options.limit, options.tags, pushPrefetch, sessionLimit]);
 
   useEffect(() => {
-    if (!state.queue.length && !isLoading) {
+    if (
+      !state.queue.length &&
+      !state.prefetch.length &&
+      hasMore &&
+      !isLoading &&
+      loadedCountRef.current < sessionLimit
+    ) {
       fetchMore();
     }
-  }, [fetchMore, isLoading, state.queue.length]);
+  }, [fetchMore, hasMore, isLoading, sessionLimit, state.prefetch.length, state.queue.length]);
 
   useEffect(() => {
     const totalBuffered = state.queue.length + state.prefetch.length;
-    if (!isLoading && hasMore && totalBuffered <= PREFETCH_THRESHOLD) {
+    if (
+      !isLoading &&
+      hasMore &&
+      loadedCountRef.current < sessionLimit &&
+      totalBuffered <= PREFETCH_THRESHOLD
+    ) {
       fetchMore();
     } else if (
       !isLoading &&
       hasMore &&
+      loadedCountRef.current < sessionLimit &&
       state.prefetch.length < PREFETCH_TARGET
     ) {
       fetchMore();
     }
-  }, [fetchMore, hasMore, isLoading, state.prefetch.length, state.queue.length]);
+  }, [fetchMore, hasMore, isLoading, sessionLimit, state.prefetch.length, state.queue.length]);
 
   const advance = useCallback(() => {
     setState((current) => {
@@ -131,16 +218,25 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
       while (queue.length < VISIBLE_CARDS && prefetch.length > 0) {
         queue.push(prefetch.shift() as SwipeFeedQuestion);
       }
+      console.log(`Advance: queue=${queue.length}, prefetch=${prefetch.length}, total=${loadedCountRef.current}`);
       return { queue, prefetch };
     });
   }, []);
 
-  const reset = useCallback(() => {
+  const resetSessionMutation = useMutation(api.swipe.resetSession);
+
+  const reset = useCallback(async () => {
     excludeRef.current.clear();
     setState(emptyState);
     setCursor(null);
     setHasMore(true);
-  }, []);
+    loadedCountRef.current = 0;
+    try {
+      await resetSessionMutation();
+    } catch (error) {
+      console.warn('Failed to reset server session:', error);
+    }
+  }, [resetSessionMutation]);
 
   const submitAnswer = useCallback(
     async (payload: SubmitArgs): Promise<SubmitResult> => {
@@ -171,15 +267,17 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
   const current = queue[0] ?? null;
   const nextItems = queue.slice(1, 3);
 
+  // 현재 카드를 포함한 전체 남은 카드 수
+  const remainingCount = state.queue.length + state.prefetch.length;
+
   return useMemo(
     () => ({
       current,
       queue,
       nextItems,
-      prefetchCount: state.prefetch.length,
+      prefetchCount: Math.max(0, remainingCount),
       isLoading,
       hasMore,
-      fetchMore,
       reset,
       advance,
       skip,
@@ -190,15 +288,14 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     [
       advance,
       current,
-      fetchMore,
       hasMore,
       isLoading,
       nextItems,
       queue,
+      remainingCount,
       reportQuestion,
       reset,
       skip,
-      state.prefetch.length,
       submitAnswer,
       toggleBookmark,
     ]

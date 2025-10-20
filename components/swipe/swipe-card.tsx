@@ -1,12 +1,11 @@
-import { useMemo } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { ThemedText } from '@/components/themed-text';
 import { Palette, Radius, Spacing } from '@/constants/theme';
@@ -33,12 +32,10 @@ export type SwipeCardProps = {
   feedback: SwipeFeedback | null;
   onSelectChoice: (index: number) => void;
   onSwipeNext: () => void;
-  onSkip: () => void;
   onOpenActions?: () => void;
 };
 
 const SWIPE_NEXT_THRESHOLD = 120;
-const SKIP_THRESHOLD = -100;
 const ACTION_THRESHOLD = -110;
 
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -51,7 +48,6 @@ export function SwipeCard({
   feedback,
   onSelectChoice,
   onSwipeNext,
-  onSkip,
   onOpenActions,
 }: SwipeCardProps) {
   const translateX = useSharedValue(0);
@@ -60,34 +56,27 @@ export function SwipeCard({
   const cardColor = useThemeColor({}, 'card');
   const textMuted = useThemeColor({}, 'textMuted');
 
-  const tags = useMemo(() => card.tags.slice(0, 2), [card.tags]);
   const difficultyDots = difficultyToDots(card.difficulty);
-  const explanation = feedback?.explanation ?? null;
 
   const gesture = Gesture.Pan()
     .enabled(isActive)
+    .activeOffsetX([-20, 20])
+    .failOffsetY([-20, 20])
     .onChange((event) => {
       translateX.value = event.translationX;
-      translateY.value = event.translationY;
+      translateY.value = event.translationY * 0.2;
     })
     .onFinalize((event) => {
-      const { translationX, translationY } = event;
-      if (feedback && translationX > SWIPE_NEXT_THRESHOLD) {
-        runOnJS(onSwipeNext)();
+      const { translationX } = event;
+      if (feedback && translationX >= SWIPE_NEXT_THRESHOLD) {
+        scheduleOnRN(onSwipeNext);
         translateX.value = 0;
         translateY.value = 0;
         return;
       }
 
-      if (translationY < SKIP_THRESHOLD) {
-        runOnJS(onSkip)();
-        translateX.value = 0;
-        translateY.value = 0;
-        return;
-      }
-
-      if (translationX < ACTION_THRESHOLD && onOpenActions) {
-        runOnJS(onOpenActions)();
+      if (translationX <= ACTION_THRESHOLD && onOpenActions) {
+        scheduleOnRN(onOpenActions);
       }
 
       translateX.value = withSpring(0);
@@ -127,15 +116,6 @@ export function SwipeCard({
         ]}
       >
         <View style={styles.header}>
-          <View style={styles.tagRow}>
-            {tags.map((tag) => (
-              <View key={tag} style={styles.tagChip}>
-                <ThemedText style={styles.tagText} lightColor="#fff" darkColor="#fff">
-                  {tag}
-                </ThemedText>
-              </View>
-            ))}
-          </View>
           <ThemedText style={[styles.difficulty, { color: textMuted }]}>
             {'●'.repeat(difficultyDots) + '○'.repeat(3 - difficultyDots)}
           </ThemedText>
@@ -161,12 +141,6 @@ export function SwipeCard({
           }
         />
 
-        {explanation && feedback && !feedback.isCorrect ? (
-          <View style={styles.explanationBox}>
-            <ThemedText style={styles.explanationTitle}>해설</ThemedText>
-            <ThemedText style={styles.explanationText}>{explanation}</ThemedText>
-          </View>
-        ) : null}
       </AnimatedView>
     </GestureDetector>
   );
@@ -186,24 +160,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.md,
-  },
-  tagRow: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-  },
-  tagChip: {
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
-    borderRadius: Radius.pill,
-    backgroundColor: Palette.purple600,
-  },
-  tagText: {
-    fontSize: 12,
-    fontWeight: '600',
+    alignItems: 'flex-end',
+    marginBottom: Spacing.sm,
   },
   difficulty: {
     fontSize: 14,
@@ -217,18 +175,5 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: Radius.md,
     marginBottom: Spacing.lg,
-  },
-  explanationBox: {
-    marginTop: Spacing.lg,
-    padding: Spacing.md,
-    borderRadius: Radius.md,
-    backgroundColor: Palette.pink200,
-  },
-  explanationTitle: {
-    fontWeight: '700',
-    marginBottom: Spacing.xs,
-  },
-  explanationText: {
-    fontSize: 14,
   },
 });

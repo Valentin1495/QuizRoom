@@ -116,7 +116,7 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.headerRow}>
-          <View>
+          <View style={styles.headerText}>
             <ThemedText type="title">QuizRoom</ThemedText>
             <ThemedText style={[styles.subtitle, { color: muted }]}>60초 안에 즐기는 오늘의 퀴즈</ThemedText>
           </View>
@@ -244,23 +244,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingVertical: Spacing.xl,
     paddingHorizontal: 20,
     gap: Spacing.xl,
   },
   headerRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    gap: Spacing.sm,
+  },
+  headerText: {
+    flex: 1,
+    gap: Spacing.xs,
   },
   subtitle: {
-    marginTop: 4,
     fontSize: 16,
   },
   createButton: {
     backgroundColor: Palette.pink500,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
     borderRadius: Radius.pill,
   },
   createButtonDisabled: {
@@ -269,7 +272,7 @@ const styles = StyleSheet.create({
   },
   createButtonLabel: {
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 12,
   },
   section: {
     gap: Spacing.lg,

@@ -57,24 +57,24 @@ function CategoryItem({
 
 function CategoryPickerComponent({ onSelect }: CategoryPickerProps) {
   return (
-    <ThemedView style={styles.container}>
-      <View style={styles.header}>
-        <ThemedText type="title">스와이프 스택</ThemedText>
-        <ThemedText style={styles.subtitle}>
-          즐기고 싶은 메인 카테고리를 선택해주세요.
-        </ThemedText>
-      </View>
-      <FlatList
-        data={categories}
-        keyExtractor={(item) => item.slug}
-        contentContainerStyle={styles.listContent}
-        numColumns={2}
-        columnWrapperStyle={styles.column}
-        renderItem={({ item }) => (
-          <CategoryItem item={item} onPress={() => onSelect(item)} />
-        )}
-      />
-    </ThemedView>
+    <FlatList
+      data={categories}
+      keyExtractor={(item) => item.slug}
+      contentContainerStyle={styles.container}
+      numColumns={2}
+      ListHeaderComponent={
+        <View style={styles.header}>
+          <ThemedText type="title">스와이프 스택</ThemedText>
+          <ThemedText style={styles.subtitle}>
+            즐기고 싶은 메인 카테고리를 선택해주세요.
+          </ThemedText>
+        </View>
+      }
+      columnWrapperStyle={styles.column}
+      renderItem={({ item }) => (
+        <CategoryItem item={item} onPress={() => onSelect(item)} />
+      )}
+    />
   );
 }
 
@@ -83,12 +83,11 @@ CategoryPicker.displayName = 'CategoryPicker';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.xl,
+    flexGrow: 1,
+    gap: Spacing.lg,
   },
   header: {
-    marginBottom: Spacing.xl,
+    marginBottom: Spacing.lg,
     gap: Spacing.sm,
   },
   subtitle: {

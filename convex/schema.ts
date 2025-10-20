@@ -134,6 +134,8 @@ export default defineSchema({
             lastCursor: v.optional(v.number()),
             excludeIds: v.optional(v.array(v.id("questions"))),
             updatedAt: v.optional(v.number()),
+            recentQuestionIds: v.optional(v.array(v.id("questions"))),
+            lastResetAt: v.optional(v.number()),
             category: v.optional(v.string()),
           })
         ),

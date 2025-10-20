@@ -1,0 +1,24 @@
+
+> quizroom@1.0.0 lint
+> expo lint --max-warnings=20
+
+env: load .env.local .env
+env: export CONVEX_DEPLOYMENT EXPO_PUBLIC_CONVEX_URL GEMINI_API_KEY ANSWER_TOKEN_SECRET
+
+/Users/eunho_xiv/Documents/QuizRoom/app/party/play.tsx
+   85:25  warning  'setDelayPreset' is assigned a value but never used                                                                                                                                                       @typescript-eslint/no-unused-vars
+  241:11  warning  The 'participants' logical expression could make the dependencies of useMemo Hook (at line 245) change on every render. To fix this, wrap the initialization of 'participants' in its own useMemo() Hook  react-hooks/exhaustive-deps
+  280:18  warning  'err' is defined but never used                                                                                                                                                                           @typescript-eslint/no-unused-vars
+  567:8   warning  React Hook useEffect has a missing dependency: 'hostUserId'. Either include it or remove the dependency array                                                                                             react-hooks/exhaustive-deps
+  649:8   warning  React Hook useEffect has a missing dependency: 'justReconnected'. Either include it or remove the dependency array                                                                                        react-hooks/exhaustive-deps
+  676:8   warning  React Hook useEffect has a missing dependency: 'connectionState'. Either include it or remove the dependency array                                                                                        react-hooks/exhaustive-deps
+  772:11  warning  'autoAdvancePhaseKey' is assigned a value but never used                                                                                                                                                  @typescript-eslint/no-unused-vars
+  790:8   warning  React Hook useEffect has a missing dependency: 'connectionState'. Either include it or remove the dependency array                                                                                        react-hooks/exhaustive-deps
+
+/Users/eunho_xiv/Documents/QuizRoom/app/room/[code].tsx
+  30:9   warning  'progressRoom' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  39:25  warning  'setSelectedDelay' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  95:20  warning  'error' is defined but never used                      @typescript-eslint/no-unused-vars
+
+✖ 11 problems (0 errors, 11 warnings)
+

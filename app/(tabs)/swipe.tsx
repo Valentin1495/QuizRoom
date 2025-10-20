@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 import { CategoryPicker } from '@/components/swipe/category-picker';
 import { SwipeStack } from '@/components/swipe/swipe-stack';
@@ -10,50 +12,54 @@ import { Palette, Radius, Spacing } from '@/constants/theme';
 
 export default function SwipeScreen() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryMeta | null>(null);
+  const insets = useSafeAreaInsets();
 
   const handleReset = useCallback(() => {
     setSelectedCategory(null);
   }, []);
 
+  const topStyle = { paddingTop: insets.top + Spacing.lg };
+
   if (!selectedCategory) {
     return (
-      <ThemedView style={styles.container}>
+      <ThemedView style={[styles.container, topStyle]}>
         <CategoryPicker onSelect={setSelectedCategory} />
       </ThemedView>
     );
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <View style={styles.selectedHeader}>
-        <View style={styles.headerText}>
-          <ThemedText type="title">스와이프</ThemedText>
-          <ThemedText style={styles.subtitle}>
-            {selectedCategory.emoji} {selectedCategory.title} 카테고리에서 시작합니다.
-          </ThemedText>
+    <BottomSheetModalProvider>
+      <ThemedView style={[styles.container, topStyle]}>
+        <View style={styles.selectedHeader}>
+          <View style={styles.headerText}>
+            <ThemedText type="title">스와이프</ThemedText>
+            <ThemedText style={styles.subtitle}>
+              {selectedCategory.emoji} {selectedCategory.title}
+            </ThemedText>
+          </View>
+          <Pressable style={styles.resetButton} onPress={handleReset}>
+            <ThemedText style={styles.resetLabel} lightColor="#fff" darkColor="#fff">
+              카테고리 변경
+            </ThemedText>
+          </Pressable>
         </View>
-        <Pressable style={styles.resetButton} onPress={handleReset}>
-          <ThemedText style={styles.resetLabel} lightColor="#fff" darkColor="#fff">
-            카테고리 변경
-          </ThemedText>
-        </Pressable>
-      </View>
-      <SwipeStack
-        category={selectedCategory.slug}
-        tags={selectedCategory.sampleTags}
-      />
-    </ThemedView>
+        <SwipeStack
+          category={selectedCategory.slug}
+          tags={selectedCategory.sampleTags}
+        />
+      </ThemedView>
+    </BottomSheetModalProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 20,
+    gap: Spacing.xl,
   },
   selectedHeader: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 12,
     gap: Spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',

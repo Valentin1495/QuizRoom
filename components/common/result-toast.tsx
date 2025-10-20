@@ -1,98 +1,88 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import Toast, { type ToastConfig, type ToastConfigParams } from 'react-native-toast-message';
 
 import { ThemedText } from '@/components/themed-text';
 import { Palette, Radius, Spacing } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
-type ToastKind = 'success' | 'error' | 'neutral';
+export type ToastKind = 'success' | 'error' | 'neutral';
 
-export type ResultToastProps = {
-  visible: boolean;
+export type ResultToastOptions = {
   message: string;
+  kind?: ToastKind;
   scoreDelta?: number;
   streak?: number;
-  kind?: ToastKind;
 };
 
-const AnimatedView = Animated.createAnimatedComponent(View);
+type ResultToastComponentProps = ToastConfigParams<{
+  kind: ToastKind;
+  scoreDelta?: number;
+  streak?: number;
+}>;
 
-export function ResultToast({
-  visible,
-  message,
-  scoreDelta,
-  streak,
-  kind = 'neutral',
-}: ResultToastProps) {
-  const opacity = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(16)).current;
+const TOAST_TYPE = 'result-toast';
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.spring(opacity, {
-        toValue: visible ? 1 : 0,
-        useNativeDriver: true,
-        damping: 18,
-        stiffness: 180,
-      }),
-      Animated.spring(translateY, {
-        toValue: visible ? 0 : 16,
-        useNativeDriver: true,
-        damping: 18,
-        stiffness: 180,
-      }),
-    ]).start();
-  }, [opacity, translateY, visible]);
-
+function ResultToastContent({ text1, props }: ResultToastComponentProps) {
   const accent = useThemeColor({}, 'tint');
 
-  const backgroundColor = useMemo(() => {
-    switch (kind) {
-      case 'success':
-        return Palette.success;
-      case 'error':
-        return Palette.danger;
-      default:
-        return accent;
-    }
-  }, [accent, kind]);
+  const kind = props.kind ?? 'neutral';
+  const scoreDelta = props.scoreDelta;
+  const streak = props.streak;
+
+  const backgroundColor =
+    kind === 'success'
+      ? Palette.success
+      : kind === 'error'
+        ? Palette.danger
+        : accent;
 
   return (
-    <AnimatedView
-      pointerEvents="none"
-      style={[
-        styles.container,
-        {
-          opacity,
-          transform: [{ translateY }],
-          backgroundColor,
-        },
-      ]}
-    >
-      <ThemedText style={styles.message} lightColor="#fff" darkColor="#fff">
-        {message}
-      </ThemedText>
+    <View pointerEvents="none" style={[styles.container, { backgroundColor }]}>
+      {text1 ? (
+        <ThemedText style={styles.message} lightColor="#fff" darkColor="#fff">
+          {text1}
+        </ThemedText>
+      ) : null}
       {scoreDelta !== undefined ? (
-        <ThemedText
-          style={styles.meta}
-          lightColor="#fff"
-          darkColor="#fff"
-        >
+        <ThemedText style={styles.meta} lightColor="#fff" darkColor="#fff">
           {scoreDelta > 0 ? '+' : ''}
           {scoreDelta} pts
         </ThemedText>
       ) : null}
       {streak !== undefined ? (
-        <ThemedText
-          style={styles.meta}
-          lightColor="#fff"
-          darkColor="#fff"
-        >
+        <ThemedText style={styles.meta} lightColor="#fff" darkColor="#fff">
           Streak {streak}
         </ThemedText>
       ) : null}
-    </AnimatedView>
+    </View>
   );
+}
+
+export const resultToastConfig: ToastConfig = {
+  [TOAST_TYPE]: (toastProps: ResultToastComponentProps) => (
+    <ResultToastContent {...toastProps} />
+  ),
+};
+
+export function showResultToast({
+  message,
+  kind = 'neutral',
+  scoreDelta,
+  streak,
+}: ResultToastOptions) {
+  Toast.show({
+    type: TOAST_TYPE,
+    position: 'top',
+    text1: message,
+    props: { kind, scoreDelta, streak },
+    autoHide: true,
+    visibilityTime: 2500,
+    topOffset: 80,
+  });
+}
+
+export function hideResultToast() {
+  Toast.hide();
 }
 
 const styles = StyleSheet.create({
