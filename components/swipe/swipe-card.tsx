@@ -3,7 +3,9 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withSpring,
+  withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
@@ -15,14 +17,22 @@ import type { SwipeFeedQuestion } from '@/lib/feed';
 
 import { AnswerSheet } from './answer-sheet';
 
-export type SwipeFeedback = {
-  isCorrect: boolean;
-  correctChoiceId: string;
-  correctChoiceIndex: number | null;
-  explanation: string | null;
-  scoreDelta: number;
-  streak: number;
-};
+export type SwipeFeedback =
+  | {
+    status: 'optimistic';
+    isCorrect: boolean;
+    correctChoiceId: string;
+    correctChoiceIndex: number | null;
+  }
+  | {
+    status: 'confirmed';
+    isCorrect: boolean;
+    correctChoiceId: string;
+    correctChoiceIndex: number | null;
+    explanation: string | null;
+    scoreDelta: number;
+    streak: number;
+  };
 
 export type SwipeCardProps = {
   card: SwipeFeedQuestion;
@@ -33,6 +43,7 @@ export type SwipeCardProps = {
   onSelectChoice: (index: number) => void;
   onSwipeNext: () => void;
   onOpenActions?: () => void;
+  onSwipeBlocked?: () => void;
 };
 
 const SWIPE_NEXT_THRESHOLD = 120;
@@ -49,9 +60,11 @@ export function SwipeCard({
   onSelectChoice,
   onSwipeNext,
   onOpenActions,
+  onSwipeBlocked,
 }: SwipeCardProps) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+  const shakeX = useSharedValue(0);
   const borderColor = useThemeColor({}, 'border');
   const cardColor = useThemeColor({}, 'card');
   const textMuted = useThemeColor({}, 'textMuted');
@@ -74,6 +87,22 @@ export function SwipeCard({
         translateY.value = 0;
         return;
       }
+      if (!feedback && translationX >= SWIPE_NEXT_THRESHOLD) {
+        if (onSwipeBlocked) {
+          scheduleOnRN(onSwipeBlocked);
+        }
+        translateY.value = withSpring(0);
+        translateX.value = withSpring(0, undefined, (finished) => {
+          if (!finished) return;
+          shakeX.value = withSequence(
+            withTiming(-14, { duration: 70 }),
+            withTiming(14, { duration: 70 }),
+            withTiming(-8, { duration: 60 }),
+            withTiming(0, { duration: 60 })
+          );
+        });
+        return;
+      }
 
       if (translationX <= ACTION_THRESHOLD && onOpenActions) {
         scheduleOnRN(onOpenActions);
@@ -86,9 +115,10 @@ export function SwipeCard({
   const animatedStyle = useAnimatedStyle(() => {
     const offset = index * 12;
     const scale = isActive ? 1 : 1 - Math.min(index, 2) * 0.05;
+    const translateXWithShake = translateX.value + shakeX.value;
     return {
       transform: [
-        { translateX: translateX.value },
+        { translateX: translateXWithShake },
         { translateY: translateY.value + offset },
         { rotate: `${translateX.value / 25}deg` },
         { scale },

@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '@/convex/_generated/api';
 import type { Doc, Id } from '@/convex/_generated/dataModel';
 import { useConvex, useMutation } from 'convex/react';
+import { useAuth } from '@/hooks/use-auth';
+import { resolveGuestSources, type GuestSwipeSource } from '@/lib/guest-feed';
 
 const VISIBLE_CARDS = 3;
 const PREFETCH_THRESHOLD = 2;
@@ -27,6 +29,9 @@ export type SwipeFeedQuestion = {
   elo: number;
   category: string;
   answerToken: string;
+  correctChoiceId: string;
+  correctChoiceIndex: number | null;
+  explanation?: string | null;
 };
 
 type FeedState = {
@@ -45,15 +50,76 @@ export type UseSwipeFeedOptions = {
   limit?: number;
 };
 
+const GUEST_SESSION_MULTIPLIER = 3;
+const GUEST_DEFAULT_QUALITY = 0.5;
+const GUEST_DEFAULT_ELO = 1200;
+
+const normalizeSlug = (value: string) => value.trim().toLowerCase();
+
+function createGuestQuestion(
+  source: GuestSwipeSource,
+  index: number,
+  sessionKey: string,
+  fallbackCategory: string
+): SwipeFeedQuestion {
+  const normalizedCategory = normalizeSlug(
+    source.category ?? fallbackCategory
+  );
+  const category = normalizedCategory || normalizeSlug(fallbackCategory);
+  const baseId = `${sessionKey}:${category}:${index}`;
+  const questionId = baseId as unknown as Id<'questions'>;
+  const deckId = `${source.deckSlug ?? category}:${sessionKey}` as unknown as QuestionDoc['deckId'];
+  const choices =
+    source.choices?.map((choice) => ({ ...choice })) ?? [];
+  const safeIndex =
+    source.answerIndex >= 0 && source.answerIndex < choices.length
+      ? source.answerIndex
+      : 0;
+  const fallbackChoice = choices[0] ?? { id: `${baseId}:a`, text: '' };
+  const correctChoice = choices[safeIndex] ?? fallbackChoice;
+  const correctId = correctChoice.id ?? fallbackChoice.id;
+  const derivedCorrectIndex = choices.findIndex(
+    (choice) => choice.id === correctId
+  );
+
+  return {
+    id: questionId,
+    deckId,
+    type: (source.type as QuestionDoc['type']) ?? 'mcq',
+    prompt: source.prompt,
+    mediaUrl: source.mediaUrl ?? null,
+    choices,
+    difficulty: (source.difficulty as QuestionDoc['difficulty']) ?? 0.5,
+    createdAt: (source.createdAt ?? Date.now()) as QuestionDoc['createdAt'],
+    tags: source.tags ?? [],
+    qualityScore: source.qualityScore ?? GUEST_DEFAULT_QUALITY,
+    elo: source.elo ?? GUEST_DEFAULT_ELO,
+    category,
+    answerToken: `${baseId}:token`,
+    correctChoiceId: correctId,
+    correctChoiceIndex:
+      derivedCorrectIndex >= 0 ? derivedCorrectIndex : safeIndex,
+    explanation: source.explanation ?? null,
+  };
+}
+
 export function useSwipeFeed(options: UseSwipeFeedOptions) {
   const convex = useConvex();
+  const { status: authStatus, isConvexReady } = useAuth();
+  const canFetch = authStatus === 'authenticated' && isConvexReady;
   const [state, setState] = useState<FeedState>(emptyState);
   const [cursor, setCursor] = useState<number | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const excludeRef = useRef<Set<Id<'questions'>>>(new Set());
+  const questionMapRef = useRef<Map<string, SwipeFeedQuestion>>(new Map());
   const loadedCountRef = useRef(0);
   const sessionLimit = options.limit ?? DEFAULT_SESSION_LIMIT;
+  const guestPoolRef = useRef<SwipeFeedQuestion[]>([]);
+  const guestCursorRef = useRef(0);
+  const guestSessionKeyRef = useRef<string>('');
+  const guestStreakRef = useRef(0);
+  const guestBookmarksRef = useRef<Set<string>>(new Set());
 
   const submitAnswerMutation = useMutation(api.swipe.submitAnswer);
   type SubmitArgs = Parameters<typeof submitAnswerMutation>[0];
@@ -95,7 +161,10 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     const itemsToAdd = newItems.slice(0, remaining);
     const actualCount = itemsToAdd.length;
 
-    itemsToAdd.forEach((item) => excludeRef.current.add(item.id));
+    itemsToAdd.forEach((item) => {
+      excludeRef.current.add(item.id);
+      questionMapRef.current.set(item.id.toString(), item);
+    });
     setState((current) => {
       // 세션 제한까지는 모든 아이템을 보관
       const maxBufferSize = Math.max(MAX_BUFFER, sessionLimit);
@@ -121,6 +190,44 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     return actualCount;
   }, [sessionLimit]);
 
+  useEffect(() => {
+    excludeRef.current.clear();
+    questionMapRef.current.clear();
+    guestCursorRef.current = 0;
+    guestPoolRef.current = [];
+    guestStreakRef.current = 0;
+    loadedCountRef.current = 0;
+    setState(emptyState);
+    setCursor(null);
+    setIsLoading(false);
+    if (canFetch) {
+      setHasMore(true);
+      return;
+    }
+    guestBookmarksRef.current.clear();
+    guestSessionKeyRef.current = `guest-${Date.now().toString(36)}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}`;
+    const desired = Math.max(
+      sessionLimit * GUEST_SESSION_MULTIPLIER,
+      sessionLimit + PREFETCH_TARGET
+    );
+    const sources = resolveGuestSources(
+      options.category,
+      desired,
+      options.tags
+    );
+    guestPoolRef.current = sources.map((source, index) =>
+      createGuestQuestion(
+        source,
+        index,
+        guestSessionKeyRef.current,
+        options.category
+      )
+    );
+    setHasMore(guestPoolRef.current.length > 0);
+  }, [canFetch, options.category, options.tags, sessionLimit]);
+
   const fetchMore = useCallback(async () => {
     if (isLoading || !hasMore || loadedCountRef.current >= sessionLimit) {
       return;
@@ -131,6 +238,22 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
       if (remaining === 0) {
         setHasMore(false);
         setCursor(null);
+        return;
+      }
+
+      if (!canFetch) {
+        if (!guestPoolRef.current.length) {
+          setHasMore(false);
+          return;
+        }
+        const start = guestCursorRef.current;
+        const end = Math.min(start + remaining, guestPoolRef.current.length);
+        const slice = guestPoolRef.current.slice(start, end);
+        guestCursorRef.current = end;
+        const added = slice.length > 0 ? pushPrefetch(slice) : 0;
+        if (added === 0 || guestCursorRef.current >= guestPoolRef.current.length) {
+          setHasMore(false);
+        }
         return;
       }
 
@@ -145,30 +268,31 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
         excludeIds: Array.from(excludeRef.current),
       });
 
-      const items: SwipeFeedQuestion[] = response.items.map((item) => ({
-        ...item,
-        mediaUrl: item.mediaUrl ?? null,
-        tags: item.tags ?? [],
-      }));
+      const items: SwipeFeedQuestion[] = response.items.map((item) => {
+        const choices = item.choices ?? [];
+        const correctIndex = choices.findIndex((choice) => choice.id === item.correctChoiceId);
+        return {
+          ...item,
+          mediaUrl: item.mediaUrl ?? null,
+          tags: item.tags ?? [],
+          correctChoiceIndex: correctIndex >= 0 ? correctIndex : null,
+          explanation: null,
+        };
+      });
 
       const actualAdded = items.length > 0 ? pushPrefetch(items) : 0;
 
       console.log(`Fetch: requested=${requestLimit}, received=${items.length}, added=${actualAdded}, total=${loadedCountRef.current}/${sessionLimit}`);
 
-      // 세션 제한에 도달했으면 종료
       if (loadedCountRef.current >= sessionLimit) {
         console.log('Session limit reached in fetchMore');
         setHasMore(false);
         setCursor(null);
-      }
-      // 서버에서 더 이상 데이터가 없으면 종료
-      else if (!response.hasMore) {
+      } else if (!response.hasMore) {
         console.log('No more data from server');
         setHasMore(false);
         setCursor(null);
-      }
-      // 아직 더 로드할 수 있음
-      else {
+      } else {
         setHasMore(true);
         setCursor(response.nextCursor ?? null);
       }
@@ -178,7 +302,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     } finally {
       setIsLoading(false);
     }
-  }, [convex, cursor, hasMore, isLoading, options.category, options.limit, options.tags, pushPrefetch, sessionLimit]);
+  }, [canFetch, convex, cursor, hasMore, isLoading, options.category, options.tags, pushPrefetch, sessionLimit]);
 
   useEffect(() => {
     if (
@@ -190,7 +314,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     ) {
       fetchMore();
     }
-  }, [fetchMore, hasMore, isLoading, sessionLimit, state.prefetch.length, state.queue.length]);
+  }, [canFetch, fetchMore, hasMore, isLoading, sessionLimit, state.prefetch.length, state.queue.length]);
 
   useEffect(() => {
     const totalBuffered = state.queue.length + state.prefetch.length;
@@ -209,16 +333,22 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     ) {
       fetchMore();
     }
-  }, [fetchMore, hasMore, isLoading, sessionLimit, state.prefetch.length, state.queue.length]);
+  }, [canFetch, fetchMore, hasMore, isLoading, sessionLimit, state.prefetch.length, state.queue.length]);
 
   const advance = useCallback(() => {
     setState((current) => {
-      const queue = current.queue.slice(1);
+      const [removed, ...restQueue] = current.queue;
+      if (removed) {
+        questionMapRef.current.delete(removed.id.toString());
+      }
+      const queue = [...restQueue];
       const prefetch = [...current.prefetch];
       while (queue.length < VISIBLE_CARDS && prefetch.length > 0) {
         queue.push(prefetch.shift() as SwipeFeedQuestion);
       }
-      console.log(`Advance: queue=${queue.length}, prefetch=${prefetch.length}, total=${loadedCountRef.current}`);
+      console.log(
+        `Advance: queue=${queue.length}, prefetch=${prefetch.length}, total=${loadedCountRef.current}`
+      );
       return { queue, prefetch };
     });
   }, []);
@@ -227,22 +357,71 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
 
   const reset = useCallback(async () => {
     excludeRef.current.clear();
+    questionMapRef.current.clear();
     setState(emptyState);
     setCursor(null);
-    setHasMore(true);
+    setIsLoading(false);
     loadedCountRef.current = 0;
+    guestCursorRef.current = 0;
+    guestStreakRef.current = 0;
+    if (!canFetch) {
+      guestBookmarksRef.current.clear();
+      guestSessionKeyRef.current = `guest-${Date.now().toString(36)}-${Math.random()
+        .toString(36)
+        .slice(2, 8)}`;
+      const desired = Math.max(
+        sessionLimit * GUEST_SESSION_MULTIPLIER,
+        sessionLimit + PREFETCH_TARGET
+      );
+      const sources = resolveGuestSources(
+        options.category,
+        desired,
+        options.tags
+      );
+      guestPoolRef.current = sources.map((source, index) =>
+        createGuestQuestion(
+          source,
+          index,
+          guestSessionKeyRef.current,
+          options.category
+        )
+      );
+      setHasMore(guestPoolRef.current.length > 0);
+      return;
+    }
+    setHasMore(true);
     try {
       await resetSessionMutation();
     } catch (error) {
       console.warn('Failed to reset server session:', error);
     }
-  }, [resetSessionMutation]);
+  }, [canFetch, options.category, options.tags, resetSessionMutation, sessionLimit]);
 
   const submitAnswer = useCallback(
     async (payload: SubmitArgs): Promise<SubmitResult> => {
+      if (!canFetch) {
+        const key = payload.questionId.toString();
+        const question = questionMapRef.current.get(key);
+        const correctChoiceId =
+          question?.correctChoiceId ?? payload.choiceId;
+        const isCorrect = correctChoiceId === payload.choiceId;
+        guestStreakRef.current = isCorrect
+          ? guestStreakRef.current + 1
+          : 0;
+        const result = {
+          isCorrect,
+          correctChoiceId,
+          explanation: question?.explanation ?? null,
+          scoreDelta: isCorrect ? 15 : -5,
+          streak: guestStreakRef.current,
+          nextQuestionElo: question?.elo ?? GUEST_DEFAULT_ELO,
+          expected: 0.5,
+        } satisfies Partial<SubmitResult>;
+        return result as SubmitResult;
+      }
       return submitAnswerMutation(payload);
     },
-    [submitAnswerMutation]
+    [canFetch, submitAnswerMutation]
   );
 
   const skip = useCallback(() => {
@@ -251,16 +430,32 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
 
   const toggleBookmark = useCallback(
     async (payload: BookmarkArgs) => {
+      if (!canFetch) {
+        const key = payload.questionId.toString();
+        const store = guestBookmarksRef.current;
+        let bookmarked: boolean;
+        if (store.has(key)) {
+          store.delete(key);
+          bookmarked = false;
+        } else {
+          store.add(key);
+          bookmarked = true;
+        }
+        return { bookmarked };
+      }
       return toggleBookmarkMutation(payload);
     },
-    [toggleBookmarkMutation]
+    [canFetch, toggleBookmarkMutation]
   );
 
   const reportQuestion = useCallback(
     async (payload: ReportArgs) => {
+      if (!canFetch) {
+        return;
+      }
       return reportMutation(payload);
     },
-    [reportMutation]
+    [canFetch, reportMutation]
   );
 
   const queue = state.queue;

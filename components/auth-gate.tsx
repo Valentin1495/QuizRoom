@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from 'react';
-import { ActivityIndicator, Button, StyleSheet } from 'react-native';
+import { ActivityIndicator, Button, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -11,10 +11,13 @@ type AuthGateProps = {
 };
 
 export function AuthGate({ children }: AuthGateProps) {
-  const { status, user, error, signInWithGoogle } = useAuth();
+  const { status, user, error, signInWithGoogle, enterGuestMode } = useAuth();
 
   const { isLoading, headline, helper } = useMemo(() => {
     if (status === 'authenticated' && user) {
+      return { isLoading: false, headline: null, helper: null };
+    }
+    if (status === 'guest') {
       return { isLoading: false, headline: null, helper: null };
     }
     if (status === 'authorizing' || status === 'loading') {
@@ -42,6 +45,10 @@ export function AuthGate({ children }: AuthGateProps) {
     return <>{children}</>;
   }
 
+  if (status === 'guest') {
+    return <>{children}</>;
+  }
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView
@@ -58,14 +65,28 @@ export function AuthGate({ children }: AuthGateProps) {
         {isLoading ? (
           <ActivityIndicator size="large" color={Palette.purple600} />
         ) : (
-          <Button
-            title="Google 계정으로 로그인"
-            onPress={() => {
-              void signInWithGoogle();
-            }}
-            color="#1a73e8"
-            disabled={status === 'authorizing'}
-          />
+          <>
+            <View style={styles.buttonWrapper}>
+              <Button
+                title="Google 계정으로 로그인"
+                onPress={() => {
+                  void signInWithGoogle();
+                }}
+                color="#1a73e8"
+                disabled={status === 'authorizing'}
+              />
+            </View>
+            <View style={styles.buttonWrapper}>
+              <Button
+                title="로그인 없이 둘러보기"
+                onPress={() => {
+                  void enterGuestMode();
+                }}
+                color={Palette.slate500}
+                disabled={status === 'authorizing'}
+              />
+            </View>
+          </>
         )}
       </ThemedView>
     </ThemedView>
@@ -92,5 +113,8 @@ const styles = StyleSheet.create({
   },
   message: {
     textAlign: 'center',
+  },
+  buttonWrapper: {
+    width: '100%',
   },
 });

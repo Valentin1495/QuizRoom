@@ -3,7 +3,6 @@ import Toast, { type ToastConfig, type ToastConfigParams } from 'react-native-to
 
 import { ThemedText } from '@/components/themed-text';
 import { Palette, Radius, Spacing } from '@/constants/theme';
-import { useThemeColor } from '@/hooks/use-theme-color';
 
 export type ToastKind = 'success' | 'error' | 'neutral';
 
@@ -23,8 +22,6 @@ type ResultToastComponentProps = ToastConfigParams<{
 const TOAST_TYPE = 'result-toast';
 
 function ResultToastContent({ text1, props }: ResultToastComponentProps) {
-  const accent = useThemeColor({}, 'tint');
-
   const kind = props.kind ?? 'neutral';
   const scoreDelta = props.scoreDelta;
   const streak = props.streak;
@@ -34,7 +31,7 @@ function ResultToastContent({ text1, props }: ResultToastComponentProps) {
       ? Palette.success
       : kind === 'error'
         ? Palette.danger
-        : accent;
+        : Palette.info;
 
   return (
     <View pointerEvents="none" style={[styles.container, { backgroundColor }]}>
@@ -46,12 +43,12 @@ function ResultToastContent({ text1, props }: ResultToastComponentProps) {
       {scoreDelta !== undefined ? (
         <ThemedText style={styles.meta} lightColor="#fff" darkColor="#fff">
           {scoreDelta > 0 ? '+' : ''}
-          {scoreDelta} pts
+          {scoreDelta}점
         </ThemedText>
       ) : null}
       {streak !== undefined ? (
         <ThemedText style={styles.meta} lightColor="#fff" darkColor="#fff">
-          Streak {streak}
+          {streak}연속 정답! 🔥
         </ThemedText>
       ) : null}
     </View>

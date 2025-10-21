@@ -17,8 +17,9 @@ export const Palette = {
   surface: '#FFFFFF',
   surfaceMuted: '#F5F6FB',
   success: '#22C55E',
-  warning: '#FBBF24',
-  danger: '#F97316',
+  warning: '#F59E0B',
+  danger: '#EF4444',
+  info: '#3B82F6',
 };
 
 export const Colors = {

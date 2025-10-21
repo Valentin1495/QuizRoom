@@ -20,33 +20,34 @@ export function useDeckFeed(options?: { tag?: string; limit?: number }) {
 }
 
 export function useCreateParty() {
-  const mutation = useMutation(api.matches.createParty);
+  const mutation = useMutation(api.rooms.create);
   return useCallback(
-    (deckId: Id<'decks'>) =>
-      mutation({ deckId }).then((payload) => ({
-        matchId: payload.matchId,
+    (deckId?: Id<'decks'>, nickname?: string) =>
+      mutation({ deckId, nickname }).then((payload) => ({
+        roomId: payload.roomId,
         code: payload.code,
+        pendingAction: payload.pendingAction ?? null,
       })),
     [mutation]
   );
 }
 
 export function useJoinParty() {
-  const mutation = useMutation(api.matches.joinByCode);
+  const mutation = useMutation(api.rooms.join);
   return useCallback(
-    (code: string) =>
-      mutation({ code }).then((payload) => ({
-        matchId: payload.matchId,
-        deckId: payload.deckId,
+    (code: string, nickname?: string) =>
+      mutation({ code, nickname }).then((payload) => ({
+        roomId: payload.roomId,
+        pendingAction: payload.pendingAction ?? null,
       })),
     [mutation]
   );
 }
 
-export function useLiveLeaderboard(matchId: Id<'matches'>) {
-  const result = useQuery(api.matches.liveLeaderboard, { matchId });
+export function useLiveLeaderboard(roomId: Id<'partyRooms'>) {
+  const result = useQuery(api.rooms.getRoomState, { roomId });
   return {
-    leaderboard: result ?? null,
+    leaderboard: result && result.status === 'ok' ? result.currentRound?.leaderboard ?? null : null,
     isLoading: result === undefined,
   };
 }

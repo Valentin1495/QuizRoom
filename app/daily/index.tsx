@@ -8,6 +8,7 @@ import { ThemedView } from '@/components/themed-view';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
+import { useAuth } from '@/hooks/use-auth';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useMutation, useQuery } from 'convex/react';
 
@@ -56,6 +57,7 @@ export default function DailyQuizScreen() {
   const shareTemplate = dailyQuiz?.shareTemplate ?? null;
   const updateStats = useMutation(api.users.updateStats);
   const [skippedQuestionIds, setSkippedQuestionIds] = useState<string[]>([]);
+  const { status: authStatus } = useAuth();
 
   useEffect(() => {
     if (!dailyQuiz) {
@@ -171,10 +173,13 @@ export default function DailyQuizScreen() {
   const totalAnswered = sortedResults.length;
 
   useEffect(() => {
+    if (authStatus !== 'authenticated') {
+      return;
+    }
     if (phase === 'finished' && correctCount > 0) {
       updateStats({ correct: correctCount });
     }
-  }, [phase, correctCount, updateStats]);
+  }, [authStatus, phase, correctCount, updateStats]);
   const unansweredCount = totalQuestions - totalAnswered;
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const allAnswered = unansweredCount === 0;

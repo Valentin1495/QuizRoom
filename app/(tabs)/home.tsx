@@ -16,6 +16,7 @@ import { ThemedView } from '@/components/themed-view';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
+import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
@@ -44,10 +45,12 @@ function formatTimeLeft(target: Date) {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { status: authStatus, isConvexReady } = useAuth();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const dailyQuiz = useQuery(api.daily.getDailyQuiz, {});
-  const selfStats = useQuery(api.users.getSelfStats);
+  const shouldFetchStats = authStatus === 'authenticated' && isConvexReady;
+  const selfStats = useQuery(api.users.getSelfStats, shouldFetchStats ? {} : 'skip');
   const [timeLeft, setTimeLeft] = useState(() => {
     const nextReset = new Date();
     nextReset.setHours(24, 0, 0, 0);

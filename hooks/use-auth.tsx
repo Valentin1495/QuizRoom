@@ -24,7 +24,7 @@ import {
 } from "react";
 import { Platform } from "react-native";
 
-type AuthStatus = "loading" | "unauthenticated" | "authorizing" | "authenticated" | "error";
+type AuthStatus = "loading" | "unauthenticated" | "authorizing" | "authenticated" | "guest" | "error";
 
 type AuthTokens = {
   idToken: string;
@@ -43,6 +43,7 @@ type AuthContextValue = {
   failAuthorizing: (message: string) => void;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  enterGuestMode: () => Promise<void>;
   error: string | null;
   isConvexReady: boolean;
   refreshUser: () => Promise<void>;
@@ -139,18 +140,22 @@ export function AuthProvider({
     );
   }, [client]);
 
-  const clearAuthState = useCallback(async () => {
-    tokensRef.current = null;
-    await storeTokens(null);
-    hasEnsuredRef.current = false;
-    client.clearAuth();
-    bumpAuthVersion();
-    setUser(null);
-    setStatus("unauthenticated");
-    setError(null);
-  }, [bumpAuthVersion, client]);
+  const clearAuthState = useCallback(
+    async (nextStatus: AuthStatus = "unauthenticated") => {
+      tokensRef.current = null;
+      await storeTokens(null);
+      hasEnsuredRef.current = false;
+      client.clearAuth();
+      bumpAuthVersion();
+      setUser(null);
+      setStatus(nextStatus);
+      setError(null);
+    },
+    [bumpAuthVersion, client]
+  );
 
   const ensureUser = useCallback(async () => {
+    if (status === "guest") return;
     if (hasEnsuredRef.current || !isConvexReady || !tokensRef.current) return;
     try {
       const payload = await ensureSelf({});
@@ -169,11 +174,18 @@ export function AuthProvider({
       setError(null);
       hasEnsuredRef.current = true;
     } catch (err) {
+      if (
+        err instanceof Error &&
+        err.message.includes("NOT_AUTHENTICATED")
+      ) {
+        await clearAuthState("unauthenticated");
+        return;
+      }
       hasEnsuredRef.current = false;
       setStatus("error");
       setError(err instanceof Error ? err.message : "사용자 정보를 불러오지 못했습니다.");
     }
-  }, [ensureSelf, isConvexReady]);
+  }, [clearAuthState, ensureSelf, isConvexReady, status]);
 
   useEffect(() => {
     (async () => {
@@ -306,7 +318,16 @@ export function AuthProvider({
     } catch (err) {
       console.error("Firebase signOut failed", err);
     }
-    await clearAuthState();
+    await clearAuthState("unauthenticated");
+  }, [clearAuthState]);
+
+  const enterGuestMode = useCallback(async () => {
+    try {
+      await firebaseSignOut(getAuth());
+    } catch (err) {
+      console.warn("Firebase signOut failed during guest mode transition", err);
+    }
+    await clearAuthState("guest");
   }, [clearAuthState]);
 
   const refreshUser = useCallback(async () => {
@@ -334,6 +355,7 @@ export function AuthProvider({
       beginAuthorizing,
       failAuthorizing,
       signInWithGoogle,
+      enterGuestMode,
       signOut,
       error,
       isConvexReady,
@@ -347,6 +369,7 @@ export function AuthProvider({
       beginAuthorizing,
       failAuthorizing,
       signInWithGoogle,
+      enterGuestMode,
       signOut,
       error,
       isConvexReady,

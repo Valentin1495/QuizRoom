@@ -3,13 +3,14 @@ import {
   BottomSheetModalProvider,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
+import * as Haptics from 'expo-haptics';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
+  TextInput,
   View,
 } from 'react-native';
 
@@ -25,6 +26,15 @@ export type SwipeStackProps = {
   category: string;
   tags?: string[];
 };
+
+const REPORT_REASONS = [
+  { key: 'typo', label: '오타가 있어요' },
+  { key: 'answer_issue', label: '정답이 잘못됐어요' },
+  { key: 'inappropriate', label: '부적절한 콘텐츠' },
+  { key: 'other', label: '기타' },
+] as const;
+
+type ReportReasonKey = (typeof REPORT_REASONS)[number]['key'];
 
 export function SwipeStack({ category, tags }: SwipeStackProps) {
   const {
@@ -48,8 +58,8 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
   const [sheetFeedback, setSheetFeedback] = useState<SwipeFeedback | null>(null);
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const actionsSheetRef = useRef<BottomSheetModal>(null);
-  const sheetSnapPoints = useMemo(() => ['90%'], []);
-  const actionsSnapPoints = useMemo(() => ['90%'], []);
+  const reportReasonSheetRef = useRef<BottomSheetModal>(null);
+  const reportNotesInputRef = useRef<TextInput>(null);
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
@@ -63,16 +73,47 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
   const closeActionsSheet = useCallback(() => {
     actionsSheetRef.current?.dismiss();
   }, []);
+  const openReportReasonSheet = useCallback(() => {
+    reportReasonSheetRef.current?.present();
+  }, []);
+  const reportSheetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeReportReasonSheet = useCallback(() => {
+    if (reportSheetTimeoutRef.current) {
+      clearTimeout(reportSheetTimeoutRef.current);
+      reportSheetTimeoutRef.current = null;
+    }
+    reportReasonSheetRef.current?.dismiss();
+  }, []);
+  const reportReasonResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const filterKey = useMemo(
     () => [category, ...(tags ?? [])].join('|'),
     [category, tags]
   );
   const previousFilterKey = useRef<string | null>(null);
+  const currentQuestionIdRef = useRef<string | null>(null);
+  type ReportPayload = Parameters<typeof reportQuestion>[0];
+  const [reportReason, setReportReason] = useState<ReportReasonKey | null>(null);
+  const [reportNotes, setReportNotes] = useState('');
+  const [reportQuestionId, setReportQuestionId] = useState<ReportPayload['questionId'] | null>(
+    null
+  );
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
 
   useEffect(() => {
     return () => {
       hideResultToast();
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (reportSheetTimeoutRef.current) {
+        clearTimeout(reportSheetTimeoutRef.current);
+      }
+      if (reportReasonResetTimeoutRef.current) {
+        clearTimeout(reportReasonResetTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -88,12 +129,14 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
   }, [filterKey, reset]);
 
   useEffect(() => {
+    currentQuestionIdRef.current = current?.id ?? null;
     if (!current) {
       setSelectedIndex(null);
       setFeedback(null);
       hideResultToast();
       closeSheet();
       closeActionsSheet();
+      closeReportReasonSheet();
       return;
     }
     setSelectedIndex(null);
@@ -101,20 +144,45 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     hideResultToast();
     closeSheet();
     closeActionsSheet();
+    closeReportReasonSheet();
     startTimeRef.current = Date.now();
-  }, [closeActionsSheet, closeSheet, current]);
+  }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current]);
 
   const handleSelect = useCallback(
     async (choiceIndex: number) => {
       if (!current || feedback) {
         return;
       }
-      setSelectedIndex(choiceIndex);
       const timeMs = Date.now() - startTimeRef.current;
       const selectedChoice = current.choices[choiceIndex];
       if (!selectedChoice) {
         return;
       }
+      setSelectedIndex(choiceIndex);
+      const questionId = current.id;
+      const optimisticIsCorrect = selectedChoice.id === current.correctChoiceId;
+      const optimisticCorrectIndexRaw =
+        current.correctChoiceIndex ??
+        current.choices.findIndex((choice) => choice.id === current.correctChoiceId);
+      const optimisticFeedback: SwipeFeedback = {
+        status: 'optimistic',
+        isCorrect: optimisticIsCorrect,
+        correctChoiceId: current.correctChoiceId,
+        correctChoiceIndex: optimisticCorrectIndexRaw >= 0 ? optimisticCorrectIndexRaw : null,
+      };
+      setFeedback(optimisticFeedback);
+      hideResultToast();
+      if (optimisticIsCorrect) {
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
+      } else {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(
+          () => undefined
+        );
+      }
+      showResultToast({
+        message: optimisticIsCorrect ? '정답! 😄' : '오답 😭',
+        kind: optimisticIsCorrect ? 'success' : 'error',
+      });
       try {
         const response = await submitAnswer({
           questionId: current.id,
@@ -125,25 +193,50 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
         const correctIndex = current.choices.findIndex(
           (choice) => choice.id === response.correctChoiceId
         );
-        const nextFeedback: SwipeFeedback = {
+        const confirmedCorrectIndex =
+          correctIndex >= 0 ? correctIndex : current.correctChoiceIndex ?? correctIndex;
+        const confirmedFeedback: SwipeFeedback = {
+          status: 'confirmed',
           isCorrect: response.isCorrect,
           correctChoiceId: response.correctChoiceId,
-          correctChoiceIndex: correctIndex >= 0 ? correctIndex : null,
+          correctChoiceIndex:
+            confirmedCorrectIndex != null && confirmedCorrectIndex >= 0
+              ? confirmedCorrectIndex
+              : null,
           explanation: response.explanation,
           scoreDelta: response.scoreDelta,
           streak: response.streak,
         };
-        setFeedback(nextFeedback);
-        setSheetFeedback(nextFeedback);
-        showResultToast({
-          message: response.isCorrect ? '정답입니다!' : '아쉬워요!',
-          kind: response.isCorrect ? 'success' : 'error',
-          scoreDelta: response.scoreDelta,
-          streak: response.streak,
-        });
+        const stillCurrent = currentQuestionIdRef.current === questionId;
+        if (stillCurrent) {
+          setFeedback(confirmedFeedback);
+          setSheetFeedback(confirmedFeedback);
+        }
+        if (response.isCorrect !== optimisticIsCorrect) {
+          void Haptics.notificationAsync(
+            response.isCorrect
+              ? Haptics.NotificationFeedbackType.Success
+              : Haptics.NotificationFeedbackType.Error
+          ).catch(() => undefined);
+          if (stillCurrent) {
+            setSelectedIndex(choiceIndex);
+          }
+        }
+        if (response.isCorrect !== optimisticIsCorrect) {
+          showResultToast({
+            message: response.isCorrect ? '정답으로 정정했어요.' : '오답으로 정정했어요.',
+            kind: response.isCorrect ? 'success' : 'error',
+            scoreDelta: response.scoreDelta,
+            streak: response.streak,
+          });
+        }
       } catch (error) {
         console.warn('정답 제출 실패', error);
-        setSelectedIndex(null);
+        if (currentQuestionIdRef.current === questionId) {
+          setSelectedIndex(null);
+          setFeedback(null);
+        }
+        hideResultToast();
         showResultToast({
           message: '전송 중 오류가 발생했어요',
           kind: 'neutral',
@@ -160,18 +253,20 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     setSelectedIndex(null);
     setFeedback(null);
     closeSheet();
+    closeReportReasonSheet();
     hideResultToast();
-  }, [closeActionsSheet, closeSheet, current, skip]);
+  }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current, skip]);
 
   const handleReset = useCallback(async () => {
     closeSheet();
     closeActionsSheet();
+    closeReportReasonSheet();
     try {
       await reset();
     } catch (error) {
       console.warn('Reset failed:', error);
     }
-  }, [closeActionsSheet, closeSheet, reset]);
+  }, [closeActionsSheet, closeReportReasonSheet, closeSheet, reset]);
 
   const handleNext = useCallback(() => {
     if (!current || !feedback) {
@@ -203,77 +298,115 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
   const handleReportAction = useCallback(() => {
     if (!current) return;
     closeActionsSheet();
-    const questionId = current.id;
-    Alert.alert('신고 사유', undefined, [
-      {
-        text: '정답 오류',
-        onPress: () =>
-          reportQuestion({
-            questionId,
-            reason: 'answer_issue',
-          })
-            .then(() =>
-              showResultToast({
-                message: '검토 요청을 전달했어요.',
-                kind: 'neutral',
-              })
-            )
-            .catch(() =>
-              showResultToast({
-                message: '신고 전송 실패',
-                kind: 'neutral',
-              })
-            ),
-      },
-      {
-        text: '부적절한 콘텐츠',
-        onPress: () =>
-          reportQuestion({
-            questionId,
-            reason: 'inappropriate',
-          })
-            .then(() =>
-              showResultToast({
-                message: '신고를 접수했어요.',
-                kind: 'neutral',
-              })
-            )
-            .catch(() =>
-              showResultToast({
-                message: '신고 전송 실패',
-                kind: 'neutral',
-              })
-            ),
-      },
-      { text: '취소', style: 'cancel' },
-    ]);
-  }, [closeActionsSheet, current, reportQuestion]);
+    if (reportReasonResetTimeoutRef.current) {
+      clearTimeout(reportReasonResetTimeoutRef.current);
+      reportReasonResetTimeoutRef.current = null;
+    }
+    setReportQuestionId(current.id);
+    setReportReason(null);
+    setReportNotes('');
+    setIsSubmittingReport(false);
+    if (reportSheetTimeoutRef.current) {
+      clearTimeout(reportSheetTimeoutRef.current);
+    }
+    reportSheetTimeoutRef.current = setTimeout(() => {
+      openReportReasonSheet();
+      reportSheetTimeoutRef.current = null;
+    }, 120);
+  }, [closeActionsSheet, current, openReportReasonSheet]);
 
   const handleActions = useCallback(() => {
     if (!current) return;
     openActionsSheet();
   }, [current, openActionsSheet]);
 
-  const hint = useMemo(() => {
-    if (!current && isLoading) return '카드를 불러오는 중이에요...';
-    if (!current) return hasMore ? '새로운 카드가 준비되고 있어요.' : '';
-    if (!feedback) {
-      return '보기를 탭해 정답을 선택하세요.';
-    }
-    return '정답을 확인했어요. 오른쪽으로 스와이프해 다음 카드로 이동!';
-  }, [current, feedback, hasMore, isLoading]);
-
   const showCompletion = !hasMore && queue.length === 0;
 
   const handleOpenSheet = useCallback(() => {
-    if (feedback?.explanation) {
-      setSheetFeedback({ ...feedback });
+    if (feedback?.status === 'confirmed' && feedback.explanation) {
+      setSheetFeedback(feedback);
       bottomSheetRef.current?.present();
     }
   }, [feedback]);
 
   const handleSheetDismiss = useCallback(() => {
     setSheetFeedback(null);
+  }, []);
+
+  const handleReportSheetDismiss = useCallback(() => {
+    if (reportSheetTimeoutRef.current) {
+      clearTimeout(reportSheetTimeoutRef.current);
+      reportSheetTimeoutRef.current = null;
+    }
+    if (reportReasonResetTimeoutRef.current) {
+      clearTimeout(reportReasonResetTimeoutRef.current);
+    }
+    reportReasonResetTimeoutRef.current = setTimeout(() => {
+      setReportReason(null);
+      setReportNotes('');
+      setReportQuestionId(null);
+      setIsSubmittingReport(false);
+      reportReasonResetTimeoutRef.current = null;
+    }, 100);
+  }, []);
+
+  useEffect(() => {
+    if (reportReason === 'other') {
+      const timeout = setTimeout(() => {
+        reportNotesInputRef.current?.focus();
+      }, 180);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+    return undefined;
+  }, [reportReason]);
+
+  const canSubmitReport = useMemo(() => {
+    if (!reportReason || !reportQuestionId) return false;
+    if (reportReason === 'other') {
+      return reportNotes.trim().length > 0 && !isSubmittingReport;
+    }
+    return !isSubmittingReport;
+  }, [isSubmittingReport, reportNotes, reportQuestionId, reportReason]);
+
+  const handleSubmitReport = useCallback(async () => {
+    if (!reportReason || !reportQuestionId) return;
+    if (reportReason === 'other' && reportNotes.trim().length === 0) return;
+    setIsSubmittingReport(true);
+    const reasonPayload =
+      reportReason === 'other' ? `other:${reportNotes.trim()}` : reportReason;
+    try {
+      await reportQuestion({
+        questionId: reportQuestionId,
+        reason: reasonPayload,
+      });
+      closeReportReasonSheet();
+      showResultToast({
+        message: '신고 접수',
+        kind: 'neutral',
+      });
+    } catch (error) {
+      console.warn('Report submission failed', error);
+      showResultToast({
+        message: '신고 전송 실패',
+        kind: 'neutral',
+      });
+    } finally {
+      setIsSubmittingReport(false);
+    }
+  }, [
+    closeReportReasonSheet,
+    reportNotes,
+    reportQuestion,
+    reportQuestionId,
+    reportReason,
+  ]);
+
+  const handleSwipeBlocked = useCallback(() => {
+    showResultToast({
+      message: '문제를 풀어야 다음 카드로 이동할 수 있어요.',
+    });
   }, []);
 
   if (!current && !showCompletion) {
@@ -314,12 +447,9 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
               </View>
             </View>
           ) : (
-            <View style={styles.hintRow}>
-              <View style={styles.hintTextGroup}>
-                <ThemedText style={styles.hintText}>{hint}</ThemedText>
-                <ThemedText style={styles.bufferText}>남은 카드 {prefetchCount}장</ThemedText>
-              </View>
-              {feedback?.explanation ? (
+            <View style={styles.statusRow}>
+              <ThemedText style={styles.statusText}>남은 카드 {prefetchCount}장</ThemedText>
+              {feedback?.status === 'confirmed' && feedback.explanation ? (
                 <Pressable style={styles.sheetLink} onPress={handleOpenSheet}>
                   <ThemedText style={styles.sheetLinkText}>해설 보기</ThemedText>
                 </Pressable>
@@ -338,6 +468,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
                 onSelectChoice={index === 0 ? handleSelect : () => undefined}
                 onSwipeNext={handleNext}
                 onOpenActions={handleActions}
+                onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
               />
             ))}
           </View>
@@ -345,11 +476,12 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
 
         <BottomSheetModal
           ref={actionsSheetRef}
-          snapPoints={actionsSnapPoints}
           backgroundStyle={styles.bottomSheetBackground}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
+          keyboardBehavior="interactive"
+          android_keyboardInputMode="adjustResize"
         >
           <BottomSheetView style={styles.actionsSheetContent}>
             <ThemedText style={styles.sheetTitle}>카드 액션</ThemedText>
@@ -371,8 +503,83 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
         </BottomSheetModal>
 
         <BottomSheetModal
+          ref={reportReasonSheetRef}
+          onDismiss={handleReportSheetDismiss}
+          backgroundStyle={styles.bottomSheetBackground}
+          enablePanDownToClose
+          enableDynamicSizing
+          enableOverDrag={false}
+          keyboardBehavior="interactive"
+          android_keyboardInputMode="adjustResize"
+        >
+          <BottomSheetView style={styles.reportSheetContent}>
+            <ThemedText style={styles.sheetTitle}>문항 신고</ThemedText>
+            <ThemedText style={styles.reportSubtitle}>
+              신고 사유를 선택해주세요.
+            </ThemedText>
+            <View style={styles.reportOptions}>
+              {REPORT_REASONS.map((option) => {
+                const isSelected = reportReason === option.key;
+                return (
+                  <Pressable
+                    key={option.key}
+                    style={[
+                      styles.reportOption,
+                      isSelected && styles.reportOptionSelected,
+                    ]}
+                    onPress={() => setReportReason(option.key)}
+                  >
+                    <ThemedText
+                      style={[
+                        styles.reportOptionLabel,
+                        isSelected && styles.reportOptionLabelSelected,
+                      ]}
+                    >
+                      {option.label}
+                    </ThemedText>
+                  </Pressable>
+                );
+              })}
+            </View>
+            {reportReason === 'other' ? (
+              <TextInput
+                ref={reportNotesInputRef}
+                style={styles.reportInput}
+                multiline
+                placeholder="신고 사유를 자세히 적어주세요."
+                placeholderTextColor="#9C96C6"
+                value={reportNotes}
+                onChangeText={setReportNotes}
+                textAlignVertical="top"
+                returnKeyType="done"
+                editable={!isSubmittingReport}
+              />
+            ) : null}
+            <Pressable
+              style={[
+                styles.reportSubmitButton,
+                !canSubmitReport && styles.reportSubmitButtonDisabled,
+              ]}
+              onPress={handleSubmitReport}
+              disabled={!canSubmitReport}
+            >
+              {isSubmittingReport ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <ThemedText
+                  style={styles.reportSubmitLabel}
+                  lightColor="#fff"
+                  darkColor="#fff"
+                >
+                  신고 제출
+                </ThemedText>
+              )}
+            </Pressable>
+          </BottomSheetView>
+        </BottomSheetModal>
+
+        <BottomSheetModal
           ref={bottomSheetRef}
-          snapPoints={sheetSnapPoints}
           onDismiss={handleSheetDismiss}
           onChange={handleSheetChanges}
           backgroundStyle={styles.bottomSheetBackground}
@@ -380,7 +587,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
           enableDynamicSizing
           enableOverDrag={false}
         >
-          {sheetFeedback ? (
+          {sheetFeedback?.status === 'confirmed' ? (
             <BottomSheetView style={styles.bottomSheetContent}>
               <ThemedText style={styles.sheetTitle}>해설</ThemedText>
               <ThemedText style={styles.sheetBody}>
@@ -430,21 +637,15 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
   },
-  hintRow: {
+  statusRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: Spacing.sm,
   },
-  hintTextGroup: {
-    flex: 1,
-    gap: Spacing.xs,
-  },
-  hintText: {
-    fontWeight: '600',
-  },
-  bufferText: {
+  statusText: {
     fontSize: 12,
+    fontWeight: '600',
     color: '#6F6A9F',
   },
   sheetLink: {
@@ -529,6 +730,47 @@ const styles = StyleSheet.create({
   actionsList: {
     gap: Spacing.sm,
   },
+  reportSheetContent: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.lg,
+    paddingTop: Spacing.md,
+    gap: Spacing.md,
+  },
+  reportSubtitle: {
+    fontSize: 13,
+    color: '#6F6A9F',
+  },
+  reportOptions: {
+    gap: Spacing.sm,
+  },
+  reportOption: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: Palette.purple200,
+  },
+  reportOptionSelected: {
+    borderColor: Palette.purple600,
+    backgroundColor: Palette.purple200 + '44',
+  },
+  reportOptionLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  reportOptionLabelSelected: {
+    color: Palette.purple600,
+  },
+  reportInput: {
+    minHeight: 96,
+    borderWidth: 1,
+    borderColor: Palette.purple200,
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    fontSize: 14,
+    lineHeight: 20,
+  },
   actionButton: {
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
@@ -548,6 +790,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionCancelLabel: {
+    fontWeight: '600',
+    color: '#fff',
+  },
+  reportSubmitButton: {
+    marginTop: Spacing.xs,
+    borderRadius: Radius.md,
+    backgroundColor: Palette.purple600,
+    paddingVertical: Spacing.md,
+    alignItems: 'center',
+  },
+  reportSubmitButtonDisabled: {
+    backgroundColor: Palette.purple200,
+  },
+  reportSubmitLabel: {
     fontWeight: '600',
     color: '#fff',
   },

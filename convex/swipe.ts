@@ -446,6 +446,10 @@ const buildFeedItem = (
   answerToken: string,
   categorySlug: string
 ) => {
+  const correctEntry =
+    shuffled.find((entry) => entry.originalIndex === question.answerIndex) ?? null;
+  const fallbackCorrectId =
+    question.choices[question.answerIndex]?.id ?? shuffled[0]?.choice.id ?? '';
   return {
     id: question._id,
     prompt: question.prompt,
@@ -459,6 +463,7 @@ const buildFeedItem = (
     elo: question.elo ?? mapDifficultyToElo(question.difficulty),
     answerToken,
     category: categorySlug,
+    correctChoiceId: correctEntry?.choice.id ?? fallbackCorrectId,
     choices: shuffled.map(({ choice }) => ({
       id: choice.id,
       text: choice.text,
