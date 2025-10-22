@@ -22,10 +22,11 @@ export function useDeckFeed(options?: { tag?: string; limit?: number }) {
 export function useCreateParty() {
   const mutation = useMutation(api.rooms.create);
   return useCallback(
-    (deckId?: Id<'decks'>, nickname?: string) =>
-      mutation({ deckId, nickname }).then((payload) => ({
+    (args: { deckId?: Id<'partyDecks'>; nickname?: string; guestKey?: string }) =>
+      mutation({ deckId: args.deckId, nickname: args.nickname, guestKey: args.guestKey }).then((payload) => ({
         roomId: payload.roomId,
         code: payload.code,
+        participantId: payload.participantId,
         pendingAction: payload.pendingAction ?? null,
       })),
     [mutation]
@@ -35,17 +36,32 @@ export function useCreateParty() {
 export function useJoinParty() {
   const mutation = useMutation(api.rooms.join);
   return useCallback(
-    (code: string, nickname?: string) =>
-      mutation({ code, nickname }).then((payload) => ({
+    (args: { code: string; nickname?: string; guestKey?: string }) =>
+      mutation({ code: args.code, nickname: args.nickname, guestKey: args.guestKey }).then((payload) => ({
         roomId: payload.roomId,
+        participantId: payload.participantId,
         pendingAction: payload.pendingAction ?? null,
       })),
     [mutation]
   );
 }
 
-export function useLiveLeaderboard(roomId: Id<'partyRooms'>) {
-  const result = useQuery(api.rooms.getRoomState, { roomId });
+export function usePartyDecks() {
+  const result = useQuery(api.rooms.listDecks, {});
+  return {
+    decks: result ?? [],
+    isLoading: result === undefined,
+  };
+}
+
+export function useLiveLeaderboard(roomId: Id<'partyRooms'>, options?: { guestKey?: string }) {
+  const args = useMemo(() => {
+    if (options?.guestKey) {
+      return { roomId, guestKey: options.guestKey };
+    }
+    return { roomId };
+  }, [options?.guestKey, roomId]);
+  const result = useQuery(api.rooms.getRoomState, args);
   return {
     leaderboard: result && result.status === 'ok' ? result.currentRound?.leaderboard ?? null : null,
     isLoading: result === undefined,

@@ -772,29 +772,116 @@ export const submitAnswer = mutation({
       streak: isCorrect ? user.streak + 1 : 0,
       nextQuestionElo: updatedQuestionElo,
       expected,
+      timeMs,
     };
   },
 });
 
 export const createReport = mutation({
   args: {
-    questionId: v.id("questions"),
+    questionId: v.optional(v.id("questions")),
     reason: v.string(),
+    note: v.optional(v.string()),
+    guest: v.optional(
+      v.object({
+        deckSlug: v.string(),
+        category: v.string(),
+        prompt: v.string(),
+        choiceId: v.optional(v.string()),
+        explanation: v.optional(v.string()),
+        choices: v.optional(
+          v.array(
+            v.object({
+              id: v.string(),
+              text: v.string(),
+            })
+          )
+        ),
+        metadata: v.optional(v.any()),
+      })
+    ),
   },
   handler: async (ctx, args) => {
-    const { user } = await ensureAuthedUser(ctx);
-    const question = await ctx.db.get(args.questionId);
-    if (!question) {
-      throw new ConvexError("QUESTION_NOT_FOUND");
+    const identity = await ctx.auth.getUserIdentity();
+    const note = args.note?.trim() ?? undefined;
+    const now = Date.now();
+
+    if (identity) {
+      const { user } = await ensureAuthedUser(ctx);
+      if (!args.questionId) {
+        throw new ConvexError("QUESTION_ID_REQUIRED");
+      }
+      const question = await ctx.db.get(args.questionId);
+      if (!question) {
+        throw new ConvexError("QUESTION_NOT_FOUND");
+      }
+
+      await ctx.db.insert("reports", {
+        deckId: question.deckId,
+        questionId: question._id,
+        reporterId: user._id,
+        reason: args.reason,
+        note,
+        createdAt: now,
+        resolved: false,
+      });
+      return { ok: true };
     }
 
-    await ctx.db.insert("reports", {
-      deckId: question.deckId,
-      questionId: question._id,
-      reporterId: user._id,
+    const guest = args.guest;
+    if (!guest) {
+      throw new ConvexError("GUEST_CONTEXT_REQUIRED");
+    }
+
+    const normalizedCategory = guest.category?.trim().toLowerCase() ?? "unknown";
+    await ctx.db.insert("guestReports", {
+      deckSlug: guest.deckSlug,
+      category: normalizedCategory,
+      prompt: guest.prompt,
       reason: args.reason,
+      note,
+      choiceId: guest.choiceId,
+      createdAt: now,
+      metadata: {
+        explanation: guest.explanation ?? null,
+        choices: guest.choices ?? null,
+        originalQuestionId: args.questionId ?? null,
+        extra: guest.metadata ?? null,
+      },
+    });
+
+    return { ok: true };
+  },
+});
+
+export const logGuestAnswer = mutation({
+  args: {
+    sessionKey: v.string(),
+    questionId: v.string(),
+    deckSlug: v.string(),
+    category: v.string(),
+    prompt: v.string(),
+    choiceId: v.string(),
+    isCorrect: v.boolean(),
+    timeMs: v.optional(v.number()),
+    tags: v.optional(v.array(v.string())),
+    difficulty: v.optional(v.number()),
+    metadata: v.optional(v.any()),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.insert("guestSwipeAnswers", {
+      sessionKey: args.sessionKey,
+      questionId: args.questionId,
+      deckSlug: args.deckSlug,
+      category: args.category,
+      prompt: args.prompt,
+      choiceId: args.choiceId,
+      isCorrect: args.isCorrect,
+      timeMs: args.timeMs,
+      tags: args.tags,
+      difficulty: args.difficulty,
+      metadata: args.metadata,
       createdAt: Date.now(),
-      resolved: false,
     });
   },
 });

@@ -18,6 +18,7 @@ type QuestionDoc = Doc<'questions'>;
 export type SwipeFeedQuestion = {
   id: Id<'questions'>;
   deckId: QuestionDoc['deckId'];
+  deckSlug: string;
   type: QuestionDoc['type'];
   prompt: QuestionDoc['prompt'];
   mediaUrl?: QuestionDoc['mediaUrl'] | null;
@@ -85,6 +86,7 @@ function createGuestQuestion(
   return {
     id: questionId,
     deckId,
+    deckSlug: source.deckSlug ?? category,
     type: (source.type as QuestionDoc['type']) ?? 'mcq',
     prompt: source.prompt,
     mediaUrl: source.mediaUrl ?? null,
@@ -130,6 +132,9 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
 
   const reportMutation = useMutation(api.swipe.createReport);
   type ReportArgs = Parameters<typeof reportMutation>[0];
+
+  const logGuestAnswerMutation = useMutation(api.swipe.logGuestAnswer);
+  type GuestAnswerArgs = Parameters<typeof logGuestAnswerMutation>[0];
 
   const pushPrefetch = useCallback((items: SwipeFeedQuestion[]): number => {
     if (!items.length) return 0;
@@ -273,6 +278,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
         const correctIndex = choices.findIndex((choice) => choice.id === item.correctChoiceId);
         return {
           ...item,
+          deckSlug: String((item as { deckId?: string }).deckId ?? ''),
           mediaUrl: item.mediaUrl ?? null,
           tags: item.tags ?? [],
           correctChoiceIndex: correctIndex >= 0 ? correctIndex : null,
@@ -408,6 +414,27 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
         guestStreakRef.current = isCorrect
           ? guestStreakRef.current + 1
           : 0;
+        const guestArgs: GuestAnswerArgs = {
+          sessionKey: guestSessionKeyRef.current || `guest-${Date.now()}`,
+          questionId: key,
+          deckSlug:
+            question?.deckSlug ??
+            (typeof question?.deckId === "string" ? question.deckId : "unknown"),
+          category: question?.category ?? options.category,
+          prompt: question?.prompt ?? "",
+          choiceId: payload.choiceId,
+          isCorrect,
+          timeMs: payload.timeMs,
+          tags: question?.tags ?? [],
+          difficulty: question?.difficulty,
+          metadata: {
+            source: "guest_swipe",
+            correctChoiceId,
+          },
+        };
+        logGuestAnswerMutation(guestArgs).catch((error) => {
+          console.warn("Failed to log guest answer", error);
+        });
         const result = {
           isCorrect,
           correctChoiceId,
@@ -416,12 +443,13 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
           streak: guestStreakRef.current,
           nextQuestionElo: question?.elo ?? GUEST_DEFAULT_ELO,
           expected: 0.5,
+          timeMs: payload.timeMs,
         } satisfies Partial<SubmitResult>;
         return result as SubmitResult;
       }
       return submitAnswerMutation(payload);
     },
-    [canFetch, submitAnswerMutation]
+    [canFetch, logGuestAnswerMutation, options.category, submitAnswerMutation]
   );
 
   const skip = useCallback(() => {
@@ -449,13 +477,8 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
   );
 
   const reportQuestion = useCallback(
-    async (payload: ReportArgs) => {
-      if (!canFetch) {
-        return;
-      }
-      return reportMutation(payload);
-    },
-    [canFetch, reportMutation]
+    async (payload: ReportArgs) => reportMutation(payload),
+    [reportMutation]
   );
 
   const queue = state.queue;
@@ -464,6 +487,8 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
 
   // 현재 카드를 포함한 전체 남은 카드 수
   const remainingCount = state.queue.length + state.prefetch.length;
+
+  const isGuest = !canFetch;
 
   return useMemo(
     () => ({
@@ -479,12 +504,14 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
       submitAnswer,
       toggleBookmark,
       reportQuestion,
+      isGuest,
     }),
     [
       advance,
       current,
       hasMore,
       isLoading,
+      isGuest,
       nextItems,
       queue,
       remainingCount,

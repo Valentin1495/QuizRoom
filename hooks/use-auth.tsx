@@ -38,12 +38,14 @@ type AuthTokens = {
 type AuthContextValue = {
   status: AuthStatus;
   user: AuthedUser | null;
+  guestKey: string | null;
   setAuthTokens: (tokens: AuthTokens) => Promise<void>;
   beginAuthorizing: () => void;
   failAuthorizing: (message: string) => void;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   enterGuestMode: () => Promise<void>;
+  ensureGuestKey: () => Promise<string>;
   error: string | null;
   isConvexReady: boolean;
   refreshUser: () => Promise<void>;
@@ -63,12 +65,17 @@ type AuthedUser = {
 };
 
 const TOKEN_STORAGE_KEY = "quizroomAuthTokens";
+const GUEST_KEY_STORAGE_KEY = "quizroomGuestKey";
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 GoogleSignin.configure({
   webClientId: '726867887633-8buje4l38mrpp0p98i8vh1k0jijqvuol.apps.googleusercontent.com',
 });
+
+function generateGuestKey() {
+  return `gr-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
 
 async function storeTokens(tokens: AuthTokens | null) {
   const key = TOKEN_STORAGE_KEY;
@@ -86,6 +93,23 @@ async function storeTokens(tokens: AuthTokens | null) {
   } else {
     await SecureStore.setItemAsync(key, payload);
   }
+}
+
+async function storeGuestKeyValue(value: string) {
+  if (Platform.OS === "web") {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(GUEST_KEY_STORAGE_KEY, value);
+    return;
+  }
+  await SecureStore.setItemAsync(GUEST_KEY_STORAGE_KEY, value);
+}
+
+async function loadGuestKeyValue(): Promise<string | null> {
+  if (Platform.OS === "web") {
+    if (typeof window === "undefined") return null;
+    return window.localStorage.getItem(GUEST_KEY_STORAGE_KEY);
+  }
+  return SecureStore.getItemAsync(GUEST_KEY_STORAGE_KEY);
 }
 
 function parseStoredTokens(payload: string | null): AuthTokens | null {
@@ -122,6 +146,7 @@ export function AuthProvider({
   const [status, setStatus] = useState<AuthStatus>("loading");
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<AuthedUser | null>(null);
+  const [guestKey, setGuestKey] = useState<string | null>(null);
   const [isConvexReady, setIsConvexReady] = useState(false);
   const tokensRef = useRef<AuthTokens | null>(null);
   const hasEnsuredRef = useRef(false);
@@ -153,6 +178,23 @@ export function AuthProvider({
     },
     [bumpAuthVersion, client]
   );
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const stored = await loadGuestKeyValue();
+        if (stored) {
+          setGuestKey(stored);
+          return;
+        }
+        const generated = generateGuestKey();
+        setGuestKey(generated);
+        await storeGuestKeyValue(generated);
+      } catch (err) {
+        console.warn("Failed to initialize guest key", err);
+      }
+    })();
+  }, []);
 
   const ensureUser = useCallback(async () => {
     if (status === "guest") return;
@@ -211,6 +253,21 @@ export function AuthProvider({
       void ensureUser();
     }
   }, [ensureUser, isConvexReady]);
+
+  const ensureGuestKeyValue = useCallback(async () => {
+    if (guestKey) {
+      return guestKey;
+    }
+    const stored = await loadGuestKeyValue();
+    if (stored) {
+      setGuestKey(stored);
+      return stored;
+    }
+    const generated = generateGuestKey();
+    setGuestKey(generated);
+    await storeGuestKeyValue(generated);
+    return generated;
+  }, [guestKey]);
 
   const beginAuthorizing = useCallback(() => {
     setStatus("authorizing");
@@ -327,8 +384,9 @@ export function AuthProvider({
     } catch (err) {
       console.warn("Firebase signOut failed during guest mode transition", err);
     }
+    await ensureGuestKeyValue();
     await clearAuthState("guest");
-  }, [clearAuthState]);
+  }, [clearAuthState, ensureGuestKeyValue]);
 
   const refreshUser = useCallback(async () => {
     hasEnsuredRef.current = false;
@@ -351,12 +409,14 @@ export function AuthProvider({
     () => ({
       status,
       user,
+      guestKey,
       setAuthTokens,
       beginAuthorizing,
       failAuthorizing,
       signInWithGoogle,
       enterGuestMode,
       signOut,
+      ensureGuestKey: ensureGuestKeyValue,
       error,
       isConvexReady,
       refreshUser,
@@ -365,12 +425,14 @@ export function AuthProvider({
     [
       status,
       user,
+      guestKey,
       setAuthTokens,
       beginAuthorizing,
       failAuthorizing,
       signInWithGoogle,
       enterGuestMode,
       signOut,
+      ensureGuestKeyValue,
       error,
       isConvexReady,
       refreshUser,

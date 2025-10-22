@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as admin_decks from "../admin/decks.js";
+import type * as admin_partyDecks from "../admin/partyDecks.js";
 import type * as admin_seedQuestionsAction from "../admin/seedQuestionsAction.js";
 import type * as admin_upsertMutation from "../admin/upsertMutation.js";
 import type * as daily from "../daily.js";
@@ -33,6 +34,7 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   "admin/decks": typeof admin_decks;
+  "admin/partyDecks": typeof admin_partyDecks;
   "admin/seedQuestionsAction": typeof admin_seedQuestionsAction;
   "admin/upsertMutation": typeof admin_upsertMutation;
   daily: typeof daily;

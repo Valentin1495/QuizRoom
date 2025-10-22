@@ -7,18 +7,21 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
 import { useMutation, useQuery } from 'convex/react';
 
 export default function PartyRoomScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { user } = useAuth();
+  const { user, status, guestKey, ensureGuestKey } = useAuth();
   const params = useLocalSearchParams<{ code?: string }>();
   const roomCode = useMemo(() => (params.code ?? '').toString().toUpperCase(), [params.code]);
 
   const [hasLeft, setHasLeft] = useState(false);
-  const shouldFetchLobby = !!user && roomCode.length > 0 && !hasLeft;
+  const [participantId, setParticipantId] = useState<Id<'partyParticipants'> | null>(null);
+  const joinAttemptRef = useRef(false);
+  const shouldFetchLobby = roomCode.length > 0 && !hasLeft;
   const lobby = useQuery(
     api.rooms.getLobby,
     shouldFetchLobby ? { code: roomCode } : 'skip'
@@ -36,7 +39,13 @@ export default function PartyRoomScreen() {
   const [pendingMs, setPendingMs] = useState(0);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
   const pendingExecutedRef = useRef(false);
-  const [selectedDelay, setSelectedDelay] = useState<'rapid' | 'standard' | 'chill'>('standard');
+  const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
+
+  useEffect(() => {
+    if (status === 'guest' && !guestKey) {
+      void ensureGuestKey();
+    }
+  }, [ensureGuestKey, guestKey, status]);
 
   const resolveDelayMs = useMemo(() => {
     switch (selectedDelay) {
@@ -50,16 +59,24 @@ export default function PartyRoomScreen() {
     }
   }, [selectedDelay]);
 
+  const resolveHostGuestKey = useCallback(async () => {
+    if (status === 'guest') {
+      return guestKey ?? (await ensureGuestKey());
+    }
+    return undefined;
+  }, [ensureGuestKey, guestKey, status]);
+
   const handleLeave = useCallback(() => {
     if (hasLeft) return;
     setHasLeft(true);
-    if (roomId) {
-      leaveRoom({ roomId }).catch((error) => {
+    if (roomId && participantId) {
+      const guestKeyValue = status === 'guest' ? guestKey ?? undefined : undefined;
+      leaveRoom({ roomId, participantId, guestKey: guestKeyValue }).catch((error) => {
         console.warn('Failed to leave room', error);
       });
     }
     router.replace('/(tabs)/party');
-  }, [hasLeft, leaveRoom, roomId, router]);
+  }, [guestKey, hasLeft, leaveRoom, participantId, roomId, router, status]);
 
   useEffect(() => {
     if (hasLeft) return;
@@ -78,6 +95,7 @@ export default function PartyRoomScreen() {
 
   useEffect(() => {
     if (hasLeft) return;
+    if (status === 'guest' && !guestKey) return;
     pendingExecutedRef.current = false;
     if (!pendingAction) {
       setPendingMs(0);
@@ -87,11 +105,15 @@ export default function PartyRoomScreen() {
     const update = () => {
       const diff = pendingAction.executeAt - (Date.now() - serverOffsetMs);
       setPendingMs(Math.max(0, diff));
-      if (roomId && diff <= 0 && !pendingExecutedRef.current) {
+      if (roomId && participantId && diff <= 0 && !pendingExecutedRef.current) {
         pendingExecutedRef.current = true;
         void (async () => {
           try {
-            await heartbeat({ roomId });
+            await heartbeat({
+              roomId,
+              participantId,
+              guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
+            });
           } catch (error) {
             pendingExecutedRef.current = false;
           }
@@ -102,43 +124,63 @@ export default function PartyRoomScreen() {
     update();
     const interval = setInterval(update, 200);
     return () => clearInterval(interval);
-  }, [hasLeft, heartbeat, pendingAction, roomId, serverOffsetMs]);
+  }, [guestKey, hasLeft, heartbeat, participantId, pendingAction, roomId, serverOffsetMs, status]);
 
   useEffect(() => {
-    if (hasLeft || !roomId || !user) return;
+    if (hasLeft || !roomId || !participantId) return;
+    if (status === 'guest' && !guestKey) return;
+    const args = {
+      roomId,
+      participantId,
+      guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
+    };
     const interval = setInterval(() => {
-      void heartbeat({ roomId });
+      void heartbeat(args);
     }, 5000);
     return () => clearInterval(interval);
-  }, [hasLeft, heartbeat, roomId, user]);
+  }, [guestKey, hasLeft, heartbeat, participantId, roomId, status]);
 
   useEffect(() => {
     if (hasLeft) return;
-    if (!roomCode || !user) return;
+    if (!roomCode) return;
     if (lobby === undefined) return;
     if (!lobby) return;
-    const alreadyParticipant = lobby.participants?.some((participant) => participant.userId === user.id);
-    if (alreadyParticipant) return;
+    if (participantId) return;
+    if (status === 'guest' && !guestKey) return;
+    if (joinAttemptRef.current) return;
+    joinAttemptRef.current = true;
     void (async () => {
       try {
-        await joinRoom({ code: roomCode, nickname: undefined });
+        const key = status === 'guest' ? guestKey ?? (await ensureGuestKey()) : undefined;
+        const result = await joinRoom({ code: roomCode, nickname: undefined, guestKey: key });
+        setParticipantId(result.participantId);
       } catch (error) {
+        joinAttemptRef.current = false;
         console.warn('Failed to join room', error);
       }
     })();
-  }, [hasLeft, joinRoom, lobby, roomCode, user]);
+  }, [ensureGuestKey, guestKey, hasLeft, joinRoom, lobby, participantId, roomCode, status]);
 
   useEffect(() => {
     if (hasLeft) return;
-    if (!lobby || !user) return;
-    const meInLobby = lobby.participants?.some((participant) => participant.userId === user.id) ?? false;
-    if (!meInLobby) return;
+    if (!lobby) return;
+    if (participantId) return;
+    if (status !== 'authenticated' || !user) return;
+    const me = lobby.participants?.find((participant) => participant.userId && participant.userId === user.id);
+    if (me) {
+      setParticipantId(me.participantId);
+    }
+  }, [hasLeft, lobby, participantId, status, user]);
+
+  useEffect(() => {
+    if (hasLeft) return;
+    if (!lobby) return;
+    if (!participantId) return;
     if (lobby.room.status !== 'lobby') {
       setHasLeft(true);
       router.replace({ pathname: '/party/play', params: { roomId: lobby.room._id } });
-      return;
     }
-  }, [hasLeft, lobby, router, user]);
+  }, [hasLeft, lobby, participantId, router]);
 
   const handleStart = useCallback(async () => {
     if (!roomId) return;
@@ -147,20 +189,29 @@ export default function PartyRoomScreen() {
       return;
     }
     try {
-      await startRoom({ roomId, delayMs: resolveDelayMs });
+      const key = await resolveHostGuestKey();
+      await startRoom({
+        roomId,
+        delayMs: resolveDelayMs,
+        guestKey: key,
+      });
     } catch (error) {
       Alert.alert('시작 실패', error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
     }
-  }, [pendingAction, resolveDelayMs, roomId, startRoom]);
+  }, [pendingAction, resolveDelayMs, resolveHostGuestKey, roomId, startRoom]);
 
   const handleCancelPending = useCallback(async () => {
     if (!roomId) return;
     try {
-      await cancelPendingAction({ roomId });
+      const key = await resolveHostGuestKey();
+      await cancelPendingAction({
+        roomId,
+        guestKey: key,
+      });
     } catch (error) {
       Alert.alert('취소 실패', error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
     }
-  }, [cancelPendingAction, roomId]);
+  }, [cancelPendingAction, resolveHostGuestKey, roomId]);
 
   if (hasLeft) {
     return null;
@@ -228,6 +279,20 @@ export default function PartyRoomScreen() {
         <View style={styles.codeBadge}>
           <ThemedText style={styles.codeBadgeText}>코드 {roomCode}</ThemedText>
         </View>
+        {lobby.deck ? (
+          <View style={styles.deckCard}>
+            <ThemedText style={styles.deckCardTitle}>
+              {lobby.deck.emoji} {lobby.deck.title}
+            </ThemedText>
+            <ThemedText style={styles.deckCardDescription}>{lobby.deck.description}</ThemedText>
+            <ThemedText style={styles.deckCardMeta}>
+              총 10라운드로 진행됩니다.
+            </ThemedText>
+            <ThemedText style={styles.deckCardWarning}>
+              보기는 한 번만 선택할 수 있어요. 신중히 골라주세요!
+            </ThemedText>
+          </View>
+        ) : null}
       </View>
 
       <View style={styles.participantSection}>
@@ -236,7 +301,7 @@ export default function PartyRoomScreen() {
           <ThemedText style={styles.emptyText}>아직 참가자가 없어요.</ThemedText>
         ) : (
           participants.map((participant) => (
-            <View key={participant.userId} style={styles.participantRow}>
+            <View key={participant.participantId} style={styles.participantRow}>
               <View style={styles.participantInfo}>
                 <ThemedText style={styles.participantName}>{participant.nickname}</ThemedText>
                 {!participant.isConnected ? (
@@ -251,27 +316,6 @@ export default function PartyRoomScreen() {
 
       {isHost && (
         <View style={styles.hostControls}>
-          {/* <View style={styles.delayPresetRow}>
-            <ThemedText style={styles.delayLabel}>카운트다운</ThemedText>
-            <Pressable
-              style={[styles.delayChip, selectedDelay === 'rapid' ? styles.delayChipActive : null]}
-              onPress={() => setSelectedDelay('rapid')}
-            >
-              <ThemedText style={[styles.delayChipText, selectedDelay === 'rapid' ? styles.delayChipTextActive : null]}>Rapid 2초</ThemedText>
-            </Pressable>
-            <Pressable
-              style={[styles.delayChip, selectedDelay === 'standard' ? styles.delayChipActive : null]}
-              onPress={() => setSelectedDelay('standard')}
-            >
-              <ThemedText style={[styles.delayChipText, selectedDelay === 'standard' ? styles.delayChipTextActive : null]}>Standard 3초</ThemedText>
-            </Pressable>
-            <Pressable
-              style={[styles.delayChip, selectedDelay === 'chill' ? styles.delayChipActive : null]}
-              onPress={() => setSelectedDelay('chill')}
-            >
-              <ThemedText style={[styles.delayChipText, selectedDelay === 'chill' ? styles.delayChipTextActive : null]}>Chill 5초</ThemedText>
-            </Pressable>
-          </View> */}
           <Pressable
             style={[styles.button, styles.primaryButton, pendingAction ? styles.buttonDisabled : null]}
             onPress={handleStart}
@@ -326,6 +370,30 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Palette.purple600,
   },
+  deckCard: {
+    marginTop: Spacing.sm,
+    padding: Spacing.md,
+    borderRadius: Radius.md,
+    backgroundColor: 'rgba(91, 46, 255, 0.08)',
+    gap: Spacing.xs,
+  },
+  deckCardTitle: {
+    fontWeight: '700',
+    fontSize: 15,
+  },
+  deckCardDescription: {
+    color: Palette.slate500,
+    fontSize: 13,
+  },
+  deckCardMeta: {
+    color: Palette.slate500,
+    fontSize: 12,
+  },
+  deckCardWarning: {
+    color: Palette.pink500,
+    fontSize: 12,
+    fontWeight: '600',
+  },
   sectionTitle: {
     fontWeight: '700',
     fontSize: 16,
@@ -368,33 +436,6 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     opacity: 0.5,
-  },
-  delayPresetRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    paddingHorizontal: Spacing.lg,
-  },
-  delayLabel: {
-    fontWeight: '600',
-    color: Palette.slate500,
-  },
-  delayChip: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderRadius: Radius.pill,
-    backgroundColor: Palette.slate200,
-  },
-  delayChipActive: {
-    backgroundColor: Palette.purple200,
-  },
-  delayChipText: {
-    color: Palette.slate500,
-    fontWeight: '500',
-  },
-  delayChipTextActive: {
-    color: Palette.purple600,
-    fontWeight: '700',
   },
   button: {
     marginTop: Spacing.lg,

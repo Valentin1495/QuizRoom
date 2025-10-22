@@ -63,7 +63,8 @@ const partyPendingAction = v.object({
   executeAt: v.number(),
   delayMs: v.number(),
   createdAt: v.number(),
-  initiatedBy: v.id("users"),
+  initiatedBy: v.optional(v.id("users")),
+  initiatedIdentity: v.optional(v.string()),
   label: v.string(),
 });
 
@@ -246,11 +247,27 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_identity", ["matchId", "identityId"]),
 
+  partyDecks: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    emoji: v.string(),
+    description: v.string(),
+    sourceCategories: v.array(v.string()),
+    questionIds: v.array(v.id("questions")),
+    totalQuestions: v.number(),
+    isActive: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_active_updatedAt", ["isActive", "updatedAt"]),
+
   partyRooms: defineTable({
     code: v.string(),
-    hostId: v.id("users"),
+    hostId: v.optional(v.id("users")),
+    hostIdentity: v.string(),
     status: partyStatusEnum,
-    deckId: v.optional(v.id("decks")),
+    deckId: v.optional(v.id("partyDecks")),
     rules: partyRules,
     currentRound: v.number(),
     totalRounds: v.number(),
@@ -267,8 +284,9 @@ export default defineSchema({
 
   partyParticipants: defineTable({
     roomId: v.id("partyRooms"),
-    userId: v.id("users"),
+    userId: v.optional(v.id("users")),
     identityId: v.string(),
+    isGuest: v.boolean(),
     nickname: v.string(),
     isHost: v.boolean(),
     joinedAt: v.number(),
@@ -280,7 +298,9 @@ export default defineSchema({
     disconnectedAt: v.optional(v.number()),
   })
     .index("by_room", ["roomId"])
-    .index("by_room_user", ["roomId", "userId"]),
+    .index("by_room_user", ["roomId", "userId"])
+    .index("by_room_identity", ["roomId", "identityId"])
+    .index("by_identity", ["identityId"]),
 
   partyRounds: defineTable({
     roomId: v.id("partyRooms"),
@@ -296,15 +316,15 @@ export default defineSchema({
   partyAnswers: defineTable({
     roomId: v.id("partyRooms"),
     roundIndex: v.number(),
-    userId: v.id("users"),
+    participantId: v.id("partyParticipants"),
     choiceIndex: v.number(),
     receivedAt: v.number(),
     isCorrect: v.boolean(),
     scoreDelta: v.number(),
   })
     .index("by_room_round", ["roomId", "roundIndex"])
-    .index("by_room_user", ["roomId", "userId"])
-    .index("by_room_user_round", ["roomId", "userId", "roundIndex"]),
+    .index("by_room_participant", ["roomId", "participantId"])
+    .index("by_participant_round", ["participantId", "roundIndex"]),
 
   partyLogs: defineTable({
     roomId: v.id("partyRooms"),
@@ -325,6 +345,32 @@ export default defineSchema({
     .index("by_deck", ["deckId"])
     .index("by_question", ["questionId"])
     .index("by_reporter", ["reporterId"]),
+
+  guestReports: defineTable({
+    deckSlug: v.string(),
+    category: v.string(),
+    prompt: v.string(),
+    reason: v.string(),
+    note: v.optional(v.string()),
+    choiceId: v.optional(v.string()),
+    createdAt: v.number(),
+    metadata: v.optional(v.any()),
+  }).index("by_category", ["category"]),
+
+  guestSwipeAnswers: defineTable({
+    sessionKey: v.string(),
+    questionId: v.string(),
+    deckSlug: v.string(),
+    category: v.string(),
+    prompt: v.string(),
+    choiceId: v.string(),
+    isCorrect: v.boolean(),
+    timeMs: v.optional(v.number()),
+    tags: v.optional(v.array(v.string())),
+    difficulty: v.optional(v.number()),
+    createdAt: v.number(),
+    metadata: v.optional(v.any()),
+  }).index("by_session", ["sessionKey", "createdAt"]),
 
   dailyQuizzes: defineTable({
     availableDate: v.string(),

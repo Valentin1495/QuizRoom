@@ -2,7 +2,7 @@ import { ConvexError, v } from "convex/values";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { mutation, query } from "./_generated/server";
-import { ensureAuthedUser, getAuthedUser } from "./lib/auth";
+import { ensureAuthedUser, getOptionalAuthedUser } from "./lib/auth";
 
 type CtxWithDb = Pick<MutationCtx, "db"> | Pick<QueryCtx, "db">;
 
@@ -11,7 +11,8 @@ type PendingActionType = "start" | "rematch" | "toLobby";
 type SchedulePendingActionOptions = {
     type: PendingActionType;
     delayMs?: number;
-    initiatedBy: Id<"users">;
+    initiatedByUserId?: Id<"users">;
+    initiatedIdentity?: string;
     label: string;
     patch?: Partial<RoomDoc>;
 };
@@ -38,22 +39,72 @@ const PARTICIPANT_LIMIT = 10;
 const PARTICIPANT_TIMEOUT_MS = 30 * 1000;
 const PARTICIPANT_OFFLINE_GRACE_MS = 2 * 60 * 1000;
 
+const GUEST_IDENTITY_PREFIX = "guest:";
+
+function normalizeGuestKey(raw?: string) {
+    const key = raw?.trim();
+    if (!key) {
+        return null;
+    }
+    if (key.length > 128) {
+        throw new ConvexError("INVALID_GUEST_KEY");
+    }
+    return key;
+}
+
+function requireGuestKey(raw?: string) {
+    const key = normalizeGuestKey(raw);
+    if (!key) {
+        throw new ConvexError("GUEST_AUTH_REQUIRED");
+    }
+    return key;
+}
+
+function guestIdentity(key: string) {
+    return `${GUEST_IDENTITY_PREFIX}${key}`;
+}
+
+function deriveGuestNickname(key: string) {
+    const suffix = key.slice(-4).toUpperCase().padStart(4, "0");
+    return `Guest ${suffix}`;
+}
+
+async function resolveHostParticipant(
+    ctx: MutationCtx,
+    room: RoomDoc,
+    guestKey?: string
+): Promise<ParticipantDoc> {
+    const authed = await getOptionalAuthedUser(ctx);
+    if (authed) {
+        const participant = await loadParticipantByUser(ctx, room._id, authed.user._id);
+        if (participant && participant.isHost) {
+            return participant;
+        }
+    }
+    if (guestKey) {
+        const identity = guestIdentity(requireGuestKey(guestKey));
+        const participant = await loadParticipantByIdentity(ctx, room._id, identity);
+        if (participant && participant.isHost) {
+            return participant;
+        }
+    }
+    throw new ConvexError("NOT_AUTHORIZED");
+}
+
 type PartyRules = typeof DEFAULT_RULES;
 
 export const cancelPendingAction = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
         let room = await loadRoom(ctx, args.roomId);
         room = (await refreshRoomParticipants(ctx, room)).room;
         if (!room.pendingAction) {
             return;
         }
-        if (room.hostId !== user._id) {
-            throw new ConvexError("NOT_AUTHORIZED");
-        }
+        const hostParticipant = await resolveHostParticipant(ctx, room, args.guestKey);
 
         await ctx.db.patch(room._id, {
             pendingAction: undefined,
@@ -66,7 +117,8 @@ export const cancelPendingAction = mutation({
             payload: {
                 type: room.pendingAction.type,
                 cancelledAt: Date.now(),
-                initiatedBy: room.pendingAction.initiatedBy,
+                initiatedByUserId: room.pendingAction.initiatedBy ?? null,
+                initiatedIdentity: room.pendingAction.initiatedIdentity ?? null,
             },
             createdAt: Date.now(),
         });
@@ -90,20 +142,24 @@ async function generateUniqueCode(ctx: MutationCtx, length = 6) {
     throw new ConvexError("FAILED_TO_ALLOCATE_CODE");
 }
 
-async function resolveDeck(ctx: MutationCtx, deckId?: Id<"decks">) {
+async function resolveDeck(ctx: MutationCtx, deckId?: Id<"partyDecks">) {
     if (deckId) {
         const deck = await ctx.db.get(deckId);
-        if (!deck || deck.status !== "published") {
+        if (!deck || !deck.isActive || deck.totalQuestions === 0 || deck.questionIds.length === 0) {
             throw new ConvexError("DECK_NOT_AVAILABLE");
         }
         return deck;
     }
     const deck = await ctx.db
-        .query("decks")
-        .withIndex("by_status", (q) => q.eq("status", "published"))
+        .query("partyDecks")
+        .withIndex("by_active_updatedAt", (q) => q.eq("isActive", true))
+        .order("desc")
         .first();
     if (!deck) {
         throw new ConvexError("NO_DECK_AVAILABLE");
+    }
+    if (deck.totalQuestions === 0 || deck.questionIds.length === 0) {
+        throw new ConvexError("DECK_NOT_AVAILABLE");
     }
     return deck;
 }
@@ -152,20 +208,59 @@ async function resetRoomState(ctx: MutationCtx, room: RoomDoc) {
     await Promise.all(answers.map((answer) => ctx.db.delete(answer._id)));
 }
 
-async function loadParticipant(
+async function loadParticipantByUser(
     ctx: CtxWithDb,
     roomId: Id<"partyRooms">,
-    userId: Id<"users">
+    userId?: Id<"users">
 ) {
+    if (!userId) {
+        return null;
+    }
     const participant = await ctx.db
         .query("partyParticipants")
         .withIndex("by_room_user", (q) => q.eq("roomId", roomId).eq("userId", userId))
         .first();
-    if (!participant) {
+    if (!participant || participant.removedAt) {
         return null;
     }
-    if (participant.removedAt) {
+    return participant;
+}
+
+async function loadParticipantByIdentity(
+    ctx: CtxWithDb,
+    roomId: Id<"partyRooms">,
+    identityId: string
+) {
+    const participant = await ctx.db
+        .query("partyParticipants")
+        .withIndex("by_room_identity", (q) => q.eq("roomId", roomId).eq("identityId", identityId))
+        .first();
+    if (!participant || participant.removedAt) {
         return null;
+    }
+    return participant;
+}
+
+async function requireParticipantAccess(
+    ctx: MutationCtx,
+    roomId: Id<"partyRooms">,
+    participantId: Id<"partyParticipants">,
+    guestKey?: string
+): Promise<ParticipantDoc> {
+    const participant = await ctx.db.get(participantId);
+    if (!participant || participant.roomId !== roomId || participant.removedAt) {
+        throw new ConvexError("NOT_IN_ROOM");
+    }
+    if (participant.userId) {
+        const { user } = await ensureAuthedUser(ctx);
+        if (user._id !== participant.userId) {
+            throw new ConvexError("NOT_AUTHORIZED");
+        }
+    } else {
+        const key = requireGuestKey(guestKey);
+        if (participant.identityId !== guestIdentity(key)) {
+            throw new ConvexError("NOT_AUTHORIZED");
+        }
     }
     return participant;
 }
@@ -268,40 +363,52 @@ async function refreshRoomParticipants(
         return { room: updatedRoom, participants: [] };
     }
 
-    if (activeParticipants.length > 0 && !activeParticipants.some((participant) => participant.userId === room.hostId)) {
-        const newHost = activeParticipants[0];
-        await ctx.db.patch(room._id, {
-            hostId: newHost.userId,
-            version: (room.version ?? 0) + 1,
-        });
-        await ctx.db.patch(newHost._id, { isHost: true });
-        await Promise.all(
-            activeParticipants
-                .filter((participant) => participant._id !== newHost._id && participant.isHost)
-                .map((participant) => ctx.db.patch(participant._id, { isHost: false }))
-        );
-        await ctx.db.insert("partyLogs", {
-            roomId: room._id,
-            type: "host_transferred",
-            payload: {
-                previousHost: room.hostId,
-                newHost: newHost.userId,
-                transferredAt: now,
-            },
-            createdAt: now,
-        });
-        updatedRoom = {
-            ...room,
-            hostId: newHost.userId,
-            version: (room.version ?? 0) + 1,
-        };
-        activeParticipants = activeParticipants.map((participant) =>
-            participant._id === newHost._id
-                ? { ...participant, isHost: true }
-                : participant.isHost
-                    ? { ...participant, isHost: false }
-                    : participant
-        );
+    const hostStillPresent = activeParticipants.some((participant) => {
+        if (room.hostId && participant.userId && participant.userId === room.hostId) {
+            return true;
+        }
+        return participant.identityId === room.hostIdentity;
+    });
+    if (activeParticipants.length > 0 && !hostStillPresent) {
+        const newHost = activeParticipants.find((participant) => participant.userId) ?? activeParticipants[0];
+        if (newHost) {
+            await ctx.db.patch(room._id, {
+                hostId: newHost.userId ?? undefined,
+                hostIdentity: newHost.identityId,
+                version: (room.version ?? 0) + 1,
+            });
+            await ctx.db.patch(newHost._id, { isHost: true });
+            await Promise.all(
+                activeParticipants
+                    .filter((participant) => participant._id !== newHost._id && participant.isHost)
+                    .map((participant) => ctx.db.patch(participant._id, { isHost: false }))
+            );
+            await ctx.db.insert("partyLogs", {
+                roomId: room._id,
+                type: "host_transferred",
+                payload: {
+                    previousHost: room.hostId ?? null,
+                    previousHostIdentity: room.hostIdentity,
+                    newHost: newHost.userId ?? null,
+                    newHostIdentity: newHost.identityId,
+                    transferredAt: now,
+                },
+                createdAt: now,
+            });
+            updatedRoom = {
+                ...room,
+                hostId: newHost.userId ?? undefined,
+                hostIdentity: newHost.identityId,
+                version: (room.version ?? 0) + 1,
+            };
+            activeParticipants = activeParticipants.map((participant) =>
+                participant._id === newHost._id
+                    ? { ...participant, isHost: true }
+                    : participant.isHost
+                        ? { ...participant, isHost: false }
+                        : participant
+            );
+        }
     }
 
     return { room: updatedRoom, participants: activeParticipants };
@@ -324,7 +431,13 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
     const now = Date.now();
     if (action.executeAt > now) return;
 
-    const hostParticipant = await loadParticipant(ctx, room._id, room.hostId);
+    let hostParticipant: ParticipantDoc | null = null;
+    if (room.hostId) {
+        hostParticipant = await loadParticipantByUser(ctx, room._id, room.hostId);
+    }
+    if (!hostParticipant) {
+        hostParticipant = await loadParticipantByIdentity(ctx, room._id, room.hostIdentity);
+    }
     if (!hostParticipant) {
         await ctx.db.patch(room._id, {
             pendingAction: undefined,
@@ -490,7 +603,8 @@ async function schedulePendingAction(
             executeAt,
             delayMs,
             createdAt: Date.now(),
-            initiatedBy: options.initiatedBy,
+            initiatedBy: options.initiatedByUserId,
+            initiatedIdentity: options.initiatedIdentity,
             label: options.label,
         },
         version: (room.version ?? 0) + 1,
@@ -517,22 +631,25 @@ function computeScoreDelta(isCorrect: boolean, elapsedMs: number, rules: PartyRu
 
 async function selectQuestions(
     ctx: MutationCtx,
-    deckId: Id<"decks">,
+    deckId: Id<"partyDecks">,
     rounds: number
 ) {
-    const questions = await ctx.db
-        .query("questions")
-        .withIndex("by_deck", (q) => q.eq("deckId", deckId))
-        .collect();
-    if (questions.length === 0) {
+    const deck = await ctx.db.get(deckId);
+    if (!deck || !deck.isActive || deck.questionIds.length === 0) {
         throw new ConvexError("NO_QUESTIONS_AVAILABLE");
     }
-    const shuffled = [...questions];
-    for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const questionIds = [...deck.questionIds];
+    for (let i = questionIds.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        [questionIds[i], questionIds[j]] = [questionIds[j], questionIds[i]];
     }
-    return shuffled.slice(0, rounds);
+    const selectedIds = questionIds.slice(0, Math.min(rounds, questionIds.length));
+    const questions = await Promise.all(selectedIds.map((id) => ctx.db.get(id)));
+    const resolved = questions.filter((q): q is NonNullable<typeof q> => Boolean(q));
+    if (resolved.length === 0) {
+        throw new ConvexError("NO_QUESTIONS_AVAILABLE");
+    }
+    return resolved;
 }
 
 function sanitizeNickname(nickname?: string | null, fallback?: string) {
@@ -543,25 +660,66 @@ function sanitizeNickname(nickname?: string | null, fallback?: string) {
     return fallback ?? "player";
 }
 
+export const listDecks = query({
+    args: {},
+    handler: async (ctx) => {
+        const decks = await ctx.db
+            .query("partyDecks")
+            .withIndex("by_active_updatedAt", (q) => q.eq("isActive", true))
+            .order("desc")
+            .collect();
+        return decks.map((deck) => ({
+            id: deck._id,
+            slug: deck.slug,
+            title: deck.title,
+            emoji: deck.emoji,
+            description: deck.description,
+            questionCount: deck.totalQuestions,
+            sourceCategories: deck.sourceCategories,
+            updatedAt: deck.updatedAt,
+        }));
+    },
+});
+
 export const create = mutation({
     args: {
-        deckId: v.optional(v.id("decks")),
+        deckId: v.optional(v.id("partyDecks")),
         nickname: v.optional(v.string()),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user, auth } = await ensureAuthedUser(ctx);
+        const identity = await ctx.auth.getUserIdentity();
+        let userId: Id<"users"> | undefined;
+        let identityId: string;
+        let nicknameFallback: string;
+        if (identity) {
+            const { user, auth } = await ensureAuthedUser(ctx);
+            userId = user._id;
+            identityId = auth.identityId;
+            nicknameFallback = user.handle;
+        } else {
+            const key = requireGuestKey(args.guestKey);
+            identityId = guestIdentity(key);
+            nicknameFallback = deriveGuestNickname(key);
+        }
         const deck = await resolveDeck(ctx, args.deckId);
+        const totalRounds = Math.min(DEFAULT_RULES.rounds, deck.totalQuestions);
+        if (totalRounds <= 0) {
+            throw new ConvexError("DECK_NOT_AVAILABLE");
+        }
         const code = await generateUniqueCode(ctx);
         const now = Date.now();
+        const nickname = sanitizeNickname(args.nickname, nicknameFallback);
 
         const roomId = await ctx.db.insert("partyRooms", {
             code,
-            hostId: user._id,
+            hostId: userId ?? undefined,
+            hostIdentity: identityId,
             status: "lobby",
             deckId: deck._id,
-            rules: DEFAULT_RULES,
+            rules: { ...DEFAULT_RULES, rounds: totalRounds },
             currentRound: 0,
-            totalRounds: DEFAULT_RULES.rounds,
+            totalRounds,
             serverNow: now,
             phaseEndsAt: undefined,
             expiresAt: now + LOBBY_EXPIRES_MS,
@@ -569,11 +727,12 @@ export const create = mutation({
             createdAt: now,
         });
 
-        await ctx.db.insert("partyParticipants", {
+        const participantId = await ctx.db.insert("partyParticipants", {
             roomId,
-            userId: user._id,
-            identityId: auth.identityId,
-            nickname: sanitizeNickname(args.nickname, user.handle),
+            userId: userId ?? undefined,
+            identityId,
+            isGuest: !userId,
+            nickname,
             isHost: true,
             joinedAt: now,
             lastSeenAt: now,
@@ -583,7 +742,7 @@ export const create = mutation({
             disconnectedAt: undefined,
         });
 
-        return { roomId, code, pendingAction: null };
+        return { roomId, code, participantId, pendingAction: null };
     },
 });
 
@@ -591,9 +750,10 @@ export const join = mutation({
     args: {
         code: v.string(),
         nickname: v.optional(v.string()),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user, auth } = await ensureAuthedUser(ctx);
+        const identity = await ctx.auth.getUserIdentity();
         const code = args.code.trim().toUpperCase();
         let room = await ctx.db
             .query("partyRooms")
@@ -605,13 +765,38 @@ export const join = mutation({
 
         const refreshResult = await refreshRoomParticipants(ctx, room);
         room = refreshResult.room;
-        const participants = refreshResult.participants;
-        const existingRecord = await ctx.db
-            .query("partyParticipants")
-            .withIndex("by_room_user", (q) => q.eq("roomId", room._id).eq("userId", user._id))
-            .first();
-        const nickname = sanitizeNickname(args.nickname, user.handle);
+
         const now = Date.now();
+        let userId: Id<"users"> | undefined;
+        let identityId: string;
+        let nicknameFallback: string;
+        let existingRecord: ParticipantDoc | null = null;
+        let isGuest = false;
+
+        if (identity) {
+            const { user, auth } = await ensureAuthedUser(ctx);
+            userId = user._id;
+            identityId = auth.identityId;
+            nicknameFallback = user.handle;
+            existingRecord = await ctx.db
+                .query("partyParticipants")
+                .withIndex("by_room_user", (q) => q.eq("roomId", room._id).eq("userId", user._id))
+                .first();
+        } else {
+            const guestKey = requireGuestKey(args.guestKey);
+            isGuest = true;
+            identityId = guestIdentity(guestKey);
+            nicknameFallback = deriveGuestNickname(guestKey);
+            existingRecord = await ctx.db
+                .query("partyParticipants")
+                .withIndex("by_room_identity", (q) => q.eq("roomId", room._id).eq("identityId", identityId))
+                .first();
+        }
+
+        const nickname =
+            args.nickname !== undefined
+                ? sanitizeNickname(args.nickname, nicknameFallback)
+                : existingRecord?.nickname ?? nicknameFallback;
 
         if (existingRecord) {
             if (existingRecord.removedAt) {
@@ -623,19 +808,27 @@ export const join = mutation({
                     disconnectedAt: undefined,
                     nickname,
                     lastSeenAt: now,
-                    isHost: existingRecord.userId === room.hostId,
+                    isHost: identityId === room.hostIdentity,
+                    userId,
+                    identityId,
+                    isGuest,
                 });
             } else {
                 await ctx.db.patch(existingRecord._id, {
                     nickname,
                     lastSeenAt: now,
                     disconnectedAt: undefined,
+                    isHost: identityId === room.hostIdentity,
+                    userId,
+                    identityId,
+                    isGuest,
                 });
             }
             await refreshRoomParticipants(ctx, room);
             const refreshedRoom = await loadRoom(ctx, room._id);
             return {
                 roomId: refreshedRoom._id,
+                participantId: existingRecord._id,
                 pendingAction: refreshedRoom.pendingAction ?? null,
             };
         }
@@ -649,18 +842,20 @@ export const join = mutation({
             throw new ConvexError("ROOM_FULL");
         }
 
-        await ctx.db.insert("partyParticipants", {
+        const participantId = await ctx.db.insert("partyParticipants", {
             roomId: room._id,
-            userId: user._id,
-            identityId: auth.identityId,
+            userId,
+            identityId,
+            isGuest,
             nickname,
-            isHost: user._id === room.hostId,
+            isHost: identityId === room.hostIdentity,
             joinedAt: now,
             lastSeenAt: now,
             totalScore: 0,
             avgResponseMs: 0,
             answers: 0,
             disconnectedAt: undefined,
+            removedAt: undefined,
         });
 
         await refreshRoomParticipants(ctx, room);
@@ -668,6 +863,7 @@ export const join = mutation({
 
         return {
             roomId: updatedRoom._id,
+            participantId,
             pendingAction: updatedRoom.pendingAction ?? null,
         };
     },
@@ -676,14 +872,16 @@ export const join = mutation({
 export const leave = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        participantId: v.id("partyParticipants"),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
-        const participant = await loadParticipant(ctx, args.roomId, user._id);
-        if (!participant) {
-            return;
-        }
-
+        const participant = await requireParticipantAccess(
+            ctx,
+            args.roomId,
+            args.participantId,
+            args.guestKey
+        );
         const room = await loadRoom(ctx, args.roomId);
         await ctx.db.patch(participant._id, {
             removedAt: Date.now(),
@@ -697,13 +895,16 @@ export const leave = mutation({
 export const heartbeat = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        participantId: v.id("partyParticipants"),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
-        const participant = await loadParticipant(ctx, args.roomId, user._id);
-        if (!participant) {
-            throw new ConvexError("NOT_IN_ROOM");
-        }
+        const participant = await requireParticipantAccess(
+            ctx,
+            args.roomId,
+            args.participantId,
+            args.guestKey
+        );
         await ctx.db.patch(participant._id, { lastSeenAt: Date.now(), disconnectedAt: undefined });
 
         const roomDoc = await ctx.db.get(args.roomId);
@@ -723,14 +924,12 @@ export const start = mutation({
     args: {
         roomId: v.id("partyRooms"),
         delayMs: v.optional(v.number()),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
         let room = await loadRoom(ctx, args.roomId);
         room = (await refreshRoomParticipants(ctx, room)).room;
-        if (room.hostId !== user._id) {
-            throw new ConvexError("NOT_AUTHORIZED");
-        }
+        const hostParticipant = await resolveHostParticipant(ctx, room, args.guestKey);
         if (room.status !== "lobby") {
             throw new ConvexError("ROOM_ALREADY_STARTED");
         }
@@ -771,12 +970,14 @@ export const start = mutation({
 
         await ctx.db.patch(room._id, {
             totalRounds,
+            rules: { ...room.rules, rounds: totalRounds },
             pendingAction: {
                 type: "start",
                 executeAt,
                 delayMs,
                 createdAt: Date.now(),
-                initiatedBy: user._id,
+                initiatedBy: hostParticipant.userId ?? room.hostId ?? undefined,
+                initiatedIdentity: hostParticipant.identityId,
                 label: "게임 시작",
             },
             version: room.version + 1,
@@ -787,14 +988,12 @@ export const start = mutation({
 export const progress = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
         let room = await loadRoom(ctx, args.roomId);
         room = (await refreshRoomParticipants(ctx, room)).room;
-        if (room.hostId !== user._id) {
-            throw new ConvexError("NOT_AUTHORIZED");
-        }
+        await resolveHostParticipant(ctx, room, args.guestKey);
 
         switch (room.status) {
             case "countdown": {
@@ -896,14 +1095,12 @@ export const progress = mutation({
 export const pause = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
         let room = await loadRoom(ctx, args.roomId);
         room = (await refreshRoomParticipants(ctx, room)).room;
-        if (room.hostId !== user._id) {
-            throw new ConvexError("NOT_AUTHORIZED");
-        }
+        await resolveHostParticipant(ctx, room, args.guestKey);
         if (room.status === "paused") {
             return;
         }
@@ -934,14 +1131,12 @@ export const pause = mutation({
 export const resume = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
         let room = await loadRoom(ctx, args.roomId);
         room = (await refreshRoomParticipants(ctx, room)).room;
-        if (room.hostId !== user._id) {
-            throw new ConvexError("NOT_AUTHORIZED");
-        }
+        await resolveHostParticipant(ctx, room, args.guestKey);
         if (room.status !== "paused" || !room.pauseState) {
             throw new ConvexError("INVALID_STATE");
         }
@@ -966,20 +1161,23 @@ export const resume = mutation({
 export const submitAnswer = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        participantId: v.id("partyParticipants"),
         choiceIndex: v.number(),
         clientTs: v.number(),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
         const room = await loadRoom(ctx, args.roomId);
         if (room.status !== "question") {
             throw new ConvexError("ROUND_NOT_ACTIVE");
         }
 
-        const participant = await loadParticipant(ctx, room._id, user._id);
-        if (!participant) {
-            throw new ConvexError("NOT_IN_ROOM");
-        }
+        const participant = await requireParticipantAccess(
+            ctx,
+            room._id,
+            args.participantId,
+            args.guestKey
+        );
 
         const round = await loadRound(ctx, room._id, room.currentRound);
         if (!round) {
@@ -993,11 +1191,8 @@ export const submitAnswer = mutation({
 
         const existing = await ctx.db
             .query("partyAnswers")
-            .withIndex("by_room_user_round", (q) =>
-                q
-                    .eq("roomId", room._id)
-                    .eq("userId", user._id)
-                    .eq("roundIndex", room.currentRound)
+            .withIndex("by_participant_round", (q) =>
+                q.eq("participantId", participant._id).eq("roundIndex", room.currentRound)
             )
             .unique();
         if (existing) {
@@ -1012,7 +1207,7 @@ export const submitAnswer = mutation({
         await ctx.db.insert("partyAnswers", {
             roomId: room._id,
             roundIndex: room.currentRound,
-            userId: user._id,
+            participantId: participant._id,
             choiceIndex: args.choiceIndex,
             receivedAt: now,
             isCorrect,
@@ -1035,14 +1230,12 @@ export const submitAnswer = mutation({
 export const finish = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
         let room = await loadRoom(ctx, args.roomId);
         room = (await refreshRoomParticipants(ctx, room)).room;
-        if (room.hostId !== user._id) {
-            throw new ConvexError("NOT_AUTHORIZED");
-        }
+        await resolveHostParticipant(ctx, room, args.guestKey);
         await ctx.db.patch(room._id, {
             status: "results",
             serverNow: Date.now(),
@@ -1057,15 +1250,12 @@ export const finish = mutation({
 export const resetToLobby = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
         let room = await loadRoom(ctx, args.roomId);
         room = (await refreshRoomParticipants(ctx, room)).room;
-
-        if (room.hostId !== user._id) {
-            throw new ConvexError("NOT_AUTHORIZED");
-        }
+        await resolveHostParticipant(ctx, room, args.guestKey);
 
         if (room.status !== "results" && room.status !== "lobby") {
             throw new ConvexError("INVALID_STATE");
@@ -1093,10 +1283,17 @@ export const resetToLobby = mutation({
 export const requestLobby = mutation({
     args: {
         roomId: v.id("partyRooms"),
+        participantId: v.id("partyParticipants"),
         delayMs: v.optional(v.number()),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
+        const participant = await requireParticipantAccess(
+            ctx,
+            args.roomId,
+            args.participantId,
+            args.guestKey
+        );
         let room = await loadRoom(ctx, args.roomId);
         room = (await refreshRoomParticipants(ctx, room)).room;
         if (room.status !== "results") {
@@ -1110,13 +1307,14 @@ export const requestLobby = mutation({
         const delayMs = clampDelay(args.delayMs);
         const executeAt = Date.now() + delayMs;
 
-        if (room.hostId !== user._id) {
+        if (!participant.isHost) {
             await ctx.db.insert("partyLogs", {
                 roomId: room._id,
                 type: "lobby_request",
                 payload: {
-                    userId: user._id,
-                    nickname: sanitizeNickname(undefined, user.handle),
+                    participantId: participant._id,
+                    userId: participant.userId ?? null,
+                    nickname: participant.nickname,
                     delayMs,
                 },
                 createdAt: Date.now(),
@@ -1130,7 +1328,8 @@ export const requestLobby = mutation({
                 executeAt,
                 delayMs,
                 createdAt: Date.now(),
-                initiatedBy: user._id,
+                initiatedBy: participant.userId ?? room.hostId ?? undefined,
+                initiatedIdentity: participant.identityId,
                 label: "대기실로",
             },
             version: (room.version ?? 0) + 1,
@@ -1142,14 +1341,12 @@ export const rematch = mutation({
     args: {
         roomId: v.id("partyRooms"),
         delayMs: v.optional(v.number()),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { user } = await ensureAuthedUser(ctx);
         let room = await loadRoom(ctx, args.roomId);
         room = (await refreshRoomParticipants(ctx, room)).room;
-        if (room.hostId !== user._id) {
-            throw new ConvexError("NOT_AUTHORIZED");
-        }
+        const hostParticipant = await resolveHostParticipant(ctx, room, args.guestKey);
         if (room.status !== "results" && room.status !== "lobby") {
             throw new ConvexError("INVALID_STATE");
         }
@@ -1167,7 +1364,8 @@ export const rematch = mutation({
                 executeAt,
                 delayMs,
                 createdAt: Date.now(),
-                initiatedBy: user._id,
+                initiatedBy: hostParticipant.userId ?? room.hostId ?? undefined,
+                initiatedIdentity: hostParticipant.identityId,
                 label: "리매치",
             },
             version: (room.version ?? 0) + 1,
@@ -1193,6 +1391,18 @@ export const getLobby = query({
                 ? { ...room, status: "lobby", currentRound: 0, phaseEndsAt: undefined }
                 : room;
 
+        const deckDoc = room.deckId ? await ctx.db.get(room.deckId) : null;
+        const deckMeta = deckDoc
+            ? {
+                id: deckDoc._id,
+                slug: deckDoc.slug,
+                title: deckDoc.title,
+                emoji: deckDoc.emoji,
+                description: deckDoc.description,
+                questionCount: deckDoc.totalQuestions,
+            }
+            : null;
+
         const participants = await ctx.db
             .query("partyParticipants")
             .withIndex("by_room", (q) => q.eq("roomId", room._id))
@@ -1205,8 +1415,11 @@ export const getLobby = query({
 
         return {
             room: normalizedRoom,
+            deck: deckMeta,
             participants: activeParticipants.map((p) => ({
-                userId: p.userId,
+                participantId: p._id,
+                userId: p.userId ?? null,
+                isGuest: p.isGuest,
                 nickname: p.nickname,
                 isHost: p.isHost,
                 joinedAt: p.joinedAt,
@@ -1217,22 +1430,45 @@ export const getLobby = query({
     },
 });
 
+type ClientRoomParticipant = {
+    participantId: Id<"partyParticipants">;
+    userId: Id<"users"> | null;
+    isGuest: boolean;
+    nickname: string;
+    totalScore: number;
+    isHost: boolean;
+    answers: number;
+    avgResponseMs: number;
+    rank: number;
+    isConnected: boolean;
+    lastSeenAt: number;
+    disconnectedAt: number | null;
+};
+
 type ClientRoomOkState = {
     status: "ok";
     room: RoomDoc;
-    me: ParticipantDoc;
-    participants: {
-        userId: Id<"users">;
+    deck: {
+        id: Id<"partyDecks">;
+        slug: string;
+        title: string;
+        emoji: string;
+        description: string;
+        questionCount: number;
+    } | null;
+    me: {
+        participantId: Id<"partyParticipants">;
+        userId: Id<"users"> | null;
+        isGuest: boolean;
         nickname: string;
         totalScore: number;
         isHost: boolean;
         answers: number;
         avgResponseMs: number;
-        rank: number;
-        isConnected: boolean;
         lastSeenAt: number;
         disconnectedAt: number | null;
-    }[];
+    };
+    participants: ClientRoomParticipant[];
     currentRound?: {
         index: number;
         question: {
@@ -1252,13 +1488,15 @@ type ClientRoomOkState = {
         };
         leaderboard?: {
             top: {
-                userId: Id<"users">;
+                participantId: Id<"partyParticipants">;
+                userId: Id<"users"> | null;
                 nickname: string;
                 totalScore: number;
                 rank: number;
             }[];
             me?: {
-                userId: Id<"users">;
+                participantId: Id<"partyParticipants">;
+                userId: Id<"users"> | null;
                 nickname: string;
                 totalScore: number;
                 rank: number;
@@ -1277,15 +1515,40 @@ export type ClientRoomState =
 export const getRoomState = query({
     args: {
         roomId: v.id("partyRooms"),
+        guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args): Promise<ClientRoomState> => {
-        const { user } = await getAuthedUser(ctx);
         const room = await loadRoom(ctx, args.roomId);
+        const deckDoc = room.deckId ? await ctx.db.get(room.deckId) : null;
+        const deckMeta = deckDoc
+            ? {
+                id: deckDoc._id,
+                slug: deckDoc.slug,
+                title: deckDoc.title,
+                emoji: deckDoc.emoji,
+                description: deckDoc.description,
+                questionCount: deckDoc.totalQuestions,
+            }
+            : null;
 
-        const meRecord = await ctx.db
-            .query("partyParticipants")
-            .withIndex("by_room_user", (q) => q.eq("roomId", room._id).eq("userId", user._id))
-            .first();
+        const authed = await getOptionalAuthedUser(ctx);
+        const guestKey = normalizeGuestKey(args.guestKey);
+
+        let meRecord: ParticipantDoc | null = null;
+        if (authed) {
+            meRecord = await ctx.db
+                .query("partyParticipants")
+                .withIndex("by_room_user", (q) => q.eq("roomId", room._id).eq("userId", authed.user._id))
+                .first();
+        } else if (guestKey) {
+            meRecord = await ctx.db
+                .query("partyParticipants")
+                .withIndex("by_room_identity", (q) => q.eq("roomId", room._id).eq("identityId", guestIdentity(guestKey)))
+                .first();
+        } else {
+            return { status: "not_in_room" };
+        }
+
         if (!meRecord || meRecord.removedAt) {
             return { status: "not_in_room" };
         }
@@ -1314,7 +1577,7 @@ export const getRoomState = query({
                 .withIndex("by_room_round", (q) => q.eq("roomId", room._id).eq("roundIndex", round.index))
                 .collect();
 
-            const myAnswer = answers.find((ans) => ans.userId === user._id);
+            const myAnswer = answers.find((ans) => ans.participantId === me._id);
             const reveal = room.status === "reveal" || room.status === "results"
                 ? (() => {
                     const distribution = new Array(question.choices.length).fill(0);
@@ -1332,15 +1595,17 @@ export const getRoomState = query({
 
             const leaderboard = (() => {
                 const top = rankedParticipants.slice(0, 3).map((p) => ({
-                    userId: p.userId,
+                    participantId: p._id,
+                    userId: p.userId ?? null,
                     nickname: p.nickname,
                     totalScore: p.totalScore,
                     rank: p.rank,
                 }));
-                const meEntrySource = rankedParticipants.find((p) => p.userId === user._id);
+                const meEntrySource = rankedParticipants.find((p) => p._id === me._id);
                 const meEntry = meEntrySource
                     ? {
-                        userId: meEntrySource.userId,
+                        participantId: meEntrySource._id,
+                        userId: meEntrySource.userId ?? null,
                         nickname: meEntrySource.nickname,
                         totalScore: meEntrySource.totalScore,
                         rank: meEntrySource.rank,
@@ -1375,9 +1640,23 @@ export const getRoomState = query({
         return {
             status: "ok",
             room,
-            me,
+            deck: deckMeta,
+            me: {
+                participantId: me._id,
+                userId: me.userId ?? null,
+                isGuest: me.isGuest,
+                nickname: me.nickname,
+                totalScore: me.totalScore,
+                isHost: me.isHost,
+                answers: me.answers,
+                avgResponseMs: me.avgResponseMs,
+                lastSeenAt: me.lastSeenAt,
+                disconnectedAt: me.disconnectedAt ?? null,
+            },
             participants: rankedParticipants.map((p) => ({
-                userId: p.userId,
+                participantId: p._id,
+                userId: p.userId ?? null,
+                isGuest: p.isGuest,
                 nickname: p.nickname,
                 totalScore: p.totalScore,
                 isHost: p.isHost,

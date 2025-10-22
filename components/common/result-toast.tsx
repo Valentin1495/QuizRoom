@@ -11,12 +11,16 @@ export type ResultToastOptions = {
   kind?: ToastKind;
   scoreDelta?: number;
   streak?: number;
+  ctaLabel?: string;
+  onPressCta?: () => void;
 };
 
 type ResultToastComponentProps = ToastConfigParams<{
   kind: ToastKind;
   scoreDelta?: number;
   streak?: number;
+  ctaLabel?: string;
+  onPressCta?: () => void;
 }>;
 
 const TOAST_TYPE = 'result-toast';
@@ -25,6 +29,8 @@ function ResultToastContent({ text1, props }: ResultToastComponentProps) {
   const kind = props.kind ?? 'neutral';
   const scoreDelta = props.scoreDelta;
   const streak = props.streak;
+  const ctaLabel = props.ctaLabel;
+  const onPressCta = props.onPressCta;
 
   const backgroundColor =
     kind === 'success'
@@ -34,7 +40,10 @@ function ResultToastContent({ text1, props }: ResultToastComponentProps) {
         : Palette.info;
 
   return (
-    <View pointerEvents="none" style={[styles.container, { backgroundColor }]}>
+    <View
+      pointerEvents={onPressCta ? 'auto' : 'none'}
+      style={[styles.container, { backgroundColor }]}
+    >
       {text1 ? (
         <ThemedText style={styles.message} lightColor="#fff" darkColor="#fff">
           {text1}
@@ -51,6 +60,18 @@ function ResultToastContent({ text1, props }: ResultToastComponentProps) {
           {streak}연속 정답! 🔥
         </ThemedText>
       ) : null}
+      {ctaLabel && onPressCta ? (
+        <View style={styles.ctaContainer}>
+          <ThemedText
+            onPress={onPressCta}
+            style={styles.ctaLabel}
+            lightColor="#fff"
+            darkColor="#fff"
+          >
+            {ctaLabel}
+          </ThemedText>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -66,14 +87,16 @@ export function showResultToast({
   kind = 'neutral',
   scoreDelta,
   streak,
+  ctaLabel,
+  onPressCta,
 }: ResultToastOptions) {
   Toast.show({
     type: TOAST_TYPE,
     position: 'top',
     text1: message,
-    props: { kind, scoreDelta, streak },
-    autoHide: true,
-    visibilityTime: 2500,
+    props: { kind, scoreDelta, streak, ctaLabel, onPressCta },
+    autoHide: !ctaLabel || !onPressCta,
+    visibilityTime: ctaLabel && onPressCta ? 5000 : 2500,
     topOffset: 80,
   });
 }
@@ -102,5 +125,16 @@ const styles = StyleSheet.create({
   meta: {
     fontWeight: '600',
     opacity: 0.85,
+  },
+  ctaContainer: {
+    marginLeft: Spacing.sm,
+    paddingVertical: 2,
+    paddingHorizontal: Spacing.sm,
+    borderRadius: Radius.pill,
+    backgroundColor: '#FFFFFF22',
+  },
+  ctaLabel: {
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
 });

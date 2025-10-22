@@ -17,7 +17,8 @@ import {
 import { hideResultToast, showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
 import { Palette, Radius, Spacing } from '@/constants/theme';
-import { useSwipeFeed } from '@/lib/feed';
+import { useAuth } from '@/hooks/use-auth';
+import { useSwipeFeed, type SwipeFeedQuestion } from '@/lib/feed';
 
 import type { SwipeFeedback } from './swipe-card';
 import { SwipeCard } from './swipe-card';
@@ -36,6 +37,22 @@ const REPORT_REASONS = [
 
 type ReportReasonKey = (typeof REPORT_REASONS)[number]['key'];
 
+type SessionStats = {
+  answered: number;
+  correct: number;
+  totalTimeMs: number;
+  totalScoreDelta: number;
+  maxStreak: number;
+};
+
+const INITIAL_SESSION_STATS: SessionStats = {
+  answered: 0,
+  correct: 0,
+  totalTimeMs: 0,
+  totalScoreDelta: 0,
+  maxStreak: 0,
+};
+
 export function SwipeStack({ category, tags }: SwipeStackProps) {
   const {
     current,
@@ -49,7 +66,10 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     toggleBookmark,
     reportQuestion,
     reset,
+    isGuest,
   } = useSwipeFeed({ category, tags, limit: 20 });
+  const { signInWithGoogle } = useAuth();
+  const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<SwipeFeedback | null>(null);
@@ -95,9 +115,8 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
   type ReportPayload = Parameters<typeof reportQuestion>[0];
   const [reportReason, setReportReason] = useState<ReportReasonKey | null>(null);
   const [reportNotes, setReportNotes] = useState('');
-  const [reportQuestionId, setReportQuestionId] = useState<ReportPayload['questionId'] | null>(
-    null
-  );
+  const [reportQuestionId, setReportQuestionId] = useState<ReportPayload['questionId'] | null>(null);
+  const [reportSubject, setReportSubject] = useState<SwipeFeedQuestion | null>(null);
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
 
   useEffect(() => {
@@ -124,6 +143,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     }
     if (previousFilterKey.current !== filterKey) {
       previousFilterKey.current = filterKey;
+      setSessionStats(INITIAL_SESSION_STATS);
       reset();
     }
   }, [filterKey, reset]);
@@ -207,6 +227,23 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
           scoreDelta: response.scoreDelta,
           streak: response.streak,
         };
+        const measuredTimeMs = Math.max(0, response.timeMs ?? timeMs);
+        const scoreDelta = response.scoreDelta ?? 0;
+        const responseStreak = response.streak ?? 0;
+        setSessionStats((prev) => {
+          const answered = prev.answered + 1;
+          const correct = prev.correct + (response.isCorrect ? 1 : 0);
+          const totalTimeMs = prev.totalTimeMs + measuredTimeMs;
+          const totalScoreDelta = prev.totalScoreDelta + scoreDelta;
+          const maxStreak = Math.max(prev.maxStreak, responseStreak);
+          return {
+            answered,
+            correct,
+            totalTimeMs,
+            totalScoreDelta,
+            maxStreak,
+          };
+        });
         const stillCurrent = currentQuestionIdRef.current === questionId;
         if (stillCurrent) {
           setFeedback(confirmedFeedback);
@@ -226,8 +263,8 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
           showResultToast({
             message: response.isCorrect ? '정답으로 정정했어요.' : '오답으로 정정했어요.',
             kind: response.isCorrect ? 'success' : 'error',
-            scoreDelta: response.scoreDelta,
-            streak: response.streak,
+            scoreDelta,
+            streak: responseStreak,
           });
         }
       } catch (error) {
@@ -261,6 +298,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     closeSheet();
     closeActionsSheet();
     closeReportReasonSheet();
+    setSessionStats(INITIAL_SESSION_STATS);
     try {
       await reset();
     } catch (error) {
@@ -279,6 +317,17 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
   const handleToggleBookmarkAction = useCallback(() => {
     if (!current) return;
     closeActionsSheet();
+    if (isGuest) {
+      showResultToast({
+        message: '로그인 후 문항을 저장할 수 있어요.',
+        kind: 'neutral',
+        ctaLabel: '로그인',
+        onPressCta: () => {
+          void signInWithGoogle();
+        },
+      });
+      return;
+    }
     const questionId = current.id;
     toggleBookmark({ questionId })
       .then((result) =>
@@ -293,7 +342,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
           kind: 'neutral',
         })
       );
-  }, [closeActionsSheet, current, toggleBookmark]);
+  }, [closeActionsSheet, current, isGuest, toggleBookmark]);
 
   const handleReportAction = useCallback(() => {
     if (!current) return;
@@ -303,6 +352,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
       reportReasonResetTimeoutRef.current = null;
     }
     setReportQuestionId(current.id);
+    setReportSubject(current);
     setReportReason(null);
     setReportNotes('');
     setIsSubmittingReport(false);
@@ -321,6 +371,48 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
   }, [current, openActionsSheet]);
 
   const showCompletion = !hasMore && queue.length === 0;
+
+  const accuracyPercent = useMemo(() => {
+    if (!sessionStats.answered) return null;
+    return Math.round((sessionStats.correct / sessionStats.answered) * 100);
+  }, [sessionStats.answered, sessionStats.correct]);
+
+  const averageSeconds = useMemo(() => {
+    if (!sessionStats.answered) return null;
+    return sessionStats.totalTimeMs / sessionStats.answered / 1000;
+  }, [sessionStats.answered, sessionStats.totalTimeMs]);
+
+  const formattedAverageSeconds = useMemo(() => {
+    if (averageSeconds === null) return '-';
+    const fixed = averageSeconds >= 10 ? averageSeconds.toFixed(1) : averageSeconds.toFixed(2);
+    return fixed.replace(/\.0+$/, '');
+  }, [averageSeconds]);
+
+  const completionTitle = useMemo(() => {
+    const answered = sessionStats.answered;
+    if (!answered) return '🎉 스와이프 완주!';
+    return `🎉 ${answered}문항 완주!`;
+  }, [sessionStats.answered]);
+
+  const completionHighlight = useMemo(() => {
+    if (!sessionStats.answered || accuracyPercent === null) {
+      return '문항을 풀면 결과 요약을 볼 수 있어요.';
+    }
+    return `정답률 ${accuracyPercent}% · 평균 반응속도 ${formattedAverageSeconds}초 ⚡`;
+  }, [accuracyPercent, formattedAverageSeconds, sessionStats.answered]);
+
+  const totalScoreLabel = useMemo(() => {
+    if (!sessionStats.answered) return '+0';
+    const value = Math.round(sessionStats.totalScoreDelta);
+    return `${value >= 0 ? '+' : ''}${value}`;
+  }, [sessionStats.answered, sessionStats.totalScoreDelta]);
+
+  const completionContext = useMemo(() => {
+    if (!sessionStats.answered) {
+      return '다음 카드도 빠르게 스와이프해보세요!';
+    }
+    return `정답 ${sessionStats.correct}/${sessionStats.answered}문항`;
+  }, [sessionStats.answered, sessionStats.correct]);
 
   const handleOpenSheet = useCallback(() => {
     if (feedback?.status === 'confirmed' && feedback.explanation) {
@@ -346,6 +438,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
       setReportNotes('');
       setReportQuestionId(null);
       setIsSubmittingReport(false);
+      setReportSubject(null);
       reportReasonResetTimeoutRef.current = null;
     }, 100);
   }, []);
@@ -363,23 +456,44 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
   }, [reportReason]);
 
   const canSubmitReport = useMemo(() => {
-    if (!reportReason || !reportQuestionId) return false;
+    if (!reportReason) return false;
+    if (!isGuest && !reportQuestionId) return false;
+    if (isGuest && !reportSubject) return false;
     if (reportReason === 'other') {
       return reportNotes.trim().length > 0 && !isSubmittingReport;
     }
     return !isSubmittingReport;
-  }, [isSubmittingReport, reportNotes, reportQuestionId, reportReason]);
+  }, [isGuest, isSubmittingReport, reportNotes, reportQuestionId, reportReason, reportSubject]);
 
   const handleSubmitReport = useCallback(async () => {
-    if (!reportReason || !reportQuestionId) return;
+    if (!reportReason) return;
+    if (!isGuest && !reportQuestionId) return;
+    if (isGuest && !reportSubject) return;
     if (reportReason === 'other' && reportNotes.trim().length === 0) return;
     setIsSubmittingReport(true);
     const reasonPayload =
       reportReason === 'other' ? `other:${reportNotes.trim()}` : reportReason;
+    const trimmedNote = reportNotes.trim();
     try {
       await reportQuestion({
-        questionId: reportQuestionId,
+        questionId: isGuest ? undefined : reportQuestionId ?? undefined,
         reason: reasonPayload,
+        note: trimmedNote.length > 0 ? trimmedNote : undefined,
+        guest:
+          isGuest && reportSubject
+            ? {
+              deckSlug: reportSubject.deckSlug,
+              category: reportSubject.category,
+              prompt: reportSubject.prompt,
+              choiceId: undefined,
+              explanation: reportSubject.explanation ?? undefined,
+              choices: reportSubject.choices,
+              metadata: {
+                tags: reportSubject.tags,
+                source: 'guest_swipe',
+              },
+            }
+            : undefined,
       });
       closeReportReasonSheet();
       showResultToast({
@@ -399,8 +513,10 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     closeReportReasonSheet,
     reportNotes,
     reportQuestion,
+    reportSubject,
     reportQuestionId,
     reportReason,
+    isGuest,
   ]);
 
   const handleSwipeBlocked = useCallback(() => {
@@ -431,9 +547,29 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
         >
           {showCompletion ? (
             <View style={styles.completionCard}>
-              <ThemedText style={styles.completionTitle}>🎉 20문항 완주!</ThemedText>
-              <ThemedText style={styles.completionSubtitle}>
-                정답률과 반응 속도를 업데이트했어요.
+              <ThemedText style={styles.completionTitle}>{completionTitle}</ThemedText>
+              <ThemedText
+                style={styles.completionHighlight}
+                lightColor={Palette.purple600}
+                darkColor={Palette.purple200}
+              >
+                {completionHighlight}
+              </ThemedText>
+              <ThemedText style={styles.completionContext}>{completionContext}</ThemedText>
+              <View style={styles.completionMetrics}>
+                <View style={styles.completionMetric}>
+                  <ThemedText style={styles.completionMetricLabel}>최고 연속 정답</ThemedText>
+                  <ThemedText style={styles.completionMetricValue}>
+                    {sessionStats.maxStreak}문항
+                  </ThemedText>
+                </View>
+                <View style={styles.completionMetric}>
+                  <ThemedText style={styles.completionMetricLabel}>획득 점수</ThemedText>
+                  <ThemedText style={styles.completionMetricValue}>{totalScoreLabel}</ThemedText>
+                </View>
+              </View>
+              <ThemedText style={styles.completionNote} lightColor="#6F6A9F" darkColor="#B8B4D9">
+                다시 도전해서 연속 정답 횟수를 늘려보세요.
               </ThemedText>
               <View style={styles.completionActions}>
                 <Pressable style={styles.primaryButton} onPress={handleReset}>
@@ -449,11 +585,25 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
           ) : (
             <View style={styles.statusRow}>
               <ThemedText style={styles.statusText}>남은 카드 {prefetchCount}장</ThemedText>
-              {feedback?.status === 'confirmed' && feedback.explanation ? (
-                <Pressable style={styles.sheetLink} onPress={handleOpenSheet}>
-                  <ThemedText style={styles.sheetLinkText}>해설 보기</ThemedText>
-                </Pressable>
-              ) : null}
+              <Pressable
+                style={[
+                  styles.sheetLink,
+                  !(feedback?.status === 'confirmed' && feedback.explanation) &&
+                  styles.sheetLinkHidden,
+                ]}
+                onPress={handleOpenSheet}
+                disabled={!(feedback?.status === 'confirmed' && feedback.explanation)}
+              >
+                <ThemedText
+                  style={[
+                    styles.sheetLinkText,
+                    !(feedback?.status === 'confirmed' && feedback.explanation) &&
+                    styles.sheetLinkTextHidden,
+                  ]}
+                >
+                  해설 보기
+                </ThemedText>
+              </Pressable>
             </View>
           )}
           <View style={styles.stackWrapper}>
@@ -484,7 +634,6 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
           android_keyboardInputMode="adjustResize"
         >
           <BottomSheetView style={styles.actionsSheetContent}>
-            <ThemedText style={styles.sheetTitle}>카드 액션</ThemedText>
             <View style={styles.actionsList}>
               <Pressable style={styles.actionButton} onPress={handleSkip}>
                 <ThemedText style={styles.actionButtonLabel}>문항 건너뛰기</ThemedText>
@@ -642,6 +791,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: Spacing.sm,
+    marginBottom: Spacing.md,
   },
   statusText: {
     fontSize: 12,
@@ -654,13 +804,19 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Palette.purple200 + '55',
   },
+  sheetLinkHidden: {
+    opacity: 0,
+  },
   sheetLinkText: {
     fontSize: 12,
     fontWeight: '600',
     color: Palette.purple600,
   },
+  sheetLinkTextHidden: {
+    color: 'transparent',
+  },
   completionCard: {
-    gap: Spacing.sm,
+    gap: Spacing.md,
     padding: Spacing.lg,
     borderRadius: Radius.lg,
     borderWidth: 1,
@@ -671,9 +827,39 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
   },
-  completionSubtitle: {
+  completionHighlight: {
     fontSize: 14,
+    fontWeight: '600',
+  },
+  completionContext: {
+    fontSize: 13,
     color: '#6F6A9F',
+  },
+  completionMetrics: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
+  completionMetric: {
+    flex: 1,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.md,
+    backgroundColor: Palette.purple200 + '22',
+    borderWidth: 1,
+    borderColor: Palette.purple200,
+  },
+  completionMetricLabel: {
+    fontSize: 12,
+    color: '#6F6A9F',
+    marginBottom: Spacing.xs,
+  },
+  completionMetricValue: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  completionNote: {
+    fontSize: 13,
   },
   completionActions: {
     flexDirection: 'row',

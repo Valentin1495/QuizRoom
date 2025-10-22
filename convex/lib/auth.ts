@@ -4,7 +4,7 @@ import { ConvexError } from "convex/values";
 
 const DEFAULT_AVATAR = "https://avatars.dicebear.com/api/initials/quizroom.png";
 
-type AuthIdentity = {
+export type AuthIdentity = {
   identityId: string;
   provider: string;
   handle: string;
@@ -113,6 +113,21 @@ export async function ensureAuthedUser(ctx: MutationCtx): Promise<{ user: Doc<"u
   const user = await ctx.db.get(newId);
   if (!user) {
     throw new ConvexError("USER_CREATION_FAILED");
+  }
+  return { user, auth: authIdentity };
+}
+
+export async function getOptionalAuthedUser(
+  ctx: QueryCtx | MutationCtx
+): Promise<{ user: Doc<"users">; auth: AuthIdentity } | null> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) {
+    return null;
+  }
+  const authIdentity = buildAuthIdentity(identity);
+  const user = await fetchUserByIdentity(ctx, authIdentity.identityId);
+  if (!user) {
+    return null;
   }
   return { user, auth: authIdentity };
 }
