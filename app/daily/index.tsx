@@ -17,16 +17,15 @@ const TOTAL_TIME_LIMIT = 60;
 type DailyQuestion = {
   id: string;
   prompt: string;
-  choices: { id: string; text: string }[];
-  answerId: string;
+  correctAnswer: boolean;
   explanation: string;
   difficulty: number;
 };
 
 type QuestionResult = {
   questionId: string;
-  selectedChoiceId: string | null;
-  correctChoiceId: string | null;
+  selection: boolean | null;
+  correctAnswer: boolean;
   isCorrect: boolean;
 };
 
@@ -52,11 +51,10 @@ export default function DailyQuizScreen() {
   const [timerMode, setTimerMode] = useState<TimerMode | null>(null);
   const [totalTimeLeft, setTotalTimeLeft] = useState<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null);
   const [results, setResults] = useState<QuestionResult[]>([]);
   const shareTemplate = dailyQuiz?.shareTemplate ?? null;
   const updateStats = useMutation(api.users.updateStats);
-  const [skippedQuestionIds, setSkippedQuestionIds] = useState<string[]>([]);
   const { status: authStatus } = useAuth();
 
   useEffect(() => {
@@ -67,33 +65,44 @@ export default function DailyQuizScreen() {
     setTimerMode(null);
     setTotalTimeLeft(null);
     setCurrentIndex(0);
-    setSelectedChoiceId(null);
+    setSelectedAnswer(null);
     setResults([]);
-    setSkippedQuestionIds([]);
   }, [dailyQuiz]);
 
-  const questions = useMemo(() => dailyQuiz?.questions ?? [], [dailyQuiz?.questions]);
+  const questions = useMemo<DailyQuestion[]>(() => {
+    if (!dailyQuiz?.questions) {
+      return [];
+    }
+    return dailyQuiz.questions as unknown as DailyQuestion[];
+  }, [dailyQuiz?.questions]);
   const totalQuestions = questions.length;
   const currentQuestion = questions[currentIndex];
-  const correctChoiceId = currentQuestion
-    ? currentQuestion.choices.find((choice) => choice.id === currentQuestion.answerId)?.id ?? null
-    : null;
+  const correctAnswer = currentQuestion ? currentQuestion.correctAnswer : null;
+  const formatBooleanAnswer = useCallback(
+    (value: boolean) => (value ? 'O · 맞아요' : 'X · 아니에요'),
+    []
+  );
 
-  const recordResult = useCallback((question: DailyQuestion, selection: string | null, isCorrect: boolean) => {
-    const correct = question.choices.find((choice) => choice.id === question.answerId)?.id ?? null;
+  const recordResult = useCallback((question: DailyQuestion, selection: boolean | null, isCorrect: boolean) => {
     setResults((prev) => {
       const filtered = prev.filter((entry) => entry.questionId !== question.id);
-      return [...filtered, { questionId: question.id, selectedChoiceId: selection, correctChoiceId: correct, isCorrect }];
+      return [
+        ...filtered,
+        {
+          questionId: question.id,
+          selection,
+          correctAnswer: question.correctAnswer,
+          isCorrect,
+        },
+      ];
     });
-    setSkippedQuestionIds((prev) => prev.filter((id) => id !== question.id));
   }, []);
 
   const handleReveal = useCallback(
-    (question: DailyQuestion, selection: string | null) => {
-      const correct = question.choices.find((choice) => choice.id === question.answerId)?.id ?? null;
-      const isCorrect = selection !== null && selection === correct;
+    (question: DailyQuestion, selection: boolean | null) => {
+      const isCorrect = selection !== null && selection === question.correctAnswer;
       recordResult(question, selection, Boolean(isCorrect));
-      setSelectedChoiceId(selection);
+      setSelectedAnswer(selection);
       setPhase('reveal');
     },
     [recordResult],
@@ -124,10 +133,10 @@ export default function DailyQuizScreen() {
     }
   }, [phase, timerMode, totalTimeLeft]);
 
-  const handleChoicePress = useCallback(
-    (choiceId: string) => {
+  const handleAnswerPress = useCallback(
+    (value: boolean) => {
       if (!currentQuestion || phase !== 'question') return;
-      handleReveal(currentQuestion, choiceId);
+      handleReveal(currentQuestion, value);
     },
     [currentQuestion, handleReveal, phase],
   );
@@ -138,7 +147,7 @@ export default function DailyQuizScreen() {
         return;
       }
       setCurrentIndex(index);
-      setSelectedChoiceId(null);
+      setSelectedAnswer(null);
       setPhase('question');
     },
     [totalQuestions],
@@ -150,8 +159,7 @@ export default function DailyQuizScreen() {
       setTimerMode(mode);
       setTotalTimeLeft(mode === 'timed' ? TOTAL_TIME_LIMIT : null);
       setResults([]);
-      setSkippedQuestionIds([]);
-      setSelectedChoiceId(null);
+      setSelectedAnswer(null);
       setCurrentIndex(0);
       setPhase('question');
     },
@@ -159,16 +167,14 @@ export default function DailyQuizScreen() {
   );
 
   const sortedResults = useMemo(() => {
-    if (!dailyQuiz) return results;
-    const order = new Map(dailyQuiz.questions.map((q, index) => [q.id, index]));
+    const order = new Map(questions.map((q, index) => [q.id, index]));
     return [...results].sort((a, b) => {
       const aIndex = order.get(a.questionId) ?? 0;
       const bIndex = order.get(b.questionId) ?? 0;
       return aIndex - bIndex;
     });
-  }, [dailyQuiz, results]);
+  }, [questions, results]);
 
-  const answeredSet = useMemo(() => new Set(sortedResults.map((entry) => entry.questionId)), [sortedResults]);
   const correctCount = sortedResults.filter((entry) => entry.isCorrect).length;
   const totalAnswered = sortedResults.length;
 
@@ -184,78 +190,23 @@ export default function DailyQuizScreen() {
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const allAnswered = unansweredCount === 0;
 
-  const findNextUnansweredIndex = useCallback(
-    (startIndex: number, excludeId?: string) => {
-      for (let offset = 1; offset <= questions.length; offset += 1) {
-        const idx = (startIndex + offset) % questions.length;
-        const questionId = questions[idx].id;
-        if (excludeId && questionId === excludeId) {
-          continue;
-        }
-        if (!answeredSet.has(questionId)) {
-          return idx;
-        }
-      }
-      return null;
-    },
-    [answeredSet, questions],
-  );
-
-  const canSkipCurrent = useMemo(() => {
-    if (phase !== 'question' || !currentQuestion) return false;
-    return findNextUnansweredIndex(currentIndex, currentQuestion.id) !== null;
-  }, [currentQuestion, currentIndex, findNextUnansweredIndex, phase]);
-
-  const promptSkippedReview = useCallback(() => {
-    Alert.alert(`미응답 문제가 ${unansweredCount}개 있어요`, '모든 문제를 풀면 결과가 더 정확해요.', [
-      {
-        text: '결과 보기',
-        onPress: () => {
-          setPhase('finished');
-        },
-      },
-      { text: '취소', style: 'cancel' },
-    ]);
-  }, [unansweredCount]);
-
   const handleNext = useCallback(() => {
     if (!dailyQuiz) return;
-    const nextIndex = findNextUnansweredIndex(currentIndex);
-    if (nextIndex !== null) {
-      goToQuestion(nextIndex);
-      return;
-    }
-    if (!allAnswered) {
-      promptSkippedReview();
+    if (!isLastQuestion) {
+      goToQuestion(currentIndex + 1);
       return;
     }
     setPhase('finished');
-  }, [allAnswered, currentIndex, dailyQuiz, findNextUnansweredIndex, goToQuestion, promptSkippedReview]);
+  }, [currentIndex, dailyQuiz, goToQuestion, isLastQuestion]);
 
   const handleReset = useCallback(() => {
     setPhase('intro');
     setTimerMode(null);
     setTotalTimeLeft(null);
     setResults([]);
-    setSkippedQuestionIds([]);
-    setSelectedChoiceId(null);
+    setSelectedAnswer(null);
     setCurrentIndex(0);
   }, []);
-
-  const handleSkip = useCallback(() => {
-    if (!currentQuestion || phase !== 'question') return;
-
-    if (!skippedQuestionIds.includes(currentQuestion.id)) {
-      setSkippedQuestionIds((prev) => [...prev, currentQuestion.id]);
-    }
-
-    const nextIndex = findNextUnansweredIndex(currentIndex, currentQuestion.id);
-    if (nextIndex !== null) {
-      goToQuestion(nextIndex);
-      return;
-    }
-    promptSkippedReview();
-  }, [currentIndex, currentQuestion, findNextUnansweredIndex, goToQuestion, phase, promptSkippedReview, skippedQuestionIds]);
 
   const categoryCopy = useMemo(
     () => resolveDailyCategoryCopy(dailyQuiz?.category),
@@ -269,7 +220,7 @@ export default function DailyQuizScreen() {
     const copy = categoryCopy;
     const emoji = dailyQuiz.shareTemplate?.emoji ?? copy?.emoji ?? '⚡';
     const label = copy?.label ?? '오늘의 퀴즈';
-    const subtitle = dailyQuiz.shareTemplate?.headline ?? '오늘의 5문제를 시작해요.';
+    const subtitle = dailyQuiz.shareTemplate?.headline ?? '오늘의 6문제를 시작해요.';
     const dateLabel = dailyQuiz.availableDate
       ? new Date(`${dailyQuiz.availableDate}T00:00:00`).toLocaleDateString('ko-KR', {
         month: 'long',
@@ -314,8 +265,8 @@ export default function DailyQuizScreen() {
   }, [correctCount, dailyQuiz, deepLink, shareEmoji, shareHeadline, totalQuestions]);
 
   const handleResultPress = () => {
-    if (!allAnswered || skippedQuestionIds.length > 0) {
-      promptSkippedReview();
+    if (!allAnswered) {
+      Alert.alert('아직 풀지 않은 문제가 있어요', '모든 문제를 풀고 결과를 확인해보세요.');
       return;
     }
     setPhase('finished');
@@ -401,16 +352,23 @@ export default function DailyQuizScreen() {
             </View>
           </View>
           <View style={styles.summaryList}>
-            {dailyQuiz.questions.map((question, index) => {
+            {questions.map((question, index) => {
               const result = sortedResults.find((entry) => entry.questionId === question.id);
-              const answerChoice = question.choices.find((choice) => choice.id === question.answerId);
+              const answerLabel = formatBooleanAnswer(question.correctAnswer);
+              const selection = result?.selection;
+              const hasSelection = selection !== null && selection !== undefined;
+              const selectionLabel = hasSelection ? formatBooleanAnswer(selection) : null;
               return (
                 <View key={question.id} style={styles.summaryRow}>
                   <ThemedText style={styles.summaryQuestion}>
                     {index + 1}. {question.prompt}
                   </ThemedText>
-                  <ThemedText style={styles.summaryAnswer}>
-                    정답: {answerChoice?.text ?? '정보 없음'}
+                  <ThemedText style={styles.summaryAnswer}>정답: {answerLabel}</ThemedText>
+                  {selectionLabel ? (
+                    <ThemedText style={styles.summaryAnswer}>내 답: {selectionLabel}</ThemedText>
+                  ) : null}
+                  <ThemedText style={styles.summaryExplanation}>
+                    해설: {question.explanation}
                   </ThemedText>
                   <ThemedText
                     style={[
@@ -508,15 +466,15 @@ export default function DailyQuizScreen() {
             {currentQuestion.prompt}
           </ThemedText>
           <View style={styles.choiceList}>
-            {currentQuestion.choices.map((choice, index) => {
-              const isSelected = selectedChoiceId === choice.id;
-              const isCorrectChoice = phase !== 'question' && choice.id === correctChoiceId;
+            {[{ value: true, label: 'O · 맞아요' }, { value: false, label: 'X · 아니에요' }].map((option) => {
+              const isSelected = selectedAnswer === option.value;
+              const isCorrectChoice = phase !== 'question' && option.value === correctAnswer;
               const isIncorrectSelection =
-                phase !== 'question' && isSelected && choice.id !== correctChoiceId;
+                phase !== 'question' && isSelected && option.value !== correctAnswer;
               return (
                 <Pressable
-                  key={choice.id}
-                  onPress={() => handleChoicePress(choice.id)}
+                  key={option.value ? 'true' : 'false'}
+                  onPress={() => handleAnswerPress(option.value)}
                   disabled={phase !== 'question'}
                   style={({ pressed }) => [
                     styles.choiceButton,
@@ -526,10 +484,10 @@ export default function DailyQuizScreen() {
                     isIncorrectSelection ? styles.choiceIncorrect : null,
                   ]}
                 >
-                  <ThemedText style={styles.choiceIndex}>
-                    {String.fromCharCode(65 + index)}
-                  </ThemedText>
-                  <ThemedText style={styles.choiceText}>{choice.text}</ThemedText>
+                  <View style={styles.booleanBadge}>
+                    <ThemedText style={styles.booleanBadgeText}>{option.value ? 'O' : 'X'}</ThemedText>
+                  </View>
+                  <ThemedText style={styles.choiceText}>{option.label}</ThemedText>
                 </Pressable>
               );
             })}
@@ -545,11 +503,6 @@ export default function DailyQuizScreen() {
       </ScrollView>
 
       <View style={styles.footerRow}>
-        {phase === 'question' && canSkipCurrent && (
-          <Pressable style={[styles.secondaryButton, styles.flexButton]} onPress={handleSkip}>
-            <ThemedText style={styles.secondaryLabel}>건너뛰기</ThemedText>
-          </Pressable>
-        )}
         {!isLastQuestion ? (
           <Pressable
             style={[styles.primaryButton, styles.flexButton, phase === 'question' ? styles.primaryDisabled : null]}
@@ -560,18 +513,22 @@ export default function DailyQuizScreen() {
               다음 문제
             </ThemedText>
           </Pressable>
-        ) : null}
+        ) : (
+          <Pressable
+            style={[
+              styles.primaryButton,
+              styles.flexButton,
+              (!allAnswered || phase === 'question') ? styles.primaryDisabled : null,
+            ]}
+            disabled={!allAnswered || phase === 'question'}
+            onPress={handleResultPress}
+          >
+            <ThemedText style={styles.primaryLabel} lightColor="#ffffff" darkColor="#ffffff">
+              결과 보기
+            </ThemedText>
+          </Pressable>
+        )}
       </View>
-      <Pressable
-        style={
-          styles.resultButton
-        }
-        onPress={handleResultPress}
-      >
-        <ThemedText style={styles.resultButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
-          결과 보기
-        </ThemedText>
-      </Pressable>
     </ThemedView>
   );
 }
@@ -719,10 +676,19 @@ const styles = StyleSheet.create({
     borderColor: Palette.danger,
     backgroundColor: 'rgba(249, 115, 22, 0.1)',
   },
-  choiceIndex: {
-    fontWeight: '600',
-    width: 24,
-    textAlign: 'center',
+  booleanBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  booleanBadgeText: {
+    fontWeight: '700',
+    fontSize: 20,
   },
   choiceText: {
     flex: 1,
@@ -752,9 +718,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  secondaryDisabled: {
-    opacity: 0.6,
-  },
   secondaryLabel: {
     fontWeight: '600',
   },
@@ -774,18 +737,6 @@ const styles = StyleSheet.create({
   },
   flexButton: {
     flex: 1,
-  },
-  resultButton: {
-    marginTop: Spacing.md,
-    paddingVertical: Spacing.md,
-    borderRadius: Radius.md,
-    backgroundColor: Palette.pink500,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  resultButtonLabel: {
-    fontWeight: '700',
-    fontSize: 16,
   },
   summaryContent: {
     flexGrow: 1,
@@ -826,6 +777,10 @@ const styles = StyleSheet.create({
   },
   summaryAnswer: {
     opacity: 0.9,
+  },
+  summaryExplanation: {
+    opacity: 0.75,
+    lineHeight: 18,
   },
   summaryResult: {
     fontWeight: '600',

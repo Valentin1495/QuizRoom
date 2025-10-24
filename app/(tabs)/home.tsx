@@ -1,14 +1,7 @@
 import { useQuery } from 'convex/react';
 import { Link, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -57,7 +50,6 @@ export default function HomeScreen() {
     return formatTimeLeft(nextReset);
   });
   const [partyCode, setPartyCode] = useState('');
-
   useEffect(() => {
     const interval = setInterval(() => {
       const tomorrow = new Date();
@@ -66,7 +58,6 @@ export default function HomeScreen() {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
   const palette = Colors[colorScheme ?? 'light'];
   const cardBackground = palette.card;
   const borderColor = palette.border;
@@ -79,12 +70,8 @@ export default function HomeScreen() {
     router.replace(`/room/${partyCode.trim().toUpperCase()}`);
   }, [isCodeValid, partyCode, router]);
 
-  const handleCreatePress = useCallback(() => {
-    Alert.alert(
-      '크리에이터 모드 준비 중',
-      '퀴즈 만들기는 곧 오픈될 예정이에요. 조금만 기다려주세요!'
-    );
-  }, []);
+  const isLoadingDailyQuiz = dailyQuiz === undefined;
+  const hasDailyQuiz = Boolean(dailyQuiz);
 
   const dailyCategoryCopy = useMemo(
     () => resolveDailyCategoryCopy(dailyQuiz?.category),
@@ -98,16 +85,28 @@ export default function HomeScreen() {
   }, [dailyCategoryCopy, dailyQuiz?.shareTemplate?.emoji]);
 
   const dailyHeadline = useMemo(() => {
+    if (isLoadingDailyQuiz) {
+      return '오늘의 퀴즈를 불러오는 중…';
+    }
     if (dailyQuiz?.shareTemplate?.headline) {
       return dailyQuiz.shareTemplate.headline;
     }
-    return '오늘의 5문제, 스트릭을 이어가세요!';
-  }, [dailyQuiz?.shareTemplate?.headline]);
+    if (hasDailyQuiz) {
+      return '오늘의 5문제, 스트릭을 이어가세요!';
+    }
+    return '오늘의 퀴즈가 준비 중이에요';
+  }, [dailyQuiz?.shareTemplate?.headline, hasDailyQuiz, isLoadingDailyQuiz]);
 
-  const dailyCTA = '오늘의 퀴즈 시작';
-  const dailyCaption = dailyQuiz?.category
-    ? `카테고리 · ${dailyCategoryCopy?.label ?? dailyQuiz.category}`
-    : '오늘은 랜덤 카테고리';
+  const dailyCTA = hasDailyQuiz ? '오늘의 퀴즈 시작' : isLoadingDailyQuiz ? '불러오는 중' : '준비 중';
+  const dailyCaption = useMemo(() => {
+    if (isLoadingDailyQuiz) {
+      return '잠시만 기다려주세요.';
+    }
+    if (hasDailyQuiz && dailyQuiz?.category) {
+      return `카테고리 · ${dailyCategoryCopy?.label ?? dailyQuiz.category}`;
+    }
+    return '새 퀴즈가 곧 공개됩니다.';
+  }, [dailyCategoryCopy?.label, dailyQuiz?.category, hasDailyQuiz, isLoadingDailyQuiz]);
 
   return (
     <ThemedView style={styles.container}>
@@ -123,11 +122,6 @@ export default function HomeScreen() {
             <ThemedText type="title">QuizRoom</ThemedText>
             <ThemedText style={[styles.subtitle, { color: muted }]}>60초 안에 즐기는 오늘의 퀴즈</ThemedText>
           </View>
-          <Pressable style={[styles.createButton, styles.createButtonDisabled]} onPress={handleCreatePress}>
-            <ThemedText style={styles.createButtonLabel} lightColor="#fff" darkColor="#fff">
-              크리에이터 모드 준비 중
-            </ThemedText>
-          </Pressable>
         </View>
 
         <View style={styles.section}>
@@ -147,13 +141,21 @@ export default function HomeScreen() {
                 {timeLeft} 남음
               </ThemedText>
             </View>
-            <Link href="/daily" asChild>
-              <Pressable style={styles.primaryButton}>
+            {hasDailyQuiz ? (
+              <Link href="/daily" asChild>
+                <Pressable style={styles.primaryButton}>
+                  <ThemedText style={styles.primaryButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
+                    {dailyCTA}
+                  </ThemedText>
+                </Pressable>
+              </Link>
+            ) : (
+              <Pressable style={[styles.primaryButton, styles.primaryDisabled]} disabled>
                 <ThemedText style={styles.primaryButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
                   {dailyCTA}
                 </ThemedText>
               </Pressable>
-            </Link>
+            )}
           </View>
           <View style={[styles.statsRow, { backgroundColor: cardBackground, borderColor }]}
           >
@@ -263,20 +265,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
   },
-  createButton: {
-    backgroundColor: Palette.pink500,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.pill,
-  },
-  createButtonDisabled: {
-    backgroundColor: Palette.slate500,
-    opacity: 0.85,
-  },
-  createButtonLabel: {
-    fontWeight: '600',
-    fontSize: 12,
-  },
   section: {
     gap: Spacing.lg,
   },
@@ -313,6 +301,9 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     paddingVertical: 14,
     alignItems: 'center',
+  },
+  primaryDisabled: {
+    opacity: 0.6,
   },
   primaryButtonLabel: {
     fontSize: 16,

@@ -74,26 +74,20 @@ const partyPauseState = v.object({
   pausedAt: v.number(),
 });
 
-const dailyCategoryEnum = v.union(
-  v.literal("tech"),
-  v.literal("series"),
-  v.literal("music"),
-  v.literal("fashion"),
-  v.literal("movie"),
-  v.literal("sports"),
-  v.literal("meme")
+export const DAILY_CATEGORY_ENUM = v.union(
+  v.literal("tech_it"),
+  v.literal("variety_ott"),
+  v.literal("drama_movie"),
+  v.literal("sports_games"),
+  v.literal("kpop_music"),
+  v.literal("fashion_life"),
+  v.literal("news_issues"),
 );
-
-const dailyChoice = v.object({
-  id: v.string(),
-  text: v.string(),
-});
 
 const dailyQuestion = v.object({
   id: v.string(),
   prompt: v.string(),
-  choices: v.array(dailyChoice),
-  answerId: v.string(),
+  correctAnswer: v.boolean(),
   explanation: v.string(),
   difficulty: v.number(),
 });
@@ -375,7 +369,7 @@ export default defineSchema({
 
   dailyQuizzes: defineTable({
     availableDate: v.string(),
-    category: dailyCategoryEnum,
+    category: DAILY_CATEGORY_ENUM,
     questions: v.array(dailyQuestion),
     shareTemplate: dailyShareTemplate,
   }).index("by_date", ["availableDate"]),

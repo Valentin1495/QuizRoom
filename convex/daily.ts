@@ -1,26 +1,12 @@
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-
-const CATEGORY_ENUM = v.union(
-  v.literal("tech"),
-  v.literal("series"),
-  v.literal("music"),
-  v.literal("fashion"),
-  v.literal("movie"),
-  v.literal("sports"),
-  v.literal("meme")
-);
-
-const CHOICE_SHAPE = v.object({
-  id: v.string(),
-  text: v.string(),
-});
+import { mutation, query } from "./_generated/server";
+import { resolveFallbackDailyQuizByDate } from "./dailyFallback";
+import { DAILY_CATEGORY_ENUM } from "./schema";
 
 const QUESTION_SHAPE = v.object({
   id: v.string(),
   prompt: v.string(),
-  choices: v.array(CHOICE_SHAPE),
-  answerId: v.string(),
+  correctAnswer: v.boolean(),
   explanation: v.string(),
   difficulty: v.number(),
 });
@@ -52,7 +38,17 @@ export const getDailyQuiz = query({
       .unique();
 
     if (!quiz) {
-      return null;
+      const fallback = resolveFallbackDailyQuizByDate(targetDate);
+      if (!fallback) {
+        return null;
+      }
+      return {
+        id: `fallback-${targetDate}`,
+        availableDate: targetDate,
+        category: fallback.category,
+        questions: fallback.questions,
+        shareTemplate: fallback.shareTemplate,
+      };
     }
 
     return {
@@ -68,7 +64,7 @@ export const getDailyQuiz = query({
 export const upsertQuiz = mutation({
   args: {
     availableDate: v.string(),
-    category: CATEGORY_ENUM,
+    category: DAILY_CATEGORY_ENUM,
     questions: v.array(QUESTION_SHAPE),
     shareTemplate: SHARE_TEMPLATE_SHAPE,
   },

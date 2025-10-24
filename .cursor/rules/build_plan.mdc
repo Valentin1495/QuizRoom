@@ -16,7 +16,7 @@ alwaysApply: true
 ### Milestone A · Core Loop & Auth (Week 1)
 - Convex 스키마/프로시저 1차 확정 (`users`, `decks`, `questions`, `matches`, `matchPlayers`, `reports`).
 - 구글/애플 로그인(Expo AuthSession + AppleAuth, Convex 세션) 및 카카오 공유 템플릿 초기 통합 구현.
-- 데일리 블링크 모드 UI/로직: 5문제, 타이머, 정답/해설 노출.
+- 데일리 블링크 모드 UI/로직: 6문제, 타이머, 정답/해설 노출.
 - Gemini 기반 문항 생성 초안 API 래퍼 구현, 시드 데이터 투입.
 
 ### Milestone B · Social Play & Live (Week 2)

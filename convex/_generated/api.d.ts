@@ -18,6 +18,7 @@ import type * as admin_partyDecks from "../admin/partyDecks.js";
 import type * as admin_seedQuestionsAction from "../admin/seedQuestionsAction.js";
 import type * as admin_upsertMutation from "../admin/upsertMutation.js";
 import type * as daily from "../daily.js";
+import type * as dailyFallback from "../dailyFallback.js";
 import type * as decks from "../decks.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as rooms from "../rooms.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   "admin/seedQuestionsAction": typeof admin_seedQuestionsAction;
   "admin/upsertMutation": typeof admin_upsertMutation;
   daily: typeof daily;
+  dailyFallback: typeof dailyFallback;
   decks: typeof decks;
   "lib/auth": typeof lib_auth;
   rooms: typeof rooms;

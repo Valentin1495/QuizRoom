@@ -48,7 +48,7 @@ export const PARTY_DECK_DEFINITIONS: PartyDeckDefinition[] = [
     title: '테크 & 트렌드',
     emoji: '💡',
     description: '최신 IT, 스타트업, 트렌드 키워드를 모았어요',
-    sourceCategories: ['tech_trends'],
+    sourceCategories: ['tech_it'],
     questionLimit: 120,
   },
   {
@@ -88,7 +88,7 @@ export const PARTY_DECK_DEFINITIONS: PartyDeckDefinition[] = [
     title: '트렌드 올스타',
     emoji: '🔥',
     description: '테크, 시사, 라이프스타일 최신 트렌드 총집합',
-    sourceCategories: ['tech_trends', 'news_issues', 'fashion_life'],
+    sourceCategories: ['tech_it', 'news_issues', 'fashion_life'],
     questionLimit: 150,
   },
   {
@@ -101,7 +101,7 @@ export const PARTY_DECK_DEFINITIONS: PartyDeckDefinition[] = [
       'variety_ott',
       'drama_movie',
       'sports_games',
-      'tech_trends',
+      'tech_it',
       'fashion_life',
       'news_issues',
       'general_knowledge',
