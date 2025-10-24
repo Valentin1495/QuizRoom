@@ -30,6 +30,7 @@ export default function PartyRoomScreen() {
   const leaveRoom = useMutation(api.rooms.leave);
   const heartbeat = useMutation(api.rooms.heartbeat);
   const startRoom = useMutation(api.rooms.start);
+  const setReady = useMutation(api.rooms.setReady);
   const progressRoom = useMutation(api.rooms.progress);
   const cancelPendingAction = useMutation(api.rooms.cancelPendingAction);
   const roomId = lobby?.room._id ?? null;
@@ -40,6 +41,31 @@ export default function PartyRoomScreen() {
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
   const pendingExecutedRef = useRef(false);
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
+
+  const participants = lobby?.participants ?? [];
+  const meParticipant = useMemo(
+    () => participants.find((participant) => participant.participantId === participantId) ?? null,
+    [participants, participantId]
+  );
+  const readyCount = useMemo(
+    () =>
+      participants.filter((participant) => !participant.isHost && participant.isReady).length,
+    [participants]
+  );
+  const readyTotal = useMemo(
+    () => participants.filter((participant) => !participant.isHost).length,
+    [participants]
+  );
+  const allReady = useMemo(() => {
+    if (readyTotal === 0) {
+      return participants.length > 0;
+    }
+    return readyCount === readyTotal;
+  }, [participants.length, readyCount, readyTotal]);
+  const isSelfReady = meParticipant?.isReady ?? false;
+  const isSelfHost = meParticipant?.isHost ?? false;
+  const readySummaryTotal = useMemo(() => readyTotal, [readyTotal]);
+  const pendingSeconds = Math.ceil(pendingMs / 1000);
 
   useEffect(() => {
     if (status === 'guest' && !guestKey) {
@@ -65,6 +91,45 @@ export default function PartyRoomScreen() {
     }
     return undefined;
   }, [ensureGuestKey, guestKey, status]);
+
+  const handleToggleReady = useCallback(async () => {
+    if (!roomId || !participantId || isSelfHost) return;
+    try {
+      await setReady({
+        roomId,
+        participantId,
+        ready: !isSelfReady,
+        guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
+      });
+    } catch (error) {
+      Alert.alert(
+        '준비 상태 변경 실패',
+        error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
+      );
+    }
+  }, [guestKey, isSelfHost, isSelfReady, participantId, roomId, setReady, status]);
+
+  const handleStart = useCallback(async () => {
+    if (!roomId) return;
+    if (!allReady) {
+      Alert.alert('아직 준비되지 않았어요', '모든 참가자가 준비 완료 상태가 되어야 시작할 수 있어요.');
+      return;
+    }
+    if (pendingAction) {
+      Alert.alert('이미 예약된 작업이 있어요');
+      return;
+    }
+    try {
+      const key = await resolveHostGuestKey();
+      await startRoom({
+        roomId,
+        delayMs: resolveDelayMs,
+        guestKey: key,
+      });
+    } catch (error) {
+      Alert.alert('시작 실패', error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
+    }
+  }, [allReady, pendingAction, resolveDelayMs, resolveHostGuestKey, roomId, startRoom]);
 
   const handleLeave = useCallback(() => {
     if (hasLeft) return;
@@ -182,24 +247,6 @@ export default function PartyRoomScreen() {
     }
   }, [hasLeft, lobby, participantId, router]);
 
-  const handleStart = useCallback(async () => {
-    if (!roomId) return;
-    if (pendingAction) {
-      Alert.alert('이미 예약된 작업이 있어요');
-      return;
-    }
-    try {
-      const key = await resolveHostGuestKey();
-      await startRoom({
-        roomId,
-        delayMs: resolveDelayMs,
-        guestKey: key,
-      });
-    } catch (error) {
-      Alert.alert('시작 실패', error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
-    }
-  }, [pendingAction, resolveDelayMs, resolveHostGuestKey, roomId, startRoom]);
-
   const handleCancelPending = useCallback(async () => {
     if (!roomId) return;
     try {
@@ -240,8 +287,6 @@ export default function PartyRoomScreen() {
     );
   }
   {/* <ThemedText style={styles.lobbyHint}>2차전 준비 중 · 덱/옵션을 확인하세요</ThemedText> */ }
-  const participants = lobby.participants ?? [];
-  const pendingSeconds = Math.ceil(pendingMs / 1000);
 
   return (
     <ThemedView style={[styles.container, { paddingBottom: insets.bottom + Spacing.lg }]}>
@@ -308,23 +353,86 @@ export default function PartyRoomScreen() {
                   <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
                 ) : null}
               </View>
-              {participant.isHost ? <ThemedText style={styles.hostBadge}>HOST</ThemedText> : null}
+              {participant.isHost ? (
+                <View style={styles.hostBadge}>
+                  <ThemedText style={styles.hostBadgeLabel}>HOST</ThemedText>
+                </View>
+              ) : (
+                <View
+                  style={[
+                    styles.readyBadge,
+                    participant.isReady ? styles.readyBadgeReady : styles.readyBadgeWaiting,
+                  ]}
+                >
+                  <ThemedText
+                    style={[
+                      styles.readyBadgeLabel,
+                      participant.isReady
+                        ? styles.readyBadgeLabelReady
+                        : styles.readyBadgeLabelWaiting,
+                    ]}
+                    lightColor="#fff"
+                    darkColor="#fff"
+                  >
+                    {participant.isReady ? '준비 완료' : '대기 중'}
+                  </ThemedText>
+                </View>
+              )}
             </View>
           ))
         )}
       </View>
 
-      {isHost && (
-        <View style={styles.hostControls}>
+      <View style={styles.controlsSection}>
+        {readySummaryTotal > 0 ? (
+          <ThemedText style={styles.readySummaryText}>
+            준비 완료 {readyCount}/{readySummaryTotal}
+          </ThemedText>
+        ) : null}
+        {meParticipant && !isSelfHost ? (
           <Pressable
-            style={[styles.button, styles.primaryButton, pendingAction ? styles.buttonDisabled : null]}
-            onPress={handleStart}
+            style={[
+              styles.readyButton,
+              isSelfReady ? styles.readyButtonActive : null,
+              pendingAction ? styles.buttonDisabled : null,
+            ]}
+            onPress={handleToggleReady}
             disabled={!!pendingAction}
           >
-            <ThemedText style={styles.primaryButtonText}>게임 시작</ThemedText>
+            <ThemedText
+              style={[
+                styles.readyButtonLabel,
+                isSelfReady ? styles.readyButtonLabelActive : null,
+              ]}
+              lightColor={isSelfReady ? '#fff' : Palette.purple600}
+              darkColor={isSelfReady ? '#fff' : Palette.purple200}
+            >
+              {isSelfReady ? '준비 취소' : '준비 완료'}
+            </ThemedText>
           </Pressable>
-        </View>
-      )}
+        ) : null}
+        {isHost ? (
+          <View style={styles.hostControls}>
+            {readySummaryTotal > 0 ? (
+              <ThemedText style={styles.hostHint}>
+                {allReady
+                  ? '모든 일반 참가자가 준비를 마쳤어요!'
+                  : '게스트와 참가자들이 준비 완료하면 시작할 수 있어요.'}
+              </ThemedText>
+            ) : null}
+            <Pressable
+              style={[
+                styles.startButton,
+                (!allReady || pendingAction) ? styles.buttonDisabled : null,
+              ]}
+              onPress={handleStart}
+              disabled={!allReady || !!pendingAction}
+            >
+              <ThemedText style={styles.primaryButtonText}>게임 시작</ThemedText>
+            </Pressable>
+          </View>
+        ) : null}
+      </View>
     </ThemedView>
   );
 }
@@ -422,17 +530,78 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Palette.slate500,
   },
+  participantBadges: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  readyBadge: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+    borderRadius: Radius.pill,
+  },
+  readyBadgeReady: {
+    backgroundColor: Palette.success,
+  },
+  readyBadgeWaiting: {
+    backgroundColor: Palette.slate500,
+  },
+  readyBadgeLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  readyBadgeLabelReady: {
+    color: '#ffffff',
+  },
+  readyBadgeLabelWaiting: {
+    color: '#ffffff',
+  },
   hostBadge: {
-    fontSize: 12,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+    borderRadius: Radius.pill,
+    backgroundColor: Palette.purple200,
+  },
+  hostBadgeLabel: {
+    fontSize: 11,
     fontWeight: '700',
     color: Palette.purple600,
   },
   emptyText: {
     color: Palette.slate500,
   },
-  hostControls: {
+  controlsSection: {
     marginTop: 'auto',
     gap: Spacing.md,
+  },
+  readySummaryText: {
+    fontSize: 13,
+    color: Palette.slate500,
+  },
+  readyButton: {
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.xl,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: Palette.purple600,
+    alignItems: 'center',
+  },
+  readyButtonActive: {
+    backgroundColor: Palette.purple600,
+  },
+  readyButtonLabel: {
+    fontWeight: '600',
+    color: Palette.purple600,
+  },
+  readyButtonLabelActive: {
+    color: '#ffffff',
+  },
+  hostControls: {
+    gap: Spacing.sm,
+  },
+  hostHint: {
+    fontSize: 12,
+    color: Palette.slate500,
   },
   buttonDisabled: {
     opacity: 0.5,
@@ -449,8 +618,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-  primaryButton: {
+  startButton: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+    borderRadius: Radius.md,
     backgroundColor: Palette.pink500,
+    alignItems: 'center',
   },
   primaryButtonText: {
     color: '#fff',

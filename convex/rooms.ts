@@ -183,6 +183,7 @@ async function resetRoomState(ctx: MutationCtx, room: RoomDoc) {
                 totalScore: 0,
                 answers: 0,
                 avgResponseMs: 0,
+                isReady: false,
             })
         )
     );
@@ -320,7 +321,9 @@ async function refreshRoomParticipants(
 
         const disconnectedAt = participant.disconnectedAt ?? now;
         if (!participant.disconnectedAt) {
-            await ctx.db.patch(participant._id, { disconnectedAt });
+            await ctx.db.patch(participant._id, { disconnectedAt, isReady: false });
+            participant.disconnectedAt = disconnectedAt;
+            participant.isReady = false;
         }
 
         if (now - disconnectedAt > PARTICIPANT_OFFLINE_GRACE_MS) {
@@ -328,7 +331,12 @@ async function refreshRoomParticipants(
                 removedAt: now,
                 disconnectedAt: undefined,
                 isHost: false,
+                isReady: false,
             });
+            participant.removedAt = now;
+            participant.disconnectedAt = undefined;
+            participant.isHost = false;
+            participant.isReady = false;
         }
     }
     let activeParticipants = active.sort((a, b) => a.joinedAt - b.joinedAt);
@@ -734,6 +742,7 @@ export const create = mutation({
             isGuest: !userId,
             nickname,
             isHost: true,
+            isReady: false,
             joinedAt: now,
             lastSeenAt: now,
             totalScore: 0,
@@ -812,6 +821,7 @@ export const join = mutation({
                     userId,
                     identityId,
                     isGuest,
+                    isReady: false,
                 });
             } else {
                 await ctx.db.patch(existingRecord._id, {
@@ -822,6 +832,7 @@ export const join = mutation({
                     userId,
                     identityId,
                     isGuest,
+                    isReady: false,
                 });
             }
             await refreshRoomParticipants(ctx, room);
@@ -849,6 +860,7 @@ export const join = mutation({
             isGuest,
             nickname,
             isHost: identityId === room.hostIdentity,
+            isReady: false,
             joinedAt: now,
             lastSeenAt: now,
             totalScore: 0,
@@ -887,6 +899,7 @@ export const leave = mutation({
             removedAt: Date.now(),
             isHost: false,
             disconnectedAt: undefined,
+            isReady: false,
         });
         await refreshRoomParticipants(ctx, room);
     },
@@ -920,6 +933,36 @@ export const heartbeat = mutation({
     },
 });
 
+export const setReady = mutation({
+    args: {
+        roomId: v.id("partyRooms"),
+        participantId: v.id("partyParticipants"),
+        ready: v.boolean(),
+        guestKey: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const participant = await requireParticipantAccess(
+            ctx,
+            args.roomId,
+            args.participantId,
+            args.guestKey
+        );
+        const room = await loadRoom(ctx, args.roomId);
+        if (room.status !== "lobby") {
+            throw new ConvexError("로비 상태에서만 준비를 변경할 수 있어요.");
+        }
+        if (room.pendingAction && room.pendingAction.type === "start") {
+            throw new ConvexError("게임 시작이 곧 진행되어 준비 상태를 변경할 수 없어요.");
+        }
+        await ctx.db.patch(participant._id, {
+            isReady: args.ready,
+            lastSeenAt: Date.now(),
+            disconnectedAt: undefined,
+        });
+        await refreshRoomParticipants(ctx, room);
+    },
+});
+
 export const start = mutation({
     args: {
         roomId: v.id("partyRooms"),
@@ -928,7 +971,21 @@ export const start = mutation({
     },
     handler: async (ctx, args) => {
         let room = await loadRoom(ctx, args.roomId);
-        room = (await refreshRoomParticipants(ctx, room)).room;
+        const refreshed = await refreshRoomParticipants(ctx, room);
+        room = refreshed.room;
+        const activeParticipants = refreshed.participants;
+        if (activeParticipants.length === 0) {
+            throw new ConvexError("참가자가 없어 게임을 시작할 수 없어요.");
+        }
+        const nonHostParticipants = activeParticipants.filter(
+            (participant) => !(participant.isHost ?? false)
+        );
+        if (
+            nonHostParticipants.length > 0 &&
+            nonHostParticipants.some((participant) => !(participant.isReady ?? false))
+        ) {
+            throw new ConvexError("게스트와 참가자 모두 준비를 완료해야 해요.");
+        }
         const hostParticipant = await resolveHostParticipant(ctx, room, args.guestKey);
         if (room.status !== "lobby") {
             throw new ConvexError("ROOM_ALREADY_STARTED");
@@ -982,6 +1039,7 @@ export const start = mutation({
             },
             version: room.version + 1,
         });
+
     },
 });
 
@@ -1422,6 +1480,7 @@ export const getLobby = query({
                 isGuest: p.isGuest,
                 nickname: p.nickname,
                 isHost: p.isHost,
+                isReady: p.isReady ?? false,
                 joinedAt: p.joinedAt,
                 isConnected: isParticipantConnected(p, now),
             })),

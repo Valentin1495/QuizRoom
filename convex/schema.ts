@@ -289,6 +289,7 @@ export default defineSchema({
     isGuest: v.boolean(),
     nickname: v.string(),
     isHost: v.boolean(),
+    isReady: v.optional(v.boolean()),
     joinedAt: v.number(),
     lastSeenAt: v.number(),
     totalScore: v.number(),
