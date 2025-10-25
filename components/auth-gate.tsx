@@ -45,7 +45,7 @@ export function AuthGate({ children }: AuthGateProps) {
     return <>{children}</>;
   }
 
-  if (status === 'guest') {
+  if (status === 'guest' || status === 'upgrading') {
     return <>{children}</>;
   }
 

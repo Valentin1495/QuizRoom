@@ -20,13 +20,13 @@ export const categories: CategoryMeta[] = [
     description: "아이돌, 가요, 음원 차트, 콘서트 관련 퀴즈",
     sampleTags: ["아이브", "뉴진스", "방탄소년단", "멜론", "뮤직비디오"],
     neighbors: [
-      { slug: "variety_ott", weight: 0.15 },
+      { slug: "variety_reality", weight: 0.15 },
       { slug: "fashion_life", weight: 0.1 },
     ],
   },
   {
-    slug: "variety_ott",
-    title: "예능•OTT",
+    slug: "variety_reality",
+    title: "예능•리얼리티",
     emoji: "📺",
     description: "방송 예능 및 OTT 오리지널 콘텐츠 퀴즈",
     sampleTags: ["놀면뭐하니", "피지컬100", "스우파", "넷플릭스", "쿠팡플레이"],
@@ -42,7 +42,7 @@ export const categories: CategoryMeta[] = [
     description: "한국·해외 드라마/영화, 배우, 명대사 관련 퀴즈",
     sampleTags: ["DP", "오징어게임", "콘크리트유토피아", "MCU", "칸영화제"],
     neighbors: [
-      { slug: "variety_ott", weight: 0.1 },
+      { slug: "variety_reality", weight: 0.1 },
       { slug: "news_issues", weight: 0.1 },
       { slug: "fashion_life", weight: 0.05 },
     ],

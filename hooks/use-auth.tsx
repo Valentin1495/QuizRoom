@@ -24,7 +24,7 @@ import {
 } from "react";
 import { Platform } from "react-native";
 
-type AuthStatus = "loading" | "unauthenticated" | "authorizing" | "authenticated" | "guest" | "error";
+type AuthStatus = "loading" | "unauthenticated" | "authorizing" | "authenticated" | "guest" | "error" | "upgrading";
 
 type AuthTokens = {
   idToken: string;
@@ -150,6 +150,7 @@ export function AuthProvider({
   const [isConvexReady, setIsConvexReady] = useState(false);
   const tokensRef = useRef<AuthTokens | null>(null);
   const hasEnsuredRef = useRef(false);
+  const lastSettledStatusRef = useRef<AuthStatus>("loading");
 
   const bumpAuthVersion = useCallback(() => {
     client.setAuth(
@@ -279,8 +280,19 @@ export function AuthProvider({
     setError(message);
   }, []);
 
+  useEffect(() => {
+    if (status !== "authorizing") {
+      lastSettledStatusRef.current = status;
+    }
+  }, [status]);
+
   const signInWithGoogle = useCallback(async () => {
-    setStatus("authorizing");
+    const previousStatus = lastSettledStatusRef.current;
+    if (previousStatus === 'guest' || previousStatus === 'authenticated') {
+      setStatus('upgrading');
+    } else {
+      setStatus('authorizing');
+    }
     setError(null);
     try {
       // Check if your device supports Google Play
@@ -302,8 +314,14 @@ export function AuthProvider({
     } catch (error) {
       const code = (error as { code?: string } | null)?.code;
       if (code === statusCodes.SIGN_IN_CANCELLED) {
-        setStatus("unauthenticated");
-        setError("로그인이 취소되었어요.");
+        setStatus(previousStatus);
+        return;
+      }
+      if (
+        error instanceof Error &&
+        error.message === 'Google ID 토큰을 가져오지 못했습니다.'
+      ) {
+        setStatus(previousStatus);
         return;
       }
       if (code === statusCodes.IN_PROGRESS) {
@@ -341,7 +359,9 @@ export function AuthProvider({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), async (firebaseUser: FirebaseAuthTypes.User | null) => {
       if (!firebaseUser) {
-        await clearAuthState();
+        const fallbackStatus =
+          lastSettledStatusRef.current === "guest" ? "guest" : "unauthenticated";
+        await clearAuthState(fallbackStatus);
         return;
       }
 

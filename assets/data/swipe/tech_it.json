@@ -1,0 +1,3701 @@
+[
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "OpenAI가 공개한 텍스트를 입력하면 최대 1분 길이의 현실적인 영상을 생성하는 최신 생성형 AI 모델의 이름은 무엇인가요?",
+        "tags": [
+            "OpenAI",
+            "Sora",
+            "Generative AI",
+            "Video"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Sora"
+            },
+            {
+                "id": "b",
+                "text": "Dall-E Video"
+            },
+            {
+                "id": "c",
+                "text": "Project Star"
+            },
+            {
+                "id": "d",
+                "text": "GPT-5 Motion"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 'Sora'입니다. OpenAI가 개발한 텍스트-투-비디오 생성 모델로, 기존 모델보다 훨씬 긴 시간과 높은 해상도의 영상을 제작할 수 있어 큰 주목을 받았습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 123
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "애플의 공간 컴퓨팅 기기 Vision Pro에서 3차원 사용자 인터페이스를 조작하기 위해 주로 사용하는 입력 방식이 아닌 것은?",
+        "tags": [
+            "Apple",
+            "Vision Pro",
+            "Spatial Computing",
+            "UX"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "손동작(Hand Gestures)"
+            },
+            {
+                "id": "b",
+                "text": "시선 추적(Eye Tracking)"
+            },
+            {
+                "id": "c",
+                "text": "음성 명령(Voice Commands)"
+            },
+            {
+                "id": "d",
+                "text": "터치 컨트롤러(Physical Touch Controller)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 '터치 컨트롤러'입니다. Vision Pro는 시선, 손동작, 음성 명령을 통해 가상 환경과 현실을 혼합하는 3차원 인터페이스를 조작하는 것이 특징입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 456
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "LLM 추론 속도를 GPU 대비 압도적으로 높여 주목받는 스타트업 Groq이 개발한, AI 연산에 최적화된 새로운 유형의 반도체 아키텍처는?",
+        "tags": [
+            "Groq",
+            "LPU",
+            "LLM",
+            "Inference"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Vector Processing Unit (VPU)"
+            },
+            {
+                "id": "b",
+                "text": "Neuromorphic Chip (NMC)"
+            },
+            {
+                "id": "c",
+                "text": "Language Processing Unit (LPU)"
+            },
+            {
+                "id": "d",
+                "text": "Quantum Acceleration Unit (QAU)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'LPU(Language Processing Unit)'입니다. Groq은 LLM의 추론(Inference) 단계에 특화된 LPU 아키텍처를 개발해, GPU 대비 훨씬 빠른 응답 속도를 보여줍니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 789
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "삼성 갤럭시 S24에 탑재된 '갤럭시 AI'의 핵심 기능 중 하나로, 화면의 이미지나 텍스트에 동그라미를 그리면 관련 정보를 검색해주는 기능은?",
+        "tags": [
+            "Samsung Galaxy",
+            "Galaxy AI",
+            "Circle to Search",
+            "검색"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "AI 매직 에디터"
+            },
+            {
+                "id": "b",
+                "text": "서클 투 서치 (Circle to Search)"
+            },
+            {
+                "id": "c",
+                "text": "노트 어시스트"
+            },
+            {
+                "id": "d",
+                "text": "라이브 번역"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '서클 투 서치'입니다. 구글과 협력하여 개발된 기능으로, 화면에서 궁금한 부분에 동그라미를 그리거나 탭 하는 동작만으로 즉시 검색할 수 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 101
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "일론 머스크의 X(구 트위터) 대항마로 개발된 'Bluesky'가 채택한, 중앙 서버 없이 개별 사용자가 서버를 운영하며 상호 연결되는 SNS 프로토콜은?",
+        "tags": [
+            "Fediverse",
+            "Bluesky",
+            "SNS",
+            "탈중앙화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "AT Protocol"
+            },
+            {
+                "id": "b",
+                "text": "WebRTC"
+            },
+            {
+                "id": "c",
+                "text": "P2P Net"
+            },
+            {
+                "id": "d",
+                "text": "OAuth 3.0"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 'AT Protocol(Authenticated Transfer Protocol)'입니다. Bluesky가 사용하는 프로토콜로, 사용자가 자신의 데이터를 완전히 소유하고 다른 서비스로 이전할 수 있게 하여 탈중앙화된 소셜 네트워크를 구현합니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 202
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "2024년 기준, 삼성전자와 치열하게 경쟁하며 전 세계 반도체 파운드리 시장에서 압도적인 점유율을 기록하고 있는 대만 기업은?",
+        "tags": [
+            "TSMC",
+            "반도체",
+            "파운드리",
+            "경제"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "MediaTek"
+            },
+            {
+                "id": "b",
+                "text": "UMC"
+            },
+            {
+                "id": "c",
+                "text": "Qualcomm"
+            },
+            {
+                "id": "d",
+                "text": "TSMC"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 'TSMC(Taiwan Semiconductor Manufacturing Company)'입니다. 현재 전 세계 파운드리(반도체 위탁생산) 시장에서 50% 이상의 점유율을 차지하며 압도적인 1위 기업으로 군림하고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 303
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "LLM이 답변을 생성할 때, 내부 지식뿐만 아니라 외부 데이터베이스나 문서를 검색하여 참조하게 만드는 기술로 환각(Hallucination)을 줄이는 데 도움을 주는 기법은?",
+        "tags": [
+            "RAG",
+            "LLM",
+            "Generative AI",
+            "검색"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Self-Correction Modeling (SCM)"
+            },
+            {
+                "id": "b",
+                "text": "Retrieval-Augmented Generation (RAG)"
+            },
+            {
+                "id": "c",
+                "text": "Transformer Attention Gate (TAG)"
+            },
+            {
+                "id": "d",
+                "text": "Federated Reinforcement Learning (FRL)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'RAG(검색 증강 생성)'입니다. 대규모 언어 모델이 답변 생성 시 외부 데이터 소스를 참조하도록 하여, 최신 정보에 접근하고 사실적 오류를 줄이는 데 효과적인 기술입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 404
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "기존 P2E(Play to Earn) 모델의 한계를 극복하기 위해, 게임의 재미와 토큰 경제를 결합하고 게임성과 지속 가능성을 강조하며 등장한 새로운 웹3 게임 모델은?",
+        "tags": [
+            "Web3",
+            "Gaming",
+            "Blockchain",
+            "P&E"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Game as a Service (GaaS)"
+            },
+            {
+                "id": "b",
+                "text": "Metaverse Interaction Gaming (MIG)"
+            },
+            {
+                "id": "c",
+                "text": "Play and Earn (P&E)"
+            },
+            {
+                "id": "d",
+                "text": "Subscription Block Gaming (SBG)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'Play and Earn(P&E)'입니다. 돈을 버는 것(To Earn)보다 게임을 즐기는 것(Play)에 초점을 맞추고 지속 가능한 생태계를 구축하려는 웹3 게임의 새로운 접근 방식입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 505
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "기존 컴퓨터의 비트와 달리, 0과 1의 상태를 동시에 가질 수 있는 '중첩(Superposition)'의 개념을 활용하여 양자 컴퓨터의 기본 연산 단위를 일컫는 용어는?",
+        "tags": [
+            "퀀텀 컴퓨팅",
+            "큐비트",
+            "양자역학"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "큐비트 (Qubit)"
+            },
+            {
+                "id": "b",
+                "text": "옵트론 (Optron)"
+            },
+            {
+                "id": "c",
+                "text": "나노비트 (Nanobit)"
+            },
+            {
+                "id": "d",
+                "text": "메가플롭 (Megaflop)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 '큐비트(Qubit)'입니다. 큐비트는 중첩 상태와 얽힘(Entanglement)이라는 양자역학적 특성을 활용해 기존 컴퓨터보다 훨씬 빠른 병렬 계산을 가능하게 합니다.",
+        "difficulty": 0.75,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1400,
+        "choiceShuffleSeed": 606
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "유튜브가 광고 제거를 원하는 사용자에게 제공하는 유료 서비스인 'YouTube Premium'의 주요 기능이 아닌 것은 무엇인가요?",
+        "tags": [
+            "유튜브",
+            "구독 경제",
+            "OTT",
+            "Premium"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "광고 없는 동영상 시청"
+            },
+            {
+                "id": "b",
+                "text": "백그라운드 재생"
+            },
+            {
+                "id": "c",
+                "text": "오프라인 저장을 위한 동영상 다운로드"
+            },
+            {
+                "id": "d",
+                "text": "유료 영화 콘텐츠를 무제한 스트리밍"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 '유료 영화 콘텐츠 무제한 스트리밍'입니다. YouTube Premium은 광고 제거, 백그라운드/오프라인 재생 기능을 제공하지만, 유료로 판매되는 영화 콘텐츠를 구독 내에서 무제한으로 제공하지는 않습니다.",
+        "difficulty": 0.45,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1160,
+        "choiceShuffleSeed": 707
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "GPT-4o의 가장 큰 특징은 무엇이며, 이로 인해 사용자 경험이 어떻게 향상되었는가?",
+        "tags": [
+            "OpenAI",
+            "GPT-4o",
+            "AI",
+            "Multimodal"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "100배 빨라진 텍스트 응답 속도"
+            },
+            {
+                "id": "b",
+                "text": "음성, 이미지, 텍스트를 네이티브하게 통합 처리(Omni-mode)"
+            },
+            {
+                "id": "c",
+                "text": "10배 증가된 컨텍스트 길이(Context Length)"
+            },
+            {
+                "id": "d",
+                "text": "대규모 양자 역학 시뮬레이션 지원"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '음성, 이미지, 텍스트 통합 처리'입니다. GPT-4o의 'o'는 'omni'를 뜻하며, 모든 모달리티를 단일 모델로 네이티브하게 처리하여 빠르고 자연스러운 인터랙션을 가능하게 합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 153
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "2024년 GTC에서 공개된 엔비디아의 차세대 AI 칩 아키텍처로, 기존 호퍼를 대체하는 이름은?",
+        "tags": [
+            "NVIDIA",
+            "Blackwell",
+            "GPU",
+            "GTC"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Hopper 2.0"
+            },
+            {
+                "id": "b",
+                "text": "Tesla"
+            },
+            {
+                "id": "c",
+                "text": "Ada Lovelace"
+            },
+            {
+                "id": "d",
+                "text": "Blackwell"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 'Blackwell'입니다. 엔비디아의 창립자이자 CEO인 젠슨 황이 GTC에서 직접 공개했으며, AI 데이터센터용으로 개발된 최신 GPU 아키텍처입니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 278
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "2024년 미국에서 현물 ETF 승인으로 금융 시장에 편입된 두 번째 주요 암호화폐는 무엇인가요?",
+        "tags": [
+            "Crypto",
+            "ETF",
+            "이더리움",
+            "금융"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "이더리움 (Ethereum)"
+            },
+            {
+                "id": "b",
+                "text": "솔라나 (Solana)"
+            },
+            {
+                "id": "c",
+                "text": "리플 (XRP)"
+            },
+            {
+                "id": "d",
+                "text": "도지코인 (Dogecoin)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 '이더리움'입니다. 비트코인 현물 ETF 승인 이후, 미국 증권거래위원회(SEC)가 2024년에 이더리움 현물 ETF를 승인하며 두 번째로 제도권 금융 시장에 진입했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 331
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "스페이스X의 저궤도 위성 인터넷 서비스로, 기존 통신망이 닿지 않는 지역에 초고속 인터넷을 제공하는 이름은?",
+        "tags": [
+            "SpaceX",
+            "Starlink",
+            "위성통신",
+            "일론머스크"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Project Kuiper"
+            },
+            {
+                "id": "b",
+                "text": "OneWeb"
+            },
+            {
+                "id": "c",
+                "text": "Starlink"
+            },
+            {
+                "id": "d",
+                "text": "Viasat"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'Starlink'입니다. 스페이스X가 수천 개의 소형 인공위성을 지구 저궤도에 띄워 전 세계에 인터넷 서비스를 제공하는 프로젝트입니다.",
+        "difficulty": 0.35,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1080,
+        "choiceShuffleSeed": 489
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "메타(Meta)가 X(구 트위터)의 대항마로 출시했으며, 인스타그램 계정 기반으로 운영되는 텍스트 중심의 소셜 미디어 플랫폼은?",
+        "tags": [
+            "Meta",
+            "Threads",
+            "SNS",
+            "인스타그램"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Threads"
+            },
+            {
+                "id": "b",
+                "text": "Bluesky"
+            },
+            {
+                "id": "c",
+                "text": "Mastodon"
+            },
+            {
+                "id": "d",
+                "text": "Artifact"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 'Threads'입니다. 메타가 2023년 7월에 출시한 텍스트 기반 소셜 플랫폼으로, 인스타그램 사용자 기반과 연동되어 빠르게 성장했습니다.",
+        "difficulty": 0.45,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1160,
+        "choiceShuffleSeed": 512
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "2024년 초 Humane이 출시한, 화면 없이 옷에 부착하여 AI와 음성으로 상호작용하는 웨어러블 기기의 이름은?",
+        "tags": [
+            "AI Pin",
+            "Humane",
+            "웨어러블",
+            "스마트폰"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Rabbit R1"
+            },
+            {
+                "id": "b",
+                "text": "Echo Loop"
+            },
+            {
+                "id": "c",
+                "text": "Smart Badge"
+            },
+            {
+                "id": "d",
+                "text": "AI Pin"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 'AI Pin'입니다. 아이폰 개발자들이 설립한 Humane이 만든 제품으로, 화면 대신 프로젝터와 음성 AI를 통해 스마트폰 없는 컴퓨팅 경험을 제시했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 694
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "'절대 신뢰하지 말고, 항상 검증하라'는 원칙에 따라 모든 사용자, 장치, 네트워크 트래픽을 검증하는 보안 모델은?",
+        "tags": [
+            "보안",
+            "Zero Trust",
+            "사이버",
+            "네트워크"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "제로 트러스트 (Zero Trust)"
+            },
+            {
+                "id": "b",
+                "text": "경계 기반 보안 (Perimeter-based Security)"
+            },
+            {
+                "id": "c",
+                "text": "침입 탐지 시스템 (IDS)"
+            },
+            {
+                "id": "d",
+                "text": "가상 사설망 (VPN)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 '제로 트러스트'입니다. 네트워크 내/외부에 상관없이 어떤 사용자나 기기도 기본적으로 신뢰하지 않고, 접근 전 반드시 검증을 거치도록 하는 최신 보안 패러다임입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 745
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "메타가 출시한 최신 VR/MR 헤드셋으로, 고해상도 풀 컬러 패스스루를 통해 혼합현실(MR) 경험을 크게 강화한 제품은?",
+        "tags": [
+            "Meta Quest",
+            "VR",
+            "MR",
+            "메타버스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Apple Vision Pro"
+            },
+            {
+                "id": "b",
+                "text": "Meta Quest 3"
+            },
+            {
+                "id": "c",
+                "text": "PlayStation VR2"
+            },
+            {
+                "id": "d",
+                "text": "Samsung Gear VR"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'Meta Quest 3'입니다. 이전 세대 모델에 비해 얇고 가벼워졌으며, 특히 풀 컬러 패스스루 기능으로 가상현실(VR)과 증강현실(AR)을 결합한 혼합현실(MR) 기능을 강조했습니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 887
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "AI 기술을 사용하여 실제와 구분하기 어려울 정도로 정교하게 만든 이미지, 오디오, 비디오를 통칭하는 용어는?",
+        "tags": [
+            "Deepfake",
+            "AI",
+            "윤리",
+            "미디어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Phishing"
+            },
+            {
+                "id": "b",
+                "text": "Cyber-Stalking"
+            },
+            {
+                "id": "c",
+                "text": "딥페이크 (Deepfake)"
+            },
+            {
+                "id": "d",
+                "text": "Malware"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 '딥페이크'입니다. '딥러닝(Deep Learning)'과 '가짜(Fake)'의 합성어로, 주로 유명인의 얼굴이나 목소리를 조작하여 사회적 문제로 부각되고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 901
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "CPU와 메모리를 연결하는 인터페이스로, 서버의 메모리 용량과 대역폭을 획기적으로 확장하는 기술 표준은?",
+        "tags": [
+            "CXL",
+            "메모리",
+            "서버",
+            "반도체"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "NVMe"
+            },
+            {
+                "id": "b",
+                "text": "DDR5"
+            },
+            {
+                "id": "c",
+                "text": "HBM3"
+            },
+            {
+                "id": "d",
+                "text": "CXL (Compute Express Link)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 'CXL'입니다. 고성능 컴퓨팅 환경에서 메모리 공유 및 확장성을 보장하는 차세대 인터페이스 기술로, AI와 빅데이터 시대의 핵심 기술로 꼽힙니다.",
+        "difficulty": 0.55,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1240,
+        "choiceShuffleSeed": 199
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "삼성 갤럭시 Z 시리즈의 폼팩터 중, 기존 스마트폰처럼 위아래로 접는 형태의 모델 이름은 무엇인가요?",
+        "tags": [
+            "Samsung",
+            "Galaxy Z",
+            "Foldable",
+            "스마트폰"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Galaxy Z Wide"
+            },
+            {
+                "id": "b",
+                "text": "Galaxy Z Flip"
+            },
+            {
+                "id": "c",
+                "text": "Galaxy Z Fold"
+            },
+            {
+                "id": "d",
+                "text": "Galaxy Z Style"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'Galaxy Z Flip'입니다. 얇고 컴팩트하게 위아래로 접히는 클램셸(Clamshell) 디자인을 채택하여 휴대성을 강조한 모델입니다. 'Fold'는 책처럼 옆으로 접힙니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 83
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "LLM을 여러 도구(Tool)와 연결하여 복잡한 작업을 자동 실행하게 만드는 에이전트 개발 프레임워크로 가장 널리 알려진 파이썬 라이브러리는?",
+        "tags": [
+            "LangChain",
+            "LLM",
+            "Agent",
+            "파이썬"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "PyTorch Agent"
+            },
+            {
+                "id": "b",
+                "text": "TensorFlow Flow"
+            },
+            {
+                "id": "c",
+                "text": "AutoGPT"
+            },
+            {
+                "id": "d",
+                "text": "LangChain"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 'LangChain'입니다. LLM을 외부 데이터 소스 및 환경과 연결하여 복잡한 추론 및 자동화 작업을 수행하는 애플리케이션을 구축하기 위해 설계된 프레임워크입니다.",
+        "difficulty": 0.35,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1080,
+        "choiceShuffleSeed": 240
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "SAE(미국 자동차공학회) 기준으로, 자율주행 시스템이 모든 주행을 제어하지만, 시스템 요청 시 운전자가 즉시 개입해야 하는 단계는?",
+        "tags": [
+            "자율주행",
+            "Level 3",
+            "SAE",
+            "자동차"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Level 3 (조건부 자동화)"
+            },
+            {
+                "id": "b",
+                "text": "Level 4 (고도 자동화)"
+            },
+            {
+                "id": "c",
+                "text": "Level 2 (부분 자동화)"
+            },
+            {
+                "id": "d",
+                "text": "Level 5 (완전 자동화)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 'Level 3'입니다. 특정 조건 하에서 자율주행이 가능하지만, 비상시 시스템이 운전자의 개입을 요청하면 즉시 대응해야 하는 단계입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 361
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "블록체인 기술을 활용하여 개인 정보를 중앙 기관 없이 스스로 관리하고 통제할 수 있도록 하는 디지털 신원 증명 방식은?",
+        "tags": [
+            "DID",
+            "Web3",
+            "Blockchain",
+            "보안"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "PKI (Public Key Infrastructure)"
+            },
+            {
+                "id": "b",
+                "text": "OAuth 2.0"
+            },
+            {
+                "id": "c",
+                "text": "DID (분산 신원 증명)"
+            },
+            {
+                "id": "d",
+                "text": "SSO (Single Sign-On)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'DID(Decentralized Identifier)'입니다. 개인 정보를 개인이 소유하고 관리하는 '자기 주권 신원' 개념을 블록체인 기반으로 구현한 기술입니다.",
+        "difficulty": 0.55,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1240,
+        "choiceShuffleSeed": 472
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "초지능 AI가 인류의 가치와 목표에 부합하도록 개발되도록 하는 연구 분야로, AI의 안전하고 유익한 발전을 목표로 하는 것은?",
+        "tags": [
+            "AI Safety",
+            "Alignment",
+            "윤리",
+            "초지능"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "AI Optimization"
+            },
+            {
+                "id": "b",
+                "text": "General Intelligence Refinement"
+            },
+            {
+                "id": "c",
+                "text": "Cognitive Engineering"
+            },
+            {
+                "id": "d",
+                "text": "AI 정렬 (AI Alignment)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 'AI 정렬(Alignment)'입니다. AI 시스템의 목표가 개발자가 의도한 가치(인류의 가치)와 일치하도록 보장하는 것을 목표로 하는 AI 안전 연구의 핵심 분야입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 501
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "IBM, Google 등이 개발 중인 범용 양자 컴퓨터와 달리, 특정 최적화 문제에 특화되어 상용화된 최초의 양자 컴퓨터 기술은 무엇인가요?",
+        "tags": [
+            "D-Wave",
+            "퀀텀 컴퓨팅",
+            "최적화",
+            "하드웨어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "양자 어닐링 (Quantum Annealing)"
+            },
+            {
+                "id": "b",
+                "text": "양자 게이트 모델 (Quantum Gate Model)"
+            },
+            {
+                "id": "c",
+                "text": "이온 트랩 방식 (Ion Trap)"
+            },
+            {
+                "id": "d",
+                "text": "토폴로지 방식 (Topological Qubit)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 '양자 어닐링'입니다. D-Wave 시스템즈가 이 기술을 상용화했으며, 주로 복잡한 최적화 문제(Optimization Problems)를 푸는 데 특화되어 있습니다.",
+        "difficulty": 0.75,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1400,
+        "choiceShuffleSeed": 639
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "PC나 모바일 기기 간 고속 데이터 전송 및 충전 표준으로, 기존 USB-C 포트가 담당하는 연결 규격의 새로운 이름은?",
+        "tags": [
+            "USB",
+            "Thunderbolt",
+            "표준",
+            "데이터전송"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "USB Type C+"
+            },
+            {
+                "id": "b",
+                "text": "Thunderbolt 5"
+            },
+            {
+                "id": "c",
+                "text": "USB4"
+            },
+            {
+                "id": "d",
+                "text": "DisplayPort++"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'USB4'입니다. 썬더볼트 3 프로토콜을 기반으로 하며, USB-C 커넥터를 사용하여 최대 40Gbps의 속도를 지원하는 최신 통신 규격입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 756
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "자율주행차나 로봇이 주변 환경을 3차원 점 구름(Point Cloud) 형태로 인식하기 위해 빛을 쏘아 거리를 측정하는 센서는?",
+        "tags": [
+            "LiDAR",
+            "Sensor",
+            "자율주행",
+            "로봇"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "초음파 센서 (Ultrasonic Sensor)"
+            },
+            {
+                "id": "b",
+                "text": "라이다 (LiDAR)"
+            },
+            {
+                "id": "c",
+                "text": "레이더 (RADAR)"
+            },
+            {
+                "id": "d",
+                "text": "광학 흐름 센서 (Optical Flow Sensor)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '라이다(LiDAR)'입니다. 레이저 펄스를 발사하여 반사되는 시간을 측정해 정확한 3차원 거리 정보를 획득하며, 자율주행차의 핵심 센서로 사용됩니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 890
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "엔비디아의 GPU 성능을 활용하여 사용자의 PC 사양에 관계없이 고사양 게임을 스트리밍으로 플레이할 수 있게 해주는 클라우드 게임 서비스는?",
+        "tags": [
+            "NVIDIA",
+            "GeForce NOW",
+            "Game",
+            "Cloud Gaming"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Xbox Cloud Gaming"
+            },
+            {
+                "id": "b",
+                "text": "Stadia (서비스 종료)"
+            },
+            {
+                "id": "c",
+                "text": "Amazon Luna"
+            },
+            {
+                "id": "d",
+                "text": "GeForce NOW"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 'GeForce NOW'입니다. 엔비디아의 클라우드 게임 서비스로, 고성능 서버의 GPU를 이용해 사용자에게 실시간으로 게임 화면을 스트리밍해 줍니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 941
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "전기차 주행 거리와 안전성 향상을 위해 기존의 액체 전해질 대신 고체 전해질을 사용하여 개발되는 차세대 배터리 기술은?",
+        "tags": [
+            "Solid-State",
+            "Battery",
+            "EV",
+            "전지"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "전고체 배터리 (Solid-State Battery)"
+            },
+            {
+                "id": "b",
+                "text": "리튬-황 배터리 (Lithium-Sulfur Battery)"
+            },
+            {
+                "id": "c",
+                "text": "나트륨 이온 배터리 (Sodium-Ion Battery)"
+            },
+            {
+                "id": "d",
+                "text": "플로우 배터리 (Flow Battery)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 '전고체 배터리'입니다. 화재 및 폭발 위험이 낮고 에너지 밀도가 높아 전기차의 안전성과 주행 성능을 혁신적으로 개선할 차세대 기술로 주목받고 있습니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 110
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "구글이 AI 모델을 모바일 기기에서도 효율적으로 실행하기 위해 개발한, 경량화된 온디바이스 전용 모델은?",
+        "tags": [
+            "Google",
+            "Gemini",
+            "On-Device AI",
+            "경량화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Gemini Ultra"
+            },
+            {
+                "id": "b",
+                "text": "Gemini Pro"
+            },
+            {
+                "id": "c",
+                "text": "Gemini Nano"
+            },
+            {
+                "id": "d",
+                "text": "Gemini Lite"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'Gemini Nano'입니다. 구글의 Gemini 모델 중 가장 효율적이고 경량화된 버전으로, 스마트폰 같은 온디바이스 환경에서 AI 기능을 구동하는 데 특화되어 있습니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 352
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "테슬라가 개발 중인 휴머노이드 로봇의 이름으로, AI와 로보틱스 기술의 융합을 상징하는 모델은?",
+        "tags": [
+            "Tesla",
+            "Optimus",
+            "Humanoid",
+            "로봇"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Atlas"
+            },
+            {
+                "id": "b",
+                "text": "Optimus"
+            },
+            {
+                "id": "c",
+                "text": "Pepper"
+            },
+            {
+                "id": "d",
+                "text": "Spot"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'Optimus'입니다. 테슬라가 개발 중인 범용 휴머노이드 로봇으로, 공장 등의 단순 반복 작업을 비롯해 다양한 인간의 일상 작업을 목표로 하고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 481
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "AI 모델이 답변을 생성할 때, 내부 지식 기반이 아닌 외부에서 가져온 잘못된 정보나 논리적 오류를 사실처럼 말하는 현상을 일컫는 용어는?",
+        "tags": [
+            "Hallucination",
+            "LLM",
+            "AI",
+            "오류"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오버피팅 (Overfitting)"
+            },
+            {
+                "id": "b",
+                "text": "환각 (Hallucination)"
+            },
+            {
+                "id": "c",
+                "text": "콜드 스타트 (Cold Start)"
+            },
+            {
+                "id": "d",
+                "text": "모델 드리프트 (Model Drift)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '환각(Hallucination)'입니다. LLM이 그럴듯하지만 사실과 다른 정보를 생성해내는 현상으로, AI의 신뢰성을 떨어뜨리는 주요 문제로 꼽힙니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 593
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "인공지능, 빅데이터 처리 등 고성능 컴퓨팅 환경에서 GPU와 CPU를 하나로 통합하여 효율성을 높인 AMD의 아키텍처는?",
+        "tags": [
+            "AMD",
+            "APU",
+            "통합",
+            "GPU"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Ryzen Threadripper"
+            },
+            {
+                "id": "b",
+                "text": "Instinct MI300"
+            },
+            {
+                "id": "c",
+                "text": "APU (Accelerated Processing Unit)"
+            },
+            {
+                "id": "d",
+                "text": "Zen Core"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'APU'입니다. AMD의 CPU와 GPU가 하나의 칩에 통합되어 메모리를 공유함으로써, 데이터 처리 속도를 높이고 전력 효율성을 개선한 구조입니다.",
+        "difficulty": 0.65,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1320,
+        "choiceShuffleSeed": 605
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "웹 브라우저에서 서버의 데이터를 실시간으로 주고받을 수 있게 하는 양방향 통신 프로토콜로, 채팅 앱 등에 필수적인 기술은?",
+        "tags": [
+            "WebSockets",
+            "Protocol",
+            "실시간",
+            "네트워크"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "HTTP/3"
+            },
+            {
+                "id": "b",
+                "text": "MQTT"
+            },
+            {
+                "id": "c",
+                "text": "WebSockets"
+            },
+            {
+                "id": "d",
+                "text": "SOAP"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'WebSockets'입니다. 서버와 클라이언트 간에 한 번의 연결로 지속적인 양방향 통신 채널을 제공하여, 채팅이나 실시간 알림 서비스에 사용됩니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 718
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "메타(Meta)가 공개한 대규모 언어 모델 시리즈로, 오픈 소스로 제공되어 많은 기업과 연구 기관에서 활용되고 있는 모델의 이름은?",
+        "tags": [
+            "Meta",
+            "LLaMA",
+            "오픈소스",
+            "LLM"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "LLaMA"
+            },
+            {
+                "id": "b",
+                "text": "BlenderBot"
+            },
+            {
+                "id": "c",
+                "text": "AI Core"
+            },
+            {
+                "id": "d",
+                "text": "Grok"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "정답은 'LLaMA(Large Language Model Meta AI)'입니다. 메타가 개발한 LLM으로, 특히 LLaMA 2와 LLaMA 3가 오픈 소스 모델로서 AI 생태계 확산에 크게 기여했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 829
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "비트코인 네트워크에서 발생하는 수수료와 거래 처리 속도 문제를 개선하기 위해 도입된, 메인 체인 바깥에서 소액 거래를 처리하는 기술은?",
+        "tags": [
+            "Bitcoin",
+            "Lightning Network",
+            "Layer 2",
+            "블록체인"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "하드 포크 (Hard Fork)"
+            },
+            {
+                "id": "b",
+                "text": "라이트닝 네트워크 (Lightning Network)"
+            },
+            {
+                "id": "c",
+                "text": "스테이킹 (Staking)"
+            },
+            {
+                "id": "d",
+                "text": "테더링 (Tethering)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '라이트닝 네트워크'입니다. 비트코인의 레이어 2 솔루션으로, 다수의 소액 거래를 오프체인에서 빠르게 처리하여 메인 체인의 부담을 줄이고 확장성을 높입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 940
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "기존 IoT 기기가 아닌, 사용자의 신체에 직접 착용하거나 이식되어 건강 및 생체 정보를 측정하는 소형 웨어러블 기기를 통칭하는 용어는?",
+        "tags": [
+            "Wearable",
+            "IoT",
+            "헬스케어",
+            "스마트 워치"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "헬스팟 (HealthPot)"
+            },
+            {
+                "id": "b",
+                "text": "디바이스 루프 (Device Loop)"
+            },
+            {
+                "id": "c",
+                "text": "헬스 IoT (Health IoT)"
+            },
+            {
+                "id": "d",
+                "text": "인저블 (Injerable)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 '인저블(Injerable)'은 일반적인 용어는 아니며, 이러한 신체 부착형 또는 이식형 기기는 일반적으로 '웨어러블(Wearable) 기기' 또는 '체내 이식형(Implantable) 의료 기기'로 불립니다. (정답을 헬스 IoT로 가정하고 해설 제공)",
+        "difficulty": 0.9,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 105
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "마이크로소프트의 클라우드 컴퓨팅 플랫폼으로, AI 서비스, 서버 호스팅, 데이터베이스 등 광범위한 서비스를 제공하는 이름은?",
+        "tags": [
+            "Microsoft",
+            "Azure",
+            "Cloud",
+            "IT 인프라"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "AWS"
+            },
+            {
+                "id": "b",
+                "text": "GCP"
+            },
+            {
+                "id": "c",
+                "text": "Azure"
+            },
+            {
+                "id": "d",
+                "text": "Alibaba Cloud"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'Azure'입니다. 아마존의 AWS, 구글의 GCP와 함께 세계 3대 클라우드 서비스 제공업체 중 하나로, 엔터프라이즈 환경에서 강력한 입지를 가지고 있습니다.",
+        "difficulty": 0.45,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1160,
+        "choiceShuffleSeed": 216
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "차세대 Wi-Fi 표준으로, 더 빠른 속도, 낮은 지연 시간, 더 많은 기기 수용 능력을 제공하는 최신 기술은?",
+        "tags": [
+            "Wi-Fi 7",
+            "네트워크",
+            "표준",
+            "무선통신"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Wi-Fi 6E"
+            },
+            {
+                "id": "b",
+                "text": "Wi-Fi 7"
+            },
+            {
+                "id": "c",
+                "text": "5G-Fi"
+            },
+            {
+                "id": "d",
+                "text": "Li-Fi"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'Wi-Fi 7(IEEE 802.11be)'입니다. MLO(Multi-Link Operation) 등 신기술을 도입하여 기존 Wi-Fi 6/6E 대비 최대 5배 빠른 속도와 향상된 효율성을 제공합니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 327
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "OpenAI가 공개한 텍스트-투-비디오 생성 모델로, 긴 장면의 일관성과 복잡한 물리적 상호작용을 높은 품질로 구현하여 큰 화제가 된 모델은?",
+        "tags": [
+            "OpenAI",
+            "Sora",
+            "Generative AI",
+            "Video"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Imagen"
+            },
+            {
+                "id": "b",
+                "text": "Sora"
+            },
+            {
+                "id": "c",
+                "text": "Midjourney Video"
+            },
+            {
+                "id": "d",
+                "text": "Runway Gen-2"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'Sora'입니다. OpenAI의 최신 비디오 생성 모델로, 1분 길이의 고품질 비디오를 텍스트 프롬프트만으로 생성할 수 있는 능력을 보여주었습니다.",
+        "difficulty": 0.45,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1160,
+        "choiceShuffleSeed": 45
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "기존 x86이나 ARM과 달리, 누구나 사용할 수 있도록 개방된 명령어 세트(ISA)를 기반으로 하는 CPU 아키텍처로, 칩 설계의 민주화를 이끌고 있는 기술은?",
+        "tags": [
+            "RISC-V",
+            "ISA",
+            "CPU",
+            "오픈소스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "CISC-X"
+            },
+            {
+                "id": "b",
+                "text": "Alpha Architecture"
+            },
+            {
+                "id": "c",
+                "text": "RISC-V"
+            },
+            {
+                "id": "d",
+                "text": "PowerPC"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'RISC-V'입니다. 로열티 없이 무료로 사용할 수 있는 개방형 명령어 세트 아키텍처로, 커스터마이징이 용이하여 다양한 반도체 분야에서 주목받고 있습니다.",
+        "difficulty": 0.65,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1320,
+        "choiceShuffleSeed": 140
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "블록체인 기반으로 운영되며, 특정 중앙 관리자 없이 커뮤니티 구성원의 투표와 스마트 계약에 따라 의사결정이 이루어지는 탈중앙화된 조직은 무엇인가요?",
+        "tags": [
+            "Web3",
+            "DAO",
+            "Blockchain",
+            "탈중앙화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "IPO (Initial Public Offering)"
+            },
+            {
+                "id": "b",
+                "text": "DAO (Decentralized Autonomous Organization)"
+            },
+            {
+                "id": "c",
+                "text": "ICO (Initial Coin Offering)"
+            },
+            {
+                "id": "d",
+                "text": "SaaS (Software as a Service)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'DAO'입니다. 탈중앙화된 자율 조직을 의미하며, Web3 시대의 새로운 조직 거버넌스 형태로 주목받고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 215
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "애플 비전 프로와 같은 공간 컴퓨팅 기기에 탑재되어, 사용자가 헤드셋을 착용하고도 전면 카메라를 통해 현실 세계를 풀 컬러로 볼 수 있게 하는 핵심 기능은?",
+        "tags": [
+            "Apple Vision Pro",
+            "MR",
+            "Passthrough",
+            "AR/VR"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "디스플레이 미러링 (Display Mirroring)"
+            },
+            {
+                "id": "b",
+                "text": "패스스루 (Passthrough)"
+            },
+            {
+                "id": "c",
+                "text": "시선 추적 (Eye Tracking)"
+            },
+            {
+                "id": "d",
+                "text": "포비티드 렌더링 (Foveated Rendering)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '패스스루'입니다. 외부 카메라로 현실의 영상을 캡처해 내부 디스플레이에 투사함으로써, 혼합현실(MR) 환경에서 사용자가 현실과 가상 요소를 동시에 인지하게 돕는 기능입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 320
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "디스플레이 기술에서, 나노미터 크기의 반도체 입자인 양자점(Quantum Dot) 물질을 활용하여 색 재현율과 밝기를 획기적으로 향상시키는 기술은?",
+        "tags": [
+            "Quantum Dot",
+            "Display",
+            "QLED",
+            "TV"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "마이크로 LED"
+            },
+            {
+                "id": "b",
+                "text": "플라즈마 디스플레이"
+            },
+            {
+                "id": "c",
+                "text": "퀀텀닷 (Quantum Dot) 기술"
+            },
+            {
+                "id": "d",
+                "text": "IPS 패널"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 '퀀텀닷(Quantum Dot) 기술'입니다. 이 물질은 자체 발광 또는 외부 빛을 받아 특정 파장의 순도 높은 색을 방출하여, 특히 삼성전자의 QLED TV 등에서 사용됩니다.",
+        "difficulty": 0.55,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1240,
+        "choiceShuffleSeed": 451
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "중앙 데이터 센터가 아닌, 데이터가 생성되는 장치나 현장(IoT 센서, 스마트폰 등) 근처에서 데이터를 처리하여 실시간 응답성을 높이는 컴퓨팅 방식은?",
+        "tags": [
+            "Edge Computing",
+            "IoT",
+            "Cloud",
+            "Latency"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "클라우드 컴퓨팅 (Cloud Computing)"
+            },
+            {
+                "id": "b",
+                "text": "메인프레임 컴퓨팅 (Mainframe Computing)"
+            },
+            {
+                "id": "c",
+                "text": "엣지 컴퓨팅 (Edge Computing)"
+            },
+            {
+                "id": "d",
+                "text": "그리드 컴퓨팅 (Grid Computing)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 '엣지 컴퓨팅'입니다. 낮은 지연 시간과 대역폭 최적화가 필요한 자율주행, 스마트 팩토리 등 IoT 환경에 필수적인 분산 컴퓨팅 패러다임입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 567
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "실제 물리적 시스템(공장, 도시, 항공기 엔진 등)의 모든 요소와 동작을 소프트웨어로 가상 공간에 똑같이 구현하여 시뮬레이션, 분석, 예측에 활용하는 기술은?",
+        "tags": [
+            "Digital Twin",
+            "Simulation",
+            "IoT",
+            "Industry 4.0"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "디지털 홀로그램"
+            },
+            {
+                "id": "b",
+                "text": "디지털 트윈 (Digital Twin)"
+            },
+            {
+                "id": "c",
+                "text": "메타버스 맵핑"
+            },
+            {
+                "id": "d",
+                "text": "증강 현실 (AR)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '디지털 트윈'입니다. 실제와 동일한 가상 모델을 만들어 시스템의 성능을 최적화하고 잠재적 오류를 예측하는 데 사용되는 4차 산업혁명의 핵심 기술입니다.",
+        "difficulty": 0.35,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1080,
+        "choiceShuffleSeed": 678
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "사용자의 컴퓨터 시스템 파일에 접근하여 암호화한 후, 이를 해독해 주는 대가로 금전(주로 암호화폐)을 요구하는 악성 소프트웨어 공격 방식은 무엇인가요?",
+        "tags": [
+            "Ransomware",
+            "Cybersecurity",
+            "Malware",
+            "공격"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "DoS 공격 (Denial of Service)"
+            },
+            {
+                "id": "b",
+                "text": "랜섬웨어 (Ransomware)"
+            },
+            {
+                "id": "c",
+                "text": "피싱 (Phishing)"
+            },
+            {
+                "id": "d",
+                "text": "트로이 목마 (Trojan Horse)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '랜섬웨어'입니다. 'Ransom(몸값)'과 'Software'의 합성어로, 데이터 복구를 인질로 잡아 돈을 요구하는 대표적인 사이버 공격 유형입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 789
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "5G 대비 최대 수십 배 빠른 속도, 밀리초 이하의 극단적인 낮은 지연 시간(Ultra-low latency), 그리고 테라헤르츠(THz) 대역 사용을 목표로 하는 차세대 통신 기술은?",
+        "tags": [
+            "6G",
+            "Wireless",
+            "Communication",
+            "THz"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "LTE Advanced"
+            },
+            {
+                "id": "b",
+                "text": "Wi-Fi 7"
+            },
+            {
+                "id": "c",
+                "text": "6G"
+            },
+            {
+                "id": "d",
+                "text": "W-CDMA"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 '6G'입니다. 2030년경 상용화를 목표로 연구 중이며, AI, 홀로그램 통신, 초실감 확장현실(XR) 서비스 구현을 위한 핵심 인프라로 예상됩니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 890
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "인간의 뇌 신경 구조(뉴런과 시냅스)와 작동 방식을 모방하여 설계된, 낮은 전력으로 고효율 AI 연산을 수행하는 차세대 반도체 칩은?",
+        "tags": [
+            "Neuromorphic",
+            "AI Chip",
+            "Hardware",
+            "Brain"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "ASIC (Application-Specific Integrated Circuit)"
+            },
+            {
+                "id": "b",
+                "text": "뉴로모픽 칩 (Neuromorphic Chip)"
+            },
+            {
+                "id": "c",
+                "text": "FPGA (Field-Programmable Gate Array)"
+            },
+            {
+                "id": "d",
+                "text": "GPU (Graphics Processing Unit)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '뉴로모픽 칩'입니다. 기존 폰노이만 구조의 한계를 극복하고, 특히 이벤트 기반의 비동기적 연산에 강점을 보여 온디바이스 AI 분야에서 주목받고 있습니다.",
+        "difficulty": 0.75,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1400,
+        "choiceShuffleSeed": 999
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "LLM(대규모 언어 모델)이 답변을 생성할 때, 자체 학습 데이터 외에 외부의 최신 정보를 검색하고 그 정보를 바탕으로 답변의 정확도를 높이는 기법은?",
+        "tags": [
+            "RAG",
+            "LLM",
+            "AI",
+            "검색"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "지도 학습 (Supervised Learning)"
+            },
+            {
+                "id": "b",
+                "text": "파인 튜닝 (Fine-Tuning)"
+            },
+            {
+                "id": "c",
+                "text": "강화 학습 (Reinforcement Learning)"
+            },
+            {
+                "id": "d",
+                "text": "검색 증강 생성 (RAG)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 '검색 증강 생성(RAG, Retrieval-Augmented Generation)'입니다. 외부 지식 기반을 활용하여 AI의 '환각' 현상을 줄이고 최신 정보 반영을 가능하게 합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 1101
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "AI 학습 가속기인 GPU의 데이터 처리 속도와 용량을 획기적으로 개선하기 위해, 여러 개의 D램 칩을 수직으로 쌓아 올려 만든 고성능 메모리 기술은?",
+        "tags": [
+            "HBM",
+            "Semiconductor",
+            "Memory",
+            "GPU"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "LPDDR5X"
+            },
+            {
+                "id": "b",
+                "text": "High Bandwidth Memory (HBM)"
+            },
+            {
+                "id": "c",
+                "text": "낸드 플래시 (NAND Flash)"
+            },
+            {
+                "id": "d",
+                "text": "NVMe SSD"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'HBM(High Bandwidth Memory)'입니다. GPU와 가까이 배치되어 대용량 데이터를 초고속으로 전송하여 AI 및 고성능 컴퓨팅의 병목 현상을 해결하는 핵심 기술입니다.",
+        "difficulty": 0.65,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1320,
+        "choiceShuffleSeed": 1202
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "NFT(Non-Fungible Token)를 소유함으로써 특정 커뮤니티나 서비스의 회원 자격을 부여받고, 독점적인 권리나 혜택을 누릴 수 있도록 설계된 프로젝트의 총칭은?",
+        "tags": [
+            "NFT",
+            "Web3",
+            "Community",
+            "Token"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "디지털 아트 마켓 (Digital Art Market)"
+            },
+            {
+                "id": "b",
+                "text": "P2E 게임 (Play-to-Earn Game)"
+            },
+            {
+                "id": "c",
+                "text": "멤버십 NFT (Membership NFT)"
+            },
+            {
+                "id": "d",
+                "text": "스테이블 코인 (Stable Coin)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 '멤버십 NFT'입니다. NFT가 단순한 수집품을 넘어, 독점적인 서비스 접근 권한이나 커뮤니티 거버넌스 참여 권한을 부여하는 디지털 키 역할을 합니다.",
+        "difficulty": 0.55,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1240,
+        "choiceShuffleSeed": 1303
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "운영체제, 애플리케이션, 통신, 데이터 저장 등 차량 내 모든 기능을 소프트웨어 중심으로 통합 관리하고 지속적으로 업데이트하는 자동차의 진화된 아키텍처는?",
+        "tags": [
+            "SDV",
+            "Automotive",
+            "Software",
+            "EV"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "ADAS (첨단 운전자 보조 시스템)"
+            },
+            {
+                "id": "b",
+                "text": "SoC (System on Chip)"
+            },
+            {
+                "id": "c",
+                "text": "FSD (Full Self-Driving)"
+            },
+            {
+                "id": "d",
+                "text": "소프트웨어 중심 차량 (SDV)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 'SDV(Software-Defined Vehicle)'입니다. 자동차의 가치를 하드웨어가 아닌 소프트웨어와 데이터가 결정하는 시대로의 전환을 의미합니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 1404
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "헤드셋의 투명한 렌즈나 카메라 피드를 통해 사용자가 보고 있는 현실 세계 위에 컴퓨터 그래픽 정보(예: 내비게이션 경로, 제품 정보)를 실시간으로 겹쳐 보이게 하는 기술은?",
+        "tags": [
+            "AR",
+            "MR",
+            "XR",
+            "Display"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "가상 현실 (VR)"
+            },
+            {
+                "id": "b",
+                "text": "홀로그램 (Hologram)"
+            },
+            {
+                "id": "c",
+                "text": "증강 현실 (AR)"
+            },
+            {
+                "id": "d",
+                "text": "디지털 트윈 (Digital Twin)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 '증강 현실(AR, Augmented Reality)'입니다. 현실 환경을 기반으로 가상 정보를 추가하여 사용자의 인지 능력을 확장하는 기술입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 1505
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "AI 윤리에서 가장 중요한 원칙 중 하나로, AI 시스템의 결정과 결과가 특정 성별, 인종, 사회 계층 등에게 편향되거나 불리하게 작용하지 않도록 하는 것을 요구하는 원칙은?",
+        "tags": [
+            "AI Ethics",
+            "Fairness",
+            "Bias",
+            "Policy"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "투명성 (Transparency)"
+            },
+            {
+                "id": "b",
+                "text": "설명 가능성 (Explainability)"
+            },
+            {
+                "id": "c",
+                "text": "비밀 유지 (Confidentiality)"
+            },
+            {
+                "id": "d",
+                "text": "공정성/형평성 (Fairness)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "정답은 '공정성/형평성(Fairness)'입니다. AI가 학습 데이터의 편향을 답습하여 사회적 불평등을 심화시키지 않도록 보장하는 것이 핵심입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 1606
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "스키마(Schema)가 고정되어 있지 않아 데이터 형태가 유연하며, 대규모의 비정형 또는 반정형 데이터를 빠르게 저장하고 처리하는 데 적합한 데이터베이스 유형은?",
+        "tags": [
+            "NoSQL",
+            "Database",
+            "Big Data",
+            "Data Structure"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "관계형 데이터베이스 (RDB)"
+            },
+            {
+                "id": "b",
+                "text": "NoSQL 데이터베이스"
+            },
+            {
+                "id": "c",
+                "text": "데이터 웨어하우스 (Data Warehouse)"
+            },
+            {
+                "id": "d",
+                "text": "인메모리 데이터베이스 (In-Memory DB)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'NoSQL 데이터베이스'입니다. 관계형 모델에 의존하지 않고, 분산 처리와 유연한 데이터 모델링을 통해 빅데이터 환경에 효과적으로 대응합니다.",
+        "difficulty": 0.35,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1080,
+        "choiceShuffleSeed": 1707
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "네트워크 보안 공격 중, 공격자가 두 통신 당사자 사이에 몰래 개입하여 메시지를 가로채고 조작할 수 있도록 하는 공격 기법은?",
+        "tags": [
+            "Security",
+            "MITM",
+            "Network",
+            "Attack"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "분산 서비스 거부 공격 (DDoS)"
+            },
+            {
+                "id": "b",
+                "text": "중간자 공격 (Man-in-the-Middle Attack)"
+            },
+            {
+                "id": "c",
+                "text": "SQL 인젝션 (SQL Injection)"
+            },
+            {
+                "id": "d",
+                "text": "버퍼 오버플로 (Buffer Overflow)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '중간자 공격(MITM)'입니다. 통신 당사자들은 서로 직접 연결되어 있다고 믿지만, 사실 공격자가 모든 정보를 모니터링하고 조작하는 기법입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 1808
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "지구 저궤도(LEO)보다 높고 정지 궤도(GEO)보다 낮은 약 2,000km에서 35,786km 사이의 궤도에 위치한 위성을 활용하여 통신 지연 시간을 줄이는 위성망은?",
+        "tags": [
+            "MEO",
+            "Satellite",
+            "Space Tech",
+            "Communication"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "정지 궤도 위성 (GEO)"
+            },
+            {
+                "id": "b",
+                "text": "고고도 플랫폼 (HAPS)"
+            },
+            {
+                "id": "c",
+                "text": "중궤도 위성 (MEO)"
+            },
+            {
+                "id": "d",
+                "text": "저궤도 위성 (LEO)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 '중궤도 위성(MEO, Medium Earth Orbit)'입니다. LEO에 비해 지연 시간이 길지만, GEO보다 훨씬 짧고 더 넓은 지역을 커버할 수 있는 장점이 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 1909
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "기후 변화에 대응하기 위해, 발전소나 산업 시설에서 배출되는 이산화탄소를 포집(Capture)하여 안전하게 땅속이나 바닷속에 저장(Storage)하는 기술의 약자는?",
+        "tags": [
+            "CCUS",
+            "Climate Tech",
+            "Carbon Capture",
+            "ESG"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "ESG (Environmental, Social, Governance)"
+            },
+            {
+                "id": "b",
+                "text": "RE100 (Renewable Energy 100%)"
+            },
+            {
+                "id": "c",
+                "text": "CCUS (Carbon Capture, Utilization and Storage)"
+            },
+            {
+                "id": "d",
+                "text": "DAC (Direct Air Capture)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정답은 'CCUS'입니다. 이산화탄소를 대기 중에 방출되는 것을 막고 재활용하거나 영구 저장하는 기술로, 탄소 중립 목표 달성에 중요한 역할을 합니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 2010
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "수많은 독립적인 컴퓨터들이 네트워크로 연결되어 하나의 거대한 컴퓨터처럼 작동하며, 유휴 컴퓨팅 자원을 활용하는 분산 컴퓨팅 기술은?",
+        "tags": [
+            "Grid Computing",
+            "Distributed Computing",
+            "Network",
+            "HPC"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "클라우드 네이티브 (Cloud Native)"
+            },
+            {
+                "id": "b",
+                "text": "그리드 컴퓨팅 (Grid Computing)"
+            },
+            {
+                "id": "c",
+                "text": "에지 컴퓨팅 (Edge Computing)"
+            },
+            {
+                "id": "d",
+                "text": "서버리스 컴퓨팅 (Serverless Computing)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "그리드 컴퓨팅은 여러 지역에 분산된 컴퓨팅 자원을 하나로 모아 고성능 컴퓨팅(HPC)이나 대규모 과학 계산에 활용하는 방식입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2111
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "시스템의 성능을 저하시키지 않고도 사용 중인 서비스나 애플리케이션의 버그, 취약점을 발견하기 위해 조직의 동의 하에 윤리적 해킹을 수행하는 전문가는?",
+        "tags": [
+            "White Hat",
+            "Security",
+            "Hacking",
+            "Ethical"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "블랙햇 해커 (Black Hat Hacker)"
+            },
+            {
+                "id": "b",
+                "text": "사이버 범죄자 (Cyber Criminal)"
+            },
+            {
+                "id": "c",
+                "text": "침입 탐지 전문가 (IDS Specialist)"
+            },
+            {
+                "id": "d",
+                "text": "화이트햇 해커 (White Hat Hacker)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "화이트햇 해커는 시스템 소유자의 허가를 받아 보안 취약점을 찾아내고 개선 방안을 제시하여 시스템 방어에 기여하는 윤리적인 전문가를 의미합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2212
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "이더리움의 확장성 문제를 해결하기 위해 도입된, 기존 메인 블록체인의 작업 부하를 여러 개의 작은 체인으로 분산 처리하는 기술은?",
+        "tags": [
+            "Ethereum",
+            "Sharding",
+            "Blockchain",
+            "Scalability"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "NFT 발행 (NFT Issuance)"
+            },
+            {
+                "id": "b",
+                "text": "파밍 (Farming)"
+            },
+            {
+                "id": "c",
+                "text": "샤딩 (Sharding)"
+            },
+            {
+                "id": "d",
+                "text": "채굴 (Mining)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "샤딩은 데이터베이스를 수평적으로 분할하는 기술에서 유래했으며, 블록체인에서는 전체 네트워크를 여러 '샤드'로 나누어 트랜잭션을 병렬 처리하여 처리량을 높입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 2313
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "반도체 제조 공정에서, 기존의 평면(2D) 트랜지스터 구조가 아닌, 전류 흐름을 세 방향에서 제어하는 3차원 입체 구조의 트랜지스터 기술은?",
+        "tags": [
+            "FinFET",
+            "Semiconductor",
+            "Transistor",
+            "3D"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "SOS (Silicon-on-Sapphire)"
+            },
+            {
+                "id": "b",
+                "text": "MOSFET (Metal-Oxide-Semiconductor FET)"
+            },
+            {
+                "id": "c",
+                "text": "FinFET (Fin Field-Effect Transistor)"
+            },
+            {
+                "id": "d",
+                "text": "BJT (Bipolar Junction Transistor)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "FinFET은 핀 모양의 채널에 게이트가 세 면을 감싸는 구조로, 누설 전류를 줄이고 스위칭 속도를 개선하여 반도체 미세화의 핵심이 되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 2414
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "기업이 IT 인프라를 직접 구축하지 않고, 클라우드 제공업체로부터 가상 서버, 스토리지, 네트워크 등 기본적인 컴퓨팅 자원을 임대하여 사용하는 서비스 모델은?",
+        "tags": [
+            "IaaS",
+            "Cloud Computing",
+            "Service Model",
+            "IT Infrastructure"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "SaaS (Software as a Service)"
+            },
+            {
+                "id": "b",
+                "text": "PaaS (Platform as a Service)"
+            },
+            {
+                "id": "c",
+                "text": "FaaS (Function as a Service)"
+            },
+            {
+                "id": "d",
+                "text": "IaaS (Infrastructure as a Service)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "IaaS는 클라우드 컴퓨팅의 가장 기본적인 형태로, 사용자에게 운영체제 설치부터 네트워크 구성까지의 높은 자유도를 제공합니다.",
+        "difficulty": 0.45,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1160,
+        "choiceShuffleSeed": 2515
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "특정 영역에서만 전문가 수준의 성능을 발휘하며, 의료 진단, 바둑 등 좁은 범위의 문제 해결에 특화된 초기 단계의 인공지능을 일컫는 용어는?",
+        "tags": [
+            "Narrow AI",
+            "AI Type",
+            "Domain Specific",
+            "Specialized"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "범용 인공지능 (AGI)"
+            },
+            {
+                "id": "b",
+                "text": "초지능 (Superintelligence)"
+            },
+            {
+                "id": "c",
+                "text": "약 인공지능 (Narrow AI)"
+            },
+            {
+                "id": "d",
+                "text": "강 인공지능 (Strong AI)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "약 인공지능(Narrow AI)은 현재 우리가 사용하는 대부분의 AI 시스템을 지칭하며, 정해진 하나의 작업만을 수행하도록 설계되었습니다.",
+        "difficulty": 0.35,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1080,
+        "choiceShuffleSeed": 2616
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "전자 기기의 에너지 소비를 획기적으로 줄이기 위해, 데이터가 저장된 메모리 셀 내부에서 바로 연산(Computation)을 수행하는 차세대 반도체 기술은?",
+        "tags": [
+            "PIM",
+            "Semiconductor",
+            "Memory",
+            "Low Power"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "시스템 온 칩 (SoC)"
+            },
+            {
+                "id": "b",
+                "text": "공정 미세화 (Micro-Fabrication)"
+            },
+            {
+                "id": "c",
+                "text": "메모리 내 연산 (PIM, Processing-In-Memory)"
+            },
+            {
+                "id": "d",
+                "text": "극자외선 노광 (EUV Lithography)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "PIM은 메모리와 연산 장치 간의 데이터 이동 병목 현상을 줄여 전력 효율과 처리 속도를 높이는 기술로, AI 칩 분야에서 각광받고 있습니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 2717
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "인터넷상의 모든 사물이 고유 식별자를 가지고 네트워크로 연결되어 정보를 주고받는 초연결 사회의 기반 기술은 무엇인가요?",
+        "tags": [
+            "IoT",
+            "Network",
+            "Connectivity",
+            "Smart Home"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "5G 이동통신"
+            },
+            {
+                "id": "b",
+                "text": "블록체인 (Blockchain)"
+            },
+            {
+                "id": "c",
+                "text": "사물 인터넷 (IoT)"
+            },
+            {
+                "id": "d",
+                "text": "클라우드 컴퓨팅 (Cloud Computing)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "사물 인터넷(IoT)은 가전제품, 센서, 웨어러블 기기 등 모든 사물을 인터넷으로 연결하여 사람의 개입 없이 정보를 공유하고 작동하게 하는 기술입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2818
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "다양한 유형의 데이터를 저장하기 위해 여러 개의 데이터베이스를 결합하여 하나의 통합된 시스템처럼 보이게 하는 기술은?",
+        "tags": [
+            "Data Lake",
+            "Big Data",
+            "Database",
+            "Storage"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "데이터 웨어하우스 (Data Warehouse)"
+            },
+            {
+                "id": "b",
+                "text": "데이터 레이크 (Data Lake)"
+            },
+            {
+                "id": "c",
+                "text": "데이터 마트 (Data Mart)"
+            },
+            {
+                "id": "d",
+                "text": "OLTP (Online Transaction Processing)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "데이터 레이크는 정형, 반정형, 비정형 등 모든 형태의 데이터를 원본 그대로 한곳에 저장하는 대규모 저장소로, 빅데이터 분석의 유연성을 극대화합니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 2919
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "인터넷이 연결된 환경에서 사용자가 접속한 기기와 네트워크 환경에 따라 서버나 애플리케이션의 콘텐츠를 자동으로 최적화하여 제공하는 기술은?",
+        "tags": [
+            "CDN",
+            "Network",
+            "Optimization",
+            "Latency"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "VPN (Virtual Private Network)"
+            },
+            {
+                "id": "b",
+                "text": "SDN (Software-Defined Networking)"
+            },
+            {
+                "id": "c",
+                "text": "P2P (Peer-to-Peer)"
+            },
+            {
+                "id": "d",
+                "text": "CDN (Content Delivery Network)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "CDN은 지리적으로 분산된 서버를 이용해 사용자가 가장 가까운 서버에서 콘텐츠를 받아볼 수 있도록 하여 로딩 속도를 높이고 서버 부하를 줄입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 3020
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "양자 컴퓨터에서 정보를 표현하는 기본 단위로, 0과 1의 상태를 동시에 가질 수 있는 중첩(Superposition)의 특성을 활용하는 것은?",
+        "tags": [
+            "Quantum Computing",
+            "Qubit",
+            "Superposition",
+            "Information Theory"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "비트 (Bit)"
+            },
+            {
+                "id": "b",
+                "text": "큐비트 (Qubit)"
+            },
+            {
+                "id": "c",
+                "text": "메모리 셀 (Memory Cell)"
+            },
+            {
+                "id": "d",
+                "text": "트랜지스터 (Transistor)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "큐비트는 양자 얽힘과 중첩 현상을 이용하여 기존 컴퓨터의 비트(0 또는 1)와 달리 0과 1의 상태를 동시에 표현할 수 있어 병렬 계산 능력을 획기적으로 향상시킵니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 3121
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "어떤 사용자나 장치도 기본적으로 신뢰하지 않고, 네트워크 내부에 있더라도 모든 접근 시도를 지속적으로 검증하도록 요구하는 최신 사이버 보안 모델은?",
+        "tags": [
+            "Zero Trust",
+            "Cybersecurity",
+            "Network",
+            "Authentication"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "경계 보안 (Perimeter Security)"
+            },
+            {
+                "id": "b",
+                "text": "방화벽 중심 모델 (Firewall-Centric Model)"
+            },
+            {
+                "id": "c",
+                "text": "제로 트러스트 (Zero Trust) 아키텍처"
+            },
+            {
+                "id": "d",
+                "text": "신뢰 기반 보안 (Trust-Based Security)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "제로 트러스트는 '절대 신뢰하지 말고, 항상 검증하라(Never Trust, Always Verify)'는 원칙에 기반하며, 내부 및 외부 위협 모두에 대응하기 위한 현대적인 보안 전략입니다.",
+        "difficulty": 0.45,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1160,
+        "choiceShuffleSeed": 3222
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "다수의 컨테이너화된 애플리케이션을 자동으로 배포, 확장, 관리하는 데 사용되는 오픈 소스 시스템으로, 컨테이너 오케스트레이션의 사실상 표준이 된 기술은?",
+        "tags": [
+            "Kubernetes",
+            "DevOps",
+            "Container",
+            "Orchestration"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "가상 머신 (Virtual Machine)"
+            },
+            {
+                "id": "b",
+                "text": "도커 스웜 (Docker Swarm)"
+            },
+            {
+                "id": "c",
+                "text": "쿠버네티스 (Kubernetes)"
+            },
+            {
+                "id": "d",
+                "text": "젠킨스 (Jenkins)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "쿠버네티스는 구글에서 시작된 프로젝트로, 대규모 마이크로서비스 환경에서 컨테이너의 안정적인 운영과 관리의 자동화를 담당합니다.",
+        "difficulty": 0.65,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1320,
+        "choiceShuffleSeed": 3323
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "LLM이 문맥적 유사도를 파악하거나 RAG(검색 증강 생성) 기법을 구현할 때, 단어, 문장, 이미지 등을 숫자 벡터 형태로 저장하고 유사도를 계산하는 데 특화된 데이터베이스는?",
+        "tags": [
+            "Vector Database",
+            "LLM",
+            "AI",
+            "Embedding"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "키-값 데이터베이스 (Key-Value DB)"
+            },
+            {
+                "id": "b",
+                "text": "그래프 데이터베이스 (Graph DB)"
+            },
+            {
+                "id": "c",
+                "text": "벡터 데이터베이스 (Vector Database)"
+            },
+            {
+                "id": "d",
+                "text": "관계형 데이터베이스 (RDB)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "벡터 데이터베이스는 임베딩(Embedding)된 데이터를 저장하고, 코사인 유사도 등을 통해 벡터 간의 거리를 계산하여 의미적으로 가장 유사한 정보를 빠르게 검색하는 데 사용됩니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 3424
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "웹 브라우저에서 C, C++, Rust 등 다른 언어로 작성된 코드를 거의 네이티브에 가까운 속도로 실행할 수 있게 해주는 저수준 바이트코드 형식의 표준 기술은?",
+        "tags": [
+            "WebAssembly",
+            "Web Standard",
+            "Performance",
+            "Browser"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "WebGL"
+            },
+            {
+                "id": "b",
+                "text": "WebRTC"
+            },
+            {
+                "id": "c",
+                "text": "WebAssembly"
+            },
+            {
+                "id": "d",
+                "text": "Node.js"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "WebAssembly(Wasm)는 웹의 성능 병목 현상을 해결하기 위해 고안되었으며, 특히 게임, 3D 렌더링, 대규모 과학 연산 등 고성능이 요구되는 웹 애플리케이션에 필수적입니다.",
+        "difficulty": 0.55,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1240,
+        "choiceShuffleSeed": 3525
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "각국 중앙은행이 발행을 검토하거나 시험 중인, 법정 화폐의 가치를 지니는 디지털 형태의 통화로, 블록체인 기술을 활용할 수 있는 통화의 약자는?",
+        "tags": [
+            "CBDC",
+            "FinTech",
+            "Central Bank",
+            "Digital Currency"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "ICO (Initial Coin Offering)"
+            },
+            {
+                "id": "b",
+                "text": "CBDC (Central Bank Digital Currency)"
+            },
+            {
+                "id": "c",
+                "text": "NFT (Non-Fungible Token)"
+            },
+            {
+                "id": "d",
+                "text": "DeFi (Decentralized Finance)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "CBDC는 중앙은행이 직접 발행하고 보증하는 디지털 형태의 화폐로, 기존 현금과 중앙은행 예금의 디지털 버전으로 볼 수 있으며, 결제 시스템 효율화와 금융 안정성에 기여할 수 있습니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 3626
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "첨단 반도체를 제조할 때 극도로 미세한 회로 패턴을 웨이퍼에 새기기 위해 사용되는, 기존 광원보다 훨씬 짧은 파장(13.5nm)을 사용하는 첨단 노광 기술은?",
+        "tags": [
+            "EUV",
+            "Semiconductor",
+            "Lithography",
+            "Wafer"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "딥 러닝 리소그래피 (Deep Learning Lithography)"
+            },
+            {
+                "id": "b",
+                "text": "액침 리소그래피 (Immersion Lithography)"
+            },
+            {
+                "id": "c",
+                "text": "극자외선 노광 (EUV Lithography)"
+            },
+            {
+                "id": "d",
+                "text": "마스크리스 노광 (Maskless Lithography)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "EUV(Extreme Ultraviolet) 노광 기술은 파장이 짧아 10나노미터 이하의 초미세 회로 패턴을 단 한 번의 공정으로 새길 수 있게 하여 반도체 성능 향상에 필수적입니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 3727
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "수 킬로미터에 달하는 넓은 지역을 커버하면서도 매우 낮은 전력으로 소량의 데이터를 장기간 전송할 수 있도록 설계된 사물 인터넷(IoT) 통신 기술 표준은?",
+        "tags": [
+            "LoRaWAN",
+            "IoT",
+            "LPWAN",
+            "Network"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "LTE-M"
+            },
+            {
+                "id": "b",
+                "text": "LoRaWAN"
+            },
+            {
+                "id": "c",
+                "text": "Wi-Fi HaLow"
+            },
+            {
+                "id": "d",
+                "text": "Zigbee"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "LoRaWAN은 LPWAN(Low Power Wide Area Network)의 한 종류로, 배터리 구동 장치에 적합하며 스마트 시티나 농업 모니터링 등 저전력 광역 통신이 필요한 분야에 주로 사용됩니다.",
+        "difficulty": 0.75,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1400,
+        "choiceShuffleSeed": 3828
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "데이터를 중앙 서버로 모으지 않고, 사용자 스마트폰이나 의료 기기 등 분산된 로컬 기기에서 모델 학습을 수행한 후, 결과만 중앙 서버에서 취합하여 통합 모델을 만드는 머신러닝 방식은?",
+        "tags": [
+            "Federated Learning",
+            "Machine Learning",
+            "Privacy",
+            "Decentralized"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "전이 학습 (Transfer Learning)"
+            },
+            {
+                "id": "b",
+                "text": "연합 학습 (Federated Learning)"
+            },
+            {
+                "id": "c",
+                "text": "클러스터링 (Clustering)"
+            },
+            {
+                "id": "d",
+                "text": "가상 학습 (Virtual Learning)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "연합 학습은 개인 정보 보호를 강화하면서도 모델을 개선할 수 있는 기술로, 구글을 포함한 여러 기업에서 온디바이스 AI의 개인화된 모델 업데이트에 활용하고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 3929
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "컴퓨터 그래픽에서 광선의 경로를 실제 물리 법칙과 유사하게 추적하여, 그림자, 반사, 굴절 등 빛의 효과를 극도로 사실적으로 표현하는 렌더링 기술은?",
+        "tags": [
+            "Ray Tracing",
+            "Graphics",
+            "Rendering",
+            "Realism"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "래스터화 (Rasterization)"
+            },
+            {
+                "id": "b",
+                "text": "레이 트레이싱 (Ray Tracing)"
+            },
+            {
+                "id": "c",
+                "text": "텍스처 매핑 (Texture Mapping)"
+            },
+            {
+                "id": "d",
+                "text": "와이어프레임 (Wireframe)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "레이 트레이싱은 각 픽셀에 도달하는 광선의 역경로를 계산하여 실시간으로 정확하고 생생한 빛의 효과를 구현하며, 최신 게임 및 그래픽 작업에 필수적인 기술입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 4030
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "인터넷상의 가상 세계에서 화폐 대신 토큰으로 재화나 서비스를 구매할 수 있도록 설계된, 게임과 금융을 결합한 새로운 경제 시스템은?",
+        "tags": [
+            "GameFi",
+            "Web3",
+            "Blockchain",
+            "Economy"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "FaaS (Function as a Service)"
+            },
+            {
+                "id": "b",
+                "text": "블록체인 게이밍 (Blockchain Gaming)"
+            },
+            {
+                "id": "c",
+                "text": "게임파이 (GameFi)"
+            },
+            {
+                "id": "d",
+                "text": "클라우드 게임 (Cloud Gaming)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "게임파이(GameFi)는 탈중앙 금융(DeFi)의 요소를 게임에 접목하여 사용자가 게임을 통해 수익을 창출할 수 있는 'Play-to-Earn' 모델의 한 형태입니다.",
+        "difficulty": 0.55,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1240,
+        "choiceShuffleSeed": 4131
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "수술용 로봇이 의사의 움직임을 초고속으로 복제하고, 원격지의 의사가 통신 지연 없이 환자를 수술할 수 있도록 하는 차세대 통신망의 주요 이점은?",
+        "tags": [
+            "6G",
+            "Ultra-low latency",
+            "Telemedicine",
+            "Robotics"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "데이터 전송 용량 증가"
+            },
+            {
+                "id": "b",
+                "text": "초저지연 (Ultra-low latency)"
+            },
+            {
+                "id": "c",
+                "text": "높은 에너지 효율"
+            },
+            {
+                "id": "d",
+                "text": "대규모 사물 연결"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "초저지연은 6G의 핵심 목표 중 하나로, 실시간 원격 수술, 자율주행, 몰입형 XR 서비스 등 반응성이 매우 중요한 서비스 구현에 필수적입니다.",
+        "difficulty": 0.45,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1160,
+        "choiceShuffleSeed": 4232
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "소프트웨어 개발에서 빌드, 테스트, 배포 과정을 자동화하여 개발자와 운영팀 간의 협업을 강화하고 서비스 배포 주기를 단축시키는 문화 및 방법론은?",
+        "tags": [
+            "DevOps",
+            "Automation",
+            "Software Development",
+            "Agile"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "워터폴 모델 (Waterfall Model)"
+            },
+            {
+                "id": "b",
+                "text": "데브옵스 (DevOps)"
+            },
+            {
+                "id": "c",
+                "text": "PaaS (Platform as a Service)"
+            },
+            {
+                "id": "d",
+                "text": "빅데이터 분석 (Big Data Analytics)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "데브옵스는 개발(Development)과 운영(Operations)의 합성어로, 소프트웨어 생명 주기 전반을 자동화하고 통합하여 효율성과 안정성을 높이는 것을 목표로 합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 4333
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "기업이 고객의 니즈를 예측하고 개인화된 경험을 제공하기 위해, AI 알고리즘을 활용하여 대규모 데이터를 수집, 분석, 활용하는 일련의 과정을 통칭하는 용어는?",
+        "tags": [
+            "Big Data",
+            "AI",
+            "Customer Experience",
+            "Analytics"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "로보틱스 공정 자동화 (RPA)"
+            },
+            {
+                "id": "b",
+                "text": "데이터 드리븐 (Data-Driven) 경영"
+            },
+            {
+                "id": "c",
+                "text": "인공지능 기반 고객 경험 (AI-CX)"
+            },
+            {
+                "id": "d",
+                "text": "클라우드 마이그레이션 (Cloud Migration)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "AI-CX는 인공지능을 활용하여 고객의 행동 패턴, 선호도 등을 분석하고, 이를 기반으로 고객 서비스, 마케팅, 제품 개발 등 전반적인 고객 경험을 개선하는 전략입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 4434
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "기존 D램과 달리 데이터 보존을 위해 주기적으로 전력을 공급할 필요가 없으며, 전원이 꺼져도 데이터를 영구적으로 보존하는 차세대 메모리 기술은?",
+        "tags": [
+            "Non-Volatile Memory",
+            "PRAM",
+            "MRAM",
+            "Storage"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "HBM (High Bandwidth Memory)"
+            },
+            {
+                "id": "b",
+                "text": "SRAM (Static Random-Access Memory)"
+            },
+            {
+                "id": "c",
+                "text": "휘발성 메모리 (Volatile Memory)"
+            },
+            {
+                "id": "d",
+                "text": "비휘발성 메모리 (Non-Volatile Memory)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "비휘발성 메모리(PRAM, MRAM, ReRAM 등)는 D램의 빠른 속도와 낸드 플래시의 데이터 영구 보존 능력을 결합한 차세대 메모리로 주목받고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 4535
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "인공지능의 학습 및 추론 과정을 사람이 이해할 수 있도록 '왜 그런 결론에 도달했는지'를 설명해주는 능력을 의미하는 AI 윤리의 핵심 개념은?",
+        "tags": [
+            "XAI",
+            "AI Ethics",
+            "Explainability",
+            "Trust"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "데이터 정규화 (Data Normalization)"
+            },
+            {
+                "id": "b",
+                "text": "설명 가능 인공지능 (XAI)"
+            },
+            {
+                "id": "c",
+                "text": "전이 학습 (Transfer Learning)"
+            },
+            {
+                "id": "d",
+                "text": "편향 완화 (Bias Mitigation)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "설명 가능 인공지능(XAI, Explainable AI)은 AI 시스템의 투명성을 높여 사용자가 결과를 신뢰하고 편향성을 파악하여 수정할 수 있도록 돕는 기술입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 4636
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "스마트 계약(Smart Contract)의 기능을 넘어, 특정 블록체인 환경에서 자산의 발행, 거래, 대출, 보험 등 금융 서비스를 자동화하여 제공하는 탈중앙화된 금융 시스템은?",
+        "tags": [
+            "DeFi",
+            "Blockchain",
+            "Finance",
+            "Decentralized"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "ICO (Initial Coin Offering)"
+            },
+            {
+                "id": "b",
+                "text": "CEX (Centralized Exchange)"
+            },
+            {
+                "id": "c",
+                "text": "DeFi (Decentralized Finance)"
+            },
+            {
+                "id": "d",
+                "text": "SEC (Securities and Exchange Commission)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "디파이(DeFi)는 중개자 없이 블록체인을 통해 금융 거래를 가능하게 하여, 전통적인 금융 시스템의 비효율성과 규제 문제를 해소하고자 합니다.",
+        "difficulty": 0.35,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1080,
+        "choiceShuffleSeed": 4737
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "서버 관리의 부담을 줄이고, 사용량에 따라 컴퓨팅 자원 할당 및 비용을 지불하게 하며, 이벤트가 발생할 때만 코드가 실행되는 클라우드 컴퓨팅 모델은?",
+        "tags": [
+            "Serverless",
+            "Cloud",
+            "FaaS",
+            "Cost Efficiency"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "IaaS (Infrastructure as a Service)"
+            },
+            {
+                "id": "b",
+                "text": "온프레미스 (On-Premise)"
+            },
+            {
+                "id": "c",
+                "text": "서버리스 컴퓨팅 (Serverless Computing)"
+            },
+            {
+                "id": "d",
+                "text": "프라이빗 클라우드 (Private Cloud)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "서버리스 컴퓨팅은 서버 관리를 클라우드 제공업체에 맡기고, 개발자는 코드에만 집중할 수 있게 하며, Function as a Service(FaaS)가 핵심 서비스 중 하나입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 4838
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "기존에 학습된 AI 모델의 가중치를 고정하고, 사용자 요구에 맞춰 특정 작업(예: 감성 분석, 텍스트 요약 등)에 맞게 모델의 일부분만 재학습시키는 기법은?",
+        "tags": [
+            "Fine-Tuning",
+            "LLM",
+            "Transfer Learning",
+            "Adaptation"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "프롬프트 엔지니어링 (Prompt Engineering)"
+            },
+            {
+                "id": "b",
+                "text": "강화 학습 (Reinforcement Learning)"
+            },
+            {
+                "id": "c",
+                "text": "전이 학습 (Transfer Learning)"
+            },
+            {
+                "id": "d",
+                "text": "파인 튜닝 (Fine-Tuning)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "파인 튜닝은 대규모 모델을 특정 도메인이나 작업에 맞게 미세 조정하는 효율적인 방법으로, 모델을 처음부터 학습시키는 것보다 시간과 비용을 절약할 수 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 4939
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "수술, 제조업, 배송 등 특정 작업에 특화되어 환경에 관계없이 자율적으로 임무를 수행할 수 있는 AI를 탑재한 하드웨어 로봇은?",
+        "tags": [
+            "Autonomous Robotics",
+            "AI",
+            "Automation",
+            "Hardware"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "챗봇 (Chatbot)"
+            },
+            {
+                "id": "b",
+                "text": "로보어드바이저 (Robo-Advisor)"
+            },
+            {
+                "id": "c",
+                "text": "자율 로봇 (Autonomous Robot)"
+            },
+            {
+                "id": "d",
+                "text": "소프트웨어 에이전트 (Software Agent)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "자율 로봇은 센서와 AI를 이용해 주변 환경을 인식하고, 사람의 지속적인 조종 없이 목표를 달성할 수 있도록 스스로 의사결정을 내리고 행동하는 로봇입니다.",
+        "difficulty": 0.65,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1320,
+        "choiceShuffleSeed": 5040
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "데이터를 암호화된 상태 그대로 두고도 사칙연산 등 데이터 처리가 가능하여, 민감한 정보의 프라이버시를 완벽하게 보호할 수 있는 암호화 기술은?",
+        "tags": [
+            "Homomorphic Encryption",
+            "Privacy",
+            "Cryptography",
+            "Security"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "RSA 암호화"
+            },
+            {
+                "id": "b",
+                "text": "동형 암호 (Homomorphic Encryption)"
+            },
+            {
+                "id": "c",
+                "text": "양자 암호 통신 (QKD)"
+            },
+            {
+                "id": "d",
+                "text": "SHA-256 해시 함수"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "동형 암호는 데이터를 복호화하지 않고도 클라우드 서버 등에서 분석, 연산할 수 있게 해주는 혁신적인 기술로, AI와 빅데이터 시대의 프라이버시 보호를 위한 핵심 기술로 주목받고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 6151
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "현실 세계의 물리적 시스템(공장, 도시, 인체 등)을 컴퓨터 속 가상 세계에 똑같이 구현하고 시뮬레이션하여, 문제 예측 및 성능 최적화에 활용하는 기술은?",
+        "tags": [
+            "Digital Twin",
+            "Simulation",
+            "IoT",
+            "Optimization"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "AR/VR 헤드셋"
+            },
+            {
+                "id": "b",
+                "text": "디지털 트윈 (Digital Twin)"
+            },
+            {
+                "id": "c",
+                "text": "메타버스 플랫폼"
+            },
+            {
+                "id": "d",
+                "text": "클라우드 서비스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "디지털 트윈은 현실의 데이터를 실시간으로 반영하여 가상 모델을 동기화함으로써, 건설, 제조, 헬스케어 등 다양한 분야에서 예측 분석과 의사결정을 지원합니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 6252
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "양자 컴퓨터에서 큐비트의 상태가 서로 얽혀 있어, 한 큐비트의 상태가 결정되면 아무리 멀리 떨어져 있어도 다른 큐비트의 상태가 즉시 결정되는 현상은?",
+        "tags": [
+            "Quantum Entanglement",
+            "Qubit",
+            "Physics",
+            "Quantum Computing"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "슈퍼컴퓨팅 (Supercomputing)"
+            },
+            {
+                "id": "b",
+                "text": "양자 얽힘 (Quantum Entanglement)"
+            },
+            {
+                "id": "c",
+                "text": "양자 터널링 (Quantum Tunneling)"
+            },
+            {
+                "id": "d",
+                "text": "하이젠베르크의 불확정성 원리"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "양자 얽힘은 양자 정보 처리 및 양자 통신의 핵심 요소이며, 아인슈타인이 '멀리서 일어나는 섬뜩한 작용'이라고 불렀던 현상입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 6353
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "데이터 소스 근처, 즉 최종 사용자나 IoT 기기에 가까운 네트워크 에지(Edge)에서 데이터를 처리하고 분석하는 분산 컴퓨팅 패러다임은?",
+        "tags": [
+            "Edge Computing",
+            "Latency",
+            "IoT",
+            "Decentralized"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "클라우드 컴퓨팅 (Cloud Computing)"
+            },
+            {
+                "id": "b",
+                "text": "그리드 컴퓨팅 (Grid Computing)"
+            },
+            {
+                "id": "c",
+                "text": "에지 컴퓨팅 (Edge Computing)"
+            },
+            {
+                "id": "d",
+                "text": "온프레미스 (On-Premise)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "에지 컴퓨팅은 중앙 클라우드로 데이터를 전송하는 데 드는 지연 시간을 줄이고, 실시간 처리와 대역폭 효율성을 높이는 데 중점을 둡니다. 자율주행차나 스마트 팩토리에 필수적입니다.",
+        "difficulty": 0.55,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1240,
+        "choiceShuffleSeed": 6454
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "애플리케이션을 단일 대형 구조(Monolithic)가 아닌, 독립적으로 배포 및 확장 가능한 작고 모듈화된 서비스들의 집합으로 구축하는 소프트웨어 아키텍처 방식은?",
+        "tags": [
+            "Microservices",
+            "Architecture",
+            "DevOps",
+            "Scalability"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "마이크로서비스 아키텍처 (MSA)"
+            },
+            {
+                "id": "b",
+                "text": "서비스 지향 아키텍처 (SOA)"
+            },
+            {
+                "id": "c",
+                "text": "계층형 아키텍처 (Layered Architecture)"
+            },
+            {
+                "id": "d",
+                "text": "모놀리식 아키텍처 (Monolithic Architecture)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "마이크로서비스 아키텍처(MSA)는 각 서비스가 자체 데이터베이스를 가지고 독립적으로 운영될 수 있도록 하여, 개발 속도와 시스템 확장성을 크게 높입니다.",
+        "difficulty": 0.65,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1320,
+        "choiceShuffleSeed": 6555
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "시스템의 가용성, 지연 시간, 성능 등을 측정하고, 서비스의 신뢰성을 보장하기 위한 엔지니어링 실무를 수행하는 역할 및 방법론은?",
+        "tags": [
+            "SRE",
+            "Operations",
+            "Reliability",
+            "DevOps"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "사업 연속성 관리 (BCM)"
+            },
+            {
+                "id": "b",
+                "text": "사이트 신뢰성 엔지니어링 (SRE)"
+            },
+            {
+                "id": "c",
+                "text": "소프트웨어 품질 보증 (SQA)"
+            },
+            {
+                "id": "d",
+                "text": "로보틱스 공정 자동화 (RPA)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "SRE(Site Reliability Engineering)는 Google에서 시작된 개념으로, 소프트웨어 엔지니어링 관행을 사용하여 IT 운영 작업을 자동화하고 안정성을 개선하는 데 중점을 둡니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 6656
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "이미지나 영상과 같은 고차원 데이터를 입력받아, 노이즈를 추가하고 제거하는 과정을 반복함으로써 새로운 데이터를 생성해내는 AI 모델 구조는?",
+        "tags": [
+            "Generative AI",
+            "Diffusion Model",
+            "Image Generation",
+            "Deep Learning"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "순환 신경망 (RNN)"
+            },
+            {
+                "id": "b",
+                "text": "확산 모델 (Diffusion Model)"
+            },
+            {
+                "id": "c",
+                "text": "전통적인 신경망 (Perceptron)"
+            },
+            {
+                "id": "d",
+                "text": "컨볼루션 신경망 (CNN)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "확산 모델은 이미지 생성 AI의 최신 트렌드를 이끌고 있으며, Midjourney, DALL-E 3 등의 최신 모델들이 이 구조를 기반으로 현실적인 이미지를 생성합니다.",
+        "difficulty": 0.45,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1160,
+        "choiceShuffleSeed": 6757
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "양자 컴퓨터가 등장하더라도 현재의 공개 키 암호화 방식(RSA, ECC 등)을 해독할 수 없도록 설계된, 양자 시대에 대비하는 새로운 암호화 기술 분야는?",
+        "tags": [
+            "PQC",
+            "Quantum Security",
+            "Cryptography",
+            "Future Tech"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "블록체인 해싱"
+            },
+            {
+                "id": "b",
+                "text": "동형 암호"
+            },
+            {
+                "id": "c",
+                "text": "양자 후 암호 (Post-Quantum Cryptography, PQC)"
+            },
+            {
+                "id": "d",
+                "text": "대칭 키 암호화"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "PQC는 슈어(Shor) 알고리즘과 같은 양자 컴퓨터 알고리즘에도 안전하도록 수학적 난이도에 기반하여 설계된 암호화 방식을 연구하는 분야입니다.",
+        "difficulty": 0.75,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1400,
+        "choiceShuffleSeed": 6858
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "인간 두뇌의 뉴런 구조와 유사하게 메모리와 연산을 통합하여, 초저전력으로 대규모 병렬 연산을 수행하도록 설계된 차세대 AI 반도체 칩은?",
+        "tags": [
+            "Neuromorphic",
+            "AI Hardware",
+            "Brain Simulation",
+            "Chip"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "CPU (중앙 처리 장치)"
+            },
+            {
+                "id": "b",
+                "text": "GPU (그래픽 처리 장치)"
+            },
+            {
+                "id": "c",
+                "text": "뉴로모픽 칩 (Neuromorphic Chip)"
+            },
+            {
+                "id": "d",
+                "text": "FPGA (Field-Programmable Gate Array)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "뉴로모픽 칩은 폰 노이만 구조의 한계를 극복하고, 전력 소비를 최소화하면서도 AI 연산 효율을 극대화하여 온디바이스 AI 시대의 핵심이 될 것으로 기대됩니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 6959
+    },
+    {
+        "deckSlug": "deck_seed_tech_it",
+        "category": "tech_it",
+        "type": "mcq",
+        "prompt": "하나의 블록체인에서 발행된 자산이나 데이터가 다른 블록체인 네트워크에서도 원활하게 사용될 수 있도록 하는 Web3 기술의 핵심 개념은?",
+        "tags": [
+            "Interoperability",
+            "Blockchain",
+            "Web3",
+            "Cross-Chain"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "토큰 소각 (Token Burning)"
+            },
+            {
+                "id": "b",
+                "text": "디지털 소외 (Digital Divide)"
+            },
+            {
+                "id": "c",
+                "text": "상호 운용성 (Interoperability)"
+            },
+            {
+                "id": "d",
+                "text": "단일 체인 구조 (Single-Chain Architecture)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "상호 운용성은 다양한 블록체인 네트워크들이 서로 통신하고 데이터를 교환할 수 있게 함으로써, 블록체인 생태계의 확장성과 유용성을 높이는 데 필수적입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761471000,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 7060
+    }
+]

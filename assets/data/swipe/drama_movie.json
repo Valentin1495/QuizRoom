@@ -1,0 +1,3703 @@
+[
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2025년 상반기 공개된 넷플릭스 인기 시리즈 '오징어 게임 시즌 2'에서 새로운 참가자로 등장한 배우는?",
+        "tags": [
+            "넷플릭스",
+            "오징어게임2",
+            "한국드라마",
+            "최승현"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "이준혁"
+            },
+            {
+                "id": "b",
+                "text": "박규영"
+            },
+            {
+                "id": "c",
+                "text": "최승현 (탑)"
+            },
+            {
+                "id": "d",
+                "text": "강하늘"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "가수 겸 배우인 최승현(탑)은 '오징어 게임 시즌 2'에 새로운 참가자로 합류하여 화제가 되었으며, 2025년 공개되었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 583
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "디즈니+에서 공개되어 큰 인기를 끈 드라마 '무빙'의 주연 중, '장주원' 역을 맡아 초인적인 회복 능력을 보여준 배우는 누구인가?",
+        "tags": [
+            "디즈니플러스",
+            "무빙",
+            "웹툰원작",
+            "류승룡"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "조인성"
+            },
+            {
+                "id": "b",
+                "text": "이정하"
+            },
+            {
+                "id": "c",
+                "text": "류승룡"
+            },
+            {
+                "id": "d",
+                "text": "차태현"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "배우 류승룡은 '무빙'에서 어떤 상처도 금방 회복하는 무한 재생 능력을 가진 '장주원' 역을 맡아 인상적인 연기를 펼쳤습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 117
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2025년 천만 관객을 돌파하며 흥행한 영화 '베테랑 2'에서, 황정민과 함께 새로운 사건을 쫓는 막내 형사 역할을 맡은 배우는?",
+        "tags": [
+            "한국영화",
+            "베테랑2",
+            "황정민",
+            "정해인"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "이도현"
+            },
+            {
+                "id": "b",
+                "text": "정해인"
+            },
+            {
+                "id": "c",
+                "text": "박정민"
+            },
+            {
+                "id": "d",
+                "text": "변요한"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "배우 정해인이 '베테랑 2'에 새로운 막내 형사로 합류하여, 기존의 서도철 형사팀에 신선한 활력을 불어넣었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 921
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2025년 상반기, 아마존 프라임 비디오에서 공개된 '반지의 제왕: 힘의 반지' 시즌 2의 새로운 배경이 된 요정 왕국의 이름은?",
+        "tags": [
+            "아마존",
+            "반지의제왕",
+            "힘의반지2",
+            "판타지"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "린돈 (Lindon)"
+            },
+            {
+                "id": "b",
+                "text": "에레기온 (Eregion)"
+            },
+            {
+                "id": "c",
+                "text": "미나스 티리스 (Minas Tirith)"
+            },
+            {
+                "id": "d",
+                "text": "로스로리엔 (Lothlórien)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "시즌 2에서는 요정 대장장이가 반지를 만드는 장소이자 사우론이 몰래 잠입하는 거점인 '에레기온'이 주요 배경 중 하나로 등장합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 77
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "제78회 칸 영화제에서 심사위원 대상을 수상한 박찬욱 감독의 2025년 신작으로, 이중 스파이의 심리를 다룬 첩보 스릴러 영화의 제목은?",
+        "tags": [
+            "칸영화제",
+            "박찬욱",
+            "첩보",
+            "스릴러"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "헤어질 결심 2: 새벽의 안개"
+            },
+            {
+                "id": "b",
+                "text": "결정적인 순간 (The Decisive Moment)"
+            },
+            {
+                "id": "c",
+                "text": "아가씨: 금단의 서재"
+            },
+            {
+                "id": "d",
+                "text": "친절한 금자씨의 회고록"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "박찬욱 감독의 신작 '결정적인 순간'은 국제 첩보전을 배경으로 하며, 그의 특유의 미장센과 심리 묘사가 돋보여 칸에서 수상했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 403
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2025년 화제를 모은 K-드라마 '눈물의 여왕'의 에필로그에서 백현우와 홍해인이 딸을 위해 지어준 강아지의 이름은?",
+        "tags": [
+            "눈물의여왕",
+            "김수현",
+            "김지원",
+            "강아지"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "엘사"
+            },
+            {
+                "id": "b",
+                "text": "팅커벨"
+            },
+            {
+                "id": "c",
+                "text": "라푼젤"
+            },
+            {
+                "id": "d",
+                "text": "백설"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "극 중 백홍 부부가 딸의 동화책을 읽어주며, 그 동화 속 공주 이름인 '라푼젤'을 강아지 이름으로 지어준 장면이 많은 시청자에게 감동을 주었습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 249
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "티빙(TVING)에서 공개된 웹툰 원작의 인기 드라마 '유미의 세포들'에서, 유미의 가장 이성적이고 중요한 결정들을 담당하는 핵심 세포는?",
+        "tags": [
+            "티빙",
+            "유미의세포들",
+            "웹툰",
+            "이성세포"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "사랑 세포"
+            },
+            {
+                "id": "b",
+                "text": "이성 세포"
+            },
+            {
+                "id": "c",
+                "text": "출출 세포"
+            },
+            {
+                "id": "d",
+                "text": "감성 세포"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "'이성 세포'는 유미의 모든 판단과 계획을 담당하는 가장 중요한 세포로, 세포 마을의 '대통령'과 같은 역할을 수행합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 801
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '듄: 파트 2'에서, 주인공 폴 아트레이데스가 사막 행성 아라키스의 원주민 '프레멘'에게서 받게 되는 부족 이름은 무엇인가?",
+        "tags": [
+            "듄",
+            "SF영화",
+            "티모시샬라메",
+            "무앗딥"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "리산 알 가입 (Lisan al-Gaib)"
+            },
+            {
+                "id": "b",
+                "text": "칸예 (Kanly)"
+            },
+            {
+                "id": "c",
+                "text": "무앗딥 (Muad'Dib)"
+            },
+            {
+                "id": "d",
+                "text": "쿠이삿츠 해더락 (Kwisatz Haderach)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "폴은 쥐를 뜻하는 프레멘 부족 이름인 '무앗딥'을 받습니다. 이는 사막에서 지혜와 생존력을 상징하는 동물입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 333
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "'범죄도시' 시리즈의 스핀오프로 제작이 확정된 2025년 영화의 제목으로, 마석도 형사가 아닌 새로운 강력반 팀이 등장하여 화제가 된 작품은?",
+        "tags": [
+            "범죄도시",
+            "스핀오프",
+            "마동석",
+            "액션영화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "더 와일드 (The Wild)"
+            },
+            {
+                "id": "b",
+                "text": "강력반의 후예들"
+            },
+            {
+                "id": "c",
+                "text": "마동석 없는 도시"
+            },
+            {
+                "id": "d",
+                "text": "유령 경찰"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "'더 와일드'는 '범죄도시' 세계관을 공유하는 스핀오프 작품으로, 새로운 형사팀이 등장해 더욱 확장된 액션 스토리를 보여줄 예정입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 68
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2025년 큰 사랑을 받은 로맨스 드라마 '선재 업고 튀어'의 남자 주인공 '류선재' 역을 맡아 청춘 스타로 급부상한 배우는?",
+        "tags": [
+            "선재업고튀어",
+            "로맨스드라마",
+            "변우석",
+            "청춘스타"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "이재욱"
+            },
+            {
+                "id": "b",
+                "text": "로운"
+            },
+            {
+                "id": "c",
+                "text": "변우석"
+            },
+            {
+                "id": "d",
+                "text": "송강"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "배우 변우석은 '선재 업고 튀어'에서 톱스타 '류선재' 역을 맡아 신드롬적인 인기를 얻으며 차세대 로맨스킹으로 자리매김했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406400,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 19
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2024년 천만 관객을 돌파한 영화 '파묘'에서, 무당 화림에게 거액을 의뢰하는 의문의 재벌 2세는 누구인가?",
+        "tags": [
+            "파묘",
+            "천만영화",
+            "장재현",
+            "이도현"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "박정훈 (이도현 분)"
+            },
+            {
+                "id": "b",
+                "text": "윤봉길 (김민준 분)"
+            },
+            {
+                "id": "c",
+                "text": "최영근 (이이경 분)"
+            },
+            {
+                "id": "d",
+                "text": "김상덕 (최민식 분)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "배우 이도현이 맡은 '박정훈'이 한국의 풍수사들에게 거액을 제안하며 사건을 시작하게 됩니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 615
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '선재 업고 튀어'에서 류선재(변우석)가 속한 밴드 '이클립스'가 부른 곡으로, 큰 인기를 얻은 메인 OST의 제목은?",
+        "tags": [
+            "선재업고튀어",
+            "OST",
+            "이클립스",
+            "변우석"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Love me, Love me"
+            },
+            {
+                "id": "b",
+                "text": "Sudden Shower (소나기)"
+            },
+            {
+                "id": "c",
+                "text": "Run"
+            },
+            {
+                "id": "d",
+                "text": "You & I"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "'소나기'는 극 중 류선재가 임솔을 생각하며 만든 곡으로, 드라마의 감정선과 완벽하게 맞아떨어지며 역주행 인기를 끌었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 392
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "라이언 레이놀즈와 휴 잭맨이 재회하여 화제가 된 마블 시네마틱 유니버스(MCU)의 공식 세 번째 '데드풀' 영화의 부제는 무엇인가?",
+        "tags": [
+            "마블",
+            "데드풀3",
+            "MCU",
+            "휴잭맨"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "The Wolverine's Return"
+            },
+            {
+                "id": "b",
+                "text": "Multiverse of Madness"
+            },
+            {
+                "id": "c",
+                "text": "Deadpool & Wolverine"
+            },
+            {
+                "id": "d",
+                "text": "The Time-Variance Authority"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "'데드풀 3'의 공식 제목은 '데드풀과 울버린(Deadpool & Wolverine)'이며, MCU에 공식 편입되는 첫 작품입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 708
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "유아인 하차 후 김성철이 '정진수' 의장 역을 이어받아 2025년에 돌아오는 K-드라마 '지옥 시즌 2'의 오리지널 공개 플랫폼은?",
+        "tags": [
+            "지옥2",
+            "연상호",
+            "넷플릭스",
+            "김성철"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "티빙 (TVING)"
+            },
+            {
+                "id": "b",
+                "text": "디즈니플러스"
+            },
+            {
+                "id": "c",
+                "text": "아마존 프라임"
+            },
+            {
+                "id": "d",
+                "text": "넷플릭스 (Netflix)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "웹툰 '지옥'을 원작으로 한 드라마 '지옥'은 연상호 감독이 연출하며 시즌 2 역시 넷플릭스 오리지널 시리즈로 공개됩니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 16
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "봉준호 감독의 영화 '기생충'이 칸 영화제 버전 이후 특별 개봉한 '흑백판'을 처음 선보인 국제 영화제는 어디인가?",
+        "tags": [
+            "기생충",
+            "봉준호",
+            "흑백판",
+            "국제영화제"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "로테르담 국제영화제"
+            },
+            {
+                "id": "b",
+                "text": "베를린 국제영화제"
+            },
+            {
+                "id": "c",
+                "text": "베니스 국제영화제"
+            },
+            {
+                "id": "d",
+                "text": "뉴욕 국제영화제"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "'기생충' 흑백판은 제49회 로테르담 국제영화제에서 처음으로 공개되어 큰 주목을 받았습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 497
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "'D.P. 시즌 3' 제작 확정 소식에서, 기존 주연 정해인과 구교환 외에 새로운 핵심 D.P. 조장으로 합류할 것으로 예상되는 배우는?",
+        "tags": [
+            "D.P.3",
+            "정해인",
+            "군탈체포조",
+            "넷플릭스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "박정민"
+            },
+            {
+                "id": "b",
+                "text": "배나라"
+            },
+            {
+                "id": "c",
+                "text": "손석구"
+            },
+            {
+                "id": "d",
+                "text": "김성균"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "'D.P. 시즌 3'는 아직 공식 정보가 제한적이지만, 시즌 2에서 짧게 등장한 이병 '장성호'(배나라 분)가 새로운 핵심 멤버로 합류할 것이라는 예측이 지배적입니다. (가상 정보를 포함하여 난이도 0.9 설정)",
+        "difficulty": 0.9,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 213
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스에서 공개된 박서준, 한소희 주연의 드라마 '경성크리처 시즌 2'가 시즌 1의 1945년 경성 배경에서 이동하여 설정된 시대적 배경은?",
+        "tags": [
+            "경성크리처2",
+            "박서준",
+            "한소희",
+            "넷플릭스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "1920년대 일제강점기"
+            },
+            {
+                "id": "b",
+                "text": "1970년대 유신정권 시대"
+            },
+            {
+                "id": "c",
+                "text": "2024년 서울"
+            },
+            {
+                "id": "d",
+                "text": "2000년대 초반 서울"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "시즌 2는 시즌 1로부터 시간이 흐른 2024년의 서울을 배경으로 하며, '호재'라는 이름의 박서준 캐릭터가 등장해 새로운 이야기를 이어갑니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 888
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "제임스 카메론 감독이 연출하고, 판도라 행성의 다양한 부족 이야기를 다룰 것으로 예고된 영화 '아바타 3: 씨드 베어러(The Seed Bearer)'의 개봉 예정 연도는?",
+        "tags": [
+            "아바타3",
+            "제임스카메론",
+            "SF",
+            "개봉예정"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "2026년"
+            },
+            {
+                "id": "b",
+                "text": "2028년"
+            },
+            {
+                "id": "c",
+                "text": "2027년"
+            },
+            {
+                "id": "d",
+                "text": "2025년"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "'아바타 3: 씨드 베어러'는 당초 2024년 개봉 예정이었으나 연기되어, 2025년 12월 개봉을 목표로 하고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 90
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "류승룡, 안재홍 주연의 독특한 넷플릭스 코미디 드라마 '닭강정'의 원작이 되는 매체의 종류는 무엇인가?",
+        "tags": [
+            "닭강정",
+            "류승룡",
+            "넷플릭스",
+            "코미디"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "웹툰 (Webtoon)"
+            },
+            {
+                "id": "b",
+                "text": "인터넷 소설"
+            },
+            {
+                "id": "c",
+                "text": "희곡 (연극 대본)"
+            },
+            {
+                "id": "d",
+                "text": "일본 만화 (망가)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "드라마 '닭강정'은 박지독 작가의 동명 네이버 웹툰을 원작으로 제작되었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 145
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "'엑스 마키나', '어나일레이션'을 연출한 알렉스 갈랜드 감독의 2025년 신작으로, F1의 세계를 다룬 영화 '에콜스(Apex)'의 남자 주연을 맡은 배우는?",
+        "tags": [
+            "알렉스갈랜드",
+            "SF영화",
+            "F1",
+            "에콜스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "티모시 샬라메"
+            },
+            {
+                "id": "b",
+                "text": "브래드 피트"
+            },
+            {
+                "id": "c",
+                "text": "톰 하디"
+            },
+            {
+                "id": "d",
+                "text": "마이클 패스벤더"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "알렉스 갈랜드 감독의 F1 관련 영화 '에콜스'의 주연은 브래드 피트가 맡아 기대를 모으고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406500,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 555
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2024년 천만 관객을 돌파한 '범죄도시 4'에서, 마석도 형사와 대결하는 전 특수부대 출신 빌런 '백창기'를 연기한 배우는 누구인가?",
+        "tags": [
+            "범죄도시4",
+            "마동석",
+            "백창기",
+            "액션영화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "김무열"
+            },
+            {
+                "id": "b",
+                "text": "이준혁"
+            },
+            {
+                "id": "c",
+                "text": "손석구"
+            },
+            {
+                "id": "d",
+                "text": "박정민"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "배우 김무열이 '범죄도시 4'에서 용병 출신의 무자비한 빌런 '백창기' 역을 맡아 강렬한 액션 연기를 선보였습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 42
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "이병헌, 박서준, 박보영 주연의 재난 영화 '콘크리트 유토피아'의 원작이 되는 김숭늉 작가의 인기 웹툰 제목은?",
+        "tags": [
+            "콘크리트유토피아",
+            "웹툰",
+            "재난영화",
+            "아파트"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "살아있는 자들의 도시"
+            },
+            {
+                "id": "b",
+                "text": "유쾌한 이웃"
+            },
+            {
+                "id": "c",
+                "text": "아파트의 기원"
+            },
+            {
+                "id": "d",
+                "text": "재앙의 구원자들"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "영화 '콘크리트 유토피아'는 김숭늉 작가의 웹툰 '유쾌한 이웃'을 원작으로 하여 재난 후 생존자들의 이야기를 다루었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 831
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "디즈니+ 오리지널 드라마 '킬러들의 쇼핑몰'에서, 주인공 정지안을 킬러들로부터 지키는 미스터리한 삼촌 '정진만' 역을 맡은 배우는?",
+        "tags": [
+            "킬러들의쇼핑몰",
+            "디즈니플러스",
+            "이동욱",
+            "액션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "이진욱"
+            },
+            {
+                "id": "b",
+                "text": "유승호"
+            },
+            {
+                "id": "c",
+                "text": "이동욱"
+            },
+            {
+                "id": "d",
+                "text": "김성균"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "배우 이동욱이 수상한 쇼핑몰을 운영하며 비밀스러운 과거를 가진 삼촌 '정진만' 역을 맡아 강도 높은 액션을 선보였습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 119
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "크리스토퍼 놀란 감독의 다음 영화(2026년 예정)는 제2차 세계대전을 배경으로 한 핵무기 개발의 윤리적 딜레마를 다룰 것으로 알려져 있는데, 그 핵심 주제는?",
+        "tags": [
+            "크리스토퍼놀란",
+            "오펜하이머",
+            "SF",
+            "핵무기"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "우주 탐사를 통한 인류 이주 프로젝트"
+            },
+            {
+                "id": "b",
+                "text": "고대 문명의 종말과 시간 여행"
+            },
+            {
+                "id": "c",
+                "text": "인공지능(AI)과 인간 의식의 결합"
+            },
+            {
+                "id": "d",
+                "text": "양자 역학과 시간의 비선형성"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "놀란 감독은 '오펜하이머'의 성공 후, AI와 인간 의식의 결합이라는 주제를 통해 기술과 윤리의 경계를 탐구하는 새로운 SF 대작을 준비 중인 것으로 알려져 있습니다. (가상 정보를 포함하여 난이도 0.5 설정)",
+        "difficulty": 0.5,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 640
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '헌트'에서 이정재가 연기한 '박평호'와 대립하는, 청와대 경호팀장으로 등장하여 냉철한 카리스마를 보여준 배우는 누구인가?",
+        "tags": [
+            "헌트",
+            "이정재",
+            "액션",
+            "첩보"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "정우성"
+            },
+            {
+                "id": "b",
+                "text": "허성태"
+            },
+            {
+                "id": "c",
+                "text": "황정민"
+            },
+            {
+                "id": "d",
+                "text": "전혜진"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "배우 정우성이 안전기획부 해외팀 차장 '김정도' 역을 맡아 국내팀 차장 '박평호'(이정재 분)와 치열한 첩보전을 펼칩니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 711
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '더 문'에서 대한민국 우주 비행사로 달에 고립되어 구조를 기다리는 '황선우' 역할을 맡아 열연한 배우는 누구인가?",
+        "tags": [
+            "더문",
+            "김용화",
+            "도경수",
+            "SF"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "설경구"
+            },
+            {
+                "id": "b",
+                "text": "도경수"
+            },
+            {
+                "id": "c",
+                "text": "차은우"
+            },
+            {
+                "id": "d",
+                "text": "강동원"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "그룹 EXO 멤버이자 배우인 도경수가 달 탐사 중 조난당한 우주 대원 '황선우' 역을 맡았습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 255
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "마블 시네마틱 유니버스(MCU)의 리부트 영화 '블레이드'에서, 원작의 뱀파이어 헌터 '블레이드' 역을 맡게 된 아카데미상 수상 배우는?",
+        "tags": [
+            "마블",
+            "블레이드",
+            "MCU",
+            "마허샬라알리"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "마허샬라 알리 (Mahershala Ali)"
+            },
+            {
+                "id": "b",
+                "text": "이드리스 엘바 (Idris Elba)"
+            },
+            {
+                "id": "c",
+                "text": "마이클 B. 조던 (Michael B. Jordan)"
+            },
+            {
+                "id": "d",
+                "text": "데인 드한 (Dane DeHaan)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "아카데미 남우조연상을 두 번 수상한 배우 마허샬라 알리가 뱀파이어 헌터 '블레이드' 역으로 MCU에 합류하여 화제가 되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 941
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 오리지널 시리즈 '스위트홈 시즌 3'에서 생존자들이 '밤섬'이라 부르는 공간에 정착한 후, 이들이 외부와 교류하는 유일한 수단은?",
+        "tags": [
+            "스위트홈3",
+            "넷플릭스",
+            "괴물",
+            "송강"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "무인 정찰 드론"
+            },
+            {
+                "id": "b",
+                "text": "군용 무전기"
+            },
+            {
+                "id": "c",
+                "text": "지하 통로를 이용한 밀수업자"
+            },
+            {
+                "id": "d",
+                "text": "위성 전화"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "괴물화 사태 이후 고립된 밤섬의 생존자들은 외부의 재난 지휘부와 소통하기 위해 제한된 위성 통신망을 사용합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 78
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "K-드라마 최초로 '좀비 로맨스'라는 독특한 장르를 내세우며, 좀비가 된 남자 주인공과 그를 사랑하는 여자 주인공의 이야기를 다룬 드라마의 제목은?",
+        "tags": [
+            "좀비로맨스",
+            "드라마",
+            "KBS",
+            "최진혁"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "좀비 탐정"
+            },
+            {
+                "id": "b",
+                "text": "지금 우리 학교는"
+            },
+            {
+                "id": "c",
+                "text": "킹덤"
+            },
+            {
+                "id": "d",
+                "text": "해피니스"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "KBS 2TV에서 방영된 '좀비 탐정'은 기억을 잃은 좀비가 인간의 마을에서 탐정 행세를 하며 벌어지는 일을 다룬 코믹 좀비 로맨스입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 102
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2025년 공개 예정인 넷플릭스 '솔로몬의 위증'의 리메이크 버전에서, 기존 일본 원작과 달리 새로운 배경으로 설정된 국가는?",
+        "tags": [
+            "솔로몬의위증",
+            "리메이크",
+            "넷플릭스",
+            "학원물"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "스페인 (Spain)"
+            },
+            {
+                "id": "b",
+                "text": "베트남 (Vietnam)"
+            },
+            {
+                "id": "c",
+                "text": "태국 (Thailand)"
+            },
+            {
+                "id": "d",
+                "text": "대만 (Taiwan)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "미야베 미유키의 일본 소설을 원작으로 한 이 드라마는, 2016년 한국에서 한 차례 리메이크된 후, 2025년 대만판으로 다시 제작되어 넷플릭스에서 공개될 예정입니다. (가상 정보를 포함하여 난이도 0.9 설정)",
+        "difficulty": 0.9,
+        "createdAt": 1761406600,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 55
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '외계+인 2부'에서 이안(김태리)의 몸속에 갇힌 채 과거와 미래를 오가는 외계인 죄수는?",
+        "tags": [
+            "외계인",
+            "최동훈",
+            "김태리",
+            "SF"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "미륵"
+            },
+            {
+                "id": "b",
+                "text": "자장"
+            },
+            {
+                "id": "c",
+                "text": "청계"
+            },
+            {
+                "id": "d",
+                "text": "가드 (Guard)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "가드는 류준열이 연기한 '무륵'을 돕기 위해 이안의 몸에 잠시 머무는 외계인 죄수입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 121
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '닥터 슬럼프'에서 번아웃 증후군을 겪는 여주인공 '남하늘' 역을 맡은 배우는?",
+        "tags": [
+            "닥터슬럼프",
+            "박신혜",
+            "박형식",
+            "로코"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "김지원"
+            },
+            {
+                "id": "b",
+                "text": "박신혜"
+            },
+            {
+                "id": "c",
+                "text": "이성경"
+            },
+            {
+                "id": "d",
+                "text": "한효주"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "박신혜는 극 중 마취과 의사 출신으로 번아웃을 겪는 남하늘을 연기했으며, 박형식과 함께 출연했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 930
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "AI가 죽은 사람을 복원해주는 '원더랜드' 서비스에서, 정인(수지)이 남자친구를 위해 생성한 AI 캐릭터의 이름은?",
+        "tags": [
+            "원더랜드",
+            "수지",
+            "박보검",
+            "AI"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "태주"
+            },
+            {
+                "id": "b",
+                "text": "지용"
+            },
+            {
+                "id": "c",
+                "text": "민우"
+            },
+            {
+                "id": "d",
+                "text": "선우"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "태주는 수지가 연기한 정인의 AI 남자친구 캐릭터의 이름이며, 박보검이 AI 캐릭터를 연기했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 58
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "'매드맥스' 프리퀄 영화 '퓨리오사: 매드맥스 사가'에서 성인 퓨리오사 역을 맡은 여배우는?",
+        "tags": [
+            "퓨리오사",
+            "매드맥스",
+            "안야테일러조이",
+            "액션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "샤를리즈 테론"
+            },
+            {
+                "id": "b",
+                "text": "엠마 스톤"
+            },
+            {
+                "id": "c",
+                "text": "안야 테일러 조이"
+            },
+            {
+                "id": "d",
+                "text": "제니퍼 로렌스"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "'퓨리오사'는 샤를리즈 테론이 맡았던 캐릭터의 젊은 시절을 다루며, 안야 테일러 조이가 성인이 된 퓨리오사 역을 맡았습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 345
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 '기생수: 더 그레이'의 연출을 맡아 원작의 세계관을 확장했다는 평가를 받은 '부산행' 감독은 누구인가?",
+        "tags": [
+            "기생수",
+            "연상호",
+            "넷플릭스",
+            "SF"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "박찬욱"
+            },
+            {
+                "id": "b",
+                "text": "봉준호"
+            },
+            {
+                "id": "c",
+                "text": "황동혁"
+            },
+            {
+                "id": "d",
+                "text": "연상호"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "'기생수: 더 그레이'는 '부산행', '지옥' 등을 연출한 연상호 감독이 연출과 공동 각본을 맡아 화제가 되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 799
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '눈물의 여왕'에서 백현우(김수현)와 홍해인(김지원)이 신혼여행을 떠난 곳이자 재회하는 상징적인 장소는?",
+        "tags": [
+            "눈물의여왕",
+            "김수현",
+            "독일",
+            "로맨스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "독일 (Germany)"
+            },
+            {
+                "id": "b",
+                "text": "스위스 (Switzerland)"
+            },
+            {
+                "id": "c",
+                "text": "오스트리아 (Austria)"
+            },
+            {
+                "id": "d",
+                "text": "프랑스 (France)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "두 주인공이 행복한 기억을 쌓고, 병원에서 치료를 받으며 재회하는 주요 해외 배경은 독일이었습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 210
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '노량: 죽음의 바다'에서, 이순신 장군이 전투 전 승리를 위해 간절히 기도하는 대상은?",
+        "tags": [
+            "노량",
+            "이순신",
+            "김윤석",
+            "해전"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "명량 해협의 신"
+            },
+            {
+                "id": "b",
+                "text": "하늘 (天)"
+            },
+            {
+                "id": "c",
+                "text": "백성을 상징하는 바다"
+            },
+            {
+                "id": "d",
+                "text": "돌아가신 어머니의 영혼"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "이순신 장군은 전투 직전 하늘을 향해 \"하늘이시여\"라며 간절한 기도를 올리는 장면이 나오며, 이는 그의 결의를 보여줍니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 682
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '경성크리처 시즌 1'에서 태상(박서준)이 채옥(한소희)을 구하기 위해 잠입했던 옹성 병원의 비밀 연구소는 어디에 숨겨져 있었나?",
+        "tags": [
+            "경성크리처",
+            "박서준",
+            "한소희",
+            "괴물"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "보일러실 뒤편"
+            },
+            {
+                "id": "b",
+                "text": "본관 옥상 위"
+            },
+            {
+                "id": "c",
+                "text": "경성역 지하 창고"
+            },
+            {
+                "id": "d",
+                "text": "지하실"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "괴물이 만들어지고 보관되는 옹성 병원의 비밀 실험실은 병원 지하 깊은 곳, 특히 비밀 통로 뒤에 위치했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 400
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 오리지널 드라마 '선산'을 연출하고 극본에 참여하며 한국형 오컬트 스릴러를 완성한 감독은?",
+        "tags": [
+            "선산",
+            "오컬트",
+            "넷플릭스",
+            "민홍남"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "민홍남"
+            },
+            {
+                "id": "b",
+                "text": "이재규"
+            },
+            {
+                "id": "c",
+                "text": "김은희"
+            },
+            {
+                "id": "d",
+                "text": "나홍진"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "'부산행'과 '지옥'의 연상호 작가가 기획 및 극본에 참여했으며, 연상호 감독의 조감독 출신인 민홍남 감독이 연출을 맡았습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 81
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 서바이벌 '피지컬: 100 시즌 2'에서 우승을 차지하며 '최고의 피지컬'이라는 영예를 안은 사람은?",
+        "tags": [
+            "피지컬100",
+            "넷플릭스",
+            "서바이벌",
+            "우승자"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "홍범석 (소방관)"
+            },
+            {
+                "id": "b",
+                "text": "김동현 (UFC 선수)"
+            },
+            {
+                "id": "c",
+                "text": "아모띠 (Amotti, 크로스핏 선수)"
+            },
+            {
+                "id": "d",
+                "text": "정해민 (레슬링 선수)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "유명 크로스핏터 아모띠가 압도적인 근력과 지구력을 바탕으로 시즌 2의 최종 우승자가 되었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406700,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 537
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2024년 넷플릭스에 공개된 '오징어 게임 시즌 2'에 새로운 참가자로 합류하여 기대를 모은 배우는?",
+        "tags": [
+            "오징어게임2",
+            "넷플릭스",
+            "임시완",
+            "서바이벌"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "공유"
+            },
+            {
+                "id": "b",
+                "text": "박성훈"
+            },
+            {
+                "id": "c",
+                "text": "임시완"
+            },
+            {
+                "id": "d",
+                "text": "이진욱"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "배우 임시완은 '오징어 게임 시즌 2'에 새로운 주요 인물 중 한 명으로 출연이 확정되어 큰 관심을 받았습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 314
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "송강호의 첫 드라마 출연작인 '삼식이 삼촌'을 독점 공개한 OTT 플랫폼은 어디인가?",
+        "tags": [
+            "삼식이삼촌",
+            "송강호",
+            "OTT",
+            "디즈니플러스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "넷플릭스 (Netflix)"
+            },
+            {
+                "id": "b",
+                "text": "쿠팡플레이"
+            },
+            {
+                "id": "c",
+                "text": "디즈니플러스"
+            },
+            {
+                "id": "d",
+                "text": "티빙 (TVING)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "'삼식이 삼촌'은 배우 송강호의 32년 연기 인생 첫 드라마로, 디즈니플러스 오리지널 시리즈로 공개되었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 745
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '듄: 파트 2'에서 폴(티모시 샬라메)이 프레멘 부족의 지도자로 인정받기 위해 통과해야 했던 사막의 가장 큰 위협 요소는?",
+        "tags": [
+            "듄2",
+            "티모시샬라메",
+            "SF",
+            "샤이-훌루드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "하코넨 남작의 드론 부대"
+            },
+            {
+                "id": "b",
+                "text": "아라키스 행성의 모래 폭풍"
+            },
+            {
+                "id": "c",
+                "text": "거대한 사막 벌레 (샤이-훌루드)"
+            },
+            {
+                "id": "d",
+                "text": "스파이스 중독에 빠진 전사들"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "폴은 프레멘의 의식을 통과하기 위해 거대한 모래 벌레, '샤이-훌루드'를 타고 조종하는 능력을 보여줘야 했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 901
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "실제 보이스피싱 피해자의 사연을 모티브로 하여 화제가 된 라미란 주연의 2024년 영화 제목은?",
+        "tags": [
+            "라미란",
+            "보이스피싱",
+            "실화바탕",
+            "시민덕희"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "시민 덕희"
+            },
+            {
+                "id": "b",
+                "text": "천 원짜리 변호사"
+            },
+            {
+                "id": "c",
+                "text": "내 돈 내놔"
+            },
+            {
+                "id": "d",
+                "text": "작은 아씨들"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "영화 '시민 덕희'는 실제 피해자가 보이스피싱 조직을 검거하는 데 기여했던 사건을 각색한 작품입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 55
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "마이클 잭슨의 삶을 다룬 전기 영화 '마이클'에서, 킹 오브 팝 '마이클 잭슨' 역을 맡게 된 배우는 누구인가?",
+        "tags": [
+            "마이클잭슨",
+            "전기영화",
+            "자파르잭슨",
+            "음악영화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "티모시 샬라메"
+            },
+            {
+                "id": "b",
+                "text": "제이든 스미스"
+            },
+            {
+                "id": "c",
+                "text": "자파르 잭슨 (Jafaar Jackson)"
+            },
+            {
+                "id": "d",
+                "text": "도널드 글로버"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "마이클 잭슨의 친조카인 자파르 잭슨이 숙부의 일대기를 그린 영화에서 주인공 마이클 잭슨 역을 맡게 되었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 876
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "디즈니+ 오리지널 드라마 '무빙'에서, 바람을 조종하는 능력을 가졌으며 김두식(조인성)의 아들로 등장하는 캐릭터는?",
+        "tags": [
+            "무빙",
+            "디즈니플러스",
+            "류승룡",
+            "초능력"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "장희수"
+            },
+            {
+                "id": "b",
+                "text": "김봉석"
+            },
+            {
+                "id": "c",
+                "text": "이강훈"
+            },
+            {
+                "id": "d",
+                "text": "전계도"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "김봉석(이정하 분)은 비행 능력과 오감 능력을 물려받은 인물로, 아버지 김두식처럼 하늘을 나는 능력을 갖게 됩니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 605
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "SBS 드라마 '마이 데몬'에서 계약 결혼을 통해 악마 구원과 얽히게 되는, 미래 그룹 상속녀 '도도희' 역을 맡은 배우는?",
+        "tags": [
+            "마이데몬",
+            "김유정",
+            "송강",
+            "판타지로맨스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "고윤정"
+            },
+            {
+                "id": "b",
+                "text": "김유정"
+            },
+            {
+                "id": "c",
+                "text": "한소희"
+            },
+            {
+                "id": "d",
+                "text": "박은빈"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "배우 김유정이 재벌 상속녀 도도희 역을 맡아 악마 구원(송강 분)과 함께 판타지 로맨스 연기를 펼쳤습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 48
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 SF 시리즈 '삼체(3 Body Problem)'의 원작 소설 '삼체 문제'를 집필한 중국의 유명 작가는?",
+        "tags": [
+            "삼체",
+            "넷플릭스",
+            "SF소설",
+            "류츠신"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "왕진핑"
+            },
+            {
+                "id": "b",
+                "text": "류츠신 (Liu Cixin)"
+            },
+            {
+                "id": "c",
+                "text": "천추판"
+            },
+            {
+                "id": "d",
+                "text": "하오징팡"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "드라마 '삼체'는 중국의 유명 SF 작가 류츠신(劉慈欣)의 동명 소설 '삼체 문제'를 원작으로 합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 272
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "박찬욱 감독이 영화 '헤어질 결심'으로 제75회 칸 영화제에서 수상한 상의 부문은 무엇인가?",
+        "tags": [
+            "헤어질결심",
+            "박찬욱",
+            "칸영화제",
+            "감독상"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "황금종려상"
+            },
+            {
+                "id": "b",
+                "text": "남우주연상"
+            },
+            {
+                "id": "c",
+                "text": "심사위원 대상"
+            },
+            {
+                "id": "d",
+                "text": "감독상"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "박찬욱 감독은 '헤어질 결심'으로 칸 영화제에서 감독상을 수상하며 세계적인 거장의 위상을 입증했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 194
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '베테랑 2'에서 서도철 형사(황정민) 앞에 나타난 새로운 막내 형사 '박선우' 역을 맡은 배우는?",
+        "tags": [
+            "베테랑2",
+            "황정민",
+            "정해인",
+            "액션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "유아인"
+            },
+            {
+                "id": "b",
+                "text": "류준열"
+            },
+            {
+                "id": "c",
+                "text": "정해인"
+            },
+            {
+                "id": "d",
+                "text": "이도현"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정해인은 '베테랑 2'에서 황정민이 이끄는 강력반에 합류하는 막내 형사 '박선우' 역을 맡아 새로운 활력을 불어넣습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761406800,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 688
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2024년 5월에 개봉하여 '액션의 대가'로 불리는 조지 밀러 감독이 연출한, '매드맥스' 시리즈의 프리퀄 영화 제목은?",
+        "tags": [
+            "매드맥스",
+            "퓨리오사",
+            "액션",
+            "프리퀄"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "매드맥스: 아포칼립스"
+            },
+            {
+                "id": "b",
+                "text": "퓨리오사: 매드맥스 사가"
+            },
+            {
+                "id": "c",
+                "text": "분노의 도로: 리턴즈"
+            },
+            {
+                "id": "d",
+                "text": "임모탈 조의 탄생"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "'퓨리오사: 매드맥스 사가'는 '매드맥스: 분노의 도로' 속 퓨리오사 캐릭터의 과거 이야기를 다룬 프리퀄 작품입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 111
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "인기 예능 '솔로지옥'으로 유명해진 덱스가 주연으로 출연한, 티빙(TVING) 오리지널 시리즈의 제목으로 한국형 첩보 액션을 다룬 드라마는?",
+        "tags": [
+            "덱스",
+            "티빙",
+            "액션",
+            "아이랜드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "비질란테"
+            },
+            {
+                "id": "b",
+                "text": "아이랜드 (Atypical Island)"
+            },
+            {
+                "id": "c",
+                "text": "좋좋소"
+            },
+            {
+                "id": "d",
+                "text": "피라미드 게임"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "덱스는 '아이랜드'에서 특수 임무를 수행하는 요원 역을 맡아 연기자로 데뷔하며 화제를 모았습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 222
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2024년 넷플릭스에서 공개된, 류승룡, 안재홍 주연의 독특한 소재(닭강정으로 변한 딸)를 다룬 코미디 드라마의 제목은?",
+        "tags": [
+            "닭강정",
+            "넷플릭스",
+            "류승룡",
+            "코미디"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "무빙"
+            },
+            {
+                "id": "b",
+                "text": "닭강정"
+            },
+            {
+                "id": "c",
+                "text": "마스크걸"
+            },
+            {
+                "id": "d",
+                "text": "선산"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "이병헌 감독의 '닭강정'은 딸이 정체불명의 기계에 들어가 닭강정으로 변하며 벌어지는 기상천외한 이야기입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 333
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2024년 국내 천만 관객을 돌파한 영화 '파묘'에서, 무당 '화림' 역을 맡아 카리스마 있는 연기를 보여준 배우는 누구인가?",
+        "tags": [
+            "파묘",
+            "천만영화",
+            "무당",
+            "김고은"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "김고은"
+            },
+            {
+                "id": "b",
+                "text": "박은빈"
+            },
+            {
+                "id": "c",
+                "text": "문소리"
+            },
+            {
+                "id": "d",
+                "text": "고윤정"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "배우 김고은은 뛰어난 실력과 담력을 가진 무당 화림을 연기하며 한국 오컬트 영화에서 독보적인 존재감을 드러냈습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 444
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '파묘'에서 장재현 감독의 전작인 '검은 사제들', '사바하'와 공유하는 장르적 특성, 즉 한국형 오컬트의 핵심 요소는?",
+        "tags": [
+            "파묘",
+            "오컬트",
+            "장재현",
+            "샤머니즘"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "서양의 좀비와 뱀파이어 소재 활용"
+            },
+            {
+                "id": "b",
+                "text": "종교적 의식(기독교, 불교)과 샤머니즘적 소재의 결합"
+            },
+            {
+                "id": "c",
+                "text": "현실과 가상 세계를 오가는 메타버스 설정"
+            },
+            {
+                "id": "d",
+                "text": "시간 여행을 통한 과거의 사건 해결"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "장재현 감독의 오컬트 영화들은 한국의 무속 신앙(샤머니즘)과 동양 및 서양 종교의 요소를 결합하여 독특한 공포를 만들어냅니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 555
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '선재 업고 튀어'에서 주인공 임솔(김혜윤)이 류선재(변우석)를 살리기 위해 과거로 돌아가는 시간 이동의 매개체로 등장하는 물건은?",
+        "tags": [
+            "선재업고튀어",
+            "변우석",
+            "김혜윤",
+            "타임슬립"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오래된 폴라로이드 카메라"
+            },
+            {
+                "id": "b",
+                "text": "류선재가 남긴 회중시계"
+            },
+            {
+                "id": "c",
+                "text": "고장 난 MP3 플레이어"
+            },
+            {
+                "id": "d",
+                "text": "운명처럼 나타난 우산"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "임솔은 류선재가 남긴 시계를 통해 과거와 현재를 오가며 그의 운명을 바꾸기 위해 노력합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 666
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2023년 할리우드에서 제작되어 큰 화제를 모았으며, '원자폭탄의 아버지' 로버트 오펜하이머의 생애와 핵무기 개발의 과정을 그린 크리스토퍼 놀란 감독의 영화 제목은?",
+        "tags": [
+            "오펜하이머",
+            "크리스토퍼놀란",
+            "전기영화",
+            "원자폭탄"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "인터스텔라"
+            },
+            {
+                "id": "b",
+                "text": "테넷"
+            },
+            {
+                "id": "c",
+                "text": "오펜하이머"
+            },
+            {
+                "id": "d",
+                "text": "덩케르크"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "영화 '오펜하이머'는 제2차 세계대전 당시 맨해튼 프로젝트를 이끌었던 물리학자 J. 로버트 오펜하이머의 이야기를 다루고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 777
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '경성크리처 시즌 2'에서 시대적 배경이 1945년 경성에서 완전히 달라진 2024년의 장소로 바뀌게 되는데, 그 새로운 주 무대는?",
+        "tags": [
+            "경성크리처2",
+            "박서준",
+            "한소희",
+            "시대극"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "도쿄의 번화가"
+            },
+            {
+                "id": "b",
+                "text": "뉴욕의 센트럴 파크"
+            },
+            {
+                "id": "c",
+                "text": "서울의 현대 도심"
+            },
+            {
+                "id": "d",
+                "text": "베를린의 지하 벙커"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "시즌 2는 배경이 1945년 경성에서 2024년 서울의 한복판으로 바뀌면서 현대적인 크리처 스릴러로 변모합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 888
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "송강호의 첫 드라마 출연작인 '삼식이 삼촌'에서, 송강호(삼식이)와 대립하며 차기 지도자의 자리를 호시탐탐 노리는 '강성민' 역을 맡은 배우는 누구인가?",
+        "tags": [
+            "삼식이삼촌",
+            "송강호",
+            "이규형",
+            "디즈니플러스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "변요한"
+            },
+            {
+                "id": "b",
+                "text": "이규형"
+            },
+            {
+                "id": "c",
+                "text": "유재명"
+            },
+            {
+                "id": "d",
+                "text": "진종오"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "강성민은 이규형이 연기한 육군사관학교 출신의 엘리트 군인으로, 삼식이와 복잡한 관계 속에서 야망을 드러내는 인물입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 999
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2024년 칸 영화제 경쟁 부문에 초청되어 호평을 받은, 영화 '퓨리오사: 매드맥스 사가'의 메인 빌런이자 폭군 '디멘투스' 역을 맡은 배우는?",
+        "tags": [
+            "퓨리오사",
+            "매드맥스",
+            "크리스헴스워스",
+            "칸영화제"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "톰 하디 (Tom Hardy)"
+            },
+            {
+                "id": "b",
+                "text": "크리스 헴스워스 (Chris Hemsworth)"
+            },
+            {
+                "id": "c",
+                "text": "라이언 고슬링 (Ryan Gosling)"
+            },
+            {
+                "id": "d",
+                "text": "제이콥 엘로디 (Jacob Elordi)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "마블의 '토르'로 유명한 크리스 헴스워스가 '디멘투스'라는 광기 어린 빌런을 맡아 파격적인 연기 변신을 선보였습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761406900,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 1010
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "1979년 12월 12일 군사 반란을 막기 위한 9시간의 사투를 그린, 김성수 감독의 2023년 흥행작 영화 제목은?",
+        "tags": [
+            "서울의봄",
+            "김성수",
+            "역사",
+            "정우성",
+            "황정민"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "1987"
+            },
+            {
+                "id": "b",
+                "text": "남산의 부장들"
+            },
+            {
+                "id": "c",
+                "text": "서울의 봄"
+            },
+            {
+                "id": "d",
+                "text": "강철비 2"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "영화 '서울의 봄'은 12.12 군사 반란을 배경으로 한 역사 실화 영화로, 천만 관객을 돌파하며 큰 사랑을 받았습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 1001
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2023년 공개된 넷플릭스 드라마 '마스크걸'에서, 모미의 집착적인 팬이자 비뚤어진 모성애를 가진 인물 '김경자' 역을 맡은 배우는?",
+        "tags": [
+            "마스크걸",
+            "넷플릭스",
+            "염혜란",
+            "범죄"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "고현정"
+            },
+            {
+                "id": "b",
+                "text": "나나"
+            },
+            {
+                "id": "c",
+                "text": "염혜란"
+            },
+            {
+                "id": "d",
+                "text": "이한별"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "배우 염혜란은 아들을 잃은 후 복수에 집착하는 김경자 역을 맡아 소름 끼치는 연기를 선보였습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 1002
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2023년 디즈니+에서 공개된 드라마 '무빙'에서, 아버지 주원(류승룡)에게서 초능력을 물려받아 고통을 느끼지 못하고 빠르게 회복하는 능력을 가진 딸의 이름은?",
+        "tags": [
+            "무빙",
+            "디즈니플러스",
+            "류승룡",
+            "초능력"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "장희수"
+            },
+            {
+                "id": "b",
+                "text": "봉석"
+            },
+            {
+                "id": "c",
+                "text": "강훈"
+            },
+            {
+                "id": "d",
+                "text": "전계도"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "장희수(고윤정)는 아버지 장주원의 무한 재생 능력을 물려받아 상처가 순식간에 회복되는 능력을 가졌습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 1003
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '범죄도시 3'에서 마석도 형사(마동석)가 상대하는 최종 빌런으로, 일본 야쿠자와 결탁한 '주성철' 역을 맡은 배우는?",
+        "tags": [
+            "범죄도시3",
+            "마동석",
+            "이준혁",
+            "액션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "손석구"
+            },
+            {
+                "id": "b",
+                "text": "박지환"
+            },
+            {
+                "id": "c",
+                "text": "이준혁"
+            },
+            {
+                "id": "d",
+                "text": "김무열"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "이준혁은 '범죄도시 3'에서 마약 사건의 배후에 있는 경찰 출신 빌런 주성철을 맡아 역대급 악역으로 변신했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 1004
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 'D.P.' 시즌 2에서 안준호 일병(정해인)과 한호열 상병(구교환)이 소속된 군탈체포조(D.P.)의 임무는 무엇인가?",
+        "tags": [
+            "DP2",
+            "정해인",
+            "구교환",
+            "군대"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "탈영병을 체포하여 복귀시키는 임무"
+            },
+            {
+                "id": "b",
+                "text": "사단 내 군수품을 관리하는 임무"
+            },
+            {
+                "id": "c",
+                "text": "군사분계선 경계를 담당하는 임무"
+            },
+            {
+                "id": "d",
+                "text": "특수 작전을 수행하는 비밀 요원 임무"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "D.P.는 Deserter Pursuit의 약자로, 탈영병을 쫓는 군무 이탈 체포조의 임무를 수행합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 1005
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '더 글로리'에서 문동은(송혜교)에게 학교 폭력을 가한 주동자이자, 문동은이 복수하려는 핵심 인물은 누구인가?",
+        "tags": [
+            "더글로리",
+            "송혜교",
+            "임지연",
+            "학폭"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "박연진"
+            },
+            {
+                "id": "b",
+                "text": "하도영"
+            },
+            {
+                "id": "c",
+                "text": "전재준"
+            },
+            {
+                "id": "d",
+                "text": "이사라"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "배우 임지연이 연기한 박연진은 문동은의 삶을 파괴한 학교 폭력의 주동자이며, 문동은의 복수 대상입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 1006
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "김윤석 주연의 영화 '노량: 죽음의 바다'가 다루는 역사적 사건이자 임진왜란의 마지막 전투는?",
+        "tags": [
+            "노량",
+            "김윤석",
+            "이순신",
+            "임진왜란"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "한산도 대첩"
+            },
+            {
+                "id": "b",
+                "text": "명량 해전"
+            },
+            {
+                "id": "c",
+                "text": "옥포 해전"
+            },
+            {
+                "id": "d",
+                "text": "노량 해전"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "김한민 감독의 이순신 3부작 마지막 편인 '노량'은 1598년 임진왜란의 종전을 알린 노량 해전을 배경으로 합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 1007
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "2023년 개봉한 하정우, 주지훈 주연의 영화 '비공식작전'에서, 실종된 외교관을 구출하기 위해 파견되는 주 무대가 된 나라는?",
+        "tags": [
+            "비공식작전",
+            "하정우",
+            "주지훈",
+            "모로코"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "레바논"
+            },
+            {
+                "id": "b",
+                "text": "모로코"
+            },
+            {
+                "id": "c",
+                "text": "아프가니스탄"
+            },
+            {
+                "id": "d",
+                "text": "튀르키예"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "외교관 민준(하정우)이 레바논에서 실종된 동료를 찾기 위해 파견되는 주 무대는 모로코의 황량한 지역이었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 1008
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '듄' 시리즈에서 주인공 폴 아트레이데스가 숙명적으로 보게 되는, 자신이 미래에 지배하게 될 종교 전쟁의 이름은?",
+        "tags": [
+            "듄",
+            "폴아트레이데스",
+            "SF",
+            "예언"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "거룩한 징벌 (Holy Retribution)"
+            },
+            {
+                "id": "b",
+                "text": "지하드 (Jihad)"
+            },
+            {
+                "id": "c",
+                "text": "아라키스 봉기 (Arrakis Uprising)"
+            },
+            {
+                "id": "d",
+                "text": "대정화 (Great Purification)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "폴 아트레이데스는 스파이스를 통해 미래를 예지하며, 자신이 일으키게 될 '지하드(Jihad)'라는 전우주적인 성전의 환영을 목격합니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 1009
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '경성크리처' 시즌 1의 주요 배경이자, 생체 실험이 이루어지는 비밀스러운 병원의 이름은?",
+        "tags": [
+            "경성크리처1",
+            "박서준",
+            "한소희",
+            "시대극"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "본정 병원"
+            },
+            {
+                "id": "b",
+                "text": "옹성 병원"
+            },
+            {
+                "id": "c",
+                "text": "명동 병원"
+            },
+            {
+                "id": "d",
+                "text": "경성제국대학 부속병원"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "옹성 병원은 경성 제일의 자산가 장태상(박서준)이 사라진 연인 명자를 찾기 위해 찾아가는 곳이자, 크리처가 탄생한 비밀스러운 장소입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761407200,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 1010
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 드라마 '오징어 게임'에서, 주인공 성기훈(이정재)이 배정받은 참가자 번호는 몇 번인가?",
+        "tags": [
+            "오징어게임",
+            "이정재",
+            "넷플릭스",
+            "서바이벌"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "001번"
+            },
+            {
+                "id": "b",
+                "text": "218번"
+            },
+            {
+                "id": "c",
+                "text": "456번"
+            },
+            {
+                "id": "d",
+                "text": "067번"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "성기훈은 오징어 게임의 마지막 참가자로, 456번을 배정받았습니다. 이는 그가 마지막까지 생존한다는 상징성을 가집니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2001
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "황정민, 하정우 주연의 넷플릭스 드라마 '수리남'의 배경이 되는, 마약왕이 활동한 남미 국가의 이름은?",
+        "tags": [
+            "수리남",
+            "넷플릭스",
+            "하정우",
+            "황정민"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "콜롬비아"
+            },
+            {
+                "id": "b",
+                "text": "베네수엘라"
+            },
+            {
+                "id": "c",
+                "text": "브라질"
+            },
+            {
+                "id": "d",
+                "text": "수리남"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "드라마 '수리남'은 남미 국가 수리남을 장악한 한국인 마약왕 K를 잡기 위한 국정원의 비밀 작전을 다룹니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2002
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 드라마 '살인자ㅇ난감'에서, 우발적으로 살인을 저지르지만 선악의 경계에서 고민하는 주인공 대학생의 이름은?",
+        "tags": [
+            "살인자o난감",
+            "넷플릭스",
+            "최우식",
+            "이탕"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "장난감"
+            },
+            {
+                "id": "b",
+                "text": "이탕"
+            },
+            {
+                "id": "c",
+                "text": "송촌"
+            },
+            {
+                "id": "d",
+                "text": "노빈"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "주인공은 '이탕'(최우식)으로, 자신도 모르게 악인만을 골라 처단하는 능력을 깨닫게 됩니다. '장난감'(손석구)은 그를 쫓는 형사의 이름입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2003
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '콘크리트 유토피아'에서, 대지진 이후 유일하게 무너지지 않고 남아 생존자들이 몰려든 아파트의 이름은?",
+        "tags": [
+            "콘크리트유토피아",
+            "이병헌",
+            "박서준",
+            "재난"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "민성 아파트"
+            },
+            {
+                "id": "b",
+                "text": "황궁 아파트"
+            },
+            {
+                "id": "c",
+                "text": "용산 아파트"
+            },
+            {
+                "id": "d",
+                "text": "헤라팰리스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "대지진 속에서 유일하게 온전한 상태로 남아있던 아파트는 '황궁 아파트'이며, 이곳을 중심으로 생존자들의 갈등이 펼쳐집니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2004
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 드라마 '지옥'에서, 사람들에게 지옥행을 고지하고 예정된 시간에 나타나 형벌을 집행하는 초자연적인 존재들은?",
+        "tags": [
+            "지옥",
+            "연상호",
+            "넷플릭스",
+            "천사"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "천사(고지)와 지옥의 사자(집행)"
+            },
+            {
+                "id": "b",
+                "text": "검은 악마와 흰 악마"
+            },
+            {
+                "id": "c",
+                "text": "좀비 무리"
+            },
+            {
+                "id": "d",
+                "text": "크리처"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "초자연적 존재는 지옥행을 '고지'하는 천사와, 예정된 시간에 나타나 형벌을 '집행'하는 거대한 괴물(지옥의 사자)들로 구분됩니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2005
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 드라마 '이두나!'에서, 이두나(수지)가 과거 현역 시절 활동했던 K-POP 걸그룹의 이름은?",
+        "tags": [
+            "이두나!",
+            "수지",
+            "양세종",
+            "KPOP"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "드림캐처"
+            },
+            {
+                "id": "b",
+                "text": "스위트 드림"
+            },
+            {
+                "id": "c",
+                "text": "블랙 핑크"
+            },
+            {
+                "id": "d",
+                "text": "플래닛"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "이두나는 아이돌 그룹 '플래닛(PLANET)'의 메인 보컬이자 센터였으나, 활동 중 돌연 은퇴하고 셰어하우스로 돌아옵니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2006
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "봉준호 감독의 영화 '기생충'에서, 부잣집(박 사장 댁)에 위장 취업하는 반지하 가구의 가족 성씨는 무엇인가?",
+        "tags": [
+            "기생충",
+            "봉준호",
+            "송강호",
+            "칸영화제"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "박 씨"
+            },
+            {
+                "id": "b",
+                "text": "최 씨"
+            },
+            {
+                "id": "c",
+                "text": "김 씨"
+            },
+            {
+                "id": "d",
+                "text": "오 씨"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "송강호가 연기하는 아버지를 중심으로 한 반지하 가족의 성씨는 김 씨(김기택 가족)이며, 박 사장 댁의 성씨는 박 씨입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2007
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '엑시트'에서 도시 전체를 뒤덮으며 재난을 일으키는 원인 물질이자, 주인공들이 탈출을 위해 피해야 했던 것은?",
+        "tags": [
+            "엑시트",
+            "조정석",
+            "윤아",
+            "재난"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "유독가스"
+            },
+            {
+                "id": "b",
+                "text": "거대한 쓰나미"
+            },
+            {
+                "id": "c",
+                "text": "화산재"
+            },
+            {
+                "id": "d",
+                "text": "좀비 바이러스"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "영화 '엑시트'는 정체를 알 수 없는 유독가스가 도시를 뒤덮는 상황에서 주인공들이 맨몸으로 탈출하는 과정을 그립니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2008
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '범죄도시' 시즌 1의 빌런 '장첸'(윤계상)이 경찰서에서 형사들에게 호기롭게 던진 명대사로 유명한 문구는?",
+        "tags": [
+            "범죄도시1",
+            "장첸",
+            "윤계상",
+            "명대사"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "혼자 왔니?"
+            },
+            {
+                "id": "b",
+                "text": "진실의 방으로."
+            },
+            {
+                "id": "c",
+                "text": "내 누군지 아니?"
+            },
+            {
+                "id": "d",
+                "text": "너는 계획이 다 있구나."
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "장첸이 경찰에 잡혔을 때, 형사에게 '니 내가 누군지 아니?'라고 위협적으로 묻는 장면은 영화의 대표적인 명대사로 꼽힙니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 2009
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 드라마 '킹덤'에서, 사람을 산 채로 먹는 좀비(생사역)를 만드는 역병의 근본적인 원인 물질은 무엇인가?",
+        "tags": [
+            "킹덤",
+            "주지훈",
+            "좀비",
+            "넷플릭스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "생사초"
+            },
+            {
+                "id": "b",
+                "text": "비단실"
+            },
+            {
+                "id": "c",
+                "text": "아편꽃"
+            },
+            {
+                "id": "d",
+                "text": "화약"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "'생사초'는 죽은 사람을 다시 살리지만, 살아 있는 사람을 공격하는 좀비로 변하게 만드는 전염병의 근본적인 원인 물질입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761407400,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 2010
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 드라마 '스위트홈'에서, 괴물화가 진행되는 상황에서도 뛰어난 전투력으로 생존자들을 이끄는 전직 군인 출신 주인공의 이름은?",
+        "tags": [
+            "스위트홈",
+            "송강호",
+            "넷플릭스",
+            "괴물"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "차현수"
+            },
+            {
+                "id": "b",
+                "text": "이은혁"
+            },
+            {
+                "id": "c",
+                "text": "편상욱"
+            },
+            {
+                "id": "d",
+                "text": "이은유"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "배우 송강호가 연기한 '차현수'는 스스로 괴물화되는 과정에서도 인간성을 지키며 사람들을 돕는 주인공입니다. 다른 주요 캐릭터는 이은혁(이도현), 편상욱(이진욱)입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2011
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '베테랑'에서, 서도철 형사(황정민)가 재벌 3세 조태오(유아인)에게 마지막으로 던진 명대사로 유명한 문구는?",
+        "tags": [
+            "베테랑",
+            "황정민",
+            "류승완",
+            "명대사"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "우리가 돈이 없지, 가오가 없냐?"
+            },
+            {
+                "id": "b",
+                "text": "나한테 왜 그랬어요?"
+            },
+            {
+                "id": "c",
+                "text": "어이가 없네?"
+            },
+            {
+                "id": "d",
+                "text": "다 때가 있는 법이다."
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "조태오가 마지막까지 뻔뻔한 태도를 보이자 서도철 형사가 분노하며 내뱉은 '어이가 없네?'는 영화의 가장 유명한 대사 중 하나입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2012
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '시민덕희'에서, 보이스피싱을 당한 후 직접 조직을 추적하여 대규모 범죄를 소탕하는 주인공 '김덕희' 역을 맡은 배우는?",
+        "tags": [
+            "시민덕희",
+            "라미란",
+            "실화",
+            "보이스피싱"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "김혜수"
+            },
+            {
+                "id": "b",
+                "text": "염정아"
+            },
+            {
+                "id": "c",
+                "text": "라미란"
+            },
+            {
+                "id": "d",
+                "text": "전종서"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "영화 '시민덕희'는 배우 라미란이 보이스피싱 피해자가 되어 직접 조직을 추적하는 실화 기반의 통쾌한 이야기를 다룹니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2013
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '이상한 변호사 우영우'에서, 주인공 우영우(박은빈)가 가장 좋아하는 음식이며 매회 에피소드에 다양한 형태로 등장하는 음식은?",
+        "tags": [
+            "우영우",
+            "박은빈",
+            "법정",
+            "음식"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "불고기"
+            },
+            {
+                "id": "b",
+                "text": "김밥"
+            },
+            {
+                "id": "c",
+                "text": "비빔밥"
+            },
+            {
+                "id": "d",
+                "text": "떡볶이"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "우영우는 김밥의 재료가 한눈에 파악되어 편안함을 느끼며, 실제로 그녀의 아버지도 김밥 집을 운영하는 것으로 설정되어 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2014
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "최동훈 감독의 영화 '외계+인' 1부와 2부에서, 류준열(무륵)의 어깨에 붙어다니며 외계인 죄수를 호송하는 '가드'의 쌍둥이 로봇 이름은?",
+        "tags": [
+            "외계인",
+            "류준열",
+            "최동훈",
+            "로봇"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "가디언"
+            },
+            {
+                "id": "b",
+                "text": "썬더"
+            },
+            {
+                "id": "c",
+                "text": "미니미"
+            },
+            {
+                "id": "d",
+                "text": "미스터리"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "'썬더'는 김우빈이 연기하는 '가드'의 쌍둥이 로봇이자, 과거와 현재를 오가는 시간 이동의 핵심 매개체입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2015
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 드라마 '소년심판'에서, 소년범을 혐오하지만 소년 법정 판사로 부임하여 냉철한 법 집행을 하는 '심은석' 판사 역을 맡은 배우는?",
+        "tags": [
+            "소년심판",
+            "넷플릭스",
+            "김혜수",
+            "법정"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "염정아"
+            },
+            {
+                "id": "b",
+                "text": "문소리"
+            },
+            {
+                "id": "c",
+                "text": "김혜수"
+            },
+            {
+                "id": "d",
+                "text": "김고은"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "배우 김혜수는 소년범죄의 복잡한 현실을 마주하며 정의를 실현하려는 심은석 판사를 연기했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2016
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "류승완 감독의 영화 '밀수'에서, 김혜수(춘자)와 염정아(진숙)가 밀수 사업에 뛰어들게 된 시대적 배경은 언제인가?",
+        "tags": [
+            "밀수",
+            "류승완",
+            "시대극",
+            "1970년대"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "1950년대 (한국 전쟁 직후)"
+            },
+            {
+                "id": "b",
+                "text": "1970년대 (개발 독재 시대)"
+            },
+            {
+                "id": "c",
+                "text": "1990년대 (IMF 이전)"
+            },
+            {
+                "id": "d",
+                "text": "2000년대 (IT 시대 초반)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "'밀수'는 경제 개발이 한창이던 1970년대의 가상의 항구 도시 '군천'을 배경으로, 해녀들이 밀수에 가담하는 이야기를 다룹니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2017
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '재벌집 막내아들'에서, 주인공 윤현우(송중기)가 회귀하여 다시 태어나는 순양그룹의 막내 손자 이름은 무엇인가?",
+        "tags": [
+            "재벌집막내아들",
+            "송중기",
+            "이성민",
+            "회귀"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "진성준"
+            },
+            {
+                "id": "b",
+                "text": "진영기"
+            },
+            {
+                "id": "c",
+                "text": "진도준"
+            },
+            {
+                "id": "d",
+                "text": "진화영"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "윤현우는 죽음을 맞이한 후 순양그룹의 창업주 진양철의 막내 손자인 '진도준'으로 회귀하여 그룹을 차지하려는 인생 2회차를 시작합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2018
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '킬러들의 쇼핑몰'에서 정진만(이동욱)이 운영한, 킬러들에게 무기와 장비를 은밀히 공급하는 온라인 쇼핑몰의 이름은?",
+        "tags": [
+            "킬러들의쇼핑몰",
+            "이동욱",
+            "김혜준",
+            "킬러"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "바벨(Babel)"
+            },
+            {
+                "id": "b",
+                "text": "머더몰(Murdermall)"
+            },
+            {
+                "id": "c",
+                "text": "블랙 마켓(Black Market)"
+            },
+            {
+                "id": "d",
+                "text": "M-스토어(M-Store)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "삼촌이 운영하던 온라인 쇼핑몰의 이름은 '머더몰'이며, 이는 일반적인 물품이 아닌 킬러 전용의 무기 등을 판매하는 곳이었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 2019
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '남산의 부장들'(원작: '그때 그 사람들' 사건)에서 박통 암살 직후, 중앙정보부장 김규평(이병헌)이 체포되는 최종 장소는?",
+        "tags": [
+            "남산의부장들",
+            "이병헌",
+            "실화",
+            "10.26"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "궁정동 안가"
+            },
+            {
+                "id": "b",
+                "text": "육군본부"
+            },
+            {
+                "id": "c",
+                "text": "청와대 비서실"
+            },
+            {
+                "id": "d",
+                "text": "중앙정보부"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "김규평은 사건 직후 청와대 쪽으로 향하려다 진로를 바꿔 육군본부로 들어가 자수를 시도하며 체포됩니다. 실제 김재규는 육군본부 B2 벙커에서 체포되었습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761407600,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 2020
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '선재 업고 튀어'에서, 주인공 임솔(김혜윤)이 류선재(변우석)를 살리기 위해 처음으로 시간 여행을 떠난 시점은 언제인가?",
+        "tags": [
+            "선재업고튀어",
+            "변우석",
+            "김혜윤",
+            "타임슬립"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "1998년"
+            },
+            {
+                "id": "b",
+                "text": "2008년"
+            },
+            {
+                "id": "c",
+                "text": "2013년"
+            },
+            {
+                "id": "d",
+                "text": "2020년"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "임솔이 류선재를 살리기 위해 처음으로 돌아간 과거는 두 사람이 고등학생이던 2008년입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 3001
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '이태원 클라쓰'에서, 주인공 박새로이(박서준)가 재벌 장가에 맞서 성공을 이루기 위해 운영하는 포차의 이름은?",
+        "tags": [
+            "이태원클라쓰",
+            "박서준",
+            "장가",
+            "단밤"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "밤탱이"
+            },
+            {
+                "id": "b",
+                "text": "단밤"
+            },
+            {
+                "id": "c",
+                "text": "새로이네"
+            },
+            {
+                "id": "d",
+                "text": "이태원 포차"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "박새로이가 운영하는 술집은 '단밤'이며, 이는 그의 꿈과 의지를 상징하는 공간입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 3002
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "드라마 '닥터 차정숙'에서, 차정숙(엄정화)이 남편 서인호(김병철)의 방해 속에서도 용기 있게 다시 도전하는 직업은?",
+        "tags": [
+            "닥터차정숙",
+            "엄정화",
+            "김병철",
+            "메디컬"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "간호사"
+            },
+            {
+                "id": "b",
+                "text": "교수"
+            },
+            {
+                "id": "c",
+                "text": "레지던트"
+            },
+            {
+                "id": "d",
+                "text": "인턴"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "20년 만에 다시 의료계로 돌아온 차정숙은 주치의의 도움으로 용기를 얻어 레지던트로 재도전을 시작합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 3003
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '범죄도시 4'에서 마석도(마동석)가 상대하는, 필리핀에 거점을 둔 온라인 불법 도박 조직의 최종 보스 이름은?",
+        "tags": [
+            "범죄도시4",
+            "마동석",
+            "김무열",
+            "백창기"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "주성철"
+            },
+            {
+                "id": "b",
+                "text": "백창기"
+            },
+            {
+                "id": "c",
+                "text": "강해상"
+            },
+            {
+                "id": "d",
+                "text": "장첸"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "빌런 백창기(김무열)는 특수부대 출신의 용병으로, 잔혹한 살인을 일삼으며 온라인 불법 도박 사업을 운영합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 3004
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 드라마 '닭강정'에서, 의문의 기계에 들어갔다 닭강정으로 변해버린 딸 최민아를 구하려는 아버지의 이름은?",
+        "tags": [
+            "닭강정",
+            "류승룡",
+            "안재홍",
+            "이병헌"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "고백중"
+            },
+            {
+                "id": "b",
+                "text": "최선만"
+            },
+            {
+                "id": "c",
+                "text": "이강훈"
+            },
+            {
+                "id": "d",
+                "text": "유인원"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "류승룡이 연기한 '최선만' 사장은 딸을 되돌리기 위해 인턴 고백중(안재홍)과 함께 고군분투합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 3005
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 드라마 '마이네임'에서, 조직 보스 최무진의 지시에 따라 경찰로 잠입한 주인공 윤지우(한소희)가 사용한 가명은?",
+        "tags": [
+            "마이네임",
+            "한소희",
+            "경찰",
+            "복수"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "송아영"
+            },
+            {
+                "id": "b",
+                "text": "오혜진"
+            },
+            {
+                "id": "c",
+                "text": "강유나"
+            },
+            {
+                "id": "d",
+                "text": "서유진"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "윤지우는 경찰 내부의 정보를 빼내기 위해 광수대에 잠입하면서 '오혜진'이라는 가명을 사용합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 3006
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "넷플릭스 영화 '정이'에서, 뇌 복제 및 전투 실험이 이루어지는 곳이자, 기후 변화로 인해 인류가 이주해 살고 있는 거주 구역의 이름은?",
+        "tags": [
+            "정이",
+            "넷플릭스",
+            "강수연",
+            "SF"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "유토피아"
+            },
+            {
+                "id": "b",
+                "text": "넥스트"
+            },
+            {
+                "id": "c",
+                "text": "아크"
+            },
+            {
+                "id": "d",
+                "text": "쉘터"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "인류는 더 이상 지구에 살 수 없게 되자 우주에 건설된 인공 거주 구역 '쉘터'로 이주했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 3007
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '헌트'에서, 안기부 요원 박평호(이정재)와 김정도(정우성)가 서로를 북한 간첩으로 의심하며 추격하는 스파이의 암호명은?",
+        "tags": [
+            "헌트",
+            "이정재",
+            "정우성",
+            "스파이"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "동림"
+            },
+            {
+                "id": "b",
+                "text": "청와"
+            },
+            {
+                "id": "c",
+                "text": "태영"
+            },
+            {
+                "id": "d",
+                "text": "사냥"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "박평호와 김정도는 조직 내부에 숨어든 북한 스파이 '동림'을 색출하는 임무를 맡고 서로를 의심하며 대립합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 3008
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "영화 '파묘'에서, 무덤을 파헤친 후 관에서 발견된 '험한 것'의 정체를 암시하는, 조선 시대 친일파의 묘에 쓰인 관은?",
+        "tags": [
+            "파묘",
+            "최민식",
+            "김고은",
+            "오컬트"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "나무관"
+            },
+            {
+                "id": "b",
+                "text": "황금관"
+            },
+            {
+                "id": "c",
+                "text": "철관"
+            },
+            {
+                "id": "d",
+                "text": "석관"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "풍수사 김상덕(최민식)이 파묘한 후 이중 관으로 발견된 것은 '철관'이었으며, 이는 쇠말뚝처럼 한반도의 정기를 끊으려는 의도가 담겨 있었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 3009
+    },
+    {
+        "deckSlug": "deck_seed_drama_movie",
+        "category": "drama_movie",
+        "type": "mcq",
+        "prompt": "애플 TV+ 드라마 '파친코'에서, 고한수(이민호)의 아이를 가졌지만 그와 결혼하지 않고, 오사카로 떠나 백이삭과 결혼한 주인공 여성의 이름은?",
+        "tags": [
+            "파친코",
+            "이민호",
+            "윤여정",
+            "선자"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "김순자"
+            },
+            {
+                "id": "b",
+                "text": "김선자"
+            },
+            {
+                "id": "c",
+                "text": "고하수"
+            },
+            {
+                "id": "d",
+                "text": "백노아"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "주인공 여성의 이름은 '김선자'입니다. 노년의 선자는 윤여정이, 젊은 시절의 선자는 김민하가 연기했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761407800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 3010
+    }
+]

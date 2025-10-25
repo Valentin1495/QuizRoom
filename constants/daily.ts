@@ -1,8 +1,8 @@
-export type DailyCategory = 'tech_it' | 'variety_ott' | 'drama_movie' | 'sports_games' | 'kpop_music' | 'fashion_life' | 'news_issues';
+export type DailyCategory = 'tech_it' | 'variety_reality' | 'drama_movie' | 'sports_games' | 'kpop_music' | 'fashion_life' | 'news_issues';
 
 export const DAILY_CATEGORY_COPY: Record<DailyCategory, { label: string; emoji: string }> = {
   tech_it: { label: '테크•IT', emoji: '💡' },
-  variety_ott: { label: '예능•OTT', emoji: '📺' },
+  variety_reality: { label: '예능•리얼리티', emoji: '📺' },
   kpop_music: { label: 'K-POP•음악', emoji: '🎵' },
   fashion_life: { label: '패션•라이프', emoji: '👗' },
   drama_movie: { label: '드라마•영화', emoji: '🎬' },

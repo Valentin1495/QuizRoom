@@ -76,7 +76,7 @@ const partyPauseState = v.object({
 
 export const DAILY_CATEGORY_ENUM = v.union(
   v.literal("tech_it"),
-  v.literal("variety_ott"),
+  v.literal("variety_reality"),
   v.literal("drama_movie"),
   v.literal("sports_games"),
   v.literal("kpop_music"),

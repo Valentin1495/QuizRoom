@@ -1,7 +1,7 @@
 import { useQuery } from 'convex/react';
 import { Link, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -12,19 +12,7 @@ import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
-
-type TrendingDeck = {
-  id: string;
-  title: string;
-  tag: string;
-  plays: number;
-};
-
-const TRENDING_DECKS: TrendingDeck[] = [
-  { id: 'kpop2024', title: '컴백 캘린더 챌린지', tag: '#KPOP', plays: 15820 },
-  { id: 'dramamaster', title: '응답하라 드라마 밈', tag: '#드라마', plays: 12104 },
-  { id: 'lckfinal', title: 'LCK 결승 하이라이트', tag: '#e스포츠', plays: 9342 },
-];
+import { useJoinParty } from '@/lib/api';
 
 function formatTimeLeft(target: Date) {
   const diff = target.getTime() - Date.now();
@@ -38,18 +26,19 @@ function formatTimeLeft(target: Date) {
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { status: authStatus, isConvexReady } = useAuth();
+  const { status: authStatus, user, signInWithGoogle, guestKey, ensureGuestKey } = useAuth();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const dailyQuiz = useQuery(api.daily.getDailyQuiz, {});
-  const shouldFetchStats = authStatus === 'authenticated' && isConvexReady;
-  const selfStats = useQuery(api.users.getSelfStats, shouldFetchStats ? {} : 'skip');
+  const joinParty = useJoinParty();
   const [timeLeft, setTimeLeft] = useState(() => {
     const nextReset = new Date();
     nextReset.setHours(24, 0, 0, 0);
     return formatTimeLeft(nextReset);
   });
   const [partyCode, setPartyCode] = useState('');
+  const [joinNickname, setJoinNickname] = useState(user?.handle ?? '');
+  const [isJoining, setIsJoining] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
       const tomorrow = new Date();
@@ -64,11 +53,6 @@ export default function HomeScreen() {
   const muted = useThemeColor({}, 'textMuted');
 
   const isCodeValid = useMemo(() => partyCode.trim().length === 6, [partyCode]);
-
-  const handleJoinParty = useCallback(() => {
-    if (!isCodeValid) return;
-    router.replace(`/room/${partyCode.trim().toUpperCase()}`);
-  }, [isCodeValid, partyCode, router]);
 
   const isLoadingDailyQuiz = dailyQuiz === undefined;
   const hasDailyQuiz = Boolean(dailyQuiz);
@@ -108,6 +92,87 @@ export default function HomeScreen() {
     return '새 퀴즈가 곧 공개됩니다.';
   }, [dailyCategoryCopy?.label, dailyQuiz?.category, hasDailyQuiz, isLoadingDailyQuiz]);
 
+  const isAuthenticated = authStatus === 'authenticated' && !!user;
+  const isGuest = authStatus === 'guest';
+  const isAuthorizing = authStatus === 'authorizing';
+  const greetingName = isAuthenticated ? user.handle : '게스트';
+  const streakValue = isAuthenticated ? user.streak : null;
+  const streakLabel =
+    streakValue !== null && streakValue > 0
+      ? `🔥 ${streakValue}일 연속 도전!`
+      : '🔥 오늘 퀴즈로 스트릭을 시작해봐요!';
+
+  const handleGoogleLogin = useCallback(async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      Alert.alert(
+        '로그인에 실패했어요',
+        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
+      );
+    }
+  }, [signInWithGoogle]);
+
+  const handleAppleLogin = useCallback(() => {
+    Alert.alert('Apple 로그인', 'Apple 로그인은 준비 중이에요. 잠시만 기다려 주세요!');
+  }, []);
+
+  useEffect(() => {
+    if (isGuest && !guestKey) {
+      void ensureGuestKey();
+    }
+  }, [ensureGuestKey, guestKey, isGuest]);
+
+  const derivedGuestNickname = useMemo(() => {
+    if (!isGuest || !guestKey) return null;
+    const suffix = guestKey.slice(-4).toUpperCase().padStart(4, '0');
+    return `Guest ${suffix}`;
+  }, [guestKey, isGuest]);
+
+  useEffect(() => {
+    if (!derivedGuestNickname) return;
+    setJoinNickname((prev) =>
+      prev === derivedGuestNickname || prev.length > 0 ? prev : derivedGuestNickname
+    );
+  }, [derivedGuestNickname]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !user?.handle) return;
+    setJoinNickname((prev) => (prev.length === 0 ? user.handle : prev));
+  }, [isAuthenticated, user?.handle]);
+
+  const handleJoinParty = useCallback(async () => {
+    const normalizedCode = partyCode.trim().toUpperCase();
+    if (normalizedCode.length !== 6) {
+      Alert.alert('입력 오류', '초대 코드를 정확히 입력해주세요.');
+      return;
+    }
+
+    setIsJoining(true);
+    try {
+      const guestKeyValue =
+        isGuest ? guestKey ?? (await ensureGuestKey()) : undefined;
+      await joinParty({
+        code: normalizedCode,
+        nickname: joinNickname.trim() || undefined,
+        guestKey: guestKeyValue,
+      });
+      router.replace(`/room/${normalizedCode}`);
+    } catch (error) {
+      let message = '코드를 확인하거나 방이 이미 시작되었는지 확인해주세요.';
+      if (error instanceof Error) {
+        message = error.message.includes('ROOM_FULL')
+          ? '파티가 가득 찼어요. 다른 방을 찾아주세요.'
+          : error.message.includes('REJOIN_NOT_ALLOWED')
+            ? '퀴즈 진행 중에는 다시 입장할 수 없어요. 게임이 끝난 뒤 다시 시도해 주세요.'
+            : error.message;
+      }
+      Alert.alert('참여 실패', message);
+    } finally {
+      setIsJoining(false);
+    }
+  }, [ensureGuestKey, guestKey, isGuest, joinNickname, joinParty, partyCode, router]);
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView
@@ -117,6 +182,52 @@ export default function HomeScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
+        <View style={[styles.welcomeCard, { backgroundColor: cardBackground, borderColor }]}>
+          <View style={styles.welcomeRow}>
+            <View style={styles.avatarFrame}>
+              {isAuthenticated && user?.avatarUrl ? (
+                <Image source={{ uri: user.avatarUrl }} style={styles.avatarImage} />
+              ) : (
+                <View style={styles.avatarFallback}>
+                  <ThemedText style={styles.avatarInitial} lightColor="#ffffff" darkColor="#ffffff">
+                    {isAuthenticated ? user.handle.slice(0, 1).toUpperCase() : '🙂'}
+                  </ThemedText>
+                </View>
+              )}
+            </View>
+            <View style={styles.welcomeText}>
+              <ThemedText type="subtitle">안녕, {greetingName} 👋</ThemedText>
+              <ThemedText style={styles.streakText}>{streakLabel}</ThemedText>
+            </View>
+          </View>
+        </View>
+
+        {!isAuthenticated ? (
+          <View style={[styles.guestBanner, { borderColor, backgroundColor: palette.card }]}>
+            <ThemedText type="subtitle">로그인하고 내 기록을 저장하세요</ThemedText>
+            <ThemedText style={[styles.bannerHelper, { color: muted }]}>
+              맞힌 문제, 스트릭, 배지를 모두 모아볼 수 있어요.
+            </ThemedText>
+            <View style={styles.bannerActions}>
+              <Pressable
+                style={[styles.bannerButton, styles.bannerButtonPrimary]}
+                onPress={handleGoogleLogin}
+                disabled={isAuthorizing}
+              >
+                <ThemedText style={styles.bannerButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
+                  {isAuthorizing ? '로그인 중…' : 'Google로 로그인'}
+                </ThemedText>
+              </Pressable>
+              <Pressable
+                style={[styles.bannerButton, styles.bannerButtonSecondary]}
+                onPress={handleAppleLogin}
+              >
+                <ThemedText style={styles.bannerButtonLabel}>Apple로 로그인</ThemedText>
+              </Pressable>
+            </View>
+          </View>
+        ) : null}
+
         <View style={styles.headerRow}>
           <View style={styles.headerText}>
             <ThemedText type="title">QuizRoom</ThemedText>
@@ -125,8 +236,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.section}>
-          <View style={[styles.dailyCard, { backgroundColor: Palette.purple600 }]}
-          >
+          <View style={[styles.dailyCard, { backgroundColor: Palette.purple600 }]}>
             <ThemedText type="subtitle" style={styles.dailyTitle} lightColor="#ffffff" darkColor="#ffffff">
               {dailyTitleLabel}
             </ThemedText>
@@ -157,30 +267,23 @@ export default function HomeScreen() {
               </Pressable>
             )}
           </View>
-          <View style={[styles.statsRow, { backgroundColor: cardBackground, borderColor }]}
-          >
-            <StatsPill label="스트릭" value={`${selfStats?.streak ?? '-'}일`} />
-            <StatsPill label="XP" value={`${selfStats?.xp ?? 0}`} />
-            <StatsPill label="오늘 정답률" value={`${selfStats?.totalPlayed ? Math.round((selfStats.totalCorrect / selfStats.totalPlayed) * 100) : 0}%`} />
-          </View>
         </View>
 
         <View style={styles.section}>
-          <SectionHeader title="트렌딩 덱" tagline="요즘 가장 뜨거운 밈 컷" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
-            {TRENDING_DECKS.map((deck) => (
-              <View key={deck.id} style={[styles.deckCard, { backgroundColor: cardBackground, borderColor }]}
-              >
-                <ThemedText style={styles.deckTag} lightColor={Palette.pink500} darkColor={Palette.pink200}>
-                  {deck.tag}
+          <SectionHeader title="스와이프 퀴즈" tagline="빠르게 취향 테스트" />
+          <View style={[styles.swipeCard, { backgroundColor: cardBackground, borderColor }]}>
+            <ThemedText type="subtitle">스와이프로 퀴즈 고르기</ThemedText>
+            <ThemedText style={[styles.swipeBody, { color: muted }]}>
+              덱을 쓱 넘기고 오늘의 퀴즈를 바로 시작해보세요.
+            </ThemedText>
+            <Link href="/swipe" asChild>
+              <Pressable style={styles.swipeButton}>
+                <ThemedText style={styles.swipeButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
+                  스와이프 시작
                 </ThemedText>
-                <ThemedText type="subtitle" style={styles.deckTitle}>
-                  {deck.title}
-                </ThemedText>
-                <ThemedText style={[styles.deckMeta, { color: muted }]}>플레이 {deck.plays.toLocaleString()}회</ThemedText>
-              </View>
-            ))}
-          </ScrollView>
+              </Pressable>
+            </Link>
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -196,18 +299,36 @@ export default function HomeScreen() {
               maxLength={6}
               style={[styles.partyInput, { borderColor }]}
               placeholderTextColor={muted}
+              editable={!isJoining}
+            />
+            <TextInput
+              value={joinNickname}
+              onChangeText={setJoinNickname}
+              placeholder="닉네임 (선택)"
+              maxLength={24}
+              editable={!isGuest}
+              selectTextOnFocus={!isGuest}
+              style={[
+                styles.partyNicknameInput,
+                { borderColor },
+                isGuest && styles.partyNicknameInputDisabled,
+              ]}
+              placeholderTextColor={muted}
             />
             <Pressable
               onPress={handleJoinParty}
-              disabled={!isCodeValid}
-              style={[styles.joinButton, !isCodeValid && styles.joinButtonDisabled]}
+              disabled={!isCodeValid || isJoining}
+              style={[
+                styles.joinButton,
+                (!isCodeValid || isJoining) && styles.joinButtonDisabled,
+              ]}
             >
               <ThemedText
                 style={styles.joinButtonLabel}
-                lightColor={!isCodeValid ? Palette.slate500 : '#ffffff'}
-                darkColor={!isCodeValid ? Palette.slate500 : '#ffffff'}
+                lightColor={!isCodeValid || isJoining ? Palette.slate500 : '#ffffff'}
+                darkColor={!isCodeValid || isJoining ? Palette.slate500 : '#ffffff'}
               >
-                파티 참여
+                {isJoining ? '참여 중…' : '파티 참여'}
               </ThemedText>
             </Pressable>
             <Link href="/(tabs)/party" asChild>
@@ -234,16 +355,6 @@ function SectionHeader({ title, tagline }: { title: string; tagline: string }) {
   );
 }
 
-function StatsPill({ label, value }: { label: string; value: string }) {
-  const muted = useThemeColor({}, 'textMuted');
-  return (
-    <View style={styles.statsPill}>
-      <ThemedText style={[styles.statsLabel, { color: muted }]}>{label}</ThemedText>
-      <ThemedText style={styles.statsValue}>{value}</ThemedText>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -251,6 +362,77 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     gap: Spacing.xl,
+  },
+  welcomeCard: {
+    borderWidth: 1,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+  },
+  welcomeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+  },
+  avatarFrame: {
+    width: 60,
+    height: 60,
+    borderRadius: Radius.lg,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Palette.purple200,
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  avatarFallback: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Palette.purple600,
+  },
+  avatarInitial: {
+    fontSize: 28,
+    fontWeight: '700',
+  },
+  welcomeText: {
+    flex: 1,
+    gap: Spacing.xs,
+  },
+  streakText: {
+    fontWeight: '600',
+    color: Palette.pink500,
+  },
+  guestBanner: {
+    borderWidth: 1,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+    gap: Spacing.md,
+  },
+  bannerHelper: {
+    fontSize: 14,
+  },
+  bannerActions: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+  },
+  bannerButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.md,
+  },
+  bannerButtonPrimary: {
+    backgroundColor: Palette.purple600,
+  },
+  bannerButtonSecondary: {
+    backgroundColor: Palette.surfaceMuted,
+  },
+  bannerButtonLabel: {
+    fontWeight: '600',
   },
   headerRow: {
     flexDirection: 'row',
@@ -309,27 +491,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  statsRow: {
-    flexDirection: 'row',
-    borderWidth: 1,
-    borderRadius: Radius.lg,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    gap: Spacing.lg,
-    justifyContent: 'space-between',
-  },
-  statsPill: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 4,
-  },
-  statsLabel: {
-    fontSize: 13,
-  },
-  statsValue: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -338,27 +499,25 @@ const styles = StyleSheet.create({
   sectionTagline: {
     fontSize: 14,
   },
-  horizontalList: {
-    gap: Spacing.lg,
-    paddingRight: 8,
-  },
-  deckCard: {
-    width: 220,
-    padding: Spacing.lg,
-    borderRadius: Radius.lg,
+  swipeCard: {
     borderWidth: 1,
-    gap: 8,
+    borderRadius: Radius.lg,
+    padding: Spacing.xl,
+    gap: Spacing.md,
   },
-  deckTag: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  deckTitle: {
-    fontSize: 18,
-    lineHeight: 24,
-  },
-  deckMeta: {
+  swipeBody: {
     fontSize: 14,
+  },
+  swipeButton: {
+    marginTop: Spacing.sm,
+    backgroundColor: Palette.pink500,
+    borderRadius: Radius.pill,
+    paddingVertical: Spacing.md,
+    alignItems: 'center',
+  },
+  swipeButtonLabel: {
+    fontWeight: '600',
+    fontSize: 16,
   },
   partyCard: {
     borderWidth: 1,
@@ -377,6 +536,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     fontSize: 18,
     letterSpacing: 4,
+  },
+  partyNicknameInput: {
+    borderWidth: 1,
+    borderRadius: Radius.pill,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    fontSize: 16,
+  },
+  partyNicknameInputDisabled: {
+    backgroundColor: Palette.surfaceMuted,
+    color: Palette.slate500,
   },
   joinButton: {
     backgroundColor: Palette.purple600,

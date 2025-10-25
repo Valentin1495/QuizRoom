@@ -1,0 +1,3547 @@
+[
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 3월 발매된 뉴진스(NewJeans)의 싱글 'How Sweet'은 어떤 글로벌 브랜드와의 협업으로 화제가 되었을까?",
+        "tags": [
+            "NewJeans",
+            "K-POP",
+            "협업",
+            "글로벌브랜드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Apple Music"
+            },
+            {
+                "id": "b",
+                "text": "Coca-Cola"
+            },
+            {
+                "id": "c",
+                "text": "Nike"
+            },
+            {
+                "id": "d",
+                "text": "Spotify"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 'Coca-Cola'입니다. 뉴진스는 2025년 3월 싱글 'How Sweet'을 발매하며 코카콜라와 글로벌 캠페인 협업을 진행했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 287
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 4월 발매된 아이브(IVE)의 두 번째 미니 앨범 이름이자, 앨범의 정체성을 담은 단어는?",
+        "tags": [
+            "IVE",
+            "아이브",
+            "K-POP",
+            "앨범"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "IVE SWITCH"
+            },
+            {
+                "id": "b",
+                "text": "I'VE MINE"
+            },
+            {
+                "id": "c",
+                "text": "LOVE DIVE"
+            },
+            {
+                "id": "d",
+                "text": "AFTER LIKE"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "아이브의 두 번째 미니 앨범명은 'IVE SWITCH'로, 다양한 모습으로 변신한 아이브의 새로운 매력을 보여주는 앨범입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761483120,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 88
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "플레디스 엔터테인먼트의 신인 보이그룹 TWS의 데뷔 앨범 타이틀곡으로, 청량한 매력을 보여주며 인기를 끈 노래는?",
+        "tags": [
+            "TWS",
+            "플레디스",
+            "데뷔",
+            "K-POP"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "plot twist"
+            },
+            {
+                "id": "b",
+                "text": "first love"
+            },
+            {
+                "id": "c",
+                "text": "첫 만남은 계획대로 되지 않아"
+            },
+            {
+                "id": "d",
+                "text": "BFF"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "TWS의 데뷔 앨범 'Sparkling Blue'의 타이틀곡은 '첫 만남은 계획대로 되지 않아'로, 경쾌한 비트와 청량한 감성으로 사랑받았습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761483120,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 412
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 6월 발매된 라이즈(RIIZE)의 첫 미니 앨범명이자, '감정'을 키워드로 한 앨범의 이름은?",
+        "tags": [
+            "RIIZE",
+            "라이즈",
+            "SM엔터테인먼트",
+            "앨범"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "GET A GUITAR"
+            },
+            {
+                "id": "b",
+                "text": "IMAGINE"
+            },
+            {
+                "id": "c",
+                "text": "SIREN"
+            },
+            {
+                "id": "d",
+                "text": "RIIZING"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "라이즈의 첫 미니 앨범명은 'RIIZING'이며, 타이틀곡 'Boom Boom Bass'를 포함하여 멤버들의 다양한 감정을 담아냈습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761483120,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 749
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "제로베이스원(ZB1) 멤버 중 성한빈, 김지웅, 장하오 3인으로 구성되어 2024년 'KCON JAPAN'에서 스페셜 유닛 무대를 꾸민 유닛명은?",
+        "tags": [
+            "제로베이스원",
+            "ZB1",
+            "KCON",
+            "유닛"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Triple S"
+            },
+            {
+                "id": "b",
+                "text": "DREAM TRIO"
+            },
+            {
+                "id": "c",
+                "text": "Unbreakable"
+            },
+            {
+                "id": "d",
+                "text": "BROS"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "성한빈, 김지웅, 장하오 세 멤버는 'DREAM TRIO'라는 이름의 스페셜 유닛으로 KCON JAPAN 2024에서 인상적인 무대를 선보였습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761483120,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 105
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "에스파(aespa)의 세계관 속에서 현실 세계의 멤버들을 돕는 아바타 캐릭터를 일컫는 용어는 무엇인가?",
+        "tags": [
+            "aespa",
+            "에스파",
+            "AI",
+            "세계관",
+            "아바타"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "MY"
+            },
+            {
+                "id": "b",
+                "text": "NAEVES"
+            },
+            {
+                "id": "c",
+                "text": "SYNK"
+            },
+            {
+                "id": "d",
+                "text": "ae"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "에스파 세계관에서 현실 세계의 멤버는 '아바타'인 'ae'와 함께 활동하며, 이들은 서로 'SYNK'를 통해 연결됩니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761483120,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 33
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 스트레이 키즈(Stray Kids)가 참여하여 큰 화제를 모은 미국 팝스타 찰리 푸스(Charlie Puth)의 곡은?",
+        "tags": [
+            "Stray Kids",
+            "스트레이키즈",
+            "Charlie Puth",
+            "협업"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Lose My Breath"
+            },
+            {
+                "id": "b",
+                "text": "That's Hilarious"
+            },
+            {
+                "id": "c",
+                "text": "Attention"
+            },
+            {
+                "id": "d",
+                "text": "I Don't Think That I Like Her"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "스트레이 키즈는 찰리 푸스와 함께 'Lose My Breath'를 발표하며 글로벌 음악 팬들의 큰 관심을 받았습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761483120,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 678
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "(여자)아이들이 2024년 1월 정규 2집으로 선보인 타이틀곡으로, 멤버 소연이 작곡에 참여한 곡은?",
+        "tags": [
+            "(G)I-DLE",
+            "여자아이들",
+            "정규앨범",
+            "작곡"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Super Lady"
+            },
+            {
+                "id": "b",
+                "text": "Queencard"
+            },
+            {
+                "id": "c",
+                "text": "와이프 (Wife)"
+            },
+            {
+                "id": "d",
+                "text": "Nxde"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정규 2집 '2'의 선공개곡이자 소연이 작곡에 참여한 곡은 '와이프 (Wife)'이며, 타이틀곡은 'Super Lady'입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761483120,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 219
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 데뷔한 아일릿(ILLIT)의 첫 미니 앨범 타이틀곡으로, '무언가를 믿고 나아가는' 메시지를 담은 노래는?",
+        "tags": [
+            "ILLIT",
+            "아일릿",
+            "데뷔",
+            "K-POP"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Magnetic"
+            },
+            {
+                "id": "b",
+                "text": "Lucky Girl Syndrome"
+            },
+            {
+                "id": "c",
+                "text": "My World"
+            },
+            {
+                "id": "d",
+                "text": "Midnight Fiction"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "아일릿의 데뷔곡 'Magnetic'은 좋아하는 상대에게 이끌리는 마음을 자석에 비유한 곡으로, 긍정적인 메시지를 담고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761483120,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 911
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "방탄소년단(BTS) 멤버 중, 2024년 솔로 앨범 'Right Place, Wrong Person'을 발표하며 자신의 내면적 감정을 표현한 멤버는?",
+        "tags": [
+            "BTS",
+            "방탄소년단",
+            "솔로",
+            "RM"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "지민 (Jimin)"
+            },
+            {
+                "id": "b",
+                "text": "슈가 (SUGA)"
+            },
+            {
+                "id": "c",
+                "text": "정국 (Jung Kook)"
+            },
+            {
+                "id": "d",
+                "text": "RM"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "RM은 2024년 두 번째 솔로 앨범 'Right Place, Wrong Person'을 발매하며, 이방인처럼 느껴지는 순간의 복잡한 감정들을 다뤘습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761483120,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 42
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 6월 발매된 레드벨벳(Red Velvet)의 새 앨범명으로, '여름의 신비로운 판타지'를 담은 곡명은?",
+        "tags": [
+            "Red Velvet",
+            "레드벨벳",
+            "여름앨범",
+            "K-POP"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Feel My Rhythm"
+            },
+            {
+                "id": "b",
+                "text": "Cosmic"
+            },
+            {
+                "id": "c",
+                "text": "Psycho"
+            },
+            {
+                "id": "d",
+                "text": "Chill Kill"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "레드벨벳의 2024년 여름 미니앨범 타이틀곡은 'Cosmic'으로, 신비롭고 몽환적인 여름 분위기를 표현했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 834
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 4월, 걸그룹 블랙핑크 멤버 중 처음으로 개인 레이블 'LLOUD'를 설립한 아티스트는?",
+        "tags": [
+            "블랙핑크",
+            "BLACKPINK",
+            "LLOUD",
+            "솔로",
+            "리사"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "로제 (ROSÉ)"
+            },
+            {
+                "id": "b",
+                "text": "리사 (LISA)"
+            },
+            {
+                "id": "c",
+                "text": "제니 (JENNIE)"
+            },
+            {
+                "id": "d",
+                "text": "지수 (JISOO)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "리사는 2024년 4월 개인 매니지먼트 회사인 'LLOUD'를 설립하고, RCA 레코드와 제휴하여 솔로 활동을 이어가고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 19
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "아이유가 2024년 2월 발매한 미니 앨범 'The Winning'의 더블 타이틀곡 중 하나로, 밴드 사운드가 강조된 노래는?",
+        "tags": [
+            "아이유",
+            "IU",
+            "The Winning",
+            "타이틀곡"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Love wins all"
+            },
+            {
+                "id": "b",
+                "text": "Shopper"
+            },
+            {
+                "id": "c",
+                "text": "Holssi"
+            },
+            {
+                "id": "d",
+                "text": "Strawberry Moon"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "아이유의 미니앨범 'The Winning'의 더블 타이틀곡은 'Shopper'와 'Holssi'이며, 'Holssi'는 경쾌한 밴드 사운드가 돋보이는 곡입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 77
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 K-POP에서 인기를 끈 버추얼 그룹 플레이브(PLAVE)의 팬덤 이름은 무엇인가?",
+        "tags": [
+            "PLAVE",
+            "플레이브",
+            "버추얼아이돌",
+            "팬덤"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "PLLI"
+            },
+            {
+                "id": "b",
+                "text": "PLANET"
+            },
+            {
+                "id": "c",
+                "text": "VLAST"
+            },
+            {
+                "id": "d",
+                "text": "ASTERUM"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "버추얼 보이그룹 플레이브의 공식 팬덤명은 'PLLI(플리)'이며, 'PLAVE'와 'I'를 합쳐 '플레이브를 이어주는 우리'라는 의미를 담고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 556
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 투모로우바이투게더(TXT)의 미니 5집 앨범명으로, 과거의 약속을 찾는 이야기를 담은 앨범은?",
+        "tags": [
+            "TXT",
+            "투모로우바이투게더",
+            "앨범",
+            "K-POP"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "The Dream Chapter: MAGIC"
+            },
+            {
+                "id": "b",
+                "text": "minisode 3: TOMORROW"
+            },
+            {
+                "id": "c",
+                "text": "The Name Chapter: FREEFALL"
+            },
+            {
+                "id": "d",
+                "text": "Temptation"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "TXT의 미니 5집 앨범은 'minisode 3: TOMORROW'로, '너와 함께하는 내일이 곧 희망'이라는 주제를 담고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 245
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 4월 지코(ZICO)가 블랙핑크 제니(JENNIE)와 협업하여 발표, 큰 인기를 끈 노래의 제목은?",
+        "tags": [
+            "ZICO",
+            "제니",
+            "JENNIE",
+            "협업",
+            "힙합"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Any song"
+            },
+            {
+                "id": "b",
+                "text": "New Thing"
+            },
+            {
+                "id": "c",
+                "text": "SPOT! (feat. JENNIE)"
+            },
+            {
+                "id": "d",
+                "text": "Summer Hate"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "지코는 제니와 함께 디지털 싱글 'SPOT! (feat. JENNIE)'을 발매하며 발매 직후 국내외 차트에서 큰 인기를 얻었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 951
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 2월 발매된 텐(TEN)의 첫 솔로 미니 앨범 타이틀곡이자, 관능적인 분위기로 화제를 모은 노래는?",
+        "tags": [
+            "TEN",
+            "NCT",
+            "솔로",
+            "SM엔터테인먼트"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Tap"
+            },
+            {
+                "id": "b",
+                "text": "Nightwalker"
+            },
+            {
+                "id": "c",
+                "text": "Paint Me Naked"
+            },
+            {
+                "id": "d",
+                "text": "New Heroes"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "NCT/WayV 멤버 텐의 첫 솔로 미니 앨범 'TEN'의 타이틀곡은 'Nightwalker'로, 몽환적이고 관능적인 매력을 선보였습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 601
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 5월 에스파(aespa)가 발매한 정규 1집의 이름이자, 이들의 독자적인 세계관을 완성하는 앨범명은?",
+        "tags": [
+            "aespa",
+            "에스파",
+            "정규앨범",
+            "세계관"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "MY WORLD"
+            },
+            {
+                "id": "b",
+                "text": "Armageddon"
+            },
+            {
+                "id": "c",
+                "text": "Supernova"
+            },
+            {
+                "id": "d",
+                "text": "Savage"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "에스파의 첫 정규 앨범명은 'Armageddon'으로, 타이틀곡 'Armageddon'과 'Supernova'를 통해 세계관 시즌 2의 막을 열었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 307
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 3월 데이식스(DAY6)가 4년 만에 완전체로 컴백하여 발표한 앨범의 타이틀곡은?",
+        "tags": [
+            "DAY6",
+            "데이식스",
+            "밴드",
+            "컴백"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "한 페이지가 될 수 있게"
+            },
+            {
+                "id": "b",
+                "text": "Welcome to the Show"
+            },
+            {
+                "id": "c",
+                "text": "예뻤어"
+            },
+            {
+                "id": "d",
+                "text": "Zombie"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "데이식스는 2024년 미니 앨범 'Fourever'를 발매하며, 타이틀곡 'Welcome to the Show'로 4년 만에 완전체 컴백했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 876
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 4월, NCT 멤버 중 처음으로 솔로 앨범 'LUCAS'를 발매하며 홀로서기에 나선 아티스트는?",
+        "tags": [
+            "NCT",
+            "솔로",
+            "WayV",
+            "루카스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "태용 (TAEYONG)"
+            },
+            {
+                "id": "b",
+                "text": "텐 (TEN)"
+            },
+            {
+                "id": "c",
+                "text": "루카스 (LUCAS)"
+            },
+            {
+                "id": "d",
+                "text": "도영 (DOYOUNG)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "루카스는 2024년 4월 첫 솔로 싱글 'Renegade'를 발매하며 솔로 활동을 시작했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761502489,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 444
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 4월 발매된 세븐틴(SEVENTEEN) 베스트 앨범 '17 IS RIGHT HERE'의 타이틀곡으로, 안무가 큰 화제를 모은 노래는?",
+        "tags": [
+            "SEVENTEEN",
+            "세븐틴",
+            "MAESTRO",
+            "K-POP"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "HOT"
+            },
+            {
+                "id": "b",
+                "text": "손오공 (Super)"
+            },
+            {
+                "id": "c",
+                "text": "아주 NICE"
+            },
+            {
+                "id": "d",
+                "text": "MAESTRO"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "세븐틴의 베스트 앨범에 수록된 신곡 'MAESTRO'는 '지휘자'라는 의미처럼 모두를 지휘하는 듯한 퍼포먼스가 특징입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 114
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 4월 데뷔한 YG의 신인 걸그룹 베이비몬스터(BABYMONSTER)의 공식 미니 1집 앨범명은 무엇인가?",
+        "tags": [
+            "BABYMONSTER",
+            "베이비몬스터",
+            "YG",
+            "앨범"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "BABYMONS7ER"
+            },
+            {
+                "id": "b",
+                "text": "SHEESH"
+            },
+            {
+                "id": "c",
+                "text": "BATTER UP"
+            },
+            {
+                "id": "d",
+                "text": "BABY DON'T CRY"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "베이비몬스터의 공식 미니 1집 앨범명은 'BABYMONS7ER'이며, 완전체 7인조로 활동을 알리는 상징적인 앨범입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 473
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "방탄소년단 제이홉(J-Hope)이 2024년 3월 발매한 특별 앨범이자, 스트리트 댄스 다큐멘터리와 연계된 앨범의 이름은?",
+        "tags": [
+            "J-Hope",
+            "BTS",
+            "솔로",
+            "HopeOnTheStreet"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Jack In The Box"
+            },
+            {
+                "id": "b",
+                "text": "Hope On The Street Vol. 1"
+            },
+            {
+                "id": "c",
+                "text": "Golden"
+            },
+            {
+                "id": "d",
+                "text": "Indigo"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "제이홉의 특별 앨범 'Hope On The Street Vol. 1'은 그의 음악적 뿌리인 스트리트 댄스를 조명하는 동명의 다큐멘터리와 함께 공개되었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 902
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "아이브(IVE)의 2024년 곡 'HEYA'의 뮤직비디오와 비주얼에서 영감을 받은 전통적인 요소는 무엇인가?",
+        "tags": [
+            "IVE",
+            "아이브",
+            "HEYA",
+            "전통",
+            "동양"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "고전 신화 (그리스·로마 신화)"
+            },
+            {
+                "id": "b",
+                "text": "19세기 유럽 복식"
+            },
+            {
+                "id": "c",
+                "text": "호랑이 설화와 동양화"
+            },
+            {
+                "id": "d",
+                "text": "미래 도시와 사이버펑크"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "아이브의 'HEYA'는 호랑이 설화 등 한국적인 요소를 현대적인 감각으로 재해석한 비주얼과 콘셉트가 특징입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 229
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 뉴진스(NewJeans)가 발표한 싱글 'How Sweet'의 수록곡이자, 일본 후지 TV의 아침 방송 테마곡으로 사용된 노래는?",
+        "tags": [
+            "NewJeans",
+            "뉴진스",
+            "BubbleGum",
+            "일본방송"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "ETA"
+            },
+            {
+                "id": "b",
+                "text": "Cool With You"
+            },
+            {
+                "id": "c",
+                "text": "Ditto"
+            },
+            {
+                "id": "d",
+                "text": "Bubble Gum"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "수록곡 'Bubble Gum'은 일본 샤ンプー 광고와 후지 TV 아침 프로그램의 테마곡으로 선공개되어 큰 인기를 얻었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 58
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 4월 키스오브라이프(KISS OF LIFE)가 발매한 싱글 'Midas Touch'에서, 이 노래가 주로 비유하고 있는 주제는?",
+        "tags": [
+            "KISS OF LIFE",
+            "키스오브라이프",
+            "MidasTouch",
+            "사랑"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "사랑에 빠지는 순간의 통제 불가능한 감정"
+            },
+            {
+                "id": "b",
+                "text": "타인의 시선에 갇힌 자아 발견"
+            },
+            {
+                "id": "c",
+                "text": "인간 복제와 AI의 윤리적 문제"
+            },
+            {
+                "id": "d",
+                "text": "미래 도시에서의 삶의 고독"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "'Midas Touch'는 통제할 수 없이 상대를 원하는 마음을 '미다스의 손'에 비유하며 솔직한 사랑의 감정을 노래합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 711
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 보이넥스트도어(BOYNEXTDOOR)가 발매한 첫 미니 앨범명으로, 제목 자체가 의문을 던지는 단어는?",
+        "tags": [
+            "BOYNEXTDOOR",
+            "보이넥스트도어",
+            "컴백",
+            "앨범"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "WHO!"
+            },
+            {
+                "id": "b",
+                "text": "WHY.."
+            },
+            {
+                "id": "c",
+                "text": "HOW?"
+            },
+            {
+                "id": "d",
+                "text": "WHAT!"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "보이넥스트도어의 미니 1집은 'HOW?'로, 데뷔 싱글 'WHO!'와 미니 1집 'WHY..'를 잇는 '첫사랑 이야기 3부작'의 마지막을 장식합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 338
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 엔믹스(NMIXX)가 두 번째 미니 앨범 'Fe3O4: BREAK'의 타이틀곡으로 선보인 곡은?",
+        "tags": [
+            "NMIXX",
+            "엔믹스",
+            "JYP",
+            "Dash"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "O.O"
+            },
+            {
+                "id": "b",
+                "text": "Dash"
+            },
+            {
+                "id": "c",
+                "text": "Party O'Clock"
+            },
+            {
+                "id": "d",
+                "text": "Cool (Your rainbow)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "엔믹스는 2024년 미니 앨범 'Fe3O4: BREAK'의 타이틀곡 'Dash'를 통해 '믹스팝' 장르의 매력을 이어갔습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 845
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "방탄소년단 V(뷔)가 2024년 3월에 발표한 디지털 싱글로, 영국 배우 프리다 구스타프손이 출연한 뮤직비디오가 특징인 노래는?",
+        "tags": [
+            "BTS",
+            "V",
+            "뷔",
+            "솔로",
+            "Fri(end)s"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Slow Dancing"
+            },
+            {
+                "id": "b",
+                "text": "Love Me Again"
+            },
+            {
+                "id": "c",
+                "text": "Fri(end)s"
+            },
+            {
+                "id": "d",
+                "text": "Rainy Days"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "V의 솔로 싱글 'Fri(end)s'는 친구 관계를 끝내고 연인이 되고 싶은 마음을 담은 곡이며, 뮤직비디오는 영국에서 촬영되었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 65
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "(여자)아이들의 2024년 정규 2집에 수록되어 타이틀곡 못지않은 인기를 얻은, '힘든 건 딱 질색'이라는 가사가 반복되는 노래는?",
+        "tags": [
+            "(G)I-DLE",
+            "여자아이들",
+            "정규앨범",
+            "나는아픈건딱질색이니까"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "나는 아픈 건 딱 질색이니까"
+            },
+            {
+                "id": "b",
+                "text": "Super Lady"
+            },
+            {
+                "id": "c",
+                "text": "Wife"
+            },
+            {
+                "id": "d",
+                "text": "Allergy"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "수록곡 '나는 아픈 건 딱 질색이니까'는 중독성 있는 멜로디와 솔직한 가사로 정규 2집 '2'의 숨겨진 히트곡으로 불렸습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505080,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 179
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 상반기 데뷔를 예고하며 SM엔터테인먼트가 에스파 이후 약 5년 만에 선보이는 신인 걸그룹의 가칭은 무엇이었는가?",
+        "tags": [
+            "SM엔터테인먼트",
+            "신인걸그룹",
+            "2025년데뷔",
+            "Hearts2Hearts"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Dear Alice"
+            },
+            {
+                "id": "b",
+                "text": "Hearts2Hearts"
+            },
+            {
+                "id": "c",
+                "text": "Next Monster"
+            },
+            {
+                "id": "d",
+                "text": "Kickflip"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "SM엔터테인먼트는 2025년 창립 30주년을 맞아 신인 걸그룹 'Hearts2Hearts(하츠투하츠)'의 데뷔를 예고했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 991
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 K-POP 시장에서 주요 키워드로 언급되는, 여러 아티스트를 동시에 소비하는 팬덤 형태를 일컫는 용어는?",
+        "tags": [
+            "K-POP",
+            "팬덤",
+            "소비트렌드",
+            "멀티스탠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "헤비 스탠 (Heavy Stan)"
+            },
+            {
+                "id": "b",
+                "text": "멀티 스탠 (Multi-Stan)"
+            },
+            {
+                "id": "c",
+                "text": "코어 팬덤 (Core Fandom)"
+            },
+            {
+                "id": "d",
+                "text": "올라운더 (All-Rounder)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "멀티 스탠(Multi-Stan)은 한 팀뿐만 아니라 여러 아티스트를 동시에 지지하고 소비하는 팬덤 문화를 의미합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 63
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 4월, 걸그룹 트와이스(TWICE)가 미국 최대 음악 축제 '코첼라' 무대에서 선보인 퍼포먼스는 K-POP 걸그룹으로서 어떤 기록을 세웠는가?",
+        "tags": [
+            "TWICE",
+            "트와이스",
+            "코첼라",
+            "K-POP"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "최초의 JYP 소속 아티스트 단독 무대"
+            },
+            {
+                "id": "b",
+                "text": "최초의 일본인 멤버가 포함된 그룹의 무대"
+            },
+            {
+                "id": "c",
+                "text": "헤드라이너로 선정된 최초의 K-POP 걸그룹"
+            },
+            {
+                "id": "d",
+                "text": "K-POP 걸그룹 최초의 메인 스테이지 출연"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "트와이스는 2024년 K-POP 걸그룹 최초로 코첼라 메인 스테이지에서 공연을 펼쳤습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 501
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 6월, 방탄소년단(BTS)의 진(Jin)이 전역 후 처음으로 팬들을 만난 행사에서 진행된 독특한 이벤트는?",
+        "tags": [
+            "BTS",
+            "진",
+            "전역",
+            "이벤트"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "함께 군대식 식사 체험"
+            },
+            {
+                "id": "b",
+                "text": "1000명과 허그회(Hug Event)"
+            },
+            {
+                "id": "c",
+                "text": "입대 전 쓴 편지 낭독"
+            },
+            {
+                "id": "d",
+                "text": "직접 만든 군번줄 증정"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "진은 전역 기념 팬 이벤트 '2024 FESTA'에서 1000명의 팬들과 포옹을 나누는 '허그회'를 진행했습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 277
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 상반기 JYP엔터테인먼트에서 데뷔를 확정한 신인 보이그룹의 가칭은 무엇이었는가?",
+        "tags": [
+            "JYP엔터테인먼트",
+            "신인보이그룹",
+            "2025년데뷔",
+            "Kickflip"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Kickflip"
+            },
+            {
+                "id": "b",
+                "text": "AXMP"
+            },
+            {
+                "id": "c",
+                "text": "Nouera"
+            },
+            {
+                "id": "d",
+                "text": "Atheart"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "JYP는 스트레이 키즈의 남동생 그룹으로 불리는 신인 보이그룹 'Kickflip(킥플립)'의 2025년 1월 데뷔를 확정했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 41
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 하반기 빌보드 'Hot 100'에 진입하며 화제를 모은, 블랙핑크 제니(JENNIE)의 솔로곡은 무엇인가?",
+        "tags": [
+            "JENNIE",
+            "제니",
+            "솔로",
+            "빌보드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "You & Me"
+            },
+            {
+                "id": "b",
+                "text": "Solo"
+            },
+            {
+                "id": "c",
+                "text": "Like JENNIE"
+            },
+            {
+                "id": "d",
+                "text": "Spot! (feat. JENNIE)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "제니는 2024년 후반에 발표한 솔로곡 'Like JENNIE'로 빌보드 메인 차트에 진입하며 글로벌 인기를 입증했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 809
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 5월 발매된 르세라핌(LE SSERAFIM)의 일본 싱글 'EASY'의 타이틀곡이 아닌 것은?",
+        "tags": [
+            "LE SSERAFIM",
+            "르세라핌",
+            "EASY",
+            "일본싱글"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "EASY -Japanese ver.-"
+            },
+            {
+                "id": "b",
+                "text": "Perfect Night -Japanese ver.-"
+            },
+            {
+                "id": "c",
+                "text": "UNFORGIVEN -Japanese ver.-"
+            },
+            {
+                "id": "d",
+                "text": "Smart -Japanese ver.-"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "르세라핌의 2024년 5월 일본 싱글 'EASY'에는 'EASY', 'Perfect Night', 'Smart'의 일본어 버전이 수록되었으며, 'UNFORGIVEN'은 이전 싱글의 수록곡입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 128
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 하반기, 방탄소년단 지민(Jimin)의 솔로곡 'Who'가 세운 기록은 무엇인가?",
+        "tags": [
+            "BTS",
+            "지민",
+            "솔로",
+            "스포티파이"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "K-POP 남성 솔로 최초 빌보드 '핫 100' 1위"
+            },
+            {
+                "id": "b",
+                "text": "2024년 하반기 해외에서 가장 많이 스트리밍된 K-POP 1위"
+            },
+            {
+                "id": "c",
+                "text": "K-POP 솔로곡 최단 기간 스포티파이 10억 스트리밍 돌파"
+            },
+            {
+                "id": "d",
+                "text": "그래미 어워즈 '올해의 레코드' 후보 지명"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "지민의 솔로곡 'Who'는 2024년 하반기 스포티파이에서 '해외에서 가장 많이 스트리밍된 K-POP' 1위를 차지했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 349
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 에스파(aespa)가 타이틀곡 'Supernova'와 함께 정규 1집 'Armageddon'을 발매하며, 독특하게 팬들의 주목을 받은 수록곡은?",
+        "tags": [
+            "aespa",
+            "에스파",
+            "정규앨범",
+            "수록곡"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Up"
+            },
+            {
+                "id": "b",
+                "text": "Long Chat (가위바위보)"
+            },
+            {
+                "id": "c",
+                "text": "Trick or Trick"
+            },
+            {
+                "id": "d",
+                "text": "Thirsty"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "수록곡 'Long Chat (가위바위보)'은 제목과 곡의 콘셉트가 독특하여 팬들 사이에서 큰 화제를 모았습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 780
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 블랙핑크(BLACKPINK)의 완전체 컴백과 함께 예고된, K-POP 걸그룹 사상 최대 규모의 월드투어 이름은?",
+        "tags": [
+            "BLACKPINK",
+            "블랙핑크",
+            "월드투어",
+            "2025년"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "THE SHOW"
+            },
+            {
+                "id": "b",
+                "text": "BORN PINK"
+            },
+            {
+                "id": "c",
+                "text": "WORLD DOMINATION"
+            },
+            {
+                "id": "d",
+                "text": "PHOENIX"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "블랙핑크는 2025년 신보와 함께 새로운 월드투어 'PHOENIX(피닉스)'를 예고하며 기대를 모으고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505320,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 456
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 상반기 미국 빌보드가 선정한 '최고의 K-POP 노래 25곡'에서 2위를 차지한 엔믹스(NMIXX)의 타이틀곡은 무엇인가?",
+        "tags": [
+            "NMIXX",
+            "엔믹스",
+            "빌보드",
+            "High Horse"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "DICE"
+            },
+            {
+                "id": "b",
+                "text": "High Horse"
+            },
+            {
+                "id": "c",
+                "text": "Party O'Clock"
+            },
+            {
+                "id": "d",
+                "text": "Love Was Gone"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "엔믹스는 2025년 발표한 'High Horse'로 빌보드 평론가들이 선정한 '2025 상반기 최고의 K-POP 노래 25곡'에서 2위를 차지했습니다. (1위는 제니의 'Like JENNIE')",
+        "difficulty": 0.7,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 113
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 5월 데뷔 1년 8개월 만에 첫 정규 앨범 'ODYSSEY'로 컴백을 알린 SM엔터테인먼트 소속 보이그룹은?",
+        "tags": [
+            "SM엔터테인먼트",
+            "보이그룹",
+            "정규앨범",
+            "라이즈"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "NCT WISH"
+            },
+            {
+                "id": "b",
+                "text": "RIIZE (라이즈)"
+            },
+            {
+                "id": "c",
+                "text": "NCT DREAM"
+            },
+            {
+                "id": "d",
+                "text": "EXO"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "라이즈는 2025년 5월, 데뷔 이래 첫 정규 앨범 'ODYSSEY(오디세이)'로 컴백했습니다. 타이틀곡은 'Bounce'",
+        "difficulty": 0.5,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 745
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 8월, 3년 만에 정규 3집 'Hunter'로 솔로 컴백을 예고한 샤이니(SHINee)의 멤버는?",
+        "tags": [
+            "SHINee",
+            "샤이니",
+            "솔로컴백",
+            "Key"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "온유 (ONEW)"
+            },
+            {
+                "id": "b",
+                "text": "민호 (MINHO)"
+            },
+            {
+                "id": "c",
+                "text": "태민 (TAEMIN)"
+            },
+            {
+                "id": "d",
+                "text": "키 (Key)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "샤이니의 멤버 키(Key)는 2025년 8월 정규 3집 'Hunter'를 발매하며 솔로 활동을 이어갈 예정입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 321
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 하반기, K-POP 걸그룹 최초로 미국 빌보드 메인 앨범 차트 '빌보드 200'에 통산 10번째 진입이라는 신기록을 세운 그룹은?",
+        "tags": [
+            "트와이스",
+            "TWICE",
+            "빌보드200",
+            "K-POP걸그룹"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "블랙핑크 (BLACKPINK)"
+            },
+            {
+                "id": "b",
+                "text": "트와이스 (TWICE)"
+            },
+            {
+                "id": "c",
+                "text": "르세라핌 (LE SSERAFIM)"
+            },
+            {
+                "id": "d",
+                "text": "뉴진스 (NewJeans)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "트와이스는 데뷔 10주년 스페셜 앨범 'TEN: The Story Goes On'으로 '빌보드 200'에 10번째 진입하며 K-POP 걸그룹 최다 진입 기록을 세웠습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 907
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 2월, YG 소속 블랙핑크 멤버 중 정규 1집 'Alter Ego' 발매를 예고한 아티스트는?",
+        "tags": [
+            "BLACKPINK",
+            "블랙핑크",
+            "솔로앨범",
+            "리사"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "지수 (JISOO)"
+            },
+            {
+                "id": "b",
+                "text": "제니 (JENNIE)"
+            },
+            {
+                "id": "c",
+                "text": "로제 (ROSÉ)"
+            },
+            {
+                "id": "d",
+                "text": "리사 (LISA)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "리사는 2025년 2월 첫 솔로 정규 앨범 'Alter Ego'를 발매하며 솔로 활동을 이어갈 예정입니다. 제니는 3월에 'Ruby' 발매가 예고되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 562
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2024년 말부터 2025년까지 K-POP 아이돌들 사이에서 유행한 댄스 밈(Meme)으로, 코믹한 움직임이 특징인 챌린지의 이름은?",
+        "tags": [
+            "K-POP",
+            "밈",
+            "챌린지",
+            "댄스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "K-POP 챌린지"
+            },
+            {
+                "id": "b",
+                "text": "삐끼삐끼 춤"
+            },
+            {
+                "id": "c",
+                "text": "아기상어 댄스"
+            },
+            {
+                "id": "d",
+                "text": "벽 잡고 춤추기"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "2024년 말부터 아이돌들 사이에서 '삐끼삐끼 춤'이 유행하며 밈으로 확산되었습니다. 이는 코믹하고 과장된 춤 동작이 특징입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 688
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 상반기, NCT 멤버 중 솔로 미니 2집 'Stunner'로 컴백을 예고한 퍼포먼스 강자 아티스트는?",
+        "tags": [
+            "NCT",
+            "솔로",
+            "WayV",
+            "텐"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "도영 (DOYOUNG)"
+            },
+            {
+                "id": "b",
+                "text": "태용 (TAEYONG)"
+            },
+            {
+                "id": "c",
+                "text": "텐 (TEN)"
+            },
+            {
+                "id": "d",
+                "text": "루카스 (LUCAS)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "NCT/WayV 멤버 텐(TEN)은 2025년 3월 솔로 미니 2집 'Stunner'를 발매하며 컴백할 예정입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 14
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 9월, NCT의 막내 유닛으로 미니 2집 컴백을 예고하며 '청량한 여름 노래'를 선공개한 그룹은?",
+        "tags": [
+            "NCT",
+            "SM엔터테인먼트",
+            "NCT WISH",
+            "청량"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "NCT 127"
+            },
+            {
+                "id": "b",
+                "text": "NCT WISH"
+            },
+            {
+                "id": "c",
+                "text": "NCT DREAM"
+            },
+            {
+                "id": "d",
+                "text": "WayV"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "NCT WISH는 2025년 9월 미니 2집 컴백에 앞서 청량한 콘셉트의 선공개곡 'Surf'를 발표했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 451
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 상반기 빌보드가 선정한 '최고의 K-POP 노래 25곡'에서 3위를 차지한 에이티즈(ATEEZ)의 R&B 힙합 장르 곡은?",
+        "tags": [
+            "ATEEZ",
+            "에이티즈",
+            "빌보드",
+            "Lemon Drop"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "WORK"
+            },
+            {
+                "id": "b",
+                "text": "Crazy Form"
+            },
+            {
+                "id": "c",
+                "text": "Lemon Drop"
+            },
+            {
+                "id": "d",
+                "text": "BOUNCY (K-HOT CHILLI PEPPERS)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "에이티즈의 'Lemon Drop'은 빌보드 평론가들이 선정한 '2025 상반기 최고의 K-POP 노래 25곡'에서 3위에 올랐으며, R&B 힙합 그루브가 돋보이는 곡입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 833
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 5월 데뷔를 앞두고, 4월 선공개 싱글 'Hands Up'으로 기대를 모은 YG 엔터테인먼트의 신인 걸그룹은?",
+        "tags": [
+            "YG",
+            "신인걸그룹",
+            "2025년데뷔",
+            "Meovv"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "ILLIT"
+            },
+            {
+                "id": "b",
+                "text": "KISS OF LIFE"
+            },
+            {
+                "id": "c",
+                "text": "BABYMONSTER"
+            },
+            {
+                "id": "d",
+                "text": "Meovv (미야오)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "YG의 신인 걸그룹 Meovv(미야오)는 2025년 5월 데뷔 미니 앨범 'MY EYES OPEN VVIDE' 발매에 앞서 4월 'Hands Up'을 선공개했습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 444
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 2월, 에스파(aespa) 이후 약 5년 만에 SM엔터테인먼트에서 데뷔한 8인조 다국적 신인 걸그룹의 이름은?",
+        "tags": [
+            "SM엔터테인먼트",
+            "신인걸그룹",
+            "2025년데뷔",
+            "Hearts2Hearts"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Dear Alice"
+            },
+            {
+                "id": "b",
+                "text": "Kickflip"
+            },
+            {
+                "id": "c",
+                "text": "Hearts2Hearts"
+            },
+            {
+                "id": "d",
+                "text": "Mytro"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "Hearts2Hearts는 2025년 2월 24일에 데뷔한 SM엔터테인먼트 소속의 8인조 다국적 걸그룹입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 101
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 6월, RM, 뷔, 지민, 정국의 전역으로 방탄소년단(BTS)의 모든 멤버가 군 복무를 마치며 K-POP 시장의 최대 이슈가 된 해는?",
+        "tags": [
+            "BTS",
+            "방탄소년단",
+            "군복무",
+            "완전체"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "2024년"
+            },
+            {
+                "id": "b",
+                "text": "2025년"
+            },
+            {
+                "id": "c",
+                "text": "2026년"
+            },
+            {
+                "id": "d",
+                "text": "2027년"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "2025년 6월 중 RM, 뷔, 지민, 정국이 전역하면서 모든 BTS 멤버가 군 복무를 마쳐 완전체 활동 재개에 대한 기대감이 커졌습니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 202
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 1월 20일, JYP엔터테인먼트에서 스트레이 키즈(Stray Kids) 이후 선보인 신인 보이그룹의 이름은?",
+        "tags": [
+            "JYP엔터테인먼트",
+            "신인보이그룹",
+            "2025년데뷔",
+            "Kickflip"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "AXMXP"
+            },
+            {
+                "id": "b",
+                "text": "Kickflip"
+            },
+            {
+                "id": "c",
+                "text": "Xdinary Heroes"
+            },
+            {
+                "id": "d",
+                "text": "CORTIS"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "JYP엔터테인먼트의 신인 보이그룹 Kickflip은 2025년 1월 20일 데뷔했습니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 303
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 하반기 컴백을 예고한 YG 엔터테인먼트 소속 걸그룹 베이비몬스터(BABYMONSTER)가 발표한 앨범명은?",
+        "tags": [
+            "BABYMONSTER",
+            "베이비몬스터",
+            "YG",
+            "위고업"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "DREAM"
+            },
+            {
+                "id": "b",
+                "text": "SHEESH"
+            },
+            {
+                "id": "c",
+                "text": "DRIP"
+            },
+            {
+                "id": "d",
+                "text": "We Go Up"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "베이비몬스터는 2025년 10월, 'We Go Up'을 발매하며 컴백할 예정입니다. 'DRIP'은 2024년 12월 말에 발표된 곡입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 404
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 솔로 앨범 'Ruby'의 선공개 곡으로 'Love Hangover'를 발매한 블랙핑크(BLACKPINK) 멤버는?",
+        "tags": [
+            "BLACKPINK",
+            "블랙핑크",
+            "솔로",
+            "제니"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "로제 (ROSÉ)"
+            },
+            {
+                "id": "b",
+                "text": "리사 (LISA)"
+            },
+            {
+                "id": "c",
+                "text": "제니 (JENNIE)"
+            },
+            {
+                "id": "d",
+                "text": "지수 (JISOO)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "제니는 2025년 1월 31일 정규 1집 'Ruby'의 선공개 곡 'Love Hangover'를 발표했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 505
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 10월, 새 앨범 'MY FIRST FLIP'을 발매하며 하반기 활동에 나선 JYP 소속 신인 보이그룹은?",
+        "tags": [
+            "JYP",
+            "신인",
+            "보이그룹",
+            "킥플립"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "NCT WISH"
+            },
+            {
+                "id": "b",
+                "text": "Kickflip"
+            },
+            {
+                "id": "c",
+                "text": "RIIZE"
+            },
+            {
+                "id": "d",
+                "text": "ZEROBASEONE"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "JYP의 신인 보이그룹 킥플립(Kickflip)은 2025년 10월 'MY FIRST FLIP'으로 컴백하며 활동을 이어가고 있습니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 606
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 11월에 개최되는 '2025 MAMA AWARDS' 2차 라인업에 에스파(aespa), 쿄카와 함께 이름을 올린 빅뱅(BIGBANG)의 멤버는?",
+        "tags": [
+            "MAMA",
+            "빅뱅",
+            "솔로",
+            "지드래곤"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "태양 (TAEYANG)"
+            },
+            {
+                "id": "b",
+                "text": "대성 (DAESUNG)"
+            },
+            {
+                "id": "c",
+                "text": "지드래곤 (G-DRAGON)"
+            },
+            {
+                "id": "d",
+                "text": "탑 (T.O.P)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "지드래곤(G-DRAGON)은 2025 MAMA AWARDS 2차 라인업에 포함되며 하반기 활발한 활동을 예고했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 707
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 하반기, 'K-팝 아레나' 조성 등 향후 5년간 총 51조 원의 예산이 투입될 예정인 정부의 핵심 정책 사업 분야는?",
+        "tags": [
+            "K-POP산업",
+            "정부정책",
+            "K-컬처",
+            "K-팝아레나"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "첨단 반도체 산업 육성"
+            },
+            {
+                "id": "b",
+                "text": "미래 모빌리티 기술 개발"
+            },
+            {
+                "id": "c",
+                "text": "K-컬처 시장 확대"
+            },
+            {
+                "id": "d",
+                "text": "친환경 에너지 전환"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정부는 'K-컬처 시장을 300조 원 규모로 확대해 세계 5대 문화강국 실현'을 목표로 'K-팝 아레나' 조성 등 K-컬처 시장 확대에 대규모 예산 투입을 계획하고 있습니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 808
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 10월, 새 앨범 'MY FIRST FLIP' 발매를 알리며 JYP 소속 킥플립(Kickflip)과 함께 하반기 신인 경쟁에 참여한 빅히트 뮤직 소속 보이그룹은?",
+        "tags": [
+            "빅히트뮤직",
+            "신인보이그룹",
+            "2025년하반기",
+            "코르티스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "TWS"
+            },
+            {
+                "id": "b",
+                "text": "BOYNEXTDOOR"
+            },
+            {
+                "id": "c",
+                "text": "CORTIS (코르티스)"
+            },
+            {
+                "id": "d",
+                "text": "TREASURE"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "빅히트 뮤직의 신인 그룹 코르티스(CORTIS)는 2025년 하반기 활동을 시작하며 킥플립 등과 함께 신인 보이그룹 경쟁에 나섰습니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 909
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 7월 11일, 정규 4집 'THIS IS FOR'를 발매하며 글로벌 인기를 이어간 JYP 엔터테인먼트 소속 걸그룹은?",
+        "tags": [
+            "JYP",
+            "걸그룹",
+            "정규앨범",
+            "트와이스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "ITZY"
+            },
+            {
+                "id": "b",
+                "text": "NMIXX"
+            },
+            {
+                "id": "c",
+                "text": "TWICE (트와이스)"
+            },
+            {
+                "id": "d",
+                "text": "KATSEYE"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "트와이스는 2025년 7월 정규 4집 'THIS IS FOR'를 발매하며 꾸준히 활동을 이어가고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761505568,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 1010
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년, 솔로 월드 투어를 성공적으로 마치고 K-팝 솔로 아티스트 사상 최고 매출 신기록을 달성한 방탄소년단(BTS) 멤버는 누구인가요?",
+        "tags": [
+            "BTS",
+            "솔로투어",
+            "매출신기록",
+            "JIN"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "RM"
+            },
+            {
+                "id": "b",
+                "text": "진 (JIN)"
+            },
+            {
+                "id": "c",
+                "text": "제이홉 (J-HOPE)"
+            },
+            {
+                "id": "d",
+                "text": "정국 (JUNGKOOK)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "진은 솔로 월드 투어를 통해 K-팝 솔로 아티스트 사상 최고 매출 신기록을 달성했습니다. 제이홉도 월드 투어를 성공적으로 마쳤습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "블랙핑크(BLACKPINK) 로제(ROSÉ)의 솔로곡 'APT.'가 2025년 6월 미국 빌보드 메인 싱글 차트 '핫 100'에서 달성한 K-팝 사상 최장 기록은 몇 주 연속 차트인이었나요?",
+        "tags": [
+            "BLACKPINK",
+            "로제",
+            "빌보드핫100",
+            "최장기록"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "26주"
+            },
+            {
+                "id": "b",
+                "text": "30주"
+            },
+            {
+                "id": "c",
+                "text": "34주"
+            },
+            {
+                "id": "d",
+                "text": "40주"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "로제의 'APT.'는 빌보드 '핫 100'에 34주 연속 진입하며 K-팝 사상 최장 기록을 경신했습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 9월, 데뷔 앨범 'Color Outside The Lines'가 빌보드 200 차트에 15위로 진입하며 '역대 K-팝 그룹 데뷔 앨범 중 두 번째로 높은 순위'를 기록한 빅히트 뮤직 소속 신인 보이그룹은?",
+        "tags": [
+            "빅히트뮤직",
+            "신인보이그룹",
+            "빌보드200",
+            "CORTIS"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "RIIZE"
+            },
+            {
+                "id": "b",
+                "text": "TWS"
+            },
+            {
+                "id": "c",
+                "text": "CORTIS (코르티스)"
+            },
+            {
+                "id": "d",
+                "text": "Kickflip"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "빅히트 뮤직의 신인 그룹 코르티스(CORTIS)는 데뷔 EP 'Color Outside The Lines'로 빌보드 200 15위를 기록했습니다.",
+        "difficulty": 0.7
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 7월, 데뷔 앨범 'ETERNALT'의 타이틀곡이 빌보드 '2025년 상반기 베스트 K-팝 25선'에 선정되며 '괴물 신인'으로 주목받은 레트로 R&B 스타일의 보이그룹은?",
+        "tags": [
+            "신인보이그룹",
+            "레트로R&B",
+            "빌보드평론가",
+            "CLOSE YOUREYES"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "CLOSE YOUR EYES (클로즈 유어 아이즈)"
+            },
+            {
+                "id": "b",
+                "text": "Kickflip"
+            },
+            {
+                "id": "c",
+                "text": "Mytro"
+            },
+            {
+                "id": "d",
+                "text": "Xlov"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "클로즈 유어 아이즈는 2000년대 R&B 감성을 살린 음악으로 평론가들에게 호평받으며 빌보드 '베스트 K-팝 25선'에 선정되었습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 10월, 투모로우바이투게더(TXT)의 태현과 르세라핌(LE SSERAFIM)의 김채원이 피처링으로 참여한, 미국 아티스트 JVKE의 싱글 제목은 무엇인가요?",
+        "tags": [
+            "콜라보레이션",
+            "JVKE",
+            "TXT",
+            "LE SSERAFIM"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Rich Man"
+            },
+            {
+                "id": "b",
+                "text": "SPAGHETTI"
+            },
+            {
+                "id": "c",
+                "text": "butterflies"
+            },
+            {
+                "id": "d",
+                "text": "WE PRAY"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "JVKE의 싱글 'butterflies'에 투모로우바이투게더의 태현과 르세라핌의 김채원이 피처링으로 참여하여 화제가 되었습니다.",
+        "difficulty": 0.7
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 3월, K-팝 아티스트 중 유일하게 미국 대형 음악 축제 '롤라팔루자(Lollapalooza)'의 헤드라이너(간판 출연자) 라인업에 이름을 올린 그룹은?",
+        "tags": [
+            "롤라팔루자",
+            "헤드라이너",
+            "미국축제",
+            "TWICE"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "BLACKPINK"
+            },
+            {
+                "id": "b",
+                "text": "TWICE"
+            },
+            {
+                "id": "c",
+                "text": "ATEEZ"
+            },
+            {
+                "id": "d",
+                "text": "Stray Kids"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "트와이스(TWICE)는 2025년 롤라팔루자 헤드라이너로 확정되며 K-팝 여성 그룹으로서의 위상을 높였습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 7월, 정규 4집 《THIS IS FOR》를 발매하고 월드 투어를 진행한 JYP 엔터테인먼트 소속 걸그룹은?",
+        "tags": [
+            "JYP",
+            "걸그룹",
+            "정규4집",
+            "TWICE"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "ITZY"
+            },
+            {
+                "id": "b",
+                "text": "NMIXX"
+            },
+            {
+                "id": "c",
+                "text": "TWICE"
+            },
+            {
+                "id": "d",
+                "text": "Wonder Girls"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "트와이스(TWICE)는 2025년 7월 정규 4집 'THIS IS FOR'를 발매하며 활발한 활동을 이어갔습니다.",
+        "difficulty": 0.4
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 6월 14일, 월드 투어 마지막 공연에서 BTS 전 멤버들이 깜짝 등장해 응원하며 화제가 되었던 방탄소년단 멤버의 솔로 월드 투어는 누구의 투어였나요?",
+        "tags": [
+            "BTS",
+            "솔로투어",
+            "군전역",
+            "J-HOPE"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "진 (JIN)"
+            },
+            {
+                "id": "b",
+                "text": "제이홉 (J-HOPE)"
+            },
+            {
+                "id": "c",
+                "text": "뷔 (V)"
+            },
+            {
+                "id": "d",
+                "text": "슈가 (SUGA)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "제이홉(J-HOPE)은 전역 후 솔로 월드 투어를 진행했으며, 마지막 고양 공연에서 BTS 멤버들의 응원을 받았습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 하반기, SM 엔터테인먼트 소속 르세라핌(LE SSERAFIM)의 첫 싱글 앨범에 피처링으로 참여하여 'SPAGHETTI'를 함께 발표한 아티스트는 누구인가요?",
+        "tags": [
+            "콜라보레이션",
+            "SM",
+            "LE SSERAFIM",
+            "피처링"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "방탄소년단 진 (JIN)"
+            },
+            {
+                "id": "b",
+                "text": "방탄소년단 제이홉 (J-HOPE)"
+            },
+            {
+                "id": "c",
+                "text": "지드래곤 (G-DRAGON)"
+            },
+            {
+                "id": "d",
+                "text": "브루노 마스 (Bruno Mars)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "르세라핌의 첫 싱글 앨범 'SPAGHETTI'에는 방탄소년단 제이홉이 피처링으로 참여하여 2025년 하반기 큰 화제가 되었습니다.",
+        "difficulty": 0.7
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 10월, SM 엔터테인먼트 소속 지젤이 첫 솔로 앨범 'Dopamine'으로 미국 빌보드 200 차트에 진입하며 독자적인 성과를 남긴 그룹은?",
+        "tags": [
+            "SM엔터테인먼트",
+            "솔로데뷔",
+            "빌보드200",
+            "채영"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Red Velvet"
+            },
+            {
+                "id": "b",
+                "text": "aespa"
+            },
+            {
+                "id": "c",
+                "text": "Girls' Generation"
+            },
+            {
+                "id": "d",
+                "text": "f(x)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "에스파(aespa)의 지젤이 2025년 10월 첫 솔로 앨범으로 빌보드 200 차트에 진입하며 그룹 활동을 넘어 솔로 아티스트로서의 성공 가능성을 입증했습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 8월에 개최된 '2025 케이 월드 드림 어워즈'에서 시상자로 참석하여 화제가 된, 드라마 '선재 업고 튀어'의 주인공 배우는 누구인가요?",
+        "tags": [
+            "연말시상식",
+            "시상자",
+            "드라마",
+            "변우석"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "차은우"
+            },
+            {
+                "id": "b",
+                "text": "변우석"
+            },
+            {
+                "id": "c",
+                "text": "류준열"
+            },
+            {
+                "id": "d",
+                "text": "송강"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "배우 변우석은 '선재 업고 튀어'로 큰 인기를 얻은 후, '2025 케이 월드 드림 어워즈'의 시상자로 참석했습니다.",
+        "difficulty": 0.4
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 '더팩트 뮤직 어워즈(TMA)'에서 '아너 오브 더 이어(Honor of the Year)'와 '레코드 오브 더 이어(Record of the Year)'를 동시에 수상하며 대상을 차지한 그룹은?",
+        "tags": [
+            "TMA",
+            "대상",
+            "월드클래스",
+            "Stray Kids"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "SEVENTEEN"
+            },
+            {
+                "id": "b",
+                "text": "스트레이 키즈 (Stray Kids)"
+            },
+            {
+                "id": "c",
+                "text": "IVE (아이브)"
+            },
+            {
+                "id": "d",
+                "text": "aespa (에스파)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "스트레이 키즈(Stray Kids)는 2025년 TMA에서 '아너 오브 더 이어'와 '레코드 오브 더 이어'를 포함해 다관왕을 차지했습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 유럽 투어 'TOWARDS THE LIGHT : WILL TO POWER' 중, 약 4만 명의 관객을 수용하는 유럽 최대 규모 공연장 '라 데팡스 아레나(La Défense Arena)'에서 K-팝 아티스트 최초로 단독 콘서트를 개최한 그룹은?",
+        "tags": [
+            "유럽투어",
+            "신기록",
+            "파리",
+            "ATEEZ"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "투모로우바이투게더 (TXT)"
+            },
+            {
+                "id": "b",
+                "text": "방탄소년단 (BTS)"
+            },
+            {
+                "id": "c",
+                "text": "에이티즈 (ATEEZ)"
+            },
+            {
+                "id": "d",
+                "text": "블랙핑크 (BLACKPINK)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "에이티즈(ATEEZ)는 2025년 유럽 투어 중 프랑스 파리의 '라 데팡스 아레나'에서 K-팝 아티스트 최초로 단독 콘서트를 개최했습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 1분기에 데뷔가 예정되어 있으며, 에스파(aespa) 이후 약 5년 만에 SM 엔터테인먼트에서 새롭게 론칭하는 신인 걸그룹의 예상 이름은?",
+        "tags": [
+            "SM엔터테인먼트",
+            "신인걸그룹",
+            "데뷔",
+            "SM뉴걸그룹"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "SM New Girl Group (가칭)"
+            },
+            {
+                "id": "b",
+                "text": "Nouera"
+            },
+            {
+                "id": "c",
+                "text": "Illusion"
+            },
+            {
+                "id": "d",
+                "text": "ATHR"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "2025년 SM 엔터테인먼트에서 론칭하는 신인 걸그룹은 당시 이름이 공개되지 않아 'SM 뉴 걸그룹(가칭)'으로 불리며 기대를 모았습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 3월, 프랑스 파리 아코르 아레나를 포함하여 런던, 베를린, 암스테르담 등 유럽 5개 도시에서 월드 투어를 진행한 빅히트 뮤직 소속 보이그룹은?",
+        "tags": [
+            "유럽투어",
+            "TXT",
+            "파리",
+            "월드투어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "SEVENTEEN"
+            },
+            {
+                "id": "b",
+                "text": "투모로우바이투게더 (TXT)"
+            },
+            {
+                "id": "c",
+                "text": "ENHYPEN (엔하이픈)"
+            },
+            {
+                "id": "d",
+                "text": "TREASURE"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "투모로우바이투게더(TXT)는 2025년 3월 파리 아코르 아레나를 포함한 유럽 투어를 성공적으로 마쳤습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 '제22회 한국대중음악상'에서 '올해의 노래', '케이팝 음반', '케이팝 노래'를 수상하며 3관왕에 오른 걸그룹은?",
+        "tags": [
+            "한국대중음악상",
+            "3관왕",
+            "올해의노래",
+            "aespa"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "NewJeans"
+            },
+            {
+                "id": "b",
+                "text": "IVE"
+            },
+            {
+                "id": "c",
+                "text": "aespa"
+            },
+            {
+                "id": "d",
+                "text": "LE SSERAFIM"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "에스파(aespa)는 제22회 한국대중음악상에서 3관왕(올해의 노래, 케이팝 음반, 케이팝 노래)을 차지하며 음악성을 인정받았습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 7월 유럽 투어 중 런던, 마드리드, 파리, 로마 등 유럽 주요 도시를 순회하며 글로벌 인기를 입증한 JYP 엔터테인먼트 소속 보이그룹은?",
+        "tags": [
+            "유럽투어",
+            "JYP",
+            "보이그룹",
+            "Stray Kids"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "GOT7"
+            },
+            {
+                "id": "b",
+                "text": "NCT DREAM"
+            },
+            {
+                "id": "c",
+                "text": "Stray Kids (스트레이 키즈)"
+            },
+            {
+                "id": "d",
+                "text": "THE BOYZ"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "스트레이 키즈(Stray Kids)는 2025년 7월 유럽에서 대규모 투어를 진행하며 월드클래스 그룹으로 자리매김했습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 6월, KBS '뮤직뱅크 월간 차트 TOP10'에 '아니라고 말해요'라는 곡으로 2위를 기록하며 솔로 활동을 성공적으로 시작한 세븐틴(SEVENTEEN) 멤버는?",
+        "tags": [
+            "솔로활동",
+            "세븐틴",
+            "뮤직뱅크",
+            "율"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "승관"
+            },
+            {
+                "id": "b",
+                "text": "원우"
+            },
+            {
+                "id": "c",
+                "text": "율 (YUL)"
+            },
+            {
+                "id": "d",
+                "text": "도겸"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "세븐틴의 율(YUL)은 솔로곡 '아니라고 말해요'로 2025년 6월 뮤직뱅크 차트 상위권에 오르며 큰 인기를 끌었습니다.",
+        "difficulty": 0.7
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 1월 20일에 데뷔하며 JYP 엔터테인먼트 소속의 신인 보이그룹으로 소개되었던 그룹의 이름은?",
+        "tags": [
+            "JYP",
+            "신인보이그룹",
+            "데뷔",
+            "Kickflip"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Kickflip"
+            },
+            {
+                "id": "b",
+                "text": "Xlov"
+            },
+            {
+                "id": "c",
+                "text": "TWS"
+            },
+            {
+                "id": "d",
+                "text": "BOYNEXTDOOR"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "킥플립(Kickflip)은 2025년 1월 20일 JYP 엔터테인먼트에서 론칭한 신인 보이그룹입니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 7월 블랙핑크(BLACKPINK)가 발매한 디지털 싱글의 제목은 무엇인가요?",
+        "tags": [
+            "BLACKPINK",
+            "완전체컴백",
+            "디지털싱글",
+            "뛰어(JUMP)"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Born Pink"
+            },
+            {
+                "id": "b",
+                "text": "뛰어 (JUMP)"
+            },
+            {
+                "id": "c",
+                "text": "Rich Man"
+            },
+            {
+                "id": "d",
+                "text": "THIS IS FOR"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "블랙핑크는 2025년 7월 디지털 싱글 '뛰어(JUMP)'를 발매하며 오랜만에 완전체 활동을 재개했습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 4월 기준, 월간 활성 사용자 수(MAU)가 970만 명에 달하며, 해외 사용자 비율이 87%를 기록한 하이브(HYBE)의 글로벌 팬덤 플랫폼 이름은?",
+        "tags": [
+            "하이브",
+            "팬덤플랫폼",
+            "Weverse",
+            "MAU"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "버블 (Bubble)"
+            },
+            {
+                "id": "b",
+                "text": "위버스 (Weverse)"
+            },
+            {
+                "id": "c",
+                "text": "디어유 (DearU)"
+            },
+            {
+                "id": "d",
+                "text": "유니버스 (UNIVERSE)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "하이브의 위버스(Weverse)는 2025년에도 가장 큰 규모의 글로벌 팬덤 플랫폼으로서 독보적인 입지를 다졌습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 10월 20일 개봉된, 데뷔부터 10년 역사를 담아낸 K-팝 최정상 걸그룹의 공식 다큐멘터리 영화 제목은?",
+        "tags": [
+            "걸그룹",
+            "10주년",
+            "다큐멘터리",
+            "TWICE"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "BLACKPINK: THE MOVIE"
+            },
+            {
+                "id": "b",
+                "text": "트와이스: 원 인 어 밀리언 (ONE IN A MILL10N)"
+            },
+            {
+                "id": "c",
+                "text": "I AM: ITZY"
+            },
+            {
+                "id": "d",
+                "text": "르세라핌: 피어리스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "트와이스(TWICE)의 데뷔 10주년을 기념하는 공식 다큐멘터리 영화 '원 인 어 밀리언(ONE IN A MILL10N)'이 2025년 10월 개봉했습니다.",
+        "difficulty": 0.4
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 연말 'MBC 가요대제전'의 여성 MC로 10년 만에 윤아의 뒤를 이어 새롭게 발탁되어 K-팝 세대교체를 상징한 인물은?",
+        "tags": [
+            "연말시상식",
+            "MC",
+            "세대교체",
+            "애니"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "장원영 (IVE)"
+            },
+            {
+                "id": "b",
+                "text": "애니 (ANY)"
+            },
+            {
+                "id": "c",
+                "text": "민지 (NewJeans)"
+            },
+            {
+                "id": "d",
+                "text": "카리나 (aespa)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "올데이프로젝트의 애니(ANY)가 '괴물 신인'으로 주목받으며 '2025 MBC 가요대제전'의 새 여성 MC로 발탁되었습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 11월 12일 CGV에서 개봉된, 방탄소년단(BTS) 제이홉의 첫 솔로 월드투어 앙코르 콘서트 실황 영화 제목은?",
+        "tags": [
+            "BTS",
+            "제이홉",
+            "콘서트영화",
+            "Hope On The Street"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "SUGA | Agust D TOUR 'D-DAY' THE MOVIE"
+            },
+            {
+                "id": "b",
+                "text": "제이홉 투어 '호프 온 더 스테이지' 더 무비"
+            },
+            {
+                "id": "c",
+                "text": "BTS: Yet To Come"
+            },
+            {
+                "id": "d",
+                "text": "J-HOPE IN THE BOX"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "제이홉의 솔로 월드투어 앙코르 콘서트 영화 '제이홉 투어 '호프 온 더 스테이지' 더 무비'가 2025년 11월 개봉했습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 한국콘텐츠진흥원의 '콘텐츠 수출 전망'에서 게임과 만화·웹툰을 제치고, 신기술융합 콘텐츠와 함께 5.5점으로 가장 높은 수출 전망 점수를 받은 K-콘텐츠 분야는?",
+        "tags": [
+            "수출전망",
+            "콘텐츠진흥원",
+            "음악",
+            "신기술융합"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "방송"
+            },
+            {
+                "id": "b",
+                "text": "패션"
+            },
+            {
+                "id": "c",
+                "text": "음악"
+            },
+            {
+                "id": "d",
+                "text": "애니메이션"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "2025년 대한민국 콘텐츠 수출 전망 조사에서 음악 분야는 신기술융합 콘텐츠와 함께 가장 높은 5.5점을 기록하며 긍정적인 전망을 보였습니다.",
+        "difficulty": 0.7
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 '더팩트 뮤직 어워즈(TMA)'에서 '뮤즈 오브 더 이어(Muse of the Year)'와 '올해의 아티스트'를 수상하며 큰 활약을 보인 걸그룹은?",
+        "tags": [
+            "TMA",
+            "뮤즈오브더이어",
+            "걸그룹",
+            "aespa"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "IVE"
+            },
+            {
+                "id": "b",
+                "text": "aespa"
+            },
+            {
+                "id": "c",
+                "text": "NewJeans"
+            },
+            {
+                "id": "d",
+                "text": "NMIXX"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "에스파(aespa)는 TMA에서 '뮤즈 오브 더 이어'를 포함해 여러 상을 수상하며 2025년의 주요 아티스트로 인정받았습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 '한류실태조사'에서 8년 연속으로 세계인들이 한국 하면 떠오르는 이미지 1위로 꼽힌 분야는?",
+        "tags": [
+            "한류",
+            "이미지1위",
+            "K-POP",
+            "한국어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "한식"
+            },
+            {
+                "id": "b",
+                "text": "K-드라마"
+            },
+            {
+                "id": "c",
+                "text": "K-팝 (K-POP)"
+            },
+            {
+                "id": "d",
+                "text": "한국 문화유산"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "K-팝은 2025년 한류실태조사에서 8년 연속으로 '한국 하면 떠오르는 이미지' 1위로 선정되었습니다.",
+        "difficulty": 0.4
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 12월 7일, 프랑스 파리의 살레 플리엘에서 '월드 투어 'H_OUR, US''를 개최하며 유럽 팬들을 만난 보이그룹은?",
+        "tags": [
+            "유럽투어",
+            "파리",
+            "보이그룹",
+            "ONEUS"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "SF9"
+            },
+            {
+                "id": "b",
+                "text": "ONEUS (원어스)"
+            },
+            {
+                "id": "c",
+                "text": "TEMPEST"
+            },
+            {
+                "id": "d",
+                "text": "ZEROBASEONE"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "원어스(ONEUS)는 2025년 12월 파리 살레 플리엘에서 월드 투어 'H_OUR, US'를 진행했습니다.",
+        "difficulty": 0.7
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 K-팝 시장의 중기적 전망에서 '음악 문화의 인스턴트 소비가 한계에 다다랐다'는 지적과 함께, K-팝에 대한 피로도가 쌓이고 있다는 시장으로 언급된 곳은?",
+        "tags": [
+            "시장전망",
+            "피로도",
+            "해외시장",
+            "미국/중국"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "일본과 동남아시아"
+            },
+            {
+                "id": "b",
+                "text": "유럽과 남미"
+            },
+            {
+                "id": "c",
+                "text": "미국과 중국"
+            },
+            {
+                "id": "d",
+                "text": "인도와 중동"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "2025년 시장 분석 보고서에 따르면, 주요 시장인 미국과 중국에서 K-팝에 대한 피로도가 증가하고 있다는 구조적인 문제가 지적되었습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 10월 29일, 전 세계 동시 개봉된 콘서트 실황 영화 '위버맨쉬(Übermensch)'의 주인공인 K-팝 아이콘은 누구인가요?",
+        "tags": [
+            "콘서트실황",
+            "월드투어",
+            "아이콘",
+            "G-DRAGON"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "지드래곤 (G-DRAGON)"
+            },
+            {
+                "id": "b",
+                "text": "태양 (TAEYANG)"
+            },
+            {
+                "id": "c",
+                "text": "RM (BTS)"
+            },
+            {
+                "id": "d",
+                "text": "비 (RAIN)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "지드래곤(G-DRAGON)의 8년 만의 월드투어 콘서트 실황 영화 '위버맨쉬'가 2025년 10월 전 세계 동시 개봉했습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 상반기 써클차트 앨범차트에서 1위를 기록하며 '트리플 밀리언셀러' 달성 가능성을 높인 그룹은?",
+        "tags": [
+            "써클차트",
+            "상반기1위",
+            "밀리언셀러",
+            "SEVENTEEN"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Stray Kids"
+            },
+            {
+                "id": "b",
+                "text": "SEVENTEEN"
+            },
+            {
+                "id": "c",
+                "text": "NCT WISH"
+            },
+            {
+                "id": "d",
+                "text": "TXT"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "세븐틴은 2025년 정규 5집 'Happy Burstday'로 상반기 앨범차트 1위를 차지하며 트리플 밀리언셀러 등극에 가까워졌습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 4월 데뷔곡 '내 안의 모든 시와 소설은'으로 '역대 보이그룹 데뷔 앨범 초동 판매량 5위'를 기록하며 '괴물 신인'으로 불린 보이그룹은?",
+        "tags": [
+            "데뷔앨범",
+            "초동기록",
+            "괴물신인",
+            "CLOSE YOUR EYES"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "RIIZE"
+            },
+            {
+                "id": "b",
+                "text": "TWS"
+            },
+            {
+                "id": "c",
+                "text": "CLOSE YOUR EYES"
+            },
+            {
+                "id": "d",
+                "text": "ZEROBASEONE"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "클로즈 유어 아이즈(CLOSE YOUR EYES)는 데뷔 앨범 'ETERNALT'로 초동 31만 장을 기록하며 역대 보이그룹 데뷔 초동 5위에 올랐습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 5월 써클차트에서 G-DRAGON, aespa, IVE, LE SSERAFIM 등의 음원과 함께 차트 상위권에 이름을 올린 DAY6의 곡은?",
+        "tags": [
+            "써클차트",
+            "밴드음악",
+            "차트인",
+            "DAY6"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "Congratulations"
+            },
+            {
+                "id": "b",
+                "text": "Sweet Chaos"
+            },
+            {
+                "id": "c",
+                "text": "Drowning"
+            },
+            {
+                "id": "d",
+                "text": "예뻤어"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "DAY6의 'Drowning'은 2025년 5월 써클차트에서 주요 아이돌 그룹의 곡들과 함께 디지털 차트 상위권에 올라 밴드 음악의 강세를 보여주었습니다.",
+        "difficulty": 0.7
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 5월 써클 디지털 차트 TOP4에서 1위부터 4위까지를 모두 차지하며 강세를 나타낸 아티스트 유형은?",
+        "tags": [
+            "디지털차트",
+            "솔로가수",
+            "강세",
+            "차트점유율"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "보이그룹"
+            },
+            {
+                "id": "b",
+                "text": "걸그룹"
+            },
+            {
+                "id": "c",
+                "text": "솔로 아티스트"
+            },
+            {
+                "id": "d",
+                "text": "밴드 그룹"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "2025년 5월 써클차트 리뷰에 따르면, 디지털 차트 상위 1위부터 4위까지는 G-DRAGON, 제니 등의 '솔로 아티스트' 음원이 강세를 보였습니다.",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 5월 K-팝 음원 차트 상위 20곡 중 해외 팝을 제외한 국내 곡들의 '영어 제목' 노래가 14곡으로 다수를 차지한 현상의 주요 원인으로 분석된 것은?",
+        "tags": [
+            "글로벌전략",
+            "영어제목",
+            "차트분석",
+            "접근성"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "국내 팬들의 선호도 변화"
+            },
+            {
+                "id": "b",
+                "text": "해외 팬들의 접근성 및 글로벌 팬덤 유입 유도 전략"
+            },
+            {
+                "id": "c",
+                "text": "음악 방송 심의 기준 완화"
+            },
+            {
+                "id": "d",
+                "text": "아이돌 그룹의 외국인 멤버 증가"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "이는 K-POP이 국내 시장을 넘어 글로벌 시장으로 확장됨에 따라 언어 장벽을 낮추고 해외 팬들에게 더욱 쉽게 다가가기 위한 전략으로 분석되었습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 1월, 정규 1집 'Ruby'의 선공개 곡 《Love Hangover》를 발매하며 솔로 활동에 시동을 건 블랙핑크(BLACKPINK) 멤버는?",
+        "tags": [
+            "BLACKPINK",
+            "솔로컴백",
+            "정규1집",
+            "JENNIE"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "JISOO"
+            },
+            {
+                "id": "b",
+                "text": "ROSE"
+            },
+            {
+                "id": "c",
+                "text": "JENNIE"
+            },
+            {
+                "id": "d",
+                "text": "LISA"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "블랙핑크의 제니(JENNIE)는 2025년 1월 첫 정규 앨범 'Ruby'의 선공개 곡을 발매했습니다. (리사 역시 2025년 2월 정규 1집을 발매했으나, 1월 선공개 곡을 발매한 것은 제니입니다.)",
+        "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 상반기 빌보드 '베스트 K-팝 25선'에 선정된 블랙핑크 제니의 첫 솔로 앨범 'Ruby'의 타이틀곡으로, 자기 찬가(Self-Celebration Song)라는 평가를 받은 곡은?",
+        "tags": [
+            "빌보드",
+            "솔로곡",
+            "제니",
+            "Like JENNIE"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "SOLO"
+            },
+            {
+                "id": "b",
+                "text": "You & Me"
+            },
+            {
+                "id": "c",
+                "text": "Like JENNIE"
+            },
+            {
+                "id": "d",
+                "text": "SPOT! (Feat. JENNIE)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "제니의 'Like JENNIE'는 2025년 상반기 빌보드 평론가 선정 '베스트 K-팝 25선'에 오르며 큰 주목을 받았습니다.",
+        "difficulty": 0.6
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 7월 11일, 정규 4집 《THIS IS FOR》를 발매하며 컴백한 JYP 엔터테인먼트 소속 걸그룹은?",
+        "tags": [
+            "JYP",
+            "정규4집",
+            "걸그룹",
+            "TWICE"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "NMIXX"
+            },
+            {
+                "id": "b",
+                "text": "ITZY"
+            },
+            {
+                "id": "c",
+                "text": "TWICE"
+            },
+            {
+                "id": "d",
+                "text": "miss A"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "트와이스(TWICE)는 2025년 7월 정규 4집 《THIS IS FOR》로 컴백했습니다.",
+        "difficulty": 0.4
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 5월, 써클차트 OST 지수에서 드라마 '선재 업고 튀어'의 '소나기'와 함께 주요 OST로 언급된, 웹툰 '선녀외전'의 OST는?",
+        "tags": [
+            "OST",
+            "웹툰OST",
+            "소나기",
+            "선녀외전"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "천상연"
+            },
+            {
+                "id": "b",
+                "text": "여름날 우리"
+            },
+            {
+                "id": "c",
+                "text": "I will always love you"
+            },
+            {
+                "id": "d",
+                "text": "Love You With All My Heart"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "2025년 5월 써클차트 OST 리뷰에 따르면, 웹툰 '선녀외전'의 OST '천상연'이 드라마 '선재 업고 튀어'의 '소나기'와 함께 주요 OST로 언급되었습니다.",
+        "difficulty": 0.7
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "2025년 5월 피지컬 앨범 판매량(TOP400 기준)이 전달 대비 약 750만 장 증가하여 올해 처음으로 월간 1천만 장을 돌파하는 데 기여한 가장 큰 요인으로 언급된 것은?",
+        "tags": [
+            "앨범판매량",
+            "월간1천만",
+            "컴백효과",
+            "대형컴백"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "중소 기획사 아이돌의 약진"
+            },
+            {
+                "id": "b",
+                "text": "세븐틴, 보이넥스트도어, 진(JIN) 등 주요 아티스트의 컴백"
+            },
+            {
+                "id": "c",
+                "text": "해외 팬덤 플랫폼의 독점 판매 증가"
+            },
+            {
+                "id": "d",
+                "text": "OST 앨범 판매량의 급증"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "2025년 5월 앨범 판매량 급증은 세븐틴의 'HAPPY BURSTDAY', 보이넥스트도어의 'No Genre', 진(JIN)의 'Echo' 등 대형 아티스트들의 컴백에 힘입은 결과입니다.",
+        "difficulty": 0.5
+    }
+]

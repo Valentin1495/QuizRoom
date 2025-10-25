@@ -1,0 +1,3606 @@
+[
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "최근 패션 트렌드 '콰이어트 럭셔리(Quiet Luxury)'의 핵심 특징으로 가장 적절한 것은?",
+        "tags": [
+            "콰이어트럭셔리",
+            "미니멀리즘",
+            "올드머니룩"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "대담하고 화려한 색상을 사용하여 시선을 집중시킨다."
+            },
+            {
+                "id": "b",
+                "text": "명품 브랜드의 로고를 전면에 배치하여 과시한다."
+            },
+            {
+                "id": "c",
+                "text": "인조 가죽이나 합성 섬유 등 저렴한 소재를 적극적으로 사용한다."
+            },
+            {
+                "id": "d",
+                "text": "로고가 없는 심플한 디자인과 최고급 소재를 통한 은근한 우아함을 추구한다."
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "콰이어트 럭셔리는 로고가 드러나지 않는 심플한 디자인과 고급 소재를 사용하며, 과시적이지 않은 우아함을 추구하는 것이 특징입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 123
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ 세대의 길거리 간식으로 폭발적인 인기를 끌었으나, 설탕 코팅 때문에 논란이 되기도 한 중국 전통 디저트는?",
+        "tags": [
+            "탕후루",
+            "푸드트렌드",
+            "길거리음식"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "탕후루"
+            },
+            {
+                "id": "b",
+                "text": "마라탕"
+            },
+            {
+                "id": "c",
+                "text": "지파이"
+            },
+            {
+                "id": "d",
+                "text": "달고나"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "탕후루는 과일을 설탕 시럽으로 코팅한 간식으로, 달콤함과 비주얼로 큰 인기를 끌었으나 과도한 설탕 섭취에 대한 우려도 제기되었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 456
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "자신의 피부, 눈동자, 머리카락 색깔에 어울리는 색을 찾아주는 서비스가 큰 인기를 얻고 있습니다. 이 서비스의 명칭은?",
+        "tags": [
+            "퍼스널컬러",
+            "MZ놀이",
+            "뷰티트렌드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "MBTI 진단"
+            },
+            {
+                "id": "b",
+                "text": "골격 진단"
+            },
+            {
+                "id": "c",
+                "text": "퍼스널 컬러 진단"
+            },
+            {
+                "id": "d",
+                "text": "얼굴형 분석"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "퍼스널 컬러 진단은 개인의 고유한 신체 색과 조화를 이루는 색을 진단하여 패션, 메이크업 등에 활용하도록 돕는 서비스입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 789
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2000년대 초반 유행했던 패션 스타일이 다시 유행하는 현상을 무엇이라고 부르며, 대표적인 아이템은?",
+        "tags": [
+            "Y2K",
+            "레트로",
+            "크롭탑",
+            "로우라이즈"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "뉴트로(Newtro) - 한복 코디"
+            },
+            {
+                "id": "b",
+                "text": "Y2K 패션 - 크롭탑과 로우라이즈 팬츠"
+            },
+            {
+                "id": "c",
+                "text": "그런지 룩(Grunge Look) - 체크무늬 셔츠"
+            },
+            {
+                "id": "d",
+                "text": "보헤미안 스타일 - 맥시 드레스와 꽃무늬"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "Y2K 패션은 1990년대 후반부터 2000년대 초반 스타일을 일컫는 말로, 크롭 기장의 상의와 로우라이즈 팬츠 등이 대표적인 아이템입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 101
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "한정된 기간 동안 임시로 운영되는 매장으로, MZ세대에게 브랜드 경험과 희소성을 제공하는 새로운 리테일 방식은?",
+        "tags": [
+            "팝업스토어",
+            "리테일",
+            "브랜드경험"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "팝업 스토어(Pop-up Store)"
+            },
+            {
+                "id": "b",
+                "text": "플래그십 스토어(Flagship Store)"
+            },
+            {
+                "id": "c",
+                "text": "아웃렛 스토어(Outlet Store)"
+            },
+            {
+                "id": "d",
+                "text": "드럭 스토어(Drug Store)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "팝업 스토어는 짧은 기간 동안 특정 장소에서 열리는 임시 매장으로, 이색적인 경험과 한정판 제품을 통해 고객의 관심을 집중시킵니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 202
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "본업 외에 다양한 부업이나 프리랜서 활동을 통해 여러 수입원을 확보하는 MZ세대의 라이프스타일을 일컫는 용어는?",
+        "tags": [
+            "N잡러",
+            "사이드잡",
+            "경제활동"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "파이어족(FIRE)"
+            },
+            {
+                "id": "b",
+                "text": "워케이션족(Workation)"
+            },
+            {
+                "id": "c",
+                "text": "프리터족(Freeter)"
+            },
+            {
+                "id": "d",
+                "text": "N잡러(N-jobber)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "N잡러는 여러 개의 직업을 동시에 가지고 경제 활동을 하는 사람을 뜻하며, 안정성을 추구하면서도 자기계발과 추가 수입을 얻고자 합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 303
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "패션 산업에서 환경 및 사회적 책임을 강조하며, 재활용 소재 사용이나 윤리적 생산을 추구하는 경향을 나타내는 단어는?",
+        "tags": [
+            "지속가능패션",
+            "업사이클링",
+            "친환경"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "패스트 패션(Fast Fashion)"
+            },
+            {
+                "id": "b",
+                "text": "지속가능 패션(Sustainable Fashion)"
+            },
+            {
+                "id": "c",
+                "text": "리미티드 에디션(Limited Edition)"
+            },
+            {
+                "id": "d",
+                "text": "하이엔드 패션(High-end Fashion)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "지속가능 패션(Sustainable Fashion)은 환경 오염을 최소화하고 생산 과정의 투명성과 공정성을 중요시하며 윤리적인 소비를 지향합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 404
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "1940년대 중반부터 1960년대까지 유행한 건축 및 가구 디자인 스타일로, 간결함과 기능성을 특징으로 하는 것은?",
+        "tags": [
+            "미드센추리모던",
+            "인테리어",
+            "가구디자인"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "빈티지 앤티크 스타일"
+            },
+            {
+                "id": "b",
+                "text": "프로방스 스타일"
+            },
+            {
+                "id": "c",
+                "text": "미드 센추리 모던"
+            },
+            {
+                "id": "d",
+                "text": "인더스트리얼 스타일"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "미드 센추리 모던(Mid-Century Modern)은 제2차 세계대전 이후 북유럽과 미국에서 유행한 디자인으로, 유기적인 형태와 단순한 실용성이 특징입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 505
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "틱톡(TikTok)과 인스타그램 릴스(Reels)로 대표되는 '숏폼' 콘텐츠가 패션 트렌드 확산에 미친 영향으로 가장 거리가 먼 것은?",
+        "tags": [
+            "숏폼",
+            "틱톡",
+            "트렌드확산",
+            "콘텐츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "다양한 스타일링 팁을 짧은 시간에 빠르게 전달하여 소비를 유도한다."
+            },
+            {
+                "id": "b",
+                "text": "브랜드와 인플루언서의 콜라보레이션을 통해 신제품 인지도를 높인다."
+            },
+            {
+                "id": "c",
+                "text": "이용자들이 직접 참여하는 챌린지를 통해 특정 아이템의 유행을 확산시킨다."
+            },
+            {
+                "id": "d",
+                "text": "복잡하고 섬세한 디테일의 의류 제작 과정을 5분 이상의 영상으로 자세히 소개한다."
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "숏폼은 주로 빠르고 직관적인 정보 전달을 선호하여, 복잡한 착장이나 디테일한 설명보다는 핵심적인 스타일링이나 제품을 빠르게 보여줍니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 606
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "명품 패션 브랜드가 메타버스 플랫폼에서 선보이는 아바타용 디지털 의류 컬렉션을 지칭하는 가장 적절한 용어는?",
+        "tags": [
+            "메타버스",
+            "디지털패션",
+            "NFT",
+            "버추얼의류"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "패스트 패션(Fast Fashion) 웨어"
+            },
+            {
+                "id": "b",
+                "text": "디지털 패션(Digital Fashion)"
+            },
+            {
+                "id": "c",
+                "text": "맞춤형 비스포크(Bespoke) 의류"
+            },
+            {
+                "id": "d",
+                "text": "지속가능한 업사이클링 룩"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "디지털 패션은 실제 물리적 형태 없이 3D 그래픽이나 AR 기술로 구현된 의류를 의미하며, 메타버스 내 아바타에게 입히거나 SNS에서 활용됩니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 707
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 패션에서 퍼(Fur) 소재가 다시 주목받는 가운데, 특히 런웨이에서 강조된 퍼 아우터의 특징은 무엇인가?",
+        "tags": [
+            "2025FW트렌드",
+            "퍼코트",
+            "페이크퍼"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "경량화된 인조 소재로 부피는 줄이고 보온성만 극대화한 슬림핏"
+            },
+            {
+                "id": "b",
+                "text": "클래식한 색상인 브라운, 아이보리 외에 비비드한 네온 컬러가 주류를 이루었다."
+            },
+            {
+                "id": "c",
+                "text": "온몸을 감싸는 폭신하고 풍성한 실루엣으로 강렬한 존재감을 드러낸다."
+            },
+            {
+                "id": "d",
+                "text": "소매와 깃 부분에만 작은 장식으로 활용하고 본체는 다른 소재를 사용했다."
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "2025 F/W 시즌에는 온몸을 감싸는 폭신하고 거대한 실루엣의 퍼 코트가 돌아와 강렬한 존재감을 드러내며 트렌드로 자리 잡았습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 818
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 인테리어 트렌드에서 자연을 실내로 들이는 디자인 철학으로, 식물과 자연 요소를 활용하는 것을 무엇이라 부르는가?",
+        "tags": [
+            "인테리어트렌드",
+            "바이오필릭",
+            "친환경디자인"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "미니멀리즘(Minimalism)"
+            },
+            {
+                "id": "b",
+                "text": "맥시멀리즘(Maximalism)"
+            },
+            {
+                "id": "c",
+                "text": "바이오필릭 디자인(Biophilic Design)"
+            },
+            {
+                "id": "d",
+                "text": "인더스트리얼 디자인(Industrial Design)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "바이오필릭 디자인은 자연과의 연결을 통해 인간의 건강과 웰빙을 향상시키고자 하는 디자인 철학으로, 실내에 식물이나 자연 요소를 적극 활용합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 194
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 MZ세대 사이에서 '가면 가?'라는 뜻으로 사용되며 유행하고 있는 신조어의 영어 이니셜은?",
+        "tags": [
+            "MZ신조어",
+            "GMG",
+            "Z세대문화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "OMG"
+            },
+            {
+                "id": "b",
+                "text": "HMH"
+            },
+            {
+                "id": "c",
+                "text": "LOL"
+            },
+            {
+                "id": "d",
+                "text": "GMG"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "GMG는 '가면 가?'를 영어 이니셜처럼 만든 표현으로, '지금 그곳에 가도 되는 상황이냐'는 의미로 10~20대 사이에서 유행하고 있습니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 331
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대의 소비 트렌드 중 하나인 '옴니보어(Omnivore)'의 의미로 가장 적절한 것은?",
+        "tags": [
+            "소비트렌드",
+            "옴니보어",
+            "하이엔드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오직 하나의 명품 브랜드 제품만을 고집하는 소비 패턴"
+            },
+            {
+                "id": "b",
+                "text": "필요한 제품을 직접 제작하거나 재활용하여 소비하는 방식"
+            },
+            {
+                "id": "c",
+                "text": "하이엔드 제품과 저렴한 제품을 혼합하여 소비하는 복합적인 패턴"
+            },
+            {
+                "id": "d",
+                "text": "환경을 고려하여 친환경 제품만 구매하는 가치 소비"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "옴니보어는 원래 '잡식성 동물'을 뜻하지만, 소비 트렌드에서는 하이엔드 제품과 저렴한 제품을 혼합하는 등 복합적인 소비 패턴을 보이는 소비자를 지칭합니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 472
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 시즌, 아웃도어와 스포츠웨어를 일상복으로 활용하는 스타일로 다시 주목받는 패션 키워드는?",
+        "tags": [
+            "고프코어",
+            "아웃도어룩",
+            "패션키워드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "테일러링 룩 (Tailoring Look)"
+            },
+            {
+                "id": "b",
+                "text": "프레피 룩 (Preppy Look)"
+            },
+            {
+                "id": "c",
+                "text": "고프코어 (Gorpcore)"
+            },
+            {
+                "id": "d",
+                "text": "슬림핏 수트 (Slim-fit Suit)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "고프코어는 야외활동이나 등산복 스타일의 기능성 의류를 일상 패션으로 활용하는 트렌드로, MZ세대에게 실용성과 스타일을 동시에 제공하며 인기를 끌고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 558
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 인테리어에서 강조되는 조명 트렌드로, 여러 종류의 조명을 조합하여 공간의 분위기를 다채롭게 연출하는 방식은?",
+        "tags": [
+            "인테리어",
+            "조명트렌드",
+            "레이어드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "단일 조명 시스템"
+            },
+            {
+                "id": "b",
+                "text": "레이어드 조명 (Layered Lighting)"
+            },
+            {
+                "id": "c",
+                "text": "태양광 조명 시스템"
+            },
+            {
+                "id": "d",
+                "text": "네온 아트 조명"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "레이어드 조명은 천정 조명, 플로우 램프, 벽등 등 여러 조명을 조합하여 공간에 깊이와 따뜻함, 세련된 분위기를 더하는 트렌드입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 680
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 소비자가 가격 대신 자신의 신념과 가치를 기준으로 제품을 구매하는 트렌드를 이르는 용어는?",
+        "tags": [
+            "미닝아웃",
+            "가치소비",
+            "ESG"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "플렉스 (Flex)"
+            },
+            {
+                "id": "b",
+                "text": "미닝 아웃 (Meaning Out)"
+            },
+            {
+                "id": "c",
+                "text": "소확행"
+            },
+            {
+                "id": "d",
+                "text": "체리슈머 (Cherry-sumer)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "미닝 아웃(Meaning Out)은 개인이 소비를 통해 자신의 가치관이나 신념을 드러내는 현상으로, 환경, 사회 문제 등과 관련된 기업의 제품을 선호하는 형태로 나타납니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 745
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 F/W 패션에서 위트 있고 대담한 스타일로 주목받으며, 스키웨어와 하이패션이 결합된 트렌드는?",
+        "tags": [
+            "스키코어",
+            "레트로",
+            "겨울패션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "스키 코어 (Ski Core)"
+            },
+            {
+                "id": "b",
+                "text": "프레피 코어 (Preppy Core)"
+            },
+            {
+                "id": "c",
+                "text": "웨스턴 룩 (Western Look)"
+            },
+            {
+                "id": "d",
+                "text": "테니스 룩 (Tennis Look)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "스키 코어는 스키복이나 스노우보드웨어의 기능성과 역동적인 패턴을 일상복과 결합하여 트렌디하고 에너지 넘치는 스타일을 연출하는 것입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 921
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 사이에서 인스타그램에 시(詩)를 업로드하는 문화로, 짧은 글을 선호하는 경향이 반영된 트렌드는?",
+        "tags": [
+            "시스타그램",
+            "SNS문화",
+            "숏폼선호"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "북스타그램"
+            },
+            {
+                "id": "b",
+                "text": "시스타그램"
+            },
+            {
+                "id": "c",
+                "text": "뮤직스타그램"
+            },
+            {
+                "id": "d",
+                "text": "다이어리스타그램"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "시스타그램은 '시+인스타그램'의 합성어로, 긴 글보다 짧고 감성적인 글을 선호하는 MZ세대의 취향이 반영된 SNS 문화입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 257
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 F/W 트렌드 중, 실버와 골드 등 반짝이는 소재로 미래적인 느낌과 고급스러움을 동시에 전하는 트렌드는?",
+        "tags": [
+            "메탈릭",
+            "미래주의",
+            "파티룩"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "파스텔 웨이브 (Pastel Wave)"
+            },
+            {
+                "id": "b",
+                "text": "네이비 시크 (Navy Chic)"
+            },
+            {
+                "id": "c",
+                "text": "메탈 플로우 (Metal Flow)"
+            },
+            {
+                "id": "d",
+                "text": "어스 톤 (Earth Tone)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "메탈 플로우는 실버, 골드 등 흐르듯 유연하게 반짝이는 메탈릭 소재를 활용하여 미래적인 감각과 화려함이 돋보이는 2025 F/W 패션 트렌드입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 88
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "고물가 시대, 명품 대신 가성비 좋은 유사 제품을 찾아 구매하는 MZ세대의 소비 트렌드를 뜻하는 용어는?",
+        "tags": [
+            "듀프소비",
+            "가성비",
+            "실용세대"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "체리슈머(Cherry-sumer)"
+            },
+            {
+                "id": "b",
+                "text": "듀프(Dupe)"
+            },
+            {
+                "id": "c",
+                "text": "오픈 런(Open Run)"
+            },
+            {
+                "id": "d",
+                "text": "미닝 아웃(Meaning Out)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "듀프(Dupe)는 'Duplicate(복제품)'의 줄임말로, 명품 디자인과 유사하지만 가격이 저렴한 제품을 찾아 구매하는 합리적인 소비 행태를 의미합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 65
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "실제 사람이 아닌 AI 기술로 제작되어 SNS에서 활동하며 광고 모델로도 주목받는 인플루언서는?",
+        "tags": [
+            "가상인플루언서",
+            "메타버스",
+            "AI트렌드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "키즈 인플루언서"
+            },
+            {
+                "id": "b",
+                "text": "버추얼 인플루언서"
+            },
+            {
+                "id": "c",
+                "text": "마이크로 인플루언서"
+            },
+            {
+                "id": "d",
+                "text": "펫 인플루언서"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "버추얼 인플루언서(가상 인플루언서)는 AI 및 3D 그래픽 기술로 만들어진 가상의 인물로, 국경과 시간을 초월하여 브랜드 홍보 활동을 하고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 147
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "할아버지 옷장에서 꺼낸 듯한 클래식하고 넉넉한 핏의 빈티지 스타일을 즐기는 MZ세대의 패션 트렌드 용어는?",
+        "tags": [
+            "그랜파코어",
+            "빈티지룩",
+            "젠더리스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "바비코어(Barbiecore)"
+            },
+            {
+                "id": "b",
+                "text": "블록코어(Bloke core)"
+            },
+            {
+                "id": "c",
+                "text": "그랜파코어(Grandpacore)"
+            },
+            {
+                "id": "d",
+                "text": "애슬레저 룩(Athleisure Look)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "그랜파코어는 할아버지처럼 여유롭고 클래식한 무드의 빈티지 의류(니트 베스트, 넉넉한 블레이저 등)를 활용하는 패션 트렌드입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 298
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "AI 기반 쇼핑 트렌드 중, 소비자가 온라인 쇼핑에서 옷을 직접 입어본 것처럼 체험할 수 있도록 돕는 기술은?",
+        "tags": [
+            "AI쇼핑",
+            "가상피팅",
+            "온라인리테일"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "맞춤형 AI 챗봇 컨설팅"
+            },
+            {
+                "id": "b",
+                "text": "가상 피팅룸(Virtual Fitting Room)"
+            },
+            {
+                "id": "c",
+                "text": "라이브 커머스 스트리밍"
+            },
+            {
+                "id": "d",
+                "text": "드론 기반 배송 서비스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "AI 기반 가상 피팅룸은 증강 현실(AR)이나 3D 기술을 활용하여 소비자가 온라인에서 옷의 핏과 스타일을 가상으로 체험할 수 있게 해주는 서비스입니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 339
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 F/W 시즌, 차가운 날씨에도 얇고 투명한 소재로 피부를 은근히 드러내 관능미를 연출하는 패션 트렌드는?",
+        "tags": [
+            "시어룩",
+            "시스루",
+            "F/W트렌드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "시어 룩(Sheer Look)"
+            },
+            {
+                "id": "b",
+                "text": "고프코어 룩(Gorpcore Look)"
+            },
+            {
+                "id": "c",
+                "text": "오피스 코어 룩(Office Core Look)"
+            },
+            {
+                "id": "d",
+                "text": "젠더리스 룩(Genderless Look)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "시어 룩(Sheer Look)은 망사나 얇은 실크 등 비치는 소재(시스루)를 활용해 노출을 최소화하면서도 은근한 매력을 강조하는 룩입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 481
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 고가 명품이나 가전제품을 소유하는 대신 일정 기간 동안 사용료를 내고 빌려 쓰는 새로운 소비 문화를 일컫는 용어는?",
+        "tags": [
+            "구독경제",
+            "렌탈문화",
+            "공유경제"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "소확행"
+            },
+            {
+                "id": "b",
+                "text": "횰로(Ho-lo)"
+            },
+            {
+                "id": "c",
+                "text": "렌탈 & 구독 경제"
+            },
+            {
+                "id": "d",
+                "text": "플렉스(Flex)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "구독 경제와 렌탈 문화는 제품을 구매하여 소유하는 대신 빌려 쓰고 반납하는 방식으로, 특히 명품, 가전, 자동차 등 고가 제품에 대해 확산되고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 501
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "'인스타그램에 올릴 만하지 않은 것'을 선호하며, 과시보다는 실속과 내실을 중시하는 MZ세대의 라이프스타일 코드는?",
+        "tags": [
+            "언인스타그래머블",
+            "실용세대",
+            "가치소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "언인스타그래머블(Un-Instagrammable)"
+            },
+            {
+                "id": "b",
+                "text": "인스타그래머블(Instagrammable)"
+            },
+            {
+                "id": "c",
+                "text": "리추얼(Ritual)"
+            },
+            {
+                "id": "d",
+                "text": "오운완(O-un-wan)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "언인스타그래머블은 사진을 찍어 SNS에 과시하는 소비를 지양하고, 개인적인 만족감과 실용성, 내실을 중요하게 생각하는 실용 세대의 특징입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 712
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "일과 휴가를 동시에 즐긴다는 의미로, 휴양지 등 원하는 곳에서 원격으로 업무를 수행하는 새로운 근무 형태는?",
+        "tags": [
+            "워케이션",
+            "근무트렌드",
+            "디지털노마드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "셧다운 제도(Shut-down system)"
+            },
+            {
+                "id": "b",
+                "text": "유연 근무제(Flexible working)"
+            },
+            {
+                "id": "c",
+                "text": "워케이션(Workation)"
+            },
+            {
+                "id": "d",
+                "text": "잡 크래프팅(Job Crafting)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "워케이션(Workation)은 일(Work)과 휴가(Vacation)의 합성어로, 사무실이 아닌 휴가지에서 업무를 병행하여 업무 효율과 삶의 질을 높이는 방식입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 855
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 컬렉션에서 주목받으며 하이테크 감성과 도시적 세련미를 더한 트렌드 컬러로 떠오른 '블루'는?",
+        "tags": [
+            "블루쇼크",
+            "컬러트렌드",
+            "하이테크"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "파스텔 블루 (Pastel Blue)"
+            },
+            {
+                "id": "b",
+                "text": "베이비 블루 (Baby Blue)"
+            },
+            {
+                "id": "c",
+                "text": "비비드 네온 블루 (Vivid Neon Blue)"
+            },
+            {
+                "id": "d",
+                "text": "민트 블루 (Mint Blue)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "2025 F/W 컬렉션에서는 광택 소재와 결합된 비비드 네온 블루(Blue Shock) 컬러가 강렬하게 등장하며 모던하고 세련된 무드를 완성했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 903
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 인테리어 트렌드에서 집을 단순히 쉬는 곳이 아닌, 취향을 담은 예술적 공간으로 만드는 핵심 요소는?",
+        "tags": [
+            "인테리어",
+            "핸드메이드",
+            "예술적요소"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "대량 생산된 규격화된 시스템 가구"
+            },
+            {
+                "id": "b",
+                "text": "최신 기술이 집약된 스마트홈 시스템"
+            },
+            {
+                "id": "c",
+                "text": "핸드메이드 공예품과 예술적 오브제"
+            },
+            {
+                "id": "d",
+                "text": "미래지향적인 메탈릭 소재 가구"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "개인의 취향을 담은 맞춤형 디자인이 부상하면서, 핸드메이드나 예술적 요소가 있는 오브제를 활용해 공간에 개성과 독창성을 부여하는 것이 트렌드입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 55
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 한국 스트리트 패션에서 ‘오버사이즈’(oversized) 실루엣이 주요 트렌드로 떠올랐는데, 이 트렌드에 대해 다음 중 옳은 설명은 무엇일까?",
+        "tags": [
+            "스트리트패션",
+            "오버사이즈",
+            "2025트렌드",
+            "한국패션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오버사이즈 실루엣은 봄·여름에만 유행하며 가을·겨울에는 대부분 사라졌다."
+            },
+            {
+                "id": "b",
+                "text": "오버사이즈 재킷과 와이드 팬츠 조합이 2025년 한국 스트리트 패션에서 흔히 관찰되었다."
+            },
+            {
+                "id": "c",
+                "text": "2025년 한국 패션에서는 오버사이즈가 아닌 ‘슬림핏’이 가장 주목받는 실루엣이었다."
+            },
+            {
+                "id": "d",
+                "text": "오버사이즈 트렌드는 색상과 상관없이 반드시 검정색 단일 컬러로만 입는 것이 특징이었다."
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "정답은 '오버사이즈 재킷과 와이드 팬츠 조합이 2025년 한국 스트리트 패션에서 흔히 관찰되었다'입니다. 2025년 패션 업계에서는 오버사이즈 실루엣이 주요 트렌드로 자리 잡았습니다.",
+        "difficulty": 0.4,
+        "createdAt": 1760773920,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 512
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 인테리어 트렌드에서 거실과 주방의 경계를 허물고 하나의 큰 공간처럼 만드는 디자인 방식은?",
+        "tags": [
+            "오픈형주방",
+            "인테리어트렌드",
+            "공간확장"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "패닉 룸(Panic Room)"
+            },
+            {
+                "id": "b",
+                "text": "클로즈드 룸(Closed Room)"
+            },
+            {
+                "id": "c",
+                "text": "오픈형 주방(Open Kitchen)"
+            },
+            {
+                "id": "d",
+                "text": "스터디 룸(Study Room)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "오픈형 주방은 주방과 거실이 벽으로 분리되지 않고 연결되어 개방감을 주며, 가족 및 손님과 소통을 원활하게 하는 인테리어 트렌드입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 772
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 사이에서 유행하는 '오운완'이 뜻하는 라이프스타일 코드는 무엇인가?",
+        "tags": [
+            "오운완",
+            "헬스케어",
+            "인증문화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오늘의 운세 완료"
+            },
+            {
+                "id": "b",
+                "text": "오늘의 운동 완료"
+            },
+            {
+                "id": "c",
+                "text": "오래된 물건 완성"
+            },
+            {
+                "id": "d",
+                "text": "오직 우리만의 완벽함"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "오운완은 '오늘의 운동 완료'의 줄임말로, 운동을 마치고 인증 사진이나 영상을 SNS에 공유하는 MZ세대의 헬스 및 인증 문화입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 111
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "최신 패션 트렌드에서 '뉴 로맨티시즘(New Romanticism)' 무드가 부상하는 배경으로 가장 적절한 것은?",
+        "tags": [
+            "뉴로맨티시즘",
+            "디자인트렌드",
+            "패션무드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "극도의 미니멀리즘에 대한 반발 심리"
+            },
+            {
+                "id": "b",
+                "text": "기술 발전으로 인한 기능성 소재의 급부상"
+            },
+            {
+                "id": "c",
+                "text": "팬데믹 이후 일상복의 캐주얼화 가속"
+            },
+            {
+                "id": "d",
+                "text": "젠더리스 패션의 보편화"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "뉴 로맨티시즘은 꽉 짜인 규범이나 극도의 미니멀리즘에서 벗어나, 과감한 볼륨, 화려한 디테일, 낭만적인 실루엣을 추구하는 경향입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 222
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 소비자가 자신의 행복과 만족을 위해 가성비 대신 심리적 만족을 주는 제품에 아낌없이 투자하는 트렌드는?",
+        "tags": [
+            "펀플레이션",
+            "심리만족",
+            "소비트렌드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "체리슈머(Cherry-sumer)"
+            },
+            {
+                "id": "b",
+                "text": "미니멀라이프(Minimal Life)"
+            },
+            {
+                "id": "c",
+                "text": "짠테크(Jjantech)"
+            },
+            {
+                "id": "d",
+                "text": "펀플레이션(Funflation)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "펀플레이션(Funflation)은 'Fun(재미)'과 'Inflation(인플레이션)'의 합성어로, 높은 가격에도 불구하고 재미와 만족을 위해 소비를 주저하지 않는 트렌드입니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 333
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 F/W 패션에서 클래식 트렌치코트와 결합하며 브랜드의 전통적인 정체성을 강화하는 데 사용된 패턴은?",
+        "tags": [
+            "체크패턴",
+            "헤리티지",
+            "버버리"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "도트 패턴 (Dot Pattern)"
+            },
+            {
+                "id": "b",
+                "text": "타탄체크 (Tartan Check)"
+            },
+            {
+                "id": "c",
+                "text": "애니멀 프린트 (Animal Print)"
+            },
+            {
+                "id": "d",
+                "text": "카무플라주 패턴 (Camouflage Pattern)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "2025 F/W 시즌에는 타탄체크 등 전통적인 체크 패턴이 트렌치코트와 결합하거나 레트로 감성을 입혀 헤리티지를 새롭게 부활시켰습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 444
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 불확실한 미래 대신 현재의 행복을 위해 소비하는 트렌드와 가장 거리가 먼 개념은?",
+        "tags": [
+            "현재지향",
+            "YOLO",
+            "파이어족"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "욜로(YOLO)"
+            },
+            {
+                "id": "b",
+                "text": "파이어족(FIRE movement)"
+            },
+            {
+                "id": "c",
+                "text": "소확행"
+            },
+            {
+                "id": "d",
+                "text": "시성비(시간 대비 성능)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "욜로, 소확행, 시성비는 모두 현재의 만족을 중시하는 MZ세대의 태도를 반영하는 반면, 파이어족은 극단적인 절약과 투자를 통해 조기 은퇴를 목표하는 개념으로 미래지향적입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 555
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 소비자가 브랜드의 단순한 인지도 대신 자신의 개성과 가치관을 반영하는 소비를 중요하게 여기는 성향은?",
+        "tags": [
+            "취향소비",
+            "개성",
+            "브랜드충성도"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "하이엔드(High-end) 소비"
+            },
+            {
+                "id": "b",
+                "text": "취향 중심 소비"
+            },
+            {
+                "id": "c",
+                "text": "과시적 소비"
+            },
+            {
+                "id": "d",
+                "text": "가성비(Cost-effectiveness) 소비"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "MZ세대는 대중적인 브랜드 인지도보다 자신의 개성과 가치관에 맞는 제품을 선택하는 '취향 중심 소비'를 통해 자아를 표현하려는 경향이 강합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 666
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 선호하는 숏폼 콘텐츠 플랫폼에서 상품을 실시간으로 소개하고 판매하는 쇼핑 방식은?",
+        "tags": [
+            "라이브커머스",
+            "숏폼쇼핑",
+            "리테일"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "카탈로그 쇼핑"
+            },
+            {
+                "id": "b",
+                "text": "홈쇼핑 채널"
+            },
+            {
+                "id": "c",
+                "text": "라이브 커머스"
+            },
+            {
+                "id": "d",
+                "text": "방문 판매"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "라이브 커머스는 인플루언서나 판매자가 실시간으로 상품을 소개하고 소비자와 소통하며 판매하는 방식으로, 숏폼 콘텐츠와 결합하여 빠르게 성장하고 있습니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 777
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "가구 디자인 트렌드에서 곡선을 강조한 부드러운 형태의 가구가 유행하는 이유로 가장 적절한 것은?",
+        "tags": [
+            "곡선가구",
+            "인테리어",
+            "트렌드이유"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "공간 활용도를 극대화하기 위해"
+            },
+            {
+                "id": "b",
+                "text": "날카로운 모서리를 없애 안전성을 높이기 위해"
+            },
+            {
+                "id": "c",
+                "text": "심리적 안정감과 편안함을 주기 위해"
+            },
+            {
+                "id": "d",
+                "text": "운반 및 이동이 편리하기 때문에"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "곡선이 강조된 가구는 시각적으로 부드러움을 주어 심리적인 안정감과 따뜻한 무드를 조성하며, 집을 편안한 안식처로 만들려는 트렌드가 반영된 결과입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 888
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "최근 MZ세대 사이에서 유행하는 '갓생' 트렌드의 핵심 가치와 가장 거리가 먼 것은?",
+        "tags": [
+            "갓생",
+            "자기계발",
+            "루틴"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "시간을 효율적으로 관리하고 루틴을 지킨다."
+            },
+            {
+                "id": "b",
+                "text": "타인의 시선에 맞추어 완벽함을 과시한다."
+            },
+            {
+                "id": "c",
+                "text": "건강 관리와 자기계발에 집중한다."
+            },
+            {
+                "id": "d",
+                "text": "작은 성취를 통해 삶의 만족도를 높인다."
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "갓생은 스스로 정한 목표를 이루고 성취감을 느끼는 데 집중하며, 타인에게 보여주기 위한 완벽한 삶보다는 본인의 만족을 중요하게 생각합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 11
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "해외 명품 브랜드가 실제 매장 오픈 전에 고객에게 먼저 제품을 선보이고 예약 판매하는 마케팅 기법은?",
+        "tags": [
+            "프리오더",
+            "마케팅",
+            "희소성"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "선착순 판매 (First Come, First Served)"
+            },
+            {
+                "id": "b",
+                "text": "버추얼 피팅 (Virtual Fitting)"
+            },
+            {
+                "id": "c",
+                "text": "프리 오더 (Pre-order) 방식"
+            },
+            {
+                "id": "d",
+                "text": "드롭 방식 (Drop System)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "프리 오더(Pre-order)는 정식 출시 전 예약 판매를 통해 고객에게 희소성과 선점 기회를 제공하며 브랜드의 기대감을 높이는 전략입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 22
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "SNS에서 명품 가방에 인형 키링이나 굿즈를 달아 자신만의 개성을 표현하는 트렌드와 관련된 소비 문화는?",
+        "tags": [
+            "굿즈문화",
+            "커스터마이징",
+            "백꾸미기"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "미니멀리즘 (Minimalism)"
+            },
+            {
+                "id": "b",
+                "text": "플렉스 (Flex)"
+            },
+            {
+                "id": "c",
+                "text": "굿즈 소비를 통한 정체성 강화"
+            },
+            {
+                "id": "d",
+                "text": "디지털 디톡스 (Digital Detox)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "명품 가방에 굿즈를 다는 것은 단순한 소비를 넘어, 굿즈를 통해 개인의 취향과 정체성을 강화하고 이를 SNS로 공유하는 MZ세대의 특징입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 33
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 F/W 패션에서 주목받은 패턴 중, 전통적인 체크 패턴을 모던하거나 레트로한 감성으로 재해석한 트렌드의 이름은?",
+        "tags": [
+            "헤리티지",
+            "체크패턴",
+            "레트로"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "애니멀 프린트 (Animal Print)"
+            },
+            {
+                "id": "b",
+                "text": "트로피컬 패턴 (Tropical Pattern)"
+            },
+            {
+                "id": "c",
+                "text": "헤리티지 리본 (Heritage Reborn)"
+            },
+            {
+                "id": "d",
+                "text": "옵티컬 아트 (Optical Art)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "헤리티지 리본(Heritage Reborn)은 타탄체크, 그리드 패턴 등 전통적인 체크를 새롭게 부활시키고 현대적으로 재해석한 트렌드를 일컫습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 44
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 사이에서 몸과 마음의 건강을 최우선으로 여기며, 명상이나 심리 치유에 관심을 갖는 라이프스타일 트렌드는?",
+        "tags": [
+            "웰빙",
+            "마인드풀니스",
+            "멘탈헬스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "힐링 앤드 파티 (Healing & Party)"
+            },
+            {
+                "id": "b",
+                "text": "마인드풀니스 & 웰빙 (Mindfulness & Wellbeing)"
+            },
+            {
+                "id": "c",
+                "text": "하이퍼커넥팅 (Hyperconnecting)"
+            },
+            {
+                "id": "d",
+                "text": "디지털 노마드 (Digital Nomad)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "마인드풀니스 & 웰빙은 정신 건강을 중요시하며, 명상, 요가, 심리 치유 등을 통해 삶의 균형을 찾으려는 MZ세대의 라이프스타일 트렌드입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 55
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 인테리어 트렌드 중, 새로운 것을 만들기보다 기존의 것을 개선하는 지속 가능한 미니멀리즘을 추구하는 테마는?",
+        "tags": [
+            "미니멀리즘",
+            "지속가능성",
+            "스마트심플"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "맥시멀리즘의 부활"
+            },
+            {
+                "id": "b",
+                "text": "레트로 퓨처리즘"
+            },
+            {
+                "id": "c",
+                "text": "스마트 심플 (Smart Simple)"
+            },
+            {
+                "id": "d",
+                "text": "글램핑 스타일"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "스마트 심플은 기존의 것을 개선하고 이색적인 형태, 믹스 매치 등을 통해 단순하지만 지루하지 않은 지속 가능한 관점의 미니멀리즘을 의미합니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 66
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 SNS에서 긴 글보다 짧고 감성적인 글을 선호하며 유행시킨, 시(詩)를 활용한 문화 콘텐츠는?",
+        "tags": [
+            "시스타그램",
+            "숏폼",
+            "SNS콘텐츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오디오 드라마"
+            },
+            {
+                "id": "b",
+                "text": "시스타그램"
+            },
+            {
+                "id": "c",
+                "text": "장문 웹소설"
+            },
+            {
+                "id": "d",
+                "text": "논문 읽기 모임"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "시스타그램은 '시+인스타그램'의 합성어로, 짧은 길이와 감성을 자극하는 문구들이 긴 호흡의 글보다 짧은 글을 선호하는 MZ세대의 취향을 저격한 결과입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 77
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 MZ세대 소비 트렌드에서 '실용 세대'의 주요 특징으로 가장 거리가 먼 것은?",
+        "tags": [
+            "실용세대",
+            "가성비",
+            "효율성"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "관계에서도 가성비를 따진다."
+            },
+            {
+                "id": "b",
+                "text": "직업 선택 기준이 '적성'에서 '효율'로 옮겨갔다."
+            },
+            {
+                "id": "c",
+                "text": "명품 대신 '양품' 브랜드를 선호한다."
+            },
+            {
+                "id": "d",
+                "text": "무조건 비싸고 희소성 있는 제품을 과시한다."
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "실용 세대는 보여지는 것보다 실속과 내실을 중요시하며, 과시적인 플렉스 소비보다는 가성비와 효율성을 최우선으로 고려하는 경향이 강합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 88
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "AI가 소비자의 검색 기록과 관심사를 분석하여 제품을 추천하는, 2025년 MZ세대의 주요 쇼핑 트렌드는?",
+        "tags": [
+            "AI쇼핑",
+            "개인맞춤",
+            "구독경제"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "AI 기반 개인 맞춤 쇼핑"
+            },
+            {
+                "id": "b",
+                "text": "오프라인 한정 특가 마케팅"
+            },
+            {
+                "id": "c",
+                "text": "브랜드 간의 상호 경쟁"
+            },
+            {
+                "id": "d",
+                "text": "전통적인 TV 홈쇼핑"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "MZ세대는 편리함과 개인화된 쇼핑 경험을 선호하며, AI가 소비 패턴을 분석하여 최적의 제품을 추천하는 맞춤형 쇼핑 서비스가 확대되고 있습니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 99
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "환경을 보호하고 지역 커뮤니티에 기여하는 '지속 가능한 제품 개발'을 지향하는 2025년 윤리적 컨셉은?",
+        "tags": [
+            "리제너레이션스",
+            "ESG",
+            "지속가능성"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "패스트 이코노미 (Fast Economy)"
+            },
+            {
+                "id": "b",
+                "text": "제로 달러 데이트 (Zero Dollar Date)"
+            },
+            {
+                "id": "c",
+                "text": "리제너레이션스 (Regenerations)"
+            },
+            {
+                "id": "d",
+                "text": "미니멀 이코노미 (Minimal Economy)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "리제너레이션스(Regenerations)는 고대의 지혜와 미래의 혁신 기술을 동시에 추구하며, 지구 환경과 지역 사회에 기여하는 지속 가능한 제품 개발을 지향합니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 100
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "SNS에서 특정 장소나 경험을 공유할 때 '인스타그램에 올릴 만한'이라는 뜻으로, 사진이 잘 나오는 장소를 칭하는 용어는?",
+        "tags": [
+            "인스타그래머블",
+            "SNS트렌드",
+            "인증샷"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "노필터 존 (No-filter Zone)"
+            },
+            {
+                "id": "b",
+                "text": "언인스타그래머블 (Un-Instagrammable)"
+            },
+            {
+                "id": "c",
+                "text": "인스타그래머블 (Instagrammable)"
+            },
+            {
+                "id": "d",
+                "text": "제로 웨이스트 스폿 (Zero-Waste Spot)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "인스타그래머블은 '인스타그램에 올릴 만한'이라는 뜻으로, 시각적으로 매력적이어서 사진이나 영상으로 공유하기 좋은 장소나 물건을 지칭합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 142
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "K팝 팬 문화에서 파생되어 명품 가방 등에 작은 인형이나 굿즈를 달아 개성을 표현하는 트렌드의 명칭은?",
+        "tags": [
+            "백꾸미기",
+            "키링",
+            "굿즈"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "백 드롭 (Bag Drop)"
+            },
+            {
+                "id": "b",
+                "text": "백 플렉스 (Bag Flex)"
+            },
+            {
+                "id": "c",
+                "text": "백 꾸미기 (Bag Customization)"
+            },
+            {
+                "id": "d",
+                "text": "백 미니멀리즘 (Bag Minimalism)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "명품 가방에 개성 있는 키링이나 굿즈를 달아 장식하는 것을 '백 꾸미기' 또는 '백꾸'라고 부르며, 굿즈 소비 문화의 확산으로 인기를 얻고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 253
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "최근 뷰티 및 패션 분야에서 AI가 소비자의 얼굴형, 피부 톤 등을 분석해 최적의 스타일을 추천해주는 기술은?",
+        "tags": [
+            "AI뷰티",
+            "맞춤형서비스",
+            "가상메이크업"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "AI 퍼스널 쇼퍼"
+            },
+            {
+                "id": "b",
+                "text": "AI 스타일 추천 서비스"
+            },
+            {
+                "id": "c",
+                "text": "AI 물류 관리 시스템"
+            },
+            {
+                "id": "d",
+                "text": "AI 결제 시스템"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "AI 스타일 추천 서비스는 소비자의 데이터를 분석하여 헤어스타일, 메이크업 컬러, 의류 코디 등 개인에게 최적화된 맞춤형 스타일을 제안합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 364
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "고전적인 복식이나 트렌드를 현대적으로 재해석하여 새로운 스타일을 창조하는 패션 경향을 일컫는 용어는?",
+        "tags": [
+            "레트로퓨처리즘",
+            "복고",
+            "재해석"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "테크 웨어 (Tech Wear)"
+            },
+            {
+                "id": "b",
+                "text": "레트로 퓨처리즘 (Retro-futurism)"
+            },
+            {
+                "id": "c",
+                "text": "노멀 코어 (Normcore)"
+            },
+            {
+                "id": "d",
+                "text": "젠더리스 룩 (Genderless Look)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "레트로 퓨처리즘은 과거의 복고적인 디자인 요소를 미래적인 소재나 실루엣과 결합하여 새로운 스타일을 창조하는 패션 트렌드입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 475
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 주거 공간을 꾸밀 때 '나만의 취향'을 담아 전문 디자이너 대신 스스로 기획하는 트렌드를 무엇이라 부르는가?",
+        "tags": [
+            "셀프인테리어",
+            "홈데코",
+            "취향소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "업사이클링"
+            },
+            {
+                "id": "b",
+                "text": "DIY (Do It Yourself) 홈스타일링"
+            },
+            {
+                "id": "c",
+                "text": "미드 센추리 모던"
+            },
+            {
+                "id": "d",
+                "text": "공유 오피스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "DIY(Do It Yourself) 홈스타일링은 가구 배치, 소품 선택 등을 전문가 없이 개인이 직접 기획하고 실행하는 것으로, 자신의 개성을 집에 반영하는 트렌드입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 586
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 패션 트렌드에서 '사자의 갈기처럼 역동적인 실루엣'으로 대담한 룩을 완성한 소재는?",
+        "tags": [
+            "페이크퍼",
+            "실루엣",
+            "와일드룩"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "메탈릭 섀틴"
+            },
+            {
+                "id": "b",
+                "text": "풍성한 페이크 퍼"
+            },
+            {
+                "id": "c",
+                "text": "네오프렌"
+            },
+            {
+                "id": "d",
+                "text": "시스루 레이스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "2025 F/W 컬렉션에서는 페이크 퍼가 단순히 보온을 넘어 역동적이고 대담한 실루엣을 강조하는 핵심 소재로 활용되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 697
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 명품이나 고가 제품을 구매할 때, 새벽부터 매장 앞에 줄을 서서 기다리는 현상을 뜻하는 용어는?",
+        "tags": [
+            "오픈런",
+            "희소성",
+            "명품소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "프리 쇼핑 (Free Shopping)"
+            },
+            {
+                "id": "b",
+                "text": "드롭 세일 (Drop Sale)"
+            },
+            {
+                "id": "c",
+                "text": "오픈 런 (Open Run)"
+            },
+            {
+                "id": "d",
+                "text": "팝업 투어 (Pop-up Tour)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "오픈 런(Open Run)은 희소성 있는 한정판 제품이나 명품을 구매하기 위해 매장이 문을 열기 전부터 달려가 줄을 서서 기다리는 소비 행태를 말합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 708
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 인테리어에서 기능성보다 단순한 아름다움과 세련된 미학을 강조하는 마감재로 최근 주목받는 소재는?",
+        "tags": [
+            "세라믹식탁",
+            "인테리어소재",
+            "미니멀인테리어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "고무나무 원목"
+            },
+            {
+                "id": "b",
+                "text": "PVC 시트"
+            },
+            {
+                "id": "c",
+                "text": "세라믹 또는 포세린 스톤웨어"
+            },
+            {
+                "id": "d",
+                "text": "스테인리스 스틸"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "세라믹이나 포세린 스톤웨어는 고급스럽고 시크한 질감, 내구성을 동시에 갖춰 특히 식탁 등 주방 인테리어에 필수적인 요소로 떠오르고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 819
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 자신의 경험을 소유하고 변화시킬 수 있는 새로운 시대를 뜻하며, 웹 3.0 환경과 관련된 용어는?",
+        "tags": [
+            "웹3.0",
+            "경험소유",
+            "메타버스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "콘텐츠 뷰잉 (Content Viewing)"
+            },
+            {
+                "id": "b",
+                "text": "경험 소유의 시대 (Era of Experience Ownership)"
+            },
+            {
+                "id": "c",
+                "text": "대량 생산 시스템"
+            },
+            {
+                "id": "d",
+                "text": "시청자 중심 미디어"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "경험 소유의 시대는 메타버스, NFT 등 웹 3.0 기술을 기반으로 사용자가 자신의 디지털 경험과 창작물을 소유하고 거래하는 새로운 디지털 라이프를 의미합니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 930
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "패션 분야에서 재활용 의류나 자투리 천을 활용하여 새로운 제품으로 만드는 지속 가능한 트렌드 활동은?",
+        "tags": [
+            "업사이클링",
+            "친환경",
+            "지속가능패션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "다운사이징 (Downsizing)"
+            },
+            {
+                "id": "b",
+                "text": "업사이클링 (Upcycling)"
+            },
+            {
+                "id": "c",
+                "text": "아웃소싱 (Outsourcing)"
+            },
+            {
+                "id": "d",
+                "text": "컬래버레이션 (Collaboration)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "업사이클링은 기존에 버려지는 제품을 재활용하여 가치를 높인 새로운 제품으로 재탄생시키는 것으로, 지속 가능한 패션의 핵심 요소입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 101
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 주로 이용하는 숏폼 콘텐츠 플랫폼에서 상품 판매를 위해 활용되는 기능으로, SNS와 쇼핑이 결합된 형태의 소비는?",
+        "tags": [
+            "숏폼",
+            "라이브커머스",
+            "SNS쇼핑"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "인쇄 매체 광고"
+            },
+            {
+                "id": "b",
+                "text": "라이브 커머스 (Live Commerce)"
+            },
+            {
+                "id": "c",
+                "text": "텔레마케팅"
+            },
+            {
+                "id": "d",
+                "text": "신문 구독 서비스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "라이브 커머스는 숏폼 플랫폼에서 인플루언서가 실시간으로 상품을 소개하고 판매하며, SNS를 통한 소비를 활성화하는 핵심 트렌드입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 21
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 인테리어 트렌드에서 자연의 미학과 첨단 기술이 공존하며, 식물적인 영감에 주목하는 컨셉은?",
+        "tags": [
+            "인테리어",
+            "자연미학",
+            "AI패션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "인더스트리얼 미니멀리즘"
+            },
+            {
+                "id": "b",
+                "text": "스마트 심플"
+            },
+            {
+                "id": "c",
+                "text": "자연의 미학 (Nature's Aesthetics)"
+            },
+            {
+                "id": "d",
+                "text": "하이테크 모더니즘"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "자연의 미학은 2025 F/W 인테리어 및 패션 트렌드인 '리제너레이션스'의 대표적인 모습 중 하나로, 실생활과 AI 패션에서 나타나는 식물적 영감에 주목합니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 32
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 사이에서 '하면 해?'라는 긍정의 신호이자 장난스러운 표현으로 'GMG'와 함께 사용되는 신조어의 영어 이니셜은?",
+        "tags": [
+            "MZ신조어",
+            "HMH",
+            "Z세대문화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "HMH"
+            },
+            {
+                "id": "b",
+                "text": "LOL"
+            },
+            {
+                "id": "c",
+                "text": "SMH"
+            },
+            {
+                "id": "d",
+                "text": "BRB"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "HMH는 '하면 해?'를 영어 이니셜처럼 만든 표현으로, '가면 가?(GMG)'와 함께 상황에 따라 행동하겠다는 긍정적이면서도 장난스러운 의미로 사용됩니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 43
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대의 소비 트렌드에서, 불필요한 지출을 줄여 자신이 원하는 분야에 거액을 소비하는 '옴니보어'의 소비 성향과 유사한 족(族)은?",
+        "tags": [
+            "옴니보어",
+            "요노족",
+            "취향소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "짠테크족"
+            },
+            {
+                "id": "b",
+                "text": "욜로족 (YOLO)"
+            },
+            {
+                "id": "c",
+                "text": "요노족"
+            },
+            {
+                "id": "d",
+                "text": "에코족"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "옴니보어는 하이엔드와 저렴한 제품을 혼합 소비하며, 원하는 분야에만 집중적으로 투자하는 '요노족(You Only Need One, 딱 하나만 필요하다)'의 성향과 유사합니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 54
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 F/W 패션에서 위트 있는 스키 코어 룩을 제안했으며, 쿨한 실루엣의 핑크 퍼퍼 셋업을 선보인 하우스 브랜드는?",
+        "tags": [
+            "스키코어",
+            "핑크퍼퍼",
+            "카사블랑카"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "펜디 (FENDI)"
+            },
+            {
+                "id": "b",
+                "text": "구찌 (GUCCI)"
+            },
+            {
+                "id": "c",
+                "text": "몽클레르 그레노블 (MONCLER GRENOBLE)"
+            },
+            {
+                "id": "d",
+                "text": "카사블랑카 (CASABLANCA)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "카사블랑카는 2025 F/W 시즌에 쿨하고 위트 있는 핑크 퍼퍼 셋업을 통해 매력적인 스키 코어 룩을 제안한 하이패션 브랜드 중 하나입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 65
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 인테리어 트렌드 중, 거실이나 홈 오피스에 식물을 두어 자연을 집안으로 들이는 디자인을 일컫는 용어는?",
+        "tags": [
+            "바이오필릭",
+            "친환경",
+            "인테리어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "플랜테리어 (Planterior)"
+            },
+            {
+                "id": "b",
+                "text": "스마트팜 (Smart Farm)"
+            },
+            {
+                "id": "c",
+                "text": "미드센추리 모던 (Mid-Century Modern)"
+            },
+            {
+                "id": "d",
+                "text": "오피스 코어 (Office Core)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "식물(Plant)과 인테리어(Interior)의 합성어인 플랜테리어는 자연을 실내로 들이는 바이오필릭 디자인의 일환으로, 심리적 안정과 공기 정화 효과를 위해 유행하고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 76
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 소비자가 오프라인 매장 대신 온라인에서 상품을 구매하며 브랜드 스토리와 제품 사용법을 숏폼 콘텐츠로 접하는 소비 방식은?",
+        "tags": [
+            "숏폼쇼핑",
+            "브랜드스토리",
+            "디지털소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "전통적인 카탈로그 마케팅"
+            },
+            {
+                "id": "b",
+                "text": "SNS 기반 숏폼 쇼핑"
+            },
+            {
+                "id": "c",
+                "text": "TV 홈쇼핑 채널"
+            },
+            {
+                "id": "d",
+                "text": "신문 광고 중심 마케팅"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "MZ세대는 틱톡, 유튜브 쇼츠 등 숏폼 플랫폼에서 SNS와 쇼핑이 결합된 형태로 브랜드 스토리와 정보를 얻고 구매하는 경향이 강합니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 87
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 인테리어 트렌드에서 부드럽고 곡선적인 가구와 함께, 빈티지한 감성과 모던한 디자인이 조화된 스타일은?",
+        "tags": [
+            "인테리어",
+            "빈티지모던",
+            "곡선가구"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "인더스트리얼 스타일"
+            },
+            {
+                "id": "b",
+                "text": "믹스 앤 매치 스타일"
+            },
+            {
+                "id": "c",
+                "text": "북유럽 스타일"
+            },
+            {
+                "id": "d",
+                "text": "쉐비 시크 스타일"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "2025년 인테리어는 빈티지와 모던의 감각적인 조화가 주요 키워드로, 곡선을 강조한 가구와 함께 다양한 스타일을 조화롭게 섞는 믹스 앤 매치 스타일이 인기를 얻고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 98
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 패션계의 '올해의 컬러(Color of the Year)'로 선정되어 따뜻하고 부드러운 이미지를 가진 색상은?",
+        "tags": [
+            "올해의컬러",
+            "모카무스",
+            "색상트렌드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "비비드 마젠타"
+            },
+            {
+                "id": "b",
+                "text": "모카 무스 (Mocha Mousse)"
+            },
+            {
+                "id": "c",
+                "text": "네온 그린"
+            },
+            {
+                "id": "d",
+                "text": "클래식 블루"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "2025년 스타일 트렌드 키워드 중 하나로 '모카 무스'가 올해의 컬러로 언급되며, 차분하고 부드러운 뉴트럴 톤의 유행을 반영합니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 109
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 소비 트렌드 중, 소비자가 특정 브랜드나 제품에 대해 높은 가격을 지불하더라도 환경 보호와 지속 가능성을 중요시하는 가치소비 형태는?",
+        "tags": [
+            "ESG",
+            "미닝아웃",
+            "지속가능소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "일회성 충동구매"
+            },
+            {
+                "id": "b",
+                "text": "가성비 극대화 소비"
+            },
+            {
+                "id": "c",
+                "text": "미닝 아웃 (Meaning Out)"
+            },
+            {
+                "id": "d",
+                "text": "과시형 플렉스"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "미닝 아웃(Meaning Out)은 자신의 신념이나 가치관(예: 환경, 윤리 등)을 드러내는 소비를 의미하며, ESG 경영을 실천하는 기업의 제품을 선호하는 형태로 나타납니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 120
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "인플레이션과 고금리 시대에 고가 상품 대신 가성비 좋은 유사 제품을 찾는 MZ세대의 소비 트렌드를 무엇이라고 부르나요?",
+        "tags": [
+            "듀프소비",
+            "가성비",
+            "고물가시대"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "체리슈머(Cherry-sumer)"
+            },
+            {
+                "id": "b",
+                "text": "듀프(Dupe) 소비"
+            },
+            {
+                "id": "c",
+                "text": "오픈 런(Open Run)"
+            },
+            {
+                "id": "d",
+                "text": "플렉스(Flex)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "듀프(Dupe)는 'Duplicate(복제품)'의 줄임말로, 명품 디자인과 유사하지만 가격이 저렴한 제품을 찾아 구매하는 합리적인 소비 행태를 의미합니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 248
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 직장인들이 업무 효율성을 높이기 위해 주변 동료나 지인들과 함께 목표를 정하고 실천하는 새로운 문화는?",
+        "tags": [
+            "루틴",
+            "업무효율",
+            "갓생"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "사이드 프로젝트(Side Project)"
+            },
+            {
+                "id": "b",
+                "text": "오피스 라이프 밸런스(OLB)"
+            },
+            {
+                "id": "c",
+                "text": "갓생 루틴 공유"
+            },
+            {
+                "id": "d",
+                "text": "워크 홀릭(Workaholic)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "갓생 루틴 공유는 목표를 정하고 꾸준히 실천하는 '갓생' 트렌드가 직장 내에서도 확산되어, 동료들과 루틴을 공유하고 서로 독려하는 문화입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 359
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 패션에서 주목받는 실루엣 중, 어깨와 소매를 부풀려 과장된 볼륨을 강조하는 여성스러운 디자인은?",
+        "tags": [
+            "뉴로맨티시즘",
+            "파워숄더",
+            "볼륨실루엣"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "미니멀 슬림핏"
+            },
+            {
+                "id": "b",
+                "text": "드롭 숄더 오버핏"
+            },
+            {
+                "id": "c",
+                "text": "파워 볼륨 슬리브"
+            },
+            {
+                "id": "d",
+                "text": "H라인 스트레이트"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "뉴 로맨티시즘 트렌드의 일환으로, 어깨나 소매에 과감한 볼륨을 넣은 '파워 볼륨 슬리브'가 여성스러운 동시에 대담한 실루엣을 강조합니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 470
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "온라인 쇼핑몰이 AI 기술을 활용하여 고객의 체형 데이터를 기반으로 옷을 제작하는 개인 맞춤형 서비스를 무엇이라고 하나요?",
+        "tags": [
+            "AI패션",
+            "맞춤제작",
+            "테크놀로지"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "가상 피팅룸"
+            },
+            {
+                "id": "b",
+                "text": "AI 온디맨드 생산"
+            },
+            {
+                "id": "c",
+                "text": "자동 재고 관리 시스템"
+            },
+            {
+                "id": "d",
+                "text": "라이브 커머스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "AI 온디맨드(On-Demand) 생산은 고객의 체형 및 취향 데이터를 바탕으로 필요한 만큼만 옷을 제작하여 재고 부담을 줄이고 개인 맞춤화를 실현하는 기술입니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 581
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 '나만의 취향'을 SNS에 공유하며 적극적으로 드러내는 소비 행태를 일컫는 용어는?",
+        "tags": [
+            "미닝아웃",
+            "취향공유",
+            "가치소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "플렉스(Flex)"
+            },
+            {
+                "id": "b",
+                "text": "언박싱(Unboxing)"
+            },
+            {
+                "id": "c",
+                "text": "취향 아웃(Taste Out)"
+            },
+            {
+                "id": "d",
+                "text": "소확행"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "취향 아웃(Taste Out)은 자신의 취향과 개성을 숨기지 않고 적극적으로 표출하며, 이를 SNS에 공유하여 자신을 브랜딩하는 MZ세대의 소비 트렌드입니다. '미닝 아웃'과 유사한 개념입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 692
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 인테리어 트렌드에서 '집을 예술 작품처럼' 꾸미는 경향과 관련하여, 개성적인 형태의 수공예 작품을 의미하는 것은?",
+        "tags": [
+            "핸드메이드",
+            "인테리어",
+            "예술적오브제"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "시스템 가구"
+            },
+            {
+                "id": "b",
+                "text": "예술적 오브제(Artistic Objet)"
+            },
+            {
+                "id": "c",
+                "text": "모듈 가구"
+            },
+            {
+                "id": "d",
+                "text": "기성품 조명"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "예술적 오브제는 핸드메이드나 독특한 디자인의 소품을 활용하여 공간에 개성과 예술적인 분위기를 더하는 인테리어 트렌드의 핵심 요소입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 703
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 패션 트렌드에서 부상한 '블록코어(Bloke core)' 룩의 핵심 아이템은 무엇인가요?",
+        "tags": [
+            "블록코어",
+            "스포츠룩",
+            "스트리트패션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오피스 룩 슈트"
+            },
+            {
+                "id": "b",
+                "text": "축구 유니폼 또는 스포츠 저지"
+            },
+            {
+                "id": "c",
+                "text": "빈티지 트위드 재킷"
+            },
+            {
+                "id": "d",
+                "text": "맥시멀 드레스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "블록코어는 축구 유니폼, 스포츠 저지 등의 스포츠 웨어를 일상복과 믹스매치하여 스트리트 감성으로 연출하는 패션 트렌드입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 814
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 '시간 대비 효율'을 최우선으로 생각하며, 빠른 정보 습득에 집중하는 소비 기준은?",
+        "tags": [
+            "시성비",
+            "효율성",
+            "디지털소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "가성비(가격 대비 성능)"
+            },
+            {
+                "id": "b",
+                "text": "시성비(시간 대비 성능)"
+            },
+            {
+                "id": "c",
+                "text": "심성비(심리적 만족 대비 성능)"
+            },
+            {
+                "id": "d",
+                "text": "인성비(인맥 대비 성능)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "시성비는 짧은 시간 안에 최대의 정보나 만족을 얻는 것을 중시하는 MZ세대의 특징입니다. 숏폼 콘텐츠 시청이나 요약본 소비가 대표적인 예입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 925
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 라이프스타일 트렌드에서 '미루는 습관'을 극복하고, 매일매일 작은 목표를 완수하며 성취감을 느끼는 활동은?",
+        "tags": [
+            "갓생",
+            "성취감",
+            "루틴"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오늘의 루틴 기록 (O-rut-gi)"
+            },
+            {
+                "id": "b",
+                "text": "디지털 디톡스"
+            },
+            {
+                "id": "c",
+                "text": "오늘의 목표 완수 (O-mok-wan)"
+            },
+            {
+                "id": "d",
+                "text": "미라클 모닝"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "미루는 습관을 극복하고 성취감을 느끼기 위해, MZ세대들은 소셜 미디어를 통해 '오늘의 목표 완수(O-mok-wan)'를 인증하며 동기부여를 합니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 1036
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "명품 브랜드가 한정판 제품을 예고 없이 정해진 시간에만 판매하는 방식으로, 소비자들의 경쟁을 유도하는 마케팅 기법은?",
+        "tags": [
+            "드롭마케팅",
+            "희소성",
+            "스트리트"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "선주문(Pre-order) 방식"
+            },
+            {
+                "id": "b",
+                "text": "드롭(Drop) 마케팅"
+            },
+            {
+                "id": "c",
+                "text": "라이브 커머스"
+            },
+            {
+                "id": "d",
+                "text": "팝업 스토어"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "드롭(Drop) 마케팅은 스트리트 패션에서 유래하여 명품 브랜드까지 확산된 방식으로, 희소성을 강조하여 소비자들의 구매 경쟁을 유도합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 1147
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 주식, 부동산 대신 소소하고 확실한 행복을 위해 소비하는 트렌드를 뜻하는 용어는?",
+        "tags": [
+            "소확행",
+            "현재지향",
+            "가치소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "미니멀라이프(Minimal Life)"
+            },
+            {
+                "id": "b",
+                "text": "파이어족(FIRE movement)"
+            },
+            {
+                "id": "c",
+                "text": "소확행"
+            },
+            {
+                "id": "d",
+                "text": "욜로(YOLO)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "소확행은 '작지만 확실한 행복'의 줄임말로, 미래를 위한 큰 투자보다는 현재의 소소한 만족을 위한 소비를 중시하는 트렌드입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 1338
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 인테리어 트렌드에서 '집안에 자연을 들여와' 심리적 안정감을 추구하는 디자인 컨셉은?",
+        "tags": [
+            "플랜테리어",
+            "바이오필릭",
+            "홈인테리어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "스마트 홈 시스템(Smart Home System)"
+            },
+            {
+                "id": "b",
+                "text": "플랜테리어(Planterior)"
+            },
+            {
+                "id": "c",
+                "text": "인더스트리얼 스타일(Industrial Style)"
+            },
+            {
+                "id": "d",
+                "text": "맥시멀리즘(Maximalism)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "플랜테리어는 식물(Plant)과 인테리어(Interior)의 합성어로, 식물을 활용하여 실내 공간을 꾸며 심리적 안정과 쾌적함을 추구하는 트렌드입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 1449
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "AI 기술을 활용하여 3D 그래픽으로 만들어져 SNS에서 활동하며 광고 모델로도 활동하는 가상의 인물은?",
+        "tags": [
+            "버추얼인플루언서",
+            "AI트렌드",
+            "메타버스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "마이크로 인플루언서"
+            },
+            {
+                "id": "b",
+                "text": "버추얼 인플루언서"
+            },
+            {
+                "id": "c",
+                "text": "펫 인플루언서"
+            },
+            {
+                "id": "d",
+                "text": "키즈 인플루언서"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "버추얼 인플루언서는 실제 사람이 아닌 AI 및 3D 그래픽 기술로 만들어진 가상의 인물로, 메타버스 시대의 새로운 마케팅 채널로 주목받고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 1560
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 패션에서 '관능미'와 '은근한 노출'을 강조하며, 얇고 투명한 소재를 활용한 스타일링은?",
+        "tags": [
+            "시어룩",
+            "시스루",
+            "페미닌"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "노멀 코어 룩(Normcore Look)"
+            },
+            {
+                "id": "b",
+                "text": "시어 룩(Sheer Look)"
+            },
+            {
+                "id": "c",
+                "text": "고프코어 룩(Gorpcore Look)"
+            },
+            {
+                "id": "d",
+                "text": "애슬레저 룩(Athleisure Look)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "시어 룩은 망사, 얇은 실크 등 비치는 소재(시스루)를 활용해 노출을 최소화하면서도 여성의 관능미를 은근히 강조하는 패션 트렌드입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 1671
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 소비자가 상품을 구매할 때, 타인의 시선이나 가격 대신 개인의 만족도와 재미를 최우선으로 고려하는 소비 경향은?",
+        "tags": [
+            "펀플레이션",
+            "심리만족",
+            "가치소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "펀플레이션(Funflation)"
+            },
+            {
+                "id": "b",
+                "text": "가성비(Cost-effectiveness) 소비"
+            },
+            {
+                "id": "c",
+                "text": "언인스타그래머블(Un-Instagrammable)"
+            },
+            {
+                "id": "d",
+                "text": "짠테크(Jjantech)"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "펀플레이션은 '재미(Fun)'와 '인플레이션(Inflation)'의 합성어로, 높은 가격에도 불구하고 재미와 심리적 만족을 위해 기꺼이 지출하는 소비 경향입니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 1782
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 패션에서 클래식한 트렌치코트와 함께 '브랜드의 오랜 정체성'을 보여주는 데 활용되는 패턴은?",
+        "tags": [
+            "헤리티지",
+            "체크패턴",
+            "클래식"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "타탄 체크 또는 헤리티지 체크"
+            },
+            {
+                "id": "b",
+                "text": "애니멀 프린트"
+            },
+            {
+                "id": "c",
+                "text": "플라워 프린트"
+            },
+            {
+                "id": "d",
+                "text": "옵티컬 아트 패턴"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "타탄 체크 등 전통적인 헤리티지 체크 패턴은 브랜드의 오랜 역사와 정체성을 상징하며, 클래식 아우터에 새롭게 부활하여 트렌디함을 더하고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 1893
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대의 새로운 근무 형태 중, 휴가지나 원하는 곳에서 원격으로 일하며 동시에 휴식을 취하는 방식은?",
+        "tags": [
+            "워케이션",
+            "유연근무",
+            "디지털노마드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "풀타임 오피스 근무"
+            },
+            {
+                "id": "b",
+                "text": "워케이션(Workation)"
+            },
+            {
+                "id": "c",
+                "text": "잡 크래프팅(Job Crafting)"
+            },
+            {
+                "id": "d",
+                "text": "OJT(On-the-Job Training)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "워케이션은 '일(Work)'과 '휴가(Vacation)'의 합성어로, 휴식과 업무를 병행하여 삶의 질과 업무 효율을 모두 높이는 유연한 근무 형태입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2004
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 사이에서 유행하는 신조어 '오운완'이 의미하는 라이프스타일 코드는?",
+        "tags": [
+            "오운완",
+            "헬스케어",
+            "자기관리"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오늘의 울화통 완화"
+            },
+            {
+                "id": "b",
+                "text": "오늘의 운세 완료"
+            },
+            {
+                "id": "c",
+                "text": "오늘의 운동 완료"
+            },
+            {
+                "id": "d",
+                "text": "오늘 우리 완성"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "오운완은 '오늘의 운동 완료'의 줄임말로, 운동 후 인증샷을 SNS에 공유하는 MZ세대의 헬스 및 자기 관리 트렌드를 보여줍니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 2115
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "AI 기술이 소비자의 관심사를 분석하여 자동으로 다음 달에 필요한 제품(화장품, 생필품 등)을 배송해주는 쇼핑 형태는?",
+        "tags": [
+            "구독경제",
+            "AI소비",
+            "자동배송"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "드롭 마케팅"
+            },
+            {
+                "id": "b",
+                "text": "AI 기반 맞춤형 구독 서비스"
+            },
+            {
+                "id": "c",
+                "text": "체리슈머 전략"
+            },
+            {
+                "id": "d",
+                "text": "라이브 커머스"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "AI 기반 맞춤형 구독 서비스는 데이터를 분석해 개인의 소비 패턴에 맞는 제품을 선별하여 정기적으로 배송함으로써 편리함과 효율성을 극대화합니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 2226
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 인테리어 트렌드에서 거실과 주방 사이의 벽을 허물어 하나의 개방적인 공간처럼 활용하는 디자인 방식은?",
+        "tags": [
+            "오픈플랜",
+            "공간활용",
+            "홈인테리어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "폐쇄형 공간 분리"
+            },
+            {
+                "id": "b",
+                "text": "모듈식 벽 설치"
+            },
+            {
+                "id": "c",
+                "text": "오픈 플랜(Open Plan) 구조"
+            },
+            {
+                "id": "d",
+                "text": "팬트리(Pantry) 강화"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "오픈 플랜 구조는 거실, 주방, 식사 공간을 벽으로 나누지 않고 통합하여 개방적인 느낌과 넓은 공간감을 제공하는 인테리어 트렌드입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2337
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "고물가 시대에 '알뜰함'과 '재미'를 결합하여 불필요한 지출을 아끼고 절약하는 것을 놀이처럼 즐기는 트렌드는?",
+        "tags": [
+            "짠테크",
+            "놀이화",
+            "갓생"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "체리피커(Cherry Picker)"
+            },
+            {
+                "id": "b",
+                "text": "짠테크(Jjantech)"
+            },
+            {
+                "id": "c",
+                "text": "플렉스(Flex)"
+            },
+            {
+                "id": "d",
+                "text": "오운완(O-un-wan)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "짠테크는 '짜다'와 '재테크'의 합성어로, 절약을 재미있는 게임처럼 즐기면서 재테크하는 MZ세대의 소비 트렌드입니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 2448
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 패션에서 '테크 웨어(Tech Wear)' 트렌드를 대표하며, 도시적인 감성과 기능성 소재가 결합된 스타일은?",
+        "tags": [
+            "테크웨어",
+            "기능성소재",
+            "도시감성"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "젠더리스 룩"
+            },
+            {
+                "id": "b",
+                "text": "애슬레저 룩"
+            },
+            {
+                "id": "c",
+                "text": "어반 테크니컬 웨어(Urban Technical Wear)"
+            },
+            {
+                "id": "d",
+                "text": "뉴 로맨티시즘"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "어반 테크니컬 웨어는 첨단 기술 소재와 도시적인 디자인을 결합하여 기능성과 스타일을 동시에 추구하는 패션 트렌드입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 2559
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "AI 기술을 활용하여 소비자가 직접 의류 디자인에 참여하고, 제작 후 NFT로 소유권을 부여하는 새로운 패션 환경은?",
+        "tags": [
+            "NFT패션",
+            "디지털소유권",
+            "웹3.0"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "가상 피팅룸"
+            },
+            {
+                "id": "b",
+                "text": "AI 기반 NFT 패션 커스터마이징"
+            },
+            {
+                "id": "c",
+                "text": "라이브 커머스"
+            },
+            {
+                "id": "d",
+                "text": "드롭 마케팅"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "NFT 패션 커스터마이징은 AI를 이용해 디자인을 만들고, 그 소유권을 NFT로 부여하여 디지털 환경에서 소비자가 직접 자신의 창작물을 소유하게 합니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 2670
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 라이프스타일 트렌드 중, '워케이션'을 성공적으로 수행하기 위해 가장 중요하게 고려해야 할 요소는?",
+        "tags": [
+            "워케이션",
+            "업무효율",
+            "유연근무"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "휴가지에서의 완벽한 단절"
+            },
+            {
+                "id": "b",
+                "text": "고성능 사무실 장비와 네트워크 환경"
+            },
+            {
+                "id": "c",
+                "text": "단기간에 집중적인 관광 일정"
+            },
+            {
+                "id": "d",
+                "text": "업무 시간 외 완벽한 갓생 루틴"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "워케이션은 업무와 휴가를 병행하므로, 안정적인 인터넷 연결과 업무에 필요한 장비가 갖춰진 '원격 근무 환경'이 필수적입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 2781
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 유행시킨 '인스타그래머블(Instagrammable)' 트렌드가 오프라인 매장 디자인에 미친 영향은?",
+        "tags": [
+            "인스타그래머블",
+            "오프라인리테일",
+            "경험소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "제품의 기능성만 강조한 미니멀 디자인"
+            },
+            {
+                "id": "b",
+                "text": "사진 찍기 좋은 독특하고 시각적인 '포토 스폿' 배치"
+            },
+            {
+                "id": "c",
+                "text": "직원의 접객 서비스와 친절도 극대화"
+            },
+            {
+                "id": "d",
+                "text": "고객 동선 최적화를 위한 효율적인 공간 배치"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "인스타그래머블 트렌드는 SNS 공유를 유도하기 위해 매장 내에 독특하고 시각적인 경험을 제공하는 '포토 스폿' 디자인을 필수 요소로 만들었습니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 2892
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025 F/W 패션에서 '뉴 로맨티시즘'과 함께 부상한, 과장된 크기와 화려한 디자인의 액세서리는?",
+        "tags": [
+            "뉴로맨티시즘",
+            "액세서리",
+            "볼륨"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "극도로 심플하고 작은 미니멀 주얼리"
+            },
+            {
+                "id": "b",
+                "text": "대담하고 볼드한 크기의 주얼리 및 액세서리"
+            },
+            {
+                "id": "c",
+                "text": "기능성만을 강조한 스포츠 시계"
+            },
+            {
+                "id": "d",
+                "text": "빈티지 시계와 전통적인 벨트"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "뉴 로맨티시즘은 과장된 볼륨과 화려한 디테일을 추구하며, 의류뿐만 아니라 대담하고 볼드한 주얼리를 통해 룩을 완성합니다.",
+        "difficulty": 0.6,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1280,
+        "choiceShuffleSeed": 3003
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 소비자가 특정 제품에 대해 '가격이 비싸더라도 환경에 미치는 영향을 최소화한' 브랜드를 선택하는 가치소비 행태는?",
+        "tags": [
+            "미닝아웃",
+            "ESG",
+            "친환경소비"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "가심비(가격 대비 심리적 만족)"
+            },
+            {
+                "id": "b",
+                "text": "그린슈머(Greensumer) 소비"
+            },
+            {
+                "id": "c",
+                "text": "체리슈머(Cherry-sumer)"
+            },
+            {
+                "id": "d",
+                "text": "시성비(시간 대비 성능)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "그린슈머는 환경 보호를 위해 친환경 제품을 구매하는 소비자를 뜻하며, 지속 가능한 가치를 우선시하는 MZ세대의 미닝 아웃적 소비 형태입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 3114
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "2025년 인테리어 트렌드에서 '집안을 편안한 안식처로' 만들고자 부드럽고 유기적인 형태의 가구가 유행하는 디자인 경향은?",
+        "tags": [
+            "바이오필릭",
+            "곡선가구",
+            "심리적안정"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "미드 센추리 모던"
+            },
+            {
+                "id": "b",
+                "text": "맥시멀리즘"
+            },
+            {
+                "id": "c",
+                "text": "곡선형 디자인과 유기적인 형태"
+            },
+            {
+                "id": "d",
+                "text": "극도의 각진 미니멀 디자인"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "곡선형 가구와 유기적인 형태는 날카로움을 없애 심리적 안정감을 주며, 집을 편안하고 아늑한 안식처로 만들고자 하는 트렌드를 반영합니다.",
+        "difficulty": 0.4,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1120,
+        "choiceShuffleSeed": 3225
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대가 긴 글보다 짧고 임팩트 있는 '시'나 '감성적인 문구'를 선호하는 트렌드가 반영된 SNS 콘텐츠는?",
+        "tags": [
+            "시스타그램",
+            "숏폼",
+            "감성콘텐츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "전문 서적 요약본"
+            },
+            {
+                "id": "b",
+                "text": "시스타그램"
+            },
+            {
+                "id": "c",
+                "text": "장문형 블로그 리뷰"
+            },
+            {
+                "id": "d",
+                "text": "다큐멘터리 영상"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "시스타그램은 짧은 길이와 감성적인 내용으로 바쁜 현대인에게 공감과 위로를 주며, 숏폼 콘텐츠 소비를 선호하는 MZ세대의 취향을 반영합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 3336
+    },
+    {
+        "deckSlug": "deck_seed_fashion_life",
+        "category": "fashion_life",
+        "type": "mcq",
+        "prompt": "MZ세대 소비자가 브랜드의 단순한 명성보다 자신의 개성과 취향이 더 잘 드러나는 제품에 투자하는 소비 경향은?",
+        "tags": [
+            "취향소비",
+            "개인화",
+            "가치관"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "대중적인 명품 선호"
+            },
+            {
+                "id": "b",
+                "text": "취향 기반 개인화 소비"
+            },
+            {
+                "id": "c",
+                "text": "극도의 미니멀리즘 소비"
+            },
+            {
+                "id": "d",
+                "text": "가격 대비 수량 최대화 소비"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "MZ세대는 대중적인 유행보다 자신의 고유한 취향과 가치관을 드러내는 제품을 선택함으로써 자아를 표현하는 것을 중요시합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761619740,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 3447
+    }
+]
