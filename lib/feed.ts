@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { api } from '@/convex/_generated/api';
 import type { Doc, Id } from '@/convex/_generated/dataModel';
-import { useConvex, useMutation } from 'convex/react';
 import { useAuth } from '@/hooks/use-auth';
 import { resolveGuestSources, type GuestSwipeSource } from '@/lib/guest-feed';
+import { useConvex, useMutation } from 'convex/react';
 
 const VISIBLE_CARDS = 3;
 const PREFETCH_THRESHOLD = 2;
@@ -288,6 +288,21 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
 
       const actualAdded = items.length > 0 ? pushPrefetch(items) : 0;
 
+      if (items.length > 0) {
+        const categoryCounts = items.reduce(
+          (acc, item) => {
+            const cat = item.category || 'unknown';
+            acc[cat] = (acc[cat] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        );
+        console.log(
+          `[DEBUG] Fetched categories for "${options.category}":`,
+          categoryCounts
+        );
+      }
+
       console.log(`Fetch: requested=${requestLimit}, received=${items.length}, added=${actualAdded}, total=${loadedCountRef.current}/${sessionLimit}`);
 
       if (loadedCountRef.current >= sessionLimit) {
@@ -490,8 +505,19 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
 
   const isGuest = !canFetch;
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    if (queue.length > 0) {
+      const categoryCounts = queue.reduce(
+        (acc, item) => {
+          const cat = item.category || 'unknown';
+          acc[cat] = (acc[cat] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
+      console.log('[DEBUG] Current queue distribution:', categoryCounts);
+    }
+    return {
       current,
       queue,
       nextItems,
@@ -505,21 +531,20 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
       toggleBookmark,
       reportQuestion,
       isGuest,
-    }),
-    [
-      advance,
-      current,
-      hasMore,
-      isLoading,
-      isGuest,
-      nextItems,
-      queue,
-      remainingCount,
-      reportQuestion,
-      reset,
-      skip,
-      submitAnswer,
-      toggleBookmark,
-    ]
-  );
+    };
+  }, [
+    advance,
+    current,
+    hasMore,
+    isLoading,
+    isGuest,
+    nextItems,
+    queue,
+    remainingCount,
+    reportQuestion,
+    reset,
+    skip,
+    submitAnswer,
+    toggleBookmark,
+  ]);
 }

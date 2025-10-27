@@ -1,76 +1,146 @@
-import sportsGames from "@/assets/data/swipe/sports_games.json";
+import dramaMovie from '@/assets/data/swipe/drama_movie.json';
+import fashionLife from '@/assets/data/swipe/fashion_life.json';
+import generalKnowledge from '@/assets/data/swipe/general_knowledge.json';
+import kpopMusic from '@/assets/data/swipe/kpop_music.json';
+import newsIssues from '@/assets/data/swipe/news_issues.json';
+import sportsGames from '@/assets/data/swipe/sports_games.json';
+import techIt from '@/assets/data/swipe/tech_it.json';
+import varietyReality from '@/assets/data/swipe/variety_reality.json';
 
 export type GuestSwipeSource = {
   deckSlug: string;
   category: string;
-  type: string;
   prompt: string;
-  tags: string[];
+  mediaUrl?: string | null;
   choices: { id: string; text: string }[];
   answerIndex: number;
-  explanation?: string;
-  difficulty: number;
+  difficulty?: number | null;
   createdAt?: number;
+  tags?: string[];
   qualityScore?: number;
   elo?: number;
-  mediaUrl?: string | null;
-  choiceShuffleSeed?: number;
+  explanation?: string | null;
+  type?: string;
 };
 
-type GuestCatalog = Record<string, GuestSwipeSource[]>;
-
-const catalog: GuestCatalog = {
-  sports_games: sportsGames as GuestSwipeSource[],
+const ALL_SOURCES: Record<string, GuestSwipeSource[]> = {
+  kpop_music: kpopMusic,
+  variety_reality: varietyReality,
+  drama_movie: dramaMovie,
+  sports_games: sportsGames,
+  tech_it: techIt,
+  fashion_life: fashionLife,
+  news_issues: newsIssues,
+  general_knowledge: generalKnowledge,
 };
 
-const FALLBACK_CATEGORY = "sports_games";
+const shuffle = <T>(array: T[], seed: number): T[] => {
+  const result = [...array];
+  let m = result.length;
+  let t: T;
+  let i: number;
 
-function normalizeCategory(slug: string) {
-  return slug.trim().toLowerCase();
-}
+  const random = () => {
+    const x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+  };
+
+  while (m) {
+    i = Math.floor(random() * m--);
+    t = result[m];
+    result[m] = result[i];
+    result[i] = t;
+  }
+  return result;
+};
 
 export function resolveGuestSources(
-  category: string,
-  desired: number,
+  primaryCategory: string,
+  limit: number,
   tags?: string[]
 ): GuestSwipeSource[] {
-  const normalized = normalizeCategory(category);
-  const base =
-    catalog[normalized] ??
-    catalog[FALLBACK_CATEGORY] ??
-    ([] as GuestSwipeSource[]);
-  if (base.length === 0) {
-    return [];
-  }
+  const primarySources = ALL_SOURCES[primaryCategory] ?? [];
+  const seed = Date.now();
+
+  // Filter by tags if provided
   const normalizedTags =
     tags?.map((tag) => tag.trim().toLowerCase()).filter(Boolean) ?? [];
   const hasTagFilter = normalizedTags.length > 0;
-  const filtered = hasTagFilter
-    ? base.filter((entry) => {
+  let filteredSources = primarySources;
+  if (hasTagFilter) {
+    filteredSources = primarySources.filter((entry) => {
+      const entryTags =
+        entry.tags?.map((tag) => tag.trim().toLowerCase()) ?? [];
+      return entryTags.some((tag) => normalizedTags.includes(tag));
+    });
+
+    if (filteredSources.length === 0) {
+      filteredSources = primarySources;
+    }
+  }
+
+  const seen = new Set<string>();
+  const takeUnique = (sources: GuestSwipeSource[]) => {
+    for (const source of sources) {
+      const key = `${source.deckSlug}:${source.prompt}`;
+      if (seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      results.push(source);
+      if (results.length >= limit) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const results: GuestSwipeSource[] = [];
+  if (takeUnique(shuffle(filteredSources, seed))) {
+    return results;
+  }
+
+  const otherCategories = Object.entries(ALL_SOURCES).filter(
+    ([slug]) => slug !== primaryCategory
+  );
+  if (otherCategories.length) {
+    const flattenedOthers = otherCategories.flatMap(([, entries]) => entries);
+    if (hasTagFilter) {
+      const matchingOthers = flattenedOthers.filter((entry) => {
         const entryTags =
           entry.tags?.map((tag) => tag.trim().toLowerCase()) ?? [];
         return entryTags.some((tag) => normalizedTags.includes(tag));
-      })
-    : base;
-
-  const working = filtered.length > 0 ? filtered : base;
-  // Shuffle a shallow copy for variation
-  const shuffled = [...working];
-  for (let index = shuffled.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    [shuffled[index], shuffled[swapIndex]] = [
-      shuffled[swapIndex],
-      shuffled[index],
-    ];
+      });
+      if (matchingOthers.length) {
+        if (takeUnique(shuffle(matchingOthers, seed + 1))) {
+          return results;
+        }
+      }
+    }
+    if (takeUnique(shuffle(flattenedOthers, seed + 2))) {
+      return results;
+    }
   }
 
-  if (shuffled.length >= desired) {
-    return shuffled.slice(0, desired);
+  if (results.length === 0 && filteredSources.length === 0) {
+    return [];
   }
 
-  const expanded: GuestSwipeSource[] = [];
-  while (expanded.length < desired) {
-    expanded.push(...shuffled);
+  const fallbackPool =
+    results.length > 0 ? [...results] : shuffle(filteredSources, seed);
+  if (fallbackPool.length === 0) {
+    return results;
   }
-  return expanded.slice(0, desired);
+
+  const filler = shuffle(fallbackPool, seed + 3);
+  while (results.length < limit) {
+    for (const entry of filler) {
+      results.push(entry);
+      if (results.length >= limit) {
+        break;
+      }
+    }
+  }
+
+  return results.slice(0, limit);
 }

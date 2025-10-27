@@ -20,6 +20,7 @@ import type * as admin_upsertMutation from "../admin/upsertMutation.js";
 import type * as daily from "../daily.js";
 import type * as dailyFallback from "../dailyFallback.js";
 import type * as decks from "../decks.js";
+import type * as history from "../history.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as rooms from "../rooms.js";
 import type * as swipe from "../swipe.js";
@@ -41,6 +42,7 @@ declare const fullApi: ApiFromModules<{
   daily: typeof daily;
   dailyFallback: typeof dailyFallback;
   decks: typeof decks;
+  history: typeof history;
   "lib/auth": typeof lib_auth;
   rooms: typeof rooms;
   swipe: typeof swipe;

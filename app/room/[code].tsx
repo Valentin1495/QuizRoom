@@ -127,7 +127,14 @@ export default function PartyRoomScreen() {
         guestKey: key,
       });
     } catch (error) {
-      Alert.alert('시작 실패', error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
+      if (error instanceof Error && error.message.includes('ACTION_PENDING')) {
+        Alert.alert('이미 시작을 준비 중이에요', '곧 자동으로 시작돼요. 잠시만 기다려주세요!');
+        return;
+      }
+      Alert.alert(
+        '시작 실패',
+        error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
+      );
     }
   }, [allReady, pendingAction, resolveDelayMs, resolveHostGuestKey, roomId, startRoom]);
 
@@ -334,7 +341,7 @@ export default function PartyRoomScreen() {
               총 10라운드로 진행됩니다.
             </ThemedText>
             <ThemedText style={styles.deckCardWarning}>
-              보기는 한 번만 선택할 수 있어요. 신중히 골라주세요!
+              보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
             </ThemedText>
           </View>
         ) : null}
@@ -416,8 +423,8 @@ export default function PartyRoomScreen() {
             {readySummaryTotal > 0 ? (
               <ThemedText style={styles.hostHint}>
                 {allReady
-                  ? '모든 일반 참가자가 준비를 마쳤어요!'
-                  : '게스트와 참가자들이 준비 완료하면 시작할 수 있어요.'}
+                  ? '모든 참가자가 준비를 마쳤어요!'
+                  : '모든 참가자들이 준비 완료하면 시작할 수 있어요.'}
               </ThemedText>
             ) : null}
             <Pressable

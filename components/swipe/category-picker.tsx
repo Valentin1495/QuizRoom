@@ -2,7 +2,6 @@ import { memo } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { categories, type CategoryMeta } from '@/constants/categories';
 import { Palette, Radius, Spacing } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';

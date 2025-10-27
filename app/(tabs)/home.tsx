@@ -215,15 +215,15 @@ export default function HomeScreen() {
                 disabled={isAuthorizing}
               >
                 <ThemedText style={styles.bannerButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
-                  {isAuthorizing ? '로그인 중…' : 'Google로 로그인'}
+                  {isAuthorizing ? '로그인 중…' : 'Google 로그인'}
                 </ThemedText>
               </Pressable>
-              <Pressable
+              {/* <Pressable
                 style={[styles.bannerButton, styles.bannerButtonSecondary]}
                 onPress={handleAppleLogin}
               >
                 <ThemedText style={styles.bannerButtonLabel}>Apple로 로그인</ThemedText>
-              </Pressable>
+              </Pressable> */}
             </View>
           </View>
         ) : null}

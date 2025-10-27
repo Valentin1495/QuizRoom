@@ -1,4 +1,4 @@
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
@@ -44,6 +44,7 @@ export type SwipeCardProps = {
   onSwipeNext: () => void;
   onOpenActions?: () => void;
   onSwipeBlocked?: () => void;
+  onCardLayout?: (height: number) => void;
 };
 
 const SWIPE_NEXT_THRESHOLD = 120;
@@ -61,6 +62,7 @@ export function SwipeCard({
   onSwipeNext,
   onOpenActions,
   onSwipeBlocked,
+  onCardLayout,
 }: SwipeCardProps) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -144,6 +146,13 @@ export function SwipeCard({
             borderColor: statusBorderColor,
           },
         ]}
+        onLayout={
+          isActive && onCardLayout
+            ? (event: LayoutChangeEvent) => {
+              onCardLayout(event.nativeEvent.layout.height);
+            }
+            : undefined
+        }
       >
         <View style={styles.header}>
           <ThemedText style={[styles.difficulty, { color: textMuted }]}>

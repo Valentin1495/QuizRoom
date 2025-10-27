@@ -172,6 +172,45 @@ async function loadRoom(ctx: CtxWithDb, roomId: Id<"partyRooms">) {
     return room;
 }
 
+async function regenerateRoomRounds(
+    ctx: MutationCtx,
+    room: RoomDoc,
+    requestedRounds?: number
+) {
+    const deckId = room.deckId;
+    if (!deckId) {
+        throw new ConvexError("DECK_NOT_SELECTED");
+    }
+    const deck = await resolveDeck(ctx, deckId);
+    const desiredRounds =
+        requestedRounds ??
+        (typeof room.rules?.rounds === "number" ? room.rules.rounds : undefined) ??
+        DEFAULT_RULES.rounds;
+    const roundsToSelect = Math.max(1, Math.min(desiredRounds, deck.totalQuestions));
+    const questions = await selectQuestions(ctx, deck._id, roundsToSelect);
+
+    const existingRounds = await ctx.db
+        .query("partyRounds")
+        .withIndex("by_room", (q) => q.eq("roomId", room._id))
+        .collect();
+    if (existingRounds.length > 0) {
+        await Promise.all(existingRounds.map((round) => ctx.db.delete(round._id)));
+    }
+
+    for (let index = 0; index < questions.length; index += 1) {
+        await ctx.db.insert("partyRounds", {
+            roomId: room._id,
+            index,
+            questionId: questions[index]._id,
+            startedAt: 0,
+            closedAt: undefined,
+            revealAt: undefined,
+        });
+    }
+
+    return questions.length;
+}
+
 async function resetRoomState(ctx: MutationCtx, room: RoomDoc) {
     const participants = await ctx.db
         .query("partyParticipants")
@@ -188,25 +227,32 @@ async function resetRoomState(ctx: MutationCtx, room: RoomDoc) {
         )
     );
 
-    const rounds = await ctx.db
-        .query("partyRounds")
-        .withIndex("by_room", (q) => q.eq("roomId", room._id))
-        .collect();
-    await Promise.all(
-        rounds.map((round) =>
-            ctx.db.patch(round._id, {
-                startedAt: 0,
-                closedAt: undefined,
-                revealAt: undefined,
-            })
-        )
-    );
-
     const answers = await ctx.db
         .query("partyAnswers")
         .withIndex("by_room_round", (q) => q.eq("roomId", room._id))
         .collect();
-    await Promise.all(answers.map((answer) => ctx.db.delete(answer._id)));
+    if (answers.length > 0) {
+        await Promise.all(answers.map((answer) => ctx.db.delete(answer._id)));
+    }
+
+    if (!room.deckId) {
+        const existingRounds = await ctx.db
+            .query("partyRounds")
+            .withIndex("by_room", (q) => q.eq("roomId", room._id))
+            .collect();
+        await Promise.all(
+            existingRounds.map((round) =>
+                ctx.db.patch(round._id, {
+                    startedAt: 0,
+                    closedAt: undefined,
+                    revealAt: undefined,
+                })
+            )
+        );
+        return existingRounds.length;
+    }
+
+    return regenerateRoomRounds(ctx, room);
 }
 
 async function loadParticipantByUser(
@@ -542,7 +588,7 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
                 });
                 return;
             }
-            await resetRoomState(ctx, room);
+            const newRoundCount = await resetRoomState(ctx, room);
             const now2 = Date.now();
             await ctx.db.patch(room._id, {
                 status: "countdown",
@@ -553,6 +599,8 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
                 version: (room.version ?? 0) + 1,
                 pendingAction: undefined,
                 pauseState: undefined,
+                totalRounds: newRoundCount,
+                rules: { ...room.rules, rounds: newRoundCount },
             });
             break;
         }
@@ -576,7 +624,7 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
                 });
                 return;
             }
-            await resetRoomState(ctx, room);
+            const newRoundCount = await resetRoomState(ctx, room);
             const now2 = Date.now();
             await ctx.db.patch(room._id, {
                 status: "lobby",
@@ -587,6 +635,8 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
                 version: (room.version ?? 0) + 1,
                 pendingAction: undefined,
                 pauseState: undefined,
+                totalRounds: newRoundCount,
+                rules: { ...room.rules, rounds: newRoundCount },
             });
             break;
         }
@@ -993,30 +1043,7 @@ export const start = mutation({
         if (room.pendingAction) {
             throw new ConvexError("ACTION_PENDING");
         }
-        const deckId = room.deckId;
-        if (!deckId) {
-            throw new ConvexError("DECK_NOT_SELECTED");
-        }
-
-        const existingRounds = await ctx.db
-            .query("partyRounds")
-            .withIndex("by_room", (q) => q.eq("roomId", room._id))
-            .collect();
-        let totalRounds = existingRounds.length;
-        if (existingRounds.length === 0) {
-            const questions = await selectQuestions(ctx, deckId, room.totalRounds);
-            totalRounds = questions.length;
-            for (let index = 0; index < questions.length; index += 1) {
-                await ctx.db.insert("partyRounds", {
-                    roomId: room._id,
-                    index,
-                    questionId: questions[index]._id,
-                    startedAt: 0,
-                    closedAt: undefined,
-                    revealAt: undefined,
-                });
-            }
-        }
+        const totalRounds = await regenerateRoomRounds(ctx, room);
 
         if (totalRounds === 0) {
             throw new ConvexError("NO_ROUNDS_AVAILABLE");
@@ -1037,7 +1064,7 @@ export const start = mutation({
                 initiatedIdentity: hostParticipant.identityId,
                 label: "게임 시작",
             },
-            version: room.version + 1,
+            version: (room.version ?? 0) + 1,
         });
 
     },
@@ -1320,9 +1347,10 @@ export const resetToLobby = mutation({
         }
 
         const now = Date.now();
+        let totalRounds = room.totalRounds;
 
         if (room.status === "results") {
-            await resetRoomState(ctx, room);
+            totalRounds = await resetRoomState(ctx, room);
         }
 
         await ctx.db.patch(room._id, {
@@ -1334,6 +1362,8 @@ export const resetToLobby = mutation({
             version: (room.version ?? 0) + 1,
             pendingAction: undefined,
             pauseState: undefined,
+            totalRounds,
+            rules: { ...room.rules, rounds: totalRounds },
         });
     },
 });

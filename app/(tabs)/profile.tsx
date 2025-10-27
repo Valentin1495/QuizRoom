@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -14,29 +14,31 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { categories } from '@/constants/categories';
+import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Palette, Radius, Spacing } from '@/constants/theme';
+import { api } from '@/convex/_generated/api';
+import type { Doc } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useQuery } from 'convex/react';
 
-type ProfileTab = 'summary' | 'history' | 'badges' | 'cosmetics';
 type AuthedUser = NonNullable<ReturnType<typeof useAuth>['user']>;
-
-const TABS: { key: ProfileTab; label: string }[] = [
-  { key: 'summary', label: '활동 요약' },
-  { key: 'history', label: '내가 푼 문제' },
-  { key: 'badges', label: '획득 배지' },
-  { key: 'cosmetics', label: '코스메틱' },
-];
+type QuizHistoryDoc = Doc<'quizHistory'>;
+type HistoryBuckets = (typeof api.history.listHistory)['_returnType'];
 
 export default function ProfileScreen() {
   const { status, user, signOut, signInWithGoogle } = useAuth();
-  const [activeTab, setActiveTab] = useState<ProfileTab>('summary');
   const [isSigningOut, setIsSigningOut] = useState(false);
   const insets = useSafeAreaInsets();
 
   const isLoading = status === 'loading';
   const isAuthorizing = status === 'authorizing' || status === 'upgrading';
   const isAuthenticated = status === 'authenticated' && !!user;
+  const history = useQuery(
+    api.history.listHistory,
+    status === 'authenticated' ? { limit: 10 } : 'skip'
+  );
 
   const handleSignOut = useCallback(async () => {
     if (isSigningOut) return;
@@ -105,19 +107,11 @@ export default function ProfileScreen() {
           />
         )}
 
-        <View style={styles.section}>
-          {isAuthenticated && user ? (
-            <AuthenticatedStatGrid user={user} />
-          ) : (
-            <GuestStatPreviews onLogin={handleGoogleLogin} isLoading={isAuthorizing} />
-          )}
-        </View>
-
-        <ProfileTabs
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
+        <QuizHistoryPanel
           isAuthenticated={isAuthenticated}
-          user={user ?? undefined}
+          history={history}
+          onLogin={handleGoogleLogin}
+          loginLoading={isAuthorizing}
         />
 
         <FooterSection
@@ -178,7 +172,7 @@ function ProfileHeader({
       </View>
       <View style={styles.headerActions}>
         <ActionButton label="프로필 편집" tone="primary" onPress={onEdit} />
-        <ActionButton label="공유 카드 보기" tone="secondary" onPress={onShare} />
+        {/* <ActionButton label="공유 카드 보기" tone="secondary" onPress={onShare} /> */}
       </View>
     </Card>
   );
@@ -214,209 +208,259 @@ function GuestHeader({
           loading={isLoading}
           disabled={isLoading}
         />
-        <ActionButton label="Apple 로그인" tone="secondary" onPress={onAppleLogin} />
+        {/* <ActionButton label="Apple 로그인" tone="secondary" onPress={onAppleLogin} /> */}
       </View>
     </Card>
   );
 }
 
-function AuthenticatedStatGrid({ user }: { user: AuthedUser }) {
-  const stats = useMemo(
-    () => [
-      {
-        icon: '🏆',
-        title: '최근 성적',
-        value:
-          user.totalPlayed > 0
-            ? `${Math.round((user.totalCorrect / user.totalPlayed) * 100)}%`
-            : '기록 없음',
-        description:
-          user.totalPlayed > 0
-            ? `이번 주 평균 정답률 · ${user.totalPlayed}회 플레이`
-            : '퀴즈에 도전해 첫 기록을 만들어보세요',
-      },
-      {
-        icon: '🔥',
-        title: '스트릭',
-        value: `${user.streak}일`,
-        description:
-          user.streak > 0 ? '좋아요! 연속 출석 중이에요.' : '오늘 퀴즈를 풀고 스트릭을 시작해요.',
-      },
-      {
-        icon: '🎯',
-        title: '관심 카테고리',
-        value: user.interests.length > 0 ? user.interests.join(' · ') : '카테고리 설정 필요',
-        description:
-          user.interests.length > 0
-            ? '관심 주제 기반 퀴즈가 추천돼요.'
-            : '프로필에서 관심사를 등록해보세요.',
-      },
-      {
-        icon: '🪄',
-        title: '보유 코스메틱',
-        value: '커밍순',
-        description: '획득한 프레임과 이모지를 여기에서 관리할 수 있어요.',
-      },
-    ],
-    [user.totalCorrect, user.totalPlayed, user.streak, user.interests]
-  );
-
-  return (
-    <View style={styles.statGrid}>
-      {stats.map((item) => (
-        <StatCard key={item.title} {...item} />
-      ))}
-    </View>
-  );
-}
-
-function GuestStatPreviews({
-  onLogin,
-  isLoading,
-}: {
-  onLogin: () => void;
-  isLoading: boolean;
-}) {
-  const previews = [
-    { title: '내 통계', description: '정확도, 스피드, 스트릭을 확인해보세요.' },
-    { title: '획득 배지', description: '도전 미션으로 특별 배지를 모아요.' },
-    { title: '코스메틱', description: '프레임과 이모지로 프로필을 꾸며요.' },
-  ];
-
-  return (
-    <View style={styles.statGrid}>
-      {previews.map((item) => (
-        <Pressable
-          key={item.title}
-          onPress={onLogin}
-          style={({ pressed }) => [
-            styles.lockedCard,
-            pressed ? styles.cardPressed : null,
-          ]}
-        >
-          <ThemedText style={styles.lockedIcon}>🔒</ThemedText>
-          <ThemedText type="subtitle">{item.title}</ThemedText>
-          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
-            {item.description}
-          </ThemedText>
-          <ActionButton
-            label={isLoading ? '로그인 중...' : '로그인'}
-            tone="ghost"
-            onPress={onLogin}
-            disabled={isLoading}
-            loading={isLoading}
-          />
-        </Pressable>
-      ))}
-    </View>
-  );
-}
-
-function ProfileTabs({
-  activeTab,
-  onTabChange,
+function QuizHistoryPanel({
   isAuthenticated,
-  user,
+  history,
+  onLogin,
+  loginLoading,
 }: {
-  activeTab: ProfileTab;
-  onTabChange: (tab: ProfileTab) => void;
   isAuthenticated: boolean;
-  user?: AuthedUser;
+  history: HistoryBuckets | undefined;
+  onLogin: () => void;
+  loginLoading: boolean;
 }) {
-  return (
-    <Card>
-      <View style={styles.tabsRow}>
-        {TABS.map((tab) => {
-          const isActive = tab.key === activeTab;
-          return (
-            <Pressable
-              key={tab.key}
-              onPress={() => onTabChange(tab.key)}
-              style={[
-                styles.tabChip,
-                isActive ? styles.tabChipActive : styles.tabChipInactive,
-              ]}
-            >
-              <ThemedText
-                style={isActive ? styles.tabLabelActive : styles.tabLabelInactive}
-                lightColor={isActive ? '#ffffff' : undefined}
-                darkColor={isActive ? '#ffffff' : undefined}
-              >
-                {tab.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
-      <View style={styles.tabContent}>
-        {isAuthenticated && user ? (
-          <AuthenticatedTabContent activeTab={activeTab} user={user} />
-        ) : (
-          <GuestTabPlaceholder />
-        )}
-      </View>
-    </Card>
-  );
-}
-
-function AuthenticatedTabContent({ activeTab, user }: { activeTab: ProfileTab; user: AuthedUser }) {
-  switch (activeTab) {
-    case 'summary':
-      return (
-        <View style={styles.tabStack}>
-          <ThemedText type="subtitle">이번 주 하이라이트</ThemedText>
-          <ThemedText>
-            평균 정답률은{' '}
-            <ThemedText style={styles.highlightText}>
-              {user.totalPlayed > 0
-                ? `${Math.round((user.totalCorrect / user.totalPlayed) * 100)}%`
-                : '기록 없음'}
-            </ThemedText>{' '}
-            이에요. 꾸준히 참여해서 더 많은 배지를 모아보세요!
-          </ThemedText>
-          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
-            관심 카테고리: {user.interests.length > 0 ? user.interests.join(', ') : '미설정'}
-          </ThemedText>
-        </View>
-      );
-    case 'history':
-      return (
-        <View style={styles.tabStack}>
+  if (!isAuthenticated) {
+    return (
+      <Card>
+        <View style={styles.sectionStack}>
           <ThemedText type="subtitle">나의 퀴즈 히스토리</ThemedText>
           <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
-            최근 플레이 기록이 곧 표시됩니다. 흥미로운 퀴즈를 더 풀어보세요!
+            로그인하고 내가 푼 퀴즈 기록을 확인해보세요.
           </ThemedText>
+          <ActionButton
+            label={loginLoading ? '로그인 중...' : 'Google 로그인'}
+            tone="primary"
+            onPress={onLogin}
+            loading={loginLoading}
+            disabled={loginLoading}
+          />
         </View>
-      );
-    case 'badges':
-      return (
-        <View style={styles.tabStack}>
-          <ThemedText type="subtitle">획득한 배지</ThemedText>
-          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
-            베타 릴리즈 준비 중이에요. 새로운 도전 과제가 곧 열립니다!
-          </ThemedText>
-        </View>
-      );
-    case 'cosmetics':
-      return (
-        <View style={styles.tabStack}>
-          <ThemedText type="subtitle">내 코스메틱</ThemedText>
-          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
-            프레임과 이모지 꾸미기 기능이 순차적으로 적용될 예정입니다.
-          </ThemedText>
-        </View>
-      );
-    default:
-      return null;
+      </Card>
+    );
   }
+
+  if (history === undefined) {
+    return (
+      <Card>
+        <View style={[styles.sectionStack, styles.historyLoading]}>
+          <ActivityIndicator color={Palette.purple600} />
+          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
+            기록을 불러오는 중이에요...
+          </ThemedText>
+        </View>
+      </Card>
+    );
+  }
+
+  const hasAny =
+    history.daily.length > 0 || history.swipe.length > 0 || history.party.length > 0;
+
+  if (!hasAny) {
+    return (
+      <Card>
+        <View style={styles.sectionStack}>
+          <ThemedText type="subtitle">나의 퀴즈 히스토리</ThemedText>
+          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
+            아직 저장된 기록이 없어요. 퀴즈를 플레이하면 여기에 기록이 쌓입니다.
+          </ThemedText>
+        </View>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <View style={styles.sectionStack}>
+        <ThemedText type="subtitle">나의 퀴즈 히스토리</ThemedText>
+        <HistorySection
+          title="데일리 퀴즈"
+          entries={history.daily}
+          emptyLabel="데일리 퀴즈를 완료하면 기록이 저장돼요."
+          renderItem={renderDailyHistoryEntry}
+        />
+        <HistorySection
+          title="스와이프"
+          entries={history.swipe}
+          emptyLabel="스와이프 세션을 완주하면 기록을 확인할 수 있어요."
+          renderItem={renderSwipeHistoryEntry}
+        />
+        <HistorySection
+          title="파티 라이브"
+          entries={history.party}
+          emptyLabel="파티 라이브에 참여하면 결과가 기록돼요."
+          renderItem={renderPartyHistoryEntry}
+        />
+      </View>
+    </Card>
+  );
 }
 
-function GuestTabPlaceholder() {
+function HistorySection({
+  title,
+  entries,
+  renderItem,
+  emptyLabel,
+}: {
+  title: string;
+  entries: QuizHistoryDoc[];
+  renderItem: (entry: QuizHistoryDoc) => ReactNode;
+  emptyLabel: string;
+}) {
   return (
-    <View style={styles.tabStack}>
-      <ThemedText type="subtitle">로그인하고 내 기록을 저장하세요!</ThemedText>
-      <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
-        활동 요약, 내가 푼 문제, 배지, 코스메틱 정보를 모두 모아볼 수 있어요.
+    <View style={styles.historySection}>
+      <ThemedText style={styles.historySectionTitle}>{title}</ThemedText>
+      {entries.length ? (
+        <View style={styles.historyList}>{entries.map(renderItem)}</View>
+      ) : (
+        <ThemedText style={styles.historyEmpty}>{emptyLabel}</ThemedText>
+      )}
+    </View>
+  );
+}
+
+type DailyHistoryPayload = {
+  date: string;
+  correct: number;
+  total: number;
+  timerMode?: string;
+  durationMs?: number;
+  category?: string;
+};
+
+type SwipeHistoryPayload = {
+  category: string;
+  tags?: string[];
+  answered: number;
+  correct: number;
+  maxStreak: number;
+  avgResponseMs: number;
+  totalScoreDelta: number;
+};
+
+type PartyHistoryPayload = {
+  deckSlug?: string;
+  deckTitle?: string;
+  roomCode?: string;
+  rank?: number;
+  totalParticipants?: number;
+  totalScore: number;
+  answered?: number;
+  correct?: number;
+};
+
+function formatHistoryTimestamp(value: number) {
+  return new Date(value).toLocaleString('ko-KR', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function formatSecondsLabel(ms?: number) {
+  if (!ms) return null;
+  const totalSeconds = Math.max(1, Math.round(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  if (minutes > 0) {
+    return seconds > 0 ? `${minutes}분 ${seconds}초` : `${minutes}분`;
+  }
+  return `${seconds}초`;
+}
+
+function formatAverageSeconds(ms: number) {
+  const seconds = ms / 1000;
+  if (seconds >= 10) {
+    return `${seconds.toFixed(1)}초`;
+  }
+  return `${seconds.toFixed(2)}초`;
+}
+
+function computeAccuracy(correct: number, total: number) {
+  if (total <= 0) return 0;
+  return Math.round((correct / total) * 100);
+}
+
+function renderDailyHistoryEntry(entry: QuizHistoryDoc) {
+  const payload = entry.payload as DailyHistoryPayload;
+  const accuracy = computeAccuracy(payload.correct, payload.total);
+  const durationLabel = formatSecondsLabel(payload.durationMs);
+  const modeLabel = payload.timerMode === 'timed' ? '타임어택 모드' : '자유 모드';
+  const categoryLabel = payload.category
+    ? resolveDailyCategoryCopy(payload.category)?.label ?? payload.category
+    : null;
+  const detailParts = [modeLabel];
+  if (categoryLabel) {
+    detailParts.push(`${categoryLabel}`);
+  }
+  if (durationLabel) {
+    detailParts.push(durationLabel);
+  }
+  return (
+    <View key={entry._id} style={styles.historyRow}>
+      <View style={styles.historyRowHeader}>
+        <ThemedText style={styles.historyRowTitle}>{payload.date}</ThemedText>
+        <ThemedText style={styles.historyRowTimestamp}>{formatHistoryTimestamp(entry.createdAt)}</ThemedText>
+      </View>
+      <ThemedText style={styles.historyRowSummary}>
+        정답 {payload.correct}/{payload.total} · 정확도 {accuracy}%
+      </ThemedText>
+      <ThemedText style={styles.historyRowDetail}>{detailParts.join(' · ')}</ThemedText>
+    </View>
+  );
+}
+
+function renderSwipeHistoryEntry(entry: QuizHistoryDoc) {
+  const payload = entry.payload as SwipeHistoryPayload;
+  const accuracy = computeAccuracy(payload.correct, payload.answered);
+  const avgSecondsLabel = formatAverageSeconds(payload.avgResponseMs);
+  const categoryMeta = categories.find((category) => category.slug === payload.category);
+  const categoryLabel = categoryMeta ? `${categoryMeta.emoji} ${categoryMeta.title}` : payload.category;
+  return (
+    <View key={entry._id} style={styles.historyRow}>
+      <View style={styles.historyRowHeader}>
+        <ThemedText style={styles.historyRowTitle}>{categoryLabel}</ThemedText>
+        <ThemedText style={styles.historyRowTimestamp}>{formatHistoryTimestamp(entry.createdAt)}</ThemedText>
+      </View>
+      <ThemedText style={styles.historyRowSummary}>
+        정답 {payload.correct}/{payload.answered} · 정확도 {accuracy}% · 최고 {payload.maxStreak}연속
+      </ThemedText>
+      <ThemedText style={styles.historyRowDetail}>
+        평균 반응속도 {avgSecondsLabel} · 점수 {payload.totalScoreDelta >= 0 ? `+${payload.totalScoreDelta}` : payload.totalScoreDelta}
+      </ThemedText>
+    </View>
+  );
+}
+
+function renderPartyHistoryEntry(entry: QuizHistoryDoc) {
+  const payload = entry.payload as PartyHistoryPayload;
+  const title = payload.deckTitle ?? '파티 매치';
+  const rankLabel =
+    payload.rank !== undefined
+      ? `순위 #${payload.rank}${payload.totalParticipants ? `/${payload.totalParticipants}` : ''}`
+      : '순위 정보 없음';
+  const answeredLabel =
+    payload.answered !== undefined && payload.answered !== null
+      ? `${payload.answered}문항 참여`
+      : null;
+  return (
+    <View key={entry._id} style={styles.historyRow}>
+      <View style={styles.historyRowHeader}>
+        <ThemedText style={styles.historyRowTitle}>{title}</ThemedText>
+        <ThemedText style={styles.historyRowTimestamp}>{formatHistoryTimestamp(entry.createdAt)}</ThemedText>
+      </View>
+      <ThemedText style={styles.historyRowSummary}>
+        {rankLabel} · 총점 {payload.totalScore}점
+      </ThemedText>
+      <ThemedText style={styles.historyRowDetail}>
+        {payload.roomCode ? `코드 ${payload.roomCode}` : '코드 정보 없음'}
+        {answeredLabel ? ` · ${answeredLabel}` : ''}
       </ThemedText>
     </View>
   );
@@ -542,29 +586,6 @@ function ActionButton({
   );
 }
 
-function StatCard({
-  icon,
-  title,
-  value,
-  description,
-}: {
-  icon: string;
-  title: string;
-  value: string;
-  description: string;
-}) {
-  return (
-    <Card style={styles.statCard}>
-      <ThemedText style={styles.statIcon}>{icon}</ThemedText>
-      <ThemedText type="subtitle">{title}</ThemedText>
-      <ThemedText style={styles.statValue}>{value}</ThemedText>
-      <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
-        {description}
-      </ThemedText>
-    </Card>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -581,9 +602,6 @@ const styles = StyleSheet.create({
   },
   loadingLabel: {
     fontSize: 14,
-  },
-  section: {
-    gap: Spacing.lg,
   },
   card: {
     borderRadius: Radius.lg,
@@ -632,71 +650,53 @@ const styles = StyleSheet.create({
   guestAvatar: {
     backgroundColor: Palette.slate200,
   },
-  statGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    rowGap: Spacing.lg,
-  },
-  statCard: {
-    width: '48%',
+  sectionStack: {
     gap: Spacing.sm,
-    shadowColor: '#2F288033',
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 3,
   },
-  statIcon: {
-    fontSize: 24,
+  historySection: {
+    gap: Spacing.sm,
   },
-  statValue: {
-    fontSize: 18,
+  historySectionTitle: {
     fontWeight: '600',
   },
-  lockedCard: {
-    width: '48%',
-    backgroundColor: Palette.surfaceMuted,
-    borderRadius: Radius.lg,
-    padding: Spacing.lg,
-    gap: Spacing.sm,
-    borderWidth: 1,
-    borderColor: Palette.slate200,
-  },
-  lockedIcon: {
-    fontSize: 24,
-  },
-  tabsRow: {
-    flexDirection: 'row',
+  historyList: {
     gap: Spacing.sm,
   },
-  tabChip: {
-    flex: 1,
-    paddingVertical: Spacing.sm,
+  historyRow: {
+    gap: Spacing.xs,
+    padding: Spacing.md,
     borderRadius: Radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tabChipActive: {
-    backgroundColor: Palette.purple600,
-  },
-  tabChipInactive: {
     backgroundColor: Palette.surfaceMuted,
   },
-  tabLabelActive: {
+  historyRowHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.sm,
+  },
+  historyRowTitle: {
     fontWeight: '600',
   },
-  tabLabelInactive: {
+  historyRowTimestamp: {
+    fontSize: 12,
+    opacity: 0.7,
+  },
+  historyRowSummary: {
+    fontSize: 14,
     fontWeight: '500',
   },
-  tabContent: {
-    marginTop: Spacing.lg,
+  historyRowDetail: {
+    fontSize: 13,
+    opacity: 0.85,
   },
-  tabStack: {
+  historyEmpty: {
+    fontSize: 13,
+    color: Palette.slate500,
+  },
+  historyLoading: {
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: Spacing.sm,
-  },
-  highlightText: {
-    fontWeight: '700',
   },
   footerActions: {
     flexDirection: 'row',
@@ -744,8 +744,5 @@ const styles = StyleSheet.create({
   },
   buttonPressed: {
     transform: [{ scale: 0.98 }],
-  },
-  cardPressed: {
-    transform: [{ scale: 0.99 }],
   },
 });

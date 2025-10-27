@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useCallback, useState } from 'react';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CategoryPicker } from '@/components/swipe/category-picker';
 import { SwipeStack } from '@/components/swipe/swipe-stack';
@@ -15,8 +15,22 @@ export default function SwipeScreen() {
   const insets = useSafeAreaInsets();
 
   const handleReset = useCallback(() => {
-    setSelectedCategory(null);
-  }, []);
+    if (!selectedCategory) {
+      return;
+    }
+    Alert.alert(
+      '카테고리 변경',
+      `${selectedCategory.title} 카테고리에서 진행 중인 점수와 스트릭이 초기화돼요.`,
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '변경',
+          style: 'destructive',
+          onPress: () => setSelectedCategory(null),
+        },
+      ]
+    );
+  }, [selectedCategory]);
 
   const topStyle = { paddingTop: insets.top + Spacing.lg };
 
@@ -47,6 +61,7 @@ export default function SwipeScreen() {
         <SwipeStack
           category={selectedCategory.slug}
           tags={selectedCategory.sampleTags}
+          setSelectedCategory={setSelectedCategory}
         />
       </ThemedView>
     </BottomSheetModalProvider>

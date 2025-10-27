@@ -511,10 +511,7 @@ export const getSwipeFeed = query({
       .filter(Boolean);
     const cursor = args.cursor;
 
-    const allowedCategories = new Set([
-      categorySlug,
-      ...(CATEGORY_ADJACENCY[categorySlug] ?? []).map((entry) => entry.slug),
-    ]);
+    const allowedCategories = new Set([categorySlug]);
 
     const filterSet = new Set<string>([categorySlug, ...normalizedFilterTags]);
 
@@ -558,7 +555,11 @@ export const getSwipeFeed = query({
 
     const weighted: WeightedQuestion[] = [];
 
-    while (pagesFetched < MAX_PAGES && weighted.length < limit && moreCandidatesAvailable) {
+    while (
+      pagesFetched < MAX_PAGES &&
+      weighted.length < limit * 5 &&
+      moreCandidatesAvailable
+    ) {
       const page = await ctx.db
         .query("questions")
         .withIndex("by_createdAt", (q) => (pageCursor ? q.lt("createdAt", pageCursor) : q))
@@ -624,7 +625,49 @@ export const getSwipeFeed = query({
       moreCandidatesAvailable = page.length === PAGE_SIZE;
     }
 
-    const selected = weightedSample(weighted, limit);
+    const primaryCandidates = weighted.filter(({ question }) => {
+      const questionCategorySlug = question.category ? normalizeTag(question.category) : null;
+      if (questionCategorySlug === categorySlug) {
+        return true;
+      }
+      const normalizedTags = (question.tags ?? [])
+        .map((tag) => normalizeTag(tag))
+        .filter(Boolean);
+      return normalizedTags.includes(categorySlug);
+    });
+
+    const primaryIds = new Set(primaryCandidates.map(({ question }) => question._id.toString()));
+    const otherCandidates = weighted.filter(
+      ({ question }) => !primaryIds.has(question._id.toString())
+    );
+
+    const primaryTargetCount = Math.round(limit * PRIMARY_CATEGORY_WEIGHT);
+
+    const primarySelection = weightedSample(
+      primaryCandidates,
+      Math.min(primaryCandidates.length, primaryTargetCount)
+    );
+
+    const actualPrimaryCount = primarySelection.length;
+    // Maintain ratio: O ~= P / 3. If no primary found, fill with others.
+    const targetOtherCount =
+      actualPrimaryCount > 0 ? Math.ceil(actualPrimaryCount / 3) : limit;
+    const finalOtherCount = Math.min(
+      otherCandidates.length,
+      targetOtherCount,
+      limit - actualPrimaryCount
+    );
+
+    const selectedSet = new Set(primarySelection.map(({ question }) => question._id.toString()));
+    const fallbackPool = otherCandidates.filter(
+      ({ question }) => !selectedSet.has(question._id.toString())
+    );
+
+    const fallbackSelection =
+      finalOtherCount > 0 ? weightedSample(fallbackPool, finalOtherCount) : [];
+
+    const selected = [...primarySelection, ...fallbackSelection];
+
     const feedItems = selected.map(({ question }) => {
       const seed = Math.floor(Math.random() * 0xffffffff);
       const shuffled = shuffleChoices(question.choices, seed);

@@ -1,7 +1,9 @@
 import {
+  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
+  type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
 import * as Haptics from 'expo-haptics';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -17,15 +19,19 @@ import {
 import { hideResultToast, showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
 import { Palette, Radius, Spacing } from '@/constants/theme';
+import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useSwipeFeed, type SwipeFeedQuestion } from '@/lib/feed';
+import { useMutation } from 'convex/react';
 
+import type { CategoryMeta } from '@/constants/categories';
 import type { SwipeFeedback } from './swipe-card';
 import { SwipeCard } from './swipe-card';
 
 export type SwipeStackProps = {
   category: string;
   tags?: string[];
+  setSelectedCategory: (category: CategoryMeta | null) => void;
 };
 
 const REPORT_REASONS = [
@@ -53,7 +59,11 @@ const INITIAL_SESSION_STATS: SessionStats = {
   maxStreak: 0,
 };
 
-export function SwipeStack({ category, tags }: SwipeStackProps) {
+const MIN_STACK_HEIGHT = 420;
+
+const createSwipeSessionId = (key: string) => `swipe:${key}:${Date.now()}`;
+
+export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackProps) {
   const {
     current,
     queue,
@@ -68,7 +78,8 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     reset,
     isGuest,
   } = useSwipeFeed({ category, tags, limit: 20 });
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, status: authStatus } = useAuth();
+  const logHistory = useMutation(api.history.logEntry);
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -110,6 +121,8 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     () => [category, ...(tags ?? [])].join('|'),
     [category, tags]
   );
+  const [sessionId, setSessionId] = useState<string>(() => createSwipeSessionId(filterKey));
+  const sessionLoggedRef = useRef(false);
   const previousFilterKey = useRef<string | null>(null);
   const currentQuestionIdRef = useRef<string | null>(null);
   type ReportPayload = Parameters<typeof reportQuestion>[0];
@@ -118,6 +131,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
   const [reportQuestionId, setReportQuestionId] = useState<ReportPayload['questionId'] | null>(null);
   const [reportSubject, setReportSubject] = useState<SwipeFeedQuestion | null>(null);
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
+  const [activeCardHeight, setActiveCardHeight] = useState<number | null>(null);
 
   useEffect(() => {
     return () => {
@@ -144,9 +158,25 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     if (previousFilterKey.current !== filterKey) {
       previousFilterKey.current = filterKey;
       setSessionStats(INITIAL_SESSION_STATS);
+      setSelectedIndex(null);
+      setFeedback(null);
+      setSheetFeedback(null);
+      setActiveCardHeight(null);
+      hideResultToast();
+      closeSheet();
+      closeActionsSheet();
+      closeReportReasonSheet();
       reset();
+      setSessionId(createSwipeSessionId(filterKey));
+      sessionLoggedRef.current = false;
     }
-  }, [filterKey, reset]);
+  }, [
+    closeActionsSheet,
+    closeReportReasonSheet,
+    closeSheet,
+    filterKey,
+    reset,
+  ]);
 
   useEffect(() => {
     currentQuestionIdRef.current = current?.id ?? null;
@@ -167,6 +197,10 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     closeReportReasonSheet();
     startTimeRef.current = Date.now();
   }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current]);
+
+  useEffect(() => {
+    sessionLoggedRef.current = false;
+  }, [sessionId]);
 
   const handleSelect = useCallback(
     async (choiceIndex: number) => {
@@ -200,7 +234,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
         );
       }
       showResultToast({
-        message: optimisticIsCorrect ? '정답! 😄' : '오답 😭',
+        message: optimisticIsCorrect ? '정답' : '오답',
         kind: optimisticIsCorrect ? 'success' : 'error',
       });
       try {
@@ -299,12 +333,14 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     closeActionsSheet();
     closeReportReasonSheet();
     setSessionStats(INITIAL_SESSION_STATS);
+    setSessionId(createSwipeSessionId(filterKey));
+    sessionLoggedRef.current = false;
     try {
       await reset();
     } catch (error) {
       console.warn('Reset failed:', error);
     }
-  }, [closeActionsSheet, closeReportReasonSheet, closeSheet, reset]);
+  }, [closeActionsSheet, closeReportReasonSheet, closeSheet, filterKey, reset]);
 
   const handleNext = useCallback(() => {
     if (!current || !feedback) {
@@ -413,6 +449,56 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     }
     return `정답 ${sessionStats.correct}/${sessionStats.answered}문항`;
   }, [sessionStats.answered, sessionStats.correct]);
+
+  useEffect(() => {
+    if (!showCompletion) {
+      return;
+    }
+    if (sessionStats.answered === 0) {
+      return;
+    }
+    if (authStatus !== 'authenticated') {
+      return;
+    }
+    if (sessionLoggedRef.current) {
+      return;
+    }
+    const avgResponseMs =
+      sessionStats.answered > 0 ? sessionStats.totalTimeMs / sessionStats.answered : 0;
+    sessionLoggedRef.current = true;
+    void (async () => {
+      try {
+        await logHistory({
+          mode: 'swipe',
+          sessionId,
+          data: {
+            category,
+            tags: tags && tags.length ? tags : undefined,
+            answered: sessionStats.answered,
+            correct: sessionStats.correct,
+            maxStreak: sessionStats.maxStreak,
+            avgResponseMs,
+            totalScoreDelta: sessionStats.totalScoreDelta,
+          },
+        });
+      } catch (error) {
+        console.warn('Failed to log swipe history', error);
+        sessionLoggedRef.current = false;
+      }
+    })();
+  }, [
+    authStatus,
+    category,
+    logHistory,
+    sessionId,
+    sessionStats.answered,
+    sessionStats.correct,
+    sessionStats.maxStreak,
+    sessionStats.totalScoreDelta,
+    sessionStats.totalTimeMs,
+    showCompletion,
+    tags,
+  ]);
 
   const handleOpenSheet = useCallback(() => {
     if (feedback?.status === 'confirmed' && feedback.explanation) {
@@ -525,6 +611,39 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
     });
   }, []);
 
+  const handleActiveCardLayout = useCallback((height: number) => {
+    setActiveCardHeight((prev) => {
+      if (prev === height) {
+        return prev;
+      }
+      return height;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!queue.length) {
+      setActiveCardHeight(null);
+    }
+  }, [queue.length]);
+
+  const stackHeight = useMemo(
+    () => Math.max(activeCardHeight ?? 0, MIN_STACK_HEIGHT),
+    [activeCardHeight]
+  );
+
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.35}
+        pressBehavior="close"
+      />
+    ),
+    []
+  );
+
   if (!current && !showCompletion) {
     return (
       <View style={styles.emptyState}>
@@ -577,7 +696,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
                     다시 도전
                   </ThemedText>
                 </Pressable>
-                <Pressable style={styles.secondaryButton} onPress={handleReset}>
+                <Pressable style={styles.secondaryButton} onPress={() => setSelectedCategory(null)}>
                   <ThemedText style={styles.secondaryButtonLabel}>다른 카테고리</ThemedText>
                 </Pressable>
               </View>
@@ -607,6 +726,10 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
             </View>
           )}
           <View style={styles.stackWrapper}>
+            <View
+              pointerEvents="none"
+              style={[styles.cardSizer, { height: stackHeight }]}
+            />
             {queue.map((card, index) => (
               <SwipeCard
                 key={card.id}
@@ -619,6 +742,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
                 onSwipeNext={handleNext}
                 onOpenActions={handleActions}
                 onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
+                onCardLayout={index === 0 ? handleActiveCardLayout : undefined}
               />
             ))}
           </View>
@@ -627,6 +751,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
         <BottomSheetModal
           ref={actionsSheetRef}
           backgroundStyle={styles.bottomSheetBackground}
+          backdropComponent={renderBackdrop}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
@@ -637,9 +762,6 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
             <View style={styles.actionsList}>
               <Pressable style={styles.actionButton} onPress={handleSkip}>
                 <ThemedText style={styles.actionButtonLabel}>문항 건너뛰기</ThemedText>
-              </Pressable>
-              <Pressable style={styles.actionButton} onPress={handleToggleBookmarkAction}>
-                <ThemedText style={styles.actionButtonLabel}>문항 저장</ThemedText>
               </Pressable>
               <Pressable style={styles.actionButton} onPress={handleReportAction}>
                 <ThemedText style={styles.actionButtonLabel}>신고하기</ThemedText>
@@ -655,6 +777,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
           ref={reportReasonSheetRef}
           onDismiss={handleReportSheetDismiss}
           backgroundStyle={styles.bottomSheetBackground}
+          backdropComponent={renderBackdrop}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
@@ -732,6 +855,7 @@ export function SwipeStack({ category, tags }: SwipeStackProps) {
           onDismiss={handleSheetDismiss}
           onChange={handleSheetChanges}
           backgroundStyle={styles.bottomSheetBackground}
+          backdropComponent={renderBackdrop}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
@@ -777,14 +901,17 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.lg,
+    paddingTop: Spacing.sm,
     paddingBottom: Spacing.xl,
     gap: Spacing.md,
   },
   stackWrapper: {
-    minHeight: 420,
+    minHeight: MIN_STACK_HEIGHT,
     flexGrow: 1,
-    justifyContent: 'center',
+    paddingTop: Spacing.xl,
+  },
+  cardSizer: {
+    width: '100%',
   },
   statusRow: {
     flexDirection: 'row',
@@ -792,6 +919,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: Spacing.sm,
     marginBottom: Spacing.md,
+    marginTop: -Spacing.md,
+    position: 'relative',
+    zIndex: 2,
   },
   statusText: {
     fontSize: 12,

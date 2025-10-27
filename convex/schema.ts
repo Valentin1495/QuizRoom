@@ -98,6 +98,42 @@ const dailyShareTemplate = v.object({
   emoji: v.string(),
 });
 
+const quizHistoryModeEnum = v.union(
+  v.literal("daily"),
+  v.literal("swipe"),
+  v.literal("party"),
+);
+
+const dailyHistoryPayload = v.object({
+  date: v.string(),
+  correct: v.number(),
+  total: v.number(),
+  timerMode: v.optional(v.string()),
+  durationMs: v.optional(v.number()),
+  category: v.optional(v.string()),
+});
+
+const swipeHistoryPayload = v.object({
+  category: v.string(),
+  tags: v.optional(v.array(v.string())),
+  answered: v.number(),
+  correct: v.number(),
+  maxStreak: v.number(),
+  avgResponseMs: v.number(),
+  totalScoreDelta: v.number(),
+});
+
+const partyHistoryPayload = v.object({
+  deckSlug: v.optional(v.string()),
+  deckTitle: v.optional(v.string()),
+  roomCode: v.optional(v.string()),
+  rank: v.optional(v.number()),
+  totalParticipants: v.optional(v.number()),
+  totalScore: v.number(),
+  answered: v.optional(v.number()),
+  correct: v.optional(v.number()),
+});
+
 export default defineSchema({
   users: defineTable({
     identityId: v.string(),
@@ -366,6 +402,17 @@ export default defineSchema({
     createdAt: v.number(),
     metadata: v.optional(v.any()),
   }).index("by_session", ["sessionKey", "createdAt"]),
+
+  quizHistory: defineTable({
+    userId: v.id("users"),
+    mode: quizHistoryModeEnum,
+    sessionId: v.string(),
+    createdAt: v.number(),
+    payload: v.union(dailyHistoryPayload, swipeHistoryPayload, partyHistoryPayload),
+  })
+    .index("by_user_createdAt", ["userId", "createdAt"])
+    .index("by_user_mode_createdAt", ["userId", "mode", "createdAt"])
+    .index("by_user_mode_session", ["userId", "mode", "sessionId"]),
 
   dailyQuizzes: defineTable({
     availableDate: v.string(),

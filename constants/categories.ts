@@ -82,7 +82,7 @@ export const categories: CategoryMeta[] = [
   },
   {
     slug: "news_issues",
-    title: "시사•이슈",
+    title: "뉴스•시사",
     emoji: "🗞️",
     description: "사회·경제·문화 등 최근 이슈 관련 퀴즈",
     sampleTags: ["물가", "환경", "국제뉴스", "문화", "정책"],

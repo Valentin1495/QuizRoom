@@ -1,5 +1,5 @@
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useMutation, useQuery } from 'convex/react';
 
-const TOTAL_TIME_LIMIT = 60;
+const QUESTION_TIME_LIMIT = 10;
 
 type DailyQuestion = {
   id: string;
@@ -49,13 +49,16 @@ export default function DailyQuizScreen() {
   const insets = useSafeAreaInsets();
   const [phase, setPhase] = useState<Phase>('intro');
   const [timerMode, setTimerMode] = useState<TimerMode | null>(null);
-  const [totalTimeLeft, setTotalTimeLeft] = useState<number | null>(null);
+  const [questionTimeLeft, setQuestionTimeLeft] = useState<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null);
   const [results, setResults] = useState<QuestionResult[]>([]);
   const shareTemplate = dailyQuiz?.shareTemplate ?? null;
   const updateStats = useMutation(api.users.updateStats);
+  const logHistory = useMutation(api.history.logEntry);
   const { status: authStatus } = useAuth();
+  const [quizStartedAt, setQuizStartedAt] = useState<number | null>(null);
+  const historyLoggedRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!dailyQuiz) {
@@ -63,10 +66,12 @@ export default function DailyQuizScreen() {
     }
     setPhase('intro');
     setTimerMode(null);
-    setTotalTimeLeft(null);
+    setQuestionTimeLeft(null);
     setCurrentIndex(0);
     setSelectedAnswer(null);
     setResults([]);
+    setQuizStartedAt(null);
+    historyLoggedRef.current = null;
   }, [dailyQuiz]);
 
   const questions = useMemo<DailyQuestion[]>(() => {
@@ -78,6 +83,16 @@ export default function DailyQuizScreen() {
   const totalQuestions = questions.length;
   const currentQuestion = questions[currentIndex];
   const correctAnswer = currentQuestion ? currentQuestion.correctAnswer : null;
+  const dailySessionKey = useMemo(() => {
+    if (!dailyQuiz) {
+      return null;
+    }
+    const dateKey =
+      dailyQuiz.availableDate ??
+      resolvedDate ??
+      new Date().toISOString().slice(0, 10);
+    return `daily:${dateKey}`;
+  }, [dailyQuiz, resolvedDate]);
   const formatBooleanAnswer = useCallback(
     (value: boolean) => (value ? 'O · 맞아요' : 'X · 아니에요'),
     []
@@ -111,8 +126,9 @@ export default function DailyQuizScreen() {
   useEffect(() => {
     if (timerMode !== 'timed') return;
     if (phase === 'intro' || phase === 'finished') return;
+    if (phase !== 'question') return;
     const timer = setInterval(() => {
-      setTotalTimeLeft((prev) => {
+      setQuestionTimeLeft((prev) => {
         if (prev === null) return prev;
         if (prev <= 1) {
           clearInterval(timer);
@@ -127,11 +143,13 @@ export default function DailyQuizScreen() {
   useEffect(() => {
     if (timerMode !== 'timed') return;
     if (phase === 'intro' || phase === 'finished') return;
-    if (totalTimeLeft === 0) {
-      Alert.alert('시간 종료', '시간이 만료되었습니다. 결과를 확인해볼까요?');
-      setPhase('finished');
+    if (phase !== 'question') return;
+    if (!currentQuestion) return;
+    if (questionTimeLeft === 0) {
+      Alert.alert('시간 종료', '답변 시간이 종료되었습니다. 다음 문제로 넘어가볼까요?');
+      handleReveal(currentQuestion, null);
     }
-  }, [phase, timerMode, totalTimeLeft]);
+  }, [currentQuestion, handleReveal, phase, questionTimeLeft, timerMode]);
 
   const handleAnswerPress = useCallback(
     (value: boolean) => {
@@ -148,20 +166,23 @@ export default function DailyQuizScreen() {
       }
       setCurrentIndex(index);
       setSelectedAnswer(null);
+      setQuestionTimeLeft(timerMode === 'timed' ? QUESTION_TIME_LIMIT : null);
       setPhase('question');
     },
-    [totalQuestions],
+    [timerMode, totalQuestions],
   );
 
   const startQuiz = useCallback(
     (mode: TimerMode) => {
       if (!dailyQuiz) return;
       setTimerMode(mode);
-      setTotalTimeLeft(mode === 'timed' ? TOTAL_TIME_LIMIT : null);
+      setQuestionTimeLeft(mode === 'timed' ? QUESTION_TIME_LIMIT : null);
       setResults([]);
       setSelectedAnswer(null);
       setCurrentIndex(0);
       setPhase('question');
+      setQuizStartedAt(Date.now());
+      historyLoggedRef.current = null;
     },
     [dailyQuiz],
   );
@@ -186,6 +207,49 @@ export default function DailyQuizScreen() {
       updateStats({ correct: correctCount });
     }
   }, [authStatus, phase, correctCount, updateStats]);
+
+  useEffect(() => {
+    if (phase !== 'finished') {
+      historyLoggedRef.current = null;
+      return;
+    }
+    if (authStatus !== 'authenticated') return;
+    if (!dailyQuiz || !dailySessionKey) return;
+    if (historyLoggedRef.current === dailySessionKey) return;
+
+    const dateKey = dailySessionKey.replace(/^daily:/, '');
+    const durationMs = quizStartedAt ? Date.now() - quizStartedAt : undefined;
+    historyLoggedRef.current = dailySessionKey;
+    void (async () => {
+      try {
+        await logHistory({
+          mode: 'daily',
+          sessionId: dailySessionKey,
+          data: {
+            date: dateKey,
+            correct: correctCount,
+            total: totalQuestions,
+            timerMode: timerMode ?? 'untimed',
+            durationMs,
+            category: dailyQuiz.category ?? undefined,
+          },
+        });
+      } catch (error) {
+        console.warn('Failed to log daily history', error);
+        historyLoggedRef.current = null;
+      }
+    })();
+  }, [
+    authStatus,
+    correctCount,
+    dailyQuiz,
+    dailySessionKey,
+    logHistory,
+    phase,
+    quizStartedAt,
+    timerMode,
+    totalQuestions,
+  ]);
   const unansweredCount = totalQuestions - totalAnswered;
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const allAnswered = unansweredCount === 0;
@@ -202,10 +266,12 @@ export default function DailyQuizScreen() {
   const handleReset = useCallback(() => {
     setPhase('intro');
     setTimerMode(null);
-    setTotalTimeLeft(null);
+    setQuestionTimeLeft(null);
     setResults([]);
     setSelectedAnswer(null);
     setCurrentIndex(0);
+    setQuizStartedAt(null);
+    historyLoggedRef.current = null;
   }, []);
 
   const categoryCopy = useMemo(
@@ -236,7 +302,7 @@ export default function DailyQuizScreen() {
   }, [categoryCopy, dailyQuiz]);
 
   const shareEmoji = shareTemplate?.emoji ?? '⚡';
-  const shareHeadline = shareTemplate?.headline ?? '60초 스피드런!';
+  const shareHeadline = shareTemplate?.headline ?? '문제당 10초 스피드런!';
   const shareCta = shareTemplate?.cta ?? '친구 초대';
 
   const deepLink = useMemo(() => {
@@ -308,12 +374,12 @@ export default function DailyQuizScreen() {
           <View style={styles.introCard}>
             <ThemedText type="title">오늘의 퀴즈 시작</ThemedText>
             <ThemedText style={styles.introSubtitle}>
-              시간 제한을 선택하고 시작해보세요. 타임어택은 60초 안에 모든 문제를 풀어야 합니다.
+              시간 제한을 선택하고 시작해보세요. 타임어택에서는 문제당 10초 안에 답해야 해요.
             </ThemedText>
             <View style={styles.introButtons}>
               <Pressable style={[styles.introButton, styles.introTimed]} onPress={() => startQuiz('timed')}>
                 <ThemedText style={styles.introButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
-                  60초 타임어택
+                  10초 타임어택
                 </ThemedText>
                 <ThemedText style={styles.introButtonCaption} lightColor="#ffffff" darkColor="#ffffff">
                   긴장감 넘치는 시간 제한 모드
@@ -451,7 +517,7 @@ export default function DailyQuizScreen() {
           <View style={styles.timerPill}>
             {timerMode === 'timed' ? (
               <ThemedText style={styles.timerText} lightColor={Palette.slate900} darkColor={Palette.slate900}>
-                남은 시간 {formatSeconds(totalTimeLeft ?? 0)}
+                남은 시간 {formatSeconds(questionTimeLeft ?? 0)}
               </ThemedText>
             ) : (
               <ThemedText style={styles.timerText} lightColor={Palette.slate900} darkColor={Palette.slate900}>

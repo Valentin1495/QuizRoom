@@ -1,0 +1,3702 @@
+[
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 K-POP 씬에서 '글로벌 롱런'의 아이콘으로 불리며, 'Ditto', 'Super Shy' 등의 히트곡을 낸 걸그룹은?",
+        "tags": [
+            "KPOP",
+            "Ditto",
+            "SuperShy",
+            "뉴진스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "뉴진스"
+            },
+            {
+                "id": "b",
+                "text": "아이브"
+            },
+            {
+                "id": "c",
+                "text": "르세라핌"
+            },
+            {
+                "id": "d",
+                "text": "에스파"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "뉴진스는 'Ditto'와 'Super Shy' 등을 통해 국내외 차트에서 장기간 큰 성공을 거두며 글로벌 K-POP 트렌드를 이끌었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 456
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "환경 보호에 대한 인식이 높아지면서, 일회용 컵 대신 개인 컵을 사용하는 등 친환경적인 소비를 지향하는 트렌드는?",
+        "tags": [
+            "환경",
+            "제로웨이스트",
+            "ESG",
+            "친환경"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "플렉스(Flex) 소비"
+            },
+            {
+                "id": "b",
+                "text": "제로 웨이스트(Zero Waste)"
+            },
+            {
+                "id": "c",
+                "text": "스몰 럭셔리(Small Luxury)"
+            },
+            {
+                "id": "d",
+                "text": "미니멀리즘(Minimalism)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "제로 웨이스트(Zero Waste)는 쓰레기 배출을 최소화하고 재활용을 통해 환경에 미치는 영향을 줄이려는 라이프스타일 및 소비 트렌드를 의미합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 505
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "넷플릭스 등 OTT 플랫폼에서 인기를 얻으며 드라마나 영화로 활발하게 제작되고 있는, 웹 브라우저를 통해 연재되는 만화 콘텐츠의 형식은?",
+        "tags": [
+            "OTT",
+            "K웹툰",
+            "만화",
+            "콘텐츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "웹소설"
+            },
+            {
+                "id": "b",
+                "text": "웹툰"
+            },
+            {
+                "id": "c",
+                "text": "웹드라마"
+            },
+            {
+                "id": "d",
+                "text": "웹영화"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "웹툰은 세로 스크롤 방식의 디지털 만화로, 최근 전 세계적으로 인기를 얻으며 다양한 2차 콘텐츠로 제작되는 한국의 대표적인 콘텐츠입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 202
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "MZ 세대 사이에서 유행하는 신조어로, 소셜 미디어 등을 통해 자신의 부나 성공을 과시하며 자랑하는 소비 행태를 뜻하는 용어는?",
+        "tags": [
+            "MZ세대",
+            "신조어",
+            "소비트렌드",
+            "플렉스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "욜로(YOLO)"
+            },
+            {
+                "id": "b",
+                "text": "갓생"
+            },
+            {
+                "id": "c",
+                "text": "소확행"
+            },
+            {
+                "id": "d",
+                "text": "플렉스(Flex)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "'플렉스(Flex)'는 본래 '구부리다'는 뜻이지만, 한국에서는 힙합 문화에서 유래하여 부나 물건을 과시하며 자랑하는 소비 문화를 의미합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 707
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "AI 챗봇의 기반인 대규모 언어 모델(LLM)의 성능과 규모를 평가하는 핵심 지표로 사용되는 것은 무엇인가요?",
+        "tags": [
+            "LLM",
+            "GPT",
+            "Gemini",
+            "AI성능"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "연산 속도(Computing Speed)"
+            },
+            {
+                "id": "b",
+                "text": "전력 소비량(Power Consumption)"
+            },
+            {
+                "id": "c",
+                "text": "매개변수 개수(Parameter Count)"
+            },
+            {
+                "id": "d",
+                "text": "데이터셋 크기(Dataset Size)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "매개변수 개수는 LLM이 학습한 데이터의 복잡성과 깊이를 나타내는 지표로, 일반적으로 모델의 성능과 규모를 평가하는 핵심 요소입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 123
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 스마트폰 시장의 주요 트렌드인 '폴더블폰'의 가장 큰 장점을 활용한 사용 방식이 아닌 것은?",
+        "tags": [
+            "스마트폰",
+            "폴더블폰",
+            "갤럭시",
+            "모바일트렌드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "여러 앱을 동시에 실행하는 멀티태스킹"
+            },
+            {
+                "id": "b",
+                "text": "펼친 화면으로 고화질 영상 시청"
+            },
+            {
+                "id": "c",
+                "text": "접어서 주머니에 쉽게 넣는 휴대성"
+            },
+            {
+                "id": "d",
+                "text": "화면을 분리하여 양손에 들고 사용하는 '듀얼 폰' 모드"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "폴더블폰은 접히는 하나의 화면을 사용하며, '듀얼 폰' 모드는 별도의 두 기기를 사용하는 것과는 다릅니다. 멀티태스킹과 휴대성이 주요 장점입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 101
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "서울시가 2024년 봄부터 운영하여 큰 인기를 얻고 있는, 한강의 특정 구역을 대규모 야시장처럼 조성하는 행사는?",
+        "tags": [
+            "서울",
+            "한강",
+            "야시장",
+            "관광"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "서울빛초롱축제"
+            },
+            {
+                "id": "b",
+                "text": "한강달빛야시장"
+            },
+            {
+                "id": "c",
+                "text": "서울뮤직페스티벌"
+            },
+            {
+                "id": "d",
+                "text": "서울재즈페스타"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "'한강달빛야시장'은 서울의 야경과 먹거리를 즐길 수 있도록 한강공원 일대에 조성된 대규모 야간 마켓으로, 서울의 대표적인 관광 콘텐츠로 자리 잡았습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 606
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "비트코인 네트워크에서 약 4년마다 블록 채굴 보상이 절반으로 줄어드는 현상을 일컫는 용어로, 공급 감소를 통해 가격에 영향을 미치는 주요 이벤트는?",
+        "tags": [
+            "비트코인",
+            "암호화폐",
+            "반감기",
+            "블록체인"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "포크(Fork)"
+            },
+            {
+                "id": "b",
+                "text": "마이닝(Mining)"
+            },
+            {
+                "id": "c",
+                "text": "스테이킹(Staking)"
+            },
+            {
+                "id": "d",
+                "text": "반감기(Halving)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "비트코인 '반감기(Halving)'는 채굴 보상이 절반으로 줄어들어 신규 공급량이 감소하는 이벤트로, 희소성을 높여 가격 변동의 주요 원인이 됩니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 404
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "리그 오브 레전드(LoL) 프로 경기에서, 맵의 오브젝트(용, 전령, 바론) 관리와 초반 팀원 개입(갱킹)을 통해 게임 흐름을 주도하는 포지션은 무엇인가요?",
+        "tags": [
+            "LoL",
+            "e스포츠",
+            "정글러",
+            "게임용어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "탑 라이너"
+            },
+            {
+                "id": "b",
+                "text": "미드 라이너"
+            },
+            {
+                "id": "c",
+                "text": "정글러"
+            },
+            {
+                "id": "d",
+                "text": "서포터"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "정글러는 라인에 서지 않고 맵을 돌아다니며 갱킹과 주요 오브젝트 관리를 통해 경기 전체의 초반 및 중반 흐름을 결정하는 핵심 포지션입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 789
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "한국의 심각한 사회 문제인 '저출산' 현상을 해소하기 위한 정부 정책의 핵심 목표가 아닌 것은?",
+        "tags": [
+            "저출산",
+            "사회문제",
+            "정부정책",
+            "인구절벽"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "돌봄 환경 개선 및 공공 보육 확대"
+            },
+            {
+                "id": "b",
+                "text": "주거 안정 지원 및 신혼부부 특화 금융 지원"
+            },
+            {
+                "id": "c",
+                "text": "과도한 사교육비 부담 완화 및 교육 개혁"
+            },
+            {
+                "id": "d",
+                "text": "고령층의 노동 시장 참여 확대 및 정년 연장"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "고령층 노동 시장 참여 확대는 '저출산'이 아닌 '고령화'로 인한 인구 구조 변화에 대응하는 정책이며, 저출산 정책은 출산율 제고에 직접적으로 초점을 맞춥니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 303
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "텍스트 설명만으로 사실적인 이미지를 생성해내는 AI 기술을 일컫는 용어로, 최근 저작권 문제로 논란이 되기도 한 것은?",
+        "tags": [
+            "AI",
+            "이미지생성",
+            "미드저니",
+            "저작권"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "인공지능 추천 시스템(ARS)"
+            },
+            {
+                "id": "b",
+                "text": "생성형 적대 신경망(GAN)"
+            },
+            {
+                "id": "c",
+                "text": "확산 모델(Diffusion Model)"
+            },
+            {
+                "id": "d",
+                "text": "양자 컴퓨팅(Quantum Computing)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "확산 모델(Diffusion Model)은 텍스트 프롬프트를 기반으로 고품질 이미지를 생성하며, Midjourney, DALL-E, Stable Diffusion 등이 이 기술을 사용합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 113
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "짧은 길이의 영상을 무한 반복 시청하게 만드는 알고리즘 기반의 소셜 미디어 플랫폼으로, 댄스 챌린지 등을 유행시킨 글로벌 앱은?",
+        "tags": [
+            "숏폼",
+            "틱톡",
+            "SNS",
+            "바이럴"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "핀터레스트"
+            },
+            {
+                "id": "b",
+                "text": "스냅챗"
+            },
+            {
+                "id": "c",
+                "text": "인스타그램"
+            },
+            {
+                "id": "d",
+                "text": "틱톡"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "틱톡(TikTok)은 짧은 형식의 동영상 콘텐츠를 기반으로 전 세계 MZ 세대 사이에서 폭발적인 인기를 얻은 소셜 미디어 플랫폼입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 257
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 넷플릭스에서 큰 성공을 거두며, 한국 전통 무속 신앙과 오컬트 요소를 결합하여 전 세계적인 화제를 모은 K-드라마는?",
+        "tags": [
+            "K드라마",
+            "넷플릭스",
+            "오컬트",
+            "콘텐츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오징어 게임"
+            },
+            {
+                "id": "b",
+                "text": "더 글로리"
+            },
+            {
+                "id": "c",
+                "text": "선재 업고 튀어"
+            },
+            {
+                "id": "d",
+                "text": "파묘"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "영화 '파묘'는 한국적인 무속 신앙과 오컬트 요소를 결합해 1천만 관객을 돌파하고 넷플릭스 등 OTT에서도 큰 인기를 얻었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 918
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "특정 프로젝트나 조직을 운영하는 데 필요한 규칙을 코드로 작성하여, 중간 관리자 없이 참여자들의 투표로 의사결정을 하는 블록체인 기반의 조직 형태는?",
+        "tags": [
+            "블록체인",
+            "Web3",
+            "DAO",
+            "가상자산"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "중앙은행 디지털 화폐(CBDC)"
+            },
+            {
+                "id": "b",
+                "text": "탈중앙화 자율 조직(DAO)"
+            },
+            {
+                "id": "c",
+                "text": "대체 불가능 토큰(NFT)"
+            },
+            {
+                "id": "d",
+                "text": "가상 현실(VR) 플랫폼"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "DAO(Decentralized Autonomous Organization)는 스마트 컨트랙트를 통해 코드로 규칙을 집행하며, 중앙 권한 없이 커뮤니티 투표로 운영되는 조직입니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 801
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "KBO 리그에서 '투수에게 공을 던지지 못하게 하는 행위'를 통해 주자를 묶어두는 규칙 위반을 뜻하며, 주자 진루가 허용되는 것은?",
+        "tags": [
+            "KBO",
+            "야구",
+            "규칙",
+            "스포츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "타임(Time)"
+            },
+            {
+                "id": "b",
+                "text": "보크(Balk)"
+            },
+            {
+                "id": "c",
+                "text": "패스트볼(Passed Ball)"
+            },
+            {
+                "id": "d",
+                "text": "터치 아웃(Touch Out)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "보크(Balk)는 투수가 주자를 속이는 등의 부정 행위를 했을 때 선언되며, 모든 주자에게 한 베이스씩 진루가 허용됩니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 742
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 MZ세대 사이에서 유행하는 트렌드로, 평일에는 건강을 관리하고 주말에만 식단 제한을 푸는 '유연한' 절제형 다이어트 방식을 뜻하는 신조어는?",
+        "tags": [
+            "MZ세대",
+            "식단",
+            "다이어트",
+            "신조어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "치팅데이"
+            },
+            {
+                "id": "b",
+                "text": "오운완"
+            },
+            {
+                "id": "c",
+                "text": "헬시플레저"
+            },
+            {
+                "id": "d",
+                "text": "갓생"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "헬시플레저(Healthy Pleasure)는 건강 관리의 즐거움을 추구하며, 엄격한 제한보다 재미있고 유연한 방식으로 건강을 관리하는 트렌드입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 321
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 일론 머스크의 우주 탐사 기업 '스페이스X'가 추진한 것으로, 인류의 달 및 화성 탐사를 위한 차세대 초대형 발사체 시스템은?",
+        "tags": [
+            "SpaceX",
+            "일론머스크",
+            "우주",
+            "스타쉽"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "팰컨 헤비(Falcon Heavy)"
+            },
+            {
+                "id": "b",
+                "text": "아폴로(Apollo)"
+            },
+            {
+                "id": "c",
+                "text": "스타십(Starship)"
+            },
+            {
+                "id": "d",
+                "text": "제임스 웹(James Webb)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "스타십(Starship)은 스페이스X가 개발 중인 재사용 가능한 초대형 로켓 시스템으로, 궁극적으로 화성 탐사를 목표로 하고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 550
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2023년 전 세계적으로 큰 흥행을 거둔 영화 '바비'의 흥행 현상을 분석하며 사용된 신조어로, 특정 영화의 폭발적인 문화적 영향력을 뜻하는 용어는?",
+        "tags": [
+            "바비",
+            "영화",
+            "트렌드",
+            "바벤하이머"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "파이어족(FIRE Movement)"
+            },
+            {
+                "id": "b",
+                "text": "바비코어(Barbiecore)"
+            },
+            {
+                "id": "c",
+                "text": "핑크 현상(Pink Phenomenon)"
+            },
+            {
+                "id": "d",
+                "text": "대체 불가능한 경험(INE)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "바비코어(Barbiecore)는 영화 '바비'로 인해 유행한 강렬한 분홍색 스타일과 미학을 뜻하며, 영화의 문화적 영향력을 상징하는 단어입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 689
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 러시아-우크라이나 전쟁 장기화에 따른 유럽연합(EU)의 주요 정책 변화로 가장 거리가 먼 것은?",
+        "tags": [
+            "국제정세",
+            "EU",
+            "러시아",
+            "우크라이나"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "화석 연료 의존도 탈피 가속화"
+            },
+            {
+                "id": "b",
+                "text": "우크라이나에 대한 대규모 경제 및 군사 지원 확대"
+            },
+            {
+                "id": "c",
+                "text": "국경 통제 완화 및 역내 자유 이동 강화"
+            },
+            {
+                "id": "d",
+                "text": "러시아 주요 산업에 대한 고강도 경제 제재 유지"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "전쟁 장기화로 인해 EU는 에너지 안보 강화, 대러 제재 유지, 우크라이나 지원 확대에 집중하고 있으며, 국경 통제는 오히려 강화되는 추세입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 834
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "부동산 시장에서 사용되는 용어로, 입주자가 잔금을 치르지 못하거나 계약 파기 등으로 인해 미분양 아파트가 다시 매물로 나오는 것을 뜻하는 용어는?",
+        "tags": [
+            "부동산",
+            "경제",
+            "미분양",
+            "투자"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "줍줍"
+            },
+            {
+                "id": "b",
+                "text": "무순위 청약"
+            },
+            {
+                "id": "c",
+                "text": "분양권 전매"
+            },
+            {
+                "id": "d",
+                "text": "착공 지연"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "무순위 청약은 최초 청약에서 계약이 이뤄지지 않았거나 계약이 취소된 주택에 대해 청약통장이나 가점 없이 진행하는 청약 방식이며, 일반적으로 '줍줍'이라고 불리기도 합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 419
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "투자자들이 위험을 줄이기 위해 투자 자산의 포트폴리오를 다양화하는 전략을 뜻하며, '모든 달걀을 한 바구니에 담지 않는다'는 원칙과 관련된 용어는?",
+        "tags": [
+            "경제",
+            "투자",
+            "재테크",
+            "분산투자"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "레버리지(Leverage)"
+            },
+            {
+                "id": "b",
+                "text": "다각화(Diversification)"
+            },
+            {
+                "id": "c",
+                "text": "헤지(Hedge)"
+            },
+            {
+                "id": "d",
+                "text": "인플레이션(Inflation)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "다각화(Diversification)는 서로 상관관계가 낮은 다양한 자산에 투자하여 개별 자산의 위험이 전체 포트폴리오에 미치는 영향을 줄이는 전략입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 147
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 애플이 공식 발표한, 혼합현실(Mixed Reality) 환경을 구현하는 고가형 헤드셋 장비의 이름은 무엇인가요?",
+        "tags": [
+            "IT",
+            "애플",
+            "혼합현실",
+            "VisionPro"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "애플 글래스(Apple Glass)"
+            },
+            {
+                "id": "b",
+                "text": "메타 퀘스트(Meta Quest)"
+            },
+            {
+                "id": "c",
+                "text": "비전 프로(Vision Pro)"
+            },
+            {
+                "id": "d",
+                "text": "홀로렌즈(HoloLens)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "애플 비전 프로(Vision Pro)는 애플이 공개한 공간 컴퓨팅 기반의 혼합현실 헤드셋으로, VR과 AR 기술을 결합하여 새로운 사용자 경험을 제공합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 286
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "유튜브와 OTT 시대를 거치며, 기존 TV 프로그램의 편집되지 않은 원본 영상이나 비하인드 스토리를 뜻하는 용어는?",
+        "tags": [
+            "유튜브",
+            "OTT",
+            "콘텐츠",
+            "비하인드"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "본방"
+            },
+            {
+                "id": "b",
+                "text": "스포일러"
+            },
+            {
+                "id": "c",
+                "text": "클립"
+            },
+            {
+                "id": "d",
+                "text": "풀영상"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "풀영상은 편집 없이 원본 그대로 제공되는 긴 길이의 영상을 의미하며, 주로 유튜브 등에서 방송에서 잘린 부분을 제공하는 용도로 사용됩니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 333
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "전기차 배터리의 핵심 원료로, 전 세계적으로 공급망 확보 경쟁이 치열하며 '하얀 석유'라고도 불리는 금속 물질은?",
+        "tags": [
+            "전기차",
+            "배터리",
+            "리튬",
+            "광물"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "구리(Copper)"
+            },
+            {
+                "id": "b",
+                "text": "코발트(Cobalt)"
+            },
+            {
+                "id": "c",
+                "text": "니켈(Nickel)"
+            },
+            {
+                "id": "d",
+                "text": "리튬(Lithium)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "리튬은 2차전지(배터리)의 핵심 소재로, 전기차 및 에너지 저장 시스템(ESS) 시장의 성장과 함께 전략적 중요성이 매우 커지고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 490
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 파리 올림픽에 정식 종목으로 채택되어 젊은 세대의 큰 관심을 받고 있는, 즉흥적인 동작과 테크닉을 겨루는 길거리 댄스 종목은?",
+        "tags": [
+            "파리올림픽",
+            "스포츠",
+            "댄스",
+            "브레이킹"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "스케이트보드"
+            },
+            {
+                "id": "b",
+                "text": "브레이킹"
+            },
+            {
+                "id": "c",
+                "text": "서핑"
+            },
+            {
+                "id": "d",
+                "text": "클라이밍"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "브레이킹(Breaking), 즉 비보잉은 파리 2024 올림픽의 새로운 정식 종목으로 채택되어 젊고 역동적인 스포츠 트렌드를 대표하고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 512
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "인터넷상의 가짜 정보나 허위 사실이 진실인 것처럼 퍼져나가 사회적 혼란을 야기하는 현상을 비판적으로 일컫는 용어는?",
+        "tags": [
+            "정보화시대",
+            "가짜뉴스",
+            "SNS",
+            "미디어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "정보 과부하(Information Overload)"
+            },
+            {
+                "id": "b",
+                "text": "확증 편향(Confirmation Bias)"
+            },
+            {
+                "id": "c",
+                "text": "탈진실(Post-Truth)"
+            },
+            {
+                "id": "d",
+                "text": "집단 지성(Collective Intelligence)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "탈진실(Post-Truth)은 객관적인 사실보다 개인적인 신념이나 감정이 여론 형성에 더 큰 영향을 미치는 현상을 의미하는 용어입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 678
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "기업이 ESG 경영의 일환으로 사회적 약자를 고용하거나 친환경 제품을 만드는 등 사회적 가치 창출을 목표로 하는 경제 활동은?",
+        "tags": [
+            "ESG",
+            "경영",
+            "사회적가치",
+            "기업"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "공정 무역(Fair Trade)"
+            },
+            {
+                "id": "b",
+                "text": "사회적 기업(Social Enterprise)"
+            },
+            {
+                "id": "c",
+                "text": " 공유 경제(Sharing Economy)"
+            },
+            {
+                "id": "d",
+                "text": "구독 경제(Subscription Economy)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "사회적 기업은 영리 활동을 하면서도 사회적 목적을 동시에 추구하며, 취약 계층 일자리 제공 등 사회적 가치를 우선합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 771
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "반도체 칩에서 '회로 선폭'의 간격이 점점 좁아져 트랜지스터 밀도가 증가하고 성능이 향상되는 기술 발전의 경향을 일컫는 법칙은?",
+        "tags": [
+            "반도체",
+            "무어의법칙",
+            "기술",
+            "칩"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "뉴턴의 법칙"
+            },
+            {
+                "id": "b",
+                "text": "무어의 법칙"
+            },
+            {
+                "id": "c",
+                "text": "황의 법칙"
+            },
+            {
+                "id": "d",
+                "text": "메트칼프의 법칙"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "무어의 법칙은 반도체 집적 회로의 성능이 2년마다 2배씩 증가한다는 것으로, 반도체 산업 발전의 기본 원리로 오랫동안 통용되어 왔습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 888
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 팝 음악계에서 큰 영향력을 발휘하며 여러 '빌보드 핫 100' 1위 곡을 보유하고, 2024년 앨범 'The Tortured Poets Department'를 발표한 아티스트는?",
+        "tags": [
+            "팝스타",
+            "빌보드",
+            "테일러스위프트",
+            "음악"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "비욘세"
+            },
+            {
+                "id": "b",
+                "text": "아리아나 그란데"
+            },
+            {
+                "id": "c",
+                "text": "테일러 스위프트"
+            },
+            {
+                "id": "d",
+                "text": "두아 리파"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "테일러 스위프트는 현재 세계에서 가장 영향력 있는 팝 아티스트 중 한 명이며, 앨범 'The Tortured Poets Department' 역시 큰 성공을 거두었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 909
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "주식 시장에서 투자 심리가 과열되어 주가가 비정상적으로 급등하는 현상을 일컫는 용어로, 주로 근거 없이 상승하는 종목에서 나타나는 것은?",
+        "tags": [
+            "주식",
+            "경제",
+            "시장",
+            "버블"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "공매도(Short Selling)"
+            },
+            {
+                "id": "b",
+                "text": "서킷브레이커(Circuit Breaker)"
+            },
+            {
+                "id": "c",
+                "text": "거품(Bubble)"
+            },
+            {
+                "id": "d",
+                "text": "기업공개(IPO)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "거품(Bubble)은 주식이나 자산 가격이 내재가치보다 훨씬 높게 형성되어 비정상적으로 상승하는 현상으로, 갑자기 터지면 큰 폭락을 유발합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 199
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "수많은 인공위성을 저궤도에 띄워 전 세계에 초고속 인터넷을 제공하려는 일론 머스크의 스페이스X 프로젝트 이름은?",
+        "tags": [
+            "IT",
+            "위성통신",
+            "SpaceX",
+            "스타링크"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "아르테미스"
+            },
+            {
+                "id": "b",
+                "text": "스타링크"
+            },
+            {
+                "id": "c",
+                "text": "프로젝트 카이퍼"
+            },
+            {
+                "id": "d",
+                "text": "블루 오리진"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "스타링크(Starlink)는 스페이스X가 개발 중인 위성 인터넷망으로, 전 세계 어디서든 인터넷 접속이 어려운 지역에 서비스를 제공하는 것을 목표로 합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 612
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "글로벌 공급망 재편의 핵심 이슈로, 자국 내 또는 동맹국 내에서 핵심 산업의 생산 시설을 확보하려는 정책적 움직임은?",
+        "tags": [
+            "경제",
+            "공급망",
+            "무역",
+            "리쇼어링"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오프쇼어링(Offshoring)"
+            },
+            {
+                "id": "b",
+                "text": "프랜차이징(Franchising)"
+            },
+            {
+                "id": "c",
+                "text": "니어쇼어링(Nearshoring) 및 프렌드쇼어링(Friendshoring)"
+            },
+            {
+                "id": "d",
+                "text": "아웃소싱(Outsourcing)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "니어쇼어링은 가까운 국가, 프렌드쇼어링은 동맹국이나 우방국을 중심으로 공급망을 재편하는 전략으로, 최근 지정학적 위험 증가에 따라 중요해지고 있습니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 753
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 한국에서 유행한 '○○세대'는 개인의 성취나 성공보다는 적당한 수준의 삶을 지향하며 무리한 경쟁을 거부하는 젊은 세대를 뜻합니다. ○○에 들어갈 단어는?",
+        "tags": [
+            "MZ세대",
+            "신조어",
+            "삶의방식",
+            "세태"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "N포세대"
+            },
+            {
+                "id": "b",
+                "text": "갓생세대"
+            },
+            {
+                "id": "c",
+                "text": "달관세대"
+            },
+            {
+                "id": "d",
+                "text": "영끌세대"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "'달관세대'는 일본의 '사토리 세대'와 유사하게, 과도한 경쟁에서 벗어나 자신만의 만족을 추구하며 소박한 삶을 지향하는 젊은 세대의 특징을 나타냅니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 802
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "축구 경기에서 공격수가 골키퍼와 1대1 상황을 맞을 때, 공을 살짝 띄워 골키퍼 위로 넘기는 슈팅 기술은?",
+        "tags": [
+            "축구",
+            "손흥민",
+            "스포츠",
+            "기술"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "발리 슛(Volley Shoot)"
+            },
+            {
+                "id": "b",
+                "text": "칩 슛(Chip Shoot)"
+            },
+            {
+                "id": "c",
+                "text": "아웃프런트 킥(Outfront Kick)"
+            },
+            {
+                "id": "d",
+                "text": "로빙 슛(Lobbing Shoot)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "칩 슛(Chip Shoot)은 공을 높게 띄워 수비나 골키퍼의 키를 넘겨 득점하는 기술로, 로빙 슛과 유사하지만 일반적으로 더 짧고 정교한 띄우기를 의미합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 941
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "온라인 플랫폼에서 사용자 후기나 댓글 등을 통해 상품이나 서비스의 장점을 홍보하고 구매를 유도하는 마케팅 기법은?",
+        "tags": [
+            "마케팅",
+            "SNS",
+            "바이럴",
+            "후기"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "노이즈 마케팅"
+            },
+            {
+                "id": "b",
+                "text": "앰부시 마케팅"
+            },
+            {
+                "id": "c",
+                "text": "버즈 마케팅"
+            },
+            {
+                "id": "d",
+                "text": "게릴라 마케팅"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "버즈 마케팅(Buzz Marketing)은 입소문 마케팅의 일종으로, 사람들이 자발적으로 상품에 대해 이야기하도록 유도하여 화제를 만들고 홍보 효과를 극대화합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 138
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "컴퓨터의 중앙처리장치(CPU) 성능 향상이 한계에 다다르자, AI 연산 등 특정 작업을 가속하기 위해 전문적으로 설계된 칩은?",
+        "tags": [
+            "IT",
+            "반도체",
+            "AI",
+            "GPU"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "메모리 반도체(Memory Semiconductor)"
+            },
+            {
+                "id": "b",
+                "text": "신경망 처리 장치(NPU)"
+            },
+            {
+                "id": "c",
+                "text": "통신 모뎀(Communication Modem)"
+            },
+            {
+                "id": "d",
+                "text": "집적 회로(IC)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "NPU(Neural Processing Unit)는 인공지능의 핵심인 신경망 연산에 최적화된 반도체 칩으로, 대규모 AI 데이터 처리에 필수적입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 255
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 미국에서 처음 도입된, 비트코인 현물 가격을 추종하도록 설계되어 일반 주식처럼 거래소에서 사고팔 수 있게 된 금융 상품은?",
+        "tags": [
+            "경제",
+            "비트코인",
+            "금융",
+            "ETF"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "비트코인 선물 계약"
+            },
+            {
+                "id": "b",
+                "text": "비트코인 현물 ETF"
+            },
+            {
+                "id": "c",
+                "text": "가상자산 담보 대출"
+            },
+            {
+                "id": "d",
+                "text": "스테이블 코인"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "비트코인 현물 ETF는 투자자들이 가상자산을 직접 보유하지 않고도 주식 시장을 통해 비트코인에 투자할 수 있게 하여 접근성을 크게 높였습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 369
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "글로벌 팝 문화에서 앨범 한 곡이 아닌, 모든 수록곡이 하나의 주제와 흐름을 공유하며 유기적으로 연결되는 형태의 앨범은?",
+        "tags": [
+            "음악",
+            "팝문화",
+            "K-POP",
+            "콘셉트앨범"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "싱글 앨범"
+            },
+            {
+                "id": "b",
+                "text": "베스트 앨범"
+            },
+            {
+                "id": "c",
+                "text": "콘셉트 앨범"
+            },
+            {
+                "id": "d",
+                "text": "리패키지 앨범"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "콘셉트 앨범(Concept Album)은 모든 수록곡이 일관된 주제나 내러티브를 가지며, 하나의 완성된 이야기나 경험을 제공하도록 제작된 앨범을 말합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 472
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "기후 변화 대응을 위해 탄소 배출량에 가격을 매겨 기업의 배출 감축을 유도하는 시장 기반의 규제 정책은 무엇인가요?",
+        "tags": [
+            "환경",
+            "기후변화",
+            "탄소배출권",
+            "정책"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "탄소 국경세(Carbon Border Adjustment Mechanism)"
+            },
+            {
+                "id": "b",
+                "text": "탄소 배출권 거래제(ETS)"
+            },
+            {
+                "id": "c",
+                "text": "에너지 효율 등급제"
+            },
+            {
+                "id": "d",
+                "text": "그린 워싱(Green Washing)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "탄소 배출권 거래제(ETS)는 정부가 기업에 배출 상한선을 부여하고, 남거나 부족한 배출권을 시장에서 거래하게 하여 탄소 감축의 경제적 동기를 부여합니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 501
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "의료계에서 첨단 기술을 활용하여 환자가 병원을 방문하지 않고도 원격으로 진단, 상담, 모니터링 등의 의료 서비스를 받는 형태는?",
+        "tags": [
+            "의료",
+            "IT",
+            "원격진료",
+            "헬스케어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "모바일 헬스케어"
+            },
+            {
+                "id": "b",
+                "text": "인공지능 진단 시스템"
+            },
+            {
+                "id": "c",
+                "text": "정밀 의료"
+            },
+            {
+                "id": "d",
+                "text": "스마트 병원"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "모바일 헬스케어(Mobile Healthcare)는 스마트폰, 웨어러블 기기 등을 활용하여 언제 어디서든 건강 상태를 관리하고 의료 서비스를 받는 개념을 포괄합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 919
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "수술용 칼 대신 초음파를 이용하여 인체 내부의 조직을 정교하게 절제하거나 응고시키는 첨단 의료 기술은?",
+        "tags": [
+            "의료",
+            "기술",
+            "초음파",
+            "수술"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "MRI(자기공명영상)"
+            },
+            {
+                "id": "b",
+                "text": "하이푸(HIFU)"
+            },
+            {
+                "id": "c",
+                "text": "PET(양전자 방출 단층 촬영)"
+            },
+            {
+                "id": "d",
+                "text": "로봇 보조 수술"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "하이푸(HIFU: High-Intensity Focused Ultrasound)는 고강도 집속 초음파를 체내의 특정 부위에 집중시켜 비침습적으로 병변을 치료하는 기술입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 810
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 K-POP 아이돌 팬덤 사이에서 유행하는 문화로, 특정 곡이나 앨범을 구매하거나 스트리밍하여 순위를 올리는 활동을 뜻하는 용어는?",
+        "tags": [
+            "K-POP",
+            "팬덤",
+            "문화",
+            "마케팅"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "덕질"
+            },
+            {
+                "id": "b",
+                "text": "총공(총공격)"
+            },
+            {
+                "id": "c",
+                "text": "역주행"
+            },
+            {
+                "id": "d",
+                "text": "입덕"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "총공(총공격)은 팬덤이 특정 시간대에 조직적으로 움직여 스트리밍, 투표, 앨범 구매 등을 집중적으로 진행하는 활동을 줄여 이르는 말입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 921
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "미국 연방준비제도(Fed)가 물가 안정을 위해 기준금리를 단기간에 급격히 올리는 정책을 일컫는 비유적인 표현은?",
+        "tags": [
+            "경제",
+            "미국",
+            "금리",
+            "Fed"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "비둘기파(Dovish) 정책"
+            },
+            {
+                "id": "b",
+                "text": "금리 인하"
+            },
+            {
+                "id": "c",
+                "text": "자이언트 스텝(Giant Step)"
+            },
+            {
+                "id": "d",
+                "text": "양적 완화(Quantitative Easing)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "자이언트 스텝은 통상적인 금리 인상 폭(0.25%p)의 두 배인 0.5%p 이상의 급격한 금리 인상을 뜻하는 용어로, 강력한 긴축 의지를 보여줍니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 103
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "유럽연합(EU)에서 2023년 채택된 법안으로, 인공지능(AI)의 위험 수준에 따라 규제를 차등 적용하는 세계 최초의 포괄적인 AI 규제법은?",
+        "tags": [
+            "EU",
+            "AI",
+            "규제",
+            "법안"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "일반 데이터 보호 규정(GDPR)"
+            },
+            {
+                "id": "b",
+                "text": "AI 액트(AI Act)"
+            },
+            {
+                "id": "c",
+                "text": "디지털 서비스법(DSA)"
+            },
+            {
+                "id": "d",
+                "text": "디지털 시장법(DMA)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "AI 액트(AI Act)는 인공지능 기술의 오용을 방지하고 인간 중심적인 개발을 촉진하기 위해 EU가 마련한 세계 최초의 인공지능 규제 법안입니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 245
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "환경오염을 줄이기 위해 일회용 플라스틱 컵 대신 다회용 컵을 사용하고, 보증금을 내고 반납하면 돌려받는 순환 시스템은?",
+        "tags": [
+            "환경",
+            "재활용",
+            "순환",
+            "플라스틱"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "제로 웨이스트"
+            },
+            {
+                "id": "b",
+                "text": "탄소 포집 기술(CCS)"
+            },
+            {
+                "id": "c",
+                "text": "다회용 컵 보증금제"
+            },
+            {
+                "id": "d",
+                "text": "리사이클링"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "다회용 컵 보증금제는 음료 구매 시 일정 보증금을 받고, 컵 반환 시 보증금을 돌려주어 일회용품 사용을 줄이는 환경 보호 제도입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 357
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 챗GPT 등 대규모 언어 모델(LLM)의 핵심 기술로, 데이터 속에서 단어 간의 관계를 파악하고 다음 단어를 예측하는 메커니즘은?",
+        "tags": [
+            "AI",
+            "LLM",
+            "트랜스포머",
+            "기술"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "순환 신경망(RNN)"
+            },
+            {
+                "id": "b",
+                "text": "CNN(합성곱 신경망)"
+            },
+            {
+                "id": "c",
+                "text": "트랜스포머(Transformer)"
+            },
+            {
+                "id": "d",
+                "text": "양자 컴퓨터"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "트랜스포머 모델은 '어텐션(Attention)' 메커니즘을 사용하여 입력 데이터의 요소 간 관계를 효과적으로 파악하며, LLM 개발의 기반이 되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 468
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "주가가 단기간에 급등락하는 상황을 이용하기 위해, 개인 투자자들이 결속하여 기관 투자자의 공매도에 맞서는 투기적 매매 현상을 일컫는 용어는?",
+        "tags": [
+            "주식",
+            "금융",
+            "공매도",
+            "개미"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "서킷브레이커"
+            },
+            {
+                "id": "b",
+                "text": "숏 스퀴즈"
+            },
+            {
+                "id": "c",
+                "text": "테이퍼링"
+            },
+            {
+                "id": "d",
+                "text": "액면 분할"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "숏 스퀴즈는 주가 상승을 예상하지 못한 공매도 투자자들이 손실을 줄이기 위해 서둘러 주식을 되사면서 주가가 더욱 급등하는 현상을 말합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 579
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 5월, 조 바이든 미국 대통령이 서명한 법안으로, 틱톡의 모회사인 바이트댄스에 미국 사업체 매각을 강제하는 내용을 담고 있는 것은?",
+        "tags": [
+            "국제정세",
+            "미국",
+            "틱톡",
+            "법안"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "인플레이션 감축법(IRA)"
+            },
+            {
+                "id": "b",
+                "text": "칩스법(CHIPS Act)"
+            },
+            {
+                "id": "c",
+                "text": "틱톡 매각 강제 법안"
+            },
+            {
+                "id": "d",
+                "text": "디지털 서비스법(DSA)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "틱톡 매각 강제 법안은 안보 우려를 이유로 중국 기업인 바이트댄스가 미국 내 틱톡 사업을 매각하지 않을 경우 서비스 금지 조치를 취하도록 하는 내용을 담고 있습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 680
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "환경 문제를 해결하기 위해 지속 가능한 식량 생산을 목표로, 곤충 단백질, 배양육 등을 활용하여 개발된 식품은?",
+        "tags": [
+            "환경",
+            "식량",
+            "미래기술",
+            "대체식품"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "오가닉 푸드"
+            },
+            {
+                "id": "b",
+                "text": "대체육"
+            },
+            {
+                "id": "c",
+                "text": "로컬 푸드"
+            },
+            {
+                "id": "d",
+                "text": "슬로우 푸드"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "대체육은 콩, 식물성 단백질뿐만 아니라 곤충, 배양육 등 다양한 기술을 활용하여 기존 육류를 대체함으로써 환경 부담을 줄이려는 미래 식량 산업의 핵심입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 791
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "프로 스포츠 경기에서 감독이나 코치가 선수에게 작전을 지시하거나 휴식을 주는 등 경기 흐름을 끊는 행위를 뜻하는 용어는?",
+        "tags": [
+            "스포츠",
+            "농구",
+            "배구",
+            "용어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "파울(Foul)"
+            },
+            {
+                "id": "b",
+                "text": "타임아웃(Time Out)"
+            },
+            {
+                "id": "c",
+                "text": "서브(Serve)"
+            },
+            {
+                "id": "d",
+                "text": "교체(Substitution)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "타임아웃(Time Out)은 농구, 배구 등 여러 구기 종목에서 감독이 경기를 잠시 중단시키고 선수들과 전략을 논의할 때 사용하는 시간을 의미합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 902
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "미국과 중국 간의 패권 경쟁이 심화되면서, 기술 표준을 독점하거나 특정 기술에 대한 접근을 제한하여 경제적 이익과 안보를 확보하려는 전략을 일컫는 용어는?",
+        "tags": [
+            "국제정세",
+            "기술패권",
+            "무역",
+            "블록화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "디커플링"
+            },
+            {
+                "id": "b",
+                "text": "디지털 리터러시"
+            },
+            {
+                "id": "c",
+                "text": "하이테크 시너지"
+            },
+            {
+                "id": "d",
+                "text": "글로벌리즘"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "디커플링(Decoupling)은 경제적으로 밀접하게 연결되었던 두 나라나 지역이 정치적, 안보적 이유로 상호 의존성을 줄이고 분리되는 현상을 의미합니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 111
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 챗GPT 등 생성형 AI를 활용하여 단시간에 방대한 양의 정보를 습득하고 요약하는 능력을 필요로 하는 새로운 개념의 문해력은?",
+        "tags": [
+            "AI",
+            "교육",
+            "문해력",
+            "디지털"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "디지털 리터러시"
+            },
+            {
+                "id": "b",
+                "text": "데이터 문해력(Data Literacy)"
+            },
+            {
+                "id": "c",
+                "text": "프롬프트 엔지니어링"
+            },
+            {
+                "id": "d",
+                "text": "인공지능 문해력(AI Literacy)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "인공지능 문해력(AI Literacy)은 AI의 작동 원리를 이해하고, AI 도구를 효과적으로 사용하여 정보를 얻고 문제를 해결하는 능력을 말합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 222
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "투자자들이 개별 주식 대신 여러 종목으로 구성된 바구니에 분산 투자하는 효과를 얻기 위해 활용하는 상품으로, 주식 시장의 주요 흐름을 추종하는 것은?",
+        "tags": [
+            "경제",
+            "투자",
+            "주식",
+            "ETF"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "회사채"
+            },
+            {
+                "id": "b",
+                "text": "상장지수펀드"
+            },
+            {
+                "id": "c",
+                "text": "파생상품"
+            },
+            {
+                "id": "d",
+                "text": "펀드 오브 펀드"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "ETF(Exchange Traded Fund)는 특정 지수를 추종하도록 설계된 펀드로, 주식처럼 실시간으로 거래소에서 사고팔 수 있어 접근성이 높습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 333
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "미래 기술로 주목받는 양자 컴퓨터의 핵심 작동 원리로, 0과 1의 상태를 동시에 가질 수 있어 연산 능력을 혁신적으로 향상시키는 정보 단위는?",
+        "tags": [
+            "과학",
+            "양자",
+            "컴퓨터",
+            "기술"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "비트(Bit)"
+            },
+            {
+                "id": "b",
+                "text": "바이트(Byte)"
+            },
+            {
+                "id": "c",
+                "text": "큐비트(Qubit)"
+            },
+            {
+                "id": "d",
+                "text": "워드(Word)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "큐비트(Qubit: Quantum Bit)는 양자 역학적 특성인 중첩(Superposition)을 이용해 0과 1을 동시에 나타낼 수 있어, 기존 컴퓨터보다 압도적인 연산 속도를 제공합니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 444
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 6월, FIFA가 공식 발표한 2026년 월드컵의 개최국은 다음 중 어디인가요?",
+        "tags": [
+            "스포츠",
+            "월드컵",
+            "FIFA",
+            "국제대회"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "카타르"
+            },
+            {
+                "id": "b",
+                "text": "캐나다, 멕시코, 미국"
+            },
+            {
+                "id": "c",
+                "text": "스페인, 포르투갈, 모로코"
+            },
+            {
+                "id": "d",
+                "text": "브라질"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "2026년 FIFA 월드컵은 북중미 3개국, 즉 캐나다, 멕시코, 미국에서 공동 개최됩니다. 본선 진출국은 기존 32개국에서 48개국으로 확대됩니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 555
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "글로벌 트렌드로 자리 잡은 '바이오필릭 디자인(Biophilic Design)'에서 가장 핵심이 되는 요소는?",
+        "tags": [
+            "디자인",
+            "환경",
+            "건축",
+            "바이오필릭"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "최소한의 장식과 색상을 사용한 미니멀리즘"
+            },
+            {
+                "id": "b",
+                "text": "인간이 자연과 연결되도록 공간을 설계하는 것"
+            },
+            {
+                "id": "c",
+                "text": "첨단 기술을 활용하여 모든 것을 자동화하는 것"
+            },
+            {
+                "id": "d",
+                "text": "복잡한 곡선을 사용하여 유려함을 강조하는 것"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "바이오필릭 디자인은 건물 내부와 외부에 자연 요소를 통합하여 인간의 본능적인 자연 친화 욕구를 충족시키고 건강과 웰빙을 증진하는 설계 방식입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 666
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "주택이나 건물의 구매자가 매매 계약을 체결한 후, 정해진 잔금을 치르지 못해 계약이 파기되고 이미 납부한 금액을 포기하는 것을 뜻하는 경제 용어는?",
+        "tags": [
+            "부동산",
+            "계약",
+            "경제",
+            "용어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "손해배상"
+            },
+            {
+                "id": "b",
+                "text": "잔금 대출"
+            },
+            {
+                "id": "c",
+                "text": "계약금 몰수(계약 파기)"
+            },
+            {
+                "id": "d",
+                "text": "전세 보증금 반환"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "일반적으로 매매 계약에서 구매자가 잔금을 이행하지 못하면, 계약서에 따라 이미 지급한 계약금은 몰수되고 계약이 해지됩니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 777
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 과학자들이 개발하여 이식에 성공한, 인간이 아닌 돼지의 장기나 조직을 인체에 이식하는 생체 이식 기술을 일컫는 용어는?",
+        "tags": [
+            "과학",
+            "의료",
+            "장기이식",
+            "이종장기"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "유전자 치료"
+            },
+            {
+                "id": "b",
+                "text": "이종 장기 이식"
+            },
+            {
+                "id": "c",
+                "text": "줄기세포 치료"
+            },
+            {
+                "id": "d",
+                "text": "인공 혈액 생성"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "이종 장기 이식(Xenotransplantation)은 인간이 아닌 다른 생물(주로 유전자 변형 돼지)의 장기를 인간에게 이식하는 기술로, 장기 부족 문제를 해결하기 위한 대안으로 연구되고 있습니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 888
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "인터넷 스트리밍 콘텐츠에서, 시청자가 화면에 뜨는 팝업을 클릭하거나 특정 코드를 입력하여 프로그램의 결말이나 내용 전개에 직접 관여하는 방식은?",
+        "tags": [
+            "OTT",
+            "콘텐츠",
+            "인터랙티브",
+            "기술"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "웹툰"
+            },
+            {
+                "id": "b",
+                "text": "인터랙티브 무비"
+            },
+            {
+                "id": "c",
+                "text": "4D 체험"
+            },
+            {
+                "id": "d",
+                "text": "스마트 TV"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "인터랙티브 무비(Interactive Movie)는 시청자의 선택에 따라 스토리가 다르게 전개되는 콘텐츠로, 넷플릭스 등 OTT 플랫폼에서 새로운 형태로 실험되고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 999
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "스포츠에서 은퇴를 선언한 선수가 일정 기간 후 다시 선수로 복귀하는 것을 뜻하며, '은퇴 후 복귀'를 의미하는 용어는?",
+        "tags": [
+            "스포츠",
+            "은퇴",
+            "복귀",
+            "용어"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "FA 선언"
+            },
+            {
+                "id": "b",
+                "text": "은퇴식"
+            },
+            {
+                "id": "c",
+                "text": "컴백"
+            },
+            {
+                "id": "d",
+                "text": "현역 복귀"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "컴백(Comeback)은 일반적으로 음악이나 연예 분야에서 사용되지만, 스포츠에서는 은퇴 선수가 다시 현역으로 돌아오는 '현역 복귀'의 의미로 쓰이기도 합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 101
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "클라우드 연결 없이 기기 자체적으로 AI 연산을 수행하여 지연 없이 개인화된 서비스를 제공하는 PC는?",
+        "tags": [
+            "AI",
+            "온디바이스",
+            "IT",
+            "컴퓨팅"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "양자 컴퓨터"
+            },
+            {
+                "id": "b",
+                "text": "클라우드 PC"
+            },
+            {
+                "id": "c",
+                "text": "게이밍 PC"
+            },
+            {
+                "id": "d",
+                "text": "AI PC"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "AI PC는 AI 연산을 위해 NPU(신경망 처리 장치) 등을 내장하여 인터넷 연결 없이도 기기 자체에서 고성능 AI 서비스를 구동할 수 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 114
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "부동산, 미술품, 음악 저작권 등 실물 자산을 디지털 증권화하여 발행하는 것으로, 소액 분산 투자가 가능해진 새로운 금융 상품은?",
+        "tags": [
+            "금융",
+            "증권",
+            "블록체인",
+            "STO"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "NFT(대체 불가능 토큰)"
+            },
+            {
+                "id": "b",
+                "text": "토큰 증권(STO)"
+            },
+            {
+                "id": "c",
+                "text": "비트코인 현물 ETF"
+            },
+            {
+                "id": "d",
+                "text": "스테이블 코인"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "토큰 증권(STO)은 증권형 토큰 발행(Security Token Offering)을 의미하며, 블록체인 기술로 다양한 실물 자산의 지분을 유동화하여 거래할 수 있게 합니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 235
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "구직, 학업, 사회 활동 없이 6개월 이상 타인과의 관계를 단절한 채 집에서만 생활하는 19세 이상 39세 청년을 지칭하는 사회적 용어는?",
+        "tags": [
+            "사회",
+            "복지",
+            "MZ세대",
+            "고립청년"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "고립·은둔 청년"
+            },
+            {
+                "id": "b",
+                "text": "프리터족"
+            },
+            {
+                "id": "c",
+                "text": "캥거루족"
+            },
+            {
+                "id": "d",
+                "text": "워라밸 세대"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "고립·은둔 청년은 사회적 관계 단절 및 구직 단념 상태가 장기화된 청년들을 지칭하며, 최근 심각한 사회 문제로 대두되어 정부와 지자체의 지원이 확대되고 있습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 369
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년부터 사우디아라비아, UAE 등이 정식 회원국으로 합류하며 영향력을 키우고 있는, 브라질, 러시아, 인도, 중국, 남아프리카공화국의 신흥 경제국 협의체는?",
+        "tags": [
+            "국제정세",
+            "경제협력",
+            "BRICS",
+            "신흥국"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "G7"
+            },
+            {
+                "id": "b",
+                "text": "OECD"
+            },
+            {
+                "id": "c",
+                "text": "APEC"
+            },
+            {
+                "id": "d",
+                "text": "BRICS"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "BRICS는 브라질, 러시아, 인도, 중국, 남아프리카공화국을 뜻하며, 최근 사우디아라비아, UAE, 이집트, 에티오피아, 이란 등을 정식 회원으로 받아들여 세력을 확장했습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 480
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "수명이 다했거나 고장 나서 지구 궤도를 떠도는 인공위성, 로켓 잔해 등 인류가 우주에 버린 모든 파편을 일컫는 용어는?",
+        "tags": [
+            "우주",
+            "환경",
+            "과학",
+            "잔해"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "블랙홀"
+            },
+            {
+                "id": "b",
+                "text": "미세 유성체"
+            },
+            {
+                "id": "c",
+                "text": "우주 쓰레기"
+            },
+            {
+                "id": "d",
+                "text": "태양풍 입자"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "우주 쓰레기(Space Debris)는 우주 개발 활동의 부산물로, 지구 궤도를 고속으로 돌며 작동 중인 인공위성이나 우주선에 충돌 위협을 가하고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 521
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 초, 포켓몬스터와 유사한 디자인에 생존 및 건축 요소를 결합하여 전 세계적으로 큰 인기를 얻은 일본의 오픈월드 게임은?",
+        "tags": [
+            "게임",
+            "오픈월드",
+            "Palworld",
+            "콘텐츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "엘든 링"
+            },
+            {
+                "id": "b",
+                "text": "팰월드"
+            },
+            {
+                "id": "c",
+                "text": "발더스 게이트 3"
+            },
+            {
+                "id": "d",
+                "text": "사이버펑크 2077"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "팰월드(Palworld)는 2024년 1월 얼리 액세스 출시 후 빠른 속도로 판매량이 증가하며 큰 화제를 모았으며, '포켓몬스터 + 생존 게임'으로 불립니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 672
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "LLM의 기반인 트랜스포머 모델에서, 문장 내 단어 간의 상호 연결성을 파악하여 문맥을 이해하게 만드는 핵심 메커니즘은?",
+        "tags": [
+            "AI",
+            "LLM",
+            "트랜스포머",
+            "기술"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "어텐션(Attention)"
+            },
+            {
+                "id": "b",
+                "text": "피드 포워드(Feed Forward)"
+            },
+            {
+                "id": "c",
+                "text": "인코더"
+            },
+            {
+                "id": "d",
+                "text": "디코더"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "어텐션(Attention) 메커니즘은 입력 문장에서 각 단어가 다른 단어들과 얼마나 관련 있는지 가중치를 계산하여, 장거리 의존성 문제를 해결하고 문맥을 정확히 파악하게 합니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 783
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "유튜브, 인스타그램 등에서 인플루언서가 광고주로부터 대가를 받았음에도 이를 숨기고 마치 개인적인 추천인 것처럼 홍보하는 행위는?",
+        "tags": [
+            "마케팅",
+            "인플루언서",
+            "광고",
+            "뒷광고"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "앰부시 마케팅"
+            },
+            {
+                "id": "b",
+                "text": "바이럴 마케팅"
+            },
+            {
+                "id": "c",
+                "text": "뒷광고"
+            },
+            {
+                "id": "d",
+                "text": "노이즈 마케팅"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "뒷광고는 광고임을 명확히 밝히지 않고 제품을 홍보하여 소비자에게 혼란을 주는 행위로, 공정거래위원회의 '추천·보증 등에 관한 표시·광고 심사 지침'에 따라 규제 대상입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 894
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "가상현실(VR), 증강현실(AR), 혼합현실(MR) 등 가상과 현실을 융합하는 모든 몰입형 기술을 포괄하는 용어는?",
+        "tags": [
+            "IT",
+            "메타버스",
+            "VR",
+            "XR"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "클라우드 컴퓨팅"
+            },
+            {
+                "id": "b",
+                "text": "사물인터넷(IoT)"
+            },
+            {
+                "id": "c",
+                "text": "인공지능(AI)"
+            },
+            {
+                "id": "d",
+                "text": "확장현실(XR)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "확장현실(XR: eXtended Reality)은 VR, AR, MR 등 인간과 컴퓨터의 상호작용을 통해 현실을 확장하는 몰입형 기술 전체를 아우르는 개념입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 126
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "영화나 드라마 팬덤 사이에서, 자신이 좋아하는 작품을 여러 번 반복해서 관람하며 디테일을 파악하는 문화 현상을 뜻하는 용어는?",
+        "tags": [
+            "문화",
+            "영화",
+            "팬덤",
+            "콘텐츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "N차 관람"
+            },
+            {
+                "id": "b",
+                "text": "스포일러 방지"
+            },
+            {
+                "id": "c",
+                "text": "역주행"
+            },
+            {
+                "id": "d",
+                "text": "프리퀄 관람"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "'N차 관람'은 한 작품을 여러 번 반복하여 보는 행위를 뜻하며, 최근 콘텐츠의 완성도나 팬심에 따라 나타나는 적극적인 소비 문화입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 347
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "미국자동차공학회(SAE) 기준, 운전자가 전혀 개입하지 않고 시스템이 모든 주행을 책임지는 최고 단계의 완전 자율 주행 레벨은?",
+        "tags": [
+            "자율주행",
+            "SAE",
+            "기술",
+            "Level5"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "레벨 2(Level 2)"
+            },
+            {
+                "id": "b",
+                "text": "레벨 3(Level 3)"
+            },
+            {
+                "id": "c",
+                "text": "레벨 4(Level 4)"
+            },
+            {
+                "id": "d",
+                "text": "레벨 5(Level 5)"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "레벨 5는 시스템이 모든 상황에서 운전을 담당하며, 운전자가 전혀 개입할 필요가 없는 완전 무인 자동화 단계입니다. 레벨 4는 특정 조건에서만 완전 자율 주행이 가능합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 213
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 서울 등 대도시에서 상용화를 목표로 개발 중인, 도심의 하늘을 비행하는 에어택시 등의 미래 교통 시스템을 통칭하는 용어는?",
+        "tags": [
+            "미래기술",
+            "교통",
+            "UAM",
+            "모빌리티"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "하이퍼루프(Hyperloop)"
+            },
+            {
+                "id": "b",
+                "text": "지능형 교통 시스템(ITS)"
+            },
+            {
+                "id": "c",
+                "text": "도심 항공 모빌리티(UAM)"
+            },
+            {
+                "id": "d",
+                "text": "자율주행 트램"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "UAM(Urban Air Mobility)은 도심 내에서 헬리콥터와 같은 수직 이착륙 비행체(eVTOL)를 활용하여 사람이나 화물을 운송하는 혁신적인 항공 교통 체계입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 324
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "국제 사회에서 기후 변화로 인해 발생하는 경제적 충격이 금융 시스템에 치명적인 위기를 초래할 수 있음을 경고하는 용어는?",
+        "tags": [
+            "경제",
+            "기후변화",
+            "금융위기",
+            "그린스완"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "블랙 스완(Black Swan)"
+            },
+            {
+                "id": "b",
+                "text": "그린 스완(Green Swan)"
+            },
+            {
+                "id": "c",
+                "text": "그레이 리노(Grey Rhino)"
+            },
+            {
+                "id": "d",
+                "text": "디지털 디바이드"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "그린 스완(Green Swan)은 예측하기 어렵지만 발생하면 금융 시스템에 광범위하고 심각한 영향을 미칠 수 있는 기후 관련 금융 리스크를 일컫습니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 456
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 10년간 이스라엘과 끊임없이 충돌하며 국제 사회의 큰 이슈가 되고 있는, 팔레스타인 무장 정파이자 정치 조직의 명칭은?",
+        "tags": [
+            "국제정세",
+            "이스라엘",
+            "팔레스타인",
+            "하마스"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "헤즈볼라"
+            },
+            {
+                "id": "b",
+                "text": "IS(이슬람 국가)"
+            },
+            {
+                "id": "c",
+                "text": "하마스"
+            },
+            {
+                "id": "d",
+                "text": "파타"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "하마스는 팔레스타인의 이슬람 무장 단체이자 정당으로, 가자 지구를 실효적으로 통치하며 이스라엘과 무력 충돌을 지속하고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 567
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "스포츠에서 경기 결과에 관계없이 선수들이 보여주는 공정한 태도, 정정당당한 경쟁 정신을 일컫는 말은?",
+        "tags": [
+            "스포츠",
+            "정신",
+            "경쟁",
+            "페어플레이"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "홈 어드밴티지"
+            },
+            {
+                "id": "b",
+                "text": "페어 플레이"
+            },
+            {
+                "id": "c",
+                "text": "토너먼트"
+            },
+            {
+                "id": "d",
+                "text": "드래프트"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "페어 플레이(Fair Play)는 선수들이 스포츠 규칙과 정신을 존중하고 심판의 판정을 따르며, 상대방을 배려하는 태도를 말합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 678
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "스마트폰을 넘어, 안경, 반지, 시계 등 신체에 착용하여 정보를 수집하고 사용자 경험을 제공하는 초소형 기기를 일컫는 용어는?",
+        "tags": [
+            "IT",
+            "기술",
+            "웨어러블",
+            "스마트폰"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "사물인터넷(IoT)"
+            },
+            {
+                "id": "b",
+                "text": "웨어러블 디바이스"
+            },
+            {
+                "id": "c",
+                "text": "드론"
+            },
+            {
+                "id": "d",
+                "text": "태블릿 PC"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "웨어러블 디바이스(Wearable Device)는 몸에 착용하거나 부착하여 다양한 컴퓨팅 기능을 수행하는 기기로, 스마트워치나 스마트 글래스 등이 대표적입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 789
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "명품 브랜드와 협업하거나 독특한 디자인의 한정판 운동화를 수집하는 문화 등, 젊은 세대의 개성과 트렌드를 반영하는 패션 스타일은?",
+        "tags": [
+            "문화",
+            "패션",
+            "스트릿",
+            "힙합"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "빈티지 패션"
+            },
+            {
+                "id": "b",
+                "text": "스트리트 패션"
+            },
+            {
+                "id": "c",
+                "text": "미니멀리즘"
+            },
+            {
+                "id": "d",
+                "text": "클래식 수트"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "스트리트 패션(Street Fashion)은 길거리에서 유래한 캐주얼하고 개성 있는 스타일로, 힙합 문화, 스케이트보드 문화와 결합하며 전 세계적으로 트렌드를 주도하고 있습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 890
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "2024년 4월, 미국을 중심으로 전 세계에 '제로 슈거' 음료의 유해성 논란을 일으키며 소비자들의 경각심을 높인 인공 감미료는?",
+        "tags": [
+            "건강",
+            "제로슈거",
+            "식품",
+            "감미료"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "스테비아"
+            },
+            {
+                "id": "b",
+                "text": "아스파탐"
+            },
+            {
+                "id": "c",
+                "text": "에리스리톨"
+            },
+            {
+                "id": "d",
+                "text": "수크랄로스"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "에리스리톨은 가장 널리 사용되는 저칼로리 감미료 중 하나로, 최근 심혈관 질환 위험과의 상관관계가 제기되며 논란이 되었습니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 901
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "인공지능(AI) 분야에서, 이미지, 오디오 등 비정형 데이터를 효율적으로 처리하고 복잡한 패턴을 인식하는 데 주로 사용되는 신경망 구조는?",
+        "tags": [
+            "AI",
+            "딥러닝",
+            "이미지",
+            "CNN"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "순환 신경망(RNN)"
+            },
+            {
+                "id": "b",
+                "text": "합성곱 신경망(CNN)"
+            },
+            {
+                "id": "c",
+                "text": "강화 학습(Reinforcement Learning)"
+            },
+            {
+                "id": "d",
+                "text": "GAN(생성형 적대 신경망)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "합성곱 신경망(CNN: Convolutional Neural Network)은 이미지의 시각적 패턴을 인식하고 처리하는 데 특화된 딥러닝 모델로, 이미지 인식 분야에서 가장 널리 사용됩니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 123
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "회사나 조직의 모든 이해관계자(주주, 직원, 고객, 협력업체 등)의 이익을 고려하며 기업을 운영해야 한다는 새로운 경영 철학은?",
+        "tags": [
+            "경영",
+            "경제",
+            "ESG",
+            "이해관계자"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "주주 자본주의"
+            },
+            {
+                "id": "b",
+                "text": "수익성 최우선주의"
+            },
+            {
+                "id": "c",
+                "text": "이해관계자 자본주의"
+            },
+            {
+                "id": "d",
+                "text": "신자유주의"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "이해관계자 자본주의(Stakeholder Capitalism)는 단기적인 주주 이익 극대화를 넘어, 기업을 둘러싼 모든 이해관계자들의 장기적인 가치를 창출하는 것을 목표로 합니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 432
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "미국 연준의 고금리 정책 등으로 인해 달러화의 가치가 다른 주요국 통화 대비 강세를 보이는 현상을 일컫는 비유적 표현은?",
+        "tags": [
+            "경제",
+            "달러",
+            "환율",
+            "금리"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "페트로 달러"
+            },
+            {
+                "id": "b",
+                "text": "킹 달러"
+            },
+            {
+                "id": "c",
+                "text": "그린 스완"
+            },
+            {
+                "id": "d",
+                "text": "양적 완화"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "킹 달러(King Dollar)는 미국 달러가 다른 통화에 비해 압도적인 강세를 보이며 세계 경제에 큰 영향을 미칠 때 사용하는 표현입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 147
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "인공지능을 활용하여 의사가 작성한 진료 기록이나 MRI 등 복잡한 비정형 데이터를 분석해 질병 진단을 돕는 의료 분야의 기술은?",
+        "tags": [
+            "AI",
+            "의료",
+            "헬스케어",
+            "진단"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "AI 기반 정밀 진단 시스템"
+            },
+            {
+                "id": "b",
+                "text": "원격 재택 치료"
+            },
+            {
+                "id": "c",
+                "text": "웨어러블 모니터링"
+            },
+            {
+                "id": "d",
+                "text": "유전자 편집 기술"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "AI 기반 정밀 진단 시스템은 의료 영상, 유전자 정보 등 방대한 데이터를 분석하여 의료진이 놓칠 수 있는 미세한 패턴이나 이상 징후를 발견하여 진단 정확도를 높입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 258
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "한 국가의 화폐 단위를 바꾸어 화폐 가치를 절상하거나 절하하는 조치를 뜻하는 것으로, 우리나라에서도 논의된 바 있는 정책 용어는?",
+        "tags": [
+            "경제",
+            "화폐",
+            "통화정책",
+            "디노미네이션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "양적 긴축(QT)"
+            },
+            {
+                "id": "b",
+                "text": "디노미네이션(Denomination)"
+            },
+            {
+                "id": "c",
+                "text": "기준 금리 인상"
+            },
+            {
+                "id": "d",
+                "text": "인플레이션"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "디노미네이션(Denomination)은 화폐의 호칭 단위를 변경하는 것으로, 예를 들어 기존 10,000원을 10원이나 1원으로 바꾸는 화폐개혁 조치를 의미합니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 369
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "MZ세대 사이에서 유행하는 신조어로, 소셜 미디어나 단체 채팅방에서 대화에 참여하지 않고 내용만 읽고 나가는 행위를 일컫는 것은?",
+        "tags": [
+            "MZ세대",
+            "SNS",
+            "신조어",
+            "문화"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "총공"
+            },
+            {
+                "id": "b",
+                "text": "관종"
+            },
+            {
+                "id": "c",
+                "text": "읽씹"
+            },
+            {
+                "id": "d",
+                "text": "눈팅"
+            }
+        ],
+        "answerIndex": 3,
+        "explanation": "눈팅은 '눈으로 채팅을 본다'는 의미의 신조어로, 채팅방이나 온라인 커뮤니티에서 글이나 대화 내용을 확인만 하고 직접 참여하지 않는 행위를 뜻합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 470
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "대기 중의 이산화탄소를 직접 포집하여 저장하거나 활용하는 기술로, 기후 변화 대응을 위한 핵심적인 탄소 중립 기술은?",
+        "tags": [
+            "환경",
+            "기후변화",
+            "탄소중립",
+            "CCUS"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "신재생 에너지 발전"
+            },
+            {
+                "id": "b",
+                "text": "탄소 포집·활용·저장 기술"
+            },
+            {
+                "id": "c",
+                "text": "전기차 보조금 정책"
+            },
+            {
+                "id": "d",
+                "text": "에너지 효율화"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "CCUS(Carbon Capture, Utilization and Storage)는 대기 또는 배출원에서 이산화탄소를 포집하고 이를 저장하거나 다른 제품으로 활용하여 실질적인 탄소 감축에 기여하는 기술입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 581
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "컴퓨터 운영체제(OS)에서 사용자 편의를 위해 여러 작업을 동시에 처리할 수 있도록 돕는 기능은?",
+        "tags": [
+            "IT",
+            "컴퓨터",
+            "기술",
+            "운영체제"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "멀티 태스킹"
+            },
+            {
+                "id": "b",
+                "text": "데이터 백업"
+            },
+            {
+                "id": "c",
+                "text": "방화벽"
+            },
+            {
+                "id": "d",
+                "text": "안티 바이러스"
+            }
+        ],
+        "answerIndex": 0,
+        "explanation": "멀티 태스킹은 하나의 중앙처리장치(CPU)를 사용하여 여러 개의 프로그램을 동시에 실행하는 것처럼 보이게 하는 운영체제의 핵심 기능입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 692
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 K-POP에서 특정 가수의 노래가 발매된 지 한참 뒤에 대중적으로 인기를 얻어 음원 차트 상위권에 오르는 현상을 뜻하는 용어는?",
+        "tags": [
+            "K-POP",
+            "음악",
+            "차트",
+            "역주행"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "총공"
+            },
+            {
+                "id": "b",
+                "text": "롱런"
+            },
+            {
+                "id": "c",
+                "text": "역주행"
+            },
+            {
+                "id": "d",
+                "text": "선공개"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "역주행은 발매 초기에는 주목받지 못했던 노래가 SNS나 특정 콘텐츠를 통해 입소문을 타면서 차트에서 순위가 역으로 상승하는 현상을 의미합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 713
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "정부나 공공 기관이 아닌 민간 기업이 자체적으로 생산하는 전력을 구매하여 사용하는 계약 방식으로, 재생 에너지 확대에 기여하는 것은?",
+        "tags": [
+            "환경",
+            "에너지",
+            "기업",
+            "RE100"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "신재생에너지 공급 의무화(RPS)"
+            },
+            {
+                "id": "b",
+                "text": "녹색 요금제"
+            },
+            {
+                "id": "c",
+                "text": "전력 구매 계약(PPA)"
+            },
+            {
+                "id": "d",
+                "text": "에너지 소비 효율 등급제"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "PPA(Power Purchase Agreement)는 기업이 발전 사업자와 직접 장기 계약을 맺고 재생 에너지를 구매하는 방식으로, RE100 이행의 핵심 수단 중 하나입니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 824
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "주식 시장에서 '테슬라, 애플, 엔비디아, 마이크로소프트' 등 미국 IT 기술주를 중심으로 한 거대 기업들의 높은 성장을 상징하는 용어는?",
+        "tags": [
+            "경제",
+            "기술주",
+            "미국",
+            "MAGA"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "블루칩"
+            },
+            {
+                "id": "b",
+                "text": "FANG(팡)"
+            },
+            {
+                "id": "c",
+                "text": "MAGA(마가)"
+            },
+            {
+                "id": "d",
+                "text": "다우 지수"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "MAGA는 마이크로소프트, 애플, 구글(알파벳), 아마존의 약자였던 FANG에서 주요 종목이 변경된 약자로, 현재는 마이크로소프트, 애플, 구글, 아마존, 테슬라, 엔비디아 등을 묶어 '매그니피센트 7' 등으로 부르기도 합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 935
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "국제 스포츠계에서 러시아와 벨라루스 선수들이 소속 국기 없이 중립 자격으로 참가하는 선수를 일컫는 공식 용어는?",
+        "tags": [
+            "스포츠",
+            "올림픽",
+            "국제정세",
+            "러시아"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "난민팀"
+            },
+            {
+                "id": "b",
+                "text": "개인 중립 선수"
+            },
+            {
+                "id": "c",
+                "text": "중립 옵저버"
+            },
+            {
+                "id": "d",
+                "text": "프리랜서 선수"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "AIN(Individual Neutral Athlete)은 러시아-우크라이나 전쟁으로 인해 러시아 및 벨라루스 선수들이 자국 국적을 사용하지 못하고 중립 선수로 국제 대회에 참가할 때 사용하는 명칭입니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 106
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "가상 공간에 실제와 같은 사회, 경제, 문화 활동이 이뤄지는 것을 총칭하며, 아바타를 통해 활동하는 3차원 가상 세계를 일컫는 용어는?",
+        "tags": [
+            "IT",
+            "가상현실",
+            "메타버스",
+            "NFT"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "클라우드 서비스"
+            },
+            {
+                "id": "b",
+                "text": "블록체인"
+            },
+            {
+                "id": "c",
+                "text": "메타버스"
+            },
+            {
+                "id": "d",
+                "text": "양자 컴퓨팅"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "메타버스(Metaverse)는 '초월'을 뜻하는 'Meta'와 '세계'를 뜻하는 'Universe'의 합성어로, 현실과 연결된 가상의 세계를 의미합니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 313
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "주식이나 가상 자산 등 디지털 콘텐츠의 소유권을 블록체인 상에 기록하여 위·변조가 불가능하도록 만든 '대체 불가능한 토큰'은?",
+        "tags": [
+            "블록체인",
+            "가상자산",
+            "NFT",
+            "기술"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "비트코인"
+            },
+            {
+                "id": "b",
+                "text": "대체 불가능 토큰(NFT)"
+            },
+            {
+                "id": "c",
+                "text": "스테이블 코인"
+            },
+            {
+                "id": "d",
+                "text": "ICO(초기 코인 공개)"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "NFT(Non-Fungible Token)는 고유성을 가지는 디지털 자산으로, 디지털 예술 작품, 수집품 등의 진품 증명 및 소유권 확인에 사용됩니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 424
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "MZ세대 직장인들 사이에서 유행하는 근무 형태로, 휴가지나 원하는 장소에서 업무와 휴가를 병행하는 것을 뜻하는 용어는?",
+        "tags": [
+            "직장문화",
+            "MZ세대",
+            "재택근무",
+            "워케이션"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "사이드 프로젝트"
+            },
+            {
+                "id": "b",
+                "text": "워케이션"
+            },
+            {
+                "id": "c",
+                "text": "주 4일제"
+            },
+            {
+                "id": "d",
+                "text": "유연 근무제"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "워케이션(Workation)은 일(Work)과 휴가(Vacation)의 합성어로, 재택근무가 가능한 직장인이 휴가지에서 업무를 병행하며 삶의 만족도를 높이는 형태입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 535
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "은행법이나 금융감독 당국의 규제를 받지 않으면서, 은행과 유사한 대출 및 자금 조달 활동을 하는 비제도권 금융을 일컫는 용어는?",
+        "tags": [
+            "경제",
+            "금융",
+            "규제",
+            "쉐도우뱅킹"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "민간 금융"
+            },
+            {
+                "id": "b",
+                "text": "그림자 금융"
+            },
+            {
+                "id": "c",
+                "text": "중앙은행"
+            },
+            {
+                "id": "d",
+                "text": "공적자금"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "그림자 금융(Shadow Banking)은 헤지펀드, 머니마켓펀드 등 규제에서 벗어나 있지만 시스템적 위험을 초래할 수 있는 금융 활동을 통칭합니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 646
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "개인 간 물건 공유, 차량 공유, 숙소 공유 등을 통해 자원의 효율성을 극대화하고 비용을 절감하는 새로운 경제 모델은?",
+        "tags": [
+            "경제",
+            "사회",
+            "공유",
+            "플랫폼"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "구독 경제"
+            },
+            {
+                "id": "b",
+                "text": "플랫폼 경제"
+            },
+            {
+                "id": "c",
+                "text": "공유 경제"
+            },
+            {
+                "id": "d",
+                "text": "순환 경제"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "공유 경제는 사용하지 않는 물품이나 서비스, 공간 등을 타인과 공유하여 효율을 높이고 새로운 가치를 창출하는 경제 활동입니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 757
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "주식이나 부동산 등 자산 가치가 급격히 상승하여 생긴 이익을 불로소득으로 보고, 이에 대한 과세를 주장하는 경제 개념은?",
+        "tags": [
+            "경제",
+            "부동산",
+            "과세",
+            "불로소득"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "유동성 함정"
+            },
+            {
+                "id": "b",
+                "text": "토지 공개념"
+            },
+            {
+                "id": "c",
+                "text": "불로소득 환수"
+            },
+            {
+                "id": "d",
+                "text": "자본 이득세"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "불로소득 환수는 노력 없이 자산 가치 상승으로 얻은 소득에 대해 세금 등을 통해 사회에 환원해야 한다는 개념입니다. '토지 공개념'과도 연결됩니다.",
+        "difficulty": 0.7,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1360,
+        "choiceShuffleSeed": 868
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "국제적인 스포츠 이벤트로 인정받으며, 수많은 팬과 프로 리그가 활성화되어 있는 비디오 게임 대회를 일컫는 용어는?",
+        "tags": [
+            "스포츠",
+            "문화",
+            "게임",
+            "E스포츠"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "체스 올림피아드"
+            },
+            {
+                "id": "b",
+                "text": "스크린 스포츠"
+            },
+            {
+                "id": "c",
+                "text": "E스포츠"
+            },
+            {
+                "id": "d",
+                "text": "VR 게임"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "E스포츠(E-Sports)는 전자 스포츠의 약자로, 컴퓨터나 비디오 게임을 통해 승부를 겨루는 스포츠의 한 분야이며 아시안 게임 등에서도 정식 종목으로 채택되었습니다.",
+        "difficulty": 0.3,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1040,
+        "choiceShuffleSeed": 979
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "최근 IT 업계의 새로운 트렌드로, 서버와 스토리지 등의 인프라를 직접 구축하지 않고 클라우드를 통해 필요한 만큼 빌려 쓰는 서비스를 일컫는 용어는?",
+        "tags": [
+            "IT",
+            "클라우드",
+            "기술",
+            "서버"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "PaaS(Platform as a Service)"
+            },
+            {
+                "id": "b",
+                "text": "SaaS(Software as a Service)"
+            },
+            {
+                "id": "c",
+                "text": "IaaS(Infrastructure as a Service)"
+            },
+            {
+                "id": "d",
+                "text": "DaaS(Data as a Service)"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "IaaS(Infrastructure as a Service)는 클라우드 서비스를 통해 서버, 스토리지, 네트워크 등 기본적인 IT 인프라를 대여해 사용하는 방식입니다.",
+        "difficulty": 0.8,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1440,
+        "choiceShuffleSeed": 109
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "영화나 드라마에서 원래의 대본에 없던 장면이나 대사를 배우가 즉석에서 만들어 연기하는 것을 뜻하는 용어는?",
+        "tags": [
+            "영화",
+            "드라마",
+            "용어",
+            "연기"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "슬로우 모션"
+            },
+            {
+                "id": "b",
+                "text": "클로즈업"
+            },
+            {
+                "id": "c",
+                "text": "애드리브"
+            },
+            {
+                "id": "d",
+                "text": "오버랩"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "애드리브(Ad-lib)는 라틴어 'Ad libitum(마음대로)'에서 유래된 말로, 배우가 대본이나 악보에 없는 내용을 즉흥적으로 구사하는 것을 의미합니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 210
+    },
+    {
+        "deckSlug": "deck_seed_general_knowledge",
+        "category": "general_knowledge",
+        "type": "mcq",
+        "prompt": "국제 정치에서 국가 간의 상호 의존성이 높아져, 군사력이나 패권 경쟁보다는 경제적 이익이나 협력을 중시하는 외교 정책은?",
+        "tags": [
+            "국제정세",
+            "외교",
+            "경제",
+            "협력"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "신현실주의"
+            },
+            {
+                "id": "b",
+                "text": "신자유주의"
+            },
+            {
+                "id": "c",
+                "text": "민족주의"
+            },
+            {
+                "id": "d",
+                "text": "고립주의"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "국제 관계에서의 신자유주의는 국가들이 절대적 이익을 추구하고, 국제 기구 및 상호 의존성을 통해 협력하는 경향을 설명하는 이론입니다.",
+        "difficulty": 0.9,
+        "createdAt": 1761751800,
+        "qualityScore": 0.5,
+        "elo": 1520,
+        "choiceShuffleSeed": 321
+    }
+]

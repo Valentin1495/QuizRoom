@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { ActivityIndicator, Alert, BackHandler, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Palette, Radius, Spacing } from '@/constants/theme';
@@ -59,7 +60,7 @@ export default function PartyPlayScreen() {
         if (authStatus === 'guest') {
             return guestKey ? { roomId, guestKey } : ('skip' as const);
         }
-    return 'skip' as const;
+        return 'skip' as const;
     }, [authStatus, disconnectReason, guestKey, hasLeft, roomId, user]);
     const isWatchingState = queryArgs !== 'skip';
     const notifyForcedExit = useCallback(() => {
@@ -79,6 +80,7 @@ export default function PartyPlayScreen() {
     const rematchRoom = useMutation(api.rooms.rematch);
     const leaveRoom = useMutation(api.rooms.leave);
     const requestLobby = useMutation(api.rooms.requestLobby);
+    const logHistory = useMutation(api.history.logEntry);
     useEffect(() => {
         if (!disconnectReason && isWatchingState && roomState?.status === 'not_in_room') {
             notifyForcedExit();
@@ -112,7 +114,7 @@ export default function PartyPlayScreen() {
     const [isGameStalled, setIsGameStalled] = useState(false);
     const [promotedToHost, setPromotedToHost] = useState(false);
     const [justReconnected, setJustReconnected] = useState(false);
-    const [delayPreset, setDelayPreset] = useState<'rapid' | 'standard' | 'chill'>('standard');
+    const [delayPreset, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
     const { phase: socketPhase, hasEverConnected: socketHasEverConnected } = useConnectionStatus();
 
     const resolveDelay = useCallback(() => {
@@ -147,8 +149,6 @@ export default function PartyPlayScreen() {
         }
     }, [pendingAction?.type]);
 
-    const [toastMessage, setToastMessage] = useState<string | null>(null);
-    const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const lastToastKeyRef = useRef<string | null>(null);
     const lastToastAtRef = useRef<number>(0);
     const showToast = useCallback((message: string, key?: string) => {
@@ -161,14 +161,7 @@ export default function PartyPlayScreen() {
         }
         lastToastKeyRef.current = toastKey;
         lastToastAtRef.current = now;
-        if (toastTimerRef.current) {
-            clearTimeout(toastTimerRef.current);
-        }
-        setToastMessage(message);
-        toastTimerRef.current = setTimeout(() => {
-            setToastMessage(null);
-            toastTimerRef.current = null;
-        }, 2000);
+        showResultToast({ message });
     }, []);
     const reconnectTransitionRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const graceTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -303,11 +296,15 @@ export default function PartyPlayScreen() {
         shownForSession: false,
         lastShownAt: null,
     });
+    const pauseToastActiveRef = useRef(false);
+    const pauseToastHostRef = useRef<string | null>(null);
+    const historyLoggedRef = useRef<string | null>(null);
     const participantConnectivityRef = useRef<Map<string, boolean>>(new Map());
     const wasHostRef = useRef<boolean | null>(null);
     const roomStatusRef = useRef<string | null>(null);
     const isInitialMount = useRef(true);
     const lostHostDueToGraceRef = useRef(false);
+    const lostHostSkipResumeToastRef = useRef(false);
     const handleManualReconnect = useCallback(async () => {
         if (!participantArgs || isManualReconnectPending) return;
         setIsManualReconnectPending(true);
@@ -332,6 +329,10 @@ export default function PartyPlayScreen() {
                 }
             });
         }
+        pauseToastActiveRef.current = false;
+        pauseToastHostRef.current = null;
+        roomStatusRef.current = null;
+        lostHostSkipResumeToastRef.current = false;
         setHasLeft(true);
         router.navigate('/(tabs)/party');
     }, [disconnectReason, hasLeft, leaveRoom, participantArgs, router]);
@@ -391,14 +392,6 @@ export default function PartyPlayScreen() {
             setDisconnectReason(EXPIRED_MESSAGE);
         }
     }, [connectionState]);
-    useEffect(() => {
-        return () => {
-            if (toastTimerRef.current) {
-                clearTimeout(toastTimerRef.current);
-                toastTimerRef.current = null;
-            }
-        };
-    }, []);
     useEffect(() => {
         const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
             handleLeave();
@@ -494,11 +487,13 @@ export default function PartyPlayScreen() {
         }
         if (previous && !currentHost) {
             lostHostDueToGraceRef.current = hostConnectionState !== 'online';
+            lostHostSkipResumeToastRef.current = true;
             showToast('연결이 끊긴 동안 다른 참가자가 진행을 이어받았어요.', 'lost_host_role');
         } else if (!previous && currentHost) {
 
             const lostDueToGrace = lostHostDueToGraceRef.current;
             lostHostDueToGraceRef.current = false;
+            lostHostSkipResumeToastRef.current = false;
             if (!lostDueToGrace) {
                 setPromotedToHost(true);
             }
@@ -700,17 +695,21 @@ export default function PartyPlayScreen() {
     }, [disconnectReason, roomStatus, roomData?.room.code, router]);
 
     useEffect(() => {
-        if (disconnectReason || connectionState !== 'online') return;
+        if (hasLeft || disconnectReason || connectionState !== 'online') return;
         const prevStatus = roomStatusRef.current;
         if (prevStatus !== null && prevStatus !== roomStatus && !isHost) {
             if (isPaused) {
                 showToast('호스트가 게임을 일시정지했어요');
             } else if (prevStatus === 'paused' && !isPaused) {
-                showToast('게임이 다시 시작됐어요');
+                if (lostHostSkipResumeToastRef.current) {
+                    lostHostSkipResumeToastRef.current = false;
+                } else {
+                    showToast('게임이 다시 시작됐어요');
+                }
             }
         }
         roomStatusRef.current = roomStatus;
-    }, [disconnectReason, isHost, isPaused, roomStatus, showToast]);
+    }, [connectionState, disconnectReason, hasLeft, isHost, isPaused, roomStatus, showToast]);
 
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
@@ -754,6 +753,10 @@ export default function PartyPlayScreen() {
                 clientTs: Date.now(),
             });
         } catch (err) {
+            if (err instanceof Error && err.message.includes('ROUND_NOT_ACTIVE')) {
+                Alert.alert('제출 시간이 지났어요', '다음 라운드에서 다시 도전해주세요.');
+                return;
+            }
             Alert.alert('답안을 제출하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         }
     };
@@ -902,6 +905,53 @@ export default function PartyPlayScreen() {
             Alert.alert('취소하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         }
     }, [cancelPendingAction, pendingAction, resolveHostGuestKey, roomId, showToast]);
+
+    useEffect(() => {
+        if (roomStatus !== 'results') {
+            historyLoggedRef.current = null;
+            return;
+        }
+        if (authStatus !== 'authenticated' || !user) return;
+        if (!roomData) return;
+        const sessionId = `party:${roomData.room._id}:${roomData.room.version ?? 0}`;
+        if (historyLoggedRef.current === sessionId) {
+            return;
+        }
+        const meEntry = participants.find(
+            (participant) => participant.participantId === roomData.me.participantId
+        );
+        if (!meEntry) {
+            return;
+        }
+        historyLoggedRef.current = sessionId;
+        void (async () => {
+            try {
+                await logHistory({
+                    mode: 'party',
+                    sessionId,
+                    data: {
+                        deckSlug: roomData.deck?.slug ?? undefined,
+                        deckTitle: roomData.deck?.title ?? undefined,
+                        roomCode: roomData.room.code,
+                        rank: meEntry.rank ?? undefined,
+                        totalParticipants: participants.length,
+                        totalScore: meEntry.totalScore,
+                        answered: meEntry.answers,
+                    },
+                });
+            } catch (error) {
+                console.warn('Failed to log party history', error);
+                historyLoggedRef.current = null;
+            }
+        })();
+    }, [
+        authStatus,
+        logHistory,
+        participants,
+        roomData,
+        roomStatus,
+        user,
+    ]);
 
     if (!roomId) {
         return null;
@@ -1496,13 +1546,6 @@ export default function PartyPlayScreen() {
                 {content}
                 {renderGraceOverlay()}
                 {renderHostGraceOverlay()}
-                {toastMessage ? (
-                    <View pointerEvents="none" style={[styles.toastWrapper, { bottom: insets.bottom + Spacing.lg }]}>
-                        <View style={styles.toastBubble}>
-                            <ThemedText style={styles.toastText}>{toastMessage}</ThemedText>
-                        </View>
-                    </View>
-                ) : null}
             </ThemedView>
         </>
     );
@@ -1839,24 +1882,6 @@ const styles = StyleSheet.create({
     },
     pauseBannerHint: {
         color: Palette.slate200,
-    },
-    toastWrapper: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        alignItems: 'center',
-    },
-    toastBubble: {
-        backgroundColor: 'rgba(18, 13, 36, 0.85)',
-        paddingHorizontal: Spacing.lg,
-        paddingVertical: Spacing.sm,
-        borderRadius: Radius.pill,
-        maxWidth: '90%',
-    },
-    toastText: {
-        color: Palette.surface,
-        fontWeight: '600',
-        textAlign: 'center',
     },
     pendingBanner: {
         padding: Spacing.md,
