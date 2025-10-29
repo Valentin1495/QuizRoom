@@ -559,7 +559,7 @@
             },
             {
                 "id": "b",
-                "text": "레이어드 조명 (Layered Lighting)"
+                "text": "레이어드 조명"
             },
             {
                 "id": "c",
@@ -571,7 +571,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "레이어드 조명은 천정 조명, 플로우 램프, 벽등 등 여러 조명을 조합하여 공간에 깊이와 따뜻함, 세련된 분위기를 더하는 트렌드입니다.",
+        "explanation": "레이어드 조명(Layered Lighting)은 천정 조명, 플로우 램프, 벽등 등 여러 조명을 조합하여 공간에 깊이와 따뜻함, 세련된 분위기를 더하는 트렌드입니다.",
         "difficulty": 0.5,
         "createdAt": 1761619740,
         "qualityScore": 0.5,
@@ -847,7 +847,7 @@
             },
             {
                 "id": "b",
-                "text": "가상 피팅룸(Virtual Fitting Room)"
+                "text": "가상 피팅룸"
             },
             {
                 "id": "c",
@@ -859,7 +859,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "AI 기반 가상 피팅룸은 증강 현실(AR)이나 3D 기술을 활용하여 소비자가 온라인에서 옷의 핏과 스타일을 가상으로 체험할 수 있게 해주는 서비스입니다.",
+        "explanation": "AI 기반 가상 피팅룸(Virtual Fitting Room)은 증강 현실(AR)이나 3D 기술을 활용하여 소비자가 온라인에서 옷의 핏과 스타일을 가상으로 체험할 수 있게 해주는 서비스입니다.",
         "difficulty": 0.8,
         "createdAt": 1761619740,
         "qualityScore": 0.5,
@@ -1644,7 +1644,7 @@
             },
             {
                 "id": "c",
-                "text": "스마트 심플 (Smart Simple)"
+                "text": "스마트 심플"
             },
             {
                 "id": "d",
@@ -1652,7 +1652,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "스마트 심플은 기존의 것을 개선하고 이색적인 형태, 믹스 매치 등을 통해 단순하지만 지루하지 않은 지속 가능한 관점의 미니멀리즘을 의미합니다.",
+        "explanation": "스마트 심플(Smart Simple)은 기존의 것을 개선하고 이색적인 형태, 믹스 매치 등을 통해 단순하지만 지루하지 않은 지속 가능한 관점의 미니멀리즘을 의미합니다.",
         "difficulty": 0.9,
         "createdAt": 1761619740,
         "qualityScore": 0.5,
@@ -2180,7 +2180,7 @@
             },
             {
                 "id": "b",
-                "text": "라이브 커머스 (Live Commerce)"
+                "text": "라이브 커머스"
             },
             {
                 "id": "c",
@@ -2192,7 +2192,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "라이브 커머스는 숏폼 플랫폼에서 인플루언서가 실시간으로 상품을 소개하고 판매하며, SNS를 통한 소비를 활성화하는 핵심 트렌드입니다.",
+        "explanation": "라이브 커머스(Live Commerce)는 숏폼 플랫폼에서 인플루언서가 실시간으로 상품을 소개하고 판매하며, SNS를 통한 소비를 활성화하는 핵심 트렌드입니다.",
         "difficulty": 0.3,
         "createdAt": 1761619740,
         "qualityScore": 0.5,
@@ -2220,7 +2220,7 @@
             },
             {
                 "id": "c",
-                "text": "자연의 미학 (Nature's Aesthetics)"
+                "text": "자연의 미학"
             },
             {
                 "id": "d",
@@ -2228,7 +2228,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "자연의 미학은 2025 F/W 인테리어 및 패션 트렌드인 '리제너레이션스'의 대표적인 모습 중 하나로, 실생활과 AI 패션에서 나타나는 식물적 영감에 주목합니다.",
+        "explanation": "자연의 미학(Nature's Aesthetics)은 2025 F/W 인테리어 및 패션 트렌드인 '리제너레이션스'의 대표적인 모습 중 하나로, 실생활과 AI 패션에서 나타나는 식물적 영감에 주목합니다.",
         "difficulty": 0.7,
         "createdAt": 1761619740,
         "qualityScore": 0.5,
@@ -2468,7 +2468,7 @@
             },
             {
                 "id": "b",
-                "text": "모카 무스 (Mocha Mousse)"
+                "text": "모카 무스"
             },
             {
                 "id": "c",
@@ -2480,7 +2480,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "2025년 스타일 트렌드 키워드 중 하나로 '모카 무스'가 올해의 컬러로 언급되며, 차분하고 부드러운 뉴트럴 톤의 유행을 반영합니다.",
+        "explanation": "2025년 스타일 트렌드 키워드 중 하나로 '모카 무스(Mocha Mousse)'가 올해의 컬러로 언급되며, 차분하고 부드러운 뉴트럴 톤의 유행을 반영합니다.",
         "difficulty": 0.8,
         "createdAt": 1761619740,
         "qualityScore": 0.5,
@@ -2508,7 +2508,7 @@
             },
             {
                 "id": "c",
-                "text": "미닝 아웃 (Meaning Out)"
+                "text": "미닝 아웃"
             },
             {
                 "id": "d",
@@ -2720,7 +2720,7 @@
             },
             {
                 "id": "b",
-                "text": "예술적 오브제(Artistic Objet)"
+                "text": "예술적 오브제"
             },
             {
                 "id": "c",
@@ -2732,7 +2732,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "예술적 오브제는 핸드메이드나 독특한 디자인의 소품을 활용하여 공간에 개성과 예술적인 분위기를 더하는 인테리어 트렌드의 핵심 요소입니다.",
+        "explanation": "예술적 오브제(Artistic Objet)는 핸드메이드나 독특한 디자인의 소품을 활용하여 공간에 개성과 예술적인 분위기를 더하는 인테리어 트렌드의 핵심 요소입니다.",
         "difficulty": 0.5,
         "createdAt": 1761619740,
         "qualityScore": 0.5,
@@ -3300,7 +3300,7 @@
             },
             {
                 "id": "c",
-                "text": "어반 테크니컬 웨어(Urban Technical Wear)"
+                "text": "어반 테크니컬 웨어"
             },
             {
                 "id": "d",
@@ -3308,7 +3308,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "어반 테크니컬 웨어는 첨단 기술 소재와 도시적인 디자인을 결합하여 기능성과 스타일을 동시에 추구하는 패션 트렌드입니다.",
+        "explanation": "어반 테크니컬 웨어(Urban Technical Wear)는 첨단 기술 소재와 도시적인 디자인을 결합하여 기능성과 스타일을 동시에 추구하는 패션 트렌드입니다.",
         "difficulty": 0.7,
         "createdAt": 1761619740,
         "qualityScore": 0.5,

@@ -993,7 +993,7 @@ export default function PartyPlayScreen() {
     if (roomState === undefined) {
         return (
             <ThemedView style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={Palette.purple600} />
+                <ActivityIndicator size="large" color={Palette.teal600} />
                 <ThemedText style={styles.loadingLabel}>게임을 불러오는 중...</ThemedText>
             </ThemedView>
         );
@@ -1027,7 +1027,7 @@ export default function PartyPlayScreen() {
 
     const renderReturning = () => (
         <View style={styles.centerCard}>
-            <ActivityIndicator size="large" color={Palette.purple600} />
+            <ActivityIndicator size="large" color={Palette.teal600} />
             <ThemedText style={[styles.centerSubtitle, styles.returningLabel]}>대기실로 이동 중...</ThemedText>
         </View>
     );
@@ -1494,7 +1494,7 @@ export default function PartyPlayScreen() {
 
     const renderBootstrapping = () => (
         <View style={styles.centerCard}>
-            <ActivityIndicator size="large" color={Palette.purple600} />
+            <ActivityIndicator size="large" color={Palette.teal600} />
             <ThemedText style={styles.centerSubtitle}>게임을 준비 중이에요...</ThemedText>
         </View>
     );
@@ -1574,14 +1574,14 @@ const styles = StyleSheet.create({
         backgroundColor: Palette.slate200,
     },
     delayChipActive: {
-        backgroundColor: Palette.purple200,
+        backgroundColor: Palette.teal200,
     },
     delayChipText: {
         color: Palette.slate500,
         fontWeight: '500',
     },
     delayChipTextActive: {
-        color: Palette.purple600,
+        color: Palette.teal600,
         fontWeight: '700',
     },
     loadingContainer: {
@@ -1601,7 +1601,7 @@ const styles = StyleSheet.create({
         marginTop: Spacing.md,
         paddingVertical: Spacing.sm,
         paddingHorizontal: Spacing.lg,
-        backgroundColor: Palette.purple600,
+        backgroundColor: Palette.coral600,
         borderRadius: Radius.md,
     },
     retryLabel: {
@@ -1646,7 +1646,7 @@ const styles = StyleSheet.create({
         opacity: 0.6,
     },
     primaryButton: {
-        backgroundColor: Palette.purple600,
+        backgroundColor: Palette.coral600,
     },
     primaryButtonText: {
         color: Palette.surface,
@@ -1704,8 +1704,8 @@ const styles = StyleSheet.create({
         borderColor: Palette.slate200,
     },
     choiceSelected: {
-        backgroundColor: Palette.purple200,
-        borderColor: Palette.purple600,
+        backgroundColor: Palette.coral200,
+        borderColor: Palette.coral600,
     },
     choicePressed: {
         opacity: 0.7,
@@ -1714,7 +1714,7 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
         borderRadius: Radius.sm,
-        backgroundColor: Palette.purple600,
+        backgroundColor: Palette.teal600,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: Spacing.sm,
@@ -1784,8 +1784,8 @@ const styles = StyleSheet.create({
         borderBottomColor: Palette.success,
     },
     distributionMine: {
-        backgroundColor: Palette.purple200,
-        borderBottomColor: Palette.purple600,
+        backgroundColor: Palette.coral200,
+        borderBottomColor: Palette.coral600,
     },
     distributionCount: {
         fontSize: 14,
@@ -1828,16 +1828,16 @@ const styles = StyleSheet.create({
     },
     leaderboardMeRow: {
         borderWidth: 2,
-        borderColor: Palette.purple600,
-        backgroundColor: Palette.purple200,
+        borderColor: Palette.coral600,
+        backgroundColor: Palette.coral200,
     },
     leaderboardMeText: {
-        color: Palette.purple600,
+        color: Palette.coral600,
         fontWeight: '700',
     },
     leaderboardMeHint: {
         fontSize: 12,
-        color: Palette.purple400,
+        color: Palette.coral400,
         fontWeight: '600',
     },
     leaveControl: {
@@ -1885,7 +1885,7 @@ const styles = StyleSheet.create({
     },
     pendingBanner: {
         padding: Spacing.md,
-        backgroundColor: Palette.purple200,
+        backgroundColor: Palette.teal200,
         borderRadius: Radius.md,
         marginBottom: Spacing.md,
         alignItems: 'center',
@@ -1908,14 +1908,14 @@ const styles = StyleSheet.create({
     },
     hostBanner: {
         padding: Spacing.md,
-        backgroundColor: Palette.purple200,
+        backgroundColor: Palette.teal200,
         borderRadius: Radius.md,
         marginBottom: Spacing.md,
         borderWidth: 1,
-        borderColor: Palette.purple600,
+        borderColor: Palette.teal600,
     },
     hostBannerTitle: {
-        color: Palette.purple600,
+        color: Palette.teal600,
         fontWeight: '700',
     },
     hostBannerSubtitle: {
@@ -1924,13 +1924,13 @@ const styles = StyleSheet.create({
     },
     connectionBanner: {
         padding: Spacing.sm,
-        backgroundColor: Palette.purple200,
+        backgroundColor: Palette.teal200,
         borderRadius: Radius.md,
         marginBottom: Spacing.sm,
         alignItems: 'center',
     },
     connectionBannerText: {
-        color: Palette.purple600,
+        color: Palette.teal600,
         fontWeight: '600',
     },
     graceOverlay: {
@@ -1966,7 +1966,7 @@ const styles = StyleSheet.create({
     graceTimer: {
         fontSize: 24,
         fontWeight: '700',
-        color: Palette.purple600,
+        color: Palette.coral600,
     },
     graceProgressBar: {
         width: '100%',
@@ -1977,6 +1977,6 @@ const styles = StyleSheet.create({
     },
     graceProgressFill: {
         height: '100%',
-        backgroundColor: Palette.purple600,
+        backgroundColor: Palette.coral600,
     },
 });

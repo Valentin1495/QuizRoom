@@ -128,7 +128,7 @@
             },
             {
                 "id": "b",
-                "text": "서클 투 서치 (Circle to Search)"
+                "text": "서클 투 서치"
             },
             {
                 "id": "c",
@@ -686,7 +686,7 @@
             },
             {
                 "id": "c",
-                "text": "딥페이크 (Deepfake)"
+                "text": "Deepfake"
             },
             {
                 "id": "d",
@@ -727,11 +727,11 @@
             },
             {
                 "id": "d",
-                "text": "CXL (Compute Express Link)"
+                "text": "CXL"
             }
         ],
         "answerIndex": 3,
-        "explanation": "정답은 'CXL'입니다. 고성능 컴퓨팅 환경에서 메모리 공유 및 확장성을 보장하는 차세대 인터페이스 기술로, AI와 빅데이터 시대의 핵심 기술로 꼽힙니다.",
+        "explanation": "정답은 'CXL(Compute Express Link)'입니다. 고성능 컴퓨팅 환경에서 메모리 공유 및 확장성을 보장하는 차세대 인터페이스 기술로, AI와 빅데이터 시대의 핵심 기술로 꼽힙니다.",
         "difficulty": 0.55,
         "createdAt": 1761471000,
         "qualityScore": 0.5,
@@ -912,7 +912,7 @@
             },
             {
                 "id": "d",
-                "text": "AI 정렬 (AI Alignment)"
+                "text": "AI 정렬"
             }
         ],
         "answerIndex": 3,
@@ -1241,7 +1241,7 @@
             },
             {
                 "id": "c",
-                "text": "APU (Accelerated Processing Unit)"
+                "text": "APU"
             },
             {
                 "id": "d",
@@ -1249,7 +1249,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "정답은 'APU'입니다. AMD의 CPU와 GPU가 하나의 칩에 통합되어 메모리를 공유함으로써, 데이터 처리 속도를 높이고 전력 효율성을 개선한 구조입니다.",
+        "explanation": "정답은 'APU(Accelerated Processing Unit)'입니다. AMD의 CPU와 GPU가 하나의 칩에 통합되어 메모리를 공유함으로써, 데이터 처리 속도를 높이고 전력 효율성을 개선한 구조입니다.",
         "difficulty": 0.65,
         "createdAt": 1761471000,
         "qualityScore": 0.5,
@@ -1648,7 +1648,7 @@
             },
             {
                 "id": "c",
-                "text": "퀀텀닷 (Quantum Dot) 기술"
+                "text": "퀀텀닷 기술"
             },
             {
                 "id": "d",
@@ -1718,7 +1718,7 @@
             },
             {
                 "id": "b",
-                "text": "디지털 트윈 (Digital Twin)"
+                "text": "디지털 트윈"
             },
             {
                 "id": "c",
@@ -1730,7 +1730,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "정답은 '디지털 트윈'입니다. 실제와 동일한 가상 모델을 만들어 시스템의 성능을 최적화하고 잠재적 오류를 예측하는 데 사용되는 4차 산업혁명의 핵심 기술입니다.",
+        "explanation": "정답은 '디지털 트윈(Digital Twin)'입니다. 실제와 동일한 가상 모델을 만들어 시스템의 성능을 최적화하고 잠재적 오류를 예측하는 데 사용되는 4차 산업혁명의 핵심 기술입니다.",
         "difficulty": 0.35,
         "createdAt": 1761471000,
         "qualityScore": 0.5,
@@ -3013,7 +3013,7 @@
             },
             {
                 "id": "b",
-                "text": "초저지연 (Ultra-low latency)"
+                "text": "초저지연"
             },
             {
                 "id": "c",
@@ -3025,7 +3025,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "초저지연은 6G의 핵심 목표 중 하나로, 실시간 원격 수술, 자율주행, 몰입형 XR 서비스 등 반응성이 매우 중요한 서비스 구현에 필수적입니다.",
+        "explanation": "초저지연(Ultra-low latency)은 6G의 핵심 목표 중 하나로, 실시간 원격 수술, 자율주행, 몰입형 XR 서비스 등 반응성이 매우 중요한 서비스 구현에 필수적입니다.",
         "difficulty": 0.45,
         "createdAt": 1761471000,
         "qualityScore": 0.5,
@@ -3383,7 +3383,7 @@
             },
             {
                 "id": "b",
-                "text": "디지털 트윈 (Digital Twin)"
+                "text": "디지털 트윈"
             },
             {
                 "id": "c",
@@ -3395,7 +3395,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "디지털 트윈은 현실의 데이터를 실시간으로 반영하여 가상 모델을 동기화함으로써, 건설, 제조, 헬스케어 등 다양한 분야에서 예측 분석과 의사결정을 지원합니다.",
+        "explanation": "디지털 트윈(Digital Twin)은 현실의 데이터를 실시간으로 반영하여 가상 모델을 동기화함으로써, 건설, 제조, 헬스케어 등 다양한 분야에서 예측 분석과 의사결정을 지원합니다.",
         "difficulty": 0.4,
         "createdAt": 1761471000,
         "qualityScore": 0.5,
@@ -3609,7 +3609,7 @@
             },
             {
                 "id": "c",
-                "text": "양자 후 암호 (Post-Quantum Cryptography, PQC)"
+                "text": "양자 후 암호"
             },
             {
                 "id": "d",
@@ -3617,7 +3617,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "PQC는 슈어(Shor) 알고리즘과 같은 양자 컴퓨터 알고리즘에도 안전하도록 수학적 난이도에 기반하여 설계된 암호화 방식을 연구하는 분야입니다.",
+        "explanation": "양자 후 암호(Post-Quantum Cryptography, PQC)는 슈어(Shor) 알고리즘과 같은 양자 컴퓨터 알고리즘에도 안전하도록 수학적 난이도에 기반하여 설계된 암호화 방식을 연구하는 분야입니다.",
         "difficulty": 0.75,
         "createdAt": 1761471000,
         "qualityScore": 0.5,

@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
   },
   tagChip: {
-    backgroundColor: Palette.purple200,
+    backgroundColor: Palette.teal600,
     paddingHorizontal: Spacing.sm,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,

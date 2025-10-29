@@ -461,7 +461,7 @@
             },
             {
                 "id": "b",
-                "text": "브레이킹 (Breaking)"
+                "text": "브레이킹"
             },
             {
                 "id": "c",
@@ -494,7 +494,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "Gemini (제미나이)"
+                "text": "Gemini"
             },
             {
                 "id": "b",
@@ -617,7 +617,7 @@
             },
             {
                 "id": "d",
-                "text": "먹방"
+                "text": "먹방 (Mukbang)"
             }
         ],
         "answerIndex": 2,
@@ -1316,7 +1316,7 @@
             },
             {
                 "id": "c",
-                "text": "마이데이터 (MyData)"
+                "text": "마이데이터"
             },
             {
                 "id": "d",
@@ -1324,7 +1324,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "마이데이터는 개인이 자신의 정보를 직접 관리하고 활용하는 것을 허용하는 개념으로, 금융, 의료 등 다양한 분야에서 혁신적인 서비스 창출을 목표로 합니다.",
+        "explanation": "마이데이터(MyData)는 개인이 자신의 정보를 직접 관리하고 활용하는 것을 허용하는 개념으로, 금융, 의료 등 다양한 분야에서 혁신적인 서비스 창출을 목표로 합니다.",
         "difficulty": 0.5,
         "createdAt": 1761479700,
         "qualityScore": 0.5,
@@ -1345,7 +1345,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "젠지 (Gen.G)"
+                "text": "젠지"
             },
             {
                 "id": "b",
@@ -1419,7 +1419,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "중동 (Middle East)"
+                "text": "중동"
             },
             {
                 "id": "b",
@@ -1435,7 +1435,7 @@
             }
         ],
         "answerIndex": 0,
-        "explanation": "2024년 이스라엘과 이란의 직접적인 군사적 충돌 우려로 인해 중동 지역의 지정학적 리스크가 고조되며 국제 유가와 안보에 큰 영향을 미쳤습니다.",
+        "explanation": "2024년 이스라엘과 이란의 직접적인 군사적 충돌 우려로 인해 중동(Middle East) 지역의 지정학적 리스크가 고조되며 국제 유가와 안보에 큰 영향을 미쳤습니다.",
         "difficulty": 0.5,
         "createdAt": 1761479700,
         "qualityScore": 0.5,
@@ -1752,7 +1752,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "그린워싱 (Greenwashing)"
+                "text": "그린워싱"
             },
             {
                 "id": "b",
@@ -1768,7 +1768,7 @@
             }
         ],
         "answerIndex": 0,
-        "explanation": "그린워싱은 기업이 환경보호에 노력하는 것처럼 홍보하지만, 실제로는 환경에 악영향을 미치거나 친환경 활동을 과장하는 위장술입니다.",
+        "explanation": "그린워싱(Greenwashing)은 기업이 환경보호에 노력하는 것처럼 홍보하지만, 실제로는 환경에 악영향을 미치거나 친환경 활동을 과장하는 위장술입니다.",
         "difficulty": 0.5,
         "createdAt": 1761479800,
         "qualityScore": 0.5,
@@ -2356,11 +2356,11 @@
             },
             {
                 "id": "d",
-                "text": "IP 비즈니스 (지식재산권 사업)"
+                "text": "IP 비즈니스"
             }
         ],
         "answerIndex": 3,
-        "explanation": "IP 비즈니스는 웹툰, 웹소설 등 원천 콘텐츠의 지적재산권을 활용하여 영화, 드라마, 게임 등 다양한 형태로 확장해 수익을 창출하는 사업 모델입니다.",
+        "explanation": "IP 비즈니스(지식재산권 사업)는 웹툰, 웹소설 등 원천 콘텐츠의 지적재산권을 활용하여 영화, 드라마, 게임 등 다양한 형태로 확장해 수익을 창출하는 사업 모델입니다.",
         "difficulty": 0.3,
         "createdAt": 1761480000,
         "qualityScore": 0.5,
@@ -2504,7 +2504,7 @@
             },
             {
                 "id": "d",
-                "text": "챌린지 (Challenge)"
+                "text": "챌린지"
             }
         ],
         "answerIndex": 3,
@@ -2529,7 +2529,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "긱 이코노미 (Gig Economy)"
+                "text": "긱 이코노미"
             },
             {
                 "id": "b",
@@ -2545,7 +2545,7 @@
             }
         ],
         "answerIndex": 0,
-        "explanation": "긱 이코노미는 필요에 따라 임시 계약직을 고용하고 단기적으로 업무를 맡기는 형태의 경제 시스템을 뜻하며, 최근 N잡러의 증가와 관련이 있습니다.",
+        "explanation": "긱 이코노미(Gig Economy)는 필요에 따라 임시 계약직을 고용하고 단기적으로 업무를 맡기는 형태의 경제 시스템을 뜻하며, 최근 N잡러의 증가와 관련이 있습니다.",
         "difficulty": 0.7,
         "createdAt": 1761480000,
         "qualityScore": 0.5,
@@ -2578,11 +2578,11 @@
             },
             {
                 "id": "d",
-                "text": "PFAS (과불화화합물)"
+                "text": "PFAS"
             }
         ],
         "answerIndex": 3,
-        "explanation": "PFAS는 자연 분해가 매우 어려워 '영원한 화학물질'로 불리며, 전 세계적으로 식수 오염 및 인체 건강에 대한 심각한 위험 때문에 규제 움직임이 커지고 있습니다.",
+        "explanation": "PFAS(과불화화합물)는 자연 분해가 매우 어려워 '영원한 화학물질'로 불리며, 전 세계적으로 식수 오염 및 인체 건강에 대한 심각한 위험 때문에 규제 움직임이 커지고 있습니다.",
         "difficulty": 0.5,
         "createdAt": 1761480000,
         "qualityScore": 0.5,
@@ -2726,7 +2726,7 @@
             },
             {
                 "id": "d",
-                "text": "브레이킹 (Breaking)"
+                "text": "브레이킹"
             }
         ],
         "answerIndex": 3,
@@ -2981,7 +2981,7 @@
             },
             {
                 "id": "c",
-                "text": "메타버스 (Metaverse)"
+                "text": "메타버스"
             },
             {
                 "id": "d",
@@ -2989,7 +2989,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "메타버스는 '가상(Meta)'과 '현실(Universe)'의 합성어로, 사회적, 경제적 활동이 이루어지는 가상 세계를 의미하며 MZ세대에게 중요한 플랫폼이 되었습니다.",
+        "explanation": "메타버스(Metaverse)는 '가상(Meta)'과 '현실(Universe)'의 합성어로, 사회적, 경제적 활동이 이루어지는 가상 세계를 의미하며 MZ세대에게 중요한 플랫폼이 되었습니다.",
         "difficulty": 0.3,
         "createdAt": 1761480100,
         "qualityScore": 0.5,
@@ -3018,7 +3018,7 @@
             },
             {
                 "id": "c",
-                "text": "리얼리티 예능 (Reality Show)"
+                "text": "리얼리티 예능"
             },
             {
                 "id": "d",
@@ -3026,7 +3026,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "리얼리티 예능은 출연자들의 실제 생활과 반응을 관찰하는 형식으로, 솔직함과 공감대 형성을 중요시하는 MZ세대의 취향과 잘 맞아 인기가 높습니다.",
+        "explanation": "리얼리티 예능(Reality Show)은 출연자들의 실제 생활과 반응을 관찰하는 형식으로, 솔직함과 공감대 형성을 중요시하는 MZ세대의 취향과 잘 맞아 인기가 높습니다.",
         "difficulty": 0.3,
         "createdAt": 1761480100,
         "qualityScore": 0.5,
@@ -3314,7 +3314,7 @@
             },
             {
                 "id": "c",
-                "text": "워라밸 (Work-Life Balance)"
+                "text": "워라밸"
             },
             {
                 "id": "d",
@@ -3322,7 +3322,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "워라밸은 '일(Work)'과 '삶(Life)'의 '균형(Balance)'을 뜻하는 말로, 일에 매몰되지 않고 개인의 삶을 중요시하는 MZ세대의 가치관을 대변합니다.",
+        "explanation": "워라밸(Work-Life Balance)은 '일(Work)'과 '삶(Life)'의 '균형(Balance)'을 뜻하는 말로, 일에 매몰되지 않고 개인의 삶을 중요시하는 MZ세대의 가치관을 대변합니다.",
         "difficulty": 0.5,
         "createdAt": 1761480100,
         "qualityScore": 0.5,
@@ -3343,7 +3343,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "주민 소환제 (Recall Election)"
+                "text": "주민 소환제"
             },
             {
                 "id": "b",
@@ -3359,7 +3359,7 @@
             }
         ],
         "answerIndex": 0,
-        "explanation": "주민 소환제(리콜 선거)는 선출직 공무원이 임기를 마치기 전에 주민들의 투표로 파면할 수 있게 하는 제도로, 최근 캘리포니아 주지사에 대한 소환 움직임이 있었습니다.",
+        "explanation": "주민 소환제(Recall Election)는 선출직 공무원이 임기를 마치기 전에 주민들의 투표로 파면할 수 있게 하는 제도로, 최근 캘리포니아 주지사에 대한 소환 움직임이 있었습니다.",
         "difficulty": 0.8,
         "createdAt": 1761480200,
         "qualityScore": 0.5,
@@ -3610,7 +3610,7 @@
             },
             {
                 "id": "c",
-                "text": "워케이션 (Workation)"
+                "text": "워케이션"
             },
             {
                 "id": "d",
@@ -3618,7 +3618,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "워케이션은 '일(Work)'과 '휴가(Vacation)'의 합성어로, 휴가지에서 업무를 병행하며 높은 삶의 질을 추구하는 MZ세대의 근무 문화입니다.",
+        "explanation": "워케이션(Workation)은 '일(Work)'과 '휴가(Vacation)'의 합성어로, 휴가지에서 업무를 병행하며 높은 삶의 질을 추구하는 MZ세대의 근무 문화입니다.",
         "difficulty": 0.4,
         "createdAt": 1761480200,
         "qualityScore": 0.5,

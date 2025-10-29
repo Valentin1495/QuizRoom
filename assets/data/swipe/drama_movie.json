@@ -165,7 +165,7 @@
             },
             {
                 "id": "b",
-                "text": "결정적인 순간 (The Decisive Moment)"
+                "text": "결정적인 순간"
             },
             {
                 "id": "c",
@@ -177,7 +177,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "박찬욱 감독의 신작 '결정적인 순간'은 국제 첩보전을 배경으로 하며, 그의 특유의 미장센과 심리 묘사가 돋보여 칸에서 수상했습니다.",
+        "explanation": "박찬욱 감독의 신작 '결정적인 순간(The Decisive Moment)'은 국제 첩보전을 배경으로 하며, 그의 특유의 미장센과 심리 묘사가 돋보여 칸에서 수상했습니다.",
         "difficulty": 0.7,
         "createdAt": 1761406400,
         "qualityScore": 0.5,
@@ -309,7 +309,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "더 와일드 (The Wild)"
+                "text": "더 와일드"
             },
             {
                 "id": "b",
@@ -325,7 +325,7 @@
             }
         ],
         "answerIndex": 0,
-        "explanation": "'더 와일드'는 '범죄도시' 세계관을 공유하는 스핀오프 작품으로, 새로운 형사팀이 등장해 더욱 확장된 액션 스토리를 보여줄 예정입니다.",
+        "explanation": "'더 와일드(The Wild)'는 '범죄도시' 세계관을 공유하는 스핀오프 작품으로, 새로운 형사팀이 등장해 더욱 확장된 액션 스토리를 보여줄 예정입니다.",
         "difficulty": 0.5,
         "createdAt": 1761406400,
         "qualityScore": 0.5,
@@ -424,7 +424,7 @@
             },
             {
                 "id": "b",
-                "text": "Sudden Shower (소나기)"
+                "text": "Sudden Shower"
             },
             {
                 "id": "c",
@@ -436,7 +436,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "'소나기'는 극 중 류선재가 임솔을 생각하며 만든 곡으로, 드라마의 감정선과 완벽하게 맞아떨어지며 역주행 인기를 끌었습니다.",
+        "explanation": "'Sudden Shower(소나기)'는 극 중 류선재가 임솔을 생각하며 만든 곡으로, 드라마의 감정선과 완벽하게 맞아떨어지며 역주행 인기를 끌었습니다.",
         "difficulty": 0.3,
         "createdAt": 1761406500,
         "qualityScore": 0.5,
@@ -1135,11 +1135,11 @@
             },
             {
                 "id": "d",
-                "text": "가드 (Guard)"
+                "text": "가드"
             }
         ],
         "answerIndex": 3,
-        "explanation": "가드는 류준열이 연기한 '무륵'을 돕기 위해 이안의 몸에 잠시 머무는 외계인 죄수입니다.",
+        "explanation": "가드(Guard)는 류준열이 연기한 '무륵'을 돕기 위해 이안의 몸에 잠시 머무는 외계인 죄수입니다.",
         "difficulty": 0.3,
         "createdAt": 1761406700,
         "qualityScore": 0.5,
@@ -1349,7 +1349,7 @@
             },
             {
                 "id": "b",
-                "text": "하늘 (天)"
+                "text": "하늘"
             },
             {
                 "id": "c",
@@ -1361,7 +1361,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "이순신 장군은 전투 직전 하늘을 향해 \"하늘이시여\"라며 간절한 기도를 올리는 장면이 나오며, 이는 그의 결의를 보여줍니다.",
+        "explanation": "이순신 장군은 전투 직전 하늘(天)을 향해 \"하늘이시여\"라며 간절한 기도를 올리는 장면이 나오며, 이는 그의 결의를 보여줍니다.",
         "difficulty": 0.3,
         "createdAt": 1761406700,
         "qualityScore": 0.5,
@@ -1649,7 +1649,7 @@
             },
             {
                 "id": "c",
-                "text": "자파르 잭슨 (Jafaar Jackson)"
+                "text": "자파르 잭슨"
             },
             {
                 "id": "d",
@@ -1657,7 +1657,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "마이클 잭슨의 친조카인 자파르 잭슨이 숙부의 일대기를 그린 영화에서 주인공 마이클 잭슨 역을 맡게 되었습니다.",
+        "explanation": "마이클 잭슨의 친조카인 자파르 잭슨(Jafaar Jackson)이 숙부의 일대기를 그린 영화에서 주인공 마이클 잭슨 역을 맡게 되었습니다.",
         "difficulty": 0.5,
         "createdAt": 1761406800,
         "qualityScore": 0.5,
@@ -1756,7 +1756,7 @@
             },
             {
                 "id": "b",
-                "text": "류츠신 (Liu Cixin)"
+                "text": "류츠신"
             },
             {
                 "id": "c",
@@ -1768,7 +1768,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "드라마 '삼체'는 중국의 유명 SF 작가 류츠신(劉慈欣)의 동명 소설 '삼체 문제'를 원작으로 합니다.",
+        "explanation": "드라마 '삼체'는 중국의 유명 SF 작가 류츠신(劉慈欣, Liu Cixin)의 동명 소설 '삼체 문제'를 원작으로 합니다.",
         "difficulty": 0.5,
         "createdAt": 1761406800,
         "qualityScore": 0.5,
@@ -1904,7 +1904,7 @@
             },
             {
                 "id": "b",
-                "text": "아이랜드 (Atypical Island)"
+                "text": "아이랜드"
             },
             {
                 "id": "c",
@@ -1916,7 +1916,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "덱스는 '아이랜드'에서 특수 임무를 수행하는 요원 역을 맡아 연기자로 데뷔하며 화제를 모았습니다.",
+        "explanation": "덱스는 '아이랜드(Atypical Island)'에서 특수 임무를 수행하는 요원 역을 맡아 연기자로 데뷔하며 화제를 모았습니다.",
         "difficulty": 0.3,
         "createdAt": 1761406900,
         "qualityScore": 0.5,

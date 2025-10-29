@@ -53,16 +53,20 @@ function AnswerSheetComponent({
         const isDisabled = disabled || correctIndex !== undefined;
         const backgroundColor =
           variant === 'correct'
-            ? Palette.success
+            ? Palette.coral600
             : variant === 'incorrect'
-            ? Palette.danger
-            : variant === 'selected'
-            ? Palette.purple200
-            : baseColor;
+              ? Palette.slate200
+              : variant === 'selected'
+                ? Palette.teal200
+                : baseColor;
         const color =
-          variant === 'correct' || variant === 'incorrect'
+          variant === 'correct'
             ? '#ffffff'
-            : textColor;
+            : variant === 'incorrect'
+              ? Palette.slate900
+              : variant === 'selected'
+                ? Palette.teal600
+                : textColor;
 
         return (
           <Pressable

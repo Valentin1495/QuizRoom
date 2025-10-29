@@ -1428,7 +1428,7 @@
             },
             {
                 "id": "b",
-                "text": "Long Chat (가위바위보)"
+                "text": "Long Chat (#♥)"
             },
             {
                 "id": "c",
@@ -1440,7 +1440,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "수록곡 'Long Chat (가위바위보)'은 제목과 곡의 콘셉트가 독특하여 팬들 사이에서 큰 화제를 모았습니다.",
+        "explanation": "수록곡 'Long Chat (#♥)'은 제목과 곡의 콘셉트가 독특하여 팬들 사이에서 큰 화제를 모았습니다.",
         "difficulty": 0.7,
         "createdAt": 1761505320,
         "qualityScore": 0.5,
@@ -1539,7 +1539,7 @@
             },
             {
                 "id": "b",
-                "text": "RIIZE (라이즈)"
+                "text": "RIIZE"
             },
             {
                 "id": "c",
@@ -1551,7 +1551,7 @@
             }
         ],
         "answerIndex": 1,
-        "explanation": "라이즈는 2025년 5월, 데뷔 이래 첫 정규 앨범 'ODYSSEY(오디세이)'로 컴백했습니다. 타이틀곡은 'Bounce'",
+        "explanation": "라이즈(RIIZE)는 2025년 5월, 데뷔 이래 첫 정규 앨범 'ODYSSEY(오디세이)'로 컴백했습니다. 타이틀곡은 'Bounce'",
         "difficulty": 0.5,
         "createdAt": 1761505568,
         "qualityScore": 0.5,
@@ -1843,7 +1843,7 @@
             },
             {
                 "id": "d",
-                "text": "Meovv (미야오)"
+                "text": "Meovv"
             }
         ],
         "answerIndex": 3,
@@ -2172,7 +2172,7 @@
             },
             {
                 "id": "c",
-                "text": "CORTIS (코르티스)"
+                "text": "CORTIS"
             },
             {
                 "id": "d",
@@ -2209,7 +2209,7 @@
             },
             {
                 "id": "c",
-                "text": "TWICE (트와이스)"
+                "text": "TWICE"
             },
             {
                 "id": "d",
@@ -2217,7 +2217,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "트와이스는 2025년 7월 정규 4집 'THIS IS FOR'를 발매하며 꾸준히 활동을 이어가고 있습니다.",
+        "explanation": "TWICE(트와이스)는 2025년 7월 정규 4집 'THIS IS FOR'를 발매하며 꾸준히 활동을 이어가고 있습니다.",
         "difficulty": 0.5,
         "createdAt": 1761505568,
         "qualityScore": 0.5,
@@ -2312,7 +2312,7 @@
             },
             {
                 "id": "c",
-                "text": "CORTIS (코르티스)"
+                "text": "CORTIS"
             },
             {
                 "id": "d",
@@ -2337,7 +2337,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "CLOSE YOUR EYES (클로즈 유어 아이즈)"
+                "text": "CLOSE YOUR EYES"
             },
             {
                 "id": "b",
@@ -2353,7 +2353,7 @@
             }
         ],
         "answerIndex": 0,
-        "explanation": "클로즈 유어 아이즈는 2000년대 R&B 감성을 살린 음악으로 평론가들에게 호평받으며 빌보드 '베스트 K-팝 25선'에 선정되었습니다.",
+        "explanation": "CLOSE YOUR EYES(클로즈 유어 아이즈)는 2000년대 R&B 감성을 살린 음악으로 평론가들에게 호평받으며 빌보드 '베스트 K-팝 25선'에 선정되었습니다.",
         "difficulty": 0.6
     },
     {
@@ -2525,33 +2525,34 @@
         "deckSlug": "deck_seed_kpop_music",
         "category": "kpop_music",
         "type": "mcq",
-        "prompt": "2025년 10월, SM 엔터테인먼트 소속 지젤이 첫 솔로 앨범 'Dopamine'으로 미국 빌보드 200 차트에 진입하며 독자적인 성과를 남긴 그룹은?",
+        "prompt": "에스파(aespa)의 지젤이 2024년 10월 공개된 앨범에서 선보인 첫 솔로곡의 제목은?",
         "tags": [
+            "에스파",
+            "지젤",
             "SM엔터테인먼트",
-            "솔로데뷔",
-            "빌보드200",
-            "채영"
+            "솔로곡",
+            "Dopamine"
         ],
         "choices": [
             {
                 "id": "a",
-                "text": "Red Velvet"
+                "text": "Addiction"
             },
             {
                 "id": "b",
-                "text": "aespa"
+                "text": "Dopamine"
             },
             {
                 "id": "c",
-                "text": "Girls' Generation"
+                "text": "Ecstasy"
             },
             {
                 "id": "d",
-                "text": "f(x)"
+                "text": "Overdrive"
             }
         ],
         "answerIndex": 1,
-        "explanation": "에스파(aespa)의 지젤이 2025년 10월 첫 솔로 앨범으로 빌보드 200 차트에 진입하며 그룹 활동을 넘어 솔로 아티스트로서의 성공 가능성을 입증했습니다.",
+        "explanation": "지젤은 2024년 10월 공개된 에스파의 앨범에 수록된 솔로곡 'Dopamine'으로 개성 있는 랩과 보컬 실력을 선보이며, 팬들에게 긍정적인 반응을 얻었습니다.",
         "difficulty": 0.6
     },
     {
@@ -2708,7 +2709,7 @@
             },
             {
                 "id": "c",
-                "text": "ENHYPEN (엔하이픈)"
+                "text": "ENHYPEN"
             },
             {
                 "id": "d",
@@ -2774,7 +2775,7 @@
             },
             {
                 "id": "c",
-                "text": "Stray Kids (스트레이 키즈)"
+                "text": "Stray Kids"
             },
             {
                 "id": "d",
@@ -2789,12 +2790,11 @@
         "deckSlug": "deck_seed_kpop_music",
         "category": "kpop_music",
         "type": "mcq",
-        "prompt": "2025년 6월, KBS '뮤직뱅크 월간 차트 TOP10'에 '아니라고 말해요'라는 곡으로 2위를 기록하며 솔로 활동을 성공적으로 시작한 세븐틴(SEVENTEEN) 멤버는?",
+        "prompt": "2025년 5월 솔로곡 'Shake It Off'를 발표하며 팬들의 사랑을 받았던 세븐틴(SEVENTEEN) 멤버는?",
         "tags": [
             "솔로활동",
             "세븐틴",
-            "뮤직뱅크",
-            "율"
+            "민규"
         ],
         "choices": [
             {
@@ -2807,7 +2807,7 @@
             },
             {
                 "id": "c",
-                "text": "율 (YUL)"
+                "text": "민규"
             },
             {
                 "id": "d",
@@ -2815,7 +2815,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "세븐틴의 율(YUL)은 솔로곡 '아니라고 말해요'로 2025년 6월 뮤직뱅크 차트 상위권에 오르며 큰 인기를 끌었습니다.",
+        "explanation": "민규는 2025년에 솔로곡을 발표하고 유닛 활동도 하는 등 활발한 활동을 펼쳤습니다.",
         "difficulty": 0.7
     },
     {
@@ -2935,7 +2935,7 @@
             },
             {
                 "id": "b",
-                "text": "트와이스: 원 인 어 밀리언 (ONE IN A MILL10N)"
+                "text": "트와이스: 원 인 어 밀리언"
             },
             {
                 "id": "c",
@@ -3104,7 +3104,7 @@
             },
             {
                 "id": "c",
-                "text": "K-팝 (K-POP)"
+                "text": "K-팝"
             },
             {
                 "id": "d",
@@ -3112,7 +3112,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "K-팝은 2025년 한류실태조사에서 8년 연속으로 '한국 하면 떠오르는 이미지' 1위로 선정되었습니다.",
+        "explanation": "K-팝(K-POP)은 2025년 한류실태조사에서 8년 연속으로 '한국 하면 떠오르는 이미지' 1위로 선정되었습니다.",
         "difficulty": 0.4
     },
     {
@@ -3133,7 +3133,7 @@
             },
             {
                 "id": "b",
-                "text": "ONEUS (원어스)"
+                "text": "ONEUS"
             },
             {
                 "id": "c",

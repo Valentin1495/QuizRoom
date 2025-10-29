@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   resetButton: {
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.pill,

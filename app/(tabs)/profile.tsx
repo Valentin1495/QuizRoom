@@ -82,7 +82,7 @@ export default function ProfileScreen() {
   if (isLoading) {
     return (
       <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Palette.purple600} />
+        <ActivityIndicator size="large" color={Palette.teal600} />
         <ThemedText style={styles.loadingLabel}>프로필을 불러오는 중이에요...</ThemedText>
       </ThemedView>
     );
@@ -249,7 +249,7 @@ function QuizHistoryPanel({
     return (
       <Card>
         <View style={[styles.sectionStack, styles.historyLoading]}>
-          <ActivityIndicator color={Palette.purple600} />
+          <ActivityIndicator color={Palette.teal600} />
           <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
             기록을 불러오는 중이에요...
           </ThemedText>
@@ -556,7 +556,7 @@ function ActionButton({
         return styles.buttonPrimary;
     }
   })();
-  const indicatorColor = tone === 'ghost' ? Palette.purple600 : '#ffffff';
+  const indicatorColor = tone === 'ghost' ? Palette.teal600 : '#ffffff';
 
   return (
     <Pressable
@@ -576,8 +576,8 @@ function ActionButton({
       ) : (
         <ThemedText
           style={styles.buttonLabel}
-          lightColor={tone === 'ghost' ? Palette.purple600 : '#ffffff'}
-          darkColor={tone === 'ghost' ? Palette.purple400 : '#ffffff'}
+          lightColor={tone === 'ghost' ? Palette.teal600 : '#ffffff'}
+          darkColor={tone === 'ghost' ? Palette.teal400 : '#ffffff'}
         >
           {label}
         </ThemedText>
@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Palette.purple200,
+    backgroundColor: Palette.yellow200,
   },
   avatarImage: {
     width: '100%',
@@ -632,7 +632,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: Radius.lg,
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.yellow600,
   },
   avatarInitial: {
     fontSize: 32,
@@ -726,15 +726,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   buttonPrimary: {
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
   },
   buttonSecondary: {
-    backgroundColor: Palette.pink500,
+    backgroundColor: Palette.coral600,
   },
   buttonGhost: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: Palette.purple200,
+    borderColor: Palette.teal200,
   },
   buttonDanger: {
     backgroundColor: Palette.danger,

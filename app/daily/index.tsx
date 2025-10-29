@@ -1,6 +1,7 @@
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -10,6 +11,7 @@ import { Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { lightHaptic, mediumHaptic, successHaptic, warningHaptic } from '@/lib/haptics';
 import { useMutation, useQuery } from 'convex/react';
 
 const QUESTION_TIME_LIMIT = 10;
@@ -59,6 +61,22 @@ export default function DailyQuizScreen() {
   const { status: authStatus } = useAuth();
   const [quizStartedAt, setQuizStartedAt] = useState<number | null>(null);
   const historyLoggedRef = useRef<string | null>(null);
+
+  // 타이머 pulse 애니메이션
+  const timerPulseOpacity = useSharedValue(1);
+  const timerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: timerPulseOpacity.value,
+    };
+  });
+
+  // 완주 celebration 애니메이션
+  const celebrationScale = useSharedValue(1);
+  const celebrationAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: celebrationScale.value }],
+    };
+  });
 
   useEffect(() => {
     if (!dailyQuiz) {
@@ -119,6 +137,13 @@ export default function DailyQuizScreen() {
       recordResult(question, selection, Boolean(isCorrect));
       setSelectedAnswer(selection);
       setPhase('reveal');
+
+      // 햅틱 피드백
+      if (isCorrect) {
+        lightHaptic(); // 정답 시 가벼운 햅틱
+      } else {
+        mediumHaptic(); // 오답 시 중간 햅틱
+      }
     },
     [recordResult],
   );
@@ -134,7 +159,17 @@ export default function DailyQuizScreen() {
           clearInterval(timer);
           return 0;
         }
-        return prev - 1;
+        const next = prev - 1;
+        // 5초, 4초, 3초일 때 경고 햅틱
+        if (next <= 5 && next >= 3) {
+          warningHaptic();
+          // Pulse 애니메이션 시작
+          timerPulseOpacity.value = withSequence(
+            withTiming(0.5, { duration: 250 }),
+            withTiming(1, { duration: 250 })
+          );
+        }
+        return next;
       });
     }, 1000);
     return () => clearInterval(timer);
@@ -261,7 +296,13 @@ export default function DailyQuizScreen() {
       return;
     }
     setPhase('finished');
-  }, [currentIndex, dailyQuiz, goToQuestion, isLastQuestion]);
+    successHaptic(); // 완주 시 성공 햅틱
+    // Celebration 애니메이션
+    celebrationScale.value = withSequence(
+      withTiming(1.05, { duration: 250 }),
+      withTiming(1, { duration: 250 })
+    );
+  }, [celebrationScale, currentIndex, dailyQuiz, goToQuestion, isLastQuestion]);
 
   const handleReset = useCallback(() => {
     setPhase('intro');
@@ -385,9 +426,9 @@ export default function DailyQuizScreen() {
                   긴장감 넘치는 시간 제한 모드
                 </ThemedText>
               </Pressable>
-              <Pressable style={styles.introButton} onPress={() => startQuiz('untimed')}>
-                <ThemedText style={styles.introButtonLabel}>시간 제한 없음</ThemedText>
-                <ThemedText style={styles.introButtonCaption}>여유롭게 문제를 풀어보세요</ThemedText>
+              <Pressable style={[styles.introButton, styles.introUntimed]} onPress={() => startQuiz('untimed')}>
+                <ThemedText style={styles.introButtonLabel} lightColor={Palette.teal600} darkColor={Palette.teal400}>시간 제한 없음</ThemedText>
+                <ThemedText style={styles.introButtonCaption} lightColor={Palette.slate500} darkColor={Palette.slate500}>여유롭게 문제를 풀어보세요</ThemedText>
               </Pressable>
             </View>
           </View>
@@ -405,10 +446,12 @@ export default function DailyQuizScreen() {
             { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl + insets.bottom },
           ]}
         >
-          <ThemedText type="title">오늘의 결과</ThemedText>
-          <ThemedText style={styles.summaryHeadline}>
-            {totalQuestions}문제 중 {correctCount}문제 정답!
-          </ThemedText>
+          <Animated.View style={celebrationAnimatedStyle}>
+            <ThemedText type="title">오늘의 결과</ThemedText>
+            <ThemedText style={styles.summaryHeadline}>
+              {totalQuestions}문제 중 {correctCount}문제 정답!
+            </ThemedText>
+          </Animated.View>
           <View style={styles.summaryStats}>
             <View style={styles.summaryStatCard}>
               <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
@@ -514,17 +557,24 @@ export default function DailyQuizScreen() {
           <View style={styles.badge}>
             <ThemedText style={styles.badgeText}>Q{currentIndex + 1}/{totalQuestions}</ThemedText>
           </View>
-          <View style={styles.timerPill}>
+          <Animated.View style={[
+            styles.timerPill,
+            timerMode === 'timed' && (questionTimeLeft ?? 0) <= 5 && styles.timerPillUrgent,
+            timerMode === 'timed' && (questionTimeLeft ?? 0) <= 5 && timerAnimatedStyle
+          ]}>
             {timerMode === 'timed' ? (
-              <ThemedText style={styles.timerText} lightColor={Palette.slate900} darkColor={Palette.slate900}>
+              <ThemedText style={[
+                styles.timerText,
+                { color: (questionTimeLeft ?? 0) <= 5 ? Palette.coral600 : Palette.teal600 }
+              ]}>
                 남은 시간 {formatSeconds(questionTimeLeft ?? 0)}
               </ThemedText>
             ) : (
-              <ThemedText style={styles.timerText} lightColor={Palette.slate900} darkColor={Palette.slate900}>
+              <ThemedText style={[styles.timerText, { color: Palette.teal600 }]}>
                 시간 제한 없음
               </ThemedText>
             )}
-          </View>
+          </Animated.View>
         </View>
 
         <View style={styles.questionCard}>
@@ -625,7 +675,7 @@ const styles = StyleSheet.create({
     gap: Spacing.lg,
     padding: Spacing.xl,
     borderRadius: Radius.lg,
-    backgroundColor: 'rgba(91, 46, 255, 0.12)',
+    backgroundColor: 'rgba(255, 111, 97, 0.08)',
   },
   introSubtitle: {
     lineHeight: 22,
@@ -639,13 +689,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: 'rgba(91,46,255,0.2)',
+    borderColor: 'rgba(0,194,168,0.3)',
     backgroundColor: 'rgba(255,255,255,0.08)',
     gap: Spacing.xs,
   },
   introTimed: {
-    backgroundColor: Palette.pink500,
+    backgroundColor: Palette.coral600,
     borderColor: 'transparent',
+  },
+  introUntimed: {
+    backgroundColor: 'transparent',
+    borderColor: Palette.teal400,
   },
   introButtonLabel: {
     fontWeight: '700',
@@ -660,7 +714,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: Radius.md,
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
   },
   retryLabel: {
     fontWeight: '600',
@@ -691,17 +745,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.purple200,
+    backgroundColor: Palette.teal200,
   },
   badgeText: {
     fontWeight: '600',
-    color: Palette.purple600,
+    color: Palette.teal600,
   },
   timerPill: {
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.pink200,
+    backgroundColor: Palette.teal200,
+  },
+  timerPillUrgent: {
+    backgroundColor: Palette.coral200,
   },
   timerText: {
     fontWeight: '600',
@@ -731,16 +788,16 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   choiceSelected: {
-    borderColor: Palette.purple600,
-    backgroundColor: 'rgba(91, 46, 255, 0.08)',
+    borderColor: Palette.teal600,
+    backgroundColor: 'rgba(0, 194, 168, 0.08)',
   },
   choiceCorrect: {
-    borderColor: Palette.success,
-    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+    borderColor: Palette.coral600,
+    backgroundColor: 'rgba(255, 111, 97, 0.1)',
   },
   choiceIncorrect: {
-    borderColor: Palette.danger,
-    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+    borderColor: Palette.slate500,
+    backgroundColor: 'rgba(112, 112, 112, 0.1)',
   },
   booleanBadge: {
     width: 48,
@@ -791,7 +848,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
     borderRadius: Radius.md,
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -864,7 +921,9 @@ const styles = StyleSheet.create({
     marginTop: Spacing.lg,
     padding: Spacing.lg,
     borderRadius: Radius.lg,
-    backgroundColor: 'rgba(91, 46, 255, 0.12)',
+    backgroundColor: 'rgba(255, 111, 97, 0.08)',
+    borderWidth: 2,
+    borderColor: Palette.coral200,
     alignItems: 'center',
     gap: Spacing.sm,
   },
@@ -886,7 +945,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xl,
     paddingVertical: Spacing.md,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.pink500,
+    backgroundColor: Palette.coral600,
   },
   shareButtonLabel: {
     fontWeight: '600',

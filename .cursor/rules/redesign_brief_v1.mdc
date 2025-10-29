@@ -1,0 +1,667 @@
+---
+alwaysApply: true
+---
+
+# QuizRoom 리디자인 브리프 (Redesign Brief)
+
+## 1️⃣ 디자인 방향 (한 줄 요약)
+
+**"네온 코랄 & 틸 리듬으로 '빠르고 보상감 있는 퀴즈'의 감정 곡선을 시각화"**
+
+현재 보라·핑크 조합에서 코랄·틸 조합으로 전환하여, 정답 순간의 **흥분(Heat)** → 진행/대기의 **안정(Cool)** → 보상의 **축하(Celebrate)**를 명확히 구분하는 시각 리듬을 만듭니다.
+
+---
+
+## 2️⃣ 핵심 개선 목표
+
+### 1. **감정 곡선 강화**
+- **현재 문제점**: 보라·핑크 조합이 모든 상황에 일관되게 사용돼 '정답 순간'과 '진행 상태'의 구분이 약함
+- **개선 목표**: 코랄(정답/CTA) → 틸(진행) → 엑센트(보상)로 3단계 감정 구분 확립
+- **기대 효과**: 정답 순간의 도파민 피크, 다음 문제 대기의 심리적 쿨다운, 완주 보상의 축하감 극대화
+
+### 2. **시각적 시인성 향상**
+- **현재 문제점**: 타이머·프로그레스·배지가 같은 색(purple/pink)으로 혼재, 긴급도 구분 어려움
+- **개선 목표**: 타이머·진행 표시에 틸, CTA·정답 스파크에 코랄, 배지·보상에 엑센트 고정
+- **기대 효과**: 60초 안에 필수 정보를 빠르게 인지, 실수 방지, 속도감 제고
+
+### 3. **피드백 타이밍 정교화**
+- **현재 문제점**: 정답 후 토스트 표시만으로 순간 피드백이 부족, 지연 느낌
+- **개선 목표**: 햅틱(light) + 컬러 스파크(코랄 0.2초 flash) + 토스트 조합으로 즉각 반응
+- **기대 효과**: 게임감 상승, 보상 만족도 증대, 스트릭 유지 동기 강화
+
+### 4. **라이트/다크 모드 통일성**
+- **현재 문제점**: 다크 모드에서 채도 유지로 눈부심, 브랜드 톤 흐트러짐
+- **개선 목표**: 다크 시 Surface 대비만 조정, 코랄·틸·엑센트는 채도 -10% 제한
+- **기대 효과**: 야간 사용성 개선, 브랜드 일관성 유지
+
+### 5. **한국어 타이포 최적화**
+- **현재 문제점**: system-ui 기본 폰트로 한글 가독성 불균일
+- **개선 목표**: Pretendard(한글) + SF Pro(영문·숫자) 명시적 적용, 타이머·점수 폰트 mono 고정
+- **기대 효과**: 정보 오인식 방지, 프리미엄 느낌, MZ 세대 친화성
+
+---
+
+## 3️⃣ 화면별 개선 포인트
+
+### 🏠 **홈 (home.tsx)**
+
+**현재 상태**
+- 헤더 "QuizRoom" 타이틀: purple600 (tint)
+- 데일리 카드 배경: purple600, 버튼: pink500
+- 스와이프·파티 카드: 중립 card 배경, 버튼: pink500 또는 purple600
+
+**개선 방향**
+- **헤더**: QuizRoom 로고 옆 포인트 아이콘(⚡)을 틸 컬러로 강조, 타이틀은 텍스트 컬러 유지
+- **데일리 카드**: 배경을 오프화이트/그라디언트(coral 10% → 투명)로 변경, CTA 버튼만 코랄 solid
+- **타이머 필**: 틸 배경, 남은 시간 텍스트 진한 틸
+- **스트릭 라벨**: 🔥 이모지 옆 숫자를 엑센트(#FFD166)로 강조
+- **스와이프·파티 버튼**: 틸 primary로 통일(코랄은 데일리 전용)
+- **아바타 프레임**: purple200 → 엑센트 gradient rim(optional)
+
+**컬러 포커스**
+- 데일리: 코랄 CTA + 틸 타이머
+- 스와이프/파티: 틸 버튼 + 중립 배경
+- 스트릭: 엑센트 강조
+
+---
+
+### 📅 **데일리 (daily/index.tsx)**
+
+**현재 상태**
+- Intro 카드: purple 배경 semi-transparent, "10초 타임어택" 버튼: pink500
+- 문제 카드: 배지(Q1/6) purple200, 타이머 pill pink200
+- 정답 후 토스트: success(green), error(red)
+- 결과 화면: 공유 카드 purple 배경
+
+**개선 방향**
+- **Intro 모드 선택**
+  - "타임어택" 버튼: 코랄 solid
+  - "시간제한 없음" 버튼: 틸 outline
+- **문제 진행**
+  - Q1/6 배지: 틸 배경 + 진한 틸 텍스트
+  - 타이머 pill: 틸 배경, 남은 시간 5초 이하 시 코랄로 변환(긴급 신호)
+- **정답 순간**
+  - 정답: 코랄 flash 0.2초 + light haptic + success 토스트(코랄 배경)
+  - 오답: 연한 그레이 flash + 토스트 중립 배경(danger 과도하지 않게)
+- **해설 카드**: 중립 배경, "다음 문제" 버튼은 틸
+- **결과 화면**
+  - 정답률 카드: 엑센트 배경
+  - 공유 버튼: 코랄 solid
+  - "홈으로" 버튼: 틸 outline
+
+**컬러 포커스**
+- 타이머/진행: 틸 (긴급 시 코랄)
+- 정답 스파크: 코랄
+- 결과 배지: 엑센트
+
+---
+
+### 📲 **스와이프 (swipe.tsx, swipe-card.tsx)**
+
+**현재 상태**
+- 카드 배경: card(white), 테두리: border(gray)
+- 정답 후 테두리: success(green), 오답: danger(red)
+- 난이도 표시: ●●○ (textMuted)
+
+**개선 방향**
+- **카드 idle 상태**: 테두리 틸 thin (2px → 1px)
+- **정답 후**: 테두리 코랄 두껍게(3px), 배경 코랄 5% tint
+- **오답 후**: 테두리 중립 그레이, 배경 변경 없음(과도한 빨강 대신)
+- **난이도 표시**: ●를 틸, ○를 muted로 구분
+- **스와이프 가이드**: "→ 다음" 힌트 텍스트에 코랄 포인트
+- **AnswerSheet 선택지**
+  - 선택 시: 틸 outline
+  - 정답 확인 시: 코랄 배경
+  - 오답 시: 중립 그레이 배경
+
+**컬러 포커스**
+- 진행: 틸
+- 정답: 코랄
+- 난이도: 틸 포인트
+
+---
+
+### 🎉 **결과 (공유 카드, result-toast.tsx)**
+
+**현재 상태**
+- 토스트: success(green), error(red), neutral(info blue)
+- 점수·스트릭 메타 정보 동일 배경
+
+**개선 방향**
+- **토스트 배경**
+  - 정답: 코랄(#FF6F61)
+  - 오답: 중립 그레이(#707070)
+  - 보상/완주: 엑센트(#FFD166)
+- **점수 델타**: +10점 → 엑센트 컬러 강조
+- **스트릭**: 🔥 3연속 → 엑센트 배경 pill
+- **공유 카드**
+  - 배경: 오프화이트 + 코랄·틸 그라디언트 라인(테두리)
+  - "공유하기" 버튼: 코랄 solid
+  - 이모지·점수: 엑센트 강조
+
+**컬러 포커스**
+- 정답 순간: 코랄
+- 보상 표시: 엑센트
+- 공유 CTA: 코랄
+
+---
+
+### 🎊 **파티 라이브 (room/[code].tsx, party/play.tsx)**
+
+**현재 상태**
+- 대기실: purple/pink 혼용
+- 리더보드: 1~3등 동일 색상
+- 참여 버튼: purple600
+
+**개선 방향**
+- **대기실**
+  - 배경: 오프화이트
+  - 방 코드: 틸 bold 강조
+  - "준비 완료" 버튼: 틸 solid
+  - 호스트 "시작" 버튼: 코랄 solid
+- **문제 진행**
+  - 타이머: 틸, 5초 이하 코랄
+  - 리더보드: 상위 3명 배경 엑센트 gradient
+- **결과 화면**
+  - 1등: 엑센트 배경 + 코랄 테두리
+  - 2~3등: 엑센트 투명도 50%
+  - 나머지: 중립
+- **리액션 이모지**: 탭 시 코랄 flash, 홀드 시 엑센트 확장
+
+**컬러 포커스**
+- 대기실: 틸 포인트
+- 결과 하이라이트: 코랄 + 엑센트 조합
+
+---
+
+### 👤 **프로필 (profile.tsx)**
+
+**현재 상태**
+- 배지·스탯 카드: 중립 배경
+- 아바타 프레임: purple200
+- CTA 버튼: purple600
+
+**개선 방향**
+- **아바타 프레임**: 엑센트 gradient rim
+- **스트릭 카드**: 🔥 + 엑센트 배경
+- **정답률·XP 아이콘**: 틸 포인트
+- **배지 컬렉션**: 획득 배지 테두리 코랄, 미획득 그레이
+- **CTA(로그아웃·설정)**: 틸 outline
+
+**컬러 포커스**
+- 아이콘·지표: 틸
+- 배지·프레임: 코랄·엑센트
+
+---
+
+## 4️⃣ 시각 톤 & 모션 가이드
+
+### 🎨 **컬러 시스템**
+
+#### **메인 팔레트 (필수 준수)**
+
+| 용도 | 컬러 | 비율 가이드 | 사용 금지 |
+|------|------|------------|---------|
+| **Primary (코랄)** | `#FF6F61` | 화면당 10~15% (CTA, 정답 스파크, 파티 호스트 버튼) | 배경 전체, 타이머 기본 상태 |
+| **Secondary (틸)** | `#00C2A8` | 15~20% (진행 표시, 타이머, 서브 버튼, 난이도) | 오답 표시, 경고 |
+| **Accent (옐로우)** | `#FFD166` | 5~10% (보상, 배지, 스트릭, 1등) | CTA, 배경 전체 |
+| **Background** | `#FDFCFD` | 60~70% (앱 배경) | 카드 배경 직접 사용 금지 |
+| **Surface** | `#1E1E1E` (다크) | 60~70% | 라이트 모드 |
+| **Text Primary** | `#1A1A1A` | 기본 텍스트 | 배경색과 대비 부족 시 |
+| **Text Secondary** | `#707070` | 보조 텍스트, 캡션 | 주요 CTA |
+
+#### **상태별 컬러**
+
+- **Success (정답)**: `#FF6F61` (코랄) — 기존 green 대체
+- **Error (오답)**: `#707070` (중립 그레이) — 기존 red 대신 부드럽게
+- **Warning (긴급)**: `#FF6F61` (코랄) — 타이머 5초 이하
+- **Info (안내)**: `#00C2A8` (틸)
+
+#### **사용 원칙**
+
+1. **코어 리듬**: 코랄로 가열(정답·CTA) → 틸로 쿨다운(진행·안내)
+2. **카드 배경**: 중립(오프화이트) 유지, 포인트는 코랄/틸 10~15% 내
+3. **라이트 테마 기본**, 다크는 Surface 대비만 조정(채도 과다 금지)
+4. **그라디언트**: 코랄→틸 또는 엑센트→투명만 허용, 보라·민트 금지
+
+#### **사용 금지 예시**
+
+- ❌ 코랄 배경 100% (눈부심)
+- ❌ 틸 + 보라 조합 (구 팔레트 혼재)
+- ❌ 엑센트를 CTA 버튼에 단독 사용 (가독성 저하)
+- ❌ 오답 시 빨강(#EF4444) 전체 강조 (부정적)
+
+---
+
+### ✍️ **타이포그래피**
+
+#### **폰트 패밀리**
+
+- **한글**: Pretendard (Regular 400, SemiBold 600, Bold 700)
+- **영문·UI**: SF Pro / -apple-system (iOS), Roboto (Android)
+- **숫자 (타이머·점수)**: SF Pro Rounded / ui-rounded (mono spacing)
+
+#### **폰트 사이즈 스케일**
+
+| 용도 | 사이즈 | Weight | Line Height |
+|------|--------|--------|-------------|
+| **Display (결과 헤드)** | 32px | 700 | 40px |
+| **Title (화면 타이틀)** | 24px | 700 | 32px |
+| **Subtitle (섹션 헤더)** | 20px | 600 | 28px |
+| **Body (본문)** | 16px | 400 | 24px |
+| **Caption (메타)** | 14px | 400 | 20px |
+| **Label (버튼·배지)** | 16px | 600 | - |
+| **Timer (타이머)** | 18px | 600 mono | - |
+
+#### **한글 최적화 원칙**
+
+- 16px 이하 금지 (가독성)
+- 숫자는 반드시 mono spacing (정렬)
+- 버튼 라벨은 SemiBold 이상
+
+---
+
+### 🔲 **카드 & 버튼**
+
+#### **카드 스타일**
+
+- **배경**: 오프화이트(`#FDFCFD`) 또는 중립 card 색
+- **테두리**: 기본 1px `#D9D8E8`, 선택/강조 시 2px 코랄/틸
+- **Border Radius**: 16px (lg), 작은 카드 12px (md)
+- **Shadow**: Y offset 4px, blur 8px, opacity 0.12
+
+#### **버튼 위계**
+
+| 우선순위 | 스타일 | 배경 | 텍스트 | 사용 |
+|---------|-------|------|-------|-----|
+| **Primary CTA** | Solid | 코랄 | #FFFFFF | "퀴즈 시작", "공유", "참여" |
+| **Secondary** | Solid | 틸 | #FFFFFF | "다음", "준비", "취소" |
+| **Tertiary** | Outline | 투명 | 틸/코랄 | "홈으로", "설정" |
+| **Ghost** | 투명 | 투명 | textMuted | "건너뛰기" |
+
+#### **버튼 크기**
+
+- **높이**: 48px (모바일 터치 최소)
+- **Padding**: 수평 24px, 수직 14px
+- **Border Radius**: 24px (pill 권장), 12px (md)
+
+---
+
+### 🎁 **토스트 & 배지**
+
+#### **토스트 (result-toast.tsx)**
+
+- **배경**: 코랄(정답), 그레이(오답), 엑센트(보상)
+- **텍스트**: #FFFFFF, 700 weight
+- **위치**: top, offset 80px
+- **Duration**: 2.5초 (기본), 5초 (CTA 포함 시)
+- **Shadow**: Y 4px, blur 8px
+
+#### **배지 (스트릭·진행)**
+
+- **배경**: 틸/엑센트 10% tint
+- **텍스트**: 진한 틸/엑센트, 600 weight
+- **크기**: 높이 28px, padding 8px 12px
+- **Border Radius**: 999px (pill)
+
+---
+
+### 🎬 **애니메이션 & 햅틱**
+
+#### **모션 원칙**
+
+- **Fast-in (ease-in)**: 0.15초, 사용자 입력 반응
+- **Smooth-out (ease-out)**: 0.3초, 상태 변경 후
+- **Spring**: 카드 스와이프, 선택 애니메이션
+
+#### **시나리오별**
+
+| 이벤트 | 애니메이션 | 햅틱 | Duration |
+|--------|-----------|------|----------|
+| **정답 선택** | 코랄 flash (opacity 0→1→0) | light | 0.2초 |
+| **오답 선택** | 그레이 flash | none | 0.2초 |
+| **완주** | 엑센트 confetti + scale(1.05) | success | 0.5초 |
+| **스트릭 달성** | 🔥 bounce + scale(1.2) | light | 0.3초 |
+| **타이머 5초** | 코랄 pulse 매초 | warning(3초부터) | 1초 loop |
+| **카드 스와이프** | translateX + rotate | selection(시작 시) | spring |
+| **버튼 탭** | scale(0.95) | light | 0.1초 |
+
+#### **햅틱 강도**
+
+- **light**: 정답, 선택, 버튼 탭
+- **medium**: 오답, 페이지 전환
+- **success**: 완주, 배지 획득
+- **warning**: 타이머 긴급(3초부터 매초)
+
+---
+
+## 5️⃣ 적용 우선순위
+
+### ✅ **즉시 반영 (MVP 출시 전 필수)**
+
+| 항목 | 작업 | 기대 효과 | 리스크 |
+|------|------|----------|-------|
+| **1. 컬러 토큰 교체** | theme.ts Palette 전면 수정 | 브랜드 통일, 감정 곡선 명확화 | 기존 하드코딩 색상 누락 주의 |
+| **2. 홈·데일리 CTA** | 코랄 primary 버튼 적용 | 전환율 상승 예상 +15% | 대비 테스트 필수 |
+| **3. 타이머 색상** | 틸 기본, 5초 이하 코랄 | 긴급도 인지 개선 | 색맹 접근성 체크 |
+| **4. 정답 피드백** | 코랄 flash + 햅틱 | 게임감 강화, 보상 만족도 | 과도한 애니메이션 시 피로 |
+
+**예상 공수**: 2~3일 (theme.ts + 주요 화면 4개)
+
+---
+
+### 🔄 **단기 (GA 1주 내)**
+
+| 항목 | 작업 | 기대 효과 | 리스크 |
+|------|------|----------|-------|
+| **5. 폰트 적용** | Pretendard 웹폰트/앱 임베드 | 프리미엄 느낌, 한글 가독성 | 용량 +200KB, 로딩 지연 |
+| **6. 스와이프 카드** | 정답 시 코랄 테두리, 오답 그레이 | 시각 일관성 | 기존 사용자 혼란 최소 |
+| **7. 파티 리더보드** | 엑센트 Top3 강조 | 경쟁 동기 | 색상 과다 시 산만함 |
+| **8. 결과 공유 카드** | 코랄·틸 그라디언트 테두리 | 공유율 상승 예상 +10% | 디자인 정교도 필요 |
+
+**예상 공수**: 3~5일
+
+---
+
+### 📅 **중기 (GA 1개월 내)**
+
+| 항목 | 작업 | 기대 효과 | 리스크 |
+|------|------|----------|-------|
+| **9. 다크 모드 조정** | Surface·채도 -10% | 야간 사용성, 눈 피로 감소 | 다크 사용자 비율 낮으면 우선순위 하락 |
+| **10. 프로필 아이콘** | 틸·엑센트 포인트 | 정보 시인성 | 작업량 소폭 |
+| **11. 애니메이션 세밀화** | Confetti, pulse 타이밍 | 프리미엄 경험 | 성능 이슈 가능 |
+| **12. A/B 테스트** | 코랄 vs 기존 보라 전환율 | 데이터 기반 최적화 | 분석 리소스 필요 |
+
+**예상 공수**: 5~7일
+
+---
+
+## 6️⃣ 디자인 토큰 제안
+
+### 🎨 **Color Tokens (theme.ts 교체안)**
+
+```typescript
+export const Palette = {
+  // Primary (CTA, 정답)
+  coral600: '#FF6F61',
+  coral400: '#FF8F85',
+  coral200: '#FFDBD8',
+  
+  // Secondary (진행, 타이머)
+  teal600: '#00C2A8',
+  teal400: '#33D4BC',
+  teal200: '#B3F0E6',
+  
+  // Accent (보상, 배지)
+  yellow600: '#FFD166',
+  yellow400: '#FFDB85',
+  yellow200: '#FFF0CC',
+  
+  // Neutral
+  slate900: '#1A1A1A',
+  slate500: '#707070',
+  slate200: '#D9D8E8',
+  
+  // Surface
+  surface: '#FDFCFD',      // 라이트 배경
+  surfaceMuted: '#F5F6FB', // 라이트 카드
+  surfaceDark: '#1E1E1E',  // 다크 배경
+  
+  // Status
+  success: '#FF6F61',  // 정답 (코랄)
+  neutral: '#707070',  // 오답 (그레이)
+  warning: '#FF6F61',  // 긴급 (코랄)
+  info: '#00C2A8',     // 안내 (틸)
+};
+
+export const Colors = {
+  light: {
+    // Text
+    text: Palette.slate900,
+    textMuted: Palette.slate500,
+    
+    // Background
+    background: Palette.surface,
+    card: Palette.surfaceMuted,
+    
+    // Brand
+    primary: Palette.coral600,
+    primaryForeground: '#FFFFFF',
+    secondary: Palette.teal600,
+    secondaryForeground: '#FFFFFF',
+    accent: Palette.yellow600,
+    accentForeground: Palette.slate900,
+    
+    // UI
+    border: Palette.slate200,
+    muted: Palette.slate500,
+    
+    // Tab
+    tabIconDefault: Palette.slate500,
+    tabIconSelected: Palette.teal600,
+  },
+  dark: {
+    // Text
+    text: '#F5F4FF',
+    textMuted: '#B6B3D6',
+    
+    // Background
+    background: Palette.surfaceDark,
+    card: '#2A2A2A',
+    
+    // Brand (채도 -10%)
+    primary: '#E65D50',        // 코랄 darker
+    primaryForeground: '#FFFFFF',
+    secondary: '#00A890',      // 틸 darker
+    secondaryForeground: '#FFFFFF',
+    accent: '#E6B84D',         // 옐로우 darker
+    accentForeground: '#1E1E1E',
+    
+    // UI
+    border: '#3A3A3A',
+    muted: '#8A8A8A',
+    
+    // Tab
+    tabIconDefault: '#6F6A9F',
+    tabIconSelected: '#00C2A8',
+  },
+};
+```
+
+---
+
+### 📐 **Spacing (유지, 일부 조정)**
+
+```typescript
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  xxl: 32,
+  xxxl: 48,  // 추가: 큰 여백
+};
+```
+
+---
+
+### 🔘 **Radius (유지)**
+
+```typescript
+export const Radius = {
+  sm: 8,
+  md: 12,
+  lg: 16,   // 기존 20 → 16 (카드 통일)
+  pill: 999,
+};
+```
+
+---
+
+### 🎭 **Typography (추가)**
+
+```typescript
+export const Typography = {
+  display: {
+    fontSize: 32,
+    fontWeight: '700' as const,
+    lineHeight: 40,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700' as const,
+    lineHeight: 32,
+  },
+  subtitle: {
+    fontSize: 20,
+    fontWeight: '600' as const,
+    lineHeight: 28,
+  },
+  body: {
+    fontSize: 16,
+    fontWeight: '400' as const,
+    lineHeight: 24,
+  },
+  caption: {
+    fontSize: 14,
+    fontWeight: '400' as const,
+    lineHeight: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600' as const,
+  },
+  timer: {
+    fontSize: 18,
+    fontWeight: '600' as const,
+    fontVariant: ['tabular-nums'] as const,
+  },
+};
+
+export const Fonts = Platform.select({
+  ios: {
+    sans: '-apple-system',
+    rounded: 'ui-rounded',
+    mono: 'ui-monospace',
+  },
+  android: {
+    sans: 'Roboto',
+    rounded: 'Roboto',
+    mono: 'monospace',
+  },
+  web: {
+    sans: "Pretendard, -apple-system, Roboto, sans-serif",
+    rounded: "'SF Pro Rounded', 'Pretendard', sans-serif",
+    mono: "SFMono-Regular, Menlo, monospace",
+  },
+});
+```
+
+---
+
+### 🎨 **Semantic Tokens (화면별 단축)**
+
+```typescript
+export const Semantic = {
+  home: {
+    dailyBackground: 'linear-gradient(135deg, #FF6F6110, transparent)',
+    dailyButton: Palette.coral600,
+    timerPill: Palette.teal200,
+    streakText: Palette.yellow600,
+    swipeButton: Palette.teal600,
+    partyButton: Palette.teal600,
+  },
+  daily: {
+    progressBadge: Palette.teal200,
+    timerNormal: Palette.teal600,
+    timerUrgent: Palette.coral600,
+    correctFlash: Palette.coral600,
+    wrongFlash: Palette.slate200,
+    nextButton: Palette.teal600,
+    shareButton: Palette.coral600,
+  },
+  swipe: {
+    cardBorder: Palette.teal400,
+    correctBorder: Palette.coral600,
+    difficultyActive: Palette.teal600,
+    difficultyInactive: Palette.slate500,
+  },
+  party: {
+    waitingButton: Palette.teal600,
+    hostStartButton: Palette.coral600,
+    top1Background: Palette.yellow600,
+    top2Background: `${Palette.yellow600}80`,  // 50% opacity
+    top3Background: `${Palette.yellow600}40`,  // 25% opacity
+  },
+  profile: {
+    avatarRim: `linear-gradient(135deg, ${Palette.yellow600}, ${Palette.coral600})`,
+    streakBackground: Palette.yellow200,
+    statIcon: Palette.teal600,
+    badgeEarned: Palette.coral600,
+    badgeLocked: Palette.slate200,
+  },
+};
+```
+
+---
+
+## 7️⃣ 실무 적용 체크리스트
+
+### 📋 **개발 단계**
+
+- [ ] `constants/theme.ts` Palette 교체 (coral, teal, yellow)
+- [ ] 하드코딩 색상 검색 (`#5B2EFF`, `purple600` 등) 및 일괄 변경
+- [ ] Pretendard 폰트 웹/앱 임베드
+- [ ] 홈·데일리·스와이프 주요 버튼 primary → coral
+- [ ] 타이머 pill 틸 적용, 5초 이하 조건부 코랄
+- [ ] 정답 피드백 (flash animation + haptic)
+- [ ] 토스트 배경 코랄/그레이/엑센트 분기
+- [ ] 다크 모드 primary/secondary 채도 -10%
+- [ ] 파티 Top3 엑센트 배경
+- [ ] 프로필 아이콘 틸 포인트
+
+### 🎨 **디자인 검수**
+
+- [ ] Figma 시안 업데이트 (전체 화면)
+- [ ] 컬러 대비 WCAG AA 이상 (4.5:1)
+- [ ] 색맹 시뮬레이션 (Deuteranopia, Protanopia)
+- [ ] 다크 모드 눈부심 체크
+- [ ] 애니메이션 60fps 유지
+- [ ] 햅틱 강도 실기기 테스트
+
+### 📊 **QA & 론치**
+
+- [ ] A/B 테스트 설정 (coral vs 기존 purple CTA)
+- [ ] 주요 화면 스크린샷 업데이트 (앱스토어)
+- [ ] 데일리 완주율, 스와이프 이탈률 추적
+- [ ] 공유율 변화 모니터링 (목표 +10%)
+- [ ] 사용자 피드백 수집 (색상 피로, 가독성)
+
+---
+
+## 8️⃣ 참고 자료
+
+- **컬러 팔레트 시뮬레이터**: [Coolors.co](https://coolors.co/ff6f61-00c2a8-ffd166-fdfcfd-1e1e1e)
+- **Pretendard 폰트**: [GitHub](https://github.com/orioncactus/pretendard)
+- **WCAG 대비 체크**: [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+- **Haptic 가이드**: [iOS Human Interface Guidelines - Playing Haptics](https://developer.apple.com/design/human-interface-guidelines/playing-haptics)
+- **MZ 컬러 트렌드**: 2024 Pantone Peach Fuzz, Gen-Z Yellow
+
+---
+
+## 🎯 마치며
+
+이 브리프는 **QuizRoom의 기능은 유지하되, 시각·감정 경험을 MZ 세대 타깃에 맞춰 재설계**하는 것을 목표로 합니다. 
+
+**코랄·틸·엑센트 3색 리듬**으로 '정답 순간의 흥분 → 진행의 안정 → 보상의 축하'를 명확히 구분하고, Pretendard 폰트·햅틱·애니메이션으로 60초 안에 몰입감과 속도감을 극대화합니다.
+
+즉시 반영 항목(컬러 토큰, CTA, 타이머, 피드백)부터 적용하고, 단기·중기 로드맵에 따라 폰트·다크 모드·A/B 테스트를 순차 진행하시면 됩니다.
+
+Figma 회의에서 이 브리프를 공유하시고, 실무 적용 체크리스트를 팀과 함께 검토하세요! 🚀
+
+---
+
+**문서 버전**: 1.0  
+**작성일**: 2025-10-29  
+**담당**: UX/UI 디자인팀 (AI 어시스턴트 초안)

@@ -236,18 +236,18 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.section}>
-          <View style={[styles.dailyCard, { backgroundColor: Palette.purple600 }]}>
-            <ThemedText type="subtitle" style={styles.dailyTitle} lightColor="#ffffff" darkColor="#ffffff">
+          <View style={[styles.dailyCard, { backgroundColor: cardBackground }]}>
+            <ThemedText type="subtitle" style={styles.dailyTitle} lightColor={Palette.coral600} darkColor={Palette.coral600}>
               {dailyTitleLabel}
             </ThemedText>
-            <ThemedText style={styles.dailyHeadline} lightColor="#ffffff" darkColor="#ffffff">
+            <ThemedText style={styles.dailyHeadline}>
               {dailyHeadline}
             </ThemedText>
-            <ThemedText style={styles.dailyCategory} lightColor="#F5F4FFCC" darkColor="#F5F4FFCC">
+            <ThemedText style={[styles.dailyCategory, { color: muted }]}>
               {dailyCaption}
             </ThemedText>
             <View style={styles.timerPill}>
-              <ThemedText style={styles.timerLabel} lightColor={Palette.purple600} darkColor={Palette.purple600}>
+              <ThemedText style={styles.timerLabel} lightColor={Palette.teal600} darkColor={Palette.teal600}>
                 {timeLeft} 남음
               </ThemedText>
             </View>
@@ -333,7 +333,7 @@ export default function HomeScreen() {
             </Pressable>
             <Link href="/(tabs)/party" asChild>
               <Pressable style={styles.secondaryLink}>
-                <ThemedText style={styles.secondaryLinkLabel} lightColor={Palette.purple600} darkColor={Palette.purple200}>
+                <ThemedText style={styles.secondaryLinkLabel} lightColor={Palette.teal600} darkColor={Palette.teal400}>
                   새 파티 만들기 →
                 </ThemedText>
               </Pressable>
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Palette.purple200,
+    backgroundColor: Palette.yellow200,
   },
   avatarImage: {
     width: '100%',
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.yellow600,
   },
   avatarInitial: {
     fontSize: 28,
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
   },
   streakText: {
     fontWeight: '600',
-    color: Palette.pink500,
+    color: Palette.yellow600,
   },
   guestBanner: {
     borderWidth: 1,
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
   },
   bannerButtonPrimary: {
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
   },
   bannerButtonSecondary: {
     backgroundColor: Palette.surfaceMuted,
@@ -454,6 +454,8 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     padding: Spacing.xl,
     gap: Spacing.lg,
+    borderWidth: 2,
+    borderColor: Palette.coral200,
   },
   dailyTitle: {
     letterSpacing: 1,
@@ -468,7 +470,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   timerPill: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Palette.teal200,
     borderRadius: Radius.pill,
     alignSelf: 'flex-start',
     paddingHorizontal: 16,
@@ -479,7 +481,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   primaryButton: {
-    backgroundColor: Palette.pink500,
+    backgroundColor: Palette.coral600,
     borderRadius: Radius.pill,
     paddingVertical: 14,
     alignItems: 'center',
@@ -510,7 +512,7 @@ const styles = StyleSheet.create({
   },
   swipeButton: {
     marginTop: Spacing.sm,
-    backgroundColor: Palette.pink500,
+    backgroundColor: Palette.teal600,
     borderRadius: Radius.pill,
     paddingVertical: Spacing.md,
     alignItems: 'center',
@@ -549,13 +551,13 @@ const styles = StyleSheet.create({
     color: Palette.slate500,
   },
   joinButton: {
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
     borderRadius: Radius.pill,
     paddingVertical: 14,
     alignItems: 'center',
   },
   joinButtonDisabled: {
-    backgroundColor: Palette.purple200,
+    backgroundColor: Palette.teal200,
   },
   joinButtonLabel: {
     fontSize: 16,

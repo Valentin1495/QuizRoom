@@ -131,9 +131,9 @@ export function SwipeCard({
 
   const statusBorderColor = feedback
     ? feedback.isCorrect
-      ? Palette.success
-      : Palette.danger
-    : borderColor;
+      ? Palette.coral600
+      : Palette.slate500
+    : Palette.teal400;
 
   return (
     <GestureDetector gesture={gesture}>
@@ -155,8 +155,13 @@ export function SwipeCard({
         }
       >
         <View style={styles.header}>
-          <ThemedText style={[styles.difficulty, { color: textMuted }]}>
-            {'●'.repeat(difficultyDots) + '○'.repeat(3 - difficultyDots)}
+          <ThemedText style={styles.difficulty}>
+            <ThemedText lightColor={Palette.teal600} darkColor={Palette.teal400}>
+              {'●'.repeat(difficultyDots)}
+            </ThemedText>
+            <ThemedText lightColor={textMuted} darkColor={textMuted}>
+              {'○'.repeat(3 - difficultyDots)}
+            </ThemedText>
           </ThemedText>
         </View>
 

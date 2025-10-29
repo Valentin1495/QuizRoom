@@ -34,10 +34,10 @@ function ResultToastContent({ text1, props }: ResultToastComponentProps) {
 
   const backgroundColor =
     kind === 'success'
-      ? Palette.success
+      ? Palette.coral600
       : kind === 'error'
-        ? Palette.danger
-        : Palette.info;
+        ? Palette.neutral
+        : Palette.yellow600;
 
   return (
     <View

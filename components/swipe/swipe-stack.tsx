@@ -5,7 +5,6 @@ import {
   BottomSheetView,
   type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
-import * as Haptics from 'expo-haptics';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -22,6 +21,7 @@ import { Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useSwipeFeed, type SwipeFeedQuestion } from '@/lib/feed';
+import { errorHaptic, lightHaptic, mediumHaptic, successHaptic } from '@/lib/haptics';
 import { useMutation } from 'convex/react';
 
 import type { CategoryMeta } from '@/constants/categories';
@@ -227,11 +227,9 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       setFeedback(optimisticFeedback);
       hideResultToast();
       if (optimisticIsCorrect) {
-        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
+        lightHaptic(); // 정답 시 가벼운 햅틱
       } else {
-        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(
-          () => undefined
-        );
+        mediumHaptic(); // 오답 시 중간 햅틱
       }
       showResultToast({
         message: optimisticIsCorrect ? '정답' : '오답',
@@ -284,11 +282,11 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
           setSheetFeedback(confirmedFeedback);
         }
         if (response.isCorrect !== optimisticIsCorrect) {
-          void Haptics.notificationAsync(
-            response.isCorrect
-              ? Haptics.NotificationFeedbackType.Success
-              : Haptics.NotificationFeedbackType.Error
-          ).catch(() => undefined);
+          if (response.isCorrect) {
+            successHaptic(); // 정답으로 정정 시 성공 햅틱
+          } else {
+            errorHaptic(); // 오답으로 정정 시 에러 햅틱
+          }
           if (stillCurrent) {
             setSelectedIndex(choiceIndex);
           }
@@ -332,6 +330,18 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     closeSheet();
     closeActionsSheet();
     closeReportReasonSheet();
+    hideResultToast();
+    setSelectedIndex(null);
+    setFeedback(null);
+    setSheetFeedback(null);
+    setActiveCardHeight(null);
+    setReportReason(null);
+    setReportNotes('');
+    setReportQuestionId(null);
+    setReportSubject(null);
+    setIsSubmittingReport(false);
+    currentQuestionIdRef.current = null;
+    startTimeRef.current = Date.now();
     setSessionStats(INITIAL_SESSION_STATS);
     setSessionId(createSwipeSessionId(filterKey));
     sessionLoggedRef.current = false;
@@ -648,7 +658,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     return (
       <View style={styles.emptyState}>
         {isLoading ? (
-          <ActivityIndicator color={Palette.purple600} />
+          <ActivityIndicator color={Palette.teal600} />
         ) : (
           <ThemedText style={styles.emptyText}>카드를 불러오는 중...</ThemedText>
         )}
@@ -669,8 +679,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               <ThemedText style={styles.completionTitle}>{completionTitle}</ThemedText>
               <ThemedText
                 style={styles.completionHighlight}
-                lightColor={Palette.purple600}
-                darkColor={Palette.purple200}
+                lightColor={Palette.coral600}
+                darkColor={Palette.coral400}
               >
                 {completionHighlight}
               </ThemedText>
@@ -687,7 +697,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                   <ThemedText style={styles.completionMetricValue}>{totalScoreLabel}</ThemedText>
                 </View>
               </View>
-              <ThemedText style={styles.completionNote} lightColor="#6F6A9F" darkColor="#B8B4D9">
+              <ThemedText style={styles.completionNote} lightColor={Palette.slate500} darkColor={Palette.slate500}>
                 다시 도전해서 연속 정답 횟수를 늘려보세요.
               </ThemedText>
               <View style={styles.completionActions}>
@@ -926,13 +936,13 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6F6A9F',
+    color: Palette.slate500,
   },
   sheetLink: {
     paddingHorizontal: Spacing.sm,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.purple200 + '55',
+    backgroundColor: Palette.teal200 + '55',
   },
   sheetLinkHidden: {
     opacity: 0,
@@ -940,7 +950,7 @@ const styles = StyleSheet.create({
   sheetLinkText: {
     fontSize: 12,
     fontWeight: '600',
-    color: Palette.purple600,
+    color: Palette.teal600,
   },
   sheetLinkTextHidden: {
     color: 'transparent',
@@ -950,8 +960,8 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     borderRadius: Radius.lg,
     borderWidth: 1,
-    borderColor: Palette.purple200,
-    backgroundColor: Palette.purple200 + '22',
+    borderColor: Palette.coral200,
+    backgroundColor: 'rgba(255, 111, 97, 0.08)', // Coral tint
   },
   completionTitle: {
     fontSize: 18,
@@ -963,7 +973,7 @@ const styles = StyleSheet.create({
   },
   completionContext: {
     fontSize: 13,
-    color: '#6F6A9F',
+    color: Palette.slate500,
   },
   completionMetrics: {
     flexDirection: 'row',
@@ -975,13 +985,13 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: Palette.purple200 + '22',
+    backgroundColor: 'rgba(0, 194, 168, 0.08)', // Teal tint
     borderWidth: 1,
-    borderColor: Palette.purple200,
+    borderColor: Palette.teal200,
   },
   completionMetricLabel: {
     fontSize: 12,
-    color: '#6F6A9F',
+    color: Palette.slate500,
     marginBottom: Spacing.xs,
   },
   completionMetricValue: {
@@ -997,7 +1007,7 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     flex: 1,
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.coral600,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.md,
     alignItems: 'center',
@@ -1008,14 +1018,14 @@ const styles = StyleSheet.create({
   secondaryButton: {
     flex: 1,
     borderWidth: 1,
-    borderColor: Palette.purple600,
+    borderColor: Palette.teal600,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.md,
     alignItems: 'center',
   },
   secondaryButtonLabel: {
     fontWeight: '600',
-    color: Palette.purple600,
+    color: Palette.teal600,
   },
   emptyState: {
     flex: 1,
@@ -1054,7 +1064,7 @@ const styles = StyleSheet.create({
   },
   reportSubtitle: {
     fontSize: 13,
-    color: '#6F6A9F',
+    color: Palette.slate500,
   },
   reportOptions: {
     gap: Spacing.sm,
@@ -1064,23 +1074,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: Palette.purple200,
+    borderColor: Palette.teal200,
   },
   reportOptionSelected: {
-    borderColor: Palette.purple600,
-    backgroundColor: Palette.purple200 + '44',
+    borderColor: Palette.teal600,
+    backgroundColor: 'rgba(0, 194, 168, 0.12)', // Teal tint
   },
   reportOptionLabel: {
     fontSize: 15,
     fontWeight: '600',
   },
   reportOptionLabelSelected: {
-    color: Palette.purple600,
+    color: Palette.teal600,
   },
   reportInput: {
     minHeight: 96,
     borderWidth: 1,
-    borderColor: Palette.purple200,
+    borderColor: Palette.teal200,
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
@@ -1092,7 +1102,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: Palette.purple200,
+    borderColor: Palette.teal200,
   },
   actionButtonLabel: {
     fontSize: 16,
@@ -1102,7 +1112,7 @@ const styles = StyleSheet.create({
   actionCancelButton: {
     paddingVertical: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.coral600,
     alignItems: 'center',
   },
   actionCancelLabel: {
@@ -1112,12 +1122,12 @@ const styles = StyleSheet.create({
   reportSubmitButton: {
     marginTop: Spacing.xs,
     borderRadius: Radius.md,
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.coral600,
     paddingVertical: Spacing.md,
     alignItems: 'center',
   },
   reportSubmitButtonDisabled: {
-    backgroundColor: Palette.purple200,
+    backgroundColor: Palette.teal200,
   },
   reportSubmitLabel: {
     fontWeight: '600',
@@ -1139,12 +1149,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: Palette.purple200 + '33',
+    backgroundColor: 'rgba(0, 194, 168, 0.12)', // Teal tint
   },
   sheetStatLabel: {
     fontSize: 12,
     marginBottom: 4,
-    color: '#6F6A9F',
+    color: Palette.slate500,
   },
   sheetStatValue: {
     fontSize: 16,
@@ -1153,7 +1163,7 @@ const styles = StyleSheet.create({
   sheetCloseButton: {
     marginTop: Spacing.sm,
     borderRadius: Radius.md,
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.coral600,
     paddingVertical: Spacing.sm,
     alignItems: 'center',
   },
@@ -1165,7 +1175,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
   },
   reloadText: {
     color: '#fff',

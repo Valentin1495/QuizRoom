@@ -274,7 +274,7 @@ export default function PartyRoomScreen() {
   if (lobby === undefined) {
     return (
       <ThemedView style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={Palette.purple600} />
+        <ActivityIndicator size="large" color={Palette.teal600} />
         <ThemedText style={styles.statusText}>파티 정보를 불러오는 중...</ThemedText>
       </ThemedView>
     );
@@ -411,8 +411,8 @@ export default function PartyRoomScreen() {
                 styles.readyButtonLabel,
                 isSelfReady ? styles.readyButtonLabelActive : null,
               ]}
-              lightColor={isSelfReady ? '#fff' : Palette.purple600}
-              darkColor={isSelfReady ? '#fff' : Palette.purple200}
+              lightColor={isSelfReady ? '#fff' : Palette.teal600}
+              darkColor={isSelfReady ? '#fff' : Palette.teal400}
             >
               {isSelfReady ? '준비 취소' : '준비 완료'}
             </ThemedText>
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.xs,
   },
   headerLeaveLabel: {
-    color: Palette.purple600,
+    color: Palette.teal600,
     fontWeight: '600',
   },
   header: {
@@ -479,17 +479,17 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.xs,
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.pill,
-    backgroundColor: 'rgba(91, 46, 255, 0.12)',
+    backgroundColor: Palette.teal200,
   },
   codeBadgeText: {
     fontWeight: '600',
-    color: Palette.purple600,
+    color: Palette.teal600,
   },
   deckCard: {
     marginTop: Spacing.sm,
     padding: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: 'rgba(91, 46, 255, 0.08)',
+    backgroundColor: 'rgba(0, 194, 168, 0.08)',
     gap: Spacing.xs,
   },
   deckCardTitle: {
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   deckCardWarning: {
-    color: Palette.pink500,
+    color: Palette.coral600,
     fontSize: 12,
     fontWeight: '600',
   },
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: Spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(91, 46, 255, 0.2)',
+    borderBottomColor: Palette.teal200,
   },
   participantInfo: {
     flexDirection: 'row',
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   readyBadgeReady: {
-    backgroundColor: Palette.success,
+    backgroundColor: Palette.teal600,
   },
   readyBadgeWaiting: {
     backgroundColor: Palette.slate500,
@@ -567,12 +567,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.sm,
     paddingVertical: 2,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.purple200,
+    backgroundColor: Palette.yellow200,
   },
   hostBadgeLabel: {
     fontSize: 11,
     fontWeight: '700',
-    color: Palette.purple600,
+    color: Palette.yellow600,
   },
   emptyText: {
     color: Palette.slate500,
@@ -590,15 +590,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xl,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: Palette.purple600,
+    borderColor: Palette.teal600,
     alignItems: 'center',
   },
   readyButtonActive: {
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
   },
   readyButtonLabel: {
     fontWeight: '600',
-    color: Palette.purple600,
+    color: Palette.teal600,
   },
   readyButtonLabelActive: {
     color: '#ffffff',
@@ -618,7 +618,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: Radius.md,
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
     alignItems: 'center',
   },
   buttonText: {
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: Radius.md,
-    backgroundColor: Palette.pink500,
+    backgroundColor: Palette.coral600,
     alignItems: 'center',
   },
   primaryButtonText: {
@@ -640,7 +640,9 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
     borderRadius: Radius.md,
-    backgroundColor: 'rgba(91, 46, 255, 0.12)',
+    backgroundColor: 'rgba(255, 111, 97, 0.08)',
+    borderWidth: 1,
+    borderColor: Palette.coral200,
     marginBottom: Spacing.md,
     gap: Spacing.sm,
   },

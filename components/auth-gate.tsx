@@ -63,7 +63,7 @@ export function AuthGate({ children }: AuthGateProps) {
           <ThemedText style={styles.message}>{helper}</ThemedText>
         ) : null}
         {isLoading ? (
-          <ActivityIndicator size="large" color={Palette.purple600} />
+          <ActivityIndicator size="large" color={Palette.teal600} />
         ) : (
           <>
             <View style={styles.buttonWrapper}>

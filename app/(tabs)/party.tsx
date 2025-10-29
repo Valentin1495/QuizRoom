@@ -229,7 +229,7 @@ export default function PartyScreen() {
           </Pressable>
           <View style={styles.deckList}>
             {isDecksLoading ? (
-              <ActivityIndicator color={Palette.purple600} />
+              <ActivityIndicator color={Palette.teal600} />
             ) : partyDecks.length > 0 ? (
               partyDecks.map((deck) => {
                 const isSelected = deck.id === selectedDeckId;
@@ -296,7 +296,9 @@ const styles = StyleSheet.create({
   card: {
     padding: Spacing.xl,
     borderRadius: Radius.lg,
-    backgroundColor: 'rgba(91, 46, 255, 0.12)',
+    backgroundColor: 'rgba(0, 194, 168, 0.08)',
+    borderWidth: 2,
+    borderColor: Palette.teal200,
     gap: Spacing.md,
   },
   cardTitle: {
@@ -309,7 +311,7 @@ const styles = StyleSheet.create({
   },
   codeInput: {
     borderWidth: 1,
-    borderColor: 'rgba(91, 46, 255, 0.35)',
+    borderColor: Palette.teal400,
     borderRadius: Radius.md,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
@@ -320,7 +322,7 @@ const styles = StyleSheet.create({
   },
   nicknameInput: {
     borderWidth: 1,
-    borderColor: 'rgba(91, 46, 255, 0.2)',
+    borderColor: Palette.teal200,
     borderRadius: Radius.md,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
@@ -338,10 +340,10 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
   },
   primaryButtonDisabled: {
-    backgroundColor: Palette.purple200,
+    backgroundColor: Palette.teal200,
   },
   primaryButtonLabel: {
     fontWeight: '600',
@@ -352,7 +354,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Palette.pink500,
+    backgroundColor: Palette.coral600,
   },
   secondaryButtonDisabled: {
     opacity: 0.7,
@@ -366,7 +368,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Palette.purple600,
+    backgroundColor: Palette.teal600,
   },
   randomButtonActive: {
     opacity: 0.7,
@@ -393,7 +395,7 @@ const styles = StyleSheet.create({
   },
   deckOption: {
     borderWidth: 1,
-    borderColor: 'rgba(91, 46, 255, 0.2)',
+    borderColor: Palette.teal200,
     borderRadius: Radius.md,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
@@ -403,8 +405,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   deckOptionSelected: {
-    borderColor: Palette.purple600,
-    backgroundColor: 'rgba(91, 46, 255, 0.12)',
+    borderColor: Palette.teal600,
+    backgroundColor: 'rgba(0, 194, 168, 0.12)',
   },
   deckOptionTitle: {
     fontWeight: '700',

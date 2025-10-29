@@ -6,46 +6,95 @@
 import { Platform } from 'react-native';
 
 export const Palette = {
-  purple600: '#5B2EFF',
-  purple400: '#8B66FF',
-  purple200: '#E8E1FF',
-  pink500: '#FF5DA2',
-  pink200: '#FFD2EA',
-  slate900: '#120D24',
-  slate500: '#5A5680',
+  // Primary (CTA, 정답)
+  coral600: '#FF6F61',
+  coral400: '#FF8F85',
+  coral200: '#FFDBD8',
+
+  // Secondary (진행, 타이머)
+  teal600: '#00C2A8',
+  teal400: '#33D4BC',
+  teal200: '#B3F0E6',
+
+  // Accent (보상, 배지)
+  yellow600: '#FFD166',
+  yellow400: '#FFDB85',
+  yellow200: '#FFF0CC',
+
+  // Neutral
+  slate900: '#1A1A1A',
+  slate500: '#707070',
   slate200: '#D9D8E8',
-  surface: '#FFFFFF',
+
+  // Surface
+  surface: '#FDFCFD',
   surfaceMuted: '#F5F6FB',
-  success: '#22C55E',
-  warning: '#F59E0B',
-  danger: '#EF4444',
-  info: '#3B82F6',
+  surfaceDark: '#1E1E1E',
+
+  // Status
+  success: '#FF6F61',  // 정답 (코랄)
+  neutral: '#707070',  // 오답 (그레이)
+  warning: '#FF6F61',  // 긴급 (코랄)
+  info: '#00C2A8',     // 안내 (틸)
+  danger: '#EF4444',   // 오류 (기존 유지)
 };
 
 export const Colors = {
   light: {
+    // Text
     text: Palette.slate900,
     textMuted: Palette.slate500,
-    background: Palette.surfaceMuted,
-    card: Palette.surface,
-    tint: Palette.purple600,
-    accent: Palette.pink500,
+
+    // Background
+    background: Palette.surface,
+    card: Palette.surfaceMuted,
+
+    // Brand
+    primary: Palette.coral600,
+    primaryForeground: '#FFFFFF',
+    secondary: Palette.teal600,
+    secondaryForeground: '#FFFFFF',
+    accent: Palette.yellow600,
+    accentForeground: Palette.slate900,
+
+    // Legacy (for backward compatibility)
+    tint: Palette.teal600,
+
+    // UI
     border: Palette.slate200,
     icon: Palette.slate500,
+
+    // Tab
     tabIconDefault: Palette.slate500,
-    tabIconSelected: Palette.purple600,
+    tabIconSelected: Palette.teal600,
   },
   dark: {
+    // Text
     text: '#F5F4FF',
     textMuted: '#B6B3D6',
-    background: '#0B0718',
-    card: '#181131',
-    tint: Palette.purple400,
-    accent: Palette.pink500,
-    border: '#2D2550',
-    icon: '#928EC7',
+
+    // Background
+    background: Palette.surfaceDark,
+    card: '#2A2A2A',
+
+    // Brand (채도 -10%)
+    primary: '#E65D50',        // 코랄 darker
+    primaryForeground: '#FFFFFF',
+    secondary: '#00A890',      // 틸 darker
+    secondaryForeground: '#FFFFFF',
+    accent: '#E6B84D',         // 옐로우 darker
+    accentForeground: '#1E1E1E',
+
+    // Legacy (for backward compatibility)
+    tint: '#00A890',
+
+    // UI
+    border: '#3A3A3A',
+    icon: '#8A8A8A',
+
+    // Tab
     tabIconDefault: '#6F6A9F',
-    tabIconSelected: Palette.purple400,
+    tabIconSelected: '#00C2A8',
   },
 };
 
@@ -61,7 +110,7 @@ export const Spacing = {
 export const Radius = {
   sm: 8,
   md: 12,
-  lg: 20,
+  lg: 16,  // 기존 20 → 16 (카드 통일)
   pill: 999,
 };
 
