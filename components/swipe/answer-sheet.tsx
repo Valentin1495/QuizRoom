@@ -2,7 +2,8 @@ import { memo, useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 type Choice = {
@@ -27,6 +28,8 @@ function AnswerSheetComponent({
   correctIndex,
   onSelect,
 }: AnswerSheetProps) {
+  const colorScheme = useColorScheme();
+  const palette = Colors[colorScheme ?? 'light'];
   const baseColor = useThemeColor({}, 'card');
   const borderColor = useThemeColor({}, 'border');
   const textColor = useThemeColor({}, 'text');
@@ -53,19 +56,19 @@ function AnswerSheetComponent({
         const isDisabled = disabled || correctIndex !== undefined;
         const backgroundColor =
           variant === 'correct'
-            ? Palette.coral600
+            ? palette.success
             : variant === 'incorrect'
-              ? Palette.slate200
+              ? Palette.gray100
               : variant === 'selected'
-                ? Palette.teal200
+                ? Palette.gray200
                 : baseColor;
         const color =
           variant === 'correct'
             ? '#ffffff'
             : variant === 'incorrect'
-              ? Palette.slate900
+              ? Palette.gray950
               : variant === 'selected'
-                ? Palette.teal600
+                ? Palette.gray900
                 : textColor;
 
         return (

@@ -17,9 +17,10 @@ import {
 
 import { hideResultToast, showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSwipeFeed, type SwipeFeedQuestion } from '@/lib/feed';
 import { errorHaptic, lightHaptic, mediumHaptic, successHaptic } from '@/lib/haptics';
 import { useMutation } from 'convex/react';
@@ -79,6 +80,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     isGuest,
   } = useSwipeFeed({ category, tags, limit: 20 });
   const { signInWithGoogle, status: authStatus } = useAuth();
+  const colorScheme = useColorScheme();
+  const palette = Colors[colorScheme ?? 'light'];
   const logHistory = useMutation(api.history.logEntry);
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
 
@@ -658,7 +661,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     return (
       <View style={styles.emptyState}>
         {isLoading ? (
-          <ActivityIndicator color={Palette.teal600} />
+          <ActivityIndicator color={palette.secondary} />
         ) : (
           <ThemedText style={styles.emptyText}>카드를 불러오는 중...</ThemedText>
         )}
@@ -679,8 +682,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               <ThemedText style={styles.completionTitle}>{completionTitle}</ThemedText>
               <ThemedText
                 style={styles.completionHighlight}
-                lightColor={Palette.coral600}
-                darkColor={Palette.coral400}
+                lightColor={palette.primary}
+                darkColor={palette.primary}
               >
                 {completionHighlight}
               </ThemedText>
@@ -697,7 +700,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                   <ThemedText style={styles.completionMetricValue}>{totalScoreLabel}</ThemedText>
                 </View>
               </View>
-              <ThemedText style={styles.completionNote} lightColor={Palette.slate500} darkColor={Palette.slate500}>
+              <ThemedText style={styles.completionNote} lightColor={palette.textMuted} darkColor={palette.textMuted}>
                 다시 도전해서 연속 정답 횟수를 늘려보세요.
               </ThemedText>
               <View style={styles.completionActions}>
@@ -936,13 +939,13 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontWeight: '600',
-    color: Palette.slate500,
+    color: Palette.gray500,
   },
   sheetLink: {
     paddingHorizontal: Spacing.sm,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.teal200 + '55',
+    backgroundColor: Palette.gray100 + '55',
   },
   sheetLinkHidden: {
     opacity: 0,
@@ -950,7 +953,7 @@ const styles = StyleSheet.create({
   sheetLinkText: {
     fontSize: 12,
     fontWeight: '600',
-    color: Palette.teal600,
+    color: Palette.gray600,
   },
   sheetLinkTextHidden: {
     color: 'transparent',
@@ -960,8 +963,8 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     borderRadius: Radius.lg,
     borderWidth: 1,
-    borderColor: Palette.coral200,
-    backgroundColor: 'rgba(255, 111, 97, 0.08)', // Coral tint
+    borderColor: Palette.gray100,
+    backgroundColor: 'rgba(229, 229, 229, 0.08)', // Neutral tint
   },
   completionTitle: {
     fontSize: 18,
@@ -973,7 +976,7 @@ const styles = StyleSheet.create({
   },
   completionContext: {
     fontSize: 13,
-    color: Palette.slate500,
+    color: Palette.gray500,
   },
   completionMetrics: {
     flexDirection: 'row',
@@ -985,13 +988,13 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: 'rgba(0, 194, 168, 0.08)', // Teal tint
+    backgroundColor: 'rgba(229, 229, 229, 0.08)', // Neutral tint
     borderWidth: 1,
-    borderColor: Palette.teal200,
+    borderColor: Palette.gray100,
   },
   completionMetricLabel: {
     fontSize: 12,
-    color: Palette.slate500,
+    color: Palette.gray500,
     marginBottom: Spacing.xs,
   },
   completionMetricValue: {
@@ -1007,7 +1010,7 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     flex: 1,
-    backgroundColor: Palette.coral600,
+    backgroundColor: Palette.gray900,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.md,
     alignItems: 'center',
@@ -1018,14 +1021,14 @@ const styles = StyleSheet.create({
   secondaryButton: {
     flex: 1,
     borderWidth: 1,
-    borderColor: Palette.teal600,
+    borderColor: Palette.gray500,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.md,
     alignItems: 'center',
   },
   secondaryButtonLabel: {
     fontWeight: '600',
-    color: Palette.teal600,
+    color: Palette.gray500,
   },
   emptyState: {
     flex: 1,
@@ -1064,7 +1067,7 @@ const styles = StyleSheet.create({
   },
   reportSubtitle: {
     fontSize: 13,
-    color: Palette.slate500,
+    color: Palette.gray500,
   },
   reportOptions: {
     gap: Spacing.sm,
@@ -1074,23 +1077,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: Palette.teal200,
+    borderColor: Palette.gray100,
   },
   reportOptionSelected: {
-    borderColor: Palette.teal600,
-    backgroundColor: 'rgba(0, 194, 168, 0.12)', // Teal tint
+    borderColor: Palette.gray600,
+    backgroundColor: 'rgba(102, 102, 102, 0.12)', // Neutral tint
   },
   reportOptionLabel: {
     fontSize: 15,
     fontWeight: '600',
   },
   reportOptionLabelSelected: {
-    color: Palette.teal600,
+    color: Palette.gray600,
   },
   reportInput: {
     minHeight: 96,
     borderWidth: 1,
-    borderColor: Palette.teal200,
+    borderColor: Palette.gray100,
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
@@ -1102,7 +1105,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: Palette.teal200,
+    borderColor: Palette.gray100,
   },
   actionButtonLabel: {
     fontSize: 16,
@@ -1112,7 +1115,7 @@ const styles = StyleSheet.create({
   actionCancelButton: {
     paddingVertical: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: Palette.coral600,
+    backgroundColor: Palette.gray900,
     alignItems: 'center',
   },
   actionCancelLabel: {
@@ -1122,12 +1125,12 @@ const styles = StyleSheet.create({
   reportSubmitButton: {
     marginTop: Spacing.xs,
     borderRadius: Radius.md,
-    backgroundColor: Palette.coral600,
+    backgroundColor: Palette.gray900,
     paddingVertical: Spacing.md,
     alignItems: 'center',
   },
   reportSubmitButtonDisabled: {
-    backgroundColor: Palette.teal200,
+    backgroundColor: Palette.gray100,
   },
   reportSubmitLabel: {
     fontWeight: '600',
@@ -1149,12 +1152,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: 'rgba(0, 194, 168, 0.12)', // Teal tint
+    backgroundColor: 'rgba(229, 229, 229, 0.12)', // Neutral tint
   },
   sheetStatLabel: {
     fontSize: 12,
     marginBottom: 4,
-    color: Palette.slate500,
+    color: Palette.gray500,
   },
   sheetStatValue: {
     fontSize: 16,
@@ -1163,7 +1166,7 @@ const styles = StyleSheet.create({
   sheetCloseButton: {
     marginTop: Spacing.sm,
     borderRadius: Radius.md,
-    backgroundColor: Palette.coral600,
+    backgroundColor: Palette.gray900,
     paddingVertical: Spacing.sm,
     alignItems: 'center',
   },
@@ -1175,7 +1178,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.teal600,
+    backgroundColor: Palette.gray500,
   },
   reloadText: {
     color: '#fff',

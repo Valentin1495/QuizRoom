@@ -16,10 +16,11 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { categories } from '@/constants/categories';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Colors, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import type { Doc } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useQuery } from 'convex/react';
 
@@ -31,6 +32,9 @@ export default function ProfileScreen() {
   const { status, user, signOut, signInWithGoogle } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const insets = useSafeAreaInsets();
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+  const mutedColor = useThemeColor({}, 'textMuted');
 
   const isLoading = status === 'loading';
   const isAuthorizing = status === 'authorizing' || status === 'upgrading';
@@ -82,8 +86,10 @@ export default function ProfileScreen() {
   if (isLoading) {
     return (
       <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Palette.teal600} />
-        <ThemedText style={styles.loadingLabel}>프로필을 불러오는 중이에요...</ThemedText>
+        <ActivityIndicator size="large" color={themeColors.primary} />
+        <ThemedText style={[styles.loadingLabel, { color: mutedColor }]}>
+          프로필을 불러오는 중이에요...
+        </ThemedText>
       </ThemedView>
     );
   }
@@ -132,7 +138,12 @@ export default function ProfileScreen() {
 
 function Card({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   const cardColor = useThemeColor({}, 'card');
-  return <View style={[styles.card, { backgroundColor: cardColor }, style]}>{children}</View>;
+  const cardBorder = useThemeColor({}, 'border');
+  return (
+    <View style={[styles.card, { backgroundColor: cardColor, borderColor: cardBorder }, style]}>
+      {children}
+    </View>
+  );
 }
 
 function ProfileHeader({
@@ -148,16 +159,28 @@ function ProfileHeader({
     user.streak > 0
       ? `🔥 연속 ${user.streak}일 출석 중`
       : '퀴즈에 도전하고 스트릭을 쌓아보세요!';
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+  const mutedColor = useThemeColor({}, 'textMuted');
+  const accentBackground = themeColors.accent;
+  const accentBorder = themeColors.borderStrong ?? themeColors.border;
+  const fallbackBackground = themeColors.primary;
+  const fallbackForeground = themeColors.primaryForeground;
 
   return (
     <Card>
       <View style={styles.headerRow}>
-        <View style={styles.avatarFrame}>
+        <View
+          style={[
+            styles.avatarFrame,
+            { backgroundColor: accentBackground, borderColor: accentBorder },
+          ]}
+        >
           {user.avatarUrl ? (
             <Image source={{ uri: user.avatarUrl }} style={styles.avatarImage} />
           ) : (
-            <View style={styles.avatarFallback}>
-              <ThemedText style={styles.avatarInitial}>
+            <View style={[styles.avatarFallback, { backgroundColor: fallbackBackground }]}>
+              <ThemedText style={[styles.avatarInitial, { color: fallbackForeground }]}>
                 {user.handle.slice(0, 1).toUpperCase()}
               </ThemedText>
             </View>
@@ -165,9 +188,7 @@ function ProfileHeader({
         </View>
         <View style={styles.headerContent}>
           <ThemedText type="subtitle">{user.handle}</ThemedText>
-          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
-            {statusLine}
-          </ThemedText>
+          <ThemedText style={[styles.statusText, { color: mutedColor }]}>{statusLine}</ThemedText>
         </View>
       </View>
       <View style={styles.headerActions}>
@@ -187,15 +208,30 @@ function GuestHeader({
   onAppleLogin: () => void;
   isLoading: boolean;
 }) {
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+  const mutedColor = useThemeColor({}, 'textMuted');
+  const guestAvatarBackground =
+    colorScheme === 'dark' ? themeColors.cardElevated : themeColors.card;
+  const guestAvatarBorder = themeColors.border;
+
   return (
     <Card>
       <View style={styles.headerRow}>
-        <View style={[styles.avatarFrame, styles.guestAvatar]}>
-          <ThemedText style={styles.avatarInitial}>?</ThemedText>
+        <View
+          style={[
+            styles.avatarFrame,
+            {
+              backgroundColor: guestAvatarBackground,
+              borderColor: guestAvatarBorder,
+            },
+          ]}
+        >
+          <ThemedText style={[styles.avatarInitial, { color: themeColors.text }]}>?</ThemedText>
         </View>
         <View style={styles.headerContent}>
           <ThemedText type="subtitle">게스트 사용자</ThemedText>
-          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
+          <ThemedText style={[styles.statusText, { color: mutedColor }]}>
             로그인하고 나만의 퀴즈 히스토리를 쌓아보세요!
           </ThemedText>
         </View>
@@ -225,12 +261,16 @@ function QuizHistoryPanel({
   onLogin: () => void;
   loginLoading: boolean;
 }) {
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+  const mutedColor = useThemeColor({}, 'textMuted');
+
   if (!isAuthenticated) {
     return (
       <Card>
         <View style={styles.sectionStack}>
           <ThemedText type="subtitle">나의 퀴즈 히스토리</ThemedText>
-          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
+          <ThemedText style={[styles.statusText, { color: mutedColor }]}>
             로그인하고 내가 푼 퀴즈 기록을 확인해보세요.
           </ThemedText>
           <ActionButton
@@ -249,8 +289,8 @@ function QuizHistoryPanel({
     return (
       <Card>
         <View style={[styles.sectionStack, styles.historyLoading]}>
-          <ActivityIndicator color={Palette.teal600} />
-          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
+          <ActivityIndicator color={themeColors.primary} />
+          <ThemedText style={[styles.statusText, { color: mutedColor }]}>
             기록을 불러오는 중이에요...
           </ThemedText>
         </View>
@@ -266,7 +306,7 @@ function QuizHistoryPanel({
       <Card>
         <View style={styles.sectionStack}>
           <ThemedText type="subtitle">나의 퀴즈 히스토리</ThemedText>
-          <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
+          <ThemedText style={[styles.statusText, { color: mutedColor }]}>
             아직 저장된 기록이 없어요. 퀴즈를 플레이하면 여기에 기록이 쌓입니다.
           </ThemedText>
         </View>
@@ -282,19 +322,19 @@ function QuizHistoryPanel({
           title="데일리 퀴즈"
           entries={history.daily}
           emptyLabel="데일리 퀴즈를 완료하면 기록이 저장돼요."
-          renderItem={renderDailyHistoryEntry}
+          renderItem={(entry) => <DailyHistoryRow key={entry._id} entry={entry} />}
         />
         <HistorySection
           title="스와이프"
           entries={history.swipe}
           emptyLabel="스와이프 세션을 완주하면 기록을 확인할 수 있어요."
-          renderItem={renderSwipeHistoryEntry}
+          renderItem={(entry) => <SwipeHistoryRow key={entry._id} entry={entry} />}
         />
         <HistorySection
           title="파티 라이브"
           entries={history.party}
           emptyLabel="파티 라이브에 참여하면 결과가 기록돼요."
-          renderItem={renderPartyHistoryEntry}
+          renderItem={(entry) => <PartyHistoryRow key={entry._id} entry={entry} />}
         />
       </View>
     </Card>
@@ -312,13 +352,15 @@ function HistorySection({
   renderItem: (entry: QuizHistoryDoc) => ReactNode;
   emptyLabel: string;
 }) {
+  const mutedColor = useThemeColor({}, 'textMuted');
+
   return (
     <View style={styles.historySection}>
       <ThemedText style={styles.historySectionTitle}>{title}</ThemedText>
       {entries.length ? (
         <View style={styles.historyList}>{entries.map(renderItem)}</View>
       ) : (
-        <ThemedText style={styles.historyEmpty}>{emptyLabel}</ThemedText>
+        <ThemedText style={[styles.historyEmpty, { color: mutedColor }]}>{emptyLabel}</ThemedText>
       )}
     </View>
   );
@@ -387,7 +429,7 @@ function computeAccuracy(correct: number, total: number) {
   return Math.round((correct / total) * 100);
 }
 
-function renderDailyHistoryEntry(entry: QuizHistoryDoc) {
+function DailyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   const payload = entry.payload as DailyHistoryPayload;
   const accuracy = computeAccuracy(payload.correct, payload.total);
   const durationLabel = formatSecondsLabel(payload.durationMs);
@@ -402,43 +444,70 @@ function renderDailyHistoryEntry(entry: QuizHistoryDoc) {
   if (durationLabel) {
     detailParts.push(durationLabel);
   }
+
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+  const subtleColor = useThemeColor({}, 'textSubtle');
+
   return (
-    <View key={entry._id} style={styles.historyRow}>
+    <View
+      style={[
+        styles.historyRow,
+        { backgroundColor: themeColors.cardElevated, borderColor: themeColors.border },
+      ]}
+    >
       <View style={styles.historyRowHeader}>
         <ThemedText style={styles.historyRowTitle}>{payload.date}</ThemedText>
-        <ThemedText style={styles.historyRowTimestamp}>{formatHistoryTimestamp(entry.createdAt)}</ThemedText>
+        <ThemedText style={[styles.historyRowTimestamp, { color: subtleColor }]}>
+          {formatHistoryTimestamp(entry.createdAt)}
+        </ThemedText>
       </View>
       <ThemedText style={styles.historyRowSummary}>
         정답 {payload.correct}/{payload.total} · 정확도 {accuracy}%
       </ThemedText>
-      <ThemedText style={styles.historyRowDetail}>{detailParts.join(' · ')}</ThemedText>
+      <ThemedText style={[styles.historyRowDetail, { color: subtleColor }]}>
+        {detailParts.join(' · ')}
+      </ThemedText>
     </View>
   );
 }
 
-function renderSwipeHistoryEntry(entry: QuizHistoryDoc) {
+function SwipeHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   const payload = entry.payload as SwipeHistoryPayload;
   const accuracy = computeAccuracy(payload.correct, payload.answered);
   const avgSecondsLabel = formatAverageSeconds(payload.avgResponseMs);
   const categoryMeta = categories.find((category) => category.slug === payload.category);
   const categoryLabel = categoryMeta ? `${categoryMeta.emoji} ${categoryMeta.title}` : payload.category;
+
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+  const subtleColor = useThemeColor({}, 'textSubtle');
+
   return (
-    <View key={entry._id} style={styles.historyRow}>
+    <View
+      style={[
+        styles.historyRow,
+        { backgroundColor: themeColors.cardElevated, borderColor: themeColors.border },
+      ]}
+    >
       <View style={styles.historyRowHeader}>
         <ThemedText style={styles.historyRowTitle}>{categoryLabel}</ThemedText>
-        <ThemedText style={styles.historyRowTimestamp}>{formatHistoryTimestamp(entry.createdAt)}</ThemedText>
+        <ThemedText style={[styles.historyRowTimestamp, { color: subtleColor }]}>
+          {formatHistoryTimestamp(entry.createdAt)}
+        </ThemedText>
       </View>
       <ThemedText style={styles.historyRowSummary}>
         정답 {payload.correct}/{payload.answered} · 정확도 {accuracy}% · 최고 {payload.maxStreak}연속
       </ThemedText>
-      <ThemedText style={styles.historyRowDetail}>
-        평균 반응속도 {avgSecondsLabel} · 점수 {payload.totalScoreDelta >= 0 ? `+${payload.totalScoreDelta}` : payload.totalScoreDelta}
+      <ThemedText style={[styles.historyRowDetail, { color: subtleColor }]}>
+        평균 반응속도 {avgSecondsLabel} · 점수{' '}
+        {payload.totalScoreDelta >= 0 ? `+${payload.totalScoreDelta}` : payload.totalScoreDelta}
       </ThemedText>
     </View>
   );
 }
 
-function renderPartyHistoryEntry(entry: QuizHistoryDoc) {
+function PartyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   const payload = entry.payload as PartyHistoryPayload;
   const title = payload.deckTitle ?? '파티 매치';
   const rankLabel =
@@ -449,16 +518,28 @@ function renderPartyHistoryEntry(entry: QuizHistoryDoc) {
     payload.answered !== undefined && payload.answered !== null
       ? `${payload.answered}문항 참여`
       : null;
+
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+  const subtleColor = useThemeColor({}, 'textSubtle');
+
   return (
-    <View key={entry._id} style={styles.historyRow}>
+    <View
+      style={[
+        styles.historyRow,
+        { backgroundColor: themeColors.cardElevated, borderColor: themeColors.border },
+      ]}
+    >
       <View style={styles.historyRowHeader}>
         <ThemedText style={styles.historyRowTitle}>{title}</ThemedText>
-        <ThemedText style={styles.historyRowTimestamp}>{formatHistoryTimestamp(entry.createdAt)}</ThemedText>
+        <ThemedText style={[styles.historyRowTimestamp, { color: subtleColor }]}>
+          {formatHistoryTimestamp(entry.createdAt)}
+        </ThemedText>
       </View>
       <ThemedText style={styles.historyRowSummary}>
         {rankLabel} · 총점 {payload.totalScore}점
       </ThemedText>
-      <ThemedText style={styles.historyRowDetail}>
+      <ThemedText style={[styles.historyRowDetail, { color: subtleColor }]}>
         {payload.roomCode ? `코드 ${payload.roomCode}` : '코드 정보 없음'}
         {answeredLabel ? ` · ${answeredLabel}` : ''}
       </ThemedText>
@@ -483,6 +564,8 @@ function FooterSection({
   onLogin: () => void;
   loginLoading: boolean;
 }) {
+  const mutedColor = useThemeColor({}, 'textMuted');
+
   if (isAuthenticated) {
     return (
       <Card>
@@ -505,7 +588,7 @@ function FooterSection({
   return (
     <Card>
       <ThemedText type="subtitle">로그인하고 시작하기</ThemedText>
-      <ThemedText lightColor={Palette.slate500} darkColor={Palette.slate500}>
+      <ThemedText style={[styles.statusText, { color: mutedColor }]}>
         기록을 저장하고 친구와 공유하려면 로그인이 필요해요.
       </ThemedText>
       <ActionButton
@@ -520,9 +603,21 @@ function FooterSection({
 }
 
 function FooterButton({ label, onPress }: { label: string; onPress: () => void }) {
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.footerButton, pressed ? styles.footerButtonPressed : null]}>
-      <ThemedText style={styles.footerButtonLabel}>{label}</ThemedText>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.footerButton,
+        {
+          backgroundColor: themeColors.cardElevated,
+          borderColor: themeColors.border,
+        },
+        pressed ? styles.footerButtonPressed : null,
+      ]}
+    >
+      <ThemedText style={[styles.footerButtonLabel, { color: themeColors.text }]}>{label}</ThemedText>
     </Pressable>
   );
 }
@@ -542,21 +637,34 @@ function ActionButton({
   disabled?: boolean;
   loading?: boolean;
 }) {
-  const backgroundStyle = (() => {
-    switch (tone) {
-      case 'primary':
-        return styles.buttonPrimary;
-      case 'secondary':
-        return styles.buttonSecondary;
-      case 'ghost':
-        return styles.buttonGhost;
-      case 'danger':
-        return styles.buttonDanger;
-      default:
-        return styles.buttonPrimary;
-    }
-  })();
-  const indicatorColor = tone === 'ghost' ? Palette.teal600 : '#ffffff';
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+
+  let backgroundColor = themeColors.primary;
+  let borderColor: string | undefined;
+  let labelColor = themeColors.primaryForeground;
+
+  switch (tone) {
+    case 'secondary':
+      backgroundColor = themeColors.secondary;
+      labelColor = themeColors.secondaryForeground;
+      break;
+    case 'ghost':
+      backgroundColor = 'transparent';
+      borderColor = themeColors.border;
+      labelColor = themeColors.primary;
+      break;
+    case 'danger':
+      backgroundColor = themeColors.danger;
+      labelColor =
+        colorScheme === 'dark' ? themeColors.text : themeColors.primaryForeground;
+      break;
+    case 'primary':
+    default:
+      backgroundColor = themeColors.primary;
+      labelColor = themeColors.primaryForeground;
+      break;
+  }
 
   return (
     <Pressable
@@ -566,21 +674,19 @@ function ActionButton({
       onPress={onPress}
       style={({ pressed }) => [
         styles.buttonBase,
-        backgroundStyle,
+        {
+          backgroundColor,
+          borderColor: borderColor ?? 'transparent',
+          borderWidth: borderColor ? 1 : 0,
+        },
         disabled ? styles.buttonDisabled : null,
         pressed && !disabled ? styles.buttonPressed : null,
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={indicatorColor} />
+        <ActivityIndicator color={labelColor} />
       ) : (
-        <ThemedText
-          style={styles.buttonLabel}
-          lightColor={tone === 'ghost' ? Palette.teal600 : '#ffffff'}
-          darkColor={tone === 'ghost' ? Palette.teal400 : '#ffffff'}
-        >
-          {label}
-        </ThemedText>
+        <ThemedText style={[styles.buttonLabel, { color: labelColor }]}>{label}</ThemedText>
       )}
     </Pressable>
   );
@@ -607,6 +713,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     padding: Spacing.lg,
     gap: Spacing.md,
+    borderWidth: 1,
   },
   headerRow: {
     flexDirection: 'row',
@@ -619,7 +726,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Palette.yellow200,
+    borderWidth: 1,
   },
   avatarImage: {
     width: '100%',
@@ -632,23 +739,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: Radius.lg,
-    backgroundColor: Palette.yellow600,
   },
   avatarInitial: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#ffffff',
   },
   headerContent: {
     flex: 1,
     gap: Spacing.xs,
   },
+  statusText: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
   headerActions: {
     flexDirection: 'row',
     gap: Spacing.md,
-  },
-  guestAvatar: {
-    backgroundColor: Palette.slate200,
   },
   sectionStack: {
     gap: Spacing.sm,
@@ -666,7 +772,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
     padding: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: Palette.surfaceMuted,
+    borderWidth: 1,
   },
   historyRowHeader: {
     flexDirection: 'row',
@@ -691,7 +797,6 @@ const styles = StyleSheet.create({
   },
   historyEmpty: {
     fontSize: 13,
-    color: Palette.slate500,
   },
   historyLoading: {
     alignItems: 'center',
@@ -706,8 +811,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.md,
-    backgroundColor: Palette.surfaceMuted,
     alignItems: 'center',
+    borderWidth: 1,
   },
   footerButtonPressed: {
     opacity: 0.85,
@@ -724,20 +829,6 @@ const styles = StyleSheet.create({
   },
   buttonLabel: {
     fontWeight: '600',
-  },
-  buttonPrimary: {
-    backgroundColor: Palette.teal600,
-  },
-  buttonSecondary: {
-    backgroundColor: Palette.coral600,
-  },
-  buttonGhost: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: Palette.teal200,
-  },
-  buttonDanger: {
-    backgroundColor: Palette.danger,
   },
   buttonDisabled: {
     opacity: 0.6,

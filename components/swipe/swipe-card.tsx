@@ -10,7 +10,8 @@ import Animated, {
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { ThemedText } from '@/components/themed-text';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { difficultyToDots } from '@/lib/elo';
 import type { SwipeFeedQuestion } from '@/lib/feed';
@@ -67,6 +68,8 @@ export function SwipeCard({
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const shakeX = useSharedValue(0);
+  const colorScheme = useColorScheme();
+  const palette = Colors[colorScheme ?? 'light'];
   const borderColor = useThemeColor({}, 'border');
   const cardColor = useThemeColor({}, 'card');
   const textMuted = useThemeColor({}, 'textMuted');
@@ -131,9 +134,9 @@ export function SwipeCard({
 
   const statusBorderColor = feedback
     ? feedback.isCorrect
-      ? Palette.coral600
-      : Palette.slate500
-    : Palette.teal400;
+      ? palette.success
+      : Palette.gray500
+    : Palette.gray400;
 
   return (
     <GestureDetector gesture={gesture}>
@@ -156,7 +159,7 @@ export function SwipeCard({
       >
         <View style={styles.header}>
           <ThemedText style={styles.difficulty}>
-            <ThemedText lightColor={Palette.teal600} darkColor={Palette.teal400}>
+            <ThemedText lightColor={palette.secondary} darkColor={palette.secondary}>
               {'●'.repeat(difficultyDots)}
             </ThemedText>
             <ThemedText lightColor={textMuted} darkColor={textMuted}>

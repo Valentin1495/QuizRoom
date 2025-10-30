@@ -1,11 +1,21 @@
 import { useQuery } from 'convex/react';
 import { Link, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Image, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { TextInput as RNTextInput } from 'react-native';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Avatar, GuestAvatar } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
@@ -26,7 +36,7 @@ function formatTimeLeft(target: Date) {
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { status: authStatus, user, signInWithGoogle, guestKey, ensureGuestKey } = useAuth();
+  const { status: authStatus, user, guestKey, ensureGuestKey } = useAuth();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const dailyQuiz = useQuery(api.daily.getDailyQuiz, {});
@@ -39,6 +49,7 @@ export default function HomeScreen() {
   const [partyCode, setPartyCode] = useState('');
   const [joinNickname, setJoinNickname] = useState(user?.handle ?? '');
   const [isJoining, setIsJoining] = useState(false);
+  const joinNicknameInputRef = useRef<RNTextInput | null>(null);
   useEffect(() => {
     const interval = setInterval(() => {
       const tomorrow = new Date();
@@ -51,6 +62,22 @@ export default function HomeScreen() {
   const cardBackground = palette.card;
   const borderColor = palette.border;
   const muted = useThemeColor({}, 'textMuted');
+  const welcomeCardBackground = useMemo(
+    () => (colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#FFFFFF'),
+    [colorScheme]
+  );
+  const welcomeCardBorder = useMemo(
+    () => (colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(26, 26, 26, 0.06)'),
+    [colorScheme]
+  );
+  const dailyCardBackground = useMemo(
+    () => (colorScheme === 'dark' ? 'rgba(229, 229, 229, 0.08)' : Palette.white),
+    [colorScheme]
+  );
+  const dailyCardBorder = useMemo(
+    () => (colorScheme === 'dark' ? 'rgba(229, 229, 229, 0.2)' : Palette.gray100),
+    [colorScheme]
+  );
 
   const isCodeValid = useMemo(() => partyCode.trim().length === 6, [partyCode]);
 
@@ -62,60 +89,45 @@ export default function HomeScreen() {
     [dailyQuiz?.category]
   );
 
-  const dailyTitleLabel = useMemo(() => {
-    const emoji = dailyQuiz?.shareTemplate?.emoji ?? '⚡';
-    const categoryLabel = dailyCategoryCopy?.label ?? '데일리 블링크';
-    return `${emoji} 오늘의 ${categoryLabel}`;
-  }, [dailyCategoryCopy, dailyQuiz?.shareTemplate?.emoji]);
-
-  const dailyHeadline = useMemo(() => {
+  const dailyHeadline = useMemo<{
+    state: 'loading' | 'ready' | 'pending';
+    prefix: string;
+    highlight: string | null;
+    suffix: string;
+  }>(() => {
     if (isLoadingDailyQuiz) {
-      return '오늘의 퀴즈를 불러오는 중…';
-    }
-    if (dailyQuiz?.shareTemplate?.headline) {
-      return dailyQuiz.shareTemplate.headline;
+      return { state: 'loading', prefix: '', highlight: null, suffix: '' };
     }
     if (hasDailyQuiz) {
-      return '오늘의 5문제, 스트릭을 이어가세요!';
+      const emoji = dailyCategoryCopy?.emoji ?? dailyQuiz?.shareTemplate?.emoji ?? '⚡';
+      const label = dailyCategoryCopy?.label ?? '데일리 퀴즈';
+      return {
+        state: 'ready',
+        prefix: '오늘의 카테고리는',
+        highlight: `${emoji} ${label}`,
+        suffix: '',
+      };
     }
-    return '오늘의 퀴즈가 준비 중이에요';
-  }, [dailyQuiz?.shareTemplate?.headline, hasDailyQuiz, isLoadingDailyQuiz]);
+    return { state: 'pending', prefix: '데일리 퀴즈가 준비 중이에요', highlight: null, suffix: '' };
+  }, [
+    dailyCategoryCopy?.emoji,
+    dailyCategoryCopy?.label,
+    dailyQuiz?.shareTemplate?.emoji,
+    hasDailyQuiz,
+    isLoadingDailyQuiz,
+  ]);
 
-  const dailyCTA = hasDailyQuiz ? '오늘의 퀴즈 시작' : isLoadingDailyQuiz ? '불러오는 중' : '준비 중';
-  const dailyCaption = useMemo(() => {
-    if (isLoadingDailyQuiz) {
-      return '잠시만 기다려주세요.';
-    }
-    if (hasDailyQuiz && dailyQuiz?.category) {
-      return `카테고리 · ${dailyCategoryCopy?.label ?? dailyQuiz.category}`;
-    }
-    return '새 퀴즈가 곧 공개됩니다.';
-  }, [dailyCategoryCopy?.label, dailyQuiz?.category, hasDailyQuiz, isLoadingDailyQuiz]);
+  const dailyCTA = hasDailyQuiz ? '시작하기' : isLoadingDailyQuiz ? '불러오는 중' : '준비 중';
+  const dailyHeadlineSkeletonColor = colorScheme === 'dark' ? palette.border : Palette.gray100;
 
   const isAuthenticated = authStatus === 'authenticated' && !!user;
   const isGuest = authStatus === 'guest';
-  const isAuthorizing = authStatus === 'authorizing';
-  const greetingName = isAuthenticated ? user.handle : '게스트';
-  const streakValue = isAuthenticated ? user.streak : null;
-  const streakLabel =
-    streakValue !== null && streakValue > 0
-      ? `🔥 ${streakValue}일 연속 도전!`
-      : '🔥 오늘 퀴즈로 스트릭을 시작해봐요!';
+  const greetingName = isAuthenticated ? user.handle : '';
 
-  const handleGoogleLogin = useCallback(async () => {
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      Alert.alert(
-        '로그인에 실패했어요',
-        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
-      );
-    }
-  }, [signInWithGoogle]);
 
-  const handleAppleLogin = useCallback(() => {
-    Alert.alert('Apple 로그인', 'Apple 로그인은 준비 중이에요. 잠시만 기다려 주세요!');
-  }, []);
+  // const handleAppleLogin = useCallback(() => {
+  //   Alert.alert('Apple 로그인', 'Apple 로그인은 준비 중이에요. 잠시만 기다려 주세요!');
+  // }, []);
 
   useEffect(() => {
     if (isGuest && !guestKey) {
@@ -173,6 +185,11 @@ export default function HomeScreen() {
     }
   }, [ensureGuestKey, guestKey, isGuest, joinNickname, joinParty, partyCode, router]);
 
+  const handleJoinPartySubmit = useCallback(() => {
+    if (!isCodeValid || isJoining) return;
+    void handleJoinParty();
+  }, [handleJoinParty, isCodeValid, isJoining]);
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView
@@ -180,114 +197,108 @@ export default function HomeScreen() {
           styles.scrollContent,
           { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl + insets.bottom },
         ]}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.welcomeCard, { backgroundColor: cardBackground, borderColor }]}>
-          <View style={styles.welcomeRow}>
-            <View style={styles.avatarFrame}>
-              {isAuthenticated && user?.avatarUrl ? (
-                <Image source={{ uri: user.avatarUrl }} style={styles.avatarImage} />
-              ) : (
-                <View style={styles.avatarFallback}>
-                  <ThemedText style={styles.avatarInitial} lightColor="#ffffff" darkColor="#ffffff">
-                    {isAuthenticated ? user.handle.slice(0, 1).toUpperCase() : '🙂'}
-                  </ThemedText>
-                </View>
-              )}
-            </View>
-            <View style={styles.welcomeText}>
-              <ThemedText type="subtitle">안녕, {greetingName} 👋</ThemedText>
-              <ThemedText style={styles.streakText}>{streakLabel}</ThemedText>
-            </View>
-          </View>
-        </View>
-
-        {!isAuthenticated ? (
-          <View style={[styles.guestBanner, { borderColor, backgroundColor: palette.card }]}>
-            <ThemedText type="subtitle">로그인하고 내 기록을 저장하세요</ThemedText>
-            <ThemedText style={[styles.bannerHelper, { color: muted }]}>
-              맞힌 문제, 스트릭, 배지를 모두 모아볼 수 있어요.
+        <View
+          style={[
+            styles.welcomeCard,
+            { backgroundColor: welcomeCardBackground, borderColor: welcomeCardBorder },
+          ]}
+        >
+          {isAuthenticated && user?.avatarUrl ? (
+            <Avatar
+              uri={user.avatarUrl}
+              size="lg"
+              radius={Radius.pill}
+            />
+          ) : (
+            <GuestAvatar
+              size="lg"
+              radius={Radius.pill}
+            />
+          )}
+          <View style={styles.welcomeText}>
+            <ThemedText type="subtitle" style={styles.welcomeGreeting}>
+              안녕하세요. {greetingName}
             </ThemedText>
-            <View style={styles.bannerActions}>
-              <Pressable
-                style={[styles.bannerButton, styles.bannerButtonPrimary]}
-                onPress={handleGoogleLogin}
-                disabled={isAuthorizing}
-              >
-                <ThemedText style={styles.bannerButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
-                  {isAuthorizing ? '로그인 중…' : 'Google 로그인'}
-                </ThemedText>
-              </Pressable>
-              {/* <Pressable
-                style={[styles.bannerButton, styles.bannerButtonSecondary]}
-                onPress={handleAppleLogin}
-              >
-                <ThemedText style={styles.bannerButtonLabel}>Apple로 로그인</ThemedText>
-              </Pressable> */}
-            </View>
-          </View>
-        ) : null}
-
-        <View style={styles.headerRow}>
-          <View style={styles.headerText}>
-            <ThemedText type="title">QuizRoom</ThemedText>
-            <ThemedText style={[styles.subtitle, { color: muted }]}>60초 안에 즐기는 오늘의 퀴즈</ThemedText>
           </View>
         </View>
 
         <View style={styles.section}>
-          <View style={[styles.dailyCard, { backgroundColor: cardBackground }]}>
-            <ThemedText type="subtitle" style={styles.dailyTitle} lightColor={Palette.coral600} darkColor={Palette.coral600}>
-              {dailyTitleLabel}
-            </ThemedText>
-            <ThemedText style={styles.dailyHeadline}>
-              {dailyHeadline}
-            </ThemedText>
-            <ThemedText style={[styles.dailyCategory, { color: muted }]}>
-              {dailyCaption}
-            </ThemedText>
-            <View style={styles.timerPill}>
-              <ThemedText style={styles.timerLabel} lightColor={Palette.teal600} darkColor={Palette.teal600}>
-                {timeLeft} 남음
-              </ThemedText>
+          <SectionHeader title="데일리 OX 퀴즈" tagline="60초 퀴즈 챌린지" />
+          <View
+            style={[
+              styles.dailyCard,
+              { backgroundColor: dailyCardBackground, borderColor: dailyCardBorder },
+            ]}
+          >
+            <View style={styles.dailyHeadlineContainer}>
+              {dailyHeadline.state === 'loading' ? (
+                <View style={styles.dailyHeadlineSkeletonWrapper}>
+                  <View
+                    style={[
+                      styles.dailyHeadlineSkeletonPrimary,
+                      { backgroundColor: dailyHeadlineSkeletonColor },
+                    ]}
+                  />
+                  <View
+                    style={[
+                      styles.dailyHeadlineSkeletonSecondary,
+                      { backgroundColor: dailyHeadlineSkeletonColor },
+                    ]}
+                  />
+                </View>
+              ) : (
+                <ThemedText
+                  style={styles.dailyHeadline}
+                  lightColor={Colors.light.text}
+                  darkColor={Colors.dark.text}
+                >
+                  {dailyHeadline.prefix}
+                  {dailyHeadline.highlight ? ` ${dailyHeadline.highlight}` : ''}
+                  {dailyHeadline.suffix ? ` ${dailyHeadline.suffix}` : ''}
+                </ThemedText>
+              )}
             </View>
             {hasDailyQuiz ? (
               <Link href="/daily" asChild>
-                <Pressable style={styles.primaryButton}>
-                  <ThemedText style={styles.primaryButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
-                    {dailyCTA}
-                  </ThemedText>
-                </Pressable>
+                <Button
+                  variant="default"
+                  size="lg"
+                  rounded="full"
+                  style={styles.primaryButton}
+                >
+                  {dailyCTA}
+                </Button>
               </Link>
             ) : (
-              <Pressable style={[styles.primaryButton, styles.primaryDisabled]} disabled>
-                <ThemedText style={styles.primaryButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
-                  {dailyCTA}
-                </ThemedText>
-              </Pressable>
+              <Button
+                variant="default"
+                size="lg"
+                rounded="full"
+                style={styles.primaryButton}
+                loading={isLoadingDailyQuiz}
+                disabled={!isLoadingDailyQuiz}
+              >
+                {dailyCTA}
+              </Button>
             )}
+            <View
+              style={[
+                styles.timerPill,
+                colorScheme === 'dark' ? styles.timerPillDark : styles.timerPillLight,
+              ]}
+            >
+              <ThemedText style={styles.timerLabel} lightColor={Colors.light.text} darkColor={Colors.dark.text}>
+                {timeLeft} 남음
+              </ThemedText>
+            </View>
           </View>
         </View>
 
         <View style={styles.section}>
-          <SectionHeader title="스와이프 퀴즈" tagline="빠르게 취향 테스트" />
-          <View style={[styles.swipeCard, { backgroundColor: cardBackground, borderColor }]}>
-            <ThemedText type="subtitle">스와이프로 퀴즈 고르기</ThemedText>
-            <ThemedText style={[styles.swipeBody, { color: muted }]}>
-              덱을 쓱 넘기고 오늘의 퀴즈를 바로 시작해보세요.
-            </ThemedText>
-            <Link href="/swipe" asChild>
-              <Pressable style={styles.swipeButton}>
-                <ThemedText style={styles.swipeButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
-                  스와이프 시작
-                </ThemedText>
-              </Pressable>
-            </Link>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <SectionHeader title="파티 라이브" tagline="친구들과 붙어보기" />
+          <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" />
           <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
           >
             <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
@@ -296,16 +307,28 @@ export default function HomeScreen() {
               onChangeText={(value) => setPartyCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
               placeholder="ABCDEF"
               autoCapitalize="characters"
+              autoCorrect={false}
+              autoComplete="off"
+              importantForAutofill="no"
+              blurOnSubmit={false}
+              returnKeyType="next"
+              onSubmitEditing={() => joinNicknameInputRef.current?.focus()}
               maxLength={6}
               style={[styles.partyInput, { borderColor }]}
               placeholderTextColor={muted}
               editable={!isJoining}
             />
             <TextInput
+              ref={joinNicknameInputRef}
               value={joinNickname}
               onChangeText={setJoinNickname}
               placeholder="닉네임 (선택)"
               maxLength={24}
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="nickname"
+              returnKeyType="done"
+              onSubmitEditing={handleJoinPartySubmit}
               editable={!isGuest}
               selectTextOnFocus={!isGuest}
               style={[
@@ -315,25 +338,22 @@ export default function HomeScreen() {
               ]}
               placeholderTextColor={muted}
             />
-            <Pressable
+            <Button
+              variant="default"
+              size="lg"
+              rounded="full"
+              style={styles.joinButton}
+              textStyle={styles.joinButtonLabel}
               onPress={handleJoinParty}
-              disabled={!isCodeValid || isJoining}
-              style={[
-                styles.joinButton,
-                (!isCodeValid || isJoining) && styles.joinButtonDisabled,
-              ]}
+              disabled={!isCodeValid}
+              loading={isJoining}
+              fullWidth
             >
-              <ThemedText
-                style={styles.joinButtonLabel}
-                lightColor={!isCodeValid || isJoining ? Palette.slate500 : '#ffffff'}
-                darkColor={!isCodeValid || isJoining ? Palette.slate500 : '#ffffff'}
-              >
-                {isJoining ? '참여 중…' : '파티 참여'}
-              </ThemedText>
-            </Pressable>
+              {isJoining ? '참여 중…' : '파티 참여'}
+            </Button>
             <Link href="/(tabs)/party" asChild>
               <Pressable style={styles.secondaryLink}>
-                <ThemedText style={styles.secondaryLinkLabel} lightColor={Palette.teal600} darkColor={Palette.teal400}>
+                <ThemedText style={styles.secondaryLinkLabel} lightColor={palette.secondaryForeground} darkColor={palette.secondary}>
                   새 파티 만들기 →
                 </ThemedText>
               </Pressable>
@@ -367,9 +387,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
-  },
-  welcomeRow: {
-    flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
   },
@@ -380,7 +397,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Palette.yellow200,
+    backgroundColor: Palette.gray100,
   },
   avatarImage: {
     width: '100%',
@@ -391,107 +408,74 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Palette.yellow600,
+    backgroundColor: Palette.gray600,
   },
   avatarInitial: {
     fontSize: 28,
     fontWeight: '700',
   },
   welcomeText: {
-    flex: 1,
-    gap: Spacing.xs,
-  },
-  streakText: {
-    fontWeight: '600',
-    color: Palette.yellow600,
-  },
-  guestBanner: {
-    borderWidth: 1,
-    borderRadius: Radius.lg,
-    padding: Spacing.lg,
-    gap: Spacing.md,
-  },
-  bannerHelper: {
-    fontSize: 14,
-  },
-  bannerActions: {
-    flexDirection: 'row',
-    gap: Spacing.md,
-  },
-  bannerButton: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Spacing.md,
-    borderRadius: Radius.md,
   },
-  bannerButtonPrimary: {
-    backgroundColor: Palette.teal600,
-  },
-  bannerButtonSecondary: {
-    backgroundColor: Palette.surfaceMuted,
-  },
-  bannerButtonLabel: {
-    fontWeight: '600',
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
-  },
-  headerText: {
-    flex: 1,
-    gap: Spacing.xs,
-  },
-  subtitle: {
-    fontSize: 16,
+  welcomeGreeting: {
+    textAlign: 'center',
   },
   section: {
     gap: Spacing.lg,
   },
   dailyCard: {
     borderRadius: Radius.lg,
-    padding: Spacing.xl,
-    gap: Spacing.lg,
+    padding: Spacing.lg,
+    gap: Spacing.md,
     borderWidth: 2,
-    borderColor: Palette.coral200,
   },
-  dailyTitle: {
-    letterSpacing: 1,
+  dailyHeadlineContainer: {
+    gap: Spacing.xs,
   },
   dailyHeadline: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: '700',
-    lineHeight: 30,
+    lineHeight: 26,
+    flexShrink: 1,
   },
-  dailyCategory: {
-    fontSize: 13,
-    fontWeight: '500',
+  dailyHeadlineSkeletonWrapper: {
+    gap: Spacing.xs,
+    paddingVertical: Spacing.xs,
+  },
+  dailyHeadlineSkeletonPrimary: {
+    width: '80%',
+    height: 24,
+    borderRadius: Radius.sm,
+  },
+  dailyHeadlineSkeletonSecondary: {
+    width: '55%',
+    height: 16,
+    borderRadius: Radius.sm,
   },
   timerPill: {
-    backgroundColor: Palette.teal200,
     borderRadius: Radius.pill,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 16,
-    paddingVertical: 6,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+  },
+  timerPillLight: {
+    borderWidth: 1,
+    borderColor: Palette.gray100,
+  },
+  timerPillDark: {
+    borderWidth: 1,
+    borderColor: Palette.gray900,
   },
   timerLabel: {
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 16,
+    letterSpacing: 1,
+    textAlign: 'center',
   },
   primaryButton: {
-    backgroundColor: Palette.coral600,
-    borderRadius: Radius.pill,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  primaryDisabled: {
-    opacity: 0.6,
-  },
-  primaryButtonLabel: {
-    fontSize: 16,
-    fontWeight: '600',
+    width: '100%',
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -500,26 +484,6 @@ const styles = StyleSheet.create({
   },
   sectionTagline: {
     fontSize: 14,
-  },
-  swipeCard: {
-    borderWidth: 1,
-    borderRadius: Radius.lg,
-    padding: Spacing.xl,
-    gap: Spacing.md,
-  },
-  swipeBody: {
-    fontSize: 14,
-  },
-  swipeButton: {
-    marginTop: Spacing.sm,
-    backgroundColor: Palette.teal600,
-    borderRadius: Radius.pill,
-    paddingVertical: Spacing.md,
-    alignItems: 'center',
-  },
-  swipeButtonLabel: {
-    fontWeight: '600',
-    fontSize: 16,
   },
   partyCard: {
     borderWidth: 1,
@@ -547,21 +511,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   partyNicknameInputDisabled: {
-    backgroundColor: Palette.surfaceMuted,
-    color: Palette.slate500,
+    backgroundColor: Palette.gray25,
+    color: Palette.gray500,
   },
   joinButton: {
-    backgroundColor: Palette.teal600,
-    borderRadius: Radius.pill,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  joinButtonDisabled: {
-    backgroundColor: Palette.teal200,
+    marginTop: Spacing.sm,
   },
   joinButtonLabel: {
     fontSize: 16,
     fontWeight: '600',
+    lineHeight: 24,
   },
   secondaryLink: {
     paddingVertical: 4,

@@ -5,96 +5,127 @@
 
 import { Platform } from 'react-native';
 
-export const Palette = {
-  // Primary (CTA, 정답)
+// ========================================
+// 브랜드 컬러 보존 (추후 재활성화용)
+// ========================================
+export const BrandColors = {
   coral600: '#FF6F61',
   coral400: '#FF8F85',
   coral200: '#FFDBD8',
-
-  // Secondary (진행, 타이머)
   teal600: '#00C2A8',
   teal400: '#33D4BC',
   teal200: '#B3F0E6',
-
-  // Accent (보상, 배지)
   yellow600: '#FFD166',
   yellow400: '#FFDB85',
   yellow200: '#FFF0CC',
+};
 
-  // Neutral
-  slate900: '#1A1A1A',
-  slate500: '#707070',
-  slate200: '#D9D8E8',
+// ========================================
+// 뉴트럴 팔레트 (현재 활성)
+// ========================================
+export const Palette = {
+  // Grayscale
+  gray950: '#1A1A1A',
+  gray900: '#2A2A2A',
+  gray700: '#4A4A4A',
+  gray600: '#666666',
+  gray500: '#707070',
+  gray400: '#808080',
+  gray300: '#999999',
+  gray200: '#B8B8B8',
+  gray150: '#CCCCCC',
+  gray100: '#E5E5E5',
+  gray50: '#F0F0F0',
+  gray25: '#F5F5F5',
 
   // Surface
-  surface: '#FDFCFD',
-  surfaceMuted: '#F5F6FB',
-  surfaceDark: '#1E1E1E',
-
-  // Status
-  success: '#FF6F61',  // 정답 (코랄)
-  neutral: '#707070',  // 오답 (그레이)
-  warning: '#FF6F61',  // 긴급 (코랄)
-  info: '#00C2A8',     // 안내 (틸)
-  danger: '#EF4444',   // 오류 (기존 유지)
+  white: '#FFFFFF',
+  offWhite: '#FAFAFA',
+  darkBg: '#121212',
+  darkCard: '#1E1E1E',
+  darkElevated: '#282828',
 };
 
 export const Colors = {
   light: {
     // Text
-    text: Palette.slate900,
-    textMuted: Palette.slate500,
+    text: Palette.gray950,
+    textMuted: Palette.gray500,
+    textSubtle: Palette.gray300,
 
     // Background
-    background: Palette.surface,
-    card: Palette.surfaceMuted,
+    background: Palette.offWhite,
+    card: Palette.white,
+    cardElevated: Palette.gray25,
 
-    // Brand
-    primary: Palette.coral600,
-    primaryForeground: '#FFFFFF',
-    secondary: Palette.teal600,
-    secondaryForeground: '#FFFFFF',
-    accent: Palette.yellow600,
-    accentForeground: Palette.slate900,
+    // Brand (흑백 전환)
+    primary: Palette.gray900,
+    primaryForeground: Palette.white,
+    secondary: Palette.gray50,
+    secondaryForeground: Palette.gray900,
+    accent: Palette.gray200,
+    accentForeground: Palette.gray950,
 
     // Legacy (for backward compatibility)
-    tint: Palette.teal600,
+    tint: Palette.gray900,
 
     // UI
-    border: Palette.slate200,
-    icon: Palette.slate500,
+    border: Palette.gray100,
+    borderStrong: Palette.gray150,
+    divider: Palette.gray50,
+    icon: Palette.gray500,
+    iconSelected: Palette.gray900,
+
+    // Status
+    success: Palette.gray600,
+    error: Palette.gray300,
+    warning: Palette.gray700,
+    info: Palette.gray400,
+    danger: Palette.gray700,
 
     // Tab
-    tabIconDefault: Palette.slate500,
-    tabIconSelected: Palette.teal600,
+    tabIconDefault: Palette.gray300,
+    tabIconSelected: Palette.gray900,
   },
   dark: {
     // Text
-    text: '#F5F4FF',
-    textMuted: '#B6B3D6',
+    text: Palette.gray25,
+    textMuted: Palette.gray200,
+    textSubtle: Palette.gray400,
 
     // Background
-    background: Palette.surfaceDark,
-    card: '#2A2A2A',
+    background: Palette.darkBg,
+    card: Palette.darkCard,
+    cardElevated: Palette.darkElevated,
 
-    // Brand (채도 -10%)
-    primary: '#E65D50',        // 코랄 darker
-    primaryForeground: '#FFFFFF',
-    secondary: '#00A890',      // 틸 darker
-    secondaryForeground: '#FFFFFF',
-    accent: '#E6B84D',         // 옐로우 darker
-    accentForeground: '#1E1E1E',
+    // Brand (흑백 전환)
+    primary: Palette.gray100,
+    primaryForeground: Palette.gray950,
+    secondary: Palette.gray300,
+    secondaryForeground: Palette.gray950,
+    accent: Palette.gray600,
+    accentForeground: Palette.gray25,
 
     // Legacy (for backward compatibility)
-    tint: '#00A890',
+    tint: Palette.gray100,
 
     // UI
-    border: '#3A3A3A',
-    icon: '#8A8A8A',
+    border: Palette.gray900,
+    borderStrong: '#3D3D3D',
+    divider: Palette.gray950,
+    icon: Palette.gray200,
+    iconSelected: Palette.gray100,
+
+    // Status
+    success: '#AAAAAA',
+    error: Palette.gray400,
+    warning: Palette.gray150,
+    info: Palette.gray300,
+    danger: Palette.gray150,
 
     // Tab
-    tabIconDefault: '#6F6A9F',
-    tabIconSelected: '#00C2A8',
+    tabIconDefault: Palette.gray400,
+    tabIconSelected: Palette.gray100,
   },
 };
 

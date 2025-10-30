@@ -8,11 +8,14 @@ import { SwipeStack } from '@/components/swipe/swipe-stack';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import type { CategoryMeta } from '@/constants/categories';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function SwipeScreen() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryMeta | null>(null);
   const insets = useSafeAreaInsets();
+  const colorScheme = useColorScheme();
+  const palette = Colors[colorScheme ?? 'light'];
 
   const handleReset = useCallback(() => {
     if (!selectedCategory) {
@@ -52,8 +55,8 @@ export default function SwipeScreen() {
               {selectedCategory.emoji} {selectedCategory.title}
             </ThemedText>
           </View>
-          <Pressable style={styles.resetButton} onPress={handleReset}>
-            <ThemedText style={styles.resetLabel} lightColor="#fff" darkColor="#fff">
+          <Pressable style={[styles.resetButton, { backgroundColor: palette.secondary }]} onPress={handleReset}>
+            <ThemedText style={styles.resetLabel} lightColor="#fff" darkColor={Palette.gray950}>
               카테고리 변경
             </ThemedText>
           </Pressable>
@@ -88,7 +91,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   resetButton: {
-    backgroundColor: Palette.teal600,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.pill,
