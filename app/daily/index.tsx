@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
@@ -6,10 +7,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Button } from '@/components/ui/button';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { lightHaptic, mediumHaptic, successHaptic, warningHaptic } from '@/lib/haptics';
 import { useMutation, useQuery } from 'convex/react';
@@ -42,6 +45,242 @@ function formatSeconds(seconds: number) {
   return `${pad(minutes)}:${pad(leftover)}`;
 }
 
+function formatDuration(ms: number) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  if (minutes === 0) {
+    return `${seconds}초`;
+  }
+  return `${minutes}분 ${seconds.toString().padStart(2, '0')}초`;
+}
+
+function formatAverageDuration(ms: number) {
+  const seconds = Math.max(0, ms / 1000);
+  if (seconds >= 10) {
+    return `${Math.round(seconds)}초`;
+  }
+  return `${seconds.toFixed(1)}초`;
+}
+
+type ColorMode = 'light' | 'dark';
+
+const getDailyThemeStyles = (mode: ColorMode) => {
+  const palette = Colors[mode];
+  const isDark = mode === 'dark';
+
+  return {
+    introCard: {
+      backgroundColor: isDark ? 'rgba(229, 229, 229, 0.08)' : palette.card,
+      borderColor: palette.border,
+    },
+    introButton: {
+      backgroundColor: isDark ? 'rgba(229, 229, 229, 0.05)' : 'rgba(26, 26, 26, 0.02)',
+      borderColor: palette.border,
+    },
+    introTimed: {
+      backgroundColor: palette.primary,
+      borderColor: 'transparent',
+    },
+    introTimedText: {
+      color: palette.primaryForeground,
+    },
+    introTimedCaption: {
+      color: palette.primaryForeground,
+    },
+    introUntimed: {
+      backgroundColor: isDark ? 'rgba(229, 229, 229, 0.08)' : Palette.gray25,
+      borderColor: palette.borderStrong,
+    },
+    introUntimedLabel: {
+      color: palette.primary,
+    },
+    introUntimedCaption: {
+      color: palette.textMuted,
+    },
+    retryButton: {
+      backgroundColor: palette.primary,
+    },
+    retryLabel: {
+      color: palette.primaryForeground,
+    },
+    badge: {
+      backgroundColor: isDark ? 'rgba(229, 229, 229, 0.12)' : Palette.gray50,
+    },
+    badgeText: {
+      color: palette.primary,
+    },
+    timerPill: {
+      borderColor: palette.border,
+    },
+    explanationCard: {
+      backgroundColor: isDark ? 'rgba(229, 229, 229, 0.05)' : Palette.gray25,
+      borderColor: palette.border,
+    },
+    secondaryButton: {
+      borderColor: palette.borderStrong,
+    },
+    summaryStatCard: {
+      backgroundColor: isDark ? 'rgba(229, 229, 229, 0.06)' : palette.card,
+      borderColor: palette.border,
+    },
+    summaryRow: {
+      backgroundColor: isDark ? 'rgba(229, 229, 229, 0.04)' : Palette.gray50,
+      borderColor: palette.border,
+    },
+    summaryResultCorrect: {
+      color: palette.success,
+    },
+    summaryResultIncorrect: {
+      color: palette.danger,
+    },
+    summaryResultSkipped: {
+      color: palette.textMuted,
+    },
+    shareCard: {
+      backgroundColor: isDark ? 'rgba(229, 229, 229, 0.06)' : palette.cardElevated,
+      borderColor: palette.border,
+    },
+    shareButton: {
+      backgroundColor: palette.primary,
+    },
+    shareButtonLabel: {
+      color: palette.primaryForeground,
+    },
+  };
+};
+
+type ChoiceState = 'default' | 'pressed' | 'correct' | 'wrong' | 'dim';
+
+type ChoiceAppearance = {
+  backgroundColor: string;
+  borderColor: string;
+  textColor: string;
+  gradientColors?: [string, string];
+};
+
+const LIGHT_CORRECT_GRADIENT: [string, string] = ['#2D9CDB', '#56CCF2'];
+const DARK_CORRECT_GRADIENT: [string, string] = ['#1F7FB8', '#41B5E6'];
+const LIGHT_WRONG_GRADIENT: [string, string] = ['#EB5757', '#FF7676'];
+const DARK_WRONG_GRADIENT: [string, string] = ['#D94B4B', '#FF6A6A'];
+const LIGHT_DEFAULT_BG = '#F5F5F5';
+const LIGHT_DEFAULT_BORDER = '#E0E0E0';
+const LIGHT_PRESSED_BG = '#E0E0E0';
+const LIGHT_PRESSED_BORDER = '#D4D4D4';
+const LIGHT_DIM_BG = '#C8C8C8';
+const LIGHT_DIM_TEXT = '#5F5F5F';
+const DARK_DEFAULT_BG = '#1F1F1F';
+const DARK_DEFAULT_BORDER = '#393939';
+const DARK_PRESSED_BG = '#2A2A2A';
+const DARK_PRESSED_BORDER = '#454545';
+const DARK_DIM_BG = '#3A3A3A';
+const DARK_DIM_TEXT = '#A3A3A3';
+
+const createChoiceAppearance = (
+  backgroundColor: string,
+  borderColor: string,
+  textColor: string,
+  gradientColors?: [string, string]
+): ChoiceAppearance => ({
+  backgroundColor,
+  borderColor,
+  textColor,
+  gradientColors,
+});
+
+const getChoiceAppearance = (mode: ColorMode, state: ChoiceState): ChoiceAppearance => {
+  const isDark = mode === 'dark';
+  const palette = Colors[mode];
+
+  if (state === 'correct') {
+    const gradient = isDark ? DARK_CORRECT_GRADIENT : LIGHT_CORRECT_GRADIENT;
+    return createChoiceAppearance(gradient[0], gradient[0], '#FFFFFF', gradient);
+  }
+
+  if (state === 'wrong') {
+    const gradient = isDark ? DARK_WRONG_GRADIENT : LIGHT_WRONG_GRADIENT;
+    return createChoiceAppearance(gradient[0], gradient[0], '#FFFFFF', gradient);
+  }
+
+  if (state === 'dim') {
+    if (isDark) {
+      return createChoiceAppearance(DARK_DIM_BG, DARK_DIM_BG, DARK_DIM_TEXT);
+    }
+    return createChoiceAppearance(LIGHT_DIM_BG, LIGHT_DIM_BG, LIGHT_DIM_TEXT);
+  }
+
+  if (state === 'pressed') {
+    if (isDark) {
+      return createChoiceAppearance(DARK_PRESSED_BG, DARK_PRESSED_BORDER, palette.text);
+    }
+    return createChoiceAppearance(LIGHT_PRESSED_BG, LIGHT_PRESSED_BORDER, Palette.gray900);
+  }
+
+  // default
+  if (isDark) {
+    return createChoiceAppearance(DARK_DEFAULT_BG, DARK_DEFAULT_BORDER, palette.text);
+  }
+  return createChoiceAppearance(LIGHT_DEFAULT_BG, LIGHT_DEFAULT_BORDER, Palette.gray900);
+};
+
+type TimerState = 'default' | 'warning' | 'danger';
+
+type TimerAppearance = {
+  state: TimerState;
+  textColor: string;
+  backgroundColor: string;
+  borderColor: string;
+};
+
+const TIMER_COLORS = {
+  default: {
+    text: '#707070',
+    lightBg: '#F5F5F5',
+    darkBg: 'rgba(112, 112, 112, 0.25)',
+    lightBorder: '#E0E0E0',
+    darkBorder: 'rgba(112, 112, 112, 0.45)',
+  },
+  warning: {
+    text: '#FFB020',
+    lightBg: 'rgba(255, 176, 32, 0.12)',
+    darkBg: 'rgba(255, 176, 32, 0.3)',
+    lightBorder: 'rgba(255, 176, 32, 0.4)',
+    darkBorder: 'rgba(255, 176, 32, 0.55)',
+  },
+  danger: {
+    text: '#E53935',
+    lightBg: 'rgba(229, 57, 53, 0.12)',
+    darkBg: 'rgba(229, 57, 53, 0.3)',
+    lightBorder: 'rgba(229, 57, 53, 0.4)',
+    darkBorder: 'rgba(229, 57, 53, 0.55)',
+  },
+} as const;
+
+const resolveTimerAppearance = (
+  mode: ColorMode,
+  timerMode: TimerMode | null,
+  secondsLeft: number | null
+): TimerAppearance => {
+  let state: TimerState = 'default';
+  if (timerMode === 'timed' && secondsLeft !== null) {
+    if (secondsLeft <= 2) {
+      state = 'danger';
+    } else if (secondsLeft <= 5) {
+      state = 'warning';
+    }
+  }
+
+  const isDark = mode === 'dark';
+  const values = TIMER_COLORS[state];
+
+  return {
+    state,
+    textColor: values.text,
+    backgroundColor: isDark ? values.darkBg : values.lightBg,
+    borderColor: isDark ? values.darkBorder : values.lightBorder,
+  };
+};
+
 export default function DailyQuizScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ date?: string | string[] }>();
@@ -49,6 +288,8 @@ export default function DailyQuizScreen() {
   const tint = useThemeColor({}, 'tint');
   const dailyQuiz = useQuery(api.daily.getDailyQuiz, { date: resolvedDate });
   const insets = useSafeAreaInsets();
+  const colorScheme = useColorScheme() ?? 'light';
+  const themedStyles = useMemo(() => getDailyThemeStyles(colorScheme), [colorScheme]);
   const [phase, setPhase] = useState<Phase>('intro');
   const [timerMode, setTimerMode] = useState<TimerMode | null>(null);
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number | null>(null);
@@ -60,6 +301,7 @@ export default function DailyQuizScreen() {
   const logHistory = useMutation(api.history.logEntry);
   const { status: authStatus } = useAuth();
   const [quizStartedAt, setQuizStartedAt] = useState<number | null>(null);
+  const [quizDurationMs, setQuizDurationMs] = useState<number | null>(null);
   const historyLoggedRef = useRef<string | null>(null);
 
   // 타이머 pulse 애니메이션
@@ -78,6 +320,29 @@ export default function DailyQuizScreen() {
     };
   });
 
+  const trueChoiceScale = useSharedValue(1);
+  const falseChoiceScale = useSharedValue(1);
+  const trueChoiceTranslate = useSharedValue(0);
+  const falseChoiceTranslate = useSharedValue(0);
+
+  const trueChoiceAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: trueChoiceTranslate.value },
+        { scale: trueChoiceScale.value },
+      ],
+    };
+  });
+
+  const falseChoiceAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: falseChoiceTranslate.value },
+        { scale: falseChoiceScale.value },
+      ],
+    };
+  });
+
   useEffect(() => {
     if (!dailyQuiz) {
       return;
@@ -89,6 +354,7 @@ export default function DailyQuizScreen() {
     setSelectedAnswer(null);
     setResults([]);
     setQuizStartedAt(null);
+    setQuizDurationMs(null);
     historyLoggedRef.current = null;
   }, [dailyQuiz]);
 
@@ -147,6 +413,43 @@ export default function DailyQuizScreen() {
     },
     [recordResult],
   );
+
+  useEffect(() => {
+    if (phase === 'intro' || phase === 'question') {
+      trueChoiceScale.value = withTiming(1, { duration: 150 });
+      falseChoiceScale.value = withTiming(1, { duration: 150 });
+      trueChoiceTranslate.value = withTiming(0, { duration: 150 });
+      falseChoiceTranslate.value = withTiming(0, { duration: 150 });
+      return;
+    }
+    if (correctAnswer === null) {
+      return;
+    }
+
+    const correctScale = correctAnswer ? trueChoiceScale : falseChoiceScale;
+    correctScale.value = withSequence(
+      withTiming(1.08, { duration: 180 }),
+      withTiming(1, { duration: 220 })
+    );
+
+    if (selectedAnswer !== null && selectedAnswer !== correctAnswer) {
+      const wrongTranslate = selectedAnswer ? trueChoiceTranslate : falseChoiceTranslate;
+      wrongTranslate.value = withSequence(
+        withTiming(-6, { duration: 70 }),
+        withTiming(6, { duration: 70 }),
+        withTiming(-3, { duration: 60 }),
+        withTiming(0, { duration: 110 })
+      );
+    }
+  }, [
+    correctAnswer,
+    falseChoiceScale,
+    falseChoiceTranslate,
+    phase,
+    selectedAnswer,
+    trueChoiceScale,
+    trueChoiceTranslate,
+  ]);
 
   useEffect(() => {
     if (timerMode !== 'timed') return;
@@ -217,6 +520,7 @@ export default function DailyQuizScreen() {
       setCurrentIndex(0);
       setPhase('question');
       setQuizStartedAt(Date.now());
+      setQuizDurationMs(null);
       historyLoggedRef.current = null;
     },
     [dailyQuiz],
@@ -233,6 +537,19 @@ export default function DailyQuizScreen() {
 
   const correctCount = sortedResults.filter((entry) => entry.isCorrect).length;
   const totalAnswered = sortedResults.length;
+  const totalDurationDisplay = useMemo(() => {
+    if (quizDurationMs === null) {
+      return '--';
+    }
+    return formatDuration(quizDurationMs);
+  }, [quizDurationMs]);
+
+  const averageDurationDisplay = useMemo(() => {
+    if (quizDurationMs === null || totalAnswered === 0) {
+      return '--';
+    }
+    return formatAverageDuration(quizDurationMs / totalAnswered);
+  }, [quizDurationMs, totalAnswered]);
 
   useEffect(() => {
     if (authStatus !== 'authenticated') {
@@ -244,6 +561,12 @@ export default function DailyQuizScreen() {
   }, [authStatus, phase, correctCount, updateStats]);
 
   useEffect(() => {
+    if (phase === 'finished' && quizDurationMs === null && quizStartedAt !== null) {
+      setQuizDurationMs(Date.now() - quizStartedAt);
+    }
+  }, [phase, quizDurationMs, quizStartedAt]);
+
+  useEffect(() => {
     if (phase !== 'finished') {
       historyLoggedRef.current = null;
       return;
@@ -253,7 +576,7 @@ export default function DailyQuizScreen() {
     if (historyLoggedRef.current === dailySessionKey) return;
 
     const dateKey = dailySessionKey.replace(/^daily:/, '');
-    const durationMs = quizStartedAt ? Date.now() - quizStartedAt : undefined;
+    const durationMs = quizDurationMs ?? (quizStartedAt ? Date.now() - quizStartedAt : undefined);
     historyLoggedRef.current = dailySessionKey;
     void (async () => {
       try {
@@ -281,6 +604,7 @@ export default function DailyQuizScreen() {
     dailySessionKey,
     logHistory,
     phase,
+    quizDurationMs,
     quizStartedAt,
     timerMode,
     totalQuestions,
@@ -295,6 +619,9 @@ export default function DailyQuizScreen() {
       goToQuestion(currentIndex + 1);
       return;
     }
+    if (quizStartedAt !== null) {
+      setQuizDurationMs(Date.now() - quizStartedAt);
+    }
     setPhase('finished');
     successHaptic(); // 완주 시 성공 햅틱
     // Celebration 애니메이션
@@ -302,7 +629,7 @@ export default function DailyQuizScreen() {
       withTiming(1.05, { duration: 250 }),
       withTiming(1, { duration: 250 })
     );
-  }, [celebrationScale, currentIndex, dailyQuiz, goToQuestion, isLastQuestion]);
+  }, [celebrationScale, currentIndex, dailyQuiz, goToQuestion, isLastQuestion, quizStartedAt]);
 
   const handleReset = useCallback(() => {
     setPhase('intro');
@@ -312,39 +639,23 @@ export default function DailyQuizScreen() {
     setSelectedAnswer(null);
     setCurrentIndex(0);
     setQuizStartedAt(null);
+    setQuizDurationMs(null);
     historyLoggedRef.current = null;
   }, []);
-
-  const categoryCopy = useMemo(
-    () => resolveDailyCategoryCopy(dailyQuiz?.category),
-    [dailyQuiz?.category]
-  );
-
-  const headerInfo = useMemo(() => {
-    if (!dailyQuiz) {
-      return null;
-    }
-    const copy = categoryCopy;
-    const emoji = dailyQuiz.shareTemplate?.emoji ?? copy?.emoji ?? '⚡';
-    const label = copy?.label ?? '오늘의 퀴즈';
-    const subtitle = dailyQuiz.shareTemplate?.headline ?? '오늘의 6문제를 시작해요.';
-    const dateLabel = dailyQuiz.availableDate
-      ? new Date(`${dailyQuiz.availableDate}T00:00:00`).toLocaleDateString('ko-KR', {
-        month: 'long',
-        day: 'numeric',
-        weekday: 'short',
-      })
-      : null;
-    return {
-      title: `${emoji} ${label}`,
-      subtitle,
-      dateLabel,
-    };
-  }, [categoryCopy, dailyQuiz]);
 
   const shareEmoji = shareTemplate?.emoji ?? '⚡';
   const shareHeadline = shareTemplate?.headline ?? '문제당 10초 스피드런!';
   const shareCta = shareTemplate?.cta ?? '친구 초대';
+  const categoryLines = useMemo(() => {
+    if (!dailyQuiz) {
+      return ['--'];
+    }
+    const resolved = resolveDailyCategoryCopy(dailyQuiz.category);
+    const emoji = resolved?.emoji ?? shareTemplate?.emoji ?? '🗂';
+    const label = resolved?.label ?? dailyQuiz.category ?? '카테고리 미정';
+    const parts = label.split('•').map((part) => part.trim()).filter(Boolean);
+    return [emoji, ...(parts.length > 0 ? parts : [label])];
+  }, [dailyQuiz?.category, shareTemplate?.emoji]);
 
   const deepLink = useMemo(() => {
     if (!dailyQuiz?.availableDate) {
@@ -376,8 +687,25 @@ export default function DailyQuizScreen() {
       Alert.alert('아직 풀지 않은 문제가 있어요', '모든 문제를 풀고 결과를 확인해보세요.');
       return;
     }
+    if (quizStartedAt !== null) {
+      setQuizDurationMs(Date.now() - quizStartedAt);
+    }
     setPhase('finished');
   };
+
+  const timerAppearance = useMemo(
+    () => resolveTimerAppearance(colorScheme, timerMode, questionTimeLeft),
+    [colorScheme, questionTimeLeft, timerMode]
+  );
+  const shouldPulse =
+    timerMode === 'timed' &&
+    (timerAppearance.state === 'warning' || timerAppearance.state === 'danger');
+
+  useEffect(() => {
+    if (!shouldPulse) {
+      timerPulseOpacity.value = withTiming(1, { duration: 150 });
+    }
+  }, [shouldPulse, timerPulseOpacity]);
 
   if (dailyQuiz === undefined) {
     return (
@@ -393,8 +721,8 @@ export default function DailyQuizScreen() {
       <ThemedView style={styles.loadingContainer}>
         <ThemedText type="title">오늘의 퀴즈가 준비되지 않았어요</ThemedText>
         <ThemedText style={styles.loadingLabel}>잠시 후 다시 시도해주세요.</ThemedText>
-        <Pressable style={styles.retryButton} onPress={() => router.back()}>
-          <ThemedText style={styles.retryLabel} lightColor="#ffffff" darkColor="#ffffff">
+        <Pressable style={[styles.retryButton, themedStyles.retryButton]} onPress={() => router.back()}>
+          <ThemedText style={[styles.retryLabel, themedStyles.retryLabel]}>
             돌아가기
           </ThemedText>
         </Pressable>
@@ -412,23 +740,33 @@ export default function DailyQuizScreen() {
           ]}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.introCard}>
+          <View style={[styles.introCard, themedStyles.introCard]}>
             <ThemedText type="title">오늘의 퀴즈 시작</ThemedText>
             <ThemedText style={styles.introSubtitle}>
               시간 제한을 선택하고 시작해보세요. 타임어택에서는 문제당 10초 안에 답해야 해요.
             </ThemedText>
             <View style={styles.introButtons}>
-              <Pressable style={[styles.introButton, styles.introTimed]} onPress={() => startQuiz('timed')}>
-                <ThemedText style={styles.introButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
+              <Pressable
+                style={[styles.introButton, themedStyles.introButton, themedStyles.introTimed]}
+                onPress={() => startQuiz('timed')}
+              >
+                <ThemedText style={[styles.introButtonLabel, themedStyles.introTimedText]}>
                   10초 타임어택
                 </ThemedText>
-                <ThemedText style={styles.introButtonCaption} lightColor="#ffffff" darkColor="#ffffff">
+                <ThemedText style={[styles.introButtonCaption, themedStyles.introTimedCaption]}>
                   긴장감 넘치는 시간 제한 모드
                 </ThemedText>
               </Pressable>
-              <Pressable style={[styles.introButton, styles.introUntimed]} onPress={() => startQuiz('untimed')}>
-                <ThemedText style={styles.introButtonLabel} lightColor={Palette.teal600} darkColor={Palette.teal400}>시간 제한 없음</ThemedText>
-                <ThemedText style={styles.introButtonCaption} lightColor={Palette.slate500} darkColor={Palette.slate500}>여유롭게 문제를 풀어보세요</ThemedText>
+              <Pressable
+                style={[styles.introButton, themedStyles.introButton, themedStyles.introUntimed]}
+                onPress={() => startQuiz('untimed')}
+              >
+                <ThemedText style={[styles.introButtonLabel, themedStyles.introUntimedLabel]}>
+                  시간 제한 없음
+                </ThemedText>
+                <ThemedText style={[styles.introButtonCaption, themedStyles.introUntimedCaption]}>
+                  여유롭게 문제를 풀어보세요
+                </ThemedText>
               </Pressable>
             </View>
           </View>
@@ -453,11 +791,33 @@ export default function DailyQuizScreen() {
             </ThemedText>
           </Animated.View>
           <View style={styles.summaryStats}>
-            <View style={styles.summaryStatCard}>
-              <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
-              <ThemedText type="title">
-                {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}%
-              </ThemedText>
+            <View style={styles.summaryStatsRow}>
+              <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
+                <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
+                <ThemedText type="title">
+                  {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}%
+                </ThemedText>
+              </View>
+              <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
+                <ThemedText style={styles.summaryStatLabel}>카테고리</ThemedText>
+                <View style={styles.categoryStack}>
+                  {categoryLines.map((line, idx) => (
+                    <ThemedText key={line + idx} style={styles.categoryLine}>
+                      {line}
+                    </ThemedText>
+                  ))}
+                </View>
+              </View>
+            </View>
+            <View style={styles.summaryStatsRow}>
+              <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
+                <ThemedText style={styles.summaryStatLabel}>총 소요 시간</ThemedText>
+                <ThemedText type="title">{totalDurationDisplay}</ThemedText>
+              </View>
+              <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
+                <ThemedText style={styles.summaryStatLabel}>평균 소요 시간</ThemedText>
+                <ThemedText type="title">{averageDurationDisplay}</ThemedText>
+              </View>
             </View>
           </View>
           <View style={styles.summaryList}>
@@ -468,7 +828,7 @@ export default function DailyQuizScreen() {
               const hasSelection = selection !== null && selection !== undefined;
               const selectionLabel = hasSelection ? formatBooleanAnswer(selection) : null;
               return (
-                <View key={question.id} style={styles.summaryRow}>
+                <View key={question.id} style={[styles.summaryRow, themedStyles.summaryRow]}>
                   <ThemedText style={styles.summaryQuestion}>
                     {index + 1}. {question.prompt}
                   </ThemedText>
@@ -484,9 +844,9 @@ export default function DailyQuizScreen() {
                       styles.summaryResult,
                       result
                         ? result.isCorrect
-                          ? styles.correctText
-                          : styles.incorrectText
-                        : styles.skippedText,
+                          ? themedStyles.summaryResultCorrect
+                          : themedStyles.summaryResultIncorrect
+                        : themedStyles.summaryResultSkipped,
                     ]}
                   >
                     {result ? (result.isCorrect ? '정답!' : '오답') : '미응답'}
@@ -495,29 +855,41 @@ export default function DailyQuizScreen() {
               );
             })}
           </View>
-          <View style={styles.shareCard}>
+          <View style={[styles.shareCard, themedStyles.shareCard]}>
             <ThemedText style={styles.shareEmoji}>{shareEmoji}</ThemedText>
             <ThemedText style={styles.shareHeadline}>{shareHeadline}</ThemedText>
             <ThemedText style={styles.shareBody}>
               {totalQuestions}문제 중 {correctCount}문제 정답! 링크를 공유하면 친구도 오늘 퀴즈에 참여할 수 있어요.
             </ThemedText>
-            <Pressable style={styles.shareButton} onPress={handleShare}>
-              <ThemedText style={styles.shareButtonLabel} lightColor="#ffffff" darkColor="#ffffff">
+            <Pressable style={[styles.shareButton, themedStyles.shareButton]} onPress={handleShare}>
+              <ThemedText style={[styles.shareButtonLabel, themedStyles.shareButtonLabel]}>
                 {shareCta}
               </ThemedText>
             </Pressable>
           </View>
         </ScrollView>
         <View style={styles.footerRow}>
-          <Pressable style={[styles.secondaryButton, styles.flexButton]} onPress={handleReset}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.secondaryButton,
+              themedStyles.secondaryButton,
+              styles.flexButton,
+              {
+                backgroundColor: pressed
+                  ? colorScheme === 'dark'
+                    ? Palette.darkCard
+                    : Palette.gray200
+                  : 'transparent',
+              },
+            ]}
+            onPress={handleReset}
+          >
             <ThemedText style={styles.secondaryLabel}>다시 풀기</ThemedText>
           </Pressable>
           <Link href="/(tabs)/home" asChild>
-            <Pressable style={[styles.primaryButton, styles.flexButton]}>
-              <ThemedText style={styles.primaryLabel} lightColor="#ffffff" darkColor="#ffffff">
-                홈으로
-              </ThemedText>
-            </Pressable>
+            <Button fullWidth size="lg" style={styles.flexButton}>
+              홈으로
+            </Button>
           </Link>
         </View>
       </ThemedView>
@@ -543,34 +915,35 @@ export default function DailyQuizScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {headerInfo ? (
-          <View style={styles.header}>
-            <ThemedText style={styles.headerTitle}>{headerInfo.title}</ThemedText>
-            <ThemedText style={styles.headerSubtitle}>{headerInfo.subtitle}</ThemedText>
-            {headerInfo.dateLabel ? (
-              <ThemedText style={styles.headerMeta}>{headerInfo.dateLabel}</ThemedText>
-            ) : null}
-          </View>
-        ) : null}
-
         <View style={styles.metaRow}>
-          <View style={styles.badge}>
-            <ThemedText style={styles.badgeText}>Q{currentIndex + 1}/{totalQuestions}</ThemedText>
+          <View style={[styles.badge, themedStyles.badge]}>
+            <ThemedText style={[styles.badgeText, themedStyles.badgeText]}>Q{currentIndex + 1}/{totalQuestions}</ThemedText>
           </View>
-          <Animated.View style={[
-            styles.timerPill,
-            timerMode === 'timed' && (questionTimeLeft ?? 0) <= 5 && styles.timerPillUrgent,
-            timerMode === 'timed' && (questionTimeLeft ?? 0) <= 5 && timerAnimatedStyle
-          ]}>
+          <Animated.View
+            style={[
+              styles.timerPill,
+              themedStyles.timerPill,
+              {
+                backgroundColor: timerAppearance.backgroundColor,
+                borderColor: timerAppearance.borderColor,
+              },
+              shouldPulse ? timerAnimatedStyle : null,
+            ]}
+          >
             {timerMode === 'timed' ? (
-              <ThemedText style={[
-                styles.timerText,
-                { color: (questionTimeLeft ?? 0) <= 5 ? Palette.coral600 : Palette.teal600 }
-              ]}>
+              <ThemedText
+                style={styles.timerText}
+                lightColor={timerAppearance.textColor}
+                darkColor={timerAppearance.textColor}
+              >
                 남은 시간 {formatSeconds(questionTimeLeft ?? 0)}
               </ThemedText>
             ) : (
-              <ThemedText style={[styles.timerText, { color: Palette.teal600 }]}>
+              <ThemedText
+                style={styles.timerText}
+                lightColor={timerAppearance.textColor}
+                darkColor={timerAppearance.textColor}
+              >
                 시간 제한 없음
               </ThemedText>
             )}
@@ -582,28 +955,115 @@ export default function DailyQuizScreen() {
             {currentQuestion.prompt}
           </ThemedText>
           <View style={styles.choiceList}>
-            {[{ value: true, label: 'O · 맞아요' }, { value: false, label: 'X · 아니에요' }].map((option) => {
-              const isSelected = selectedAnswer === option.value;
-              const isCorrectChoice = phase !== 'question' && option.value === correctAnswer;
+            {[true, false].map((value) => {
+              const isSelected = selectedAnswer === value;
+              const isCorrectChoice = phase !== 'question' && value === correctAnswer;
               const isIncorrectSelection =
-                phase !== 'question' && isSelected && option.value !== correctAnswer;
+                phase !== 'question' && isSelected && value !== correctAnswer;
               return (
                 <Pressable
-                  key={option.value ? 'true' : 'false'}
-                  onPress={() => handleAnswerPress(option.value)}
+                  key={value ? 'true' : 'false'}
+                  onPress={() => handleAnswerPress(value)}
                   disabled={phase !== 'question'}
-                  style={({ pressed }) => [
-                    styles.choiceButton,
-                    pressed && phase === 'question' ? styles.choicePressed : null,
-                    isSelected ? styles.choiceSelected : null,
-                    isCorrectChoice ? styles.choiceCorrect : null,
-                    isIncorrectSelection ? styles.choiceIncorrect : null,
-                  ]}
                 >
-                  <View style={styles.booleanBadge}>
-                    <ThemedText style={styles.booleanBadgeText}>{option.value ? 'O' : 'X'}</ThemedText>
-                  </View>
-                  <ThemedText style={styles.choiceText}>{option.label}</ThemedText>
+                  {({ pressed }) => {
+                    const state: ChoiceState =
+                      phase === 'question'
+                        ? (pressed ? 'pressed' : 'default')
+                        : isCorrectChoice
+                          ? 'correct'
+                          : isIncorrectSelection
+                            ? 'wrong'
+                            : 'dim';
+                    const appearance = getChoiceAppearance(colorScheme, state);
+                    const glyph = value ? 'O' : 'X';
+                    const borderColor = appearance.gradientColors
+                      ? appearance.gradientColors[1]
+                      : appearance.borderColor;
+                    const shellBackground =
+                      appearance.gradientColors?.[0] ?? appearance.backgroundColor;
+                    const animatedStyle =
+                      value ? trueChoiceAnimatedStyle : falseChoiceAnimatedStyle;
+                    let glowStyle =
+                      state === 'correct'
+                        ? styles.choiceGlowSuccess
+                        : state === 'wrong'
+                          ? styles.choiceGlowError
+                          : null;
+
+                    let feedbackLabel: string | null = null;
+                    let feedbackColor = appearance.textColor;
+                    if (phase !== 'question') {
+                      if (isCorrectChoice) {
+                        feedbackLabel = isSelected ? '정답!' : '정답';
+                        feedbackColor = '#FFFFFF';
+                      } else if (isIncorrectSelection) {
+                        feedbackLabel = '오답';
+                        feedbackColor = '#FFFFFF';
+                      }
+                    }
+
+                    return (
+                      <Animated.View
+                        style={[
+                          styles.choiceButton,
+                          animatedStyle,
+                          glowStyle,
+                          { borderColor, backgroundColor: shellBackground },
+                        ]}
+                      >
+                        {appearance.gradientColors ? (
+                          <LinearGradient
+                            colors={appearance.gradientColors}
+                            start={{ x: 0, y: 0.5 }}
+                            end={{ x: 1, y: 0.5 }}
+                            style={styles.choiceInner}
+                          >
+                            <ThemedText
+                              style={styles.choiceGlyph}
+                              lightColor={appearance.textColor}
+                              darkColor={appearance.textColor}
+                            >
+                              {glyph}
+                            </ThemedText>
+                            {feedbackLabel ? (
+                              <ThemedText
+                                style={styles.choiceFeedback}
+                                lightColor={feedbackColor}
+                                darkColor={feedbackColor}
+                              >
+                                {feedbackLabel}
+                              </ThemedText>
+                            ) : null}
+                          </LinearGradient>
+                        ) : (
+                          <View
+                            style={[
+                              styles.choiceInner,
+                              { backgroundColor: appearance.backgroundColor },
+                            ]}
+                          >
+                            <ThemedText
+                              style={styles.choiceGlyph}
+                              lightColor={appearance.textColor}
+                              darkColor={appearance.textColor}
+                            >
+                              {glyph}
+                            </ThemedText>
+                            {feedbackLabel ? (
+                              <ThemedText
+                                style={styles.choiceFeedback}
+                                lightColor={feedbackColor}
+                                darkColor={feedbackColor}
+                              >
+                                {feedbackLabel}
+                              </ThemedText>
+                            ) : null}
+                          </View>
+                        )}
+                      </Animated.View>
+                    );
+                  }}
                 </Pressable>
               );
             })}
@@ -611,7 +1071,7 @@ export default function DailyQuizScreen() {
         </View>
 
         {phase !== 'question' ? (
-          <View style={styles.explanationCard}>
+          <View style={[styles.explanationCard, themedStyles.explanationCard]}>
             <ThemedText style={styles.explanationTitle}>해설</ThemedText>
             <ThemedText style={styles.explanationBody}>{currentQuestion.explanation}</ThemedText>
           </View>
@@ -620,29 +1080,25 @@ export default function DailyQuizScreen() {
 
       <View style={styles.footerRow}>
         {!isLastQuestion ? (
-          <Pressable
-            style={[styles.primaryButton, styles.flexButton, phase === 'question' ? styles.primaryDisabled : null]}
+          <Button
+            fullWidth
+            size="lg"
+            style={styles.flexButton}
             disabled={phase === 'question'}
             onPress={handleNext}
           >
-            <ThemedText style={styles.primaryLabel} lightColor="#ffffff" darkColor="#ffffff">
-              다음 문제
-            </ThemedText>
-          </Pressable>
+            다음 문제
+          </Button>
         ) : (
-          <Pressable
-            style={[
-              styles.primaryButton,
-              styles.flexButton,
-              (!allAnswered || phase === 'question') ? styles.primaryDisabled : null,
-            ]}
+          <Button
+            fullWidth
+            size="lg"
+            style={styles.flexButton}
             disabled={!allAnswered || phase === 'question'}
             onPress={handleResultPress}
           >
-            <ThemedText style={styles.primaryLabel} lightColor="#ffffff" darkColor="#ffffff">
-              결과 보기
-            </ThemedText>
-          </Pressable>
+            결과 보기
+          </Button>
         )}
       </View>
     </ThemedView>
@@ -675,7 +1131,7 @@ const styles = StyleSheet.create({
     gap: Spacing.lg,
     padding: Spacing.xl,
     borderRadius: Radius.lg,
-    backgroundColor: 'rgba(255, 111, 97, 0.08)',
+    borderWidth: 1,
   },
   introSubtitle: {
     lineHeight: 22,
@@ -689,17 +1145,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: 'rgba(0,194,168,0.3)',
-    backgroundColor: 'rgba(255,255,255,0.08)',
     gap: Spacing.xs,
-  },
-  introTimed: {
-    backgroundColor: Palette.coral600,
-    borderColor: 'transparent',
-  },
-  introUntimed: {
-    backgroundColor: 'transparent',
-    borderColor: Palette.teal400,
   },
   introButtonLabel: {
     fontWeight: '700',
@@ -714,27 +1160,9 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: Radius.md,
-    backgroundColor: Palette.teal600,
   },
   retryLabel: {
     fontWeight: '600',
-  },
-  header: {
-    gap: Spacing.xs,
-    marginBottom: Spacing.lg,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    lineHeight: 20,
-    opacity: 0.9,
-  },
-  headerMeta: {
-    fontSize: 12,
-    opacity: 0.7,
   },
   metaRow: {
     flexDirection: 'row',
@@ -745,20 +1173,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.teal200,
   },
   badgeText: {
     fontWeight: '600',
-    color: Palette.teal600,
   },
   timerPill: {
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.teal200,
-  },
-  timerPillUrgent: {
-    backgroundColor: Palette.coral200,
+    borderWidth: 1,
   },
   timerText: {
     fontWeight: '600',
@@ -771,55 +1194,61 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   choiceList: {
-    gap: Spacing.md,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: Spacing.lg,
   },
   choiceButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    borderRadius: Radius.lg,
+    flexBasis: '45%',
+    aspectRatio: 1,
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    borderRadius: Radius.md,
     borderWidth: 1,
     borderColor: 'transparent',
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    overflow: 'hidden',
   },
-  choicePressed: {
-    opacity: 0.8,
-  },
-  choiceSelected: {
-    borderColor: Palette.teal600,
-    backgroundColor: 'rgba(0, 194, 168, 0.08)',
-  },
-  choiceCorrect: {
-    borderColor: Palette.coral600,
-    backgroundColor: 'rgba(255, 111, 97, 0.1)',
-  },
-  choiceIncorrect: {
-    borderColor: Palette.slate500,
-    backgroundColor: 'rgba(112, 112, 112, 0.1)',
-  },
-  booleanBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: Radius.pill,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    backgroundColor: 'rgba(255,255,255,0.06)',
+  choiceInner: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.lg,
+    gap: Spacing.xs,
   },
-  booleanBadgeText: {
+  choiceGlyph: {
     fontWeight: '700',
-    fontSize: 20,
+    fontSize: 56,
+    lineHeight: 56,
   },
-  choiceText: {
-    flex: 1,
+  choiceFeedback: {
+    fontWeight: '600',
+    fontSize: 15,
+    marginTop: Spacing.xs,
+  },
+  choiceGlowSuccess: {
+    borderWidth: 2,
+    shadowColor: '#56CCF2',
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
+  },
+  choiceGlowError: {
+    borderWidth: 2,
+    shadowColor: '#FF6A6A',
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
   },
   explanationCard: {
     padding: Spacing.lg,
     borderRadius: Radius.lg,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderWidth: 1,
     gap: Spacing.sm,
   },
   explanationTitle: {
@@ -837,25 +1266,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: Palette.slate500,
     alignItems: 'center',
     justifyContent: 'center',
   },
   secondaryLabel: {
-    fontWeight: '600',
-  },
-  primaryButton: {
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-    borderRadius: Radius.md,
-    backgroundColor: Palette.teal600,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  primaryDisabled: {
-    opacity: 0.6,
-  },
-  primaryLabel: {
     fontWeight: '600',
   },
   flexButton: {
@@ -871,15 +1285,28 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   summaryStats: {
+    gap: Spacing.md,
+  },
+  summaryStatsRow: {
     flexDirection: 'row',
     gap: Spacing.md,
+    flexWrap: 'wrap',
   },
   summaryStatCard: {
     flex: 1,
     padding: Spacing.lg,
     borderRadius: Radius.lg,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderWidth: 1,
     gap: Spacing.xs,
+    minWidth: 160,
+  },
+  categoryStack: {
+    gap: 2,
+    alignItems: 'center',
+  },
+  categoryLine: {
+    fontWeight: '600',
+    fontSize: 16,
   },
   summaryStatLabel: {
     fontWeight: '600',
@@ -892,7 +1319,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
     padding: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderWidth: 1,
   },
   summaryQuestion: {
     fontWeight: '600',
@@ -908,22 +1335,11 @@ const styles = StyleSheet.create({
   summaryResult: {
     fontWeight: '600',
   },
-  correctText: {
-    color: Palette.success,
-  },
-  incorrectText: {
-    color: Palette.danger,
-  },
-  skippedText: {
-    color: Palette.slate500,
-  },
   shareCard: {
     marginTop: Spacing.lg,
     padding: Spacing.lg,
     borderRadius: Radius.lg,
-    backgroundColor: 'rgba(255, 111, 97, 0.08)',
-    borderWidth: 2,
-    borderColor: Palette.coral200,
+    borderWidth: 1,
     alignItems: 'center',
     gap: Spacing.sm,
   },
@@ -945,7 +1361,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xl,
     paddingVertical: Spacing.md,
     borderRadius: Radius.pill,
-    backgroundColor: Palette.coral600,
   },
   shareButtonLabel: {
     fontWeight: '600',

@@ -77,11 +77,11 @@ export const Colors = {
     iconSelected: Palette.gray900,
 
     // Status
-    success: Palette.gray600,
-    error: Palette.gray300,
-    warning: Palette.gray700,
-    info: Palette.gray400,
-    danger: Palette.gray700,
+    success: Palette.gray400,   // 완료/정상
+    warning: '#FFB020',         // 5초 이하 경고 (앰버)
+    danger: '#FF6F61',          // 2초 이하 긴급 (코랄)
+    error: '#E53935',           // 오류/실패
+    info: Palette.gray500,      // 정보
 
     // Tab
     tabIconDefault: Palette.gray300,
@@ -117,11 +117,11 @@ export const Colors = {
     iconSelected: Palette.gray100,
 
     // Status
-    success: '#AAAAAA',
-    error: Palette.gray400,
-    warning: Palette.gray150,
-    info: Palette.gray300,
-    danger: Palette.gray150,
+    success: Palette.gray500,   // 어두운 배경에서 더 밝게
+    warning: '#FFCA28',         // 밝은 앰버 (눈에 잘 띄도록)
+    danger: '#FF867C',          // 다크모드용 코랄 톤 (명도 높임)
+    error: '#EF5350',           // 다크모드용 레드 (조금 밝은 톤)
+    info: Palette.gray300,      // 밝은 회색 (가독성)
 
     // Tab
     tabIconDefault: Palette.gray400,

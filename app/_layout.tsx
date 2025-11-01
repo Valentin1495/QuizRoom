@@ -31,7 +31,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen
                   name="daily/index"
-                  options={{ title: '데일리 블링크', headerBackButtonDisplayMode: 'minimal' }}
+                  options={{ headerShown: false }}
                 />
                 <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
               </Stack>

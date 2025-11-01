@@ -115,13 +115,16 @@ function hexToRgb(hex: string) {
   };
 }
 function rgbToHex(r: number, g: number, b: number) {
-  const to = (n: number) => n.toString(16).padStart(2, '0');
+  const to = (n: number) => Math.round(n).toString(16).padStart(2, '0');
   return `#${to(Math.max(0, Math.min(255, r)))}${to(Math.max(0, Math.min(255, g)))}${to(Math.max(0, Math.min(255, b)))}`;
 }
 function mix(hexA: string, hexB: string, amount = 0.1) {
   const a = hexToRgb(hexA), b = hexToRgb(hexB);
   const r = a.r + (b.r - a.r) * amount, g = a.g + (b.g - a.g) * amount, b2 = a.b + (b.b - a.b) * amount;
   return rgbToHex(r, g, b2);
+}
+function darken(hex: string, amount = 0.15) {
+  return mix(hex, "#000000", amount);
 }
 function isLight(hex: string) {
   const { r, g, b } = hexToRgb(hex);
@@ -165,13 +168,14 @@ export function Button({
     return [
       ...baseContainer,
       container,
+      !isDisabled && pressed ? feedbackStyles.pressed : null,
       variant === "outline" && baseStyles.noShadow,
       isDisabled && baseStyles.disabled,
       style,
     ];
   };
 
-  const { text, spinner } = resolveStyles(variant, p, false);
+  const { text, spinner, ripple } = resolveStyles(variant, p, false);
   const hasChildren = Children.count(children) > 0;
   const showLeft = loading || !!leftIcon;
   const showRight = !!rightIcon;
@@ -186,7 +190,7 @@ export function Button({
         if (isDisabled) return;
         onPress?.(e);
       }}
-      android_ripple={{ color: mix(p.foreground, p.border, 0.85) }}
+      android_ripple={{ color: ripple, borderless: false }}
     >
       <View style={[baseStyles.contentRow, fullWidth && baseStyles.contentRowFull]}>
         {showLeft ? (
@@ -205,45 +209,76 @@ export function Button({
   );
 }
 
+interface ResolvedStyles {
+  container: ViewStyle;
+  text: TextStyle;
+  spinner: string;
+  ripple: string;
+}
+
 function resolveStyles(
   variant: ButtonVariant,
   p: Normalized,
   pressed: boolean
-): { container: ViewStyle; text: any; spinner: string } {
+): ResolvedStyles {
   switch (variant) {
-    case "outline": {
-      const baseBg = "transparent" as const;
-      const bg = pressed ? mix(p.secondary, p.border, 0.5) : baseBg; // hover-like
+    case 'outline': {
+      const baseBg = 'transparent' as const;
+      const outlineActive = mix(p.foreground, p.border, 0.6);
+      const bg = pressed ? outlineActive : baseBg;
+      const borderColor = pressed ? mix(p.border, p.foreground, 0.4) : p.border;
       const color = p.foreground;
       return {
-        container: { backgroundColor: bg, borderWidth: 1, borderColor: p.border },
+        container: { backgroundColor: bg, borderWidth: 1, borderColor },
         text: { color },
         spinner: color,
+        ripple: darken(p.border, 0.35),
       };
     }
-    case "secondary": {
+    case 'secondary': {
       const baseBg = p.secondary;
-      const bg = pressed ? mix(baseBg, isLight(baseBg) ? "#000000" : "#FFFFFF", 0.07) : baseBg;
+      const bg = pressed ? darken(baseBg, 0.12) : baseBg;
       const color = p.onSecondary ?? contrastText(baseBg);
-      return { container: { backgroundColor: bg }, text: { color }, spinner: color };
+      return {
+        container: { backgroundColor: bg },
+        text: { color },
+        spinner: color,
+        ripple: darken(baseBg, 0.3),
+      };
     }
-    case "destructive": {
+    case 'destructive': {
       const baseBg = p.destructive;
-      const bg = pressed ? mix(baseBg, "#000000", 0.08) : baseBg;
+      const bg = pressed ? darken(baseBg, 0.18) : baseBg;
       const color = p.onDestructive ?? contrastText(baseBg);
-      return { container: { backgroundColor: bg }, text: { color }, spinner: color };
+      return {
+        container: { backgroundColor: bg },
+        text: { color },
+        spinner: color,
+        ripple: darken(baseBg, 0.25),
+      };
     }
-    case "ghost": {
-      const baseBg = "transparent" as const;
-      const bg = pressed ? mix(p.secondary, p.border, 0.35) : baseBg;
+    case 'ghost': {
+      const baseBg = 'transparent' as const;
+      const ghostBase = isLight(p.primary) ? darken(p.primary, 0.65) : darken(p.primary, 0.25);
+      const bg = pressed ? ghostBase : baseBg;
       const color = p.foreground;
-      return { container: { backgroundColor: bg }, text: { color }, spinner: color };
+      return {
+        container: { backgroundColor: bg },
+        text: { color },
+        spinner: color,
+        ripple: darken(p.foreground, 0.4),
+      };
     }
     default: {
       const baseBg = p.primary;
-      const bg = pressed ? mix(baseBg, "#000000", 0.07) : baseBg; // subtle darken
+      const bg = pressed ? darken(baseBg, 0.12) : baseBg;
       const color = p.onPrimary ?? contrastText(baseBg);
-      return { container: { backgroundColor: bg }, text: { color }, spinner: color };
+      return {
+        container: { backgroundColor: bg },
+        text: { color },
+        spinner: color,
+        ripple: darken(baseBg, 0.25),
+      };
     }
   }
 }
@@ -302,6 +337,13 @@ const baseStyles = StyleSheet.create({
     shadowRadius: 0,
     shadowOpacity: 0,
     elevation: 0,
+  },
+});
+
+const feedbackStyles = StyleSheet.create({
+  pressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.97 }],
   },
 });
 
