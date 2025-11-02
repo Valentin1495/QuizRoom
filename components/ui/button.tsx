@@ -2,6 +2,7 @@ import React, { Children } from "react";
 import {
   ActivityIndicator,
   GestureResponderEvent,
+  Platform,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -28,7 +29,7 @@ export type ButtonVariant =
   | "secondary"
   | "destructive"
   | "ghost"; // optional, closer to shadcn
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 export interface ButtonProps {
   children?: React.ReactNode;
@@ -169,12 +170,11 @@ export function Button({
       ...baseContainer,
       container,
       !isDisabled && pressed ? feedbackStyles.pressed : null,
-      variant === "outline" && baseStyles.noShadow,
+      (variant === "outline" || variant === "ghost") && baseStyles.noShadow,
       isDisabled && baseStyles.disabled,
       style,
     ];
   };
-
   const { text, spinner, ripple } = resolveStyles(variant, p, false);
   const hasChildren = Children.count(children) > 0;
   const showLeft = loading || !!leftIcon;
@@ -224,9 +224,10 @@ function resolveStyles(
   switch (variant) {
     case 'outline': {
       const baseBg = 'transparent' as const;
-      const outlineActive = mix(p.foreground, p.border, 0.6);
+      const mixTarget = isLight(p.foreground) ? '#000000' : '#FFFFFF';
+      const outlineActive = mix(p.border, mixTarget, 0.18);
       const bg = pressed ? outlineActive : baseBg;
-      const borderColor = pressed ? mix(p.border, p.foreground, 0.4) : p.border;
+      const borderColor = pressed ? mix(p.border, p.foreground, 0.35) : p.border;
       const color = p.foreground;
       return {
         container: { backgroundColor: bg, borderWidth: 1, borderColor },
@@ -259,8 +260,9 @@ function resolveStyles(
     }
     case 'ghost': {
       const baseBg = 'transparent' as const;
-      const ghostBase = isLight(p.primary) ? darken(p.primary, 0.65) : darken(p.primary, 0.25);
-      const bg = pressed ? ghostBase : baseBg;
+      const mixTarget = isLight(p.foreground) ? '#000000' : '#FFFFFF';
+      const ghostActive = mix(p.border, mixTarget, 0.08);
+      const bg = pressed ? ghostActive : baseBg;
       const color = p.foreground;
       return {
         container: { backgroundColor: bg },
@@ -290,7 +292,6 @@ const baseStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16, // px-4
     // disabled:pointer-events-none is approximated via disabled prop
     shadowColor: "rgba(0, 0, 0, 0.12)",
     shadowOffset: { width: 0, height: 4 },
@@ -348,9 +349,19 @@ const feedbackStyles = StyleSheet.create({
 });
 
 const sizeStyles = StyleSheet.create({
-  sm: { minHeight: 36, paddingVertical: 6 },
-  md: { minHeight: 44, paddingVertical: 8 },
-  lg: { minHeight: 52, paddingVertical: 12 },
+  sm: { minHeight: 36, paddingVertical: 6, paddingHorizontal: 12 },
+  md: { minHeight: 44, paddingVertical: 8, paddingHorizontal: 16 },
+  lg: { minHeight: 52, paddingVertical: 12, paddingHorizontal: 24 },
+  icon: Platform.select({
+    android: {
+      paddingVertical: 6,
+      paddingHorizontal: 6,
+    },
+    default: {
+      paddingVertical: 8,
+      paddingHorizontal: 8,
+    },
+  }),
 });
 
 const roundedStyles = StyleSheet.create({

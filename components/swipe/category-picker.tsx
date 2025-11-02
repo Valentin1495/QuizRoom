@@ -1,9 +1,12 @@
+import { useRouter } from 'expo-router';
 import { memo } from 'react';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
+import { Button } from '@/components/ui/button';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { categories, type CategoryMeta } from '@/constants/categories';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export type CategoryPickerProps = {
@@ -41,35 +44,36 @@ function CategoryItem({
       >
         {item.description}
       </ThemedText>
-      <View style={styles.tagRow}>
-        {item.sampleTags.slice(0, 3).map((tag) => (
-          <View key={tag} style={styles.tagChip}>
-            <ThemedText style={styles.tagText} lightColor="#fff" darkColor="#fff">
-              #{tag}
-            </ThemedText>
-          </View>
-        ))}
-      </View>
     </Pressable>
   );
 }
 
 function CategoryPickerComponent({ onSelect }: CategoryPickerProps) {
+  const router = useRouter();
+  const iconColor = useThemeColor({}, 'text');
+
   return (
     <FlatList
       data={categories}
       keyExtractor={(item) => item.slug}
       contentContainerStyle={styles.container}
-      numColumns={2}
       ListHeaderComponent={
         <View style={styles.header}>
-          <ThemedText type="title">스와이프 스택</ThemedText>
+          <View style={styles.headerRow}>
+            <Button
+              variant="ghost"
+              size="icon"
+              style={styles.backButton}
+              onPress={() => router.back()}
+              leftIcon={<IconSymbol name="arrow.left" size={24} color={iconColor} />}
+            />
+            <ThemedText type="title">스와이프 스택</ThemedText>
+          </View>
           <ThemedText style={styles.subtitle}>
             즐기고 싶은 메인 카테고리를 선택해주세요.
           </ThemedText>
         </View>
       }
-      columnWrapperStyle={styles.column}
       renderItem={({ item }) => (
         <CategoryItem item={item} onPress={() => onSelect(item)} />
       )}
@@ -84,10 +88,24 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     gap: Spacing.lg,
+    paddingBottom: Spacing.xl,
   },
   header: {
-    marginBottom: Spacing.lg,
-    gap: Spacing.sm,
+    marginVertical: Spacing.lg,
+    gap: Spacing.md,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  backButton: {
+    ...Platform.select({
+      ios: {
+        // Optically align the icon with the title text on iOS
+        transform: [{ translateY: -4 }],
+      },
+    }),
   },
   subtitle: {
     fontSize: 14,
@@ -97,16 +115,12 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xl,
     gap: Spacing.lg,
   },
-  column: {
-    gap: Spacing.lg,
-  },
   card: {
     flex: 1,
     borderRadius: Radius.lg,
     borderWidth: 1,
     padding: Spacing.lg,
-    justifyContent: 'space-between',
-    minHeight: 156,
+    gap: Spacing.lg,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -123,21 +137,5 @@ const styles = StyleSheet.create({
   cardDescription: {
     fontSize: 13,
     lineHeight: 18,
-  },
-  tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.xs,
-    marginTop: Spacing.md,
-  },
-  tagChip: {
-    backgroundColor: Palette.gray600,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
-    borderRadius: Radius.pill,
-  },
-  tagText: {
-    fontSize: 12,
-    fontWeight: '600',
   },
 });

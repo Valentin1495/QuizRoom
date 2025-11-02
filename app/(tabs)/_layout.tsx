@@ -34,7 +34,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="party"
         options={{
-          title: '파티',
+          title: '라이브 매치',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.3.fill" color={color} />,
         }}
       />

@@ -61,7 +61,7 @@ export const Colors = {
     // Brand (흑백 전환)
     primary: Palette.gray900,
     primaryForeground: Palette.white,
-    secondary: Palette.gray50,
+    secondary: Palette.gray100,
     secondaryForeground: Palette.gray900,
     accent: Palette.gray200,
     accentForeground: Palette.gray950,

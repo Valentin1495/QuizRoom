@@ -1,12 +1,8 @@
 // Fallback for using MaterialIcons on Android and web.
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
-import { ComponentProps } from 'react';
+import { SymbolWeight } from 'expo-symbols';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
-
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
-type IconSymbolName = keyof typeof MAPPING;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
@@ -14,11 +10,24 @@ type IconSymbolName = keyof typeof MAPPING;
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING = {
-  'house.fill': 'home',
-  'paperplane.fill': 'send',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-} as IconMapping;
+  'arrow.left': 'arrow-back',
+  // Feedback icons                                                                                                              │
+  'checkmark.circle.fill': 'check-circle',
+  'xmark.circle.fill': 'cancel',
+  // Tab Bar Icons
+  'sparkles': 'auto-awesome',
+  'square.stack.3d.up.fill': 'layers',
+  'person.3.fill': 'people',
+  'person.crop.circle': 'account-circle',
+} as const;
+
+export type IconSymbolName = keyof typeof MAPPING;
+
+/**
+ * A list of SF Symbols that appear visually smaller as Material Icons
+ * and require a size adjustment on Android/web to match their iOS appearance.
+ */
+const SIZE_ADJUSTMENT_LIST: IconSymbolName[] = ['arrow.left'];
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
@@ -37,5 +46,7 @@ export function IconSymbol({
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  // Some icons like chevrons need to be larger on Android/web to visually match iOS.
+  const adjustedSize = SIZE_ADJUSTMENT_LIST.includes(name) ? size + 4 : size;
+  return <MaterialIcons color={color} size={adjustedSize} name={MAPPING[name]} style={style} />;
 }

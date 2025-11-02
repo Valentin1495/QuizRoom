@@ -281,6 +281,57 @@ const resolveTimerAppearance = (
   };
 };
 
+type SummaryStatus = 'correct' | 'incorrect' | 'skipped';
+
+type SummaryAppearance = {
+  backgroundColor: string;
+  borderColor: string;
+  badgeBackgroundColor: string;
+  badgeTextColor: string;
+  answerTextColor: string;
+  explanationBackgroundColor: string;
+};
+
+const SUMMARY_STATUS_COLORS = {
+  correct: {
+    lightBg: 'rgba(76, 195, 138, 0.14)',
+    darkBg: 'rgba(76, 195, 138, 0.22)',
+    lightBorder: 'rgba(76, 195, 138, 0.4)',
+    darkBorder: 'rgba(76, 195, 138, 0.5)',
+    badge: '#4CC38A',
+    answer: '#2E9F6E',
+  },
+  incorrect: {
+    lightBg: 'rgba(228, 94, 94, 0.14)',
+    darkBg: 'rgba(228, 94, 94, 0.24)',
+    lightBorder: 'rgba(228, 94, 94, 0.4)',
+    darkBorder: 'rgba(228, 94, 94, 0.5)',
+    badge: '#E45E5E',
+    answer: '#C44747',
+  },
+  skipped: {
+    lightBg: 'rgba(112, 112, 112, 0.08)',
+    darkBg: 'rgba(112, 112, 112, 0.2)',
+    lightBorder: 'rgba(112, 112, 112, 0.28)',
+    darkBorder: 'rgba(112, 112, 112, 0.4)',
+    badge: '#808080',
+    answer: '#707070',
+  },
+} as const;
+
+const getSummaryAppearance = (mode: ColorMode, status: SummaryStatus): SummaryAppearance => {
+  const isDark = mode === 'dark';
+  const palette = SUMMARY_STATUS_COLORS[status];
+  return {
+    backgroundColor: isDark ? palette.darkBg : palette.lightBg,
+    borderColor: isDark ? palette.darkBorder : palette.lightBorder,
+    badgeBackgroundColor: palette.badge,
+    badgeTextColor: '#FFFFFF',
+    answerTextColor: palette.answer,
+    explanationBackgroundColor: isDark ? 'rgba(255,255,255,0.05)' : Palette.gray25,
+  };
+};
+
 export default function DailyQuizScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ date?: string | string[] }>();
@@ -378,7 +429,7 @@ export default function DailyQuizScreen() {
     return `daily:${dateKey}`;
   }, [dailyQuiz, resolvedDate]);
   const formatBooleanAnswer = useCallback(
-    (value: boolean) => (value ? 'O · 맞아요' : 'X · 아니에요'),
+    (value: boolean) => (value ? 'O' : 'X'),
     []
   );
 
@@ -646,15 +697,14 @@ export default function DailyQuizScreen() {
   const shareEmoji = shareTemplate?.emoji ?? '⚡';
   const shareHeadline = shareTemplate?.headline ?? '문제당 10초 스피드런!';
   const shareCta = shareTemplate?.cta ?? '친구 초대';
-  const categoryLines = useMemo(() => {
+  const categoryDisplay = useMemo(() => {
     if (!dailyQuiz) {
-      return ['--'];
+      return '--';
     }
     const resolved = resolveDailyCategoryCopy(dailyQuiz.category);
     const emoji = resolved?.emoji ?? shareTemplate?.emoji ?? '🗂';
     const label = resolved?.label ?? dailyQuiz.category ?? '카테고리 미정';
-    const parts = label.split('•').map((part) => part.trim()).filter(Boolean);
-    return [emoji, ...(parts.length > 0 ? parts : [label])];
+    return `${emoji} ${label}`;
   }, [dailyQuiz?.category, shareTemplate?.emoji]);
 
   const deepLink = useMemo(() => {
@@ -771,6 +821,17 @@ export default function DailyQuizScreen() {
             </View>
           </View>
         </ScrollView>
+        <View style={styles.footerRow}>
+          <Button
+            variant="outline"
+            fullWidth
+            size="lg"
+            style={styles.flexButton}
+            onPress={() => router.back()}
+          >
+            돌아가기
+          </Button>
+        </View>
       </ThemedView>
     );
   }
@@ -786,37 +847,28 @@ export default function DailyQuizScreen() {
         >
           <Animated.View style={celebrationAnimatedStyle}>
             <ThemedText type="title">오늘의 결과</ThemedText>
-            <ThemedText style={styles.summaryHeadline}>
-              {totalQuestions}문제 중 {correctCount}문제 정답!
-            </ThemedText>
           </Animated.View>
           <View style={styles.summaryStats}>
             <View style={styles.summaryStatsRow}>
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
-                <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
-                <ThemedText type="title">
-                  {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}%
-                </ThemedText>
+                <ThemedText style={styles.summaryStatLabel}>카테고리</ThemedText>
+                <ThemedText type="subtitle">{categoryDisplay}</ThemedText>
               </View>
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
-                <ThemedText style={styles.summaryStatLabel}>카테고리</ThemedText>
-                <View style={styles.categoryStack}>
-                  {categoryLines.map((line, idx) => (
-                    <ThemedText key={line + idx} style={styles.categoryLine}>
-                      {line}
-                    </ThemedText>
-                  ))}
-                </View>
+                <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
+                <ThemedText type="subtitle">
+                  {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}% - {correctCount}/{totalQuestions}문제
+                </ThemedText>
               </View>
             </View>
             <View style={styles.summaryStatsRow}>
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
                 <ThemedText style={styles.summaryStatLabel}>총 소요 시간</ThemedText>
-                <ThemedText type="title">{totalDurationDisplay}</ThemedText>
+                <ThemedText type="subtitle">{totalDurationDisplay}</ThemedText>
               </View>
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
                 <ThemedText style={styles.summaryStatLabel}>평균 소요 시간</ThemedText>
-                <ThemedText type="title">{averageDurationDisplay}</ThemedText>
+                <ThemedText type="subtitle">{averageDurationDisplay}</ThemedText>
               </View>
             </View>
           </View>
@@ -827,35 +879,65 @@ export default function DailyQuizScreen() {
               const selection = result?.selection;
               const hasSelection = selection !== null && selection !== undefined;
               const selectionLabel = hasSelection ? formatBooleanAnswer(selection) : null;
+              const summaryStatus: SummaryStatus = result
+                ? result.isCorrect
+                  ? 'correct'
+                  : 'incorrect'
+                : 'skipped';
+              const appearance = getSummaryAppearance(colorScheme, summaryStatus);
+              const statusLabel = result ? (result.isCorrect ? '정답' : '오답') : '미응답';
               return (
-                <View key={question.id} style={[styles.summaryRow, themedStyles.summaryRow]}>
-                  <ThemedText style={styles.summaryQuestion}>
-                    {index + 1}. {question.prompt}
-                  </ThemedText>
-                  <ThemedText style={styles.summaryAnswer}>정답: {answerLabel}</ThemedText>
-                  {selectionLabel ? (
-                    <ThemedText style={styles.summaryAnswer}>내 답: {selectionLabel}</ThemedText>
-                  ) : null}
-                  <ThemedText style={styles.summaryExplanation}>
-                    해설: {question.explanation}
-                  </ThemedText>
-                  <ThemedText
+                <View
+                  key={question.id}
+                  style={[
+                    styles.summaryRow,
+                    {
+                      backgroundColor: appearance.backgroundColor,
+                      borderColor: appearance.borderColor,
+                    },
+                  ]}
+                >
+                  <View style={styles.summaryRowHeader}>
+                    <ThemedText style={styles.summaryRowIndex}>Q{index + 1}</ThemedText>
+                    <View
+                      style={[styles.summaryStatusBadge, { backgroundColor: appearance.badgeBackgroundColor }]}
+                    >
+                      <ThemedText
+                        style={[styles.summaryStatusBadgeText, { color: appearance.badgeTextColor }]}
+                      >
+                        {statusLabel}
+                      </ThemedText>
+                    </View>
+                  </View>
+                  <ThemedText style={styles.summaryQuestion}>{question.prompt}</ThemedText>
+                  <View style={styles.summaryAnswers}>
+                    <View style={styles.summaryAnswerRow}>
+                      <ThemedText style={styles.summaryAnswerLabel}>정답</ThemedText>
+                      <ThemedText style={styles.summaryAnswerValue}>{answerLabel}</ThemedText>
+                    </View>
+                    <View style={styles.summaryAnswerRow}>
+                      <ThemedText style={styles.summaryAnswerLabel}>내 답</ThemedText>
+                      <ThemedText
+                        style={[styles.summaryAnswerValue, { color: appearance.answerTextColor }]}
+                      >
+                        {selectionLabel ?? '응답 없음'}
+                      </ThemedText>
+                    </View>
+                  </View>
+                  <View
                     style={[
-                      styles.summaryResult,
-                      result
-                        ? result.isCorrect
-                          ? themedStyles.summaryResultCorrect
-                          : themedStyles.summaryResultIncorrect
-                        : themedStyles.summaryResultSkipped,
+                      styles.summaryExplanationBox,
+                      { backgroundColor: appearance.explanationBackgroundColor },
                     ]}
                   >
-                    {result ? (result.isCorrect ? '정답!' : '오답') : '미응답'}
-                  </ThemedText>
+                    <ThemedText style={styles.summaryExplanationLabel}>해설</ThemedText>
+                    <ThemedText style={styles.summaryExplanationText}>{question.explanation}</ThemedText>
+                  </View>
                 </View>
               );
             })}
           </View>
-          <View style={[styles.shareCard, themedStyles.shareCard]}>
+          {/* <View style={[styles.shareCard, themedStyles.shareCard]}>
             <ThemedText style={styles.shareEmoji}>{shareEmoji}</ThemedText>
             <ThemedText style={styles.shareHeadline}>{shareHeadline}</ThemedText>
             <ThemedText style={styles.shareBody}>
@@ -866,26 +948,18 @@ export default function DailyQuizScreen() {
                 {shareCta}
               </ThemedText>
             </Pressable>
-          </View>
+          </View> */}
         </ScrollView>
         <View style={styles.footerRow}>
-          <Pressable
-            style={({ pressed }) => [
-              styles.secondaryButton,
-              themedStyles.secondaryButton,
-              styles.flexButton,
-              {
-                backgroundColor: pressed
-                  ? colorScheme === 'dark'
-                    ? Palette.darkCard
-                    : Palette.gray200
-                  : 'transparent',
-              },
-            ]}
+          <Button
+            variant="secondary"
+            fullWidth
+            size="lg"
+            style={styles.flexButton}
             onPress={handleReset}
           >
-            <ThemedText style={styles.secondaryLabel}>다시 풀기</ThemedText>
-          </Pressable>
+            다시 풀기
+          </Button>
           <Link href="/(tabs)/home" asChild>
             <Button fullWidth size="lg" style={styles.flexButton}>
               홈으로
@@ -1079,6 +1153,15 @@ export default function DailyQuizScreen() {
       </ScrollView>
 
       <View style={styles.footerRow}>
+        <Button
+          variant="secondary"
+          fullWidth
+          size="lg"
+          style={styles.flexButton}
+          onPress={() => router.back()}
+        >
+          나가기
+        </Button>
         {!isLastQuestion ? (
           <Button
             fullWidth
@@ -1261,17 +1344,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: Spacing.md,
   },
-  secondaryButton: {
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-    borderRadius: Radius.md,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  secondaryLabel: {
-    fontWeight: '600',
-  },
   flexButton: {
     flex: 1,
   },
@@ -1279,10 +1351,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     gap: Spacing.lg,
     paddingBottom: Spacing.xl,
-  },
-  summaryHeadline: {
-    fontSize: 18,
-    fontWeight: '600',
   },
   summaryStats: {
     gap: Spacing.md,
@@ -1300,14 +1368,6 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
     minWidth: 160,
   },
-  categoryStack: {
-    gap: 2,
-    alignItems: 'center',
-  },
-  categoryLine: {
-    fontWeight: '600',
-    fontSize: 16,
-  },
   summaryStatLabel: {
     fontWeight: '600',
     opacity: 0.8,
@@ -1316,24 +1376,60 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   summaryRow: {
-    gap: Spacing.xs,
-    padding: Spacing.md,
-    borderRadius: Radius.md,
+    gap: Spacing.md,
+    padding: Spacing.lg,
+    borderRadius: Radius.lg,
     borderWidth: 1,
+  },
+  summaryRowHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  summaryRowIndex: {
+    fontWeight: '700',
+  },
+  summaryStatusBadge: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+  },
+  summaryStatusBadgeText: {
+    fontWeight: '700',
+    fontSize: 12,
   },
   summaryQuestion: {
     fontWeight: '600',
-    lineHeight: 20,
+    lineHeight: 22,
   },
-  summaryAnswer: {
-    opacity: 0.9,
+  summaryAnswers: {
+    gap: Spacing.xs,
   },
-  summaryExplanation: {
-    opacity: 0.75,
-    lineHeight: 18,
+  summaryAnswerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
   },
-  summaryResult: {
+  summaryAnswerLabel: {
     fontWeight: '600',
+    opacity: 0.7,
+    minWidth: 56,
+  },
+  summaryAnswerValue: {
+    flex: 1,
+    fontWeight: '500',
+  },
+  summaryExplanationBox: {
+    padding: Spacing.sm,
+    borderRadius: Radius.md,
+    gap: 4,
+  },
+  summaryExplanationLabel: {
+    fontWeight: '600',
+    opacity: 0.75,
+  },
+  summaryExplanationText: {
+    lineHeight: 18,
   },
   shareCard: {
     marginTop: Spacing.lg,
