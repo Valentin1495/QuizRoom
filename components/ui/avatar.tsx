@@ -1,7 +1,9 @@
 // components/ui/Avatar.tsx
 import * as Haptics from 'expo-haptics';
 import React, { useMemo } from 'react';
-import { Image, Pressable, Text, TextStyle, useColorScheme, View, ViewStyle } from 'react-native';
+import { Image, Pressable, Text, TextStyle, View, ViewStyle } from 'react-native';
+
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Colors, Palette, Radius } from '../../constants/theme';
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';

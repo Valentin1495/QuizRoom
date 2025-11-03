@@ -11,7 +11,10 @@ import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
  */
 const MAPPING = {
   'arrow.left': 'arrow-back',
-  // Feedback icons                                                                                                              │
+  'arrow.right': 'arrow-forward',
+  'sun.max.fill': 'light-mode',
+  'moon.fill': 'dark-mode',
+  // Feedback icons
   'checkmark.circle.fill': 'check-circle',
   'xmark.circle.fill': 'cancel',
   // Tab Bar Icons
@@ -19,6 +22,15 @@ const MAPPING = {
   'square.stack.3d.up.fill': 'layers',
   'person.3.fill': 'people',
   'person.crop.circle': 'account-circle',
+  // Category Icons
+  'music.note': 'music-note',
+  'tv': 'tv',
+  'film.fill': 'movie',
+  'trophy.fill': 'emoji-events',
+  'desktopcomputer': 'desktop-mac',
+  'bag.fill': 'shopping-bag',
+  'newspaper': 'newspaper',
+  'lightbulb': 'lightbulb-outline',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING;
@@ -27,7 +39,7 @@ export type IconSymbolName = keyof typeof MAPPING;
  * A list of SF Symbols that appear visually smaller as Material Icons
  * and require a size adjustment on Android/web to match their iOS appearance.
  */
-const SIZE_ADJUSTMENT_LIST: IconSymbolName[] = ['arrow.left'];
+const SIZE_ADJUSTMENT_LIST: IconSymbolName[] = ['arrow.left', 'arrow.right', 'sun.max.fill', 'moon.fill'];
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.

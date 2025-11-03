@@ -4,16 +4,17 @@ import {
   GestureResponderEvent,
   Platform,
   Pressable,
+  PressableStateCallbackType,
   StyleProp,
   StyleSheet,
   Text,
   TextStyle,
-  useColorScheme,
   View,
   ViewStyle,
 } from "react-native";
 
 import * as Theme from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 // ---------------------------------------------------------------
 // shadcn/ui-like Button for React Native (neutral palette aware)
@@ -42,6 +43,8 @@ export interface ButtonProps {
   rightIcon?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
+  pressedStyle?: StyleProp<ViewStyle>;
   fullWidth?: boolean;
   onPress?: (event: GestureResponderEvent) => void;
   accessibilityLabel?: string;
@@ -148,6 +151,8 @@ export function Button({
   rightIcon,
   style,
   textStyle,
+  contentStyle,
+  pressedStyle,
   fullWidth,
   accessibilityLabel,
   onPress,
@@ -158,27 +163,29 @@ export function Button({
 
   const isDisabled = disabled || loading;
 
-  const baseContainer = [baseStyles.base, sizeStyles[size], roundedStyles[rounded]] as ViewStyle[];
-  if (fullWidth) {
-    baseContainer.push(baseStyles.fullWidth);
-  }
-
   // Pressed-state styling to emulate shadcn hover/active
-  const pressableStyle = ({ pressed }: { pressed: boolean }) => {
+  const pressableStyle = ({ pressed }: PressableStateCallbackType): StyleProp<ViewStyle> => {
     const { container } = resolveStyles(variant, p, pressed);
-    return [
-      ...baseContainer,
+    const pressedOverlay = pressed && pressedStyle ? StyleSheet.flatten(pressedStyle) : null;
+    const baseStyle: StyleProp<ViewStyle> = [
+      baseStyles.base,
+      sizeStyles[size],
+      roundedStyles[rounded],
+      fullWidth ? baseStyles.fullWidth : null,
       container,
       !isDisabled && pressed ? feedbackStyles.pressed : null,
-      (variant === "outline" || variant === "ghost") && baseStyles.noShadow,
-      isDisabled && baseStyles.disabled,
-      style,
+      pressedOverlay,
+      (variant === "outline" || variant === "ghost") ? baseStyles.noShadow : null,
+      isDisabled ? baseStyles.disabled : null,
     ];
+    return StyleSheet.compose(baseStyle, style);
   };
   const { text, spinner, ripple } = resolveStyles(variant, p, false);
   const hasChildren = Children.count(children) > 0;
   const showLeft = loading || !!leftIcon;
   const showRight = !!rightIcon;
+
+  const sizeTextStyle = size === "lg" ? textSizeStyles.lg : undefined;
 
   return (
     <Pressable
@@ -192,17 +199,30 @@ export function Button({
       }}
       android_ripple={{ color: ripple, borderless: false }}
     >
-      <View style={[baseStyles.contentRow, fullWidth && baseStyles.contentRowFull]}>
+      <View
+        style={StyleSheet.compose(
+          [baseStyles.contentRow, fullWidth ? baseStyles.contentRowFull : undefined],
+          contentStyle
+        )}
+      >
         {showLeft ? (
           <View style={[baseStyles.iconSlot, hasChildren && baseStyles.iconSlotStart]}>
             {loading ? <ActivityIndicator size="small" color={spinner} /> : leftIcon}
           </View>
         ) : null}
         {hasChildren ? (
-          <Text style={[baseStyles.text, text, textStyle]}>{children}</Text>
+          <Text style={[baseStyles.text, sizeTextStyle, text, textStyle]}>{children}</Text>
         ) : null}
         {showRight ? (
-          <View style={[baseStyles.iconSlot, hasChildren && baseStyles.iconSlotEnd]}>{rightIcon}</View>
+          <View
+            style={[
+              baseStyles.iconSlot,
+              hasChildren && baseStyles.iconSlotEnd,
+              Platform.OS === "android" ? baseStyles.iconSlotEndAndroid : null,
+            ]}
+          >
+            {rightIcon}
+          </View>
         ) : null}
       </View>
     </Pressable>
@@ -230,7 +250,7 @@ function resolveStyles(
       const borderColor = pressed ? mix(p.border, p.foreground, 0.35) : p.border;
       const color = p.foreground;
       return {
-        container: { backgroundColor: bg, borderWidth: 1, borderColor },
+        container: { backgroundColor: bg, borderWidth: 2, borderColor },
         text: { color },
         spinner: color,
         ripple: darken(p.border, 0.35),
@@ -329,6 +349,12 @@ const baseStyles = StyleSheet.create({
   iconSlotEnd: {
     marginLeft: 8,
   },
+  iconSlotEndAndroid: Platform.select({
+    android: {
+      transform: [{ translateY: 1.5 }],
+    },
+    default: {},
+  }),
   disabled: {
     opacity: 0.5,
   },
@@ -362,6 +388,14 @@ const sizeStyles = StyleSheet.create({
       paddingHorizontal: 8,
     },
   }),
+});
+
+const textSizeStyles = StyleSheet.create({
+  lg: {
+    fontSize: 16,
+    fontWeight: "600",
+    lineHeight: 24,
+  },
 });
 
 const roundedStyles = StyleSheet.create({

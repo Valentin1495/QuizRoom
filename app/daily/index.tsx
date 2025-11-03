@@ -1,14 +1,16 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
-import { resolveDailyCategoryCopy } from '@/constants/daily';
+import type { IconSymbolName } from '@/components/ui/icon-symbol';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
@@ -18,6 +20,16 @@ import { lightHaptic, mediumHaptic, successHaptic, warningHaptic } from '@/lib/h
 import { useMutation, useQuery } from 'convex/react';
 
 const QUESTION_TIME_LIMIT = 10;
+
+const DAILY_CATEGORY_ICONS: Record<DailyCategory, IconSymbolName> = {
+  tech_it: 'desktopcomputer',
+  variety_reality: 'tv',
+  drama_movie: 'film.fill',
+  sports_games: 'trophy.fill',
+  kpop_music: 'music.note',
+  fashion_life: 'bag.fill',
+  news_issues: 'newspaper',
+};
 
 type DailyQuestion = {
   id: string;
@@ -234,7 +246,7 @@ type TimerAppearance = {
 
 const TIMER_COLORS = {
   default: {
-    text: '#707070',
+    text: '#4A4A4A',
     lightBg: '#F5F5F5',
     darkBg: 'rgba(112, 112, 112, 0.25)',
     lightBorder: '#E0E0E0',
@@ -275,7 +287,7 @@ const resolveTimerAppearance = (
 
   return {
     state,
-    textColor: values.text,
+    textColor: state === 'default' ? (isDark ? '#FFFFFF' : values.text) : values.text,
     backgroundColor: isDark ? values.darkBg : values.lightBg,
     borderColor: isDark ? values.darkBorder : values.lightBorder,
   };
@@ -340,6 +352,7 @@ export default function DailyQuizScreen() {
   const dailyQuiz = useQuery(api.daily.getDailyQuiz, { date: resolvedDate });
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme() ?? 'light';
+  const palette = Colors[colorScheme];
   const themedStyles = useMemo(() => getDailyThemeStyles(colorScheme), [colorScheme]);
   const [phase, setPhase] = useState<Phase>('intro');
   const [timerMode, setTimerMode] = useState<TimerMode | null>(null);
@@ -698,14 +711,15 @@ export default function DailyQuizScreen() {
   const shareHeadline = shareTemplate?.headline ?? '문제당 10초 스피드런!';
   const shareCta = shareTemplate?.cta ?? '친구 초대';
   const categoryDisplay = useMemo(() => {
-    if (!dailyQuiz) {
-      return '--';
+    const fallback: { label: string; icon: IconSymbolName } = { label: '--', icon: 'lightbulb' };
+    if (!dailyQuiz?.category) {
+      return fallback;
     }
     const resolved = resolveDailyCategoryCopy(dailyQuiz.category);
-    const emoji = resolved?.emoji ?? shareTemplate?.emoji ?? '🗂';
-    const label = resolved?.label ?? dailyQuiz.category ?? '카테고리 미정';
-    return `${emoji} ${label}`;
-  }, [dailyQuiz?.category, shareTemplate?.emoji]);
+    const label = resolved?.label ?? dailyQuiz.category ?? fallback.label;
+    const icon = DAILY_CATEGORY_ICONS[dailyQuiz.category as DailyCategory] ?? fallback.icon;
+    return { label, icon };
+  }, [dailyQuiz?.category]);
 
   const deepLink = useMemo(() => {
     if (!dailyQuiz?.availableDate) {
@@ -791,33 +805,46 @@ export default function DailyQuizScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={[styles.introCard, themedStyles.introCard]}>
-            <ThemedText type="title">오늘의 퀴즈 시작</ThemedText>
+            <ThemedText type="title">데일리 퀴즈 시작</ThemedText>
             <ThemedText style={styles.introSubtitle}>
               시간 제한을 선택하고 시작해보세요. 타임어택에서는 문제당 10초 안에 답해야 해요.
             </ThemedText>
             <View style={styles.introButtons}>
-              <Pressable
+              <Button
+                size="lg"
+                fullWidth
                 style={[styles.introButton, themedStyles.introButton, themedStyles.introTimed]}
+                textStyle={[styles.introButtonLabel, themedStyles.introTimedText]}
+                contentStyle={styles.introButtonContent}
+                pressedStyle={styles.introButtonPressed}
                 onPress={() => startQuiz('timed')}
               >
-                <ThemedText style={[styles.introButtonLabel, themedStyles.introTimedText]}>
+                <>
                   10초 타임어택
-                </ThemedText>
-                <ThemedText style={[styles.introButtonCaption, themedStyles.introTimedCaption]}>
-                  긴장감 넘치는 시간 제한 모드
-                </ThemedText>
-              </Pressable>
-              <Pressable
+                  {'\n'}
+                  <Text style={[styles.introButtonCaption, themedStyles.introTimedCaption]}>
+                    긴장감 넘치는 시간 제한 모드
+                  </Text>
+                </>
+              </Button>
+              <Button
+                variant="secondary"
+                size="lg"
+                fullWidth
                 style={[styles.introButton, themedStyles.introButton, themedStyles.introUntimed]}
+                textStyle={[styles.introButtonLabel, themedStyles.introUntimedLabel]}
+                contentStyle={styles.introButtonContent}
+                pressedStyle={styles.introButtonPressed}
                 onPress={() => startQuiz('untimed')}
               >
-                <ThemedText style={[styles.introButtonLabel, themedStyles.introUntimedLabel]}>
+                <>
                   시간 제한 없음
-                </ThemedText>
-                <ThemedText style={[styles.introButtonCaption, themedStyles.introUntimedCaption]}>
-                  여유롭게 문제를 풀어보세요
-                </ThemedText>
-              </Pressable>
+                  {'\n'}
+                  <Text style={[styles.introButtonCaption, themedStyles.introUntimedCaption]}>
+                    여유롭게 문제를 풀어보세요
+                  </Text>
+                </>
+              </Button>
             </View>
           </View>
         </ScrollView>
@@ -838,7 +865,7 @@ export default function DailyQuizScreen() {
 
   if (phase === 'finished') {
     return (
-      <ThemedView style={styles.container}>
+      <ThemedView style={[styles.container, styles.summaryContainer]}>
         <ScrollView
           contentContainerStyle={[
             styles.summaryContent,
@@ -846,13 +873,16 @@ export default function DailyQuizScreen() {
           ]}
         >
           <Animated.View style={celebrationAnimatedStyle}>
-            <ThemedText type="title">오늘의 결과</ThemedText>
+            <ThemedText type="title">데일리 퀴즈 결과</ThemedText>
           </Animated.View>
           <View style={styles.summaryStats}>
             <View style={styles.summaryStatsRow}>
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
                 <ThemedText style={styles.summaryStatLabel}>카테고리</ThemedText>
-                <ThemedText type="subtitle">{categoryDisplay}</ThemedText>
+                <View style={styles.summaryCategoryRow}>
+                  <IconSymbol name={categoryDisplay.icon} size={22} color={palette.text} />
+                  <ThemedText type="subtitle">{categoryDisplay.label}</ThemedText>
+                </View>
               </View>
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
                 <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
@@ -952,8 +982,7 @@ export default function DailyQuizScreen() {
         </ScrollView>
         <View style={styles.footerRow}>
           <Button
-            variant="secondary"
-            fullWidth
+            variant="outline"
             size="lg"
             style={styles.flexButton}
             onPress={handleReset}
@@ -961,7 +990,7 @@ export default function DailyQuizScreen() {
             다시 풀기
           </Button>
           <Link href="/(tabs)/home" asChild>
-            <Button fullWidth size="lg" style={styles.flexButton}>
+            <Button size="lg" style={styles.flexButton}>
               홈으로
             </Button>
           </Link>
@@ -1154,8 +1183,7 @@ export default function DailyQuizScreen() {
 
       <View style={styles.footerRow}>
         <Button
-          variant="secondary"
-          fullWidth
+          variant="outline"
           size="lg"
           style={styles.flexButton}
           onPress={() => router.back()}
@@ -1164,7 +1192,6 @@ export default function DailyQuizScreen() {
         </Button>
         {!isLastQuestion ? (
           <Button
-            fullWidth
             size="lg"
             style={styles.flexButton}
             disabled={phase === 'question'}
@@ -1174,7 +1201,6 @@ export default function DailyQuizScreen() {
           </Button>
         ) : (
           <Button
-            fullWidth
             size="lg"
             style={styles.flexButton}
             disabled={!allAnswered || phase === 'question'}
@@ -1228,15 +1254,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     borderRadius: Radius.md,
     borderWidth: 1,
+  },
+  introButtonContent: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     gap: Spacing.xs,
   },
   introButtonLabel: {
     fontWeight: '700',
     fontSize: 18,
+    lineHeight: 24,
+    textAlign: 'left',
   },
   introButtonCaption: {
     fontSize: 13,
     opacity: 0.9,
+  },
+  introButtonPressed: {
+    opacity: 0.96,
   },
   retryButton: {
     marginTop: Spacing.lg,
@@ -1343,6 +1378,7 @@ const styles = StyleSheet.create({
   footerRow: {
     flexDirection: 'row',
     gap: Spacing.md,
+    paddingTop: Spacing.sm,
   },
   flexButton: {
     flex: 1,
@@ -1351,6 +1387,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     gap: Spacing.lg,
     paddingBottom: Spacing.xl,
+  },
+  summaryContainer: {
+    paddingTop: 0,
+    gap: 0,
   },
   summaryStats: {
     gap: Spacing.md,
@@ -1367,6 +1407,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: Spacing.xs,
     minWidth: 160,
+  },
+  summaryCategoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
   },
   summaryStatLabel: {
     fontWeight: '600',

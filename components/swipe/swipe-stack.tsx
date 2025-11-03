@@ -17,6 +17,7 @@ import {
 
 import { hideResultToast, showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
+import { Button } from '@/components/ui/button';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
@@ -234,10 +235,10 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       } else {
         mediumHaptic(); // 오답 시 중간 햅틱
       }
-      showResultToast({
-        message: optimisticIsCorrect ? '정답' : '오답',
-        kind: optimisticIsCorrect ? 'success' : 'error',
-      });
+      // showResultToast({
+      //   message: optimisticIsCorrect ? '정답' : '오답',
+      //   kind: optimisticIsCorrect ? 'success' : 'error',
+      // });
       try {
         const response = await submitAnswer({
           questionId: current.id,
@@ -311,7 +312,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         hideResultToast();
         showResultToast({
           message: '전송 중 오류가 발생했어요',
-          kind: 'neutral',
         });
       }
     },
@@ -369,7 +369,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     if (isGuest) {
       showResultToast({
         message: '로그인 후 문항을 저장할 수 있어요.',
-        kind: 'neutral',
         ctaLabel: '로그인',
         onPressCta: () => {
           void signInWithGoogle();
@@ -382,13 +381,12 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       .then((result) =>
         showResultToast({
           message: result.bookmarked ? '저장함에 담았어요.' : '저장을 해제했어요.',
-          kind: 'neutral',
         })
       )
       .catch(() =>
         showResultToast({
           message: '저장에 실패했어요.',
-          kind: 'neutral',
+
         })
       );
   }, [closeActionsSheet, current, isGuest, toggleBookmark]);
@@ -597,13 +595,11 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       closeReportReasonSheet();
       showResultToast({
         message: '신고 접수',
-        kind: 'neutral',
       });
     } catch (error) {
       console.warn('Report submission failed', error);
       showResultToast({
         message: '신고 전송 실패',
-        kind: 'neutral',
       });
     } finally {
       setIsSubmittingReport(false);
@@ -661,10 +657,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     return (
       <View style={styles.emptyState}>
         {isLoading ? (
-          <ActivityIndicator color={palette.secondary} />
-        ) : (
-          <ThemedText style={styles.emptyText}>카드를 불러오는 중...</ThemedText>
-        )}
+          <ActivityIndicator color={palette.primary} />
+        ) : null}
       </View>
     );
   }
@@ -717,25 +711,17 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
           ) : (
             <View style={styles.statusRow}>
               <ThemedText style={styles.statusText}>남은 카드 {prefetchCount}장</ThemedText>
-              <Pressable
-                style={[
-                  styles.sheetLink,
-                  !(feedback?.status === 'confirmed' && feedback.explanation) &&
-                  styles.sheetLinkHidden,
-                ]}
+              <Button
+                variant="ghost"
+                size="sm"
+                rounded="full"
                 onPress={handleOpenSheet}
                 disabled={!(feedback?.status === 'confirmed' && feedback.explanation)}
+                style={!(feedback?.status === 'confirmed' && feedback.explanation) && styles.sheetButtonHidden}
+                textStyle={!(feedback?.status === 'confirmed' && feedback.explanation) && styles.sheetButtonTextHidden}
               >
-                <ThemedText
-                  style={[
-                    styles.sheetLinkText,
-                    !(feedback?.status === 'confirmed' && feedback.explanation) &&
-                    styles.sheetLinkTextHidden,
-                  ]}
-                >
-                  해설 보기
-                </ThemedText>
-              </Pressable>
+                해설 보기
+              </Button>
             </View>
           )}
           <View style={styles.stackWrapper}>
@@ -773,16 +759,31 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         >
           <BottomSheetView style={styles.actionsSheetContent}>
             <View style={styles.actionsList}>
-              <Pressable style={styles.actionButton} onPress={handleSkip}>
-                <ThemedText style={styles.actionButtonLabel}>문항 건너뛰기</ThemedText>
-              </Pressable>
-              <Pressable style={styles.actionButton} onPress={handleReportAction}>
-                <ThemedText style={styles.actionButtonLabel}>신고하기</ThemedText>
-              </Pressable>
+              <Button
+                variant="outline"
+                fullWidth
+                size="lg"
+                onPress={handleSkip}
+              >
+                건너뛰기
+              </Button>
+              <Button
+                variant="outline"
+                fullWidth
+                size="lg"
+                onPress={handleReportAction}
+              >
+                신고하기
+              </Button>
             </View>
-            <Pressable style={styles.actionCancelButton} onPress={closeActionsSheet}>
-              <ThemedText style={styles.actionCancelLabel}>취소</ThemedText>
-            </Pressable>
+            <Button
+              variant="default"
+              fullWidth
+              size="lg"
+              onPress={closeActionsSheet}
+            >
+              취소
+            </Button>
           </BottomSheetView>
         </BottomSheetModal>
 
@@ -840,26 +841,16 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 editable={!isSubmittingReport}
               />
             ) : null}
-            <Pressable
-              style={[
-                styles.reportSubmitButton,
-                !canSubmitReport && styles.reportSubmitButtonDisabled,
-              ]}
+            <Button
+              variant="default"
+              size="lg"
+              fullWidth
               onPress={handleSubmitReport}
               disabled={!canSubmitReport}
+              loading={isSubmittingReport}
             >
-              {isSubmittingReport ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <ThemedText
-                  style={styles.reportSubmitLabel}
-                  lightColor="#fff"
-                  darkColor="#fff"
-                >
-                  신고 제출
-                </ThemedText>
-              )}
-            </Pressable>
+              신고 제출
+            </Button>
           </BottomSheetView>
         </BottomSheetModal>
 
@@ -893,9 +884,14 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                   <ThemedText style={styles.sheetStatValue}>{sheetFeedback.streak}</ThemedText>
                 </View>
               </View>
-              <Pressable style={styles.sheetCloseButton} onPress={closeSheet}>
-                <ThemedText style={styles.sheetCloseLabel}>닫기</ThemedText>
-              </Pressable>
+              <Button
+                variant="default"
+                fullWidth
+                size="md"
+                onPress={closeSheet}
+              >
+                닫기
+              </Button>
             </BottomSheetView>
           ) : (
             <BottomSheetView style={styles.bottomSheetContent}>
@@ -941,21 +937,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Palette.gray500,
   },
-  sheetLink: {
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
-    borderRadius: Radius.pill,
-    backgroundColor: Palette.gray100 + '55',
-  },
-  sheetLinkHidden: {
+  sheetButtonHidden: {
     opacity: 0,
   },
-  sheetLinkText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: Palette.gray600,
-  },
-  sheetLinkTextHidden: {
+  sheetButtonTextHidden: {
     color: 'transparent',
   },
   completionCard: {
@@ -1067,7 +1052,7 @@ const styles = StyleSheet.create({
   },
   reportSubtitle: {
     fontSize: 13,
-    color: Palette.gray500,
+    color: Palette.gray700,
   },
   reportOptions: {
     gap: Spacing.sm,
@@ -1081,14 +1066,15 @@ const styles = StyleSheet.create({
   },
   reportOptionSelected: {
     borderColor: Palette.gray600,
-    backgroundColor: 'rgba(102, 102, 102, 0.12)', // Neutral tint
+    backgroundColor: Palette.gray25,
   },
   reportOptionLabel: {
     fontSize: 15,
     fontWeight: '600',
+    color: Palette.gray900,
   },
   reportOptionLabelSelected: {
-    color: Palette.gray600,
+    fontWeight: '700',
   },
   reportInput: {
     minHeight: 96,
@@ -1099,42 +1085,6 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     fontSize: 14,
     lineHeight: 20,
-  },
-  actionButton: {
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.md,
-    borderRadius: Radius.md,
-    borderWidth: 1,
-    borderColor: Palette.gray100,
-  },
-  actionButtonLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  actionCancelButton: {
-    paddingVertical: Spacing.md,
-    borderRadius: Radius.md,
-    backgroundColor: Palette.gray900,
-    alignItems: 'center',
-  },
-  actionCancelLabel: {
-    fontWeight: '600',
-    color: '#fff',
-  },
-  reportSubmitButton: {
-    marginTop: Spacing.xs,
-    borderRadius: Radius.md,
-    backgroundColor: Palette.gray900,
-    paddingVertical: Spacing.md,
-    alignItems: 'center',
-  },
-  reportSubmitButtonDisabled: {
-    backgroundColor: Palette.gray100,
-  },
-  reportSubmitLabel: {
-    fontWeight: '600',
-    color: '#fff',
   },
   sheetTitle: {
     fontSize: 16,
@@ -1152,27 +1102,16 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: 'rgba(229, 229, 229, 0.12)', // Neutral tint
+    backgroundColor: Palette.gray25,
   },
   sheetStatLabel: {
     fontSize: 12,
     marginBottom: 4,
-    color: Palette.gray500,
+    color: Palette.gray900,
   },
   sheetStatValue: {
     fontSize: 16,
     fontWeight: '700',
-  },
-  sheetCloseButton: {
-    marginTop: Spacing.sm,
-    borderRadius: Radius.md,
-    backgroundColor: Palette.gray900,
-    paddingVertical: Spacing.sm,
-    alignItems: 'center',
-  },
-  sheetCloseLabel: {
-    fontWeight: '600',
-    color: '#fff',
   },
   reloadButton: {
     paddingHorizontal: Spacing.lg,

@@ -14,13 +14,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Button } from '@/components/ui/button';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { categories } from '@/constants/categories';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import type { Doc } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColorScheme, useColorSchemeManager } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useQuery } from 'convex/react';
 
@@ -112,6 +114,8 @@ export default function ProfileScreen() {
             isLoading={isAuthorizing}
           />
         )}
+
+        <ThemePreferencesCard />
 
         <QuizHistoryPanel
           isAuthenticated={isAuthenticated}
@@ -566,39 +570,39 @@ function FooterSection({
 }) {
   const mutedColor = useThemeColor({}, 'textMuted');
 
-  if (isAuthenticated) {
-    return (
-      <Card>
-        <ThemedText type="subtitle">계정</ThemedText>
-        <View style={styles.footerActions}>
-          <FooterButton label="문의하기" onPress={onSupport} />
-          <FooterButton label="약관·정책" onPress={onPolicy} />
-        </View>
-        <ActionButton
-          label="로그아웃"
-          tone="danger"
-          onPress={onSignOut}
-          loading={isSigningOut}
-          disabled={isSigningOut}
-        />
-      </Card>
-    );
-  }
-
   return (
-    <Card>
-      <ThemedText type="subtitle">로그인하고 시작하기</ThemedText>
-      <ThemedText style={[styles.statusText, { color: mutedColor }]}>
-        기록을 저장하고 친구와 공유하려면 로그인이 필요해요.
-      </ThemedText>
-      <ActionButton
-        label={loginLoading ? '로그인 중...' : 'Google 로그인'}
-        tone="primary"
-        onPress={onLogin}
-        loading={loginLoading}
-        disabled={loginLoading}
-      />
-    </Card>
+    <>
+      {isAuthenticated ? (
+        <Card>
+          <ThemedText type="subtitle">계정</ThemedText>
+          <View style={styles.footerActions}>
+            <FooterButton label="문의하기" onPress={onSupport} />
+            <FooterButton label="약관·정책" onPress={onPolicy} />
+          </View>
+          <ActionButton
+            label="로그아웃"
+            tone="danger"
+            onPress={onSignOut}
+            loading={isSigningOut}
+            disabled={isSigningOut}
+          />
+        </Card>
+      ) : (
+        <Card>
+          <ThemedText type="subtitle">로그인하고 시작하기</ThemedText>
+          <ThemedText style={[styles.statusText, { color: mutedColor }]}>
+            기록을 저장하고 친구와 공유하려면 로그인이 필요해요.
+          </ThemedText>
+          <ActionButton
+            label={loginLoading ? '로그인 중...' : 'Google 로그인'}
+            tone="primary"
+            onPress={onLogin}
+            loading={loginLoading}
+            disabled={loginLoading}
+          />
+        </Card>
+      )}
+    </>
   );
 }
 
@@ -619,6 +623,72 @@ function FooterButton({ label, onPress }: { label: string; onPress: () => void }
     >
       <ThemedText style={[styles.footerButtonLabel, { color: themeColors.text }]}>{label}</ThemedText>
     </Pressable>
+  );
+}
+
+function ThemePreferencesCard() {
+  const { colorScheme, toggleColorScheme, isReady } = useColorSchemeManager();
+  const themeColors = Colors[colorScheme ?? 'light'];
+  const mutedColor = useThemeColor({}, 'textMuted');
+  const isDark = colorScheme === 'dark';
+
+  const handlePress = useCallback(() => {
+    toggleColorScheme();
+  }, [toggleColorScheme]);
+
+  const handleIconPress = useCallback(() => {
+    toggleColorScheme();
+  }, [toggleColorScheme]);
+
+  return (
+    <Card>
+      <ThemedText type="subtitle">테마 토글</ThemedText>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ disabled: !isReady }}
+        onPress={handlePress}
+        disabled={!isReady}
+        style={({ pressed }) => [
+          styles.themeToggleRow,
+          {
+            backgroundColor: themeColors.cardElevated,
+            borderColor: themeColors.border,
+          },
+          pressed ? styles.themeToggleRowPressed : null,
+          !isReady ? styles.themeToggleDisabled : null,
+        ]}
+      >
+        <View style={styles.themeToggleTextGroup}>
+          <ThemedText style={styles.themeToggleTitle}>{isDark ? '어두운 테마' : '밝은 테마'}</ThemedText>
+          <ThemedText style={[styles.themeToggleSubtitle, { color: mutedColor }]}>
+            {isDark ? '밝은 화면으로 전환해요' : '어두운 화면으로 전환해요'}
+          </ThemedText>
+        </View>
+        <Button
+          variant="ghost"
+          size="icon"
+          rounded="full"
+          accessibilityLabel={isDark ? '밝은 테마로 전환' : '어두운 테마로 전환'}
+          disabled={!isReady}
+          pressedStyle={{
+            backgroundColor: themeColors.card,
+            borderColor: themeColors.borderStrong ?? themeColors.border,
+          }}
+          onPress={(event) => {
+            event?.stopPropagation?.();
+            if (!isReady) return;
+            handleIconPress();
+          }}
+          leftIcon={
+            <IconSymbol
+              name={isDark ? 'moon.fill' : 'sun.max.fill'}
+              size={22}
+              color={themeColors.text}
+            />
+          }
+        />
+      </Pressable>
+    </Card>
   );
 }
 
@@ -802,6 +872,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.sm,
+  },
+  themeToggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    gap: Spacing.md,
+  },
+  themeToggleRowPressed: {
+    opacity: 0.75,
+  },
+  themeToggleDisabled: {
+    opacity: 0.5,
+  },
+  themeToggleTextGroup: {
+    flex: 1,
+    gap: Spacing.xs,
+  },
+  themeToggleTitle: {
+    fontWeight: '600',
+  },
+  themeToggleSubtitle: {
+    fontSize: 13,
   },
   footerActions: {
     flexDirection: 'row',

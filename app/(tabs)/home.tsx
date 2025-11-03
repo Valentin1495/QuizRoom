@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { TextInput as RNTextInput } from 'react-native';
 import {
   Alert,
-  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -16,13 +15,24 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { resolveDailyCategoryCopy } from '@/constants/daily';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import type { IconSymbolName } from '@/components/ui/icon-symbol';
+import { DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { useJoinParty } from '@/lib/api';
+
+const DAILY_CATEGORY_ICONS: Record<DailyCategory, IconSymbolName> = {
+  tech_it: 'desktopcomputer',
+  variety_reality: 'tv',
+  drama_movie: 'film.fill',
+  sports_games: 'trophy.fill',
+  kpop_music: 'music.note',
+  fashion_life: 'bag.fill',
+  news_issues: 'newspaper',
+};
 
 function formatTimeLeft(target: Date) {
   const diff = target.getTime() - Date.now();
@@ -50,6 +60,7 @@ export default function HomeScreen() {
   const [joinNickname, setJoinNickname] = useState(user?.handle ?? '');
   const [isJoining, setIsJoining] = useState(false);
   const joinNicknameInputRef = useRef<RNTextInput | null>(null);
+
   useEffect(() => {
     const interval = setInterval(() => {
       const tomorrow = new Date();
@@ -58,27 +69,13 @@ export default function HomeScreen() {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-  const palette = Colors[colorScheme ?? 'light'];
-  const cardBackground = palette.card;
-  const borderColor = palette.border;
-  const muted = useThemeColor({}, 'textMuted');
-  const welcomeCardBackground = useMemo(
-    () => (colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#FFFFFF'),
-    [colorScheme]
-  );
-  const welcomeCardBorder = useMemo(
-    () => (colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(26, 26, 26, 0.06)'),
-    [colorScheme]
-  );
-  const dailyCardBackground = useMemo(
-    () => (colorScheme === 'dark' ? 'rgba(229, 229, 229, 0.08)' : Palette.white),
-    [colorScheme]
-  );
-  const dailyCardBorder = useMemo(
-    () => (colorScheme === 'dark' ? 'rgba(229, 229, 229, 0.2)' : Palette.gray100),
-    [colorScheme]
-  );
 
+  const palette = Colors[colorScheme ?? 'light'];
+  const cardBackground = palette.cardElevated;
+  const borderColor = palette.borderStrong;
+  const muted = palette.textMuted;
+  const subtle = palette.textSubtle;
+  const textColor = palette.text;
   const isCodeValid = useMemo(() => partyCode.trim().length === 6, [partyCode]);
 
   const isLoadingDailyQuiz = dailyQuiz === undefined;
@@ -92,27 +89,27 @@ export default function HomeScreen() {
   const dailyHeadline = useMemo<{
     state: 'loading' | 'ready' | 'pending';
     prefix: string;
-    highlight: string | null;
+    category: { label: string; icon: IconSymbolName } | null;
     suffix: string;
   }>(() => {
     if (isLoadingDailyQuiz) {
-      return { state: 'loading', prefix: '', highlight: null, suffix: '' };
+      return { state: 'loading', prefix: '', category: null, suffix: '' };
     }
     if (hasDailyQuiz) {
-      const emoji = dailyCategoryCopy?.emoji ?? dailyQuiz?.shareTemplate?.emoji ?? '⚡';
       const label = dailyCategoryCopy?.label ?? '데일리 퀴즈';
+      const icon =
+        (dailyQuiz?.category && DAILY_CATEGORY_ICONS[dailyQuiz.category as DailyCategory]) ?? 'sparkles';
       return {
         state: 'ready',
         prefix: '오늘의 카테고리는',
-        highlight: `${emoji} ${label}`,
+        category: { label, icon },
         suffix: '',
       };
     }
-    return { state: 'pending', prefix: '데일리 퀴즈가 준비 중이에요', highlight: null, suffix: '' };
+    return { state: 'pending', prefix: '데일리 퀴즈가 준비 중이에요', category: null, suffix: '' };
   }, [
-    dailyCategoryCopy?.emoji,
     dailyCategoryCopy?.label,
-    dailyQuiz?.shareTemplate?.emoji,
+    dailyQuiz?.category,
     hasDailyQuiz,
     isLoadingDailyQuiz,
   ]);
@@ -203,7 +200,7 @@ export default function HomeScreen() {
         <View
           style={[
             styles.welcomeCard,
-            { backgroundColor: welcomeCardBackground, borderColor: welcomeCardBorder },
+            { backgroundColor: cardBackground, borderColor },
           ]}
         >
           {isAuthenticated && user?.avatarUrl ? (
@@ -226,11 +223,11 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.section}>
-          <SectionHeader title="데일리 OX 퀴즈" tagline="60초 퀴즈 챌린지" />
+          <SectionHeader title="데일리 퀴즈" tagline="60초 OX 퀴즈" muted={muted} />
           <View
             style={[
               styles.dailyCard,
-              { backgroundColor: dailyCardBackground, borderColor: dailyCardBorder },
+              { backgroundColor: cardBackground, borderColor },
             ]}
           >
             <View style={styles.dailyHeadlineContainer}>
@@ -250,15 +247,33 @@ export default function HomeScreen() {
                   />
                 </View>
               ) : (
-                <ThemedText
-                  style={styles.dailyHeadline}
-                  lightColor={Colors.light.text}
-                  darkColor={Colors.dark.text}
-                >
-                  {dailyHeadline.prefix}
-                  {dailyHeadline.highlight ? ` ${dailyHeadline.highlight}` : ''}
-                  {dailyHeadline.suffix ? ` ${dailyHeadline.suffix}` : ''}
-                </ThemedText>
+                <>
+                  {dailyHeadline.state === 'ready' && dailyHeadline.category ? (
+                    <View style={styles.dailyHeadlineRow}>
+                      <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
+                      <View
+                        style={[
+                          styles.dailyHeadlineBadge,
+                          { borderColor, backgroundColor: palette.card },
+                        ]}
+                      >
+                        <IconSymbol
+                          name={dailyHeadline.category.icon}
+                          size={20}
+                          color={palette.text}
+                        />
+                        <ThemedText style={styles.dailyHeadlineBadgeLabel}>
+                          {dailyHeadline.category.label}
+                        </ThemedText>
+                      </View>
+                      {dailyHeadline.suffix ? (
+                        <ThemedText style={styles.dailyHeadline}>{dailyHeadline.suffix}</ThemedText>
+                      ) : null}
+                    </View>
+                  ) : (
+                    <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
+                  )}
+                </>
               )}
             </View>
             {hasDailyQuiz ? (
@@ -287,10 +302,10 @@ export default function HomeScreen() {
             <View
               style={[
                 styles.timerPill,
-                colorScheme === 'dark' ? styles.timerPillDark : styles.timerPillLight,
+                { borderColor },
               ]}
             >
-              <ThemedText style={styles.timerLabel} lightColor={Colors.light.text} darkColor={Colors.dark.text}>
+              <ThemedText style={styles.timerLabel}>
                 {timeLeft} 남음
               </ThemedText>
             </View>
@@ -298,7 +313,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.section}>
-          <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" />
+          <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" muted={muted} />
           <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
           >
             <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
@@ -314,7 +329,7 @@ export default function HomeScreen() {
               returnKeyType="next"
               onSubmitEditing={() => joinNicknameInputRef.current?.focus()}
               maxLength={6}
-              style={[styles.partyInput, { borderColor }]}
+              style={[styles.partyInput, { backgroundColor: palette.background, borderColor, color: palette.text, letterSpacing: 4 }]}
               placeholderTextColor={muted}
               editable={!isJoining}
             />
@@ -322,7 +337,7 @@ export default function HomeScreen() {
               ref={joinNicknameInputRef}
               value={joinNickname}
               onChangeText={setJoinNickname}
-              placeholder="닉네임 (선택)"
+              placeholder="닉네임"
               maxLength={24}
               autoCapitalize="none"
               autoCorrect={false}
@@ -332,9 +347,9 @@ export default function HomeScreen() {
               editable={!isGuest}
               selectTextOnFocus={!isGuest}
               style={[
-                styles.partyNicknameInput,
-                { borderColor },
-                isGuest && styles.partyNicknameInputDisabled,
+                styles.partyInput,
+                { backgroundColor: palette.background, borderColor, color: palette.text },
+                isGuest && { backgroundColor: palette.cardElevated, color: subtle },
               ]}
               placeholderTextColor={muted}
             />
@@ -352,11 +367,9 @@ export default function HomeScreen() {
               {isJoining ? '참여 중…' : '파티 참여'}
             </Button>
             <Link href="/(tabs)/party" asChild>
-              <Pressable style={styles.secondaryLink}>
-                <ThemedText style={styles.secondaryLinkLabel} lightColor={palette.secondaryForeground} darkColor={palette.secondary}>
-                  새 파티 만들기 →
-                </ThemedText>
-              </Pressable>
+              <Button variant='ghost' rounded='full' pressedStyle={{ backgroundColor: palette.card }} rightIcon={<IconSymbol name='arrow.right' size={16} color={textColor} />}>
+                새 파티 만들기
+              </Button>
             </Link>
           </View>
         </View>
@@ -365,8 +378,8 @@ export default function HomeScreen() {
   );
 }
 
-function SectionHeader({ title, tagline }: { title: string; tagline: string }) {
-  const muted = useThemeColor({}, 'textMuted');
+function SectionHeader({ title, tagline, muted }: { title: string; tagline: string; muted: string }) {
+
   return (
     <View style={styles.sectionHeader}>
       <ThemedText type="subtitle">{title}</ThemedText>
@@ -384,7 +397,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xl,
   },
   welcomeCard: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
     alignItems: 'center',
@@ -432,11 +445,29 @@ const styles = StyleSheet.create({
   dailyHeadlineContainer: {
     gap: Spacing.xs,
   },
+  dailyHeadlineRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
   dailyHeadline: {
     fontSize: 16,
     fontWeight: '700',
     lineHeight: 26,
     flexShrink: 1,
+  },
+  dailyHeadlineBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+  },
+  dailyHeadlineBadgeLabel: {
+    fontWeight: '600',
   },
   dailyHeadlineSkeletonWrapper: {
     gap: Spacing.xs,
@@ -453,20 +484,13 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm,
   },
   timerPill: {
+    borderWidth: 2,
     borderRadius: Radius.pill,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 18,
     paddingVertical: 12,
-  },
-  timerPillLight: {
-    borderWidth: 1,
-    borderColor: Palette.gray100,
-  },
-  timerPillDark: {
-    borderWidth: 1,
-    borderColor: Palette.gray900,
   },
   timerLabel: {
     fontWeight: '600',
@@ -486,7 +510,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   partyCard: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: Radius.lg,
     padding: Spacing.xl,
     gap: Spacing.md,
@@ -496,23 +520,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   partyInput: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: Radius.pill,
+    height: 52,
     paddingVertical: 12,
     paddingHorizontal: 18,
     fontSize: 18,
-    letterSpacing: 4,
-  },
-  partyNicknameInput: {
-    borderWidth: 1,
-    borderRadius: Radius.pill,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    fontSize: 16,
-  },
-  partyNicknameInputDisabled: {
-    backgroundColor: Palette.gray25,
-    color: Palette.gray500,
+    textAlignVertical: 'center',
   },
   joinButton: {
     marginTop: Spacing.sm,
@@ -521,12 +535,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 24,
-  },
-  secondaryLink: {
-    paddingVertical: 4,
-  },
-  secondaryLinkLabel: {
-    fontSize: 14,
-    fontWeight: '600',
   },
 });

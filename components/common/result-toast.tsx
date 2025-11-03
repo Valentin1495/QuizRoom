@@ -2,7 +2,8 @@ import { StyleSheet, View } from 'react-native';
 import Toast, { type ToastConfig, type ToastConfigParams } from 'react-native-toast-message';
 
 import { ThemedText } from '@/components/themed-text';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export type ToastKind = 'success' | 'error' | 'neutral';
 
@@ -25,49 +26,99 @@ type ResultToastComponentProps = ToastConfigParams<{
 
 const TOAST_TYPE = 'result-toast';
 
+type ToastTone = {
+  background: string;
+  text: string;
+  meta: string;
+  ctaBackground: string;
+  ctaText: string;
+};
+
+const TOAST_COLORS: Record<ToastKind, { light: ToastTone; dark: ToastTone }> = {
+  success: {
+    light: {
+      background: '#E6F5EC',
+      text: '#0B5133',
+      meta: '#137C4B',
+      ctaBackground: 'rgba(11, 81, 51, 0.12)',
+      ctaText: '#0B5133',
+    },
+    dark: {
+      background: 'rgba(159, 228, 174, 0.22)',
+      text: '#DFFAE5',
+      meta: '#9FE4AE',
+      ctaBackground: 'rgba(159, 228, 174, 0.28)',
+      ctaText: '#DFFAE5',
+    },
+  },
+  error: {
+    light: {
+      background: '#FDE7E4',
+      text: '#8A1E13',
+      meta: '#C23C2D',
+      ctaBackground: 'rgba(138, 30, 19, 0.12)',
+      ctaText: '#8A1E13',
+    },
+    dark: {
+      background: 'rgba(255, 158, 146, 0.24)',
+      text: '#FFE2DE',
+      meta: '#FFB8AE',
+      ctaBackground: 'rgba(255, 158, 146, 0.32)',
+      ctaText: '#FFE2DE',
+    },
+  },
+  neutral: {
+    light: {
+      background: '#E8EDFF',
+      text: '#2C3A7A',
+      meta: '#5460B4',
+      ctaBackground: 'rgba(44, 58, 122, 0.12)',
+      ctaText: '#2C3A7A',
+    },
+    dark: {
+      background: 'rgba(122, 140, 255, 0.25)',
+      text: '#E5EBFF',
+      meta: '#C8D0FF',
+      ctaBackground: 'rgba(229, 235, 255, 0.22)',
+      ctaText: '#E5EBFF',
+    },
+  },
+};
+
 function ResultToastContent({ text1, props }: ResultToastComponentProps) {
   const kind = props.kind ?? 'neutral';
   const scoreDelta = props.scoreDelta;
   const streak = props.streak;
   const ctaLabel = props.ctaLabel;
   const onPressCta = props.onPressCta;
-
-  const backgroundColor =
-    kind === 'success'
-      ? Palette.coral600
-      : kind === 'error'
-        ? Palette.neutral
-        : Palette.yellow600;
+  const colorScheme = useColorScheme();
+  const mode = colorScheme === 'dark' ? 'dark' : 'light';
+  const tone = TOAST_COLORS[kind][mode];
 
   return (
     <View
       pointerEvents={onPressCta ? 'auto' : 'none'}
-      style={[styles.container, { backgroundColor }]}
+      style={[styles.container, { backgroundColor: tone.background }]}
     >
       {text1 ? (
-        <ThemedText style={styles.message} lightColor="#fff" darkColor="#fff">
+        <ThemedText style={[styles.message, { color: tone.text }]}>
           {text1}
         </ThemedText>
       ) : null}
       {scoreDelta !== undefined ? (
-        <ThemedText style={styles.meta} lightColor="#fff" darkColor="#fff">
+        <ThemedText style={[styles.meta, { color: tone.meta }]}>
           {scoreDelta > 0 ? '+' : ''}
           {scoreDelta}점
         </ThemedText>
       ) : null}
       {streak !== undefined ? (
-        <ThemedText style={styles.meta} lightColor="#fff" darkColor="#fff">
+        <ThemedText style={[styles.meta, { color: tone.meta }]}>
           {streak}연속 정답! 🔥
         </ThemedText>
       ) : null}
       {ctaLabel && onPressCta ? (
-        <View style={styles.ctaContainer}>
-          <ThemedText
-            onPress={onPressCta}
-            style={styles.ctaLabel}
-            lightColor="#fff"
-            darkColor="#fff"
-          >
+        <View style={[styles.ctaContainer, { backgroundColor: tone.ctaBackground }]}>
+          <ThemedText onPress={onPressCta} style={[styles.ctaLabel, { color: tone.ctaText }]}>
             {ctaLabel}
           </ThemedText>
         </View>
@@ -131,7 +182,6 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     paddingHorizontal: Spacing.sm,
     borderRadius: Radius.pill,
-    backgroundColor: '#FFFFFF22',
   },
   ctaLabel: {
     fontWeight: '700',

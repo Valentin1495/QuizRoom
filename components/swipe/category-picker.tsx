@@ -23,6 +23,7 @@ function CategoryItem({
   const cardColor = useThemeColor({}, 'card');
   const borderColor = useThemeColor({}, 'border');
   const muted = useThemeColor({}, 'textMuted');
+  const iconColor = useThemeColor({}, 'text');
 
   return (
     <Pressable
@@ -33,7 +34,7 @@ function CategoryItem({
       ]}
     >
       <View style={styles.cardHeader}>
-        <ThemedText style={styles.emoji}>{item.emoji}</ThemedText>
+        <IconSymbol name={item.icon} size={28} color={iconColor} />
         <ThemedText type="subtitle" style={styles.cardTitle}>
           {item.title}
         </ThemedText>
@@ -67,7 +68,7 @@ function CategoryPickerComponent({ onSelect }: CategoryPickerProps) {
               onPress={() => router.back()}
               leftIcon={<IconSymbol name="arrow.left" size={24} color={iconColor} />}
             />
-            <ThemedText type="title">스와이프 스택</ThemedText>
+            <ThemedText type="title">스와이프 퀴즈</ThemedText>
           </View>
           <ThemedText style={styles.subtitle}>
             즐기고 싶은 메인 카테고리를 선택해주세요.
@@ -126,9 +127,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-  },
-  emoji: {
-    fontSize: 24,
   },
   cardTitle: {
     flex: 1,
