@@ -51,10 +51,7 @@ type TimerMode = 'timed' | 'untimed';
 
 function formatSeconds(seconds: number) {
   const safeSeconds = Math.max(0, seconds);
-  const minutes = Math.floor(safeSeconds / 60);
-  const leftover = safeSeconds % 60;
-  const pad = (value: number) => value.toString().padStart(2, '0');
-  return `${pad(minutes)}:${pad(leftover)}`;
+  return `${safeSeconds}초`;
 }
 
 function formatDuration(ms: number) {
@@ -310,7 +307,7 @@ const SUMMARY_STATUS_COLORS = {
     darkBg: 'rgba(76, 195, 138, 0.22)',
     lightBorder: 'rgba(76, 195, 138, 0.4)',
     darkBorder: 'rgba(76, 195, 138, 0.5)',
-    badge: '#4CC38A',
+    badge: '#2E9F6E',
     answer: '#2E9F6E',
   },
   incorrect: {
@@ -548,7 +545,6 @@ export default function DailyQuizScreen() {
     if (phase !== 'question') return;
     if (!currentQuestion) return;
     if (questionTimeLeft === 0) {
-      Alert.alert('시간 종료', '답변 시간이 종료되었습니다. 다음 문제로 넘어가볼까요?');
       handleReveal(currentQuestion, null);
     }
   }, [currentQuestion, handleReveal, phase, questionTimeLeft, timerMode]);
@@ -688,12 +684,7 @@ export default function DailyQuizScreen() {
     }
     setPhase('finished');
     successHaptic(); // 완주 시 성공 햅틱
-    // Celebration 애니메이션
-    celebrationScale.value = withSequence(
-      withTiming(1.05, { duration: 250 }),
-      withTiming(1, { duration: 250 })
-    );
-  }, [celebrationScale, currentIndex, dailyQuiz, goToQuestion, isLastQuestion, quizStartedAt]);
+  }, [currentIndex, dailyQuiz, goToQuestion, isLastQuestion, quizStartedAt]);
 
   const handleReset = useCallback(() => {
     setPhase('intro');
@@ -706,6 +697,16 @@ export default function DailyQuizScreen() {
     setQuizDurationMs(null);
     historyLoggedRef.current = null;
   }, []);
+
+  useEffect(() => {
+    if (phase === 'finished') {
+      celebrationScale.value = 1;
+      celebrationScale.value = withSequence(
+        withTiming(1.05, { duration: 450 }),
+        withTiming(1, { duration: 450 })
+      );
+    }
+  }, [celebrationScale, phase]);
 
   const shareEmoji = shareTemplate?.emoji ?? '⚡';
   const shareHeadline = shareTemplate?.headline ?? '문제당 10초 스피드런!';
@@ -871,8 +872,9 @@ export default function DailyQuizScreen() {
             styles.summaryContent,
             { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl + insets.bottom },
           ]}
+          showsVerticalScrollIndicator={false}
         >
-          <Animated.View style={celebrationAnimatedStyle}>
+          <Animated.View>
             <ThemedText type="title">데일리 퀴즈 결과</ThemedText>
           </Animated.View>
           <View style={styles.summaryStats}>
@@ -887,7 +889,7 @@ export default function DailyQuizScreen() {
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
                 <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
                 <ThemedText type="subtitle">
-                  {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}% - {correctCount}/{totalQuestions}문제
+                  {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}% ({correctCount} / {totalQuestions}문제)
                 </ThemedText>
               </View>
             </View>
@@ -1020,7 +1022,7 @@ export default function DailyQuizScreen() {
       >
         <View style={styles.metaRow}>
           <View style={[styles.badge, themedStyles.badge]}>
-            <ThemedText style={[styles.badgeText, themedStyles.badgeText]}>Q{currentIndex + 1}/{totalQuestions}</ThemedText>
+            <ThemedText style={[styles.badgeText, themedStyles.badgeText]}>Q{currentIndex + 1} / {totalQuestions}</ThemedText>
           </View>
           <Animated.View
             style={[
@@ -1315,13 +1317,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: Spacing.lg,
+    marginVertical: Spacing.xl,
   },
   choiceButton: {
-    flexBasis: '45%',
+    flexBasis: '48%',
     aspectRatio: 1,
     alignItems: 'stretch',
     justifyContent: 'center',
-    borderRadius: Radius.md,
+    borderRadius: Radius.lg,
     borderWidth: 1,
     borderColor: 'transparent',
     overflow: 'hidden',
@@ -1332,15 +1335,15 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: Radius.md,
+    borderRadius: Radius.lg,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.lg,
     gap: Spacing.xs,
   },
   choiceGlyph: {
     fontWeight: '700',
-    fontSize: 56,
-    lineHeight: 56,
+    fontSize: 64,
+    lineHeight: 64,
   },
   choiceFeedback: {
     fontWeight: '600',
@@ -1394,6 +1397,7 @@ const styles = StyleSheet.create({
   },
   summaryStats: {
     gap: Spacing.md,
+    marginVertical: Spacing.lg,
   },
   summaryStatsRow: {
     flexDirection: 'row',
@@ -1418,7 +1422,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   summaryList: {
-    gap: Spacing.md,
+    gap: Spacing.xl,
   },
   summaryRow: {
     gap: Spacing.md,

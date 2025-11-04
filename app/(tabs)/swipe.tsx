@@ -1,12 +1,13 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useCallback, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CategoryPicker } from '@/components/swipe/category-picker';
 import { SwipeStack } from '@/components/swipe/swipe-stack';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { CategoryMeta } from '@/constants/categories';
@@ -15,6 +16,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function SwipeScreen() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryMeta | null>(null);
+  const [showResetDialog, setShowResetDialog] = useState(false);
   const insets = useSafeAreaInsets();
   const iconColor = useThemeColor({}, 'text');
 
@@ -22,19 +24,13 @@ export default function SwipeScreen() {
     if (!selectedCategory) {
       return;
     }
-    Alert.alert(
-      '카테고리를 변경하시겠어요?',
-      `${selectedCategory.title} 카테고리에서 진행 중인 점수와 스트릭이 초기화돼요.`,
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '변경',
-          style: 'destructive',
-          onPress: () => setSelectedCategory(null),
-        },
-      ]
-    );
+    setShowResetDialog(true);
   }, [selectedCategory]);
+
+  const handleConfirmReset = useCallback(() => {
+    setShowResetDialog(false);
+    setSelectedCategory(null);
+  }, []);
 
   const topStyle = { paddingTop: insets.top + Spacing.lg };
 
@@ -73,6 +69,24 @@ export default function SwipeScreen() {
           setSelectedCategory={setSelectedCategory}
         />
       </ThemedView>
+      <AlertDialog
+        visible={showResetDialog}
+        onClose={() => setShowResetDialog(false)}
+        title="카테고리를 변경하시겠어요?"
+        description={`${selectedCategory.title} 카테고리에서 진행 중인 점수와 스트릭이 초기화돼요.`}
+        actions={[
+          {
+            label: '취소',
+            tone: 'outline',
+            onPress: () => setShowResetDialog(false),
+          },
+          {
+            label: '변경',
+            tone: 'destructive',
+            onPress: handleConfirmReset,
+          },
+        ]}
+      />
     </BottomSheetModalProvider>
   );
 }

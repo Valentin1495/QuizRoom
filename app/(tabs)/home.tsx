@@ -15,8 +15,8 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xl,
   },
   welcomeCard: {
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
     alignItems: 'center',
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     padding: Spacing.lg,
     gap: Spacing.md,
-    borderWidth: 2,
+    borderWidth: 1.5,
   },
   dailyHeadlineContainer: {
     gap: Spacing.xs,
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm,
   },
   timerPill: {
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderRadius: Radius.pill,
     width: '100%',
     alignItems: 'center',
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   partyCard: {
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderRadius: Radius.lg,
     padding: Spacing.xl,
     gap: Spacing.md,
@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   partyInput: {
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderRadius: Radius.pill,
     height: 52,
     paddingVertical: 12,

@@ -1895,7 +1895,7 @@
         "deckSlug": "deck_seed_kpop_music",
         "category": "kpop_music",
         "type": "mcq",
-        "prompt": "2025년 6월, RM, 뷔, 지민, 정국의 전역으로 방탄소년단(BTS)의 모든 멤버가 군 복무를 마치며 K-POP 시장의 최대 이슈가 된 해는?",
+        "prompt": "RM, 뷔, 지민, 정국의 전역으로 방탄소년단(BTS)의 모든 멤버가 군 복무를 마치며 K-POP 시장의 최대 이슈가 된 해는?",
         "tags": [
             "BTS",
             "방탄소년단",
@@ -1905,22 +1905,22 @@
         "choices": [
             {
                 "id": "a",
-                "text": "2024년"
+                "text": "2022년"
             },
             {
                 "id": "b",
-                "text": "2025년"
+                "text": "2023년"
             },
             {
                 "id": "c",
-                "text": "2026년"
+                "text": "2024년"
             },
             {
                 "id": "d",
-                "text": "2027년"
+                "text": "2025년"
             }
         ],
-        "answerIndex": 1,
+        "answerIndex": 3,
         "explanation": "2025년 6월 중 RM, 뷔, 지민, 정국이 전역하면서 모든 BTS 멤버가 군 복무를 마쳐 완전체 활동 재개에 대한 기대감이 커졌습니다.",
         "difficulty": 0.4,
         "createdAt": 1761505568,

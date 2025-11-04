@@ -1,9 +1,7 @@
-import { useRouter } from 'expo-router';
 import { memo } from 'react';
-import { FlatList, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { categories, type CategoryMeta } from '@/constants/categories';
 import { Radius, Spacing } from '@/constants/theme';
@@ -50,9 +48,6 @@ function CategoryItem({
 }
 
 function CategoryPickerComponent({ onSelect }: CategoryPickerProps) {
-  const router = useRouter();
-  const iconColor = useThemeColor({}, 'text');
-
   return (
     <FlatList
       data={categories}
@@ -61,13 +56,6 @@ function CategoryPickerComponent({ onSelect }: CategoryPickerProps) {
       ListHeaderComponent={
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <Button
-              variant="ghost"
-              size="icon"
-              style={styles.backButton}
-              onPress={() => router.back()}
-              leftIcon={<IconSymbol name="arrow.left" size={24} color={iconColor} />}
-            />
             <ThemedText type="title">스와이프 퀴즈</ThemedText>
           </View>
           <ThemedText style={styles.subtitle}>
@@ -78,6 +66,7 @@ function CategoryPickerComponent({ onSelect }: CategoryPickerProps) {
       renderItem={({ item }) => (
         <CategoryItem item={item} onPress={() => onSelect(item)} />
       )}
+      showsVerticalScrollIndicator={false}
     />
   );
 }
@@ -99,14 +88,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
-  },
-  backButton: {
-    ...Platform.select({
-      ios: {
-        // Optically align the icon with the title text on iOS
-        transform: [{ translateY: -4 }],
-      },
-    }),
   },
   subtitle: {
     fontSize: 14,

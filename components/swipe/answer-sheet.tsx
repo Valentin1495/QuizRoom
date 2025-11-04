@@ -69,10 +69,10 @@ const getChoiceVisual = (
       };
     case 'dim':
       return {
-        backgroundColor: Palette.gray100,
-        borderColor: Palette.gray200,
-        textColor: Palette.gray500,
-        dimOpacity: 0.6,
+        backgroundColor: isDark ? Palette.gray700 : Palette.gray100,
+        borderColor: isDark ? Palette.gray600 : Palette.gray200,
+        textColor: isDark ? Palette.gray300 : Palette.gray500,
+        dimOpacity: isDark ? 0.7 : 0.6,
       };
     default:
       return {
@@ -256,7 +256,7 @@ function AnswerSheetComponent({
   const colorScheme = useColorScheme();
   const normalizedScheme = (colorScheme ?? 'light') as ColorMode;
   const baseColor = useThemeColor({}, 'card');
-  const borderColor = useThemeColor({}, 'border');
+  const borderColor = useThemeColor({}, 'borderStrong');
   const textColor = useThemeColor({}, 'text');
 
   const defaults = useMemo(

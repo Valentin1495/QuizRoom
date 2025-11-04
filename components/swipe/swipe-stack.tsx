@@ -22,6 +22,7 @@ import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useThemeColor } from '@/hooks/use-theme-color';
 import { useSwipeFeed, type SwipeFeedQuestion } from '@/lib/feed';
 import { errorHaptic, lightHaptic, mediumHaptic, successHaptic } from '@/lib/haptics';
 import { useMutation } from 'convex/react';
@@ -83,6 +84,11 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const { signInWithGoogle, status: authStatus } = useAuth();
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const sheetSurface = useThemeColor({}, 'card');
+  const sheetSurfaceElevated = useThemeColor({}, 'cardElevated');
+  const sheetBorderColor = useThemeColor({}, 'border');
+  const sheetTextColor = useThemeColor({}, 'text');
+  const sheetMutedColor = useThemeColor({}, 'textMuted');
   const logHistory = useMutation(api.history.logEntry);
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
 
@@ -710,7 +716,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
             </View>
           ) : (
             <View style={styles.statusRow}>
-              <ThemedText style={styles.statusText}>남은 카드 {prefetchCount}장</ThemedText>
+              <ThemedText style={styles.statusText} lightColor={palette.textMuted} darkColor={palette.textMuted}>남은 카드 {prefetchCount}장</ThemedText>
               <Button
                 variant="ghost"
                 size="sm"
@@ -734,6 +740,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 key={card.id}
                 card={card}
                 index={index}
+                cardNumber={sessionStats.answered + index + 1}
                 isActive={index === 0}
                 selectedIndex={index === 0 ? selectedIndex : null}
                 feedback={index === 0 ? feedback : null}
@@ -749,7 +756,13 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
 
         <BottomSheetModal
           ref={actionsSheetRef}
-          backgroundStyle={styles.bottomSheetBackground}
+          backgroundStyle={[
+            styles.bottomSheetBackground,
+            {
+              backgroundColor: palette.card,
+              borderColor: palette.border,
+            },
+          ]}
           backdropComponent={renderBackdrop}
           enablePanDownToClose
           enableDynamicSizing
@@ -761,7 +774,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
             <View style={styles.actionsList}>
               <Button
                 variant="outline"
-                fullWidth
                 size="lg"
                 onPress={handleSkip}
               >
@@ -769,7 +781,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               </Button>
               <Button
                 variant="outline"
-                fullWidth
                 size="lg"
                 onPress={handleReportAction}
               >
@@ -777,8 +788,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               </Button>
             </View>
             <Button
-              variant="default"
-              fullWidth
               size="lg"
               onPress={closeActionsSheet}
             >
@@ -790,7 +799,13 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         <BottomSheetModal
           ref={reportReasonSheetRef}
           onDismiss={handleReportSheetDismiss}
-          backgroundStyle={styles.bottomSheetBackground}
+          backgroundStyle={[
+            styles.bottomSheetBackground,
+            {
+              backgroundColor: palette.card,
+              borderColor: palette.border,
+            },
+          ]}
           backdropComponent={renderBackdrop}
           enablePanDownToClose
           enableDynamicSizing
@@ -800,8 +815,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         >
           <BottomSheetView style={styles.reportSheetContent}>
             <ThemedText style={styles.sheetTitle}>문항 신고</ThemedText>
-            <ThemedText style={styles.reportSubtitle}>
-              신고 사유를 선택해주세요.
+            <ThemedText style={[styles.reportSubtitle, { color: sheetMutedColor }]}>
+              신고 사유를 선택해주세요
             </ThemedText>
             <View style={styles.reportOptions}>
               {REPORT_REASONS.map((option) => {
@@ -809,9 +824,19 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 return (
                   <Pressable
                     key={option.key}
-                    style={[
+                    style={({ pressed }) => [
                       styles.reportOption,
-                      isSelected && styles.reportOptionSelected,
+                      {
+                        backgroundColor: sheetSurface,
+                        borderColor: sheetBorderColor,
+                      },
+                      isSelected
+                        ? {
+                          backgroundColor: sheetSurfaceElevated ?? sheetSurface,
+                          borderColor: palette.primary,
+                        }
+                        : null,
+                      pressed ? styles.reportOptionPressed : null,
                     ]}
                     onPress={() => setReportReason(option.key)}
                   >
@@ -820,6 +845,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                         styles.reportOptionLabel,
                         isSelected && styles.reportOptionLabelSelected,
                       ]}
+                      lightColor={isSelected ? palette.primary : sheetTextColor}
+                      darkColor={isSelected ? palette.primary : sheetTextColor}
                     >
                       {option.label}
                     </ThemedText>
@@ -830,10 +857,17 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
             {reportReason === 'other' ? (
               <TextInput
                 ref={reportNotesInputRef}
-                style={styles.reportInput}
+                style={[
+                  styles.reportInput,
+                  {
+                    backgroundColor: sheetSurface,
+                    borderColor: sheetBorderColor,
+                    color: sheetTextColor,
+                  },
+                ]}
                 multiline
                 placeholder="신고 사유를 자세히 적어주세요."
-                placeholderTextColor="#9C96C6"
+                placeholderTextColor={sheetMutedColor}
                 value={reportNotes}
                 onChangeText={setReportNotes}
                 textAlignVertical="top"
@@ -842,9 +876,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               />
             ) : null}
             <Button
-              variant="default"
               size="lg"
-              fullWidth
               onPress={handleSubmitReport}
               disabled={!canSubmitReport}
               loading={isSubmittingReport}
@@ -858,7 +890,13 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
           ref={bottomSheetRef}
           onDismiss={handleSheetDismiss}
           onChange={handleSheetChanges}
-          backgroundStyle={styles.bottomSheetBackground}
+          backgroundStyle={[
+            styles.bottomSheetBackground,
+            {
+              backgroundColor: palette.card,
+              borderColor: palette.border,
+            },
+          ]}
           backdropComponent={renderBackdrop}
           enablePanDownToClose
           enableDynamicSizing
@@ -928,14 +966,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: Spacing.sm,
     marginBottom: Spacing.md,
-    marginTop: -Spacing.md,
+    marginTop: 0,
     position: 'relative',
     zIndex: 2,
   },
   statusText: {
     fontSize: 12,
     fontWeight: '600',
-    color: Palette.gray500,
   },
   sheetButtonHidden: {
     opacity: 0,
@@ -1052,7 +1089,6 @@ const styles = StyleSheet.create({
   },
   reportSubtitle: {
     fontSize: 13,
-    color: Palette.gray700,
   },
   reportOptions: {
     gap: Spacing.sm,
@@ -1062,16 +1098,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: Palette.gray100,
   },
-  reportOptionSelected: {
-    borderColor: Palette.gray600,
-    backgroundColor: Palette.gray25,
+  reportOptionPressed: {
+    opacity: 0.9,
   },
   reportOptionLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: Palette.gray900,
   },
   reportOptionLabelSelected: {
     fontWeight: '700',
@@ -1079,7 +1112,6 @@ const styles = StyleSheet.create({
   reportInput: {
     minHeight: 96,
     borderWidth: 1,
-    borderColor: Palette.gray100,
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,

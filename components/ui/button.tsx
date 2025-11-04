@@ -59,35 +59,38 @@ type Palette = Record<string, string>;
 
 interface Normalized {
   primary: string;
-  onPrimary: string;
+  primaryForeground: string;
   secondary: string;
-  onSecondary: string;
+  secondaryForeground: string;
   border: string;
-  foreground: string;
+  accent: string;
+  accentForeground: string;
   destructive: string;
-  onDestructive: string;
+  destructiveForeground: string;
 }
 
 const FALLBACK_LIGHT: Normalized = {
   primary: "#2A2A2A",
-  onPrimary: "#FFFFFF",
+  primaryForeground: "#FFFFFF",
   secondary: "#F4F4F5", // accent-ish
-  onSecondary: "#111111",
+  secondaryForeground: "#111111",
   border: "#E4E4E7",
-  foreground: "#111827",
+  accent: "#111827",
+  accentForeground: "#FFFFFF",
   destructive: "#DC2626",
-  onDestructive: "#FFFFFF",
+  destructiveForeground: "#FFFFFF",
 };
 
 const FALLBACK_DARK: Normalized = {
   primary: "#E5E5E5",
-  onPrimary: "#111111",
+  primaryForeground: "#111111",
   secondary: "#262626",
-  onSecondary: "#F5F5F5",
+  secondaryForeground: "#F5F5F5",
   border: "#27272A",
-  foreground: "#F5F5F5",
+  accent: "#F5F5F5",
+  accentForeground: "#111111",
   destructive: "#EF4444",
-  onDestructive: "#111111",
+  destructiveForeground: "#FFFFFF",
 };
 
 function getColors() {
@@ -97,13 +100,14 @@ function getColors() {
 
   const norm = (p: Palette, fb: Normalized): Normalized => ({
     primary: p.primary ?? fb.primary,
-    onPrimary: p.primaryForeground ?? fb.onPrimary,
+    primaryForeground: p.primaryForeground ?? fb.primaryForeground,
     secondary: p.secondary ?? fb.secondary,
-    onSecondary: p.secondaryForeground ?? fb.onSecondary,
+    secondaryForeground: p.secondaryForeground ?? fb.secondaryForeground,
     border: p.border ?? fb.border,
-    foreground: p.foreground ?? fb.foreground,
+    accent: p.accent ?? fb.accent,
+    accentForeground: p.accentForeground ?? fb.accentForeground,
     destructive: p.destructive ?? fb.destructive,
-    onDestructive: p.destructiveForeground ?? fb.onDestructive,
+    destructiveForeground: p.destructiveForeground ?? fb.destructiveForeground,
   });
 
   return { light: norm(light, FALLBACK_LIGHT), dark: norm(dark, FALLBACK_DARK) };
@@ -165,7 +169,7 @@ export function Button({
 
   // Pressed-state styling to emulate shadcn hover/active
   const pressableStyle = ({ pressed }: PressableStateCallbackType): StyleProp<ViewStyle> => {
-    const { container } = resolveStyles(variant, p, pressed);
+    const { container } = resolveStyles(variant, p, pressed, scheme === "dark");
     const pressedOverlay = pressed && pressedStyle ? StyleSheet.flatten(pressedStyle) : null;
     const baseStyle: StyleProp<ViewStyle> = [
       baseStyles.base,
@@ -180,7 +184,7 @@ export function Button({
     ];
     return StyleSheet.compose(baseStyle, style);
   };
-  const { text, spinner, ripple } = resolveStyles(variant, p, false);
+  const { text, spinner, ripple } = resolveStyles(variant, p, false, scheme === "dark");
   const hasChildren = Children.count(children) > 0;
   const showLeft = loading || !!leftIcon;
   const showRight = !!rightIcon;
@@ -239,16 +243,17 @@ interface ResolvedStyles {
 function resolveStyles(
   variant: ButtonVariant,
   p: Normalized,
-  pressed: boolean
+  pressed: boolean,
+  isDark: boolean
 ): ResolvedStyles {
   switch (variant) {
     case 'outline': {
       const baseBg = 'transparent' as const;
-      const mixTarget = isLight(p.foreground) ? '#000000' : '#FFFFFF';
+      const mixTarget = isLight(p.accentForeground) ? '#000000' : '#FFFFFF';
       const outlineActive = mix(p.border, mixTarget, 0.18);
       const bg = pressed ? outlineActive : baseBg;
-      const borderColor = pressed ? mix(p.border, p.foreground, 0.35) : p.border;
-      const color = p.foreground;
+      const borderColor = pressed ? mix(p.border, p.accentForeground, 0.35) : p.border;
+      const color = p.accentForeground;
       return {
         container: { backgroundColor: bg, borderWidth: 2, borderColor },
         text: { color },
@@ -257,44 +262,50 @@ function resolveStyles(
       };
     }
     case 'secondary': {
-      const baseBg = p.secondary;
-      const bg = pressed ? darken(baseBg, 0.12) : baseBg;
-      const color = p.onSecondary ?? contrastText(baseBg);
+      const baseBg = p.accent;
+      const toneTarget = isLight(baseBg) ? '#000000' : '#FFFFFF';
+      const activeBg = mix(baseBg, toneTarget, isDark ? 0.12 : 0.14);
+      const bg = pressed ? activeBg : baseBg;
+      const borderColor = mix(baseBg, toneTarget, 0.18);
+      const color = p.accentForeground ?? contrastText(bg);
       return {
-        container: { backgroundColor: bg },
+        container: { backgroundColor: bg, borderWidth: 1, borderColor },
         text: { color },
         spinner: color,
-        ripple: darken(baseBg, 0.3),
+        ripple: mix(baseBg, toneTarget, isDark ? 0.3 : 0.35),
       };
     }
     case 'destructive': {
       const baseBg = p.destructive;
-      const bg = pressed ? darken(baseBg, 0.18) : baseBg;
-      const color = p.onDestructive ?? contrastText(baseBg);
+      const toneTarget = isLight(baseBg) ? '#000000' : '#FFFFFF';
+      const activeBg = mix(baseBg, toneTarget, isDark ? 0.16 : 0.18);
+      const bg = pressed ? activeBg : baseBg;
+      const borderColor = mix(baseBg, toneTarget, 0.22);
+      const color = p.destructiveForeground ?? contrastText(bg);
       return {
-        container: { backgroundColor: bg },
+        container: { backgroundColor: bg, borderWidth: 1, borderColor },
         text: { color },
         spinner: color,
-        ripple: darken(baseBg, 0.25),
+        ripple: mix(baseBg, toneTarget, isDark ? 0.32 : 0.3),
       };
     }
     case 'ghost': {
       const baseBg = 'transparent' as const;
-      const mixTarget = isLight(p.foreground) ? '#000000' : '#FFFFFF';
+      const mixTarget = isLight(p.accentForeground) ? '#000000' : '#FFFFFF';
       const ghostActive = mix(p.border, mixTarget, 0.08);
       const bg = pressed ? ghostActive : baseBg;
-      const color = p.foreground;
+      const color = p.accentForeground;
       return {
         container: { backgroundColor: bg },
         text: { color },
         spinner: color,
-        ripple: darken(p.foreground, 0.4),
+        ripple: darken(p.accentForeground, 0.4),
       };
     }
     default: {
       const baseBg = p.primary;
       const bg = pressed ? darken(baseBg, 0.12) : baseBg;
-      const color = p.onPrimary ?? contrastText(baseBg);
+      const color = p.primaryForeground ?? contrastText(baseBg);
       return {
         container: { backgroundColor: bg },
         text: { color },

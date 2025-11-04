@@ -627,67 +627,64 @@ function FooterButton({ label, onPress }: { label: string; onPress: () => void }
 }
 
 function ThemePreferencesCard() {
-  const { colorScheme, toggleColorScheme, isReady } = useColorSchemeManager();
+  const { colorScheme, setColorScheme, isReady } = useColorSchemeManager();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
-  const isDark = colorScheme === 'dark';
 
-  const handlePress = useCallback(() => {
-    toggleColorScheme();
-  }, [toggleColorScheme]);
-
-  const handleIconPress = useCallback(() => {
-    toggleColorScheme();
-  }, [toggleColorScheme]);
+  const options = [
+    { key: 'light', title: '밝은 테마', icon: 'sun.max.fill' },
+    { key: 'dark', title: '어두운 테마', icon: 'moon.fill' },
+  ] as const;
 
   return (
     <Card>
-      <ThemedText type="subtitle">테마 토글</ThemedText>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityState={{ disabled: !isReady }}
-        onPress={handlePress}
-        disabled={!isReady}
-        style={({ pressed }) => [
-          styles.themeToggleRow,
-          {
-            backgroundColor: themeColors.cardElevated,
-            borderColor: themeColors.border,
-          },
-          pressed ? styles.themeToggleRowPressed : null,
-          !isReady ? styles.themeToggleDisabled : null,
-        ]}
-      >
-        <View style={styles.themeToggleTextGroup}>
-          <ThemedText style={styles.themeToggleTitle}>{isDark ? '어두운 테마' : '밝은 테마'}</ThemedText>
-          <ThemedText style={[styles.themeToggleSubtitle, { color: mutedColor }]}>
-            {isDark ? '밝은 화면으로 전환해요' : '어두운 화면으로 전환해요'}
-          </ThemedText>
-        </View>
-        <Button
-          variant="ghost"
-          size="icon"
-          rounded="full"
-          accessibilityLabel={isDark ? '밝은 테마로 전환' : '어두운 테마로 전환'}
-          disabled={!isReady}
-          pressedStyle={{
-            backgroundColor: themeColors.card,
-            borderColor: themeColors.borderStrong ?? themeColors.border,
-          }}
-          onPress={(event) => {
-            event?.stopPropagation?.();
-            if (!isReady) return;
-            handleIconPress();
-          }}
-          leftIcon={
+      <View style={styles.sectionStack}>
+        <ThemedText type="subtitle">화면 테마</ThemedText>
+        <ThemedText style={{ color: mutedColor, fontSize: 14, lineHeight: 20 }}>
+          앱의 화면 테마를 설정할 수 있어요.
+        </ThemedText>
+      </View>
+      <View style={styles.themeOptionsContainer}>
+        {options.map((option) => (
+          <Pressable
+            key={option.key}
+            accessibilityRole="button"
+            accessibilityState={{ selected: colorScheme === option.key, disabled: !isReady }}
+            disabled={!isReady}
+            onPress={() => setColorScheme(option.key)}
+            style={({ pressed }) => [
+              styles.themeOptionButton,
+              {
+                backgroundColor:
+                  colorScheme === option.key ? themeColors.primary : themeColors.cardElevated,
+                borderColor:
+                  colorScheme === option.key
+                    ? 'transparent'
+                    : themeColors.border,
+              },
+              pressed && styles.themeOptionButtonPressed,
+              !isReady && styles.themeOptionButtonDisabled,
+            ]}
+          >
             <IconSymbol
-              name={isDark ? 'moon.fill' : 'sun.max.fill'}
-              size={22}
-              color={themeColors.text}
+              name={option.icon}
+              size={20}
+              color={colorScheme === option.key ? themeColors.primaryForeground : themeColors.text}
             />
-          }
-        />
-      </Pressable>
+            <ThemedText
+              style={[
+                styles.themeOptionLabel,
+                {
+                  color:
+                    colorScheme === option.key ? themeColors.primaryForeground : themeColors.text,
+                },
+              ]}
+            >
+              {option.title}
+            </ThemedText>
+          </Pressable>
+        ))}
+      </View>
     </Card>
   );
 }
@@ -873,31 +870,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: Spacing.sm,
   },
-  themeToggleRow: {
+  themeOptionsContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: Radius.md,
-    borderWidth: 1,
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
     gap: Spacing.md,
   },
-  themeToggleRowPressed: {
-    opacity: 0.75,
+  themeOptionButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    minHeight: 48,
   },
-  themeToggleDisabled: {
+  themeOptionButtonPressed: {
+    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
+  },
+  themeOptionButtonDisabled: {
     opacity: 0.5,
   },
-  themeToggleTextGroup: {
-    flex: 1,
-    gap: Spacing.xs,
-  },
-  themeToggleTitle: {
+  themeOptionLabel: {
     fontWeight: '600',
-  },
-  themeToggleSubtitle: {
-    fontSize: 13,
   },
   footerActions: {
     flexDirection: 'row',

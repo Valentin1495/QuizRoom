@@ -63,8 +63,10 @@ export const Colors = {
     primaryForeground: Palette.white,
     secondary: Palette.gray100,
     secondaryForeground: Palette.gray900,
-    accent: Palette.gray200,
+    accent: Palette.gray50,
     accentForeground: Palette.gray950,
+    destructive: '#DC2626',
+    destructiveForeground: Palette.white,
 
     // Legacy (for backward compatibility)
     tint: Palette.gray900,
@@ -103,14 +105,16 @@ export const Colors = {
     primaryForeground: Palette.gray950,
     secondary: Palette.gray300,
     secondaryForeground: Palette.gray950,
-    accent: Palette.gray600,
+    accent: Palette.gray900,
     accentForeground: Palette.gray25,
+    destructive: '#EF4444',
+    destructiveForeground: Palette.white,
 
     // Legacy (for backward compatibility)
     tint: Palette.gray100,
 
     // UI
-    border: Palette.gray900,
+    border: Palette.gray700,
     borderStrong: '#3D3D3D',
     divider: Palette.gray950,
     icon: Palette.gray200,

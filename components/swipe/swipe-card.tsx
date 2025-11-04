@@ -39,6 +39,7 @@ export type SwipeCardProps = {
   card: SwipeFeedQuestion;
   index: number;
   isActive: boolean;
+  cardNumber?: number;
   selectedIndex: number | null;
   feedback: SwipeFeedback | null;
   onSelectChoice: (index: number) => void;
@@ -121,6 +122,7 @@ export function SwipeCard({
   card,
   index,
   isActive,
+  cardNumber,
   selectedIndex,
   feedback,
   onSelectChoice,
@@ -133,7 +135,8 @@ export function SwipeCard({
   const translateY = useSharedValue(0);
   const shakeX = useSharedValue(0);
   const colorScheme = useColorScheme();
-  const palette = Colors[colorScheme ?? 'light'];
+  const normalizedScheme = (colorScheme ?? 'light') as 'light' | 'dark';
+  const palette = Colors[normalizedScheme];
   const cardColor = useThemeColor({}, 'card');
 
   const difficultyDots = difficultyToDots(card.difficulty);
@@ -142,6 +145,7 @@ export function SwipeCard({
   const difficultyMode = colorScheme === 'dark' ? 'dark' : 'light';
   const difficultyToken = DIFFICULTY_TOKENS[difficultyLevel][difficultyMode];
   const inactiveDotsCount = Math.max(0, 3 - difficultyDots);
+  const displayCardNumber = cardNumber ?? index + 1;
 
   const gesture = Gesture.Pan()
     .enabled(isActive)
@@ -227,6 +231,19 @@ export function SwipeCard({
         <View style={styles.header}>
           <View
             style={[
+              styles.cardPositionBadge,
+              {
+                borderColor: palette.borderStrong,
+                backgroundColor: palette.card,
+              },
+            ]}
+          >
+            <ThemedText style={[styles.cardPositionText, { color: palette.text }]}>
+              Q{displayCardNumber}
+            </ThemedText>
+          </View>
+          <View
+            style={[
               styles.difficultyBadge,
               {
                 backgroundColor: difficultyToken.background,
@@ -294,20 +311,31 @@ const styles = StyleSheet.create({
     right: 0,
     padding: Spacing.lg,
     borderRadius: Radius.lg,
-    borderWidth: 2,
+    borderWidth: 1.5,
     shadowColor: '#2F288040',
     shadowOpacity: 0.2,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 10 },
   },
   header: {
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: Spacing.sm,
+  },
+  cardPositionBadge: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
+  },
+  cardPositionText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
   difficultyBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-end',
     gap: Spacing.xs,
     paddingHorizontal: Spacing.sm,
     paddingVertical: Spacing.xs,
