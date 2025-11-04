@@ -71,7 +71,7 @@ export default function HomeScreen() {
   }, []);
 
   const palette = Colors[colorScheme ?? 'light'];
-  const cardBackground = palette.cardElevated;
+  const cardBackground = palette.card;
   const borderColor = palette.borderStrong;
   const muted = palette.textMuted;
   const subtle = palette.textSubtle;

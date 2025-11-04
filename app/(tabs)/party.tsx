@@ -5,12 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Button } from '@/components/ui/button';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import type { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
-import { useCreateParty, useJoinParty, usePartyDecks } from '@/lib/api';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useCreateParty, useJoinParty, usePartyDecks } from '@/lib/api';
 
 export default function PartyScreen() {
   const router = useRouter();
@@ -48,19 +49,12 @@ export default function PartyScreen() {
   const cardBackground = themeColors.card;
   const cardBorder = themeColors.borderStrong ?? themeColors.border;
   const inputBackground = colorScheme === 'dark' ? themeColors.cardElevated : themeColors.card;
-  const inputDisabledBackground =
-    colorScheme === 'dark' ? themeColors.border : themeColors.cardElevated;
+  const inputDisabledBackground = themeColors.cardElevated;
   const inputBorder = themeColors.border;
-  const primaryButtonBackground = themeColors.primary;
-  const primaryButtonForeground = themeColors.primaryForeground;
-  const primaryButtonDisabledBackground =
-    colorScheme === 'dark' ? 'rgba(229,229,229,0.16)' : themeColors.border;
   const secondaryButtonBackground = themeColors.secondary;
   const secondaryButtonForeground = themeColors.secondaryForeground;
   const secondaryButtonDisabledBackground =
     colorScheme === 'dark' ? 'rgba(255,255,255,0.08)' : Palette.gray200;
-  const randomButtonBackground = themeColors.secondary;
-  const randomButtonActiveOpacity = 0.7;
   const deckOptionBorder = themeColors.border;
   const deckOptionBackground = colorScheme === 'dark' ? themeColors.cardElevated : themeColors.card;
   const deckOptionSelectedBorder = themeColors.primary;
@@ -194,9 +188,9 @@ export default function PartyScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <ThemedText type="title">파티 라이브</ThemedText>
+          <ThemedText type="title">라이브 매치</ThemedText>
           <ThemedText style={[styles.headerSubtitle, { color: mutedColor }]}>
-            친구들과 실시간 퀴즈 배틀을 즐겨보세요.
+            친구들과 실시간 퀴즈 배틀을 즐겨보세요
           </ThemedText>
         </View>
 
@@ -206,9 +200,9 @@ export default function PartyScreen() {
             { backgroundColor: cardBackground, borderColor: cardBorder },
           ]}
         >
-          <ThemedText style={styles.cardTitle}>방 참여</ThemedText>
+          <ThemedText style={styles.cardTitle}>퀴즈룸 참여</ThemedText>
           <ThemedText style={[styles.cardDescription, { color: mutedColor }]}>
-            초대 코드를 입력하고 닉네임을 정해주세요.
+            초대 코드를 입력하고 닉네임을 정해주세요
           </ThemedText>
           <TextInput
             value={partyCode}
@@ -229,7 +223,7 @@ export default function PartyScreen() {
           <TextInput
             value={joinNickname}
             onChangeText={setJoinNickname}
-            placeholder="닉네임 (선택)"
+            placeholder="닉네임"
             maxLength={24}
             editable={!isGuest}
             selectTextOnFocus={!isGuest}
@@ -247,26 +241,14 @@ export default function PartyScreen() {
             ]}
             placeholderTextColor={mutedColor}
           />
-          <Pressable
+          <Button
             onPress={handleJoinParty}
             disabled={isJoining || !isJoinEnabled}
-            style={[
-              styles.primaryButton,
-              { backgroundColor: primaryButtonBackground },
-              (!isJoinEnabled || isJoining) && {
-                backgroundColor: primaryButtonDisabledBackground,
-                opacity: 0.7,
-              },
-            ]}
+            loading={isJoining}
+            size="lg"
           >
-            <ThemedText
-              style={styles.primaryButtonLabel}
-              lightColor={primaryButtonForeground}
-              darkColor={primaryButtonForeground}
-            >
-              {isJoining ? '참여 중...' : '파티 참여'}
-            </ThemedText>
-          </Pressable>
+            참여하기
+          </Button>
         </View>
 
         <View
@@ -275,9 +257,9 @@ export default function PartyScreen() {
             { backgroundColor: cardBackground, borderColor: cardBorder },
           ]}
         >
-          <ThemedText style={styles.cardTitle}>새 파티 만들기</ThemedText>
+          <ThemedText style={styles.cardTitle}>새 퀴즈룸 만들기</ThemedText>
           <ThemedText style={[styles.cardDescription, { color: mutedColor }]}>
-            방을 열고 친구들에게 초대 코드를 공유하세요.
+            퀴즈룸을 열고 친구들에게 초대 코드를 공유하세요
           </ThemedText>
           <View style={styles.deckSectionHeader}>
             <ThemedText style={styles.deckSectionTitle}>덱 선택</ThemedText>
@@ -287,27 +269,14 @@ export default function PartyScreen() {
               </ThemedText>
             ) : null}
           </View>
-          <Pressable
-            style={[
-              styles.randomButton,
-              { backgroundColor: randomButtonBackground },
-              isRandomizing && { opacity: randomButtonActiveOpacity },
-            ]}
+          <Button
+            variant="outline"
             onPress={handleRandomDeck}
             disabled={isRandomizing || isDecksLoading || partyDecks.length === 0}
+            loading={isRandomizing}
           >
-            {isRandomizing ? (
-              <ActivityIndicator color={secondaryButtonForeground} size="small" />
-            ) : (
-              <ThemedText
-                style={styles.randomButtonLabel}
-                lightColor={secondaryButtonForeground}
-                darkColor={secondaryButtonForeground}
-              >
-                랜덤으로 추천받기 🎲
-              </ThemedText>
-            )}
-          </Pressable>
+            랜덤으로 추천받기 🎲
+          </Button>
           <View style={styles.deckList}>
             {isDecksLoading ? (
               <ActivityIndicator color={themeColors.primary} />
@@ -367,26 +336,14 @@ export default function PartyScreen() {
             ]}
             placeholderTextColor={mutedColor}
           />
-          <Pressable
+          <Button
+            size="lg"
             onPress={handleCreateParty}
             disabled={isCreating || (!isDecksLoading && !selectedDeckId)}
-            style={[
-              styles.secondaryButton,
-              { backgroundColor: secondaryButtonBackground },
-              (isCreating || (!isDecksLoading && !selectedDeckId)) && {
-                backgroundColor: secondaryButtonDisabledBackground,
-                opacity: 0.7,
-              },
-            ]}
+            loading={isCreating}
           >
-            <ThemedText
-              style={styles.secondaryButtonLabel}
-              lightColor={secondaryButtonForeground}
-              darkColor={secondaryButtonForeground}
-            >
-              {isCreating ? '생성 중...' : '새 파티 만들기'}
-            </ThemedText>
-          </Pressable>
+            퀴즈룸 생성
+          </Button>
         </View>
       </ScrollView>
     </ThemedView>
@@ -434,6 +391,8 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
     fontSize: 16,
+    height: 48,
+    textAlignVertical: 'center',
   },
   primaryButton: {
     marginTop: Spacing.sm,
