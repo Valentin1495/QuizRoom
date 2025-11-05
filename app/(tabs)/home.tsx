@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xl,
   },
   welcomeCard: {
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
     alignItems: 'center',
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     padding: Spacing.lg,
     gap: Spacing.md,
-    borderWidth: 1.5,
+    borderWidth: 1,
   },
   dailyHeadlineContainer: {
     gap: Spacing.xs,
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm,
   },
   timerPill: {
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderRadius: Radius.pill,
     width: '100%',
     alignItems: 'center',
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   partyCard: {
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderRadius: Radius.lg,
     padding: Spacing.xl,
     gap: Spacing.md,
@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   partyInput: {
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderRadius: Radius.pill,
     height: 52,
     paddingVertical: 12,

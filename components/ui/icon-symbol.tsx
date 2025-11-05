@@ -10,11 +10,13 @@ import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING = {
+  // Navigation Icons
   'arrow.left': 'arrow-back',
   'arrow.right': 'arrow-forward',
+  // Theme Icons
   'sun.max.fill': 'light-mode',
   'moon.fill': 'dark-mode',
-  // Feedback icons
+  // Feedback Icons
   'checkmark.circle.fill': 'check-circle',
   'xmark.circle.fill': 'cancel',
   // Tab Bar Icons
@@ -31,6 +33,13 @@ const MAPPING = {
   'bag.fill': 'shopping-bag',
   'newspaper': 'newspaper',
   'lightbulb': 'lightbulb-outline',
+  // Deck Icons
+  'party.popper': 'celebration',
+  'brain.head.profile': 'psychology',
+  'mic.fill': 'theater-comedy',
+  'die.face.5': 'casino',
+  'flame.fill': 'trending-up',
+  'star.fill': 'star-outline',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING;

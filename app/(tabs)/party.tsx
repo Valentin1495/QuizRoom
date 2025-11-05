@@ -1,17 +1,19 @@
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import type { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useCreateParty, useJoinParty, usePartyDecks } from '@/lib/api';
+import { getDeckIcon } from '@/lib/deck-icons';
 
 export default function PartyScreen() {
   const router = useRouter();
@@ -41,25 +43,17 @@ export default function PartyScreen() {
   const normalizedJoinNickname = useMemo(() => joinNickname.trim(), [joinNickname]);
   const normalizedHostNickname = useMemo(() => hostNickname.trim(), [hostNickname]);
   const isJoinEnabled = normalizedCode.length === 6;
-  const selectedDeck = useMemo(
-    () => partyDecks.find((deck) => deck.id === selectedDeckId) ?? null,
-    [partyDecks, selectedDeckId]
-  );
 
   const cardBackground = themeColors.card;
   const cardBorder = themeColors.borderStrong ?? themeColors.border;
   const inputBackground = colorScheme === 'dark' ? themeColors.cardElevated : themeColors.card;
   const inputDisabledBackground = themeColors.cardElevated;
   const inputBorder = themeColors.border;
-  const secondaryButtonBackground = themeColors.secondary;
-  const secondaryButtonForeground = themeColors.secondaryForeground;
-  const secondaryButtonDisabledBackground =
-    colorScheme === 'dark' ? 'rgba(255,255,255,0.08)' : Palette.gray200;
   const deckOptionBorder = themeColors.border;
   const deckOptionBackground = colorScheme === 'dark' ? themeColors.cardElevated : themeColors.card;
   const deckOptionSelectedBorder = themeColors.primary;
   const deckOptionSelectedBackground =
-    colorScheme === 'dark' ? 'rgba(229,229,229,0.08)' : Palette.gray25;
+    colorScheme === 'dark' ? 'rgba(229,229,229,0.12)' : Palette.gray25;
   const deckEmptyTextColor = mutedColor;
   useEffect(() => {
     if (!isDecksLoading && partyDecks.length > 0 && !selectedDeckId) {
@@ -242,6 +236,7 @@ export default function PartyScreen() {
             placeholderTextColor={mutedColor}
           />
           <Button
+            variant='secondary'
             onPress={handleJoinParty}
             disabled={isJoining || !isJoinEnabled}
             loading={isJoining}
@@ -257,32 +252,28 @@ export default function PartyScreen() {
             { backgroundColor: cardBackground, borderColor: cardBorder },
           ]}
         >
-          <ThemedText style={styles.cardTitle}>새 퀴즈룸 만들기</ThemedText>
+          <ThemedText style={styles.cardTitle}>퀴즈룸 생성</ThemedText>
           <ThemedText style={[styles.cardDescription, { color: mutedColor }]}>
-            퀴즈룸을 열고 친구들에게 초대 코드를 공유하세요
+            새 퀴즈룸을 열고 친구들에게 초대 코드를 공유하세요
           </ThemedText>
           <View style={styles.deckSectionHeader}>
             <ThemedText style={styles.deckSectionTitle}>덱 선택</ThemedText>
-            {selectedDeck ? (
-              <ThemedText style={[styles.deckSectionSubtitle, { color: subtleColor }]}>
-                {selectedDeck.emoji} {selectedDeck.title}
-              </ThemedText>
-            ) : null}
           </View>
-          <Button
-            variant="outline"
-            onPress={handleRandomDeck}
-            disabled={isRandomizing || isDecksLoading || partyDecks.length === 0}
-            loading={isRandomizing}
-          >
-            랜덤으로 추천받기 🎲
-          </Button>
           <View style={styles.deckList}>
             {isDecksLoading ? (
               <ActivityIndicator color={themeColors.primary} />
             ) : partyDecks.length > 0 ? (
               partyDecks.map((deck) => {
                 const isSelected = deck.id === selectedDeckId;
+                const platformCardStyle: ViewStyle =
+                  Platform.OS === 'ios'
+                    ? {
+                      shadowColor: themeColors.primary,
+                      shadowOpacity: isSelected ? 0.25 : 0,
+                      shadowRadius: isSelected ? 12 : 0,
+                      shadowOffset: { width: 0, height: isSelected ? 6 : 0 },
+                    }
+                    : {};
                 return (
                   <Pressable
                     key={deck.id}
@@ -291,18 +282,30 @@ export default function PartyScreen() {
                     style={[
                       styles.deckOption,
                       {
-                        borderColor: deckOptionBorder,
-                        backgroundColor: deckOptionBackground,
+                        borderColor: isSelected ? deckOptionSelectedBorder : deckOptionBorder,
+                        backgroundColor: isSelected
+                          ? deckOptionSelectedBackground
+                          : deckOptionBackground,
+                        borderWidth: isSelected ? 1.5 : 1,
+                        transform: [{ scale: isSelected ? 1.02 : 1 }],
                       },
-                      isSelected && {
-                        borderColor: deckOptionSelectedBorder,
-                        backgroundColor: deckOptionSelectedBackground,
-                      },
+                      platformCardStyle,
                     ]}
                   >
-                    <ThemedText style={styles.deckOptionTitle}>
-                      {deck.emoji} {deck.title}
-                    </ThemedText>
+                    <View style={styles.deckOptionHeader}>
+                      <IconSymbol
+                        name={getDeckIcon(deck.slug)}
+                        size={20}
+                        color={isSelected ? themeColors.primary : themeColors.text}
+                      />
+                      <ThemedText
+                        style={styles.deckOptionTitle}
+                        lightColor={themeColors.text}
+                        darkColor={themeColors.text}
+                      >
+                        {deck.title}
+                      </ThemedText>
+                    </View>
                     <ThemedText style={[styles.deckOptionDescription, { color: mutedColor }]}>
                       {deck.description}
                     </ThemedText>
@@ -315,6 +318,16 @@ export default function PartyScreen() {
               </ThemedText>
             )}
           </View>
+          <Button
+            variant="outline"
+            onPress={handleRandomDeck}
+            disabled={isRandomizing || isDecksLoading || partyDecks.length === 0}
+            loading={isRandomizing}
+          >
+            랜덤으로 추천받기 ❓
+          </Button>
+
+          <ThemedText style={styles.deckSectionTitle}>닉네임 입력</ThemedText>
           <TextInput
             value={hostNickname}
             onChangeText={setHostNickname}
@@ -342,7 +355,7 @@ export default function PartyScreen() {
             disabled={isCreating || (!isDecksLoading && !selectedDeckId)}
             loading={isCreating}
           >
-            퀴즈룸 생성
+            생성하기
           </Button>
         </View>
       </ScrollView>
@@ -394,39 +407,23 @@ const styles = StyleSheet.create({
     height: 48,
     textAlignVertical: 'center',
   },
-  primaryButton: {
-    marginTop: Spacing.sm,
-    borderRadius: Radius.md,
-    paddingVertical: Spacing.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  primaryButtonLabel: {
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  secondaryButton: {
-    borderRadius: Radius.md,
-    paddingVertical: Spacing.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  secondaryButtonLabel: {
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  randomButton: {
-    borderRadius: Radius.md,
-    paddingVertical: Spacing.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  randomButtonLabel: {
-    fontWeight: '600',
-    fontSize: 14,
-  },
   deckSectionHeader: {
     gap: Spacing.xs,
+  },
+  deckSectionSubtitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.xs,
+    width: '100%',
+  },
+  deckSectionSubtitleSelected: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 4,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    alignSelf: 'stretch',
+    justifyContent: 'center',
   },
   deckSectionTitle: {
     fontSize: 14,
@@ -448,6 +445,11 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
     flexBasis: '48%',
     flexGrow: 1,
+  },
+  deckOptionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
   },
   deckOptionTitle: {
     fontWeight: '700',

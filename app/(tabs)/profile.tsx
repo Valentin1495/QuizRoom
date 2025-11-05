@@ -2,7 +2,6 @@ import { useCallback, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -14,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Button } from '@/components/ui/button';
+import { Avatar } from '@/components/ui/avatar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { categories } from '@/constants/categories';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
@@ -166,37 +165,30 @@ function ProfileHeader({
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
-  const accentBackground = themeColors.accent;
-  const accentBorder = themeColors.borderStrong ?? themeColors.border;
   const fallbackBackground = themeColors.primary;
-  const fallbackForeground = themeColors.primaryForeground;
 
   return (
     <Card>
       <View style={styles.headerRow}>
-        <View
-          style={[
-            styles.avatarFrame,
-            { backgroundColor: accentBackground, borderColor: accentBorder },
-          ]}
-        >
-          {user.avatarUrl ? (
-            <Image source={{ uri: user.avatarUrl }} style={styles.avatarImage} />
-          ) : (
-            <View style={[styles.avatarFallback, { backgroundColor: fallbackBackground }]}>
-              <ThemedText style={[styles.avatarInitial, { color: fallbackForeground }]}>
-                {user.handle.slice(0, 1).toUpperCase()}
-              </ThemedText>
-            </View>
-          )}
-        </View>
+        <Avatar
+          uri={user.avatarUrl}
+          name={user.handle}
+          size="xl"
+          radius={Radius.pill}
+          backgroundColorOverride={fallbackBackground}
+        />
         <View style={styles.headerContent}>
           <ThemedText type="subtitle">{user.handle}</ThemedText>
           <ThemedText style={[styles.statusText, { color: mutedColor }]}>{statusLine}</ThemedText>
         </View>
       </View>
       <View style={styles.headerActions}>
-        <ActionButton label="프로필 편집" tone="primary" onPress={onEdit} />
+        <ActionButton
+          label="프로필 편집"
+          tone="primary"
+          onPress={onEdit}
+          style={styles.fullWidthAction}
+        />
         {/* <ActionButton label="공유 카드 보기" tone="secondary" onPress={onShare} /> */}
       </View>
     </Card>
@@ -222,17 +214,14 @@ function GuestHeader({
   return (
     <Card>
       <View style={styles.headerRow}>
-        <View
-          style={[
-            styles.avatarFrame,
-            {
-              backgroundColor: guestAvatarBackground,
-              borderColor: guestAvatarBorder,
-            },
-          ]}
-        >
-          <ThemedText style={[styles.avatarInitial, { color: themeColors.text }]}>?</ThemedText>
-        </View>
+        <Avatar
+          name="?"
+          size="xl"
+          radius={Radius.lg}
+          backgroundColorOverride={guestAvatarBackground}
+          style={{ borderColor: guestAvatarBorder }}
+          textStyle={{ color: themeColors.text }}
+        />
         <View style={styles.headerContent}>
           <ThemedText type="subtitle">게스트 사용자</ThemedText>
           <ThemedText style={[styles.statusText, { color: mutedColor }]}>
@@ -247,6 +236,7 @@ function GuestHeader({
           onPress={onGoogleLogin}
           loading={isLoading}
           disabled={isLoading}
+          style={styles.fullWidthAction}
         />
         {/* <ActionButton label="Apple 로그인" tone="secondary" onPress={onAppleLogin} /> */}
       </View>
@@ -697,12 +687,14 @@ function ActionButton({
   tone,
   disabled,
   loading,
+  style,
 }: {
   label: string;
   onPress: () => void;
   tone: ActionButtonTone;
   disabled?: boolean;
   loading?: boolean;
+  style?: StyleProp<ViewStyle>;
 }) {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -741,6 +733,7 @@ function ActionButton({
       onPress={onPress}
       style={({ pressed }) => [
         styles.buttonBase,
+        style,
         {
           backgroundColor,
           borderColor: borderColor ?? 'transparent',
@@ -786,30 +779,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
-  },
-  avatarFrame: {
-    width: 72,
-    height: 72,
-    borderRadius: Radius.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-  },
-  avatarImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: Radius.lg,
-  },
-  avatarFallback: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: Radius.lg,
-  },
-  avatarInitial: {
-    fontSize: 32,
-    fontWeight: '700',
   },
   headerContent: {
     flex: 1,
@@ -918,6 +887,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 44,
+  },
+  fullWidthAction: {
+    alignSelf: 'stretch',
+    width: '100%',
   },
   buttonLabel: {
     fontWeight: '600',
