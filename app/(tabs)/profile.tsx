@@ -1,4 +1,5 @@
-import { useCallback, useState, type ReactNode } from 'react';
+import { BlurView } from 'expo-blur';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -13,7 +14,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, GuestAvatar } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { categories } from '@/constants/categories';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
@@ -30,7 +32,7 @@ type QuizHistoryDoc = Doc<'quizHistory'>;
 type HistoryBuckets = (typeof api.history.listHistory)['_returnType'];
 
 export default function ProfileScreen() {
-  const { status, user, signOut, signInWithGoogle } = useAuth();
+  const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
@@ -84,6 +86,20 @@ export default function ProfileScreen() {
     }
   }, [signInWithGoogle]);
 
+  useEffect(() => {
+    if (status === 'guest' && !guestKey) {
+      void ensureGuestKey();
+    }
+  }, [ensureGuestKey, guestKey, status]);
+
+  const guestAvatarId = useMemo(() => {
+    if (!guestKey) return undefined;
+    const suffix = guestKey.slice(-4);
+    const parsed = parseInt(suffix, 16);
+    if (Number.isNaN(parsed)) return undefined;
+    return parsed % 100;
+  }, [guestKey]);
+
   if (isLoading) {
     return (
       <ThemedView style={styles.loadingContainer}>
@@ -111,6 +127,7 @@ export default function ProfileScreen() {
             onGoogleLogin={handleGoogleLogin}
             onAppleLogin={handleAppleLogin}
             isLoading={isAuthorizing}
+            guestId={guestAvatarId}
           />
         )}
 
@@ -183,12 +200,13 @@ function ProfileHeader({
         </View>
       </View>
       <View style={styles.headerActions}>
-        <ActionButton
-          label="프로필 편집"
-          tone="primary"
+        <Button
           onPress={onEdit}
-          style={styles.fullWidthAction}
-        />
+          variant="secondary"
+          fullWidth
+        >
+          프로필 편집
+        </Button>
         {/* <ActionButton label="공유 카드 보기" tone="secondary" onPress={onShare} /> */}
       </View>
     </Card>
@@ -199,28 +217,26 @@ function GuestHeader({
   onGoogleLogin,
   onAppleLogin,
   isLoading,
+  guestId,
 }: {
   onGoogleLogin: () => void;
   onAppleLogin: () => void;
   isLoading: boolean;
+  guestId?: number;
 }) {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
-  const guestAvatarBackground =
-    colorScheme === 'dark' ? themeColors.cardElevated : themeColors.card;
   const guestAvatarBorder = themeColors.border;
 
   return (
     <Card>
       <View style={styles.headerRow}>
-        <Avatar
-          name="?"
+        <GuestAvatar
+          guestId={guestId}
           size="xl"
           radius={Radius.lg}
-          backgroundColorOverride={guestAvatarBackground}
           style={{ borderColor: guestAvatarBorder }}
-          textStyle={{ color: themeColors.text }}
         />
         <View style={styles.headerContent}>
           <ThemedText type="subtitle">게스트 사용자</ThemedText>
@@ -230,17 +246,112 @@ function GuestHeader({
         </View>
       </View>
       <View style={styles.headerActions}>
-        <ActionButton
-          label="Google 로그인"
-          tone="primary"
+        <Button
           onPress={onGoogleLogin}
           loading={isLoading}
           disabled={isLoading}
-          style={styles.fullWidthAction}
-        />
+          fullWidth
+          variant='secondary'
+        >
+          Google 로그인
+        </Button>
         {/* <ActionButton label="Apple 로그인" tone="secondary" onPress={onAppleLogin} /> */}
       </View>
     </Card>
+  );
+}
+
+function GuestHistoryPlaceholder({
+  onLogin,
+  loginLoading,
+}: {
+  onLogin: () => void;
+  loginLoading: boolean;
+}) {
+  const textColor = useThemeColor({}, 'text');
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+
+  const PlaceholderRow = () => (
+    <View
+      style={[
+        styles.historyRow,
+        { backgroundColor: themeColors.cardElevated, borderColor: themeColors.border },
+      ]}
+    >
+      <View
+        style={[
+          styles.placeholderLine,
+          { backgroundColor: textColor, opacity: 0.08, width: '40%' },
+        ]}
+      />
+      <View
+        style={[
+          styles.placeholderLine,
+          { backgroundColor: textColor, opacity: 0.08, width: '70%', marginTop: Spacing.xs },
+        ]}
+      />
+    </View>
+  );
+
+  return (
+    <View style={styles.guestHistoryContainer}>
+      <View style={styles.guestHistoryContent}>
+        <View style={styles.historySection}>
+          <ThemedText style={styles.historySectionTitle}>데일리 퀴즈</ThemedText>
+          <View style={styles.historyList}>
+            {[1].map((i) => (
+              <PlaceholderRow key={i} />
+            ))}
+          </View>
+        </View>
+        <View style={styles.historySection}>
+          <ThemedText style={styles.historySectionTitle}>스와이프</ThemedText>
+          <View style={styles.historyList}>
+            {[1, 2].map((i) => (
+              <PlaceholderRow key={i} />
+            ))}
+          </View>
+        </View>
+        <BlurView
+          pointerEvents="none"
+          style={styles.guestHistoryBlur}
+          intensity={8}
+          tint={colorScheme === 'dark' ? 'dark' : 'light'}
+          experimentalBlurMethod='dimezisBlurView'
+        />
+      </View>
+
+      <View
+        style={styles.modalDialogContainer}
+      >
+        <View style={styles.modalDialog}>
+          <IconSymbol
+            name="lock.fill"
+            size={28}
+            color={textColor}
+            style={{ marginBottom: Spacing.sm }}
+          />
+          <ThemedText type="subtitle" style={{ textAlign: 'center', marginBottom: Spacing.xs }}>
+            기록 잠금 해제
+          </ThemedText>
+          <ThemedText
+            style={[
+              { color: textColor, textAlign: 'center', marginBottom: Spacing.lg },
+            ]}
+          >
+            로그인하고 나의 퀴즈 기록을 확인해보세요!
+          </ThemedText>
+          <Button
+            onPress={onLogin}
+            loading={loginLoading}
+            disabled={loginLoading}
+          >
+            {loginLoading ? '로그인 중...' : 'Google 로그인'}
+          </Button>
+        </View>
+      </View>
+    </View>
   );
 }
 
@@ -261,20 +372,11 @@ function QuizHistoryPanel({
 
   if (!isAuthenticated) {
     return (
-      <Card>
-        <View style={styles.sectionStack}>
-          <ThemedText type="subtitle">나의 퀴즈 히스토리</ThemedText>
-          <ThemedText style={[styles.statusText, { color: mutedColor }]}>
-            로그인하고 내가 푼 퀴즈 기록을 확인해보세요.
-          </ThemedText>
-          <ActionButton
-            label={loginLoading ? '로그인 중...' : 'Google 로그인'}
-            tone="primary"
-            onPress={onLogin}
-            loading={loginLoading}
-            disabled={loginLoading}
-          />
+      <Card style={{ padding: 0, overflow: 'hidden' }}>
+        <View style={{ paddingHorizontal: Spacing.lg, paddingTop: Spacing.lg }}>
+          <ThemedText type="subtitle">퀴즈 히스토리</ThemedText>
         </View>
+        <GuestHistoryPlaceholder onLogin={onLogin} loginLoading={loginLoading} />
       </Card>
     );
   }
@@ -299,7 +401,7 @@ function QuizHistoryPanel({
     return (
       <Card>
         <View style={styles.sectionStack}>
-          <ThemedText type="subtitle">나의 퀴즈 히스토리</ThemedText>
+          <ThemedText type="subtitle">퀴즈 히스토리</ThemedText>
           <ThemedText style={[styles.statusText, { color: mutedColor }]}>
             아직 저장된 기록이 없어요. 퀴즈를 플레이하면 여기에 기록이 쌓입니다.
           </ThemedText>
@@ -311,23 +413,23 @@ function QuizHistoryPanel({
   return (
     <Card>
       <View style={styles.sectionStack}>
-        <ThemedText type="subtitle">나의 퀴즈 히스토리</ThemedText>
+        <ThemedText type="subtitle">퀴즈 히스토리</ThemedText>
         <HistorySection
           title="데일리 퀴즈"
           entries={history.daily}
-          emptyLabel="데일리 퀴즈를 완료하면 기록이 저장돼요."
+          emptyLabel="데일리 퀴즈를 완료하고 결과를 확인해보세요."
           renderItem={(entry) => <DailyHistoryRow key={entry._id} entry={entry} />}
         />
         <HistorySection
           title="스와이프"
           entries={history.swipe}
-          emptyLabel="스와이프 세션을 완주하면 기록을 확인할 수 있어요."
+          emptyLabel="스와이프 세션을 완주하고 결과를 확인해보세요."
           renderItem={(entry) => <SwipeHistoryRow key={entry._id} entry={entry} />}
         />
         <HistorySection
-          title="파티 라이브"
+          title="라이브 매치"
           entries={history.party}
-          emptyLabel="파티 라이브에 참여하면 결과가 기록돼요."
+          emptyLabel="라이브 매치에 참여하고 결과를 확인해보세요."
           renderItem={(entry) => <PartyHistoryRow key={entry._id} entry={entry} />}
         />
       </View>
@@ -547,8 +649,6 @@ function FooterSection({
   isSigningOut,
   onSupport,
   onPolicy,
-  onLogin,
-  loginLoading,
 }: {
   isAuthenticated: boolean;
   onSignOut: () => void;
@@ -558,8 +658,6 @@ function FooterSection({
   onLogin: () => void;
   loginLoading: boolean;
 }) {
-  const mutedColor = useThemeColor({}, 'textMuted');
-
   return (
     <>
       {isAuthenticated ? (
@@ -569,29 +667,16 @@ function FooterSection({
             <FooterButton label="문의하기" onPress={onSupport} />
             <FooterButton label="약관·정책" onPress={onPolicy} />
           </View>
-          <ActionButton
-            label="로그아웃"
-            tone="danger"
+          <Button
             onPress={onSignOut}
             loading={isSigningOut}
             disabled={isSigningOut}
-          />
+            variant="destructive"
+          >
+            로그아웃
+          </Button>
         </Card>
-      ) : (
-        <Card>
-          <ThemedText type="subtitle">로그인하고 시작하기</ThemedText>
-          <ThemedText style={[styles.statusText, { color: mutedColor }]}>
-            기록을 저장하고 친구와 공유하려면 로그인이 필요해요.
-          </ThemedText>
-          <ActionButton
-            label={loginLoading ? '로그인 중...' : 'Google 로그인'}
-            tone="primary"
-            onPress={onLogin}
-            loading={loginLoading}
-            disabled={loginLoading}
-          />
-        </Card>
-      )}
+      ) : null}
     </>
   );
 }
@@ -626,6 +711,8 @@ function ThemePreferencesCard() {
     { key: 'dark', title: '어두운 테마', icon: 'moon.fill' },
   ] as const;
 
+  const selectedOption = options.find((option) => option.key === colorScheme);
+
   return (
     <Card>
       <View style={styles.sectionStack}>
@@ -635,120 +722,68 @@ function ThemePreferencesCard() {
         </ThemedText>
       </View>
       <View style={styles.themeOptionsContainer}>
-        {options.map((option) => (
-          <Pressable
-            key={option.key}
-            accessibilityRole="button"
-            accessibilityState={{ selected: colorScheme === option.key, disabled: !isReady }}
-            disabled={!isReady}
-            onPress={() => setColorScheme(option.key)}
-            style={({ pressed }) => [
-              styles.themeOptionButton,
-              {
-                backgroundColor:
-                  colorScheme === option.key ? themeColors.primary : themeColors.cardElevated,
-                borderColor:
-                  colorScheme === option.key
-                    ? 'transparent'
-                    : themeColors.border,
-              },
-              pressed && styles.themeOptionButtonPressed,
-              !isReady && styles.themeOptionButtonDisabled,
-            ]}
-          >
+        {options.map((option) => {
+          const isSelected = colorScheme === option.key;
+          const iconColor = isSelected ? themeColors.primaryForeground : themeColors.text;
+          const labelColor = isSelected ? themeColors.primaryForeground : themeColors.text;
+          const dynamicStyle = isSelected
+            ? {
+                backgroundColor: themeColors.primary,
+                borderColor: themeColors.primary,
+                borderWidth: 1,
+                shadowColor: themeColors.primary,
+                shadowOpacity: colorScheme === 'dark' ? 0.35 : 0.2,
+                shadowRadius: 14,
+                shadowOffset: { width: 0, height: 8 },
+                elevation: 6,
+              }
+            : {
+                backgroundColor: themeColors.cardElevated,
+                borderColor: themeColors.border,
+                borderWidth: 1,
+                shadowColor: 'transparent',
+                shadowOpacity: 0,
+                shadowRadius: 0,
+                shadowOffset: { width: 0, height: 0 },
+                elevation: 0,
+              };
+          const rightIcon = isSelected ? (
             <IconSymbol
-              name={option.icon}
-              size={20}
-              color={colorScheme === option.key ? themeColors.primaryForeground : themeColors.text}
+              name="checkmark.circle.fill"
+              size={18}
+              color={themeColors.primaryForeground}
             />
-            <ThemedText
-              style={[
-                styles.themeOptionLabel,
-                {
-                  color:
-                    colorScheme === option.key ? themeColors.primaryForeground : themeColors.text,
-                },
-              ]}
+          ) : undefined;
+          return (
+            <Button
+              key={option.key}
+              variant="secondary"
+              size="md"
+              leftIcon={
+                <IconSymbol
+                  name={option.icon}
+                  size={20}
+                  color={iconColor}
+                />
+              }
+              rightIcon={rightIcon}
+              onPress={() => setColorScheme(option.key)}
+              disabled={!isReady}
+              style={[styles.themeOptionButton, dynamicStyle]}
+              textStyle={[styles.themeOptionLabel, { color: labelColor }]}
+              accessibilityState={{ selected: isSelected, disabled: !isReady }}
             >
               {option.title}
-            </ThemedText>
-          </Pressable>
-        ))}
+            </Button>
+          );
+        })}
       </View>
+      {selectedOption ? (
+        <ThemedText style={[styles.themeCurrentLabel, { color: mutedColor }]}>
+          현재 테마: {selectedOption.title}
+        </ThemedText>
+      ) : null}
     </Card>
-  );
-}
-
-type ActionButtonTone = 'primary' | 'secondary' | 'ghost' | 'danger';
-
-function ActionButton({
-  label,
-  onPress,
-  tone,
-  disabled,
-  loading,
-  style,
-}: {
-  label: string;
-  onPress: () => void;
-  tone: ActionButtonTone;
-  disabled?: boolean;
-  loading?: boolean;
-  style?: StyleProp<ViewStyle>;
-}) {
-  const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ?? 'light'];
-
-  let backgroundColor = themeColors.primary;
-  let borderColor: string | undefined;
-  let labelColor = themeColors.primaryForeground;
-
-  switch (tone) {
-    case 'secondary':
-      backgroundColor = themeColors.secondary;
-      labelColor = themeColors.secondaryForeground;
-      break;
-    case 'ghost':
-      backgroundColor = 'transparent';
-      borderColor = themeColors.border;
-      labelColor = themeColors.primary;
-      break;
-    case 'danger':
-      backgroundColor = themeColors.danger;
-      labelColor =
-        colorScheme === 'dark' ? themeColors.text : themeColors.primaryForeground;
-      break;
-    case 'primary':
-    default:
-      backgroundColor = themeColors.primary;
-      labelColor = themeColors.primaryForeground;
-      break;
-  }
-
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ disabled }}
-      disabled={disabled}
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.buttonBase,
-        style,
-        {
-          backgroundColor,
-          borderColor: borderColor ?? 'transparent',
-          borderWidth: borderColor ? 1 : 0,
-        },
-        disabled ? styles.buttonDisabled : null,
-        pressed && !disabled ? styles.buttonPressed : null,
-      ]}
-    >
-      {loading ? (
-        <ActivityIndicator color={labelColor} />
-      ) : (
-        <ThemedText style={[styles.buttonLabel, { color: labelColor }]}>{label}</ThemedText>
-      )}
-    </Pressable>
   );
 }
 
@@ -839,30 +874,54 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: Spacing.sm,
   },
+  guestHistoryContainer: {
+    position: 'relative',
+    marginTop: Spacing.md,
+  },
+  guestHistoryContent: {
+    overflow: 'hidden',
+    borderRadius: Radius.lg,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.lg,
+    gap: Spacing.md,
+    position: 'relative',
+  },
+  guestHistoryBlur: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: Radius.lg,
+  },
+  modalDialogContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: Spacing.xl,
+  },
+  placeholderLine: {
+    height: 12,
+    borderRadius: Radius.sm,
+  },
+  modalDialog: {
+    width: '100%',
+    padding: Spacing.lg,
+    alignItems: 'center',
+  },
   themeOptionsContainer: {
     flexDirection: 'row',
     gap: Spacing.md,
   },
   themeOptionButton: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.sm,
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.md,
-    borderWidth: 1,
-    minHeight: 48,
-  },
-  themeOptionButtonPressed: {
-    transform: [{ scale: 0.98 }],
-    opacity: 0.9,
-  },
-  themeOptionButtonDisabled: {
-    opacity: 0.5,
   },
   themeOptionLabel: {
     fontWeight: '600',
+  },
+  themeCurrentLabel: {
+    marginTop: Spacing.sm,
+    fontSize: 13,
   },
   footerActions: {
     flexDirection: 'row',
@@ -880,25 +939,5 @@ const styles = StyleSheet.create({
   },
   footerButtonLabel: {
     fontWeight: '600',
-  },
-  buttonBase: {
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 44,
-  },
-  fullWidthAction: {
-    alignSelf: 'stretch',
-    width: '100%',
-  },
-  buttonLabel: {
-    fontWeight: '600',
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonPressed: {
-    transform: [{ scale: 0.98 }],
   },
 });

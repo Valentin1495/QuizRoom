@@ -194,14 +194,14 @@ export default function PartyScreen() {
             { backgroundColor: cardBackground, borderColor: cardBorder },
           ]}
         >
-          <ThemedText style={styles.cardTitle}>퀴즈룸 참여</ThemedText>
+          <ThemedText style={styles.cardTitle}>퀴즈룸 입장</ThemedText>
           <ThemedText style={[styles.cardDescription, { color: mutedColor }]}>
             초대 코드를 입력하고 닉네임을 정해주세요
           </ThemedText>
           <TextInput
             value={partyCode}
             onChangeText={(value) => setPartyCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
-            placeholder="ABC123"
+            placeholder="A1B2C3"
             autoCapitalize="characters"
             maxLength={6}
             style={[
@@ -242,7 +242,7 @@ export default function PartyScreen() {
             loading={isJoining}
             size="lg"
           >
-            참여하기
+            입장하기
           </Button>
         </View>
 

@@ -11,6 +11,7 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  type AccessibilityState,
 } from "react-native";
 
 import * as Theme from "@/constants/theme";
@@ -48,6 +49,7 @@ export interface ButtonProps {
   fullWidth?: boolean;
   onPress?: (event: GestureResponderEvent) => void;
   accessibilityLabel?: string;
+  accessibilityState?: AccessibilityState;
 }
 
 // --------------------------- Theme adapter --------------------------- //
@@ -159,6 +161,7 @@ export function Button({
   pressedStyle,
   fullWidth,
   accessibilityLabel,
+  accessibilityState,
   onPress,
 }: ButtonProps) {
   const scheme = useColorScheme();
@@ -193,8 +196,10 @@ export function Button({
 
   return (
     <Pressable
+      key={variant}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
+      accessibilityState={accessibilityState}
       disabled={isDisabled}
       style={pressableStyle}
       onPress={(e) => {
@@ -258,21 +263,20 @@ function resolveStyles(
         container: { backgroundColor: bg, borderWidth: 2, borderColor },
         text: { color },
         spinner: color,
-        ripple: darken(p.border, 0.35),
+        ripple: darken(p.border, 0.35) + '3D',
       };
     }
     case 'secondary': {
-      const baseBg = p.accent;
+      const baseBg = p.secondary;
       const toneTarget = isLight(baseBg) ? '#000000' : '#FFFFFF';
       const activeBg = mix(baseBg, toneTarget, isDark ? 0.12 : 0.14);
       const bg = pressed ? activeBg : baseBg;
-      const borderColor = mix(baseBg, toneTarget, 0.18);
-      const color = p.accentForeground ?? contrastText(bg);
+      const color = p.secondaryForeground ?? contrastText(bg);
       return {
-        container: { backgroundColor: bg, borderWidth: 1, borderColor },
+        container: { backgroundColor: bg },
         text: { color },
         spinner: color,
-        ripple: mix(baseBg, toneTarget, isDark ? 0.3 : 0.35),
+        ripple: mix(baseBg, toneTarget, isDark ? 0.3 : 0.35) + '3D',
       };
     }
     case 'destructive': {
@@ -286,7 +290,7 @@ function resolveStyles(
         container: { backgroundColor: bg, borderWidth: 1, borderColor },
         text: { color },
         spinner: color,
-        ripple: mix(baseBg, toneTarget, isDark ? 0.32 : 0.3),
+        ripple: mix(baseBg, toneTarget, isDark ? 0.32 : 0.3) + '3D',
       };
     }
     case 'ghost': {
@@ -299,7 +303,7 @@ function resolveStyles(
         container: { backgroundColor: bg },
         text: { color },
         spinner: color,
-        ripple: darken(p.accentForeground, 0.4),
+        ripple: darken(p.accentForeground, 0.4) + '3D',
       };
     }
     default: {
@@ -310,7 +314,7 @@ function resolveStyles(
         container: { backgroundColor: bg },
         text: { color },
         spinner: color,
-        ripple: darken(baseBg, 0.25),
+        ripple: darken(baseBg, 0.25) + '3D',
       };
     }
   }

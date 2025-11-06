@@ -306,7 +306,7 @@ export default function HomeScreen() {
               ]}
             >
               <ThemedText style={styles.timerLabel}>
-                {timeLeft} 남음
+                ⏱️ 남은 시간: {timeLeft}
               </ThemedText>
             </View>
           </View>
@@ -320,12 +320,12 @@ export default function HomeScreen() {
             <TextInput
               value={partyCode}
               onChangeText={(value) => setPartyCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
-              placeholder="ABCDEF"
+              placeholder="A1B2C3"
               autoCapitalize="characters"
               autoCorrect={false}
               autoComplete="off"
               importantForAutofill="no"
-              blurOnSubmit={false}
+              submitBehavior="submit"
               returnKeyType="next"
               onSubmitEditing={() => joinNicknameInputRef.current?.focus()}
               maxLength={6}
@@ -364,11 +364,11 @@ export default function HomeScreen() {
               loading={isJoining}
               fullWidth
             >
-              {isJoining ? '참여 중…' : '파티 참여'}
+              {isJoining ? '참가 중…' : '참가하기'}
             </Button>
             <Link href="/(tabs)/party" asChild>
-              <Button variant='ghost' rounded='full' pressedStyle={{ backgroundColor: palette.card }} rightIcon={<IconSymbol name='arrow.right' size={16} color={textColor} />}>
-                새 파티 만들기
+              <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.right' size={16} color={textColor} />}>
+                새 퀴즈룸 만들기
               </Button>
             </Link>
           </View>

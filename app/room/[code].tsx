@@ -2,11 +2,12 @@ import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, BackHandler, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
@@ -31,6 +32,8 @@ export default function PartyRoomScreen() {
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
   const pendingExecutedRef = useRef(false);
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
+  const [pendingBannerHeight, setPendingBannerHeight] = useState(0);
+
 
   const shouldFetchLobby = roomCode.length > 0 && !hasLeft;
   const lobby = useQuery(
@@ -42,11 +45,33 @@ export default function PartyRoomScreen() {
   const heartbeat = useMutation(api.rooms.heartbeat);
   const startRoom = useMutation(api.rooms.start);
   const setReady = useMutation(api.rooms.setReady);
-  const progressRoom = useMutation(api.rooms.progress);
   const cancelPendingAction = useMutation(api.rooms.cancelPendingAction);
   const roomId = lobby?.room._id ?? null;
   const isHost = lobby?.room.hostId === user?.id;
   const pendingAction = lobby?.room.pendingAction ?? null;
+  const pendingBannerAnim = useRef(new Animated.Value(pendingAction ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(pendingBannerAnim, {
+      toValue: pendingAction ? 1 : 0,
+      duration: 220,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [pendingAction, pendingBannerAnim]);
+
+  const fallbackBannerHeight = 88;
+  const bannerHeight = pendingBannerHeight || fallbackBannerHeight;
+  const pendingBannerOffset = pendingBannerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, bannerHeight + Spacing.lg],
+    extrapolate: 'clamp',
+  });
+  const pendingBannerTranslateY = pendingBannerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-12, 0],
+  });
+  const pendingBannerOpacity = pendingBannerAnim;
 
   const participants = lobby?.participants ?? [];
   const meParticipant = useMemo(
@@ -90,6 +115,8 @@ export default function PartyRoomScreen() {
   const destructiveColor = theme.destructive;
   const destructiveMutedColor = colorScheme === 'light' ? '#FEE2E2' : 'rgba(239, 68, 68, 0.2)';
   const destructiveMutedBgColor = colorScheme === 'light' ? '#FEF2F2' : 'rgba(239, 68, 68, 0.1)';
+  const infoMutedColor = colorScheme === 'light' ? '#B45309' : '#FCD34D';
+  const infoMutedBgColor = colorScheme === 'light' ? '#FEF9C3' : 'rgba(252, 211, 77, 0.1)';
   const accentForegroundColor = theme.accentForeground;
 
   const resolveDelayMs = useMemo(() => {
@@ -114,7 +141,7 @@ export default function PartyRoomScreen() {
   const handleCopyCode = useCallback(async () => {
     await Clipboard.setStringAsync(roomCode);
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    Alert.alert('초대 코드 복사 완료', `${roomCode} 코드가 클립보드에 복사되었어요.`);
+    Alert.alert('초대 코드 복사 완료', `코드 ${roomCode}가 클립보드에 복사되었어요.`);
   }, [roomCode]);
 
   const handleToggleReady = useCallback(async () => {
@@ -324,6 +351,22 @@ export default function PartyRoomScreen() {
         statusText: {
           textAlign: 'center',
         },
+        contentWrapper: {
+          flex: 1,
+          position: 'relative',
+        },
+        contentStack: {
+          flex: 1,
+          gap: Spacing.xl,
+        },
+        pendingBannerContainer: {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          elevation: 2,
+        },
         header: {
           gap: Spacing.sm,
         },
@@ -461,70 +504,30 @@ export default function PartyRoomScreen() {
         },
         controlsSection: {
           marginTop: 'auto',
-          gap: Spacing.md,
+          gap: Spacing.sm,
         },
         readySummaryText: {
           fontSize: 13,
           color: mutedColor,
         },
         readyButton: {
-          paddingVertical: Spacing.sm,
-          paddingHorizontal: Spacing.xl,
-          borderRadius: Radius.md,
-          borderWidth: 1,
-          borderColor: primaryColor,
-          alignItems: 'center',
-        },
-        readyButtonActive: {
-          backgroundColor: primaryColor,
-        },
-        readyButtonLabel: {
-          fontWeight: '600',
-        },
-        readyButtonLabelActive: {
-          color: '#ffffff',
+          marginTop: Spacing.sm,
         },
         hostControls: {
           gap: Spacing.sm,
+          marginTop: -Spacing.sm,
         },
         hostHint: {
           fontSize: 12,
           color: mutedColor,
         },
-        buttonDisabled: {
-          opacity: 0.5,
-        },
-        button: {
-          marginTop: Spacing.lg,
-          paddingVertical: Spacing.md,
-          paddingHorizontal: Spacing.xl,
-          borderRadius: Radius.md,
-          backgroundColor: primaryColor,
-          alignItems: 'center',
-        },
-        buttonText: {
-          color: '#fff',
-          fontWeight: '600',
-        },
-        startButton: {
-          paddingVertical: Spacing.md,
-          paddingHorizontal: Spacing.xl,
-          borderRadius: Radius.md,
-          backgroundColor: destructiveColor,
-          alignItems: 'center',
-        },
-        primaryButtonText: {
-          color: '#fff',
-          fontWeight: '600',
-        },
         pendingBanner: {
           paddingVertical: Spacing.md,
           paddingHorizontal: Spacing.lg,
           borderRadius: Radius.md,
-          backgroundColor: destructiveMutedBgColor,
+          backgroundColor: infoMutedBgColor,
           borderWidth: 1,
-          borderColor: destructiveMutedColor,
-          marginBottom: Spacing.md,
+          borderColor: infoMutedColor,
           gap: Spacing.sm,
         },
         pendingTitle: {
@@ -544,14 +547,6 @@ export default function PartyRoomScreen() {
           color: Colors[colorScheme].secondaryForeground,
           fontWeight: '600',
         },
-        leaveButton: {
-          marginTop: Spacing.sm,
-        },
-        leaveButtonLabel: {
-          textAlign: 'center',
-          color: mutedColor,
-          fontSize: 14,
-        },
       }),
     [
       colorScheme,
@@ -563,6 +558,8 @@ export default function PartyRoomScreen() {
       destructiveColor,
       destructiveMutedColor,
       destructiveMutedBgColor,
+      infoMutedColor,
+      infoMutedBgColor,
       accentForegroundColor,
     ]
   );
@@ -587,13 +584,12 @@ export default function PartyRoomScreen() {
           파티를 찾을 수 없어요
         </ThemedText>
         <ThemedText>코드가 정확한지 확인해주세요.</ThemedText>
-        <Pressable style={styles.button} onPress={handleLeave}>
-          <ThemedText style={styles.buttonText}>돌아가기</ThemedText>
-        </Pressable>
+        <Button size="lg" onPress={handleLeave}>
+          돌아가기
+        </Button>
       </ThemedView>
     );
   }
-  {/* <ThemedText style={styles.lobbyHint}>2차전 준비 중 · 덱/옵션을 확인하세요</ThemedText> */ }
 
   return (
     <ThemedView
@@ -603,161 +599,180 @@ export default function PartyRoomScreen() {
       ]}
     >
       <Stack.Screen options={{ headerShown: false }} />
-      {pendingAction ? (
-        <View style={styles.pendingBanner}>
-          <ThemedText type="subtitle" style={styles.pendingTitle}>
-            {pendingAction.label}
-          </ThemedText>
-          <ThemedText style={styles.pendingSubtitle}>
-            {pendingSeconds > 0
-              ? `${pendingSeconds}초 후 자동 진행됩니다. 호스트가 취소할 수 있어요.`
-              : '잠시 후 자동으로 실행됩니다.'}
-          </ThemedText>
-          {isHost ? (
-            <Pressable style={styles.pendingCancelButton} onPress={handleCancelPending}>
-              <ThemedText style={styles.pendingCancelLabel}>취소</ThemedText>
-            </Pressable>
-          ) : null}
-        </View>
-      ) : null}
-      <View style={styles.header}>
-        <ThemedText type="title">실시간 퀴즈룸</ThemedText>
-        <ThemedText style={styles.headerSubtitle}>라이브 매치를 시작해보세요!</ThemedText>
-        <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
-          <View style={styles.codeBadge}>
-            <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
-          </View>
-          <ThemedText style={styles.codeBadgeHint}>탭해서 코드 복사</ThemedText>
-        </Pressable>
-        {lobby.deck ? (
-          <View style={styles.deckCard}>
-            <View style={styles.deckCardTitleRow}>
-              <IconSymbol
-                name={getDeckIcon(lobby.deck.slug)}
-                size={20}
-                color={primaryColor}
-              />
-              <ThemedText style={styles.deckCardTitle}>
-                {lobby.deck.title}
-              </ThemedText>
-            </View>
-            <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
-            <ThemedText style={styles.deckCardDescription}>
-              • 총 10라운드로 진행됩니다.
-            </ThemedText>
-            <ThemedText style={styles.deckCardWarning}>
-              • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
-            </ThemedText>
-          </View>
-        ) : null}
-      </View>
-
-      <View style={styles.participantSection}>
-        <ThemedText style={styles.sectionTitle}>참가자 ({participants.length})</ThemedText>
-        {participants.length === 0 ? (
-          <ThemedText style={styles.emptyText}>
-            친구를 초대해 보세요! 위 코드를 공유해주세요.
-          </ThemedText>
-        ) : (
-          participants.map((participant) => {
-            const isMe = participant.participantId === meParticipant?.participantId;
-            return (
-              <View
-                key={participant.participantId}
-                style={[styles.participantRow, isMe && styles.participantRowMe]}
-              >
-                <View style={styles.participantInfo}>
-                  <ThemedText style={[styles.participantName, isMe && styles.participantNameMe]}>
-                    {participant.nickname}
-                    {isMe ? ' (나)' : ''}
-                  </ThemedText>
-                  {!participant.isConnected ? (
-                    <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
-                  ) : null}
-                </View>
-                {participant.isHost ? (
-                  <View style={styles.hostBadge}>
-                    <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>
-                  </View>
-                ) : (
-                  <View
-                    style={[
-                      styles.readyBadge,
-                      participant.isReady ? styles.readyBadgeReady : styles.readyBadgeWaiting,
-                    ]}
-                  >
-                    <ThemedText
-                      style={[
-                        styles.readyBadgeLabel,
-                        participant.isReady
-                          ? styles.readyBadgeLabelReady
-                          : styles.readyBadgeLabelWaiting,
-                      ]}
-                      lightColor="#fff"
-                      darkColor="#fff"
-                    >
-                      {participant.isReady ? '준비 완료' : '대기 중'}
-                    </ThemedText>
-                  </View>
-                )}
-              </View>
-            );
-          })
-        )}
-      </View>
-
-      <View style={styles.controlsSection}>
-        {readySummaryTotal > 0 ? (
-          <ThemedText style={styles.readySummaryText}>
-            준비 완료 {readyCount}/{readySummaryTotal}
-          </ThemedText>
-        ) : null}
-        {meParticipant && !isSelfHost ? (
-          <Pressable
-            style={[
-              styles.readyButton,
-              isSelfReady ? styles.readyButtonActive : null,
-              pendingAction ? styles.buttonDisabled : null,
-            ]}
-            onPress={handleToggleReady}
-            disabled={!!pendingAction}
-          >
-            <ThemedText
-              style={[
-                styles.readyButtonLabel,
-                isSelfReady ? styles.readyButtonLabelActive : null,
-              ]}
-              lightColor={isSelfReady ? theme.primaryForeground : theme.primary}
-              darkColor={isSelfReady ? theme.primaryForeground : theme.primary}
+      <View style={styles.contentWrapper}>
+        <Animated.View
+          pointerEvents={pendingAction ? 'auto' : 'none'}
+          style={[
+            styles.pendingBannerContainer,
+            {
+              opacity: pendingBannerOpacity,
+              transform: [{ translateY: pendingBannerTranslateY }],
+            },
+          ]}
+        >
+          {pendingAction ? (
+            <View
+              style={styles.pendingBanner}
+              onLayout={(event) => {
+                const { height } = event.nativeEvent.layout;
+                if (height && Math.abs(height - pendingBannerHeight) > 0.5) {
+                  setPendingBannerHeight(height);
+                }
+              }}
             >
-              {isSelfReady ? '준비 취소' : '준비 완료'}
-            </ThemedText>
-          </Pressable>
-        ) : null}
-        {isHost ? (
-          <View style={styles.hostControls}>
+              <ThemedText type="subtitle" style={styles.pendingTitle}>
+                {pendingAction.label}
+              </ThemedText>
+              <ThemedText style={styles.pendingSubtitle}>
+                {pendingSeconds > 0
+                  ? `${pendingSeconds}초 후 자동 진행됩니다. 호스트가 취소할 수 있어요.`
+                  : '잠시 후 자동으로 실행됩니다.'}
+              </ThemedText>
+              {isHost ? (
+                <Pressable style={styles.pendingCancelButton} onPress={handleCancelPending}>
+                  <ThemedText style={styles.pendingCancelLabel}>취소</ThemedText>
+                </Pressable>
+              ) : null}
+            </View>
+          ) : null}
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            styles.contentStack,
+            { marginTop: pendingBannerOffset },
+          ]}
+        >
+          <View style={styles.header}>
+            <ThemedText type="title">실시간 퀴즈룸</ThemedText>
+            <ThemedText style={styles.headerSubtitle}>라이브 매치를 시작하세요!</ThemedText>
+            <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
+              <View style={styles.codeBadge}>
+                <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
+              </View>
+              <ThemedText style={styles.codeBadgeHint}>탭해서 코드 복사</ThemedText>
+            </Pressable>
+            {lobby.deck ? (
+              <View style={styles.deckCard}>
+                <View style={styles.deckCardTitleRow}>
+                  <IconSymbol
+                    name={getDeckIcon(lobby.deck.slug)}
+                    size={20}
+                    color={primaryColor}
+                  />
+                  <ThemedText style={styles.deckCardTitle}>
+                    {lobby.deck.title}
+                  </ThemedText>
+                </View>
+                <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
+                <ThemedText style={styles.deckCardDescription}>
+                  • 총 10라운드로 진행됩니다.
+                </ThemedText>
+                <ThemedText style={styles.deckCardWarning}>
+                  • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
+                </ThemedText>
+              </View>
+            ) : null}
+          </View>
+
+          <View style={styles.participantSection}>
+            <ThemedText style={styles.sectionTitle}>참가자 ({participants.length})</ThemedText>
+            {participants.length === 0 ? (
+              <ThemedText style={styles.emptyText}>
+                친구를 초대해 보세요! 위 코드를 공유해주세요.
+              </ThemedText>
+            ) : (
+              participants.map((participant) => {
+                const isMe = participant.participantId === meParticipant?.participantId;
+                return (
+                  <View
+                    key={participant.participantId}
+                    style={[styles.participantRow, isMe && styles.participantRowMe]}
+                  >
+                    <View style={styles.participantInfo}>
+                      <ThemedText style={[styles.participantName, isMe && styles.participantNameMe]}>
+                        {participant.nickname}
+                        {isMe ? ' (나)' : ''}
+                      </ThemedText>
+                      {!participant.isConnected ? (
+                        <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
+                      ) : null}
+                    </View>
+                    {participant.isHost ? (
+                      <View style={styles.hostBadge}>
+                        <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>
+                      </View>
+                    ) : (
+                      <View
+                        style={[
+                          styles.readyBadge,
+                          participant.isReady ? styles.readyBadgeReady : styles.readyBadgeWaiting,
+                        ]}
+                      >
+                        <ThemedText
+                          style={[
+                            styles.readyBadgeLabel,
+                            participant.isReady
+                              ? styles.readyBadgeLabelReady
+                              : styles.readyBadgeLabelWaiting,
+                          ]}
+                          lightColor="#fff"
+                          darkColor="#fff"
+                        >
+                          {participant.isReady ? '준비 완료' : '대기 중'}
+                        </ThemedText>
+                      </View>
+                    )}
+                  </View>
+                );
+              })
+            )}
+          </View>
+
+          <View style={styles.controlsSection}>
             {readySummaryTotal > 0 ? (
-              <ThemedText style={styles.hostHint}>
-                {allReady
-                  ? '모든 참가자가 준비를 마쳤어요!'
-                  : '모든 참가자들이 준비 완료하면 시작할 수 있어요.'}
+              <ThemedText style={styles.readySummaryText}>
+                준비 완료 {readyCount}/{readySummaryTotal}
               </ThemedText>
             ) : null}
-            <Pressable
-              style={[
-                styles.startButton,
-                (!allReady || pendingAction) ? styles.buttonDisabled : null,
-              ]}
-              onPress={handleStart}
-              disabled={!allReady || !!pendingAction}
+            {meParticipant && !isSelfHost ? (
+              <Button
+                variant={isSelfReady ? 'secondary' : 'default'}
+                size="lg"
+                onPress={handleToggleReady}
+                disabled={!!pendingAction}
+              >
+                {isSelfReady ? '준비 취소' : '준비 완료'}
+              </Button>
+            ) : null}
+            {isHost ? (
+              <View style={styles.hostControls}>
+                {readySummaryTotal > 0 ? (
+                  <ThemedText style={styles.hostHint}>
+                    {allReady
+                      ? '모든 참가자가 준비를 마쳤어요!'
+                      : '모든 참가자들이 준비 완료하면 시작할 수 있어요.'}
+                  </ThemedText>
+                ) : null}
+                <Button
+                  size="lg"
+                  onPress={handleStart}
+                  disabled={!allReady || !!pendingAction}
+                >
+                  시작하기
+                </Button>
+              </View>
+            ) : null}
+            <Button
+              variant="outline"
+              onPress={handleLeave}
+              size="lg"
+              disabled={!!pendingAction}
             >
-              <ThemedText style={styles.primaryButtonText}>게임 시작</ThemedText>
-            </Pressable>
+              나가기
+            </Button>
           </View>
-        ) : null}
-        <Pressable style={styles.leaveButton} onPress={handleLeave}>
-          <ThemedText style={styles.leaveButtonLabel}>파티 나가기</ThemedText>
-        </Pressable>
+        </Animated.View>
       </View>
     </ThemedView>
   );

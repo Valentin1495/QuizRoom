@@ -19,6 +19,7 @@ const MAPPING = {
   // Feedback Icons
   'checkmark.circle.fill': 'check-circle',
   'xmark.circle.fill': 'cancel',
+  'lock.fill': 'lock-outline',
   // Tab Bar Icons
   'sparkles': 'auto-awesome',
   'square.stack.3d.up.fill': 'layers',
