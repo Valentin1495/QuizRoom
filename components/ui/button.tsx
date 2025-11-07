@@ -64,6 +64,7 @@ interface Normalized {
   primaryForeground: string;
   secondary: string;
   secondaryForeground: string;
+  cardElevated: string;
   border: string;
   accent: string;
   accentForeground: string;
@@ -76,6 +77,7 @@ const FALLBACK_LIGHT: Normalized = {
   primaryForeground: "#FFFFFF",
   secondary: "#F4F4F5", // accent-ish
   secondaryForeground: "#111111",
+  cardElevated: "#F5F5F5",
   border: "#E4E4E7",
   accent: "#111827",
   accentForeground: "#FFFFFF",
@@ -88,6 +90,7 @@ const FALLBACK_DARK: Normalized = {
   primaryForeground: "#111111",
   secondary: "#262626",
   secondaryForeground: "#F5F5F5",
+  cardElevated: "#1F1F1F",
   border: "#27272A",
   accent: "#F5F5F5",
   accentForeground: "#111111",
@@ -105,6 +108,7 @@ function getColors() {
     primaryForeground: p.primaryForeground ?? fb.primaryForeground,
     secondary: p.secondary ?? fb.secondary,
     secondaryForeground: p.secondaryForeground ?? fb.secondaryForeground,
+    cardElevated: p.cardElevated ?? fb.cardElevated,
     border: p.border ?? fb.border,
     accent: p.accent ?? fb.accent,
     accentForeground: p.accentForeground ?? fb.accentForeground,
@@ -267,11 +271,11 @@ function resolveStyles(
       };
     }
     case 'secondary': {
-      const baseBg = p.secondary;
+      const baseBg = p.cardElevated;
       const toneTarget = isLight(baseBg) ? '#000000' : '#FFFFFF';
       const activeBg = mix(baseBg, toneTarget, isDark ? 0.12 : 0.14);
       const bg = pressed ? activeBg : baseBg;
-      const color = p.secondaryForeground ?? contrastText(bg);
+      const color = p.accentForeground ?? contrastText(bg);
       return {
         container: { backgroundColor: bg },
         text: { color },
@@ -310,8 +314,9 @@ function resolveStyles(
       const baseBg = p.primary;
       const bg = pressed ? darken(baseBg, 0.12) : baseBg;
       const color = p.primaryForeground ?? contrastText(baseBg);
+      const borderColor = darken(baseBg, isDark ? 0.22 : 0.18);
       return {
-        container: { backgroundColor: bg },
+        container: { backgroundColor: bg, borderWidth: 1, borderColor },
         text: { color },
         spinner: color,
         ripple: darken(baseBg, 0.25) + '3D',

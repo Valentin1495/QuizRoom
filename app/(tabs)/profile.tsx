@@ -252,6 +252,8 @@ function GuestHeader({
           disabled={isLoading}
           fullWidth
           variant='secondary'
+          style={{ backgroundColor: themeColors.cardElevated }}
+          textStyle={{ color: themeColors.text }}
         >
           Google 로그인
         </Button>
@@ -346,6 +348,9 @@ function GuestHistoryPlaceholder({
             onPress={onLogin}
             loading={loginLoading}
             disabled={loginLoading}
+            variant="default"
+            style={{ backgroundColor: themeColors.primary }}
+            textStyle={{ color: themeColors.primaryForeground }}
           >
             {loginLoading ? '로그인 중...' : 'Google 로그인'}
           </Button>
@@ -724,53 +729,38 @@ function ThemePreferencesCard() {
       <View style={styles.themeOptionsContainer}>
         {options.map((option) => {
           const isSelected = colorScheme === option.key;
-          const iconColor = isSelected ? themeColors.primaryForeground : themeColors.text;
-          const labelColor = isSelected ? themeColors.primaryForeground : themeColors.text;
           const dynamicStyle = isSelected
             ? {
-                backgroundColor: themeColors.primary,
-                borderColor: themeColors.primary,
-                borderWidth: 1,
-                shadowColor: themeColors.primary,
-                shadowOpacity: colorScheme === 'dark' ? 0.35 : 0.2,
-                shadowRadius: 14,
-                shadowOffset: { width: 0, height: 8 },
-                elevation: 6,
-              }
+              borderColor: themeColors.primary,
+              borderWidth: 2,
+            }
             : {
-                backgroundColor: themeColors.cardElevated,
-                borderColor: themeColors.border,
-                borderWidth: 1,
-                shadowColor: 'transparent',
-                shadowOpacity: 0,
-                shadowRadius: 0,
-                shadowOffset: { width: 0, height: 0 },
-                elevation: 0,
-              };
+              borderColor: themeColors.border,
+              borderWidth: 1,
+            };
           const rightIcon = isSelected ? (
             <IconSymbol
               name="checkmark.circle.fill"
               size={18}
-              color={themeColors.primaryForeground}
+              color={themeColors.text}
             />
           ) : undefined;
           return (
             <Button
               key={option.key}
-              variant="secondary"
+              variant="outline"
               size="md"
               leftIcon={
                 <IconSymbol
                   name={option.icon}
                   size={20}
-                  color={iconColor}
+                  color={themeColors.text}
                 />
               }
               rightIcon={rightIcon}
               onPress={() => setColorScheme(option.key)}
               disabled={!isReady}
-              style={[styles.themeOptionButton, dynamicStyle]}
-              textStyle={[styles.themeOptionLabel, { color: labelColor }]}
+              style={[styles.themeOptionButton, { backgroundColor: themeColors.cardElevated }, dynamicStyle]}
               accessibilityState={{ selected: isSelected, disabled: !isReady }}
             >
               {option.title}
