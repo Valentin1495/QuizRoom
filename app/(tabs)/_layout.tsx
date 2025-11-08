@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -8,6 +9,8 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const isIOS = Platform.OS === 'ios';
+  const isAndroid = Platform.OS === 'android';
 
   return (
     <Tabs
@@ -16,6 +19,8 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarButton: HapticTab,
+        tabBarLabelStyle: isIOS ? { marginTop: 4 } : undefined,
+        tabBarStyle: isAndroid ? { height: 84, paddingBottom: 28 } : undefined,
       }}>
       <Tabs.Screen
         name="home"
@@ -35,7 +40,14 @@ export default function TabLayout() {
         name="party"
         options={{
           title: '라이브 매치',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.3.fill" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol
+              size={isIOS ? 36 : 28}
+              name="person.3.fill"
+              color={color}
+              style={isIOS ? { marginBottom: -4 } : undefined}
+            />
+          ),
         }}
       />
       <Tabs.Screen

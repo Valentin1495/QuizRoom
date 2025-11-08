@@ -191,7 +191,7 @@ export function Button({
     ];
     return StyleSheet.compose(baseStyle, style);
   };
-  const { text, spinner, ripple } = resolveStyles(variant, p, false, scheme === "dark");
+  const { text, spinner, labelColor } = resolveStyles(variant, p, false, scheme === "dark");
   const hasChildren = Children.count(children) > 0;
   const showLeft = loading || !!leftIcon;
   const showRight = !!rightIcon;
@@ -210,7 +210,6 @@ export function Button({
         if (isDisabled) return;
         onPress?.(e);
       }}
-      android_ripple={{ color: ripple, borderless: false }}
     >
       <View
         style={StyleSheet.compose(
@@ -224,7 +223,7 @@ export function Button({
           </View>
         ) : null}
         {hasChildren ? (
-          <Text style={[baseStyles.text, sizeTextStyle, text, textStyle]}>{children}</Text>
+          <Text style={[baseStyles.text, sizeTextStyle, text, labelColor ? { color: labelColor } : null, textStyle]}>{children}</Text>
         ) : null}
         {showRight ? (
           <View
@@ -246,7 +245,7 @@ interface ResolvedStyles {
   container: ViewStyle;
   text: TextStyle;
   spinner: string;
-  ripple: string;
+  labelColor?: string;
 }
 
 function resolveStyles(
@@ -267,11 +266,11 @@ function resolveStyles(
         container: { backgroundColor: bg, borderWidth: 2, borderColor },
         text: { color },
         spinner: color,
-        ripple: darken(p.border, 0.35) + '3D',
+        labelColor: color,
       };
     }
     case 'secondary': {
-      const baseBg = p.cardElevated;
+      const baseBg = isDark ? Theme.Palette.gray900 : Theme.Palette.gray100;
       const toneTarget = isLight(baseBg) ? '#000000' : '#FFFFFF';
       const activeBg = mix(baseBg, toneTarget, isDark ? 0.12 : 0.14);
       const bg = pressed ? activeBg : baseBg;
@@ -280,7 +279,7 @@ function resolveStyles(
         container: { backgroundColor: bg },
         text: { color },
         spinner: color,
-        ripple: mix(baseBg, toneTarget, isDark ? 0.3 : 0.35) + '3D',
+        labelColor: color,
       };
     }
     case 'destructive': {
@@ -292,9 +291,8 @@ function resolveStyles(
       const color = p.destructiveForeground ?? contrastText(bg);
       return {
         container: { backgroundColor: bg, borderWidth: 1, borderColor },
-        text: { color },
+        text: { color, fontWeight: '600' },
         spinner: color,
-        ripple: mix(baseBg, toneTarget, isDark ? 0.32 : 0.3) + '3D',
       };
     }
     case 'ghost': {
@@ -307,7 +305,6 @@ function resolveStyles(
         container: { backgroundColor: bg },
         text: { color },
         spinner: color,
-        ripple: darken(p.accentForeground, 0.4) + '3D',
       };
     }
     default: {
@@ -319,7 +316,7 @@ function resolveStyles(
         container: { backgroundColor: bg, borderWidth: 1, borderColor },
         text: { color },
         spinner: color,
-        ripple: darken(baseBg, 0.25) + '3D',
+        labelColor: color,
       };
     }
   }

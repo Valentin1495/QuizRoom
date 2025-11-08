@@ -56,10 +56,10 @@ function CategoryPickerComponent({ onSelect }: CategoryPickerProps) {
       ListHeaderComponent={
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <ThemedText type="title">스와이프 퀴즈</ThemedText>
+            <ThemedText type="title">스와이프</ThemedText>
           </View>
           <ThemedText style={styles.subtitle}>
-            즐기고 싶은 메인 카테고리를 선택해주세요.
+            즐기고 싶은 메인 카테고리를 선택해주세요
           </ThemedText>
         </View>
       }

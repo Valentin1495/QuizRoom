@@ -3,17 +3,17 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import {
   ActivityIndicator,
   Alert,
-  Pressable,
   ScrollView,
   StyleSheet,
   View,
   type StyleProp,
-  type ViewStyle,
+  type ViewStyle
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -34,10 +34,19 @@ type HistoryBuckets = (typeof api.history.listHistory)['_returnType'];
 export default function ProfileScreen() {
   const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
+
+  const handleOpenLogoutDialog = useCallback(() => {
+    setLogoutDialogVisible(true);
+  }, []);
+
+  const handleCloseLogoutDialog = useCallback(() => {
+    setLogoutDialogVisible(false);
+  }, []);
 
   const isLoading = status === 'loading';
   const isAuthorizing = status === 'authorizing' || status === 'upgrading';
@@ -51,6 +60,7 @@ export default function ProfileScreen() {
     if (isSigningOut) return;
 
     try {
+      handleCloseLogoutDialog();
       setIsSigningOut(true);
       await signOut();
     } catch (error) {
@@ -61,7 +71,7 @@ export default function ProfileScreen() {
     } finally {
       setIsSigningOut(false);
     }
-  }, [isSigningOut, signOut]);
+  }, [handleCloseLogoutDialog, isSigningOut, signOut]);
 
   const handleShareCard = useCallback(() => {
     Alert.alert('공유 카드', '퀴즈 공유 카드는 곧 제공될 예정이에요!');
@@ -131,8 +141,6 @@ export default function ProfileScreen() {
           />
         )}
 
-        <ThemePreferencesCard />
-
         <QuizHistoryPanel
           isAuthenticated={isAuthenticated}
           history={history}
@@ -140,9 +148,11 @@ export default function ProfileScreen() {
           loginLoading={isAuthorizing}
         />
 
+        <ThemePreferencesCard />
+
         <FooterSection
           isAuthenticated={isAuthenticated}
-          onSignOut={handleSignOut}
+          onSignOut={handleOpenLogoutDialog}
           isSigningOut={isSigningOut}
           onSupport={() =>
             Alert.alert('문의하기', 'valentink1495@gmail.com으로 연락해주세요.')
@@ -152,6 +162,16 @@ export default function ProfileScreen() {
           loginLoading={isAuthorizing}
         />
       </ScrollView>
+      <AlertDialog
+        visible={isLogoutDialogVisible}
+        onClose={handleCloseLogoutDialog}
+        title="로그아웃"
+        description="계정에서 로그아웃하시겠어요?"
+        actions={[
+          { label: '취소', tone: 'secondary' },
+          { label: '확인', tone: 'destructive', onPress: handleSignOut, disabled: isSigningOut },
+        ]}
+      />
     </ThemedView>
   );
 }
@@ -235,13 +255,13 @@ function GuestHeader({
         <GuestAvatar
           guestId={guestId}
           size="xl"
-          radius={Radius.lg}
+          radius={Radius.pill}
           style={{ borderColor: guestAvatarBorder }}
         />
         <View style={styles.headerContent}>
           <ThemedText type="subtitle">게스트 사용자</ThemedText>
           <ThemedText style={[styles.statusText, { color: mutedColor }]}>
-            로그인하고 나만의 퀴즈 히스토리를 쌓아보세요!
+            로그인 후 나의 통계를 확인해보세요
           </ThemedText>
         </View>
       </View>
@@ -252,10 +272,8 @@ function GuestHeader({
           disabled={isLoading}
           fullWidth
           variant='secondary'
-          style={{ backgroundColor: themeColors.cardElevated }}
-          textStyle={{ color: themeColors.text }}
         >
-          Google 로그인
+          {isLoading ? '로그인 중...' : 'Google 로그인'}
         </Button>
         {/* <ActionButton label="Apple 로그인" tone="secondary" onPress={onAppleLogin} /> */}
       </View>
@@ -310,7 +328,15 @@ function GuestHistoryPlaceholder({
         <View style={styles.historySection}>
           <ThemedText style={styles.historySectionTitle}>스와이프</ThemedText>
           <View style={styles.historyList}>
-            {[1, 2].map((i) => (
+            {[1].map((i) => (
+              <PlaceholderRow key={i} />
+            ))}
+          </View>
+        </View>
+        <View style={styles.historySection}>
+          <ThemedText style={styles.historySectionTitle}>라이브 매치</ThemedText>
+          <View style={styles.historyList}>
+            {[1].map((i) => (
               <PlaceholderRow key={i} />
             ))}
           </View>
@@ -342,15 +368,12 @@ function GuestHistoryPlaceholder({
               { color: textColor, textAlign: 'center', marginBottom: Spacing.lg },
             ]}
           >
-            로그인하고 나의 퀴즈 기록을 확인해보세요!
+            로그인하고 퀴즈 기록을 쌓아보세요!
           </ThemedText>
           <Button
             onPress={onLogin}
             loading={loginLoading}
             disabled={loginLoading}
-            variant="default"
-            style={{ backgroundColor: themeColors.primary }}
-            textStyle={{ color: themeColors.primaryForeground }}
           >
             {loginLoading ? '로그인 중...' : 'Google 로그인'}
           </Button>
@@ -539,16 +562,16 @@ function DailyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
     ? resolveDailyCategoryCopy(payload.category)?.label ?? payload.category
     : null;
   const detailParts = [modeLabel];
-  if (categoryLabel) {
-    detailParts.push(`${categoryLabel}`);
-  }
   if (durationLabel) {
     detailParts.push(durationLabel);
+  }
+  if (categoryLabel) {
+    detailParts.push(`${categoryLabel}`);
   }
 
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
-  const subtleColor = useThemeColor({}, 'textSubtle');
+  const mutedColor = useThemeColor({}, 'textMuted');
 
   return (
     <View
@@ -558,16 +581,16 @@ function DailyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
       ]}
     >
       <View style={styles.historyRowHeader}>
-        <ThemedText style={styles.historyRowTitle}>{payload.date}</ThemedText>
-        <ThemedText style={[styles.historyRowTimestamp, { color: subtleColor }]}>
+        <ThemedText style={styles.historyRowTitle}>{detailParts[2]}</ThemedText>
+        <ThemedText style={[styles.historyRowTimestamp, { color: mutedColor }]}>
           {formatHistoryTimestamp(entry.createdAt)}
         </ThemedText>
       </View>
       <ThemedText style={styles.historyRowSummary}>
-        정답 {payload.correct}/{payload.total} · 정확도 {accuracy}%
+        정답률 {accuracy}% ({payload.correct}/{payload.total})
       </ThemedText>
-      <ThemedText style={[styles.historyRowDetail, { color: subtleColor }]}>
-        {detailParts.join(' · ')}
+      <ThemedText style={[styles.historyRowDetail, { color: mutedColor }]}>
+        {detailParts.slice(0, 2).join(' | ')}
       </ThemedText>
     </View>
   );
@@ -578,11 +601,12 @@ function SwipeHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   const accuracy = computeAccuracy(payload.correct, payload.answered);
   const avgSecondsLabel = formatAverageSeconds(payload.avgResponseMs);
   const categoryMeta = categories.find((category) => category.slug === payload.category);
-  const categoryLabel = categoryMeta ? `${categoryMeta.emoji} ${categoryMeta.title}` : payload.category;
+  const categoryLabel = categoryMeta ? categoryMeta.title : payload.category;
+  const categoryIcon = categoryMeta?.icon ?? 'lightbulb';
 
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
-  const subtleColor = useThemeColor({}, 'textSubtle');
+  const mutedColor = useThemeColor({}, 'textMuted');
 
   return (
     <View
@@ -592,16 +616,19 @@ function SwipeHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
       ]}
     >
       <View style={styles.historyRowHeader}>
-        <ThemedText style={styles.historyRowTitle}>{categoryLabel}</ThemedText>
-        <ThemedText style={[styles.historyRowTimestamp, { color: subtleColor }]}>
+        <View style={styles.historyRowTitleGroup}>
+          <IconSymbol name={categoryIcon} size={18} color={themeColors.text} />
+          <ThemedText style={styles.historyRowTitle}>{categoryLabel}</ThemedText>
+        </View>
+        <ThemedText style={[styles.historyRowTimestamp, { color: mutedColor }]}>
           {formatHistoryTimestamp(entry.createdAt)}
         </ThemedText>
       </View>
       <ThemedText style={styles.historyRowSummary}>
-        정답 {payload.correct}/{payload.answered} · 정확도 {accuracy}% · 최고 {payload.maxStreak}연속
+        정답률 {accuracy}% ({payload.correct}/{payload.answered}) | 🔥 최고 {payload.maxStreak}연속
       </ThemedText>
-      <ThemedText style={[styles.historyRowDetail, { color: subtleColor }]}>
-        평균 반응속도 {avgSecondsLabel} · 점수{' '}
+      <ThemedText style={[styles.historyRowDetail, { color: mutedColor }]}>
+        평균 반응속도 {avgSecondsLabel} | 점수{' '}
         {payload.totalScoreDelta >= 0 ? `+${payload.totalScoreDelta}` : payload.totalScoreDelta}
       </ThemedText>
     </View>
@@ -622,7 +649,7 @@ function PartyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
 
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
-  const subtleColor = useThemeColor({}, 'textSubtle');
+  const mutedColor = useThemeColor({}, 'textMuted');
 
   return (
     <View
@@ -633,16 +660,16 @@ function PartyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
     >
       <View style={styles.historyRowHeader}>
         <ThemedText style={styles.historyRowTitle}>{title}</ThemedText>
-        <ThemedText style={[styles.historyRowTimestamp, { color: subtleColor }]}>
+        <ThemedText style={[styles.historyRowTimestamp, { color: mutedColor }]}>
           {formatHistoryTimestamp(entry.createdAt)}
         </ThemedText>
       </View>
       <ThemedText style={styles.historyRowSummary}>
-        {rankLabel} · 총점 {payload.totalScore}점
+        {rankLabel} | 총점 {payload.totalScore}점
       </ThemedText>
-      <ThemedText style={[styles.historyRowDetail, { color: subtleColor }]}>
+      <ThemedText style={[styles.historyRowDetail, { color: mutedColor }]}>
         {payload.roomCode ? `코드 ${payload.roomCode}` : '코드 정보 없음'}
-        {answeredLabel ? ` · ${answeredLabel}` : ''}
+        {answeredLabel ? ` | ${answeredLabel}` : ''}
       </ThemedText>
     </View>
   );
@@ -669,8 +696,20 @@ function FooterSection({
         <Card>
           <ThemedText type="subtitle">계정</ThemedText>
           <View style={styles.footerActions}>
-            <FooterButton label="문의하기" onPress={onSupport} />
-            <FooterButton label="약관·정책" onPress={onPolicy} />
+            <Button
+              variant="outline"
+              style={styles.footerButton}
+              onPress={onSupport}
+            >
+              문의하기
+            </Button>
+            <Button
+              variant="outline"
+              style={styles.footerButton}
+              onPress={onPolicy}
+            >
+              약관·정책
+            </Button>
           </View>
           <Button
             onPress={onSignOut}
@@ -686,26 +725,6 @@ function FooterSection({
   );
 }
 
-function FooterButton({ label, onPress }: { label: string; onPress: () => void }) {
-  const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ?? 'light'];
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.footerButton,
-        {
-          backgroundColor: themeColors.cardElevated,
-          borderColor: themeColors.border,
-        },
-        pressed ? styles.footerButtonPressed : null,
-      ]}
-    >
-      <ThemedText style={[styles.footerButtonLabel, { color: themeColors.text }]}>{label}</ThemedText>
-    </Pressable>
-  );
-}
-
 function ThemePreferencesCard() {
   const { colorScheme, setColorScheme, isReady } = useColorSchemeManager();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -716,14 +735,12 @@ function ThemePreferencesCard() {
     { key: 'dark', title: '어두운 테마', icon: 'moon.fill' },
   ] as const;
 
-  const selectedOption = options.find((option) => option.key === colorScheme);
-
   return (
     <Card>
       <View style={styles.sectionStack}>
         <ThemedText type="subtitle">화면 테마</ThemedText>
         <ThemedText style={{ color: mutedColor, fontSize: 14, lineHeight: 20 }}>
-          앱의 화면 테마를 설정할 수 있어요.
+          앱의 화면 테마를 설정할 수 있어요
         </ThemedText>
       </View>
       <View style={styles.themeOptionsContainer}>
@@ -768,11 +785,6 @@ function ThemePreferencesCard() {
           );
         })}
       </View>
-      {selectedOption ? (
-        <ThemedText style={[styles.themeCurrentLabel, { color: mutedColor }]}>
-          현재 테마: {selectedOption.title}
-        </ThemedText>
-      ) : null}
     </Card>
   );
 }
@@ -844,6 +856,11 @@ const styles = StyleSheet.create({
   historyRowTitle: {
     fontWeight: '600',
   },
+  historyRowTitleGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
   historyRowTimestamp: {
     fontSize: 12,
     opacity: 0.7,
@@ -909,25 +926,11 @@ const styles = StyleSheet.create({
   themeOptionLabel: {
     fontWeight: '600',
   },
-  themeCurrentLabel: {
-    marginTop: Spacing.sm,
-    fontSize: 13,
-  },
   footerActions: {
     flexDirection: 'row',
     gap: Spacing.md,
   },
   footerButton: {
     flex: 1,
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  footerButtonPressed: {
-    opacity: 0.85,
-  },
-  footerButtonLabel: {
-    fontWeight: '600',
   },
 });

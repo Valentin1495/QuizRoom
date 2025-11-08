@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { TextInput as RNTextInput } from 'react-native';
 import {
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -305,8 +306,14 @@ export default function HomeScreen() {
                 { borderColor },
               ]}
             >
+              <IconSymbol
+                name='hourglass'
+                size={18}
+                color={textColor}
+                style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
+              />
               <ThemedText style={styles.timerLabel}>
-                ⏱️ 남은 시간: {timeLeft}
+                남은 시간: {timeLeft}
               </ThemedText>
             </View>
           </View>
@@ -487,6 +494,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: Radius.pill,
     width: '100%',
+    flexDirection: 'row',
+    gap: Spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 18,

@@ -20,6 +20,7 @@ const MAPPING = {
   'checkmark.circle.fill': 'check-circle',
   'xmark.circle.fill': 'cancel',
   'lock.fill': 'lock-outline',
+  'hourglass': 'hourglass-top',
   // Tab Bar Icons
   'sparkles': 'auto-awesome',
   'square.stack.3d.up.fill': 'layers',

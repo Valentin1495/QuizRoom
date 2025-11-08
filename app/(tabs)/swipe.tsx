@@ -47,7 +47,7 @@ export default function SwipeScreen() {
       <ThemedView style={[styles.container, topStyle]}>
         <View style={styles.selectedHeader}>
           <View style={styles.headerText}>
-            <ThemedText type="title">스와이프 퀴즈</ThemedText>
+            <ThemedText type="title">스와이프</ThemedText>
             <View style={styles.subtitleRow}>
               <IconSymbol name={selectedCategory.icon} size={18} color={iconColor} />
               <ThemedText style={styles.subtitle}>{selectedCategory.title}</ThemedText>
