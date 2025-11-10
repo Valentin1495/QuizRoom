@@ -37,7 +37,7 @@ type ToastTone = {
 const TOAST_COLORS: Record<ToastKind, { light: ToastTone; dark: ToastTone }> = {
   success: {
     light: {
-      background: '#E6F5EC',
+      background: 'rgba(230, 245, 236, 0.92)',
       text: '#0B5133',
       meta: '#137C4B',
       ctaBackground: 'rgba(11, 81, 51, 0.12)',
@@ -53,7 +53,7 @@ const TOAST_COLORS: Record<ToastKind, { light: ToastTone; dark: ToastTone }> = {
   },
   error: {
     light: {
-      background: '#FDE7E4',
+      background: 'rgba(253, 231, 228, 0.92)',
       text: '#8A1E13',
       meta: '#C23C2D',
       ctaBackground: 'rgba(138, 30, 19, 0.12)',
@@ -69,7 +69,7 @@ const TOAST_COLORS: Record<ToastKind, { light: ToastTone; dark: ToastTone }> = {
   },
   neutral: {
     light: {
-      background: '#E8EDFF',
+      background: 'rgba(232, 237, 255, 0.92)',
       text: '#2C3A7A',
       meta: '#5460B4',
       ctaBackground: 'rgba(44, 58, 122, 0.12)',

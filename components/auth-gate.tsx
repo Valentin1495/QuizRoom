@@ -1,10 +1,12 @@
 import { useMemo, type ReactNode } from 'react';
-import { ActivityIndicator, Button, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Button } from '@/components/ui/button';
+import { Elevation, Radius, Spacing } from '@/constants/theme';
 import { useAuth } from '@/hooks/use-auth';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 type AuthGateProps = {
   children: ReactNode;
@@ -12,6 +14,7 @@ type AuthGateProps = {
 
 export function AuthGate({ children }: AuthGateProps) {
   const { status, user, error, signInWithGoogle, enterGuestMode } = useAuth();
+  const primaryColor = useThemeColor({}, 'primary');
 
   const { isLoading, headline, helper } = useMemo(() => {
     if (status === 'authenticated' && user) {
@@ -36,8 +39,8 @@ export function AuthGate({ children }: AuthGateProps) {
     }
     return {
       isLoading: false,
-      headline: 'QuizRoom에 로그인하고 계속하기',
-      helper: 'Google 계정으로 간편하게 로그인하세요.',
+      headline: 'QuizRoom',
+      helper: 'Google 계정으로 간편하게 로그인하세요',
     } as const;
   }, [status, user, error]);
 
@@ -53,40 +56,54 @@ export function AuthGate({ children }: AuthGateProps) {
     <ThemedView style={styles.container}>
       <ThemedView
         style={styles.card}
-        lightColor="rgba(255, 255, 255, 0.96)"
-        darkColor="rgba(22, 22, 22, 0.92)"
+        lightColor="rgba(255, 255, 255, 0.98)"
+        darkColor="rgba(30, 30, 30, 0.95)"
       >
-        <ThemedText type="title" style={styles.title}>
-          {headline}
-        </ThemedText>
-        {helper ? (
-          <ThemedText style={styles.message}>{helper}</ThemedText>
-        ) : null}
+        {/* Hero Section */}
+        <View style={styles.hero}>
+          <ThemedText type="title" style={styles.title}>
+            {headline}
+          </ThemedText>
+          {helper ? (
+            <ThemedText style={styles.message}>{helper}</ThemedText>
+          ) : null}
+        </View>
+
+        {/* Loading State */}
         {isLoading ? (
-          <ActivityIndicator size="large" color={Palette.teal600} />
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={primaryColor} />
+          </View>
         ) : (
-          <>
-            <View style={styles.buttonWrapper}>
-              <Button
-                title="Google 계정으로 로그인"
-                onPress={() => {
-                  void signInWithGoogle();
-                }}
-                color="#1a73e8"
-                disabled={status === 'authorizing'}
-              />
-            </View>
-            <View style={styles.buttonWrapper}>
-              <Button
-                title="로그인 없이 둘러보기"
-                onPress={() => {
-                  void enterGuestMode();
-                }}
-                color={Palette.slate500}
-                disabled={status === 'authorizing'}
-              />
-            </View>
-          </>
+          <View style={styles.buttonGroup}>
+            {/* Primary CTA - Google Sign In */}
+            <Button
+              variant="default"
+              size="lg"
+              rounded="lg"
+              fullWidth
+              onPress={() => {
+                void signInWithGoogle();
+              }}
+              disabled={status === 'authorizing'}
+            >
+              Google 로그인
+            </Button>
+
+            {/* Secondary CTA - Guest Mode */}
+            <Button
+              variant="outline"
+              size="lg"
+              rounded="lg"
+              fullWidth
+              onPress={() => {
+                void enterGuestMode();
+              }}
+              disabled={status === 'authorizing'}
+            >
+              게스트로 시작
+            </Button>
+          </View>
         )}
       </ThemedView>
     </ThemedView>
@@ -98,23 +115,45 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: Spacing.lg,
+    padding: Spacing.xl,
   },
   card: {
     width: '100%',
-    maxWidth: 360,
-    paddingVertical: Spacing.xl,
-    paddingHorizontal: Spacing.lg,
+    maxWidth: 400,
+    paddingVertical: Spacing.xxl,
+    paddingHorizontal: Spacing.xl,
     borderRadius: Radius.lg,
-    gap: Spacing.lg,
+    gap: Spacing.xl,
+    ...Elevation.sm,
+  },
+  hero: {
+    gap: Spacing.md,
+    alignItems: 'center',
   },
   title: {
     textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
+    letterSpacing: -0.5,
   },
   message: {
     textAlign: 'center',
+    fontSize: 15,
+    lineHeight: 22,
+    opacity: 0.8,
   },
-  buttonWrapper: {
+  loadingContainer: {
+    paddingVertical: Spacing.xl,
+    alignItems: 'center',
+  },
+  buttonGroup: {
+    gap: Spacing.md,
     width: '100%',
+  },
+  trustText: {
+    textAlign: 'center',
+    fontSize: 12,
+    lineHeight: 18,
+    opacity: 0.6,
   },
 });

@@ -42,6 +42,13 @@ const MAPPING = {
   'die.face.5': 'casino',
   'flame.fill': 'trending-up',
   'star.fill': 'star-outline',
+  'exclamationmark.triangle.fill': 'warning',
+  'face.frown': 'sentiment-dissatisfied',
+  'crown.fill': 'workspace-premium',
+  'arrow.triangle.2.circlepath': 'sync',
+  'rocket.fill': 'rocket-launch',
+  'pause.circle.fill': 'pause-circle',
+  'medal.fill': 'military-tech',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING;

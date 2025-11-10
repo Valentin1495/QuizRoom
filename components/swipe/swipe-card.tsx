@@ -1,4 +1,5 @@
-import { Image, LayoutChangeEvent, Platform, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Dimensions, Image, LayoutChangeEvent, Platform, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
@@ -51,6 +52,7 @@ export type SwipeCardProps = {
 
 const SWIPE_NEXT_THRESHOLD = 120;
 const ACTION_THRESHOLD = -110;
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -134,10 +136,25 @@ export function SwipeCard({
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const shakeX = useSharedValue(0);
+  const opacity = useSharedValue(1);
+  const isDismissing = useSharedValue(false);
   const colorScheme = useColorScheme();
   const normalizedScheme = (colorScheme ?? 'light') as 'light' | 'dark';
   const palette = Colors[normalizedScheme];
   const cardColor = useThemeColor({}, 'card');
+
+  const animatedOffset = useSharedValue(index * 12);
+  const animatedScale = useSharedValue(1 - Math.min(index, 2) * 0.05);
+
+  useEffect(() => {
+    const newOffset = index * 12;
+    animatedOffset.value = withSpring(newOffset);
+  }, [index, animatedOffset]);
+
+  useEffect(() => {
+    const newScale = isActive ? 1 : 1 - Math.min(index, 2) * 0.05;
+    animatedScale.value = withSpring(newScale);
+  }, [index, isActive, animatedScale]);
 
   const difficultyDots = difficultyToDots(card.difficulty);
   const difficultyLevel: DifficultyLevel =
@@ -145,28 +162,52 @@ export function SwipeCard({
   const difficultyMode = colorScheme === 'dark' ? 'dark' : 'light';
   const difficultyToken = DIFFICULTY_TOKENS[difficultyLevel][difficultyMode];
   const inactiveDotsCount = Math.max(0, 3 - difficultyDots);
-  const displayCardNumber = cardNumber ?? index + 1;
+  const [displayCardNumber] = useState(cardNumber ?? index + 1);
 
   const gesture = Gesture.Pan()
     .enabled(isActive)
     .activeOffsetX([-20, 20])
     .failOffsetY([-20, 20])
     .onChange((event) => {
-      translateX.value = event.translationX;
-      translateY.value = event.translationY * 0.2;
-    })
-    .onFinalize((event) => {
-      const { translationX } = event;
-      if (feedback && translationX >= SWIPE_NEXT_THRESHOLD) {
-        scheduleOnRN(onSwipeNext);
-        translateX.value = 0;
-        translateY.value = 0;
+      if (isDismissing.value) {
         return;
       }
+      translateX.value = event.translationX;
+      translateY.value = event.translationY * 0.2;
+
+      // 틴더 스타일: 이동 거리에 비례한 투명도 감소
+      const distance = Math.abs(event.translationX);
+      const maxDistance = SCREEN_WIDTH * 0.7;
+      opacity.value = Math.max(0.3, 1 - (distance / maxDistance) * 0.7);
+    })
+    .onFinalize((event) => {
+      if (isDismissing.value) {
+        return;
+      }
+      const { translationX } = event;
+
+      // 오른쪽 스와이프 - 다음으로 넘어가기
+      if (feedback && translationX >= SWIPE_NEXT_THRESHOLD) {
+        // 틴더 스타일: 카드가 날아가며 사라지는 애니메이션
+        isDismissing.value = true;
+        const currentY = translateY.value;
+        // 카드가 완전히 화면 밖으로 나가도록 충분한 거리
+        translateX.value = withTiming(SCREEN_WIDTH * 1.8, { duration: 280 });
+        translateY.value = withTiming(currentY - 50, { duration: 280 });
+        opacity.value = withTiming(0, { duration: 280 }, (finished) => {
+          if (finished) {
+            scheduleOnRN(onSwipeNext);
+          }
+        });
+        return;
+      }
+
+      // 오른쪽 스와이프했지만 아직 문제를 풀지 않음
       if (!feedback && translationX >= SWIPE_NEXT_THRESHOLD) {
         if (onSwipeBlocked) {
           scheduleOnRN(onSwipeBlocked);
         }
+        opacity.value = withSpring(1);
         translateY.value = withSpring(0);
         translateX.value = withSpring(0, undefined, (finished) => {
           if (!finished) return;
@@ -180,28 +221,77 @@ export function SwipeCard({
         return;
       }
 
+      // 왼쪽 스와이프 - 액션 메뉴
       if (translationX <= ACTION_THRESHOLD && onOpenActions) {
         scheduleOnRN(onOpenActions);
       }
 
+      // 카드 복귀 - 탄성 애니메이션
       translateX.value = withSpring(0);
       translateY.value = withSpring(0);
+      opacity.value = withSpring(1);
     });
 
   const animatedStyle = useAnimatedStyle(() => {
-    const offset = index * 12;
-    const scale = isActive ? 1 : 1 - Math.min(index, 2) * 0.05;
+    // 날아가는 중이면 index 변경 무시
+    if (isDismissing.value) {
+      const translateXWithShake = translateX.value + shakeX.value;
+      const maxRotation = 15;
+      const rotationProgress = Math.min(Math.abs(translateXWithShake) / (SCREEN_WIDTH * 0.4), 1);
+      const rotation = (translateXWithShake / Math.abs(translateXWithShake || 1)) * rotationProgress * maxRotation;
+
+      return {
+        transform: [
+          { translateX: translateXWithShake },
+          { translateY: translateY.value },
+          { rotate: `${rotation}deg` },
+          { scale: 1 },
+        ],
+        zIndex: 999, // 최상위로
+        opacity: opacity.value,
+      };
+    }
+
     const translateXWithShake = translateX.value + shakeX.value;
+
+    // 틴더 스타일: ±15도 범위로 자연스러운 회전
+    const maxRotation = 15;
+    const rotationProgress = Math.min(Math.abs(translateXWithShake) / (SCREEN_WIDTH * 0.4), 1);
+    const rotation = (translateXWithShake / Math.abs(translateXWithShake || 1)) * rotationProgress * maxRotation;
+
     return {
       transform: [
         { translateX: translateXWithShake },
-        { translateY: translateY.value + offset },
-        { rotate: `${translateX.value / 25}deg` },
-        { scale },
+        { translateY: translateY.value + animatedOffset.value },
+        { rotate: `${rotation}deg` },
+        { scale: animatedScale.value },
       ],
       zIndex: 100 - index,
+      opacity: isActive ? opacity.value : 1,
     };
   }, [index, isActive]);
+
+  // 틴더 스타일: 방향별 컬러 피드백 오버레이
+  const overlayAnimatedStyle = useAnimatedStyle(() => {
+    const distance = translateX.value;
+    const isRight = distance > 0;
+    const isLeft = distance < 0;
+    const progress = Math.min(Math.abs(distance) / 120, 1);
+
+    let backgroundColor = 'rgba(0,0,0,0)';
+    if (isRight && feedback) {
+      // 오른쪽: 연한 민트그린 (정답 완료 시)
+      backgroundColor = `rgba(100, 255, 180, ${progress * 0.12})`;
+    } else if (isLeft) {
+      // 왼쪽: 살짝 오렌지빛 베이지 (액션 메뉴)
+      backgroundColor = `rgba(255, 200, 130, ${progress * 0.12})`;
+    }
+
+    return {
+      backgroundColor,
+      opacity: (isActive || isDismissing.value) ? 1 : 0,
+    };
+  }, [feedback, isActive]);
 
   const statusBorderColor = feedback
     ? feedback.isCorrect
@@ -220,6 +310,7 @@ export function SwipeCard({
             borderColor: statusBorderColor,
           },
         ]}
+        pointerEvents={isActive ? 'auto' : 'none'}
         onLayout={
           isActive && onCardLayout
             ? (event: LayoutChangeEvent) => {
@@ -228,6 +319,9 @@ export function SwipeCard({
             : undefined
         }
       >
+        {/* 틴더 스타일: 방향별 컬러 피드백 오버레이 */}
+        <AnimatedView style={[styles.overlay, overlayAnimatedStyle]} pointerEvents="none" />
+
         <View style={styles.header}>
           <View
             style={[
@@ -316,6 +410,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 10 },
+    overflow: 'hidden',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: Radius.lg,
   },
   header: {
     flexDirection: 'row',

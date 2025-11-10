@@ -1197,19 +1197,19 @@
         "choices": [
             {
                 "id": "a",
-                "text": "N포세대"
+                "text": "N포"
             },
             {
                 "id": "b",
-                "text": "갓생세대"
+                "text": "갓생"
             },
             {
                 "id": "c",
-                "text": "달관세대"
+                "text": "달관"
             },
             {
                 "id": "d",
-                "text": "영끌세대"
+                "text": "영끌"
             }
         ],
         "answerIndex": 2,

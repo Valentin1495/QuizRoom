@@ -15,7 +15,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { useCreateParty, useJoinParty, usePartyDecks } from '@/lib/api';
 import { getDeckIcon } from '@/lib/deck-icons';
 
-export default function PartyScreen() {
+export default function LiveMatchScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { user, status, guestKey, ensureGuestKey } = useAuth();
@@ -261,7 +261,9 @@ export default function PartyScreen() {
           </View>
           <View style={styles.deckList}>
             {isDecksLoading ? (
-              <ActivityIndicator color={themeColors.primary} />
+              <View style={styles.deckLoading}>
+                <ActivityIndicator color={themeColors.primary} />
+              </View>
             ) : partyDecks.length > 0 ? (
               partyDecks.map((deck) => {
                 const isSelected = deck.id === selectedDeckId;
@@ -436,6 +438,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.sm,
+  },
+  deckLoading: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Spacing.lg,
   },
   deckOption: {
     borderWidth: 1,

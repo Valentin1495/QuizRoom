@@ -1,6 +1,7 @@
 import { useQuery } from 'convex/react';
 import { Link, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { TextInput as RNTextInput } from 'react-native';
 import {
   Alert,
@@ -60,6 +61,7 @@ export default function HomeScreen() {
   const [partyCode, setPartyCode] = useState('');
   const [joinNickname, setJoinNickname] = useState(user?.handle ?? '');
   const [isJoining, setIsJoining] = useState(false);
+  const [isClearingStorage, setIsClearingStorage] = useState(false);
   const joinNicknameInputRef = useRef<RNTextInput | null>(null);
 
   useEffect(() => {
@@ -187,6 +189,33 @@ export default function HomeScreen() {
     if (!isCodeValid || isJoining) return;
     void handleJoinParty();
   }, [handleJoinParty, isCodeValid, isJoining]);
+
+  const handleClearAsyncStorage = useCallback(() => {
+    if (isClearingStorage) return;
+    Alert.alert(
+      'AsyncStorage 초기화',
+      '로컬에 저장된 모든 데이터를 삭제할까요? (되돌릴 수 없어요)',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '초기화',
+          style: 'destructive',
+          onPress: async () => {
+            setIsClearingStorage(true);
+            try {
+              await AsyncStorage.clear();
+              Alert.alert('완료', 'AsyncStorage가 초기화되었습니다.');
+            } catch (error) {
+              console.warn('Failed to clear AsyncStorage', error);
+              Alert.alert('실패', '초기화에 실패했어요. 다시 시도해 주세요.');
+            } finally {
+              setIsClearingStorage(false);
+            }
+          },
+        },
+      ]
+    );
+  }, [isClearingStorage]);
 
   return (
     <ThemedView style={styles.container}>
@@ -373,13 +402,37 @@ export default function HomeScreen() {
             >
               {isJoining ? '참가 중…' : '참가하기'}
             </Button>
-            <Link href="/(tabs)/party" asChild>
+            <Link href="/live-match" asChild>
               <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.right' size={16} color={textColor} />}>
                 새 퀴즈룸 만들기
               </Button>
             </Link>
           </View>
         </View>
+
+        {__DEV__ ? (
+          <View style={styles.section}>
+            <SectionHeader title="디버그" tagline="개발 중 전용 도구" muted={muted} />
+            <View style={[styles.debugCard, { backgroundColor: cardBackground, borderColor }]}>
+              <ThemedText style={styles.debugTitle}>AsyncStorage 초기화</ThemedText>
+              <ThemedText style={[styles.debugDescription, { color: muted }]}>
+                로컬에 저장된 온보딩, 세션 등 모든 값을 삭제합니다. 개발 중에만 사용하세요.
+              </ThemedText>
+              <Button
+                variant="destructive"
+                size="md"
+                rounded="full"
+                onPress={handleClearAsyncStorage}
+                loading={isClearingStorage}
+                disabled={isClearingStorage}
+                style={styles.debugButton}
+                textStyle={styles.debugButtonLabel}
+              >
+                AsyncStorage 초기화
+              </Button>
+            </View>
+          </View>
+        ) : null}
       </ScrollView>
     </ThemedView>
   );
@@ -544,5 +597,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 24,
+  },
+  debugCard: {
+    borderWidth: 1,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+    gap: Spacing.sm,
+  },
+  debugTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  debugDescription: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  debugButton: {
+    alignSelf: 'flex-start',
+  },
+  debugButtonLabel: {
+    fontWeight: '700',
   },
 });

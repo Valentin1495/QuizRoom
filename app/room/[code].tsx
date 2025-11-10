@@ -18,7 +18,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { useMutation, useQuery } from 'convex/react';
 
-export default function PartyRoomScreen() {
+export default function MatchLobbyScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { user, status, guestKey, ensureGuestKey } = useAuth();
@@ -117,6 +117,9 @@ export default function PartyRoomScreen() {
   const destructiveMutedBgColor = colorScheme === 'light' ? '#FEF2F2' : 'rgba(239, 68, 68, 0.1)';
   const infoMutedColor = colorScheme === 'light' ? '#B45309' : '#FCD34D';
   const infoMutedBgColor = colorScheme === 'light' ? '#FEF9C3' : 'rgba(252, 211, 77, 0.1)';
+  const neutralBannerBg = colorScheme === 'light' ? '#E8EDFF' : 'rgba(44, 58, 122, 0.9)';
+  const neutralBannerBorder = colorScheme === 'light' ? '#5460B4' : '#C8D0FF';
+  const neutralBannerText = colorScheme === 'light' ? '#2C3A7A' : '#E5EBFF';
   const accentForegroundColor = theme.accentForeground;
 
   const resolveDelayMs = useMemo(() => {
@@ -201,7 +204,7 @@ export default function PartyRoomScreen() {
         console.warn('Failed to leave room', error);
       });
     }
-    router.replace('/(tabs)/party');
+    router.replace('/(tabs)/live-match');
   }, [guestKey, hasLeft, leaveRoom, participantId, roomId, router, status]);
 
   useEffect(() => {
@@ -316,7 +319,7 @@ export default function PartyRoomScreen() {
     if (!participantId) return;
     if (lobby.room.status !== 'lobby') {
       setHasLeft(true);
-      router.replace({ pathname: '/party/play', params: { roomId: lobby.room._id } });
+      router.replace({ pathname: '/match/play', params: { roomId: lobby.room._id } });
     }
   }, [hasLeft, lobby, participantId, router]);
 
@@ -525,26 +528,32 @@ export default function PartyRoomScreen() {
           paddingVertical: Spacing.md,
           paddingHorizontal: Spacing.lg,
           borderRadius: Radius.md,
-          backgroundColor: infoMutedBgColor,
+          backgroundColor: neutralBannerBg,
           borderWidth: 1,
-          borderColor: infoMutedColor,
+          borderColor: neutralBannerBorder,
           gap: Spacing.sm,
         },
         pendingTitle: {
           fontWeight: '700',
+          color: neutralBannerText,
         },
         pendingSubtitle: {
-          color: mutedColor,
+          color: neutralBannerText,
         },
         pendingCancelButton: {
-          alignSelf: 'flex-start',
-          paddingVertical: Spacing.xs,
+          alignSelf: 'stretch',
+          width: '100%',
+          paddingVertical: Spacing.sm,
           paddingHorizontal: Spacing.md,
           borderRadius: Radius.pill,
-          backgroundColor: Colors[colorScheme].secondary,
+          backgroundColor: neutralBannerBg,
+          borderWidth: 1,
+          borderColor: neutralBannerBorder,
         },
         pendingCancelLabel: {
-          color: Colors[colorScheme].secondaryForeground,
+          width: '100%',
+          textAlign: 'center',
+          color: neutralBannerText,
           fontWeight: '600',
         },
       }),
@@ -561,6 +570,9 @@ export default function PartyRoomScreen() {
       infoMutedColor,
       infoMutedBgColor,
       accentForegroundColor,
+      neutralBannerBg,
+      neutralBannerBorder,
+      neutralBannerText,
     ]
   );
 
@@ -644,7 +656,7 @@ export default function PartyRoomScreen() {
           ]}
         >
           <View style={styles.header}>
-            <ThemedText type="title">실시간 퀴즈룸</ThemedText>
+            <ThemedText type="title">퀴즈룸</ThemedText>
             <ThemedText style={styles.headerSubtitle}>라이브 매치를 시작하세요!</ThemedText>
             <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
               <View style={styles.codeBadge}>
@@ -759,7 +771,7 @@ export default function PartyRoomScreen() {
                   onPress={handleStart}
                   disabled={!allReady || !!pendingAction}
                 >
-                  시작하기
+                  게임 시작
                 </Button>
               </View>
             ) : null}

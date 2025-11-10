@@ -37,7 +37,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="party"
+        name="live-match"
         options={{
           title: '라이브 매치',
           tabBarIcon: ({ color }) => (

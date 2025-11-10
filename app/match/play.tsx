@@ -7,11 +7,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+
+import { Button } from '@/components/ui/button';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Elevation, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
 import { useConnectionStatus } from '@/hooks/use-connection-status';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { getDeckIcon } from '@/lib/deck-icons';
 import { useMutation, useQuery } from 'convex/react';
 
 function computeTimeLeft(expiresAt?: number | null, now?: number) {
@@ -21,7 +27,7 @@ function computeTimeLeft(expiresAt?: number | null, now?: number) {
 }
 
 const FORCED_EXIT_MESSAGE = '세션이 더 이상 유지되지 않아 방과의 연결이 종료됐어요. 다시 참여하려면 방 코드를 입력해 주세요.';
-const EXPIRED_MESSAGE = '😢 연결이 오래 끊겼습니다.\n이번 퀴즈는 종료되었어요.';
+const EXPIRED_MESSAGE = '연결이 오래 끊겼습니다.\n이번 퀴즈는 종료되었어요.';
 const TOAST_COOLDOWN_MS = 10000;
 type ConnectionState = 'online' | 'reconnecting' | 'grace' | 'expired';
 type HostConnectionState = 'online' | 'waiting' | 'expired';
@@ -30,13 +36,18 @@ const HOST_GRACE_MS = HOST_GRACE_SECONDS * 1000;
 const HOST_HEARTBEAT_GRACE_MS = 7000;
 const HOST_SNAPSHOT_STALE_THRESHOLD_MS = HOST_HEARTBEAT_GRACE_MS * 2;
 
-export default function PartyPlayScreen() {
+export default function MatchPlayScreen() {
     const router = useRouter();
     const { user, status: authStatus, guestKey, ensureGuestKey } = useAuth();
     const insets = useSafeAreaInsets();
     const params = useLocalSearchParams<{ roomId?: string }>();
     const roomIdParam = useMemo(() => params.roomId?.toString() ?? null, [params.roomId]);
     const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'partyRooms'>) : null), [roomIdParam]);
+    const textColor = useThemeColor({}, 'text');
+    const warningColor = useThemeColor({}, 'warning');
+    const successColor = useThemeColor({}, 'success');
+    const dangerColor = useThemeColor({}, 'danger');
+    const infoColor = useThemeColor({}, 'info');
 
     const [hasLeft, setHasLeft] = useState(false);
     const [disconnectReason, setDisconnectReason] = useState<string | null>(null);
@@ -114,7 +125,7 @@ export default function PartyPlayScreen() {
     const [isGameStalled, setIsGameStalled] = useState(false);
     const [promotedToHost, setPromotedToHost] = useState(false);
     const [justReconnected, setJustReconnected] = useState(false);
-    const [delayPreset, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
+    const [delayPreset] = useState<'rapid' | 'standard' | 'chill'>('chill');
     const { phase: socketPhase, hasEverConnected: socketHasEverConnected } = useConnectionStatus();
 
     const resolveDelay = useCallback(() => {
@@ -238,7 +249,7 @@ export default function PartyPlayScreen() {
         });
         setGraceRemaining(120);
         if (shouldAnnounce) {
-            showToast('✅ 연결 복구! 마지막 진행 상태로 돌아갑니다.', 'connection_restored');
+            showToast('연결이 복구됐어요! 마지막 진행 상태로 돌아갑니다.', 'connection_restored');
             void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         }
     }, [clearConnectionTimers, showToast]);
@@ -268,7 +279,7 @@ export default function PartyPlayScreen() {
 
     const roomStatus = roomData?.room.status ?? 'lobby';
     const currentRound = roomData?.currentRound ?? null;
-    const participants = roomData?.participants ?? [];
+    const participants = useMemo(() => roomData?.participants ?? [], [roomData]);
     const hostUserId = roomData?.room.hostId ?? null;
     const hostParticipant = useMemo(
         () => (hostUserId ? participants.find((p) => p.userId === hostUserId) : null),
@@ -311,7 +322,7 @@ export default function PartyPlayScreen() {
         try {
             await heartbeat(participantArgs);
             handleConnectionRestored();
-        } catch (err) {
+        } catch {
             beginReconnecting();
             showToast('아직 연결되지 않았어요. 잠시 후 다시 시도해 주세요.', 'manual_reconnect_failed');
         } finally {
@@ -334,7 +345,7 @@ export default function PartyPlayScreen() {
         roomStatusRef.current = null;
         lostHostSkipResumeToastRef.current = false;
         setHasLeft(true);
-        router.navigate('/(tabs)/party');
+        router.navigate('/(tabs)/live-match');
     }, [disconnectReason, hasLeft, leaveRoom, participantArgs, router]);
     useEffect(() => {
         if (connectionState === 'reconnecting') {
@@ -569,7 +580,7 @@ export default function PartyPlayScreen() {
             hostConnectivityRef.current = perceivedOnline;
             if (hostAppearsOffline) {
                 beginHostGraceWait(hostGraceElapsedMs);
-                showToast(`⚠️ ${hostNickname}님 연결이 불안정해 잠시 대기 중이에요.`, 'host_disconnect');
+                showToast(`${hostNickname}님 연결이 불안정해 잠시 대기 중이에요.`, 'host_disconnect');
             }
             return;
         }
@@ -577,7 +588,7 @@ export default function PartyPlayScreen() {
         if (previous && hostAppearsOffline) {
             hostConnectivityRef.current = perceivedOnline;
             beginHostGraceWait(hostGraceElapsedMs);
-            showToast(`⚠️ ${hostNickname}님 연결이 불안정해 잠시 대기 중이에요.`, 'host_disconnect');
+            showToast(`${hostNickname}님 연결이 불안정해 잠시 대기 중이에요.`, 'host_disconnect');
             return;
         }
 
@@ -585,7 +596,7 @@ export default function PartyPlayScreen() {
             hostConnectivityRef.current = perceivedOnline;
             if (hostConnectionState !== 'online') {
                 resetHostGraceState();
-                showToast(`${hostNickname}님 연결이 복구됐어요. 게임을 다시 시작합니다 🚀`, 'host_reconnect');
+                showToast(`${hostNickname}님 연결이 복구됐어요. 게임을 다시 시작합니다.`, 'host_reconnect');
                 void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
             } else {
                 resetHostGraceState();
@@ -607,6 +618,7 @@ export default function PartyPlayScreen() {
         hostSnapshotFresh,
         hostNickname,
         hostParticipant,
+        hostUserId,
         isHost,
         resetHostGraceState,
         showToast,
@@ -678,7 +690,17 @@ export default function PartyPlayScreen() {
                 map.delete(key);
             }
         });
-    }, [connectionState, disconnectReason, hasLeft, hostUserId, isHostOverlayActive, meParticipantId, participants, showToast]);
+    }, [
+        connectionState,
+        disconnectReason,
+        hasLeft,
+        hostUserId,
+        isHostOverlayActive,
+        justReconnected,
+        meParticipantId,
+        participants,
+        showToast,
+    ]);
 
     useEffect(() => {
         if (disconnectReason) return;
@@ -812,7 +834,6 @@ export default function PartyPlayScreen() {
         }
     }, [isHost, isPaused, isResumePending, resolveHostGuestKey, resumeRoom, roomId]);
 
-    const autoAdvancePhaseKey = `${roomStatus}-${roomData?.room.currentRound ?? 'final'}`;
     const autoAdvancePhaseRef = useRef<string | null>(null);
     const autoAdvanceTriggeredRef = useRef(false);
 
@@ -830,7 +851,7 @@ export default function PartyPlayScreen() {
         if (autoAdvanceTriggeredRef.current) return;
         autoAdvanceTriggeredRef.current = true;
         handleAdvance();
-    }, [hasLeft, handleAdvance, isHost, roomData?.room.currentRound, roomId, roomStatus, timeLeft]);
+    }, [connectionState, handleAdvance, hasLeft, isHost, roomData?.room.currentRound, roomId, roomStatus, timeLeft]);
 
     useEffect(() => {
         if (hasLeft) return;
@@ -961,26 +982,26 @@ export default function PartyPlayScreen() {
         if (disconnectReason === EXPIRED_MESSAGE) {
             return (
                 <>
-                    <Stack.Screen options={{ title: '연결 끊김', headerBackVisible: false }} />
+                    <Stack.Screen options={{ headerShown: false }} />
                     <ThemedView style={styles.loadingContainer}>
                         <ThemedText type="title">연결이 종료됐어요</ThemedText>
                         <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>{disconnectReason}</ThemedText>
-                        <Pressable style={styles.retryButton} onPress={handleLeave}>
-                            <ThemedText style={styles.retryLabel}>나가기</ThemedText>
-                        </Pressable>
+                        <Button variant="default" size="lg" onPress={handleLeave}>
+                            나가기
+                        </Button>
                     </ThemedView>
                 </>
             );
         }
         return (
             <>
-                <Stack.Screen options={{ title: '연결 끊김', headerBackVisible: false }} />
+                <Stack.Screen options={{ headerShown: false }} />
                 <ThemedView style={styles.loadingContainer}>
                     <ThemedText type="title">연결이 종료됐어요</ThemedText>
                     <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>{disconnectReason}</ThemedText>
-                    <Pressable style={styles.retryButton} onPress={handleLeave}>
-                        <ThemedText style={styles.retryLabel}>파티 찾기</ThemedText>
-                    </Pressable>
+                    <Button variant="default" size="lg" onPress={handleLeave}>
+                        퀴즈룸 찾기
+                    </Button>
                 </ThemedView>
             </>
         );
@@ -993,7 +1014,7 @@ export default function PartyPlayScreen() {
     if (roomState === undefined) {
         return (
             <ThemedView style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={Palette.teal600} />
+                <ActivityIndicator size="large" color={Palette.gray900} />
                 <ThemedText style={styles.loadingLabel}>게임을 불러오는 중...</ThemedText>
             </ThemedView>
         );
@@ -1003,31 +1024,30 @@ export default function PartyPlayScreen() {
         return (
             <ThemedView style={styles.loadingContainer}>
                 <ThemedText type="title">게임 정보를 찾을 수 없어요</ThemedText>
-                <Pressable style={styles.retryButton} onPress={() => router.navigate('/(tabs)/party')}>
-                    <ThemedText style={styles.retryLabel}>홈으로 이동</ThemedText>
-                </Pressable>
+                <Button variant="default" size="lg" onPress={() => router.navigate('/(tabs)/live-match')}>
+                    홈으로 이동
+                </Button>
             </ThemedView>
         );
     }
 
     const renderCountdown = () => (
         <View style={styles.centerCard}>
-            <ThemedText type="title">다음 라운드 준비!</ThemedText>
-            <ThemedText style={styles.centerSubtitle}>{timeLeft !== null ? `${timeLeft}s` : '...'} 후 문제를 읽어요.</ThemedText>
+            <ThemedText type="title" style={styles.cardTitle}>다음 라운드 준비!</ThemedText>
+            <ThemedText style={styles.centerSubtitle}>
+                <ThemedText style={styles.timerHighlight}>{timeLeft ?? '...'}</ThemedText>초 후 시작
+            </ThemedText>
             {isHost && !hostIsConnected ? (
-                <Pressable
-                    style={[styles.button, styles.secondaryButton]}
-                    onPress={handleAdvance}
-                >
-                    <ThemedText style={styles.secondaryButtonText}>다음 진행</ThemedText>
-                </Pressable>
+                <Button variant='secondary' size="lg" fullWidth onPress={handleAdvance}>
+                    바로 진행
+                </Button>
             ) : null}
         </View>
     );
 
     const renderReturning = () => (
         <View style={styles.centerCard}>
-            <ActivityIndicator size="large" color={Palette.teal600} />
+            <ActivityIndicator size="large" color={Palette.gray900} />
             <ThemedText style={[styles.centerSubtitle, styles.returningLabel]}>대기실로 이동 중...</ThemedText>
         </View>
     );
@@ -1037,45 +1057,56 @@ export default function PartyPlayScreen() {
 
     const renderQuestion = () => (
         <View style={styles.questionCard}>
-            <ThemedText style={styles.roundCaption}>
-                라운드 {currentRoundIndex} / {totalRoundsDisplay}
-            </ThemedText>
+            <View style={styles.questionHeader}>
+                <ThemedText style={styles.roundCaption}>
+                    라운드 {currentRoundIndex} / {totalRoundsDisplay}
+                </ThemedText>
+                <View style={styles.timerBadge}>
+                    <ThemedText style={styles.timerBadgeText}>
+                        {(isPaused && pausedRemainingSeconds !== null ? pausedRemainingSeconds : timeLeft) ?? '-'}초
+                    </ThemedText>
+                </View>
+            </View>
             <ThemedText type="subtitle" style={styles.questionPrompt}>
                 {currentRound?.question?.prompt ?? '문제를 불러오는 중...'}
             </ThemedText>
             <View style={styles.choiceList}>
                 {currentRound?.question?.choices.map((choice, index) => {
                     const isSelected = selectedChoice === index || currentRound?.myAnswer?.choiceIndex === index;
+                    const isDisabled = currentRound?.myAnswer !== undefined || isPaused;
                     return (
                         <Pressable
                             key={choice.id}
                             onPress={() => handleChoicePress(index)}
-                            disabled={currentRound?.myAnswer !== undefined || isPaused}
+                            disabled={isDisabled}
                             style={({ pressed }) => [
                                 styles.choiceButton,
-                                isSelected ? styles.choiceSelected : null,
-                                pressed && currentRound?.myAnswer === undefined && !isPaused ? styles.choicePressed : null,
+                                isSelected && styles.choiceSelected,
+                                pressed && !isDisabled && styles.choicePressed,
                             ]}
                         >
-                            <View style={styles.choiceBadge}>
-                                <ThemedText style={styles.choiceBadgeText}>{String.fromCharCode(65 + index)}</ThemedText>
+                            <View style={[styles.choiceBadge, isSelected && styles.choiceBadgeSelected]}>
+                                <ThemedText style={[styles.choiceBadgeText, isSelected && styles.choiceBadgeTextSelected]}>
+                                    {String.fromCharCode(65 + index)}
+                                </ThemedText>
                             </View>
-                            <ThemedText style={styles.choiceLabel}>{choice.text}</ThemedText>
+                            <ThemedText style={[styles.choiceLabel, isSelected && styles.choiceLabelSelected]}>
+                                {choice.text}
+                            </ThemedText>
                         </Pressable>
                     );
                 })}
             </View>
-            <ThemedText style={styles.timerText}>
-                답변 시간 {(isPaused && pausedRemainingSeconds !== null ? pausedRemainingSeconds : timeLeft) ?? '-'}초
-            </ThemedText>
             {isHost ? (
-                <Pressable
-                    style={[styles.button, styles.secondaryButton, isPaused ? styles.buttonDisabled : null]}
+                <Button
+                    variant="outline"
+                    size="lg"
+                    fullWidth
                     onPress={handleAdvance}
                     disabled={isPaused}
                 >
-                    <ThemedText style={styles.secondaryButtonText}>정답 공개</ThemedText>
-                </Pressable>
+                    정답 공개
+                </Button>
             ) : null}
         </View>
     );
@@ -1083,16 +1114,20 @@ export default function PartyPlayScreen() {
     const renderGrace = () => (
         <View style={styles.centerCard}>
             <ThemedText type="title">답안 마감 중</ThemedText>
-            <ThemedText style={styles.centerSubtitle}>{timeLeft !== null ? `${timeLeft}s` : '...'} 후 정답 공개</ThemedText>
+            <ThemedText style={styles.centerSubtitle}>{timeLeft !== null ? `${timeLeft}초` : '...'} 후 정답 공개</ThemedText>
         </View>
     );
 
     const renderReveal = () => (
         <View style={styles.revealCard}>
-            <ThemedText type="title">정답 공개</ThemedText>
-            <ThemedText style={styles.revealSubtitle}>
-                정답은 {currentRound?.reveal ? String.fromCharCode(65 + currentRound.reveal.correctChoice) : '?'} 입니다.
-            </ThemedText>
+            <ThemedText type="title" style={styles.cardTitle}>정답 공개</ThemedText>
+            <View style={styles.correctAnswerBadge}>
+                <ThemedText style={styles.correctAnswerLabel}>
+                    정답은 <ThemedText style={styles.correctAnswerHighlight}>
+                        {currentRound?.reveal ? String.fromCharCode(65 + currentRound.reveal.correctChoice) : '?'}
+                    </ThemedText> 입니다
+                </ThemedText>
+            </View>
             {currentRound?.question?.explanation ? (
                 <ThemedText style={styles.explanationText}>{currentRound.question.explanation}</ThemedText>
             ) : null}
@@ -1101,74 +1136,212 @@ export default function PartyPlayScreen() {
                     const count = currentRound?.reveal?.distribution[index] ?? 0;
                     const isCorrect = currentRound?.reveal?.correctChoice === index;
                     const isMine = currentRound?.myAnswer?.choiceIndex === index;
+                    const answeredCorrectly = currentRound?.myAnswer?.isCorrect ?? false;
+                    const variant: 'correct' | 'incorrect' | 'selected' | 'default' = isCorrect
+                        ? 'correct'
+                        : isMine
+                            ? answeredCorrectly
+                                ? 'selected'
+                                : 'incorrect'
+                            : 'default';
+                    const gradientColors =
+                        variant === 'correct'
+                            ? ['#2D9CDB', '#56CCF2']
+                            : variant === 'incorrect'
+                                ? ['#EB5757', '#FF7676']
+                                : null;
+                    const labelColor =
+                        variant === 'correct' || variant === 'incorrect'
+                            ? '#FFFFFF'
+                            : variant === 'selected'
+                                ? Palette.gray900
+                                : Palette.gray800;
+                    const badgeTextColor = variant === 'correct' || variant === 'incorrect' ? '#FFFFFF' : Palette.gray900;
+                    const metaColor =
+                        variant === 'correct' || variant === 'incorrect'
+                            ? 'rgba(255, 255, 255, 0.85)'
+                            : Palette.gray500;
+                    const countColor =
+                        variant === 'correct' || variant === 'incorrect'
+                            ? '#FFFFFF'
+                            : variant === 'selected'
+                                ? Palette.gray900
+                                : Palette.gray600;
+                    const iconName =
+                        variant === 'correct'
+                            ? 'checkmark.circle.fill'
+                            : variant === 'incorrect'
+                                ? 'xmark.circle.fill'
+                                : null;
+                    const iconColor = '#FFFFFF';
+                    const metaText = isMine ? '내 선택' : '전체 분포';
+
+                    const rowContent = (
+                        <View style={styles.distributionRowContent}>
+                            <View
+                                style={[
+                                    styles.distributionBadge,
+                                    variant === 'correct' && styles.distributionBadgeElevated,
+                                    variant === 'incorrect' && styles.distributionBadgeElevated,
+                                    variant === 'selected' && styles.distributionBadgeSelected,
+                                ]}
+                            >
+                                <ThemedText
+                                    style={[
+                                        styles.distributionBadgeText,
+                                        { color: badgeTextColor },
+                                    ]}
+                                >
+                                    {String.fromCharCode(65 + index)}
+                                </ThemedText>
+                            </View>
+                            <View style={styles.distributionTextGroup}>
+                                <ThemedText
+                                    style={[
+                                        styles.choiceLabel,
+                                        styles.distributionLabel,
+                                        { color: labelColor },
+                                    ]}
+                                >
+                                    {choice.text}
+                                </ThemedText>
+                                <ThemedText style={[styles.distributionMeta, { color: metaColor }]}>
+                                    {metaText}
+                                </ThemedText>
+                            </View>
+                            <View style={styles.distributionCountGroup}>
+                                {iconName ? (
+                                    <IconSymbol name={iconName} size={18} color={iconColor} />
+                                ) : null}
+                                <ThemedText
+                                    style={[
+                                        styles.distributionCount,
+                                        { color: countColor },
+                                    ]}
+                                >
+                                    {count}명
+                                </ThemedText>
+                            </View>
+                        </View>
+                    );
+
+                    if (gradientColors) {
+                        return (
+                            <LinearGradient
+                                key={choice.id}
+                                colors={gradientColors}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
+                                style={[
+                                    styles.distributionRow,
+                                    variant === 'correct' && styles.distributionRowCorrect,
+                                    variant === 'incorrect' && styles.distributionRowIncorrect,
+                                ]}
+                            >
+                                {rowContent}
+                            </LinearGradient>
+                        );
+                    }
+
                     return (
                         <View
                             key={choice.id}
-                            style={[styles.distributionRow, isCorrect ? styles.distributionCorrect : null, isMine ? styles.distributionMine : null]}
+                            style={[
+                                styles.distributionRow,
+                                styles.distributionRowDefault,
+                                variant === 'selected' && styles.distributionRowSelected,
+                            ]}
                         >
-                            <ThemedText style={styles.choiceBadgeText}>{String.fromCharCode(65 + index)}</ThemedText>
-                            <ThemedText style={styles.choiceLabel}>{choice.text}</ThemedText>
-                            <ThemedText style={styles.distributionCount}>{count}명</ThemedText>
+                            {rowContent}
                         </View>
                     );
                 })}
             </View>
-            <ThemedText style={styles.deltaText}>
-                {currentRound?.myAnswer
-                    ? `${currentRound.myAnswer.isCorrect ? '정답!' : '오답'} · ${currentRound.myAnswer.scoreDelta}점`
-                    : '이번 라운드에 응시하지 않았어요.'}
-            </ThemedText>
+            <View style={styles.scoreResultBadge}>
+                {currentRound?.myAnswer ? (
+                    <View style={styles.scoreResultContent}>
+                        <IconSymbol
+                            name={currentRound.myAnswer.isCorrect ? 'checkmark.circle.fill' : 'xmark.circle.fill'}
+                            size={20}
+                            color={currentRound.myAnswer.isCorrect ? successColor : dangerColor}
+                        />
+                        <ThemedText style={styles.scoreResultText}>
+                            {currentRound.myAnswer.isCorrect ? '정답!' : '오답'} · {currentRound.myAnswer.scoreDelta > 0 ? '+' : ''}
+                            {currentRound.myAnswer.scoreDelta}점
+                        </ThemedText>
+                    </View>
+                ) : (
+                    <ThemedText style={styles.scoreResultText}>이번 라운드에 응시하지 않았어요</ThemedText>
+                )}
+            </View>
             {isHost ? (
-                <Pressable
-                    style={[styles.button, styles.primaryButton, isPaused ? styles.buttonDisabled : null]}
+                <Button
+                    variant="outline"
+                    size="lg"
+                    fullWidth
                     onPress={handleAdvance}
                     disabled={isPaused}
                 >
-                    <ThemedText style={styles.primaryButtonText}>리더보드</ThemedText>
-                </Pressable>
+                    리더보드 보기
+                </Button>
             ) : null}
         </View>
     );
 
     const renderLeaderboard = () => (
         <View style={styles.revealCard}>
-            <ThemedText type="title">리더보드</ThemedText>
+            <View style={styles.iconHeadingRow}>
+                <IconSymbol name="trophy.fill" size={28} color={textColor} />
+                <ThemedText type="title" style={styles.cardTitle}>리더보드</ThemedText>
+            </View>
             <View style={styles.distributionList}>
                 {currentRound?.leaderboard?.top.length ? (
                     currentRound.leaderboard.top.map((entry) => {
                         const isMe = meParticipantId !== null && entry.participantId === meParticipantId;
+                        const isPodium = entry.rank != null && entry.rank <= 3;
+                        const podiumColor =
+                            entry.rank === 1 ? '#F5C044' : entry.rank === 2 ? '#CBD5E1' : '#F4B085';
                         return (
                             <View
                                 key={entry.participantId}
                                 style={[
                                     styles.distributionRow,
                                     styles.leaderboardRow,
-                                    entry.rank === 1 ? styles.leaderboardRankOne : null,
-                                    entry.rank === 2 ? styles.leaderboardRankTwo : null,
-                                    entry.rank === 3 ? styles.leaderboardRankThree : null,
-                                    isMe ? styles.leaderboardMeRow : null,
+                                    entry.rank === 1 && styles.leaderboardRankOne,
+                                    entry.rank === 2 && styles.leaderboardRankTwo,
+                                    entry.rank === 3 && styles.leaderboardRankThree,
+                                    isMe && styles.leaderboardMeRow,
                                 ]}
                             >
-                                <View style={styles.leaderboardRankBadge}>
-                                    <ThemedText style={styles.leaderboardRankText}>{entry.rank}</ThemedText>
+                                <View style={[styles.leaderboardRankBadge, isMe && styles.leaderboardRankBadgeMe]}>
+                                    {isPodium ? (
+                                        <IconSymbol name="medal.fill" size={20} color={podiumColor} />
+                                    ) : (
+                                        <ThemedText style={[styles.leaderboardRankText, isMe && styles.leaderboardRankTextMe]}>
+                                            {entry.rank}
+                                        </ThemedText>
+                                    )}
                                 </View>
                                 <View style={styles.leaderboardNameWrapper}>
                                     <ThemedText
                                         style={[
                                             styles.choiceLabel,
-                                            isMe ? styles.leaderboardMeText : null,
+                                            isMe && styles.leaderboardMeText,
                                         ]}
                                     >
                                         {entry.nickname}
                                     </ThemedText>
                                     {isMe ? (
-                                        <ThemedText style={styles.leaderboardMeHint}>나</ThemedText>
+                                        <View style={styles.meBadge}>
+                                            <ThemedText style={styles.meBadgeText}>나</ThemedText>
+                                        </View>
                                     ) : null}
                                 </View>
                                 <ThemedText
                                     style={[
                                         styles.distributionCount,
-                                        isMe ? styles.leaderboardMeText : null,
+                                        styles.leaderboardScore,
+                                        isMe && styles.leaderboardMeText,
                                     ]}
                                 >
                                     {entry.totalScore}점
@@ -1181,71 +1354,131 @@ export default function PartyPlayScreen() {
                 )}
             </View>
             {currentRound?.leaderboard?.me ? (
-                <ThemedText style={styles.deltaText}>
-                    현재 순위 #{currentRound.leaderboard.me.rank} · {currentRound.leaderboard.me.totalScore}점
-                </ThemedText>
+                <View style={styles.myRankBadge}>
+                    <ThemedText style={styles.myRankText}>
+                        현재 순위 #{currentRound.leaderboard.me.rank} · {currentRound.leaderboard.me.totalScore}점
+                    </ThemedText>
+                </View>
             ) : null}
-            <ThemedText style={styles.timerText}>
+            <ThemedText style={styles.nextRoundHint}>
                 {isFinalLeaderboard
-                    ? `${timeLeft ?? '-'}초 후에 최종 결과 화면으로 이동해요`
-                    : `다음 라운드까지 ${timeLeft ?? '-'}초`}
+                    ? `${timeLeft ?? '-'}초 후 최종 결과 화면으로 이동해요`
+                    : `다음 라운드 준비까지 ${timeLeft ?? '-'}초`}
             </ThemedText>
             {isHost && !pendingAction ? (
-                <Pressable
-                    style={[styles.button, styles.secondaryButton, isPaused ? styles.buttonDisabled : null]}
+                <Button
+                    size="lg"
+                    fullWidth
                     onPress={handleAdvance}
                     disabled={isPaused}
                 >
-                    <ThemedText style={styles.secondaryButtonText}>{isFinalLeaderboard ? '최종 결과' : '다음 라운드'}</ThemedText>
-                </Pressable>
+                    {isFinalLeaderboard ? '최종 결과 보기' : '바로 진행'}
+                </Button>
             ) : null}
         </View>
     );
 
-    const renderResults = () => (
-        <View style={styles.revealCard}>
-            <ThemedText type="title">최종 결과</ThemedText>
-            <View style={styles.distributionList}>
-                {participants.map((player, index) => (
-                    <View key={player.participantId} style={styles.distributionRow}>
-                        <ThemedText style={styles.choiceBadgeText}>#{player.rank ?? index + 1}</ThemedText>
-                        <View style={styles.resultNameWrapper}>
-                            <ThemedText style={styles.choiceLabel}>{player.nickname}</ThemedText>
-                            {player.userId && hostUserId && player.userId === hostUserId && !player.isConnected ? (
-                                <ThemedText style={styles.offlineTag}>오프라인</ThemedText>
-                            ) : null}
-                        </View>
-                        <ThemedText style={styles.distributionCount}>{player.totalScore}점</ThemedText>
+    const renderResults = () => {
+        const deckInfo = roomData?.deck;
+        const deckTitle = deckInfo?.title ?? '랜덤 덱';
+        const deckDescription =
+            deckInfo?.description ?? '게임을 만들 때 랜덤으로 선택된 덱입니다.';
+
+        return (
+            <View style={styles.revealCard}>
+                <View style={styles.iconHeadingRow}>
+                    <IconSymbol name="party.popper" size={28} color={textColor} />
+                    <ThemedText type="title" style={styles.cardTitle}>최종 결과</ThemedText>
+                </View>
+                <View style={styles.deckSummary}>
+                    <View style={styles.deckSummaryIcon}>
+                        <IconSymbol name={getDeckIcon(deckInfo?.slug)} size={24} color={textColor} />
                     </View>
-                ))}
+                    <View style={styles.deckSummaryText}>
+                        <ThemedText style={styles.deckSummaryTitle}>{deckTitle}</ThemedText>
+                        {deckDescription ? (
+                            <ThemedText style={styles.deckSummaryDescription}>{deckDescription}</ThemedText>
+                        ) : null}
+                    </View>
+                </View>
+                <View style={styles.distributionList}>
+                    {participants.map((player, index) => {
+                        const isMe = meParticipantId !== null && player.participantId === meParticipantId;
+                        const displayRank = player.rank ?? index + 1;
+                        const isPodium = player.rank != null && player.rank <= 3;
+                        const podiumColor =
+                            player.rank === 1 ? '#F5C044' : player.rank === 2 ? '#CBD5E1' : '#F4B085';
+                        return (
+                            <View
+                                key={player.participantId}
+                                style={[
+                                    styles.distributionRow,
+                                    styles.leaderboardRow,
+                                    player.rank === 1 && styles.leaderboardRankOne,
+                                    player.rank === 2 && styles.leaderboardRankTwo,
+                                    player.rank === 3 && styles.leaderboardRankThree,
+                                    isMe && styles.leaderboardMeRow,
+                                ]}
+                            >
+                                <View style={[styles.leaderboardRankBadge, isMe && styles.leaderboardRankBadgeMe]}>
+                                    {isPodium ? (
+                                        <IconSymbol name="medal.fill" size={20} color={podiumColor} />
+                                    ) : (
+                                        <ThemedText style={[styles.leaderboardRankText, isMe && styles.leaderboardRankTextMe]}>
+                                            #{displayRank}
+                                        </ThemedText>
+                                    )}
+                                </View>
+                                <View style={styles.resultNameWrapper}>
+                                    <ThemedText style={[styles.choiceLabel, isMe && styles.leaderboardMeText]}>
+                                        {player.nickname}
+                                    </ThemedText>
+                                    {isMe ? (
+                                        <View style={styles.meBadge}>
+                                            <ThemedText style={styles.meBadgeText}>나</ThemedText>
+                                        </View>
+                                    ) : null}
+                                    {player.userId && hostUserId && player.userId === hostUserId && !player.isConnected ? (
+                                        <ThemedText style={styles.offlineTag}>오프라인</ThemedText>
+                                    ) : null}
+                                </View>
+                                <ThemedText style={[styles.distributionCount, styles.leaderboardScore, isMe && styles.leaderboardMeText]}>
+                                    {player.totalScore}점
+                                </ThemedText>
+                            </View>
+                        );
+                    })}
+                </View>
+                <Button
+                    variant="default"
+                    size="lg"
+                    fullWidth
+                    onPress={handleRematch}
+                    disabled={isRematchPending || isLobbyPending || roomStatus !== 'results' || !isHost}
+                >
+                    리매치
+                </Button>
+                <Button
+                    variant="secondary"
+                    size="lg"
+                    fullWidth
+                    onPress={handleReturnToLobby}
+                    disabled={isLobbyPending || isRematchPending || roomStatus !== 'results' || !isHost}
+                >
+                    대기실로
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="lg"
+                    fullWidth
+                    onPress={handleLeave}
+                    disabled={isLobbyPending || isRematchPending || roomStatus !== 'results'}
+                >
+                    나가기
+                </Button>
             </View>
-            <Pressable
-                style={[
-                    styles.button,
-                    styles.primaryButton,
-                    (isRematchPending || isLobbyPending || roomStatus !== 'results' || !isHost) ? styles.buttonDisabled : null,
-                ]}
-                onPress={handleRematch}
-                disabled={isRematchPending || isLobbyPending || roomStatus !== 'results'}
-            >
-                <ThemedText style={styles.primaryButtonText}>리매치</ThemedText>
-            </Pressable>
-            <Pressable
-                style={[styles.button, styles.secondaryButton, (isLobbyPending || isRematchPending || roomStatus !== 'results' || !isHost) ? styles.buttonDisabled : null]}
-                onPress={handleReturnToLobby}
-                disabled={isLobbyPending || isRematchPending || roomStatus !== 'results'}
-            >
-                <ThemedText style={styles.secondaryButtonText}>대기실로</ThemedText>
-            </Pressable>
-            <Pressable
-                style={[styles.ghostButton, isLobbyPending || isRematchPending || roomStatus !== 'results' ? styles.ghostButtonDisabled : null]}
-                onPress={handleLeave}
-                disabled={isLobbyPending || isRematchPending || roomStatus !== 'results'}
-            >
-                <ThemedText style={styles.ghostButtonText}>나가기</ThemedText>
-            </Pressable>
-        </View>
-    );
+        );
+    };
 
     const renderPendingBanner = () => {
         if (!pendingAction) return null;
@@ -1261,9 +1494,9 @@ export default function PartyPlayScreen() {
                         : '잠시 후 자동으로 실행됩니다.'}
                 </ThemedText>
                 {isHost ? (
-                    <Pressable style={styles.pendingCancelButton} onPress={handleCancelPending}>
-                        <ThemedText style={styles.pendingCancelLabel}>취소</ThemedText>
-                    </Pressable>
+                    <Button fullWidth size="sm" onPress={handleCancelPending}>
+                        취소
+                    </Button>
                 ) : null}
             </View>
         );
@@ -1276,9 +1509,12 @@ export default function PartyPlayScreen() {
         const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         return (
             <View style={styles.hostBanner}>
-                <ThemedText type="subtitle" style={styles.hostBannerTitle}>
-                    ⌛ 재접속 대기 중 ({formattedTime})
-                </ThemedText>
+                <View style={styles.iconMessageRow}>
+                    <IconSymbol name="hourglass" size={20} color={warningColor} />
+                    <ThemedText type="subtitle" style={styles.hostBannerTitle}>
+                        재접속 대기 중 ({formattedTime})
+                    </ThemedText>
+                </View>
                 <ThemedText style={styles.hostBannerSubtitle}>
                     {hostNickname}님 연결을 기다리는 중이에요. 복구되면 자동으로 이어집니다.
                 </ThemedText>
@@ -1291,16 +1527,22 @@ export default function PartyPlayScreen() {
         if (connectionState === 'reconnecting') {
             banners.push(
                 <View key="self_reconnecting" style={styles.connectionBanner}>
-                    <ThemedText style={styles.connectionBannerText}>⚠️ 연결이 불안정합니다… 다시 연결 중</ThemedText>
+                    <View style={styles.connectionBannerRow}>
+                        <IconSymbol name="exclamationmark.triangle.fill" size={18} color={warningColor} />
+                        <ThemedText style={styles.connectionBannerText}>연결이 불안정합니다… 다시 연결 중</ThemedText>
+                    </View>
                 </View>
             );
         }
         if (!isHost && hostConnectionState === 'waiting') {
             banners.push(
                 <View key="host_reconnecting" style={styles.connectionBanner}>
-                    <ThemedText style={styles.connectionBannerText}>
-                        ⚠️ 호스트 연결이 불안정합니다… 다시 연결 중
-                    </ThemedText>
+                    <View style={styles.connectionBannerRow}>
+                        <IconSymbol name="exclamationmark.triangle.fill" size={18} color={warningColor} />
+                        <ThemedText style={styles.connectionBannerText}>
+                            호스트 연결이 불안정합니다… 다시 연결 중
+                        </ThemedText>
+                    </View>
                 </View>
             );
         }
@@ -1326,18 +1568,19 @@ export default function PartyPlayScreen() {
                     <View style={styles.graceProgressBar}>
                         <View style={[styles.graceProgressFill, { width: `${progress * 100}%` }]} />
                     </View>
-                    <Pressable
-                        style={[styles.button, styles.primaryButton, isManualReconnectPending ? styles.buttonDisabled : null]}
+                    <Button
+                        variant="default"
+                        size="lg"
+                        fullWidth
                         onPress={handleManualReconnect}
                         disabled={isManualReconnectPending}
+                        loading={isManualReconnectPending}
                     >
-                        <ThemedText style={styles.primaryButtonText}>
-                            {isManualReconnectPending ? '재시도 중...' : '재연결 시도'}
-                        </ThemedText>
-                    </Pressable>
-                    <Pressable style={styles.ghostButton} onPress={handleLeave}>
-                        <ThemedText style={styles.ghostButtonText}>나가기</ThemedText>
-                    </Pressable>
+                        {isManualReconnectPending ? '재시도 중...' : '재연결 시도'}
+                    </Button>
+                    <Button variant="ghost" size="lg" fullWidth onPress={handleLeave}>
+                        나가기
+                    </Button>
                 </View>
             </View>
         );
@@ -1358,17 +1601,22 @@ export default function PartyPlayScreen() {
                 <View style={styles.graceOverlay}>
                     <View style={styles.graceBackdrop} />
                     <View style={styles.graceCard}>
-                        <ThemedText style={styles.graceTitle}>👑 새로운 호스트가 지정되었어요</ThemedText>
+                        <View style={styles.graceTitleRow}>
+                            <IconSymbol name="crown.fill" size={24} color={warningColor} />
+                            <ThemedText style={styles.graceTitle}>새로운 호스트가 지정되었어요</ThemedText>
+                        </View>
                         <ThemedText style={styles.graceSubtitle}>{nextHostMessage}</ThemedText>
-                        <Pressable
-                            style={[styles.button, styles.primaryButton]}
+                        <Button
+                            variant="default"
+                            size="lg"
+                            fullWidth
                             onPress={() => setPromotedToHost(false)}
                         >
-                            <ThemedText style={styles.primaryButtonText}>확인</ThemedText>
-                        </Pressable>
-                        <Pressable style={[styles.button, styles.primaryButton]} onPress={handleLeave}>
-                            <ThemedText style={styles.primaryButtonText}>나가기</ThemedText>
-                        </Pressable>
+                            확인
+                        </Button>
+                        <Button variant="secondary" size="lg" fullWidth onPress={handleLeave}>
+                            나가기
+                        </Button>
                     </View>
                 </View>
             );
@@ -1387,7 +1635,10 @@ export default function PartyPlayScreen() {
                 <View style={styles.graceOverlay}>
                     <View style={styles.graceBackdrop} />
                     <View style={styles.graceCard}>
-                        <ThemedText style={styles.graceTitle}>🔄 호스트 연결이 끊겼습니다.</ThemedText>
+                        <View style={styles.graceTitleRow}>
+                            <IconSymbol name="arrow.triangle.2.circlepath" size={24} color={infoColor} />
+                            <ThemedText style={styles.graceTitle}>호스트 연결이 끊겼습니다.</ThemedText>
+                        </View>
                         <ThemedText style={styles.graceSubtitle}>
                             {hostNickname}님 연결을 복구 중이에요. {formattedTime} 안에 돌아오면 계속 진행돼요.
                         </ThemedText>
@@ -1396,9 +1647,9 @@ export default function PartyPlayScreen() {
                         </View>
                         <ThemedText style={styles.graceTimer}>{formattedTime}</ThemedText>
                         <ThemedText style={styles.graceSubtitle}>자동으로 재시도하고 있어요.</ThemedText>
-                        <Pressable style={styles.ghostButton} onPress={handleLeave}>
-                            <ThemedText style={styles.ghostButtonText}>나가기</ThemedText>
-                        </Pressable>
+                        <Button variant="ghost" size="lg" fullWidth onPress={handleLeave}>
+                            나가기
+                        </Button>
                     </View>
                 </View>
             );
@@ -1407,11 +1658,14 @@ export default function PartyPlayScreen() {
             <View style={styles.graceOverlay}>
                 <View style={styles.graceBackdrop} />
                 <View style={styles.graceCard}>
-                    <ThemedText style={styles.graceTitle}>😢 호스트 연결이 오래 끊겼습니다.</ThemedText>
+                    <View style={styles.graceTitleRow}>
+                        <IconSymbol name="face.frown" size={24} color={dangerColor} />
+                        <ThemedText style={styles.graceTitle}>호스트 연결이 오래 끊겼습니다.</ThemedText>
+                    </View>
                     <ThemedText style={styles.graceSubtitle}>{nextHostMessage}</ThemedText>
-                    <Pressable style={[styles.button, styles.primaryButton]} onPress={handleLeave}>
-                        <ThemedText style={styles.primaryButtonText}>나가기</ThemedText>
-                    </Pressable>
+                    <Button variant="default" size="lg" fullWidth onPress={handleLeave}>
+                        나가기
+                    </Button>
                 </View>
             </View>
         );
@@ -1420,9 +1674,16 @@ export default function PartyPlayScreen() {
     const renderLeaveButton = () => {
         if (roomStatus === 'results') return null;
         return (
-            <Pressable style={styles.leaveControl} onPress={handleLeave}>
-                <ThemedText style={styles.leaveControlLabel}>나가기</ThemedText>
-            </Pressable>
+            <Button
+                variant="ghost"
+                size="sm"
+                rounded="full"
+                style={styles.leaveControl}
+                onPress={handleLeave}
+                accessibilityLabel="현재 퀴즈룸 나가기"
+            >
+                나가기
+            </Button>
         );
     };
 
@@ -1455,13 +1716,15 @@ export default function PartyPlayScreen() {
         const disabled = isPausePending || !!pendingAction;
         return (
             <View style={styles.pauseControls}>
-                <Pressable
-                    style={[styles.pauseControlButton, disabled ? styles.buttonDisabled : null]}
+                <Button
+                    variant="secondary"
+                    size="sm"
+                    rounded="full"
                     onPress={handlePause}
                     disabled={disabled}
                 >
-                    <ThemedText style={styles.pauseControlLabel}>일시정지</ThemedText>
-                </Pressable>
+                    일시정지
+                </Button>
             </View>
         );
     };
@@ -1470,23 +1733,29 @@ export default function PartyPlayScreen() {
         if (!isPaused) return null;
         return (
             <View style={styles.pauseBanner}>
-                <ThemedText type="subtitle" style={styles.pauseBannerTitle}>
-                    게임이 일시정지됐어요
-                </ThemedText>
+                <View style={styles.iconHeadingRow}>
+                    <IconSymbol name="pause.circle.fill" size={24} color={infoColor} />
+                    <ThemedText type="subtitle" style={styles.pauseBannerTitle}>
+                        게임이 일시정지됐어요
+                    </ThemedText>
+                </View>
                 <ThemedText style={styles.pauseBannerSubtitle}>
-                    {isHost ? '재개 버튼을 눌러 게임을 이어가세요.' : '호스트가 곧 게임을 다시 시작할 거예요.'}
+                    {isHost ? '재개 버튼을 눌러 게임을 이어가세요' : '호스트가 곧 게임을 다시 시작할 거예요'}
                 </ThemedText>
                 {pausedRemainingSeconds !== null ? (
                     <ThemedText style={styles.pauseBannerHint}>재개 시 남은 시간 약 {pausedRemainingSeconds}초</ThemedText>
                 ) : null}
                 {isHost ? (
-                    <Pressable
-                        style={[styles.button, styles.primaryButton, isResumePending ? styles.buttonDisabled : null]}
+                    <Button
+                        variant="secondary"
+                        rounded="full"
                         onPress={handleResume}
                         disabled={isResumePending}
+                        loading={isResumePending}
+                        style={styles.resumeButton}
                     >
-                        <ThemedText style={styles.primaryButtonText}>재개</ThemedText>
-                    </Pressable>
+                        재개
+                    </Button>
                 ) : null}
             </View>
         );
@@ -1494,7 +1763,7 @@ export default function PartyPlayScreen() {
 
     const renderBootstrapping = () => (
         <View style={styles.centerCard}>
-            <ActivityIndicator size="large" color={Palette.teal600} />
+            <ActivityIndicator size="large" color={Palette.gray900} />
             <ThemedText style={styles.centerSubtitle}>게임을 준비 중이에요...</ThemedText>
         </View>
     );
@@ -1532,16 +1801,23 @@ export default function PartyPlayScreen() {
         content = renderBootstrapping();
     }
 
+    const leaveControl = connectionState === 'online' ? renderLeaveButton() : null;
+    const pauseControl = connectionState === 'online' ? renderPauseControls() : null;
+
     return (
         <>
-            <Stack.Screen options={{ title: '파티 퀴즈', headerBackVisible: false }} />
-            <ThemedView style={[styles.container, { paddingBottom: insets.bottom + Spacing.lg }]}>
+            <Stack.Screen options={{ headerShown: false }} />
+            <ThemedView style={[styles.container, { paddingTop: insets.top + Spacing.md, paddingBottom: insets.bottom + Spacing.lg }]}>
                 {/* {isHost ? renderDelaySelector() : null} */}
                 {renderConnectionBanner()}
                 {connectionState === 'online' ? renderPendingBanner() : null}
                 {connectionState === 'online' && hostBannerVisible ? renderHostBanner() : null}
-                {connectionState === 'online' ? renderLeaveButton() : null}
-                {connectionState === 'online' ? renderPauseControls() : null}
+                {leaveControl || pauseControl ? (
+                    <View style={styles.sessionControls}>
+                        {pauseControl}
+                        {leaveControl}
+                    </View>
+                ) : null}
                 {connectionState === 'online' ? renderPauseNotice() : null}
                 {content}
                 {renderGraceOverlay()}
@@ -1554,7 +1830,8 @@ export default function PartyPlayScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Palette.surfaceMuted,
+        backgroundColor: Palette.gray25,
+        paddingHorizontal: Spacing.lg,
     },
     delayPresetRow: {
         flexDirection: 'row',
@@ -1565,30 +1842,30 @@ const styles = StyleSheet.create({
     },
     delayLabel: {
         fontWeight: '600',
-        color: Palette.slate500,
+        color: Palette.gray500,
     },
     delayChip: {
         paddingHorizontal: Spacing.md,
         paddingVertical: Spacing.xs,
         borderRadius: Radius.pill,
-        backgroundColor: Palette.slate200,
+        backgroundColor: Palette.gray200,
     },
     delayChipActive: {
-        backgroundColor: Palette.teal200,
+        backgroundColor: Palette.gray100,
     },
     delayChipText: {
-        color: Palette.slate500,
+        color: Palette.gray500,
         fontWeight: '500',
     },
     delayChipTextActive: {
-        color: Palette.teal600,
+        color: Palette.gray900,
         fontWeight: '700',
     },
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Palette.surfaceMuted,
+        backgroundColor: Palette.gray25,
     },
     loadingLabel: {
         marginTop: Spacing.md,
@@ -1596,34 +1873,80 @@ const styles = StyleSheet.create({
     disconnectLabel: {
         textAlign: 'center',
         marginHorizontal: Spacing.lg,
-    },
-    retryButton: {
-        marginTop: Spacing.md,
-        paddingVertical: Spacing.sm,
-        paddingHorizontal: Spacing.lg,
-        backgroundColor: Palette.coral600,
-        borderRadius: Radius.md,
-    },
-    retryLabel: {
-        color: Palette.surface,
+        lineHeight: 22,
     },
     centerCard: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: Spacing.lg,
-        backgroundColor: Palette.surface,
+        padding: Spacing.xxl,
+        backgroundColor: Palette.white,
         borderRadius: Radius.lg,
-        shadowColor: '#2F288033',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        gap: Spacing.lg,
+        ...Elevation.sm,
+    },
+    cardTitle: {
+        marginBottom: Spacing.xs,
+    },
+    iconHeadingRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.sm,
+    },
+    iconMessageRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.xs,
+    },
+    graceTitleRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.sm,
+    },
+    deckSummary: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.md,
+        padding: Spacing.md,
+        borderRadius: Radius.md,
+        borderWidth: 1,
+        borderColor: Palette.gray100,
+        backgroundColor: Palette.gray50,
+    },
+    deckSummaryIcon: {
+        width: 48,
+        height: 48,
+        borderRadius: Radius.md,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Palette.white,
+        borderWidth: 1,
+        borderColor: Palette.gray200,
+    },
+    deckSummaryText: {
+        flex: 1,
+        gap: Spacing.xs,
+    },
+    deckSummaryTitle: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: Palette.gray900,
+    },
+    deckSummaryDescription: {
+        fontSize: 13,
+        color: Palette.gray600,
+        lineHeight: 18,
     },
     centerSubtitle: {
-        marginTop: Spacing.sm,
-        color: Palette.slate500,
+        fontSize: 16,
+        color: Palette.gray600,
         textAlign: 'center',
+        lineHeight: 24,
+    },
+    timerHighlight: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: Palette.gray900,
     },
     returningLabel: {
         marginTop: Spacing.md,
@@ -1632,305 +1955,433 @@ const styles = StyleSheet.create({
         marginTop: Spacing.sm,
         marginBottom: Spacing.sm,
         textAlign: 'center',
-        color: Palette.slate500,
-    },
-    button: {
-        marginTop: Spacing.md,
-        paddingVertical: Spacing.sm,
-        paddingHorizontal: Spacing.lg,
-        borderRadius: Radius.md,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    buttonDisabled: {
-        opacity: 0.6,
-    },
-    primaryButton: {
-        backgroundColor: Palette.coral600,
-    },
-    primaryButtonText: {
-        color: Palette.surface,
-    },
-    secondaryButton: {
-        backgroundColor: Palette.slate200,
-    },
-    secondaryButtonText: {
-        color: Palette.slate900,
-    },
-    ghostButton: {
-        marginTop: Spacing.sm,
-        paddingVertical: Spacing.sm,
-        alignItems: 'center',
-    },
-    ghostButtonDisabled: {
-        opacity: 0.6,
-    },
-    ghostButtonText: {
-        color: Palette.slate500,
-        textDecorationLine: 'underline',
+        color: Palette.gray500,
     },
     questionCard: {
         flex: 1,
-        padding: Spacing.lg,
-        backgroundColor: Palette.surface,
+        padding: Spacing.xl,
+        backgroundColor: Palette.white,
         borderRadius: Radius.lg,
-        shadowColor: '#2F288033',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        gap: Spacing.lg,
+        ...Elevation.sm,
+    },
+    questionHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     roundCaption: {
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: '600',
-        color: Palette.slate500,
-        marginBottom: Spacing.xs,
+        color: Palette.gray500,
+        letterSpacing: 0.5,
+    },
+    timerBadge: {
+        paddingHorizontal: Spacing.md,
+        paddingVertical: Spacing.xs,
+        backgroundColor: Palette.gray900,
+        borderRadius: Radius.pill,
+    },
+    timerBadgeText: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: Palette.white,
     },
     questionPrompt: {
-        marginBottom: Spacing.md,
+        fontSize: 18,
+        lineHeight: 28,
+        fontWeight: '600',
     },
     choiceList: {
-        marginBottom: Spacing.md,
+        gap: Spacing.md,
     },
     choiceButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: Spacing.sm,
-        paddingHorizontal: Spacing.md,
-        marginBottom: Spacing.sm,
-        backgroundColor: Palette.surfaceMuted,
+        paddingVertical: Spacing.md,
+        paddingHorizontal: Spacing.lg,
+        backgroundColor: Palette.gray50,
         borderRadius: Radius.md,
-        borderWidth: 1,
-        borderColor: Palette.slate200,
+        borderWidth: 2,
+        borderColor: Palette.gray200,
     },
     choiceSelected: {
-        backgroundColor: Palette.coral200,
-        borderColor: Palette.coral600,
+        backgroundColor: Palette.gray900,
+        borderColor: Palette.gray900,
     },
     choicePressed: {
-        opacity: 0.7,
+        opacity: 0.8,
+        transform: [{ scale: 0.98 }],
     },
     choiceBadge: {
-        width: 24,
-        height: 24,
+        width: 32,
+        height: 32,
         borderRadius: Radius.sm,
-        backgroundColor: Palette.teal600,
+        backgroundColor: Palette.gray300,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: Spacing.sm,
+        marginRight: Spacing.md,
+    },
+    choiceBadgeSelected: {
+        backgroundColor: Palette.white,
     },
     choiceBadgeText: {
-        color: Palette.surface,
-        fontSize: 14,
-        fontWeight: 'bold',
+        color: Palette.gray900,
+        fontSize: 16,
+        fontWeight: '700',
+    },
+    choiceBadgeTextSelected: {
+        color: Palette.gray900,
     },
     choiceLabel: {
         flex: 1,
         fontSize: 16,
-        color: Palette.slate900,
+        lineHeight: 24,
+        color: Palette.gray900,
+        fontWeight: '500',
+    },
+    choiceLabelSelected: {
+        color: Palette.white,
+        fontWeight: '600',
     },
     timerText: {
-        marginTop: Spacing.md,
         textAlign: 'center',
-        color: Palette.slate500,
+        color: Palette.gray500,
     },
     revealCard: {
         flex: 1,
-        padding: Spacing.lg,
-        backgroundColor: Palette.surface,
+        padding: Spacing.xl,
+        backgroundColor: Palette.white,
         borderRadius: Radius.lg,
-        shadowColor: '#2F288033',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        gap: Spacing.lg,
+        ...Elevation.sm,
     },
-    revealSubtitle: {
-        marginTop: Spacing.sm,
-        marginBottom: Spacing.md,
-        color: Palette.slate500,
+    correctAnswerBadge: {
+        padding: Spacing.md,
+        backgroundColor: Palette.gray50,
+        borderRadius: Radius.md,
+        borderWidth: 2,
+        borderColor: Palette.gray900,
+    },
+    correctAnswerLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: Palette.gray900,
+        textAlign: 'center',
+    },
+    correctAnswerHighlight: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: Palette.gray900,
     },
     explanationText: {
-        marginBottom: Spacing.md,
-        color: Palette.slate900,
-        lineHeight: 20,
+        fontSize: 15,
+        color: Palette.gray700,
+        lineHeight: 22,
+        paddingVertical: Spacing.sm,
+        paddingHorizontal: Spacing.md,
+        backgroundColor: Palette.gray50,
+        borderRadius: Radius.md,
+    },
+    scoreResultBadge: {
+        padding: Spacing.md,
+        backgroundColor: Palette.gray900,
+        borderRadius: Radius.md,
+    },
+    scoreResultContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: Spacing.sm,
+    },
+    scoreResultText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: Palette.white,
+        textAlign: 'center',
     },
     distributionList: {
-        marginBottom: Spacing.md,
+        gap: Spacing.sm,
     },
     distributionRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: Spacing.sm,
-        borderBottomWidth: 1,
-        borderBottomColor: Palette.slate200,
+        paddingVertical: Spacing.md,
+        paddingHorizontal: Spacing.md,
+        borderRadius: Radius.sm,
+        gap: Spacing.md,
+    },
+    distributionRowDefault: {
+        borderRadius: Radius.md,
+        borderWidth: 1,
+        borderColor: Palette.gray100,
+        backgroundColor: Palette.white,
+    },
+    distributionRowContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.md,
+        flex: 1,
+    },
+    distributionRowCorrect: {
+        borderRadius: Radius.md,
+        shadowColor: '#00000050',
+        shadowOpacity: 0.25,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 8 },
+        elevation: 8,
+    },
+    distributionRowIncorrect: {
+        borderRadius: Radius.md,
+        shadowColor: '#EB575780',
+        shadowOpacity: 0.4,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 8 },
+        elevation: 8,
+    },
+    distributionRowSelected: {
+        borderRadius: Radius.md,
+        borderWidth: 1,
+        borderColor: Palette.gray300,
+        backgroundColor: Palette.gray50,
+    },
+    distributionBadge: {
+        width: 32,
+        height: 32,
+        borderRadius: Radius.sm,
+        backgroundColor: Palette.gray300,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    distributionBadgeCorrect: {
+        backgroundColor: Palette.gray900,
+        borderWidth: 1,
+        borderColor: Palette.white,
+    },
+    distributionBadgeElevated: {
+        backgroundColor: 'rgba(255,255,255,0.15)',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.4)',
+    },
+    distributionBadgeSelected: {
+        backgroundColor: Palette.gray200,
+        borderWidth: 1,
+        borderColor: Palette.gray400,
+    },
+    distributionBadgeText: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: Palette.gray900,
+    },
+    distributionLabel: {
+        fontSize: 15,
+    },
+    distributionTextGroup: {
+        flex: 1,
+    },
+    distributionMeta: {
+        fontSize: 12,
+        color: Palette.gray500,
     },
     leaderboardNameWrapper: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.xs,
-        paddingRight: Spacing.md,
+        gap: Spacing.sm,
     },
     resultNameWrapper: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.xs,
-    },
-    distributionCorrect: {
-        backgroundColor: '#DCFCE7',
-        borderBottomColor: Palette.success,
-    },
-    distributionMine: {
-        backgroundColor: Palette.coral200,
-        borderBottomColor: Palette.coral600,
+        gap: Spacing.sm,
     },
     distributionCount: {
-        fontSize: 14,
-        color: Palette.slate500,
+        fontSize: 15,
+        fontWeight: '600',
+        color: Palette.gray600,
+    },
+    distributionCountCorrect: {
+        color: Palette.white,
+    },
+    distributionCountSelected: {
+        color: Palette.gray900,
+    },
+    distributionCountGroup: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.xs,
     },
     offlineTag: {
-        fontSize: 12,
-        color: Palette.slate500,
-    },
-    deltaText: {
-        marginTop: Spacing.md,
-        textAlign: 'center',
-        color: Palette.slate500,
+        fontSize: 11,
+        color: Palette.gray400,
+        fontStyle: 'italic',
     },
     leaderboardRow: {
-        backgroundColor: Palette.surfaceMuted,
-        gap: Spacing.sm,
-        paddingHorizontal: Spacing.sm,
+        backgroundColor: Palette.gray50,
     },
     leaderboardRankBadge: {
-        width: 32,
-        height: 32,
+        width: 40,
+        height: 40,
         borderRadius: Radius.md,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: Palette.slate200,
+        backgroundColor: Palette.gray200,
+    },
+    leaderboardRankBadgeMe: {
+        backgroundColor: Palette.gray900,
     },
     leaderboardRankText: {
+        fontSize: 16,
         fontWeight: '700',
-        color: Palette.slate500,
+        color: Palette.gray600,
+    },
+    leaderboardRankTextMe: {
+        color: Palette.white,
     },
     leaderboardRankOne: {
-        backgroundColor: '#FBE7C6',
+        backgroundColor: Palette.gray100,
     },
     leaderboardRankTwo: {
-        backgroundColor: '#E0ECFF',
+        backgroundColor: Palette.gray50,
     },
     leaderboardRankThree: {
-        backgroundColor: '#E8E0FF',
+        backgroundColor: Palette.offWhite,
     },
     leaderboardMeRow: {
+        backgroundColor: Palette.gray100,
         borderWidth: 2,
-        borderColor: Palette.coral600,
-        backgroundColor: Palette.coral200,
+        borderColor: Palette.gray900,
     },
     leaderboardMeText: {
-        color: Palette.coral600,
+        color: Palette.gray900,
         fontWeight: '700',
     },
-    leaderboardMeHint: {
-        fontSize: 12,
-        color: Palette.coral400,
-        fontWeight: '600',
-    },
-    leaveControl: {
-        alignSelf: 'flex-end',
-        paddingVertical: Spacing.xs,
-        paddingHorizontal: Spacing.md,
-        borderRadius: Radius.pill,
-        backgroundColor: Palette.slate200,
-        marginBottom: Spacing.sm,
-    },
-    leaveControlLabel: {
-        color: Palette.slate900,
-        fontWeight: '600',
-    },
-    pauseControls: {
-        alignSelf: 'flex-end',
-        marginBottom: Spacing.sm,
-    },
-    pauseControlButton: {
-        paddingVertical: Spacing.xs,
-        paddingHorizontal: Spacing.md,
-        borderRadius: Radius.pill,
-        backgroundColor: Palette.slate900,
-    },
-    pauseControlLabel: {
-        color: Palette.surface,
-        fontWeight: '600',
-    },
-    pauseBanner: {
-        padding: Spacing.md,
-        backgroundColor: Palette.slate900,
-        borderRadius: Radius.md,
-        marginBottom: Spacing.md,
-        gap: Spacing.sm,
-    },
-    pauseBannerTitle: {
-        color: Palette.surface,
+    leaderboardScore: {
         fontWeight: '700',
     },
-    pauseBannerSubtitle: {
-        color: Palette.slate200,
+    meBadge: {
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: 2,
+        backgroundColor: Palette.gray900,
+        borderRadius: Radius.sm,
     },
-    pauseBannerHint: {
-        color: Palette.slate200,
+    meBadgeText: {
+        fontSize: 11,
+        fontWeight: '700',
+        color: Palette.white,
     },
-    pendingBanner: {
+    myRankBadge: {
         padding: Spacing.md,
-        backgroundColor: Palette.teal200,
+        backgroundColor: Palette.gray50,
         borderRadius: Radius.md,
-        marginBottom: Spacing.md,
-        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: Palette.gray200,
     },
-    pendingTitle: {
-        marginBottom: Spacing.sm,
-    },
-    pendingSubtitle: {
-        marginBottom: Spacing.sm,
+    myRankText: {
+        fontSize: 15,
+        fontWeight: '600',
+        color: Palette.gray700,
         textAlign: 'center',
     },
-    pendingCancelButton: {
-        paddingVertical: Spacing.sm,
-        paddingHorizontal: Spacing.lg,
-        backgroundColor: Palette.slate200,
-        borderRadius: Radius.md,
+    nextRoundHint: {
+        fontSize: 14,
+        color: Palette.gray500,
+        textAlign: 'center',
     },
-    pendingCancelLabel: {
-        color: Palette.slate900,
+    sessionControls: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: Spacing.sm,
+        marginBottom: Spacing.md,
+    },
+    leaveControl: {
+        paddingHorizontal: Spacing.lg,
+    },
+    pauseControls: {
+        flexDirection: 'row',
+    },
+    resumeButton: {
+        backgroundColor: Palette.gray50,
+        borderColor: Palette.gray200,
+    },
+    pauseBanner: {
+        padding: Spacing.lg,
+        backgroundColor: Palette.gray900,
+        borderRadius: Radius.lg,
+        marginBottom: Spacing.md,
+        gap: Spacing.md,
+        ...Elevation.sm,
+    },
+    pauseBannerTitle: {
+        color: Palette.white,
+        fontWeight: '700',
+        fontSize: 18,
+    },
+    pauseBannerSubtitle: {
+        fontSize: 15,
+        color: Palette.gray200,
+        lineHeight: 22,
+    },
+    pauseBannerHint: {
+        fontSize: 14,
+        color: Palette.gray200,
+    },
+    pendingBanner: {
+        padding: Spacing.lg,
+        backgroundColor: Palette.gray100,
+        borderRadius: Radius.lg,
+        marginBottom: Spacing.md,
+        alignItems: 'center',
+        gap: Spacing.md,
+        ...Elevation.xs,
+    },
+    pendingTitle: {
+        fontSize: 18,
+        fontWeight: '700',
+    },
+    pendingSubtitle: {
+        fontSize: 15,
+        textAlign: 'center',
+        color: Palette.gray600,
+        lineHeight: 22,
     },
     hostBanner: {
-        padding: Spacing.md,
-        backgroundColor: Palette.teal200,
-        borderRadius: Radius.md,
+        padding: Spacing.lg,
+        backgroundColor: Palette.gray100,
+        borderRadius: Radius.lg,
         marginBottom: Spacing.md,
-        borderWidth: 1,
-        borderColor: Palette.teal600,
+        borderWidth: 2,
+        borderColor: Palette.gray900,
+        gap: Spacing.sm,
+        ...Elevation.xs,
     },
     hostBannerTitle: {
-        color: Palette.teal600,
+        fontSize: 16,
+        color: Palette.gray900,
         fontWeight: '700',
     },
     hostBannerSubtitle: {
-        marginTop: Spacing.xs,
-        color: Palette.slate500,
+        fontSize: 14,
+        color: Palette.gray600,
+        lineHeight: 20,
     },
     connectionBanner: {
-        padding: Spacing.sm,
-        backgroundColor: Palette.teal200,
-        borderRadius: Radius.md,
-        marginBottom: Spacing.sm,
+        padding: Spacing.md,
+        backgroundColor: Palette.gray100,
+        borderRadius: Radius.lg,
+        marginBottom: Spacing.md,
         alignItems: 'center',
+        ...Elevation.xs,
+    },
+    connectionBannerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.xs,
     },
     connectionBannerText: {
-        color: Palette.teal600,
+        fontSize: 14,
+        color: Palette.gray900,
         fontWeight: '600',
     },
     graceOverlay: {
@@ -1944,39 +2395,44 @@ const styles = StyleSheet.create({
     },
     graceBackdrop: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(18, 13, 36, 0.45)',
+        backgroundColor: 'rgba(26, 26, 26, 0.45)',
     },
     graceCard: {
-        width: '85%',
-        padding: Spacing.lg,
+        width: '90%',
+        maxWidth: 400,
+        padding: Spacing.xxl,
         borderRadius: Radius.lg,
-        backgroundColor: Palette.surface,
+        backgroundColor: Palette.white,
         alignItems: 'center',
-        gap: Spacing.md,
+        gap: Spacing.lg,
+        ...Elevation.sm,
     },
     graceTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '700',
-        color: Palette.slate900,
+        color: Palette.gray900,
+        textAlign: 'center',
     },
     graceSubtitle: {
+        fontSize: 15,
         textAlign: 'center',
-        color: Palette.slate500,
+        color: Palette.gray600,
+        lineHeight: 22,
     },
     graceTimer: {
-        fontSize: 24,
+        fontSize: 32,
         fontWeight: '700',
-        color: Palette.coral600,
+        color: Palette.gray900,
     },
     graceProgressBar: {
         width: '100%',
         height: 8,
         borderRadius: Radius.pill,
-        backgroundColor: Palette.slate200,
+        backgroundColor: Palette.gray200,
         overflow: 'hidden',
     },
     graceProgressFill: {
         height: '100%',
-        backgroundColor: Palette.coral600,
+        backgroundColor: Palette.gray900,
     },
 });

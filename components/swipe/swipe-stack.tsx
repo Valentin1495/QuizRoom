@@ -5,9 +5,13 @@ import {
   BottomSheetView,
   type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Animated,
+  Dimensions,
+  PanResponder,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -18,7 +22,7 @@ import {
 import { hideResultToast, showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
-import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
+import { Colors, Elevation, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -63,8 +67,40 @@ const INITIAL_SESSION_STATS: SessionStats = {
 };
 
 const MIN_STACK_HEIGHT = 420;
+const ONBOARDING_KEY = '@swipe_onboarding_completed';
 
 const createSwipeSessionId = (key: string) => `swipe:${key}:${Date.now()}`;
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SWIPE_RIGHT_THRESHOLD = 120;
+const SWIPE_LEFT_THRESHOLD = -110;
+
+const ONBOARDING_SLIDES = [
+  {
+    id: 'slide_1',
+    type: 'choice' as const,
+    title: '정답을 선택해보세요',
+    body: '아래 보기 중 하나를 눌러보세요',
+    instruction: '✅ 아무 보기나 선택해보세요',
+    choices: ['보기 A', '보기 B', '보기 C', '보기 D'],
+  },
+  {
+    id: 'slide_2',
+    type: 'swipe' as const,
+    title: '오른쪽으로 스와이프하세요',
+    body: '정답을 선택한 후 다음 카드로 넘어가요',
+    instruction: '👉 이 카드를 오른쪽으로 스와이프',
+    direction: 'right' as const,
+  },
+  {
+    id: 'slide_3',
+    type: 'swipe' as const,
+    title: '왼쪽으로 스와이프하세요',
+    body: '신고하거나 더 많은 옵션을 볼 수 있어요',
+    instruction: '👈 이 카드를 왼쪽으로 스와이프',
+    direction: 'left' as const,
+  },
+] as const;
 
 export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackProps) {
   const {
@@ -142,12 +178,38 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const [reportSubject, setReportSubject] = useState<SwipeFeedQuestion | null>(null);
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
   const [activeCardHeight, setActiveCardHeight] = useState<number | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingSlideIndex, setOnboardingSlideIndex] = useState(0);
+  const [onboardingCompleted, setOnboardingCompleted] = useState(false);
+  const [selectedTutorialChoice, setSelectedTutorialChoice] = useState<number | null>(null);
+  const onboardingFadeAnim = useRef(new Animated.Value(0)).current;
+  const tutorialCardPan = useRef(new Animated.ValueXY()).current;
+  const tutorialCardRotate = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     return () => {
       hideResultToast();
     };
   }, []);
+
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      try {
+        const completed = await AsyncStorage.getItem(ONBOARDING_KEY);
+        if (!completed) {
+          setShowOnboarding(true);
+          Animated.timing(onboardingFadeAnim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }).start();
+        }
+      } catch (error) {
+        console.warn('Failed to check onboarding status', error);
+      }
+    };
+    void checkOnboarding();
+  }, [onboardingFadeAnim]);
 
   useEffect(() => {
     return () => {
@@ -362,12 +424,11 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   }, [closeActionsSheet, closeReportReasonSheet, closeSheet, filterKey, reset]);
 
   const handleNext = useCallback(() => {
-    if (!current || !feedback) {
-      return;
-    }
+    setFeedback(null);
+    setSelectedIndex(null);
     closeSheet();
     advance();
-  }, [advance, closeSheet, current, feedback]);
+  }, [advance, closeSheet]);
 
   const handleToggleBookmarkAction = useCallback(() => {
     if (!current) return;
@@ -626,6 +687,163 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     });
   }, []);
 
+  // 튜토리얼 닫기 (저장 안 함 - 다음에 다시 보임)
+  const handleCloseOnboarding = useCallback(() => {
+    Animated.timing(onboardingFadeAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      setShowOnboarding(false);
+      setOnboardingSlideIndex(0);
+      setOnboardingCompleted(false);
+      setSelectedTutorialChoice(null);
+      tutorialCardPan.setValue({ x: 0, y: 0 });
+      tutorialCardRotate.setValue(0);
+    });
+  }, [onboardingFadeAnim, tutorialCardPan, tutorialCardRotate]);
+
+  // 다시 보지 않기 (AsyncStorage에 저장)
+  const handleDontShowAgain = useCallback(async () => {
+    try {
+      await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
+      Animated.timing(onboardingFadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setShowOnboarding(false);
+        setOnboardingSlideIndex(0);
+        setOnboardingCompleted(false);
+        setSelectedTutorialChoice(null);
+        tutorialCardPan.setValue({ x: 0, y: 0 });
+        tutorialCardRotate.setValue(0);
+      });
+    } catch (error) {
+      console.warn('Failed to save onboarding completion', error);
+      setShowOnboarding(false);
+    }
+  }, [onboardingFadeAnim, tutorialCardPan, tutorialCardRotate]);
+
+  const handleNextOnboardingSlide = useCallback(() => {
+    if (onboardingSlideIndex < ONBOARDING_SLIDES.length - 1) {
+      setOnboardingSlideIndex((prev) => prev + 1);
+      setOnboardingCompleted(false);
+      setSelectedTutorialChoice(null);
+      tutorialCardPan.setValue({ x: 0, y: 0 });
+      tutorialCardRotate.setValue(0);
+    } else {
+      handleCloseOnboarding();
+    }
+  }, [handleCloseOnboarding, onboardingSlideIndex, tutorialCardPan, tutorialCardRotate]);
+
+  const handleSkipOnboarding = useCallback(() => {
+    handleCloseOnboarding();
+  }, [handleCloseOnboarding]);
+
+  const handleTutorialChoiceSelect = useCallback((index: number) => {
+    setSelectedTutorialChoice(index);
+    lightHaptic();
+    setTimeout(() => {
+      handleNextOnboardingSlide();
+    }, 800);
+  }, [handleNextOnboardingSlide]);
+
+  const tutorialPanResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderGrant: () => {
+          tutorialCardPan.setOffset({
+            x: (tutorialCardPan.x as any)._value,
+            y: (tutorialCardPan.y as any)._value,
+          });
+          tutorialCardPan.setValue({ x: 0, y: 0 });
+        },
+        onPanResponderMove: (_, gesture) => {
+          if (ONBOARDING_SLIDES[onboardingSlideIndex]?.type !== 'swipe') return;
+          // 좌우 스와이프: x축 이동, y축은 약간만 반영
+          tutorialCardPan.setValue({ x: gesture.dx, y: gesture.dy * 0.2 });
+          const rotate = gesture.dx / 25;
+          tutorialCardRotate.setValue(rotate);
+        },
+        onPanResponderRelease: (_, gesture) => {
+          const currentSlide = ONBOARDING_SLIDES[onboardingSlideIndex];
+          if (currentSlide?.type !== 'swipe') {
+            tutorialCardPan.flattenOffset();
+            Animated.spring(tutorialCardPan, {
+              toValue: { x: 0, y: 0 },
+              useNativeDriver: true,
+            }).start();
+            Animated.spring(tutorialCardRotate, {
+              toValue: 0,
+              useNativeDriver: true,
+            }).start();
+            return;
+          }
+
+          const isRightSwipe = currentSlide.direction === 'right';
+          const isLeftSwipe = currentSlide.direction === 'left';
+
+          // 오른쪽 스와이프 체크
+          if (isRightSwipe && gesture.dx >= SWIPE_RIGHT_THRESHOLD) {
+            successHaptic();
+            Animated.parallel([
+              Animated.timing(tutorialCardPan, {
+                toValue: { x: SCREEN_WIDTH, y: 0 },
+                duration: 300,
+                useNativeDriver: true,
+              }),
+              Animated.timing(tutorialCardRotate, {
+                toValue: 15,
+                duration: 300,
+                useNativeDriver: true,
+              }),
+            ]).start(() => {
+              tutorialCardPan.setValue({ x: 0, y: 0 });
+              tutorialCardRotate.setValue(0);
+              handleNextOnboardingSlide();
+            });
+          }
+          // 왼쪽 스와이프 체크
+          else if (isLeftSwipe && gesture.dx <= SWIPE_LEFT_THRESHOLD) {
+            successHaptic();
+            Animated.parallel([
+              Animated.timing(tutorialCardPan, {
+                toValue: { x: -SCREEN_WIDTH * 0.3, y: 0 },
+                duration: 300,
+                useNativeDriver: true,
+              }),
+              Animated.timing(tutorialCardRotate, {
+                toValue: -15,
+                duration: 300,
+                useNativeDriver: true,
+              }),
+            ]).start(() => {
+              tutorialCardPan.setValue({ x: 0, y: 0 });
+              tutorialCardRotate.setValue(0);
+              handleNextOnboardingSlide();
+            });
+          } else {
+            // 스와이프 실패 - 원위치
+            tutorialCardPan.flattenOffset();
+            Animated.parallel([
+              Animated.spring(tutorialCardPan, {
+                toValue: { x: 0, y: 0 },
+                useNativeDriver: true,
+              }),
+              Animated.spring(tutorialCardRotate, {
+                toValue: 0,
+                useNativeDriver: true,
+              }),
+            ]).start();
+          }
+        },
+      }),
+    [onboardingSlideIndex, tutorialCardPan, tutorialCardRotate, handleNextOnboardingSlide]
+  );
+
   const handleActiveCardLayout = useCallback((height: number) => {
     setActiveCardHeight((prev) => {
       if (prev === height) {
@@ -669,9 +887,156 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     );
   }
 
+  const currentSlide = ONBOARDING_SLIDES[onboardingSlideIndex];
+  const isLastSlide = onboardingSlideIndex === ONBOARDING_SLIDES.length - 1;
+
+  const cardRotateInterpolate = tutorialCardRotate.interpolate({
+    inputRange: [-10, 0, 10],
+    outputRange: ['-8deg', '0deg', '8deg'],
+  });
+
+  const renderTutorialCard = () => {
+    if (currentSlide.type === 'swipe') {
+      const isRightSwipe = currentSlide.direction === 'right';
+      const swipeIcon = isRightSwipe ? '→' : '←';
+      const swipeText = isRightSwipe ? '오른쪽으로 스와이프' : '왼쪽으로 스와이프';
+
+      return (
+        <Animated.View
+          {...tutorialPanResponder.panHandlers}
+          style={[
+            styles.tutorialCard,
+            {
+              transform: [
+                { translateX: tutorialCardPan.x },
+                { translateY: tutorialCardPan.y },
+                { rotate: cardRotateInterpolate },
+              ],
+            },
+          ]}
+        >
+          <View style={styles.tutorialCardContent}>
+            <ThemedText style={styles.tutorialCardTitle}>연습 문제</ThemedText>
+            <ThemedText style={styles.tutorialCardBody}>
+              {swipeText}해보세요!
+            </ThemedText>
+            <View style={styles.tutorialSwipeIndicator}>
+              <ThemedText style={styles.tutorialSwipeIcon}>{swipeIcon}</ThemedText>
+              <ThemedText style={styles.tutorialSwipeText}>스와이프</ThemedText>
+            </View>
+          </View>
+        </Animated.View>
+      );
+    }
+
+    if (currentSlide.type === 'choice') {
+      return (
+        <View style={styles.tutorialCard}>
+          <View style={styles.tutorialCardContent}>
+            <ThemedText style={styles.tutorialCardTitle}>연습 문제</ThemedText>
+            <ThemedText style={styles.tutorialCardBody}>아무 보기나 눌러보세요</ThemedText>
+            <View style={styles.tutorialChoices}>
+              {currentSlide.choices.map((choice, index) => (
+                <Pressable
+                  key={`choice-${index}`}
+                  style={[
+                    styles.tutorialChoice,
+                    selectedTutorialChoice === index && styles.tutorialChoiceSelected,
+                  ]}
+                  onPress={() => handleTutorialChoiceSelect(index)}
+                >
+                  <View
+                    style={[
+                      styles.tutorialChoiceBadge,
+                      selectedTutorialChoice === index && styles.tutorialChoiceBadgeSelected,
+                    ]}
+                  >
+                    <ThemedText
+                      style={[
+                        styles.tutorialChoiceBadgeText,
+                        selectedTutorialChoice === index && styles.tutorialChoiceBadgeTextSelected,
+                      ]}
+                    >
+                      {String.fromCharCode(65 + index)}
+                    </ThemedText>
+                  </View>
+                  <ThemedText
+                    style={[
+                      styles.tutorialChoiceText,
+                      selectedTutorialChoice === index && styles.tutorialChoiceTextSelected,
+                    ]}
+                  >
+                    {choice}
+                  </ThemedText>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        </View>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <BottomSheetModalProvider>
       <View style={styles.container}>
+        {showOnboarding ? (
+          <Animated.View
+            style={[
+              styles.onboardingOverlay,
+              {
+                opacity: onboardingFadeAnim,
+              },
+            ]}
+          >
+            <View style={styles.onboardingContainer}>
+              <Pressable
+                style={styles.onboardingSkip}
+                onPress={handleSkipOnboarding}
+                hitSlop={8}
+              >
+                <ThemedText style={styles.onboardingSkipText}>건너뛰기</ThemedText>
+              </Pressable>
+
+              <View style={styles.onboardingContent}>
+                <ThemedText style={styles.onboardingTitle}>{currentSlide.title}</ThemedText>
+                <ThemedText style={styles.onboardingBody}>{currentSlide.body}</ThemedText>
+
+                <View style={styles.tutorialCardWrapper}>{renderTutorialCard()}</View>
+
+                <ThemedText style={styles.onboardingInstruction}>
+                  {currentSlide.instruction}
+                </ThemedText>
+              </View>
+
+              <View style={styles.onboardingFooter}>
+                <View style={styles.onboardingIndicators}>
+                  {ONBOARDING_SLIDES.map((_, index) => (
+                    <View
+                      key={`indicator-${index}`}
+                      style={[
+                        styles.onboardingIndicator,
+                        index === onboardingSlideIndex && styles.onboardingIndicatorActive,
+                      ]}
+                    />
+                  ))}
+                </View>
+
+                <Button
+                  variant="outline"
+                  size="md"
+                  fullWidth
+                  onPress={() => void handleDontShowAgain()}
+                >
+                  다시 보지 않기
+                </Button>
+              </View>
+            </View>
+          </Animated.View>
+        ) : null}
+
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -1154,5 +1519,161 @@ const styles = StyleSheet.create({
   reloadText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  onboardingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    zIndex: 1000,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.xl,
+  },
+  onboardingContainer: {
+    width: '100%',
+    maxWidth: 440,
+    gap: Spacing.xl,
+  },
+  onboardingSkip: {
+    alignSelf: 'flex-end',
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: Radius.pill,
+  },
+  onboardingSkipText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Palette.white,
+  },
+  onboardingContent: {
+    alignItems: 'center',
+    gap: Spacing.xl,
+  },
+  onboardingTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    textAlign: 'center',
+    color: Palette.white,
+  },
+  onboardingBody: {
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: 'center',
+    color: 'rgba(255, 255, 255, 0.85)',
+  },
+  onboardingInstruction: {
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  tutorialCardWrapper: {
+    width: '100%',
+    alignItems: 'center',
+    minHeight: 280,
+    justifyContent: 'center',
+  },
+  tutorialCard: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: Palette.white,
+    borderRadius: Radius.lg,
+    padding: Spacing.xl,
+    ...Elevation.sm,
+  },
+  tutorialCardContent: {
+    gap: Spacing.lg,
+  },
+  tutorialCardTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: Palette.gray900,
+    textAlign: 'center',
+  },
+  tutorialCardBody: {
+    fontSize: 15,
+    color: Palette.gray600,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  tutorialSwipeIndicator: {
+    alignItems: 'center',
+    paddingVertical: Spacing.xl,
+    gap: Spacing.sm,
+  },
+  tutorialSwipeIcon: {
+    fontSize: 48,
+    color: Palette.gray900,
+  },
+  tutorialSwipeText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Palette.gray500,
+  },
+  tutorialChoices: {
+    gap: Spacing.md,
+  },
+  tutorialChoice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    backgroundColor: Palette.gray50,
+    borderRadius: Radius.md,
+    borderWidth: 2,
+    borderColor: Palette.gray200,
+  },
+  tutorialChoiceSelected: {
+    backgroundColor: Palette.gray900,
+    borderColor: Palette.gray900,
+  },
+  tutorialChoiceBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: Radius.sm,
+    backgroundColor: Palette.gray300,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: Spacing.md,
+  },
+  tutorialChoiceBadgeSelected: {
+    backgroundColor: Palette.white,
+  },
+  tutorialChoiceBadgeText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: Palette.gray900,
+  },
+  tutorialChoiceBadgeTextSelected: {
+    color: Palette.gray900,
+  },
+  tutorialChoiceText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '500',
+    color: Palette.gray900,
+  },
+  tutorialChoiceTextSelected: {
+    color: Palette.white,
+    fontWeight: '600',
+  },
+  onboardingFooter: {
+    gap: Spacing.lg,
+    paddingHorizontal: Spacing.md,
+  },
+  onboardingIndicators: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+  },
+  onboardingIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: Palette.gray200,
+  },
+  onboardingIndicatorActive: {
+    width: 24,
+    backgroundColor: Palette.gray900,
   },
 });
