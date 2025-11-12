@@ -280,11 +280,11 @@ export function SwipeCard({
 
     let backgroundColor = 'rgba(0,0,0,0)';
     if (isRight && feedback) {
-      // 오른쪽: 연한 민트그린 (정답 완료 시)
-      backgroundColor = `rgba(100, 255, 180, ${progress * 0.12})`;
+      // 오른쪽: 하늘색 / 청록 (정답 완료 시)
+      backgroundColor = `rgba(100, 200, 255, ${progress * 0.18})`;
     } else if (isLeft) {
-      // 왼쪽: 살짝 오렌지빛 베이지 (액션 메뉴)
-      backgroundColor = `rgba(255, 200, 130, ${progress * 0.12})`;
+      // 왼쪽: 라벤더 보라 (액션 메뉴)
+      backgroundColor = `rgba(180, 130, 255, ${progress * 0.18})`;
     }
 
     return {

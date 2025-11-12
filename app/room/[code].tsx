@@ -529,8 +529,12 @@ export default function MatchLobbyScreen() {
           paddingHorizontal: Spacing.lg,
           borderRadius: Radius.md,
           backgroundColor: neutralBannerBg,
-          borderWidth: 1,
-          borderColor: neutralBannerBorder,
+          borderWidth: 0,
+          shadowColor: '#00000020',
+          shadowOpacity: 0.2,
+          shadowRadius: 12,
+          shadowOffset: { width: 0, height: 4 },
+          elevation: 6,
           gap: Spacing.sm,
         },
         pendingTitle: {
@@ -584,7 +588,7 @@ export default function MatchLobbyScreen() {
     return (
       <ThemedView style={styles.centerContainer}>
         <ActivityIndicator size="large" color={primaryColor} />
-        <ThemedText style={styles.statusText}>파티 정보를 불러오는 중...</ThemedText>
+        <ThemedText style={styles.statusText}>퀴즈룸 정보를 불러오는 중...</ThemedText>
       </ThemedView>
     );
   }
@@ -593,7 +597,7 @@ export default function MatchLobbyScreen() {
     return (
       <ThemedView style={styles.centerContainer}>
         <ThemedText type="title" style={styles.statusText}>
-          파티를 찾을 수 없어요
+          퀴즈룸을 찾을 수 없어요
         </ThemedText>
         <ThemedText>코드가 정확한지 확인해주세요.</ThemedText>
         <Button size="lg" onPress={handleLeave}>

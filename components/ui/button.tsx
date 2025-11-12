@@ -373,7 +373,8 @@ const baseStyles = StyleSheet.create({
     default: {},
   }),
   disabled: {
-    opacity: 0.5,
+    opacity: 0.4,
+    borderWidth: 0,
   },
   noShadow: {
     shadowColor: "transparent",

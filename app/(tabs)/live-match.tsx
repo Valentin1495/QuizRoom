@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -170,10 +170,12 @@ export default function LiveMatchScreen() {
   }, [ensureGuestKey, guestKey, isJoinEnabled, joinParty, normalizedCode, normalizedJoinNickname, router, status]);
 
   return (
-    <ThemedView style={styles.screen}>
-      <ScrollView
-        contentContainerStyle={[
-          styles.container,
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <ThemedView style={styles.screen}>
+        <ScrollView
+          contentContainerStyle={[
+            styles.container,
           {
             paddingTop: insets.top + Spacing.lg,
             paddingBottom: Spacing.xl + insets.bottom,
@@ -325,8 +327,16 @@ export default function LiveMatchScreen() {
             onPress={handleRandomDeck}
             disabled={isRandomizing || isDecksLoading || partyDecks.length === 0}
             loading={isRandomizing}
+            leftIcon={
+              <IconSymbol
+                name="questionmark.square"
+                size={18}
+                color={themeColors.text}
+                style={Platform.OS === 'android' ? { marginTop: 2 } : undefined}
+              />
+            }
           >
-            랜덤으로 추천받기 ❓
+            랜덤으로 추천받기
           </Button>
 
           <ThemedText style={styles.deckSectionTitle}>닉네임 입력</ThemedText>
@@ -362,6 +372,7 @@ export default function LiveMatchScreen() {
         </View>
       </ScrollView>
     </ThemedView>
+    </>
   );
 }
 

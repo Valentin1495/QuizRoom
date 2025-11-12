@@ -6,7 +6,7 @@ const DECK_ICON_MAP: Record<string, IconSymbolName> = {
   party_random_all: 'die.face.5',
   party_showtime_mix: 'mic.fill',
   party_brainiac_mix: 'brain.head.profile',
-  party_lifestyle_mix: 'party.popper',
+  party_lifestyle_mix: 'paintpalette',
 };
 
 export const getDeckIcon = (slug?: string | null): IconSymbolName => {

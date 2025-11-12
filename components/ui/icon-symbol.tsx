@@ -10,6 +10,9 @@ import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING = {
+  'lock.fill': 'lock-outline',
+  'hourglass': 'hourglass-top',
+  'party.popper': 'celebration',
   // Navigation Icons
   'arrow.left': 'arrow-back',
   'arrow.right': 'arrow-forward',
@@ -19,8 +22,13 @@ const MAPPING = {
   // Feedback Icons
   'checkmark.circle.fill': 'check-circle',
   'xmark.circle.fill': 'cancel',
-  'lock.fill': 'lock-outline',
-  'hourglass': 'hourglass-top',
+  'exclamationmark.triangle.fill': 'warning',
+  'face.frown': 'sentiment-dissatisfied',
+  'crown.fill': 'workspace-premium',
+  'arrow.triangle.2.circlepath': 'sync',
+  'rocket.fill': 'rocket-launch',
+  'pause.circle.fill': 'pause-circle',
+  'medal.fill': 'military-tech',
   // Tab Bar Icons
   'sparkles': 'auto-awesome',
   'square.stack.3d.up.fill': 'layers',
@@ -36,19 +44,16 @@ const MAPPING = {
   'newspaper': 'newspaper',
   'lightbulb': 'lightbulb-outline',
   // Deck Icons
-  'party.popper': 'celebration',
+  'paintpalette': 'palette',
   'brain.head.profile': 'psychology',
   'mic.fill': 'theater-comedy',
   'die.face.5': 'casino',
   'flame.fill': 'trending-up',
   'star.fill': 'star-outline',
-  'exclamationmark.triangle.fill': 'warning',
-  'face.frown': 'sentiment-dissatisfied',
-  'crown.fill': 'workspace-premium',
-  'arrow.triangle.2.circlepath': 'sync',
-  'rocket.fill': 'rocket-launch',
-  'pause.circle.fill': 'pause-circle',
-  'medal.fill': 'military-tech',
+  'questionmark.square': 'quiz',
+  // Onboarding Icons
+  'hand.draw': 'swipe',
+  'checkmark.seal.fill': 'verified',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING;

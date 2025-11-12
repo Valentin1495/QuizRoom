@@ -26,7 +26,7 @@ function computeTimeLeft(expiresAt?: number | null, now?: number) {
     return Math.ceil(diff / 1000);
 }
 
-const FORCED_EXIT_MESSAGE = '세션이 더 이상 유지되지 않아 방과의 연결이 종료됐어요. 다시 참여하려면 방 코드를 입력해 주세요.';
+const FORCED_EXIT_MESSAGE = '세션이 더 이상 유지되지 않아 방과의 연결이 종료됐어요. 다시 참여하려면 초대 코드를 입력해 주세요.';
 const EXPIRED_MESSAGE = '연결이 오래 끊겼습니다.\n이번 퀴즈는 종료되었어요.';
 const TOAST_COOLDOWN_MS = 10000;
 type ConnectionState = 'online' | 'reconnecting' | 'grace' | 'expired';
@@ -45,7 +45,6 @@ export default function MatchPlayScreen() {
     const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'partyRooms'>) : null), [roomIdParam]);
     const textColor = useThemeColor({}, 'text');
     const warningColor = useThemeColor({}, 'warning');
-    const successColor = useThemeColor({}, 'success');
     const dangerColor = useThemeColor({}, 'danger');
     const infoColor = useThemeColor({}, 'info');
 
@@ -1146,21 +1145,17 @@ export default function MatchPlayScreen() {
                             : 'default';
                     const gradientColors =
                         variant === 'correct'
-                            ? ['#2D9CDB', '#56CCF2']
+                            ? (['#2D9CDB', '#56CCF2'] as const)
                             : variant === 'incorrect'
-                                ? ['#EB5757', '#FF7676']
+                                ? (['#EB5757', '#FF7676'] as const)
                                 : null;
                     const labelColor =
                         variant === 'correct' || variant === 'incorrect'
                             ? '#FFFFFF'
                             : variant === 'selected'
                                 ? Palette.gray900
-                                : Palette.gray800;
+                                : Palette.gray700;
                     const badgeTextColor = variant === 'correct' || variant === 'incorrect' ? '#FFFFFF' : Palette.gray900;
-                    const metaColor =
-                        variant === 'correct' || variant === 'incorrect'
-                            ? 'rgba(255, 255, 255, 0.85)'
-                            : Palette.gray500;
                     const countColor =
                         variant === 'correct' || variant === 'incorrect'
                             ? '#FFFFFF'
@@ -1174,8 +1169,6 @@ export default function MatchPlayScreen() {
                                 ? 'xmark.circle.fill'
                                 : null;
                     const iconColor = '#FFFFFF';
-                    const metaText = isMine ? '내 선택' : '전체 분포';
-
                     const rowContent = (
                         <View style={styles.distributionRowContent}>
                             <View
@@ -1202,25 +1195,33 @@ export default function MatchPlayScreen() {
                                         styles.distributionLabel,
                                         { color: labelColor },
                                     ]}
+                                    numberOfLines={1}
                                 >
                                     {choice.text}
-                                </ThemedText>
-                                <ThemedText style={[styles.distributionMeta, { color: metaColor }]}>
-                                    {metaText}
                                 </ThemedText>
                             </View>
                             <View style={styles.distributionCountGroup}>
                                 {iconName ? (
-                                    <IconSymbol name={iconName} size={18} color={iconColor} />
+                                    <View style={styles.distributionStatusIcon}>
+                                        <IconSymbol name={iconName} size={16} color={iconColor} />
+                                    </View>
                                 ) : null}
-                                <ThemedText
+                                <View
                                     style={[
-                                        styles.distributionCount,
-                                        { color: countColor },
+                                        styles.distributionCountBadge,
+                                        (variant === 'correct' || variant === 'incorrect') &&
+                                        styles.distributionCountBadgeGradient,
                                     ]}
                                 >
-                                    {count}명
-                                </ThemedText>
+                                    <ThemedText
+                                        style={[
+                                            styles.distributionCount,
+                                            { color: countColor },
+                                        ]}
+                                    >
+                                        {count}명
+                                    </ThemedText>
+                                </View>
                             </View>
                         </View>
                     );
@@ -1263,7 +1264,7 @@ export default function MatchPlayScreen() {
                         <IconSymbol
                             name={currentRound.myAnswer.isCorrect ? 'checkmark.circle.fill' : 'xmark.circle.fill'}
                             size={20}
-                            color={currentRound.myAnswer.isCorrect ? successColor : dangerColor}
+                            color={currentRound.myAnswer.isCorrect ? '#56CCF2' : '#FF7676'}
                         />
                         <ThemedText style={styles.scoreResultText}>
                             {currentRound.myAnswer.isCorrect ? '정답!' : '오답'} · {currentRound.myAnswer.scoreDelta > 0 ? '+' : ''}
@@ -1296,32 +1297,26 @@ export default function MatchPlayScreen() {
             </View>
             <View style={styles.distributionList}>
                 {currentRound?.leaderboard?.top.length ? (
-                    currentRound.leaderboard.top.map((entry) => {
+                    currentRound.leaderboard.top.map((entry, index) => {
                         const isMe = meParticipantId !== null && entry.participantId === meParticipantId;
-                        const isPodium = entry.rank != null && entry.rank <= 3;
-                        const podiumColor =
-                            entry.rank === 1 ? '#F5C044' : entry.rank === 2 ? '#CBD5E1' : '#F4B085';
+                        const rank = entry.rank ?? index + 1;
+                        const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+                        const rankDisplay = rankEmoji || `${rank}위`;
+                        const nameDisplay = `${rankDisplay} ${entry.nickname}`;
                         return (
                             <View
                                 key={entry.participantId}
                                 style={[
                                     styles.distributionRow,
                                     styles.leaderboardRow,
-                                    entry.rank === 1 && styles.leaderboardRankOne,
-                                    entry.rank === 2 && styles.leaderboardRankTwo,
-                                    entry.rank === 3 && styles.leaderboardRankThree,
+                                    rank === 1 && styles.leaderboardRankOne,
+                                    rank === 2 && styles.leaderboardRankTwo,
+                                    rank === 3 && styles.leaderboardRankThree,
                                     isMe && styles.leaderboardMeRow,
                                 ]}
+                                accessibilityRole="text"
+                                accessibilityLabel={`${rank}위 ${entry.nickname}`}
                             >
-                                <View style={[styles.leaderboardRankBadge, isMe && styles.leaderboardRankBadgeMe]}>
-                                    {isPodium ? (
-                                        <IconSymbol name="medal.fill" size={20} color={podiumColor} />
-                                    ) : (
-                                        <ThemedText style={[styles.leaderboardRankText, isMe && styles.leaderboardRankTextMe]}>
-                                            {entry.rank}
-                                        </ThemedText>
-                                    )}
-                                </View>
                                 <View style={styles.leaderboardNameWrapper}>
                                     <ThemedText
                                         style={[
@@ -1329,7 +1324,7 @@ export default function MatchPlayScreen() {
                                             isMe && styles.leaderboardMeText,
                                         ]}
                                     >
-                                        {entry.nickname}
+                                        {nameDisplay}
                                     </ThemedText>
                                     {isMe ? (
                                         <View style={styles.meBadge}>
@@ -1377,7 +1372,6 @@ export default function MatchPlayScreen() {
             ) : null}
         </View>
     );
-
     const renderResults = () => {
         const deckInfo = roomData?.deck;
         const deckTitle = deckInfo?.title ?? '랜덤 덱';
@@ -1404,34 +1398,27 @@ export default function MatchPlayScreen() {
                 <View style={styles.distributionList}>
                     {participants.map((player, index) => {
                         const isMe = meParticipantId !== null && player.participantId === meParticipantId;
-                        const displayRank = player.rank ?? index + 1;
-                        const isPodium = player.rank != null && player.rank <= 3;
-                        const podiumColor =
-                            player.rank === 1 ? '#F5C044' : player.rank === 2 ? '#CBD5E1' : '#F4B085';
+                        const rank = player.rank ?? index + 1;
+                        const podiumEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+                        const rankDisplay = podiumEmoji ? `${podiumEmoji} ${rank}위` : `${rank}위`;
+                        const nameDisplay = `${rankDisplay} ${player.nickname}`;
                         return (
                             <View
                                 key={player.participantId}
                                 style={[
                                     styles.distributionRow,
                                     styles.leaderboardRow,
-                                    player.rank === 1 && styles.leaderboardRankOne,
-                                    player.rank === 2 && styles.leaderboardRankTwo,
-                                    player.rank === 3 && styles.leaderboardRankThree,
+                                    rank === 1 && styles.leaderboardRankOne,
+                                    rank === 2 && styles.leaderboardRankTwo,
+                                    rank === 3 && styles.leaderboardRankThree,
                                     isMe && styles.leaderboardMeRow,
                                 ]}
+                                accessibilityRole="text"
+                                accessibilityLabel={`${rank}위 ${player.nickname}`}
                             >
-                                <View style={[styles.leaderboardRankBadge, isMe && styles.leaderboardRankBadgeMe]}>
-                                    {isPodium ? (
-                                        <IconSymbol name="medal.fill" size={20} color={podiumColor} />
-                                    ) : (
-                                        <ThemedText style={[styles.leaderboardRankText, isMe && styles.leaderboardRankTextMe]}>
-                                            #{displayRank}
-                                        </ThemedText>
-                                    )}
-                                </View>
                                 <View style={styles.resultNameWrapper}>
                                     <ThemedText style={[styles.choiceLabel, isMe && styles.leaderboardMeText]}>
-                                        {player.nickname}
+                                        {nameDisplay}
                                     </ThemedText>
                                     {isMe ? (
                                         <View style={styles.meBadge}>
@@ -1868,7 +1855,7 @@ const styles = StyleSheet.create({
         backgroundColor: Palette.gray25,
     },
     loadingLabel: {
-        marginTop: Spacing.md,
+        marginVertical: Spacing.md,
     },
     disconnectLabel: {
         textAlign: 'center',
@@ -1998,12 +1985,12 @@ const styles = StyleSheet.create({
     choiceButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: Spacing.md,
-        paddingHorizontal: Spacing.lg,
+        padding: Spacing.md,
         backgroundColor: Palette.gray50,
         borderRadius: Radius.md,
-        borderWidth: 2,
-        borderColor: Palette.gray200,
+        borderWidth: 1,
+        borderColor: Palette.gray100,
+        minHeight: 60,
     },
     choiceSelected: {
         backgroundColor: Palette.gray900,
@@ -2034,11 +2021,13 @@ const styles = StyleSheet.create({
         color: Palette.gray900,
     },
     choiceLabel: {
-        flex: 1,
+        flexShrink: 1,
+        marginLeft: Spacing.md,
         fontSize: 16,
-        lineHeight: 24,
-        color: Palette.gray900,
         fontWeight: '500',
+        color: Palette.gray700,
+        lineHeight: 22,
+        textAlignVertical: 'center',
     },
     choiceLabelSelected: {
         color: Palette.white,
@@ -2105,7 +2094,7 @@ const styles = StyleSheet.create({
     },
     distributionRow: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'stretch',
         paddingVertical: Spacing.md,
         paddingHorizontal: Spacing.md,
         borderRadius: Radius.sm,
@@ -2178,10 +2167,9 @@ const styles = StyleSheet.create({
     },
     distributionTextGroup: {
         flex: 1,
-    },
-    distributionMeta: {
-        fontSize: 12,
-        color: Palette.gray500,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        gap: Spacing.xs,
     },
     leaderboardNameWrapper: {
         flex: 1,
@@ -2209,7 +2197,29 @@ const styles = StyleSheet.create({
     distributionCountGroup: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.xs,
+        gap: Spacing.sm,
+    },
+    distributionStatusIcon: {
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.4)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(255,255,255,0.15)',
+    },
+    distributionCountBadge: {
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: Spacing.xs,
+        borderRadius: Radius.pill,
+        borderWidth: 1,
+        borderColor: Palette.gray200,
+        backgroundColor: Palette.white,
+    },
+    distributionCountBadgeGradient: {
+        borderColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.15)',
     },
     offlineTag: {
         fontSize: 11,
@@ -2218,25 +2228,6 @@ const styles = StyleSheet.create({
     },
     leaderboardRow: {
         backgroundColor: Palette.gray50,
-    },
-    leaderboardRankBadge: {
-        width: 40,
-        height: 40,
-        borderRadius: Radius.md,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: Palette.gray200,
-    },
-    leaderboardRankBadgeMe: {
-        backgroundColor: Palette.gray900,
-    },
-    leaderboardRankText: {
-        fontSize: 16,
-        fontWeight: '700',
-        color: Palette.gray600,
-    },
-    leaderboardRankTextMe: {
-        color: Palette.white,
     },
     leaderboardRankOne: {
         backgroundColor: Palette.gray100,
