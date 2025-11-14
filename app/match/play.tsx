@@ -10,6 +10,7 @@ import { ThemedView } from '@/components/themed-view';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { AlertDialog } from '@/components/ui/alert-dialog';
+import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Elevation, Palette, Radius, Spacing } from '@/constants/theme';
@@ -51,7 +52,9 @@ export default function MatchPlayScreen() {
     const infoColor = useThemeColor({}, 'info');
     const cardColor = useThemeColor({}, 'card');
     const borderColor = useThemeColor({}, 'border');
-    const backgroundSecondary = useThemeColor({}, 'background');
+    const background = useThemeColor({}, 'background');
+    const avatarBorderColor = useThemeColor({}, 'border');
+    const avatarFallbackColor = useThemeColor({}, 'primary');
 
     const [hasLeft, setHasLeft] = useState(false);
     const [isLeaveDialogVisible, setLeaveDialogVisible] = useState(false);
@@ -285,6 +288,11 @@ export default function MatchPlayScreen() {
     const roomStatus = roomData?.room.status ?? 'lobby';
     const currentRound = roomData?.currentRound ?? null;
     const participants = useMemo(() => roomData?.participants ?? [], [roomData]);
+    const participantsById = useMemo(() => {
+        const map = new Map<Id<'partyParticipants'>, (typeof participants)[number]>();
+        participants.forEach((participant) => map.set(participant.participantId, participant));
+        return map;
+    }, [participants]);
     const hostUserId = roomData?.room.hostId ?? null;
     const hostParticipant = useMemo(
         () => (hostUserId ? participants.find((p) => p.userId === hostUserId) : null),
@@ -997,7 +1005,7 @@ export default function MatchPlayScreen() {
             visible={isLeaveDialogVisible}
             onClose={handleCancelLeave}
             title="퀴즈룸을 나가시겠어요?"
-            description="진행 중인 매치를 종료하고 로비로 돌아갑니다."
+            description="진행 중인 매치를 종료하고 이전 화면으로 돌아갑니다."
             actions={[
                 { label: '취소', tone: 'secondary', onPress: handleCancelLeave },
                 { label: '나가기', tone: 'destructive', onPress: handleConfirmLeave },
@@ -1021,7 +1029,7 @@ export default function MatchPlayScreen() {
                     <ThemedView style={styles.loadingContainer}>
                         <ThemedText type="title">연결이 종료됐어요</ThemedText>
                         <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>{disconnectReason}</ThemedText>
-                        <Button variant="default" size="lg" onPress={handleLeave}>
+                        <Button variant="default" size="lg" onPress={() => performLeave()}>
                             나가기
                         </Button>
                     </ThemedView>
@@ -1035,7 +1043,7 @@ export default function MatchPlayScreen() {
                 <ThemedView style={styles.loadingContainer}>
                     <ThemedText type="title">연결이 종료됐어요</ThemedText>
                     <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>{disconnectReason}</ThemedText>
-                    <Button variant="default" size="lg" onPress={handleLeave}>
+                    <Button variant="default" size="lg" onPress={() => performLeave()}>
                         퀴즈룸 찾기
                     </Button>
                 </ThemedView>
@@ -1126,20 +1134,19 @@ export default function MatchPlayScreen() {
                             disabled={isDisabled}
                             style={({ pressed }) => [
                                 styles.choiceButton,
-                                { backgroundColor: backgroundSecondary, borderColor: borderColor },
-                                isSelected && [styles.choiceSelected, { backgroundColor: textColor, borderColor: textColor }],
+                                { backgroundColor: background, borderColor: borderColor },
+                                isSelected && { backgroundColor: textColor, borderColor: textColor },
                                 pressed && !isDisabled && styles.choicePressed,
                             ]}
                         >
                             <View style={[
                                 styles.choiceBadge,
                                 { backgroundColor: borderColor },
-                                isSelected && [styles.choiceBadgeSelected, { backgroundColor: cardColor }]
+                                isSelected && { backgroundColor: cardColor }
                             ]}>
                                 <ThemedText style={[
                                     styles.choiceBadgeText,
                                     { color: textColor },
-                                    isSelected && [styles.choiceBadgeTextSelected, { color: textColor }]
                                 ]}>
                                     {String.fromCharCode(65 + index)}
                                 </ThemedText>
@@ -1179,7 +1186,7 @@ export default function MatchPlayScreen() {
     const renderReveal = () => (
         <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
             <ThemedText type="title" style={styles.cardTitle}>정답 공개</ThemedText>
-            <View style={[styles.correctAnswerBadge, { backgroundColor: backgroundSecondary, borderColor: textColor }]}>
+            <View style={[styles.correctAnswerBadge, { backgroundColor: background, borderColor: textColor }]}>
                 <ThemedText style={[styles.correctAnswerLabel, { color: textColor }]}>
                     정답은 <ThemedText style={[styles.correctAnswerHighlight, { color: textColor }]}>
                         {currentRound?.reveal ? String.fromCharCode(65 + currentRound.reveal.correctChoice) : '?'}
@@ -1187,7 +1194,7 @@ export default function MatchPlayScreen() {
                 </ThemedText>
             </View>
             {currentRound?.question?.explanation ? (
-                <ThemedText style={[styles.explanationText, { backgroundColor: backgroundSecondary, color: textMutedColor }]}>{currentRound.question.explanation}</ThemedText>
+                <ThemedText style={[styles.explanationText, { backgroundColor: background, color: textMutedColor }]}>{currentRound.question.explanation}</ThemedText>
             ) : null}
             <View style={styles.distributionList}>
                 {currentRound?.question?.choices.map((choice, index) => {
@@ -1211,16 +1218,12 @@ export default function MatchPlayScreen() {
                     const labelColor =
                         variant === 'correct' || variant === 'incorrect'
                             ? '#FFFFFF'
-                            : variant === 'selected'
-                                ? Palette.gray900
-                                : Palette.gray700;
-                    const badgeTextColor = variant === 'correct' || variant === 'incorrect' ? '#FFFFFF' : Palette.gray900;
+                            : textColor;
+                    const badgeTextColor = variant === 'correct' || variant === 'incorrect' ? '#FFFFFF' : textColor;
                     const countColor =
                         variant === 'correct' || variant === 'incorrect'
                             ? '#FFFFFF'
-                            : variant === 'selected'
-                                ? Palette.gray900
-                                : Palette.gray600;
+                            : textMutedColor;
                     const iconName =
                         variant === 'correct'
                             ? 'checkmark.circle.fill'
@@ -1233,9 +1236,10 @@ export default function MatchPlayScreen() {
                             <View
                                 style={[
                                     styles.distributionBadge,
+                                    variant === 'default' && { backgroundColor: borderColor },
                                     variant === 'correct' && styles.distributionBadgeElevated,
                                     variant === 'incorrect' && styles.distributionBadgeElevated,
-                                    variant === 'selected' && styles.distributionBadgeSelected,
+                                    variant === 'selected' && [styles.distributionBadgeSelected, { backgroundColor: borderColor, borderColor: borderColor }],
                                 ]}
                             >
                                 <ThemedText
@@ -1268,6 +1272,8 @@ export default function MatchPlayScreen() {
                                 <View
                                     style={[
                                         styles.distributionCountBadge,
+                                        variant === 'default' && { backgroundColor: cardColor, borderColor: borderColor },
+                                        variant === 'selected' && { backgroundColor: cardColor, borderColor: borderColor },
                                         (variant === 'correct' || variant === 'incorrect') &&
                                         styles.distributionCountBadgeGradient,
                                     ]}
@@ -1309,7 +1315,8 @@ export default function MatchPlayScreen() {
                             style={[
                                 styles.distributionRow,
                                 styles.distributionRowDefault,
-                                variant === 'selected' && styles.distributionRowSelected,
+                                { backgroundColor: cardColor, borderColor: borderColor },
+                                variant === 'selected' && [styles.distributionRowSelected, { backgroundColor: background, borderColor: borderColor }],
                             ]}
                         >
                             {rowContent}
@@ -1326,8 +1333,7 @@ export default function MatchPlayScreen() {
                             color={currentRound.myAnswer.isCorrect ? '#56CCF2' : '#FF7676'}
                         />
                         <ThemedText style={[styles.scoreResultText, { color: cardColor }]}>
-                            {currentRound.myAnswer.isCorrect ? '정답!' : '오답'} {currentRound.myAnswer.scoreDelta > 0 ? '+' : ''}
-                            {currentRound.myAnswer.scoreDelta}점
+                            {currentRound.myAnswer.isCorrect ? '정답!' : '오답'} {currentRound.myAnswer.scoreDelta > 0 ? `+${currentRound.myAnswer.scoreDelta}점` : ''}
                         </ThemedText>
                     </View>
                 ) : (
@@ -1348,6 +1354,45 @@ export default function MatchPlayScreen() {
         </View>
     );
 
+    const renderParticipantAvatar = (participantId: Id<'partyParticipants'>, isSelf: boolean) => {
+        const participant = participantsById.get(participantId);
+        const sharedStyle = [
+            styles.leaderboardAvatar,
+            { borderColor: isSelf ? textColor : avatarBorderColor },
+        ];
+        if (participant?.userId) {
+            return (
+                <Avatar
+                    uri={participant.avatarUrl}
+                    name={participant.nickname}
+                    size="sm"
+                    radius={Radius.pill}
+                    backgroundColorOverride={avatarFallbackColor}
+                    style={sharedStyle}
+                />
+            );
+        }
+        if (participant) {
+            return (
+                <GuestAvatar
+                    guestId={participant.guestAvatarId ?? 0}
+                    size="sm"
+                    radius={Radius.pill}
+                    style={sharedStyle}
+                />
+            );
+        }
+        return (
+            <Avatar
+                name="?"
+                size="sm"
+                radius={Radius.pill}
+                backgroundColorOverride={avatarFallbackColor}
+                style={sharedStyle}
+            />
+        );
+    };
+
     const renderLeaderboard = () => (
         <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
             <View style={styles.iconHeadingRow}>
@@ -1367,39 +1412,43 @@ export default function MatchPlayScreen() {
                                 key={entry.participantId}
                                 style={[
                                     styles.distributionRow,
-                                    styles.leaderboardRow,
-                                    rank === 1 && styles.leaderboardRankOne,
-                                    rank === 2 && styles.leaderboardRankTwo,
-                                    rank === 3 && styles.leaderboardRankThree,
-                                    isMe && [styles.leaderboardMeRow, { backgroundColor: backgroundSecondary, borderColor: textColor }],
+                                    { backgroundColor: background },
+                                    isMe && [styles.leaderboardMeRow, { backgroundColor: background, borderColor: textColor }],
                                 ]}
                                 accessibilityRole="text"
                                 accessibilityLabel={`${rank}위 ${entry.nickname}`}
                             >
                                 <View style={styles.leaderboardNameWrapper}>
+                                    {renderParticipantAvatar(entry.participantId, isMe)}
+                                    <View style={styles.leaderboardNameTextGroup}>
+                                        <View style={styles.leaderboardNameRow}>
+                                            <ThemedText
+                                                style={[
+                                                    styles.choiceLabel,
+                                                    isMe && [styles.leaderboardMeText, { color: textColor }],
+                                                ]}
+                                            >
+                                                {nameDisplay}
+                                            </ThemedText>
+                                            {isMe ? (
+                                                <View style={[styles.meBadge, { backgroundColor: textColor }]}>
+                                                    <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
+                                                </View>
+                                            ) : null}
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={styles.leaderboardScoreWrapper}>
                                     <ThemedText
                                         style={[
-                                            styles.choiceLabel,
+                                            styles.distributionCount,
+                                            styles.leaderboardScore,
                                             isMe && [styles.leaderboardMeText, { color: textColor }],
                                         ]}
                                     >
-                                        {nameDisplay}
+                                        {entry.totalScore}점
                                     </ThemedText>
-                                    {isMe ? (
-                                        <View style={[styles.meBadge, { backgroundColor: textColor }]}>
-                                            <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
-                                        </View>
-                                    ) : null}
                                 </View>
-                                <ThemedText
-                                    style={[
-                                        styles.distributionCount,
-                                        styles.leaderboardScore,
-                                        isMe && [styles.leaderboardMeText, { color: textColor }],
-                                    ]}
-                                >
-                                    {entry.totalScore}점
-                                </ThemedText>
                             </View>
                         );
                     })
@@ -1408,7 +1457,7 @@ export default function MatchPlayScreen() {
                 )}
             </View>
             {currentRound?.leaderboard?.me ? (
-                <View style={[styles.myRankBadge, { backgroundColor: backgroundSecondary, borderColor: borderColor }]}>
+                <View style={[styles.myRankBadge, { backgroundColor: background, borderColor: borderColor }]}>
                     <ThemedText style={[styles.myRankText, { color: textMutedColor }]}>
                         현재 순위 #{currentRound.leaderboard.me.rank} · {currentRound.leaderboard.me.totalScore}점
                     </ThemedText>
@@ -1443,7 +1492,7 @@ export default function MatchPlayScreen() {
                     <IconSymbol name="party.popper" size={28} color={textColor} />
                     <ThemedText type="title" style={styles.cardTitle}>최종 결과</ThemedText>
                 </View>
-                <View style={[styles.deckSummary, { borderColor: borderColor, backgroundColor: backgroundSecondary }]}>
+                <View style={[styles.deckSummary, { borderColor: borderColor, backgroundColor: background }]}>
                     <View style={[styles.deckSummaryIcon, { backgroundColor: cardColor, borderColor: borderColor }]}>
                         <IconSymbol name={getDeckIcon(deckInfo?.slug)} size={24} color={textColor} />
                     </View>
@@ -1466,31 +1515,35 @@ export default function MatchPlayScreen() {
                                 key={player.participantId}
                                 style={[
                                     styles.distributionRow,
-                                    styles.leaderboardRow,
-                                    rank === 1 && styles.leaderboardRankOne,
-                                    rank === 2 && styles.leaderboardRankTwo,
-                                    rank === 3 && styles.leaderboardRankThree,
-                                    isMe && [styles.leaderboardMeRow, { backgroundColor: backgroundSecondary, borderColor: textColor }],
+                                    { backgroundColor: background },
+                                    isMe && [styles.leaderboardMeRow, { backgroundColor: background, borderColor: textColor }],
                                 ]}
                                 accessibilityRole="text"
                                 accessibilityLabel={`${rank}위 ${player.nickname}`}
                             >
                                 <View style={styles.resultNameWrapper}>
-                                    <ThemedText style={[styles.choiceLabel, isMe && [styles.leaderboardMeText, { color: textColor }]]}>
-                                        {nameDisplay}
-                                    </ThemedText>
-                                    {isMe ? (
-                                        <View style={[styles.meBadge, { backgroundColor: textColor }]}>
-                                            <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
+                                    {renderParticipantAvatar(player.participantId, isMe)}
+                                    <View style={styles.resultNameTextGroup}>
+                                        <View style={styles.leaderboardNameRow}>
+                                            <ThemedText style={[styles.choiceLabel, isMe && [styles.leaderboardMeText, { color: textColor }]]}>
+                                                {nameDisplay}
+                                            </ThemedText>
+                                            {isMe ? (
+                                                <View style={[styles.meBadge, { backgroundColor: textColor }]}>
+                                                    <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
+                                                </View>
+                                            ) : null}
                                         </View>
-                                    ) : null}
-                                    {player.userId && hostUserId && player.userId === hostUserId && !player.isConnected ? (
-                                        <ThemedText style={styles.offlineTag}>오프라인</ThemedText>
-                                    ) : null}
+                                        {player.userId && hostUserId && player.userId === hostUserId && !player.isConnected ? (
+                                            <ThemedText style={styles.offlineTag}>오프라인</ThemedText>
+                                        ) : null}
+                                    </View>
                                 </View>
-                                <ThemedText style={[styles.distributionCount, styles.leaderboardScore, isMe && [styles.leaderboardMeText, { color: textColor }]]}>
-                                    {player.totalScore}점
-                                </ThemedText>
+                                <View style={styles.leaderboardScoreWrapper}>
+                                    <ThemedText style={[styles.distributionCount, styles.leaderboardScore, isMe && [styles.leaderboardMeText, { color: textColor }]]}>
+                                        {player.totalScore}점
+                                    </ThemedText>
+                                </View>
                             </View>
                         );
                     })}
@@ -1530,7 +1583,7 @@ export default function MatchPlayScreen() {
         if (!pendingAction) return null;
         const seconds = Math.ceil(pendingMs / 1000);
         return (
-            <View style={[styles.pendingBanner, { backgroundColor: backgroundSecondary }]}>
+            <View style={[styles.pendingBanner, { backgroundColor: background }]}>
                 <ThemedText type="subtitle" style={styles.pendingTitle}>
                     {scheduleLabel}
                 </ThemedText>
@@ -1554,7 +1607,7 @@ export default function MatchPlayScreen() {
         const seconds = hostGraceRemaining % 60;
         const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         return (
-            <View style={[styles.hostBanner, { backgroundColor: backgroundSecondary, borderColor: textColor }]}>
+            <View style={[styles.hostBanner, { backgroundColor: background, borderColor: textColor }]}>
                 <View style={styles.iconMessageRow}>
                     <IconSymbol name="hourglass" size={20} color={warningColor} />
                     <ThemedText type="subtitle" style={[styles.hostBannerTitle, { color: textColor }]}>
@@ -1572,7 +1625,7 @@ export default function MatchPlayScreen() {
         const banners: ReactNode[] = [];
         if (connectionState === 'reconnecting') {
             banners.push(
-                <View key="self_reconnecting" style={[styles.connectionBanner, { backgroundColor: backgroundSecondary }]}>
+                <View key="self_reconnecting" style={[styles.connectionBanner, { backgroundColor: background }]}>
                     <View style={styles.connectionBannerRow}>
                         <IconSymbol name="exclamationmark.triangle.fill" size={18} color={warningColor} />
                         <ThemedText style={[styles.connectionBannerText, { color: textColor }]}>연결이 불안정합니다… 다시 연결 중</ThemedText>
@@ -1582,7 +1635,7 @@ export default function MatchPlayScreen() {
         }
         if (!isHost && hostConnectionState === 'waiting') {
             banners.push(
-                <View key="host_reconnecting" style={[styles.connectionBanner, { backgroundColor: backgroundSecondary }]}>
+                <View key="host_reconnecting" style={[styles.connectionBanner, { backgroundColor: background }]}>
                     <View style={styles.connectionBannerRow}>
                         <IconSymbol name="exclamationmark.triangle.fill" size={18} color={warningColor} />
                         <ThemedText style={[styles.connectionBannerText, { color: textColor }]}>
@@ -1798,7 +1851,7 @@ export default function MatchPlayScreen() {
                         onPress={handleResume}
                         disabled={isResumePending}
                         loading={isResumePending}
-                        style={{ backgroundColor: backgroundSecondary, borderColor: borderColor }}
+                        style={{ backgroundColor: background, borderColor: borderColor }}
                     >
                         재개
                     </Button>
@@ -1850,8 +1903,6 @@ export default function MatchPlayScreen() {
     const leaveControl = connectionState === 'online' ? renderLeaveButton() : null;
     const pauseControl = connectionState === 'online' ? renderPauseControls() : null;
 
-    const background = useThemeColor({}, 'background');
-
     return (
         <>
             <Stack.Screen options={{ headerShown: false }} />
@@ -1879,7 +1930,6 @@ export default function MatchPlayScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Palette.gray25,
         paddingHorizontal: Spacing.lg,
     },
     delayPresetRow: {
@@ -1914,7 +1964,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Palette.gray25,
     },
     loadingLabel: {
         marginVertical: Spacing.md,
@@ -1929,7 +1978,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: Spacing.xxl,
-        backgroundColor: Palette.white,
         borderRadius: Radius.lg,
         gap: Spacing.lg,
         ...Elevation.sm,
@@ -1959,8 +2007,6 @@ const styles = StyleSheet.create({
         padding: Spacing.md,
         borderRadius: Radius.md,
         borderWidth: 1,
-        borderColor: Palette.gray100,
-        backgroundColor: Palette.gray50,
     },
     deckSummaryIcon: {
         width: 48,
@@ -1968,9 +2014,7 @@ const styles = StyleSheet.create({
         borderRadius: Radius.md,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: Palette.white,
         borderWidth: 1,
-        borderColor: Palette.gray200,
     },
     deckSummaryText: {
         flex: 1,
@@ -1979,23 +2023,19 @@ const styles = StyleSheet.create({
     deckSummaryTitle: {
         fontSize: 16,
         fontWeight: '700',
-        color: Palette.gray900,
     },
     deckSummaryDescription: {
         fontSize: 13,
-        color: Palette.gray600,
         lineHeight: 18,
     },
     centerSubtitle: {
         fontSize: 16,
-        color: Palette.gray600,
         textAlign: 'center',
         lineHeight: 24,
     },
     timerHighlight: {
         fontSize: 24,
         fontWeight: '700',
-        color: Palette.gray900,
     },
     returningLabel: {
         marginTop: Spacing.md,
@@ -2009,7 +2049,6 @@ const styles = StyleSheet.create({
     questionCard: {
         flex: 1,
         padding: Spacing.xl,
-        backgroundColor: Palette.white,
         borderRadius: Radius.lg,
         gap: Spacing.lg,
         ...Elevation.sm,
@@ -2022,19 +2061,16 @@ const styles = StyleSheet.create({
     roundCaption: {
         fontSize: 13,
         fontWeight: '600',
-        color: Palette.gray500,
         letterSpacing: 0.5,
     },
     timerBadge: {
         paddingHorizontal: Spacing.md,
         paddingVertical: Spacing.xs,
-        backgroundColor: Palette.gray900,
         borderRadius: Radius.pill,
     },
     timerBadgeText: {
         fontSize: 14,
         fontWeight: '700',
-        color: Palette.white,
     },
     questionPrompt: {
         fontSize: 18,
@@ -2048,15 +2084,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: Spacing.md,
-        backgroundColor: Palette.gray50,
         borderRadius: Radius.md,
         borderWidth: 1,
-        borderColor: Palette.gray100,
         minHeight: 60,
-    },
-    choiceSelected: {
-        backgroundColor: Palette.gray900,
-        borderColor: Palette.gray900,
     },
     choicePressed: {
         opacity: 0.8,
@@ -2066,33 +2096,23 @@ const styles = StyleSheet.create({
         width: 32,
         height: 32,
         borderRadius: Radius.sm,
-        backgroundColor: Palette.gray300,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: Spacing.md,
     },
-    choiceBadgeSelected: {
-        backgroundColor: Palette.white,
-    },
     choiceBadgeText: {
-        color: Palette.gray900,
         fontSize: 16,
         fontWeight: '700',
-    },
-    choiceBadgeTextSelected: {
-        color: Palette.gray900,
     },
     choiceLabel: {
         flexShrink: 1,
         marginLeft: Spacing.md,
         fontSize: 16,
         fontWeight: '500',
-        color: Palette.gray700,
         lineHeight: 22,
         textAlignVertical: 'center',
     },
     choiceLabelSelected: {
-        color: Palette.white,
         fontWeight: '600',
     },
     timerText: {
@@ -2102,28 +2122,23 @@ const styles = StyleSheet.create({
     revealCard: {
         flex: 1,
         padding: Spacing.xl,
-        backgroundColor: Palette.white,
         borderRadius: Radius.lg,
         gap: Spacing.lg,
         ...Elevation.sm,
     },
     correctAnswerBadge: {
         padding: Spacing.md,
-        backgroundColor: Palette.gray50,
         borderRadius: Radius.md,
         borderWidth: 2,
-        borderColor: Palette.gray900,
     },
     correctAnswerLabel: {
         fontSize: 16,
         fontWeight: '600',
-        color: Palette.gray900,
         textAlign: 'center',
     },
     correctAnswerHighlight: {
         fontSize: 24,
         fontWeight: '700',
-        color: Palette.gray900,
     },
     explanationText: {
         fontSize: 15,
@@ -2134,7 +2149,6 @@ const styles = StyleSheet.create({
     },
     scoreResultBadge: {
         padding: Spacing.md,
-        backgroundColor: Palette.gray900,
         borderRadius: Radius.md,
     },
     scoreResultContent: {
@@ -2146,7 +2160,6 @@ const styles = StyleSheet.create({
     scoreResultText: {
         fontSize: 16,
         fontWeight: '600',
-        color: Palette.white,
         textAlign: 'center',
     },
     distributionList: {
@@ -2163,8 +2176,6 @@ const styles = StyleSheet.create({
     distributionRowDefault: {
         borderRadius: Radius.md,
         borderWidth: 1,
-        borderColor: Palette.gray100,
-        backgroundColor: Palette.white,
     },
     distributionRowContent: {
         flexDirection: 'row',
@@ -2191,21 +2202,13 @@ const styles = StyleSheet.create({
     distributionRowSelected: {
         borderRadius: Radius.md,
         borderWidth: 1,
-        borderColor: Palette.gray300,
-        backgroundColor: Palette.gray50,
     },
     distributionBadge: {
         width: 32,
         height: 32,
         borderRadius: Radius.sm,
-        backgroundColor: Palette.gray300,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    distributionBadgeCorrect: {
-        backgroundColor: Palette.gray900,
-        borderWidth: 1,
-        borderColor: Palette.white,
     },
     distributionBadgeElevated: {
         backgroundColor: 'rgba(255,255,255,0.15)',
@@ -2213,14 +2216,11 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.4)',
     },
     distributionBadgeSelected: {
-        backgroundColor: Palette.gray200,
         borderWidth: 1,
-        borderColor: Palette.gray400,
     },
     distributionBadgeText: {
         fontSize: 14,
         fontWeight: '700',
-        color: Palette.gray900,
     },
     distributionLabel: {
         fontSize: 15,
@@ -2237,22 +2237,39 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: Spacing.sm,
     },
+    leaderboardAvatar: {
+        borderWidth: 1,
+        borderRadius: Radius.pill,
+    },
+    leaderboardNameTextGroup: {
+        flex: 1,
+        gap: Spacing.xs,
+    },
+    leaderboardNameRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.xs,
+        flexWrap: 'wrap',
+    },
+    leaderboardScoreWrapper: {
+        minWidth: 72,
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        alignSelf: 'stretch',
+    },
     resultNameWrapper: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         gap: Spacing.sm,
     },
+    resultNameTextGroup: {
+        flex: 1,
+        gap: Spacing.xs,
+    },
     distributionCount: {
         fontSize: 15,
         fontWeight: '600',
-        color: Palette.gray600,
-    },
-    distributionCountCorrect: {
-        color: Palette.white,
-    },
-    distributionCountSelected: {
-        color: Palette.gray900,
     },
     distributionCountGroup: {
         flexDirection: 'row',
@@ -2274,8 +2291,6 @@ const styles = StyleSheet.create({
         paddingVertical: Spacing.xs,
         borderRadius: Radius.pill,
         borderWidth: 1,
-        borderColor: Palette.gray200,
-        backgroundColor: Palette.white,
     },
     distributionCountBadgeGradient: {
         borderColor: 'rgba(255,255,255,0.5)',
@@ -2285,18 +2300,6 @@ const styles = StyleSheet.create({
         fontSize: 11,
         color: Palette.gray400,
         fontStyle: 'italic',
-    },
-    leaderboardRow: {
-        backgroundColor: Palette.gray50,
-    },
-    leaderboardRankOne: {
-        backgroundColor: Palette.gray100,
-    },
-    leaderboardRankTwo: {
-        backgroundColor: Palette.gray50,
-    },
-    leaderboardRankThree: {
-        backgroundColor: Palette.offWhite,
     },
     leaderboardMeRow: {
         borderWidth: 2,
@@ -2318,20 +2321,16 @@ const styles = StyleSheet.create({
     },
     myRankBadge: {
         padding: Spacing.md,
-        backgroundColor: Palette.gray50,
         borderRadius: Radius.md,
         borderWidth: 1,
-        borderColor: Palette.gray200,
     },
     myRankText: {
         fontSize: 15,
         fontWeight: '600',
-        color: Palette.gray700,
         textAlign: 'center',
     },
     nextRoundHint: {
         fontSize: 14,
-        color: Palette.gray500,
         textAlign: 'center',
     },
     sessionControls: {
@@ -2367,7 +2366,6 @@ const styles = StyleSheet.create({
     },
     pendingBanner: {
         padding: Spacing.lg,
-        backgroundColor: Palette.gray100,
         borderRadius: Radius.lg,
         marginBottom: Spacing.md,
         alignItems: 'center',
@@ -2381,32 +2379,26 @@ const styles = StyleSheet.create({
     pendingSubtitle: {
         fontSize: 15,
         textAlign: 'center',
-        color: Palette.gray600,
         lineHeight: 22,
     },
     hostBanner: {
         padding: Spacing.lg,
-        backgroundColor: Palette.gray100,
         borderRadius: Radius.lg,
         marginBottom: Spacing.md,
         borderWidth: 2,
-        borderColor: Palette.gray900,
         gap: Spacing.sm,
         ...Elevation.xs,
     },
     hostBannerTitle: {
         fontSize: 16,
-        color: Palette.gray900,
         fontWeight: '700',
     },
     hostBannerSubtitle: {
         fontSize: 14,
-        color: Palette.gray600,
         lineHeight: 20,
     },
     connectionBanner: {
         padding: Spacing.md,
-        backgroundColor: Palette.gray100,
         borderRadius: Radius.lg,
         marginBottom: Spacing.md,
         alignItems: 'center',
@@ -2419,7 +2411,6 @@ const styles = StyleSheet.create({
     },
     connectionBannerText: {
         fontSize: 14,
-        color: Palette.gray900,
         fontWeight: '600',
     },
     graceOverlay: {
@@ -2440,7 +2431,6 @@ const styles = StyleSheet.create({
         maxWidth: 400,
         padding: Spacing.xxl,
         borderRadius: Radius.lg,
-        backgroundColor: Palette.white,
         alignItems: 'center',
         gap: Spacing.lg,
         ...Elevation.sm,
@@ -2448,29 +2438,24 @@ const styles = StyleSheet.create({
     graceTitle: {
         fontSize: 20,
         fontWeight: '700',
-        color: Palette.gray900,
         textAlign: 'center',
     },
     graceSubtitle: {
         fontSize: 15,
         textAlign: 'center',
-        color: Palette.gray600,
         lineHeight: 22,
     },
     graceTimer: {
         fontSize: 32,
         fontWeight: '700',
-        color: Palette.gray900,
     },
     graceProgressBar: {
         width: '100%',
         height: 8,
         borderRadius: Radius.pill,
-        backgroundColor: Palette.gray200,
         overflow: 'hidden',
     },
     graceProgressFill: {
         height: '100%',
-        backgroundColor: Palette.gray900,
     },
 });

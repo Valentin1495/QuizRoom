@@ -81,7 +81,7 @@ export default function SwipeScreen() {
             onPress: () => setShowResetDialog(false),
           },
           {
-            label: '확인',
+            label: '변경',
             tone: 'destructive',
             onPress: handleConfirmReset,
           },

@@ -169,7 +169,7 @@ export default function ProfileScreen() {
         description="계정에서 로그아웃하시겠어요?"
         actions={[
           { label: '취소', tone: 'secondary' },
-          { label: '확인', tone: 'destructive', onPress: handleSignOut, disabled: isSigningOut },
+          { label: '로그아웃', tone: 'destructive', onPress: handleSignOut, disabled: isSigningOut },
         ]}
       />
     </ThemedView>

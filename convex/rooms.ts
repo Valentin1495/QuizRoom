@@ -1566,7 +1566,9 @@ export const getLobby = query({
 type ClientRoomParticipant = {
     participantId: Id<"partyParticipants">;
     userId: Id<"users"> | null;
+    avatarUrl: string | null;
     isGuest: boolean;
+    guestAvatarId: number | null;
     nickname: string;
     totalScore: number;
     isHost: boolean;
@@ -1574,6 +1576,8 @@ type ClientRoomParticipant = {
     avgResponseMs: number;
     rank: number;
     isConnected: boolean;
+    joinedAt: number;
+    isReady: boolean;
     lastSeenAt: number;
     disconnectedAt: number | null;
 };
@@ -1623,6 +1627,8 @@ type ClientRoomOkState = {
             top: {
                 participantId: Id<"partyParticipants">;
                 userId: Id<"users"> | null;
+                avatarUrl: string | null;
+                guestAvatarId: number | null;
                 nickname: string;
                 totalScore: number;
                 rank: number;
@@ -1630,6 +1636,8 @@ type ClientRoomOkState = {
             me?: {
                 participantId: Id<"partyParticipants">;
                 userId: Id<"users"> | null;
+                avatarUrl: string | null;
+                guestAvatarId: number | null;
                 nickname: string;
                 totalScore: number;
                 rank: number;
@@ -1696,6 +1704,19 @@ export const getRoomState = query({
         participants.sort((a, b) => b.totalScore - a.totalScore || a.avgResponseMs - b.avgResponseMs);
         const rankedParticipants = attachRanks(participants);
 
+        const participantUserIds = rankedParticipants
+            .map((p) => p.userId)
+            .filter((id): id is Id<"users"> => !!id);
+        const participantUsers =
+            participantUserIds.length > 0
+                ? await Promise.all(participantUserIds.map((id) => ctx.db.get(id)))
+                : [];
+        const usersById = new Map(
+            participantUsers
+                .filter((u): u is Doc<"users"> => u !== null)
+                .map((u) => [u._id, u])
+        );
+
         const round = await loadRound(ctx, room._id, room.currentRound);
 
         let currentRound: ClientRoomOkState["currentRound"];
@@ -1726,26 +1747,33 @@ export const getRoomState = query({
                 })()
                 : undefined;
 
-            const leaderboard = (() => {
-                const top = rankedParticipants.slice(0, 3).map((p) => ({
+        const leaderboard = (() => {
+            const top = rankedParticipants.slice(0, 3).map((p) => {
+                const user = p.userId ? usersById.get(p.userId) : null;
+                return {
                     participantId: p._id,
                     userId: p.userId ?? null,
+                    avatarUrl: user?.avatarUrl ?? null,
+                    guestAvatarId: p.guestAvatarId ?? null,
                     nickname: p.nickname,
                     totalScore: p.totalScore,
                     rank: p.rank,
-                }));
-                const meEntrySource = rankedParticipants.find((p) => p._id === me._id);
-                const meEntry = meEntrySource
-                    ? {
-                        participantId: meEntrySource._id,
-                        userId: meEntrySource.userId ?? null,
-                        nickname: meEntrySource.nickname,
-                        totalScore: meEntrySource.totalScore,
-                        rank: meEntrySource.rank,
-                    }
-                    : undefined;
-                return { top, me: meEntry };
-            })();
+                };
+            });
+            const meEntrySource = rankedParticipants.find((p) => p._id === me._id);
+            const meEntry = meEntrySource
+                ? {
+                    participantId: meEntrySource._id,
+                    userId: meEntrySource.userId ?? null,
+                    avatarUrl: meEntrySource.userId ? usersById.get(meEntrySource.userId)?.avatarUrl ?? null : null,
+                    guestAvatarId: meEntrySource.guestAvatarId ?? null,
+                    nickname: meEntrySource.nickname,
+                    totalScore: meEntrySource.totalScore,
+                    rank: meEntrySource.rank,
+                }
+                : undefined;
+            return { top, me: meEntry };
+        })();
 
             currentRound = {
                 index: round.index,
@@ -1786,20 +1814,27 @@ export const getRoomState = query({
                 lastSeenAt: me.lastSeenAt,
                 disconnectedAt: me.disconnectedAt ?? null,
             },
-            participants: rankedParticipants.map((p) => ({
-                participantId: p._id,
-                userId: p.userId ?? null,
-                isGuest: p.isGuest,
-                nickname: p.nickname,
-                totalScore: p.totalScore,
-                isHost: p.isHost,
-                answers: p.answers,
-                avgResponseMs: p.avgResponseMs,
-                rank: p.rank,
-                isConnected: isParticipantConnected(p, now),
-                lastSeenAt: p.lastSeenAt,
-                disconnectedAt: p.disconnectedAt ?? null,
-            })),
+            participants: rankedParticipants.map((p) => {
+                const user = p.userId ? usersById.get(p.userId) : null;
+                return {
+                    participantId: p._id,
+                    userId: p.userId ?? null,
+                    avatarUrl: user?.avatarUrl ?? null,
+                    isGuest: p.isGuest,
+                    guestAvatarId: p.guestAvatarId ?? null,
+                    nickname: p.nickname,
+                    joinedAt: p.joinedAt,
+                    totalScore: p.totalScore,
+                    isHost: p.isHost,
+                    answers: p.answers,
+                    avgResponseMs: p.avgResponseMs,
+                    rank: p.rank,
+                    isReady: p.isReady ?? false,
+                    isConnected: isParticipantConnected(p, now),
+                    lastSeenAt: p.lastSeenAt,
+                    disconnectedAt: p.disconnectedAt ?? null,
+                };
+            }),
             currentRound,
             now: Date.now(),
         };
