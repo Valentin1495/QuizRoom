@@ -10,7 +10,7 @@ import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING = {
-  'lock.fill': 'lock-outline',
+  'lock': 'lock',
   'hourglass': 'hourglass-top',
   'party.popper': 'celebration',
   // Navigation Icons
@@ -26,9 +26,7 @@ const MAPPING = {
   'face.frown': 'sentiment-dissatisfied',
   'crown.fill': 'workspace-premium',
   'arrow.triangle.2.circlepath': 'sync',
-  'rocket.fill': 'rocket-launch',
   'pause.circle.fill': 'pause-circle',
-  'medal.fill': 'military-tech',
   // Tab Bar Icons
   'sparkles': 'auto-awesome',
   'square.stack.3d.up.fill': 'layers',
@@ -37,22 +35,23 @@ const MAPPING = {
   // Category Icons
   'music.note': 'music-note',
   'tv': 'tv',
-  'film.fill': 'movie',
+  'film': 'movie',
   'trophy.fill': 'emoji-events',
+  'trophy': 'emoji-events',
   'desktopcomputer': 'desktop-mac',
-  'bag.fill': 'shopping-bag',
+  'bag': 'shopping-bag',
   'newspaper': 'newspaper',
-  'lightbulb': 'lightbulb-outline',
+  'lightbulb': 'lightbulb',
   // Deck Icons
   'paintpalette': 'palette',
   'brain.head.profile': 'psychology',
-  'mic.fill': 'theater-comedy',
+  'mic': 'theater-comedy',
   'die.face.5': 'casino',
-  'flame.fill': 'trending-up',
-  'star.fill': 'star-outline',
+  'flame': 'trending-up',
+  'star': 'star',
   'questionmark.square': 'quiz',
   // Onboarding Icons
-  'hand.draw': 'swipe',
+  'hand.draw.fill': 'swipe',
   'checkmark.seal.fill': 'verified',
 } as const;
 

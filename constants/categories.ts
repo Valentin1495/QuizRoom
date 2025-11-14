@@ -44,7 +44,7 @@ export const categories: CategoryMeta[] = [
     slug: "drama_movie",
     title: "드라마•영화",
     emoji: "🎬",
-    icon: "film.fill",
+    icon: "film",
     description: "한국·해외 드라마/영화, 배우, 명대사 관련 퀴즈",
     sampleTags: ["DP", "오징어게임", "콘크리트유토피아", "MCU", "칸영화제"],
     neighbors: [
@@ -57,7 +57,7 @@ export const categories: CategoryMeta[] = [
     slug: "sports_games",
     title: "스포츠•게임",
     emoji: "🏆",
-    icon: "trophy.fill",
+    icon: "trophy",
     description: "축구, 야구, e스포츠, 콘솔·모바일 게임 관련 퀴즈",
     sampleTags: ["손흥민", "KBO", "롤드컵", "LoL", "플스"],
     neighbors: [
@@ -81,7 +81,7 @@ export const categories: CategoryMeta[] = [
     slug: "fashion_life",
     title: "패션•라이프",
     emoji: "👗",
-    icon: "bag.fill",
+    icon: "bag",
     description: "패션, 뷰티, 브랜드, 일상 트렌드 관련 퀴즈",
     sampleTags: ["나이키", "무신사", "향수", "뷰티", "스트릿"],
     neighbors: [

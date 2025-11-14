@@ -39,7 +39,7 @@ function RootLayoutContent() {
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="(tabs)" />
               <Stack.Screen name="daily/index" />
-              <Stack.Screen name="room/[code]" />
+              <Stack.Screen name="room" options={{ headerShown: false }} />
               <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
             </Stack>
             <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />

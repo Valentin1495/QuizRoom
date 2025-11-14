@@ -142,7 +142,9 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     // 세션 제한 체크: 이미 제한에 도달했으면 추가하지 않음
     const remaining = sessionLimit - loadedCountRef.current;
     if (remaining <= 0) {
-      console.log('Session limit reached, ignoring new items');
+      if (__DEV__) {
+        console.log('Session limit reached, ignoring new items');
+      }
       setHasMore(false);
       setCursor(null);
       return 0;
@@ -190,7 +192,9 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
       setCursor(null);
     }
 
-    console.log(`PushPrefetch: added=${actualCount}, filtered=${newItems.length - actualCount}, total=${loadedCountRef.current}/${sessionLimit}`);
+    if (__DEV__) {
+      console.log(`PushPrefetch: added=${actualCount}, filtered=${newItems.length - actualCount}, total=${loadedCountRef.current}/${sessionLimit}`);
+    }
 
     return actualCount;
   }, [sessionLimit]);
@@ -297,20 +301,28 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
           },
           {} as Record<string, number>
         );
-        console.log(
-          `[DEBUG] Fetched categories for "${options.category}":`,
-          categoryCounts
-        );
+        if (__DEV__) {
+          console.log(
+            `[DEBUG] Fetched categories for "${options.category}":`,
+            categoryCounts
+          );
+        }
       }
 
-      console.log(`Fetch: requested=${requestLimit}, received=${items.length}, added=${actualAdded}, total=${loadedCountRef.current}/${sessionLimit}`);
+      if (__DEV__) {
+        console.log(`Fetch: requested=${requestLimit}, received=${items.length}, added=${actualAdded}, total=${loadedCountRef.current}/${sessionLimit}`);
+      }
 
       if (loadedCountRef.current >= sessionLimit) {
-        console.log('Session limit reached in fetchMore');
+        if (__DEV__) {
+          console.log('Session limit reached in fetchMore');
+        }
         setHasMore(false);
         setCursor(null);
       } else if (!response.hasMore) {
-        console.log('No more data from server');
+        if (__DEV__) {
+          console.log('No more data from server');
+        }
         setHasMore(false);
         setCursor(null);
       } else {
@@ -367,9 +379,11 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
       while (queue.length < VISIBLE_CARDS && prefetch.length > 0) {
         queue.push(prefetch.shift() as SwipeFeedQuestion);
       }
-      console.log(
-        `Advance: queue=${queue.length}, prefetch=${prefetch.length}, total=${loadedCountRef.current}`
-      );
+      if (__DEV__) {
+        console.log(
+          `Advance: queue=${queue.length}, prefetch=${prefetch.length}, total=${loadedCountRef.current}`
+        );
+      }
       return { queue, prefetch };
     });
   }, []);
@@ -515,7 +529,9 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
         },
         {} as Record<string, number>
       );
-      console.log('[DEBUG] Current queue distribution:', categoryCounts);
+      if (__DEV__) {
+        console.log('[DEBUG] Current queue distribution:', categoryCounts);
+      }
     }
     return {
       current,

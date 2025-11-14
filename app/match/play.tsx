@@ -9,6 +9,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { LinearGradient } from 'expo-linear-gradient';
 
+import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Elevation, Palette, Radius, Spacing } from '@/constants/theme';
@@ -44,11 +45,16 @@ export default function MatchPlayScreen() {
     const roomIdParam = useMemo(() => params.roomId?.toString() ?? null, [params.roomId]);
     const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'partyRooms'>) : null), [roomIdParam]);
     const textColor = useThemeColor({}, 'text');
+    const textMutedColor = useThemeColor({}, 'textMuted');
     const warningColor = useThemeColor({}, 'warning');
     const dangerColor = useThemeColor({}, 'danger');
     const infoColor = useThemeColor({}, 'info');
+    const cardColor = useThemeColor({}, 'card');
+    const borderColor = useThemeColor({}, 'border');
+    const backgroundSecondary = useThemeColor({}, 'background');
 
     const [hasLeft, setHasLeft] = useState(false);
+    const [isLeaveDialogVisible, setLeaveDialogVisible] = useState(false);
     const [disconnectReason, setDisconnectReason] = useState<string | null>(null);
     const [connectionState, setConnectionState] = useState<ConnectionState>('online');
     const [graceRemaining, setGraceRemaining] = useState(120);
@@ -328,7 +334,7 @@ export default function MatchPlayScreen() {
             setIsManualReconnectPending(false);
         }
     }, [beginReconnecting, handleConnectionRestored, heartbeat, isManualReconnectPending, participantArgs, showToast]);
-    const handleLeave = useCallback(() => {
+    const performLeave = useCallback(() => {
         if (hasLeft) return;
         if (!disconnectReason && participantArgs) {
             leaveRoom(participantArgs).catch((err) => {
@@ -346,6 +352,19 @@ export default function MatchPlayScreen() {
         setHasLeft(true);
         router.navigate('/(tabs)/live-match');
     }, [disconnectReason, hasLeft, leaveRoom, participantArgs, router]);
+
+    const handleLeave = useCallback(() => {
+        setLeaveDialogVisible(true);
+    }, []);
+
+    const handleConfirmLeave = useCallback(() => {
+        setLeaveDialogVisible(false);
+        performLeave();
+    }, [performLeave]);
+
+    const handleCancelLeave = useCallback(() => {
+        setLeaveDialogVisible(false);
+    }, []);
     useEffect(() => {
         if (connectionState === 'reconnecting') {
             if (reconnectTransitionRef.current) return;
@@ -920,7 +939,7 @@ export default function MatchPlayScreen() {
         try {
             const key = await resolveHostGuestKey();
             await cancelPendingAction({ roomId, guestKey: key });
-            showToast('진행이 취소되었어요');
+            showToast('매치가 취소되었어요');
         } catch (err) {
             Alert.alert('취소하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         }
@@ -973,8 +992,25 @@ export default function MatchPlayScreen() {
         user,
     ]);
 
+    const leaveDialogElement = (
+        <AlertDialog
+            visible={isLeaveDialogVisible}
+            onClose={handleCancelLeave}
+            title="퀴즈룸을 나가시겠어요?"
+            description="진행 중인 매치를 종료하고 로비로 돌아갑니다."
+            actions={[
+                { label: '취소', tone: 'secondary', onPress: handleCancelLeave },
+                { label: '나가기', tone: 'destructive', onPress: handleConfirmLeave },
+            ]}
+        />
+    );
+
     if (!roomId) {
-        return null;
+        return (
+            <>
+                {leaveDialogElement}
+            </>
+        );
     }
 
     if (disconnectReason) {
@@ -989,6 +1025,7 @@ export default function MatchPlayScreen() {
                             나가기
                         </Button>
                     </ThemedView>
+                    {leaveDialogElement}
                 </>
             );
         }
@@ -1002,6 +1039,7 @@ export default function MatchPlayScreen() {
                         퀴즈룸 찾기
                     </Button>
                 </ThemedView>
+                {leaveDialogElement}
             </>
         );
     }
@@ -1012,29 +1050,37 @@ export default function MatchPlayScreen() {
 
     if (roomState === undefined) {
         return (
-            <ThemedView style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={Palette.gray900} />
-                <ThemedText style={styles.loadingLabel}>게임을 불러오는 중...</ThemedText>
-            </ThemedView>
+            <>
+                <Stack.Screen options={{ headerShown: false }} />
+                <ThemedView style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={textColor} />
+                    <ThemedText style={[styles.loadingLabel, { color: textMutedColor }]}>게임을 불러오는 중...</ThemedText>
+                </ThemedView>
+                {leaveDialogElement}
+            </>
         );
     }
 
     if (!roomState) {
         return (
-            <ThemedView style={styles.loadingContainer}>
-                <ThemedText type="title">게임 정보를 찾을 수 없어요</ThemedText>
-                <Button variant="default" size="lg" onPress={() => router.navigate('/(tabs)/live-match')}>
-                    홈으로 이동
-                </Button>
-            </ThemedView>
+            <>
+                <Stack.Screen options={{ headerShown: false }} />
+                <ThemedView style={styles.loadingContainer}>
+                    <ThemedText type="title">게임 정보를 찾을 수 없어요</ThemedText>
+                    <Button variant="default" size="lg" onPress={() => router.navigate('/(tabs)/live-match')}>
+                        홈으로 이동
+                    </Button>
+                </ThemedView>
+                {leaveDialogElement}
+            </>
         );
     }
 
     const renderCountdown = () => (
-        <View style={styles.centerCard}>
+        <View style={[styles.centerCard, { backgroundColor: cardColor }]}>
             <ThemedText type="title" style={styles.cardTitle}>다음 라운드 준비!</ThemedText>
-            <ThemedText style={styles.centerSubtitle}>
-                <ThemedText style={styles.timerHighlight}>{timeLeft ?? '...'}</ThemedText>초 후 시작
+            <ThemedText style={[styles.centerSubtitle, { color: textMutedColor }]}>
+                <ThemedText style={[styles.timerHighlight, { color: textColor }]}>{timeLeft ?? '...'}</ThemedText>초 후 시작
             </ThemedText>
             {isHost && !hostIsConnected ? (
                 <Button variant='secondary' size="lg" fullWidth onPress={handleAdvance}>
@@ -1045,9 +1091,9 @@ export default function MatchPlayScreen() {
     );
 
     const renderReturning = () => (
-        <View style={styles.centerCard}>
-            <ActivityIndicator size="large" color={Palette.gray900} />
-            <ThemedText style={[styles.centerSubtitle, styles.returningLabel]}>대기실로 이동 중...</ThemedText>
+        <View style={[styles.centerCard, { backgroundColor: cardColor }]}>
+            <ActivityIndicator size="large" color={textColor} />
+            <ThemedText style={[styles.centerSubtitle, styles.returningLabel, { color: textMutedColor }]}>대기실로 이동 중...</ThemedText>
         </View>
     );
 
@@ -1055,13 +1101,13 @@ export default function MatchPlayScreen() {
     const totalRoundsDisplay = roomData?.room.totalRounds ?? 10;
 
     const renderQuestion = () => (
-        <View style={styles.questionCard}>
+        <View style={[styles.questionCard, { backgroundColor: cardColor }]}>
             <View style={styles.questionHeader}>
-                <ThemedText style={styles.roundCaption}>
+                <ThemedText style={[styles.roundCaption, { color: textMutedColor }]}>
                     라운드 {currentRoundIndex} / {totalRoundsDisplay}
                 </ThemedText>
-                <View style={styles.timerBadge}>
-                    <ThemedText style={styles.timerBadgeText}>
+                <View style={[styles.timerBadge, { backgroundColor: textColor }]}>
+                    <ThemedText style={[styles.timerBadgeText, { color: cardColor }]}>
                         {(isPaused && pausedRemainingSeconds !== null ? pausedRemainingSeconds : timeLeft) ?? '-'}초
                     </ThemedText>
                 </View>
@@ -1080,23 +1126,36 @@ export default function MatchPlayScreen() {
                             disabled={isDisabled}
                             style={({ pressed }) => [
                                 styles.choiceButton,
-                                isSelected && styles.choiceSelected,
+                                { backgroundColor: backgroundSecondary, borderColor: borderColor },
+                                isSelected && [styles.choiceSelected, { backgroundColor: textColor, borderColor: textColor }],
                                 pressed && !isDisabled && styles.choicePressed,
                             ]}
                         >
-                            <View style={[styles.choiceBadge, isSelected && styles.choiceBadgeSelected]}>
-                                <ThemedText style={[styles.choiceBadgeText, isSelected && styles.choiceBadgeTextSelected]}>
+                            <View style={[
+                                styles.choiceBadge,
+                                { backgroundColor: borderColor },
+                                isSelected && [styles.choiceBadgeSelected, { backgroundColor: cardColor }]
+                            ]}>
+                                <ThemedText style={[
+                                    styles.choiceBadgeText,
+                                    { color: textColor },
+                                    isSelected && [styles.choiceBadgeTextSelected, { color: textColor }]
+                                ]}>
                                     {String.fromCharCode(65 + index)}
                                 </ThemedText>
                             </View>
-                            <ThemedText style={[styles.choiceLabel, isSelected && styles.choiceLabelSelected]}>
+                            <ThemedText style={[
+                                styles.choiceLabel,
+                                { color: textColor },
+                                isSelected && [styles.choiceLabelSelected, { color: cardColor }]
+                            ]}>
                                 {choice.text}
                             </ThemedText>
                         </Pressable>
                     );
                 })}
             </View>
-            {isHost ? (
+            {isHost && __DEV__ ? (
                 <Button
                     variant="outline"
                     size="lg"
@@ -1111,24 +1170,24 @@ export default function MatchPlayScreen() {
     );
 
     const renderGrace = () => (
-        <View style={styles.centerCard}>
+        <View style={[styles.centerCard, { backgroundColor: cardColor }]}>
             <ThemedText type="title">답안 마감 중</ThemedText>
-            <ThemedText style={styles.centerSubtitle}>{timeLeft !== null ? `${timeLeft}초` : '...'} 후 정답 공개</ThemedText>
+            <ThemedText style={[styles.centerSubtitle, { color: textMutedColor }]}>{timeLeft !== null ? `${timeLeft}초` : '...'} 후 정답 공개</ThemedText>
         </View>
     );
 
     const renderReveal = () => (
-        <View style={styles.revealCard}>
+        <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
             <ThemedText type="title" style={styles.cardTitle}>정답 공개</ThemedText>
-            <View style={styles.correctAnswerBadge}>
-                <ThemedText style={styles.correctAnswerLabel}>
-                    정답은 <ThemedText style={styles.correctAnswerHighlight}>
+            <View style={[styles.correctAnswerBadge, { backgroundColor: backgroundSecondary, borderColor: textColor }]}>
+                <ThemedText style={[styles.correctAnswerLabel, { color: textColor }]}>
+                    정답은 <ThemedText style={[styles.correctAnswerHighlight, { color: textColor }]}>
                         {currentRound?.reveal ? String.fromCharCode(65 + currentRound.reveal.correctChoice) : '?'}
                     </ThemedText> 입니다
                 </ThemedText>
             </View>
             {currentRound?.question?.explanation ? (
-                <ThemedText style={styles.explanationText}>{currentRound.question.explanation}</ThemedText>
+                <ThemedText style={[styles.explanationText, { backgroundColor: backgroundSecondary, color: textMutedColor }]}>{currentRound.question.explanation}</ThemedText>
             ) : null}
             <View style={styles.distributionList}>
                 {currentRound?.question?.choices.map((choice, index) => {
@@ -1258,7 +1317,7 @@ export default function MatchPlayScreen() {
                     );
                 })}
             </View>
-            <View style={styles.scoreResultBadge}>
+            <View style={[styles.scoreResultBadge, { backgroundColor: textColor }]}>
                 {currentRound?.myAnswer ? (
                     <View style={styles.scoreResultContent}>
                         <IconSymbol
@@ -1266,13 +1325,13 @@ export default function MatchPlayScreen() {
                             size={20}
                             color={currentRound.myAnswer.isCorrect ? '#56CCF2' : '#FF7676'}
                         />
-                        <ThemedText style={styles.scoreResultText}>
-                            {currentRound.myAnswer.isCorrect ? '정답!' : '오답'} · {currentRound.myAnswer.scoreDelta > 0 ? '+' : ''}
+                        <ThemedText style={[styles.scoreResultText, { color: cardColor }]}>
+                            {currentRound.myAnswer.isCorrect ? '정답!' : '오답'} {currentRound.myAnswer.scoreDelta > 0 ? '+' : ''}
                             {currentRound.myAnswer.scoreDelta}점
                         </ThemedText>
                     </View>
                 ) : (
-                    <ThemedText style={styles.scoreResultText}>이번 라운드에 응시하지 않았어요</ThemedText>
+                    <ThemedText style={[styles.scoreResultText, { color: cardColor }]}>이번 라운드에 응시하지 않았어요</ThemedText>
                 )}
             </View>
             {isHost ? (
@@ -1290,7 +1349,7 @@ export default function MatchPlayScreen() {
     );
 
     const renderLeaderboard = () => (
-        <View style={styles.revealCard}>
+        <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
             <View style={styles.iconHeadingRow}>
                 <IconSymbol name="trophy.fill" size={28} color={textColor} />
                 <ThemedText type="title" style={styles.cardTitle}>리더보드</ThemedText>
@@ -1312,7 +1371,7 @@ export default function MatchPlayScreen() {
                                     rank === 1 && styles.leaderboardRankOne,
                                     rank === 2 && styles.leaderboardRankTwo,
                                     rank === 3 && styles.leaderboardRankThree,
-                                    isMe && styles.leaderboardMeRow,
+                                    isMe && [styles.leaderboardMeRow, { backgroundColor: backgroundSecondary, borderColor: textColor }],
                                 ]}
                                 accessibilityRole="text"
                                 accessibilityLabel={`${rank}위 ${entry.nickname}`}
@@ -1321,14 +1380,14 @@ export default function MatchPlayScreen() {
                                     <ThemedText
                                         style={[
                                             styles.choiceLabel,
-                                            isMe && styles.leaderboardMeText,
+                                            isMe && [styles.leaderboardMeText, { color: textColor }],
                                         ]}
                                     >
                                         {nameDisplay}
                                     </ThemedText>
                                     {isMe ? (
-                                        <View style={styles.meBadge}>
-                                            <ThemedText style={styles.meBadgeText}>나</ThemedText>
+                                        <View style={[styles.meBadge, { backgroundColor: textColor }]}>
+                                            <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
                                         </View>
                                     ) : null}
                                 </View>
@@ -1336,7 +1395,7 @@ export default function MatchPlayScreen() {
                                     style={[
                                         styles.distributionCount,
                                         styles.leaderboardScore,
-                                        isMe && styles.leaderboardMeText,
+                                        isMe && [styles.leaderboardMeText, { color: textColor }],
                                     ]}
                                 >
                                     {entry.totalScore}점
@@ -1349,13 +1408,13 @@ export default function MatchPlayScreen() {
                 )}
             </View>
             {currentRound?.leaderboard?.me ? (
-                <View style={styles.myRankBadge}>
-                    <ThemedText style={styles.myRankText}>
+                <View style={[styles.myRankBadge, { backgroundColor: backgroundSecondary, borderColor: borderColor }]}>
+                    <ThemedText style={[styles.myRankText, { color: textMutedColor }]}>
                         현재 순위 #{currentRound.leaderboard.me.rank} · {currentRound.leaderboard.me.totalScore}점
                     </ThemedText>
                 </View>
             ) : null}
-            <ThemedText style={styles.nextRoundHint}>
+            <ThemedText style={[styles.nextRoundHint, { color: textMutedColor }]}>
                 {isFinalLeaderboard
                     ? `${timeLeft ?? '-'}초 후 최종 결과 화면으로 이동해요`
                     : `다음 라운드 준비까지 ${timeLeft ?? '-'}초`}
@@ -1379,19 +1438,19 @@ export default function MatchPlayScreen() {
             deckInfo?.description ?? '게임을 만들 때 랜덤으로 선택된 덱입니다.';
 
         return (
-            <View style={styles.revealCard}>
+            <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
                 <View style={styles.iconHeadingRow}>
                     <IconSymbol name="party.popper" size={28} color={textColor} />
                     <ThemedText type="title" style={styles.cardTitle}>최종 결과</ThemedText>
                 </View>
-                <View style={styles.deckSummary}>
-                    <View style={styles.deckSummaryIcon}>
+                <View style={[styles.deckSummary, { borderColor: borderColor, backgroundColor: backgroundSecondary }]}>
+                    <View style={[styles.deckSummaryIcon, { backgroundColor: cardColor, borderColor: borderColor }]}>
                         <IconSymbol name={getDeckIcon(deckInfo?.slug)} size={24} color={textColor} />
                     </View>
                     <View style={styles.deckSummaryText}>
-                        <ThemedText style={styles.deckSummaryTitle}>{deckTitle}</ThemedText>
+                        <ThemedText style={[styles.deckSummaryTitle, { color: textColor }]}>{deckTitle}</ThemedText>
                         {deckDescription ? (
-                            <ThemedText style={styles.deckSummaryDescription}>{deckDescription}</ThemedText>
+                            <ThemedText style={[styles.deckSummaryDescription, { color: textMutedColor }]}>{deckDescription}</ThemedText>
                         ) : null}
                     </View>
                 </View>
@@ -1411,25 +1470,25 @@ export default function MatchPlayScreen() {
                                     rank === 1 && styles.leaderboardRankOne,
                                     rank === 2 && styles.leaderboardRankTwo,
                                     rank === 3 && styles.leaderboardRankThree,
-                                    isMe && styles.leaderboardMeRow,
+                                    isMe && [styles.leaderboardMeRow, { backgroundColor: backgroundSecondary, borderColor: textColor }],
                                 ]}
                                 accessibilityRole="text"
                                 accessibilityLabel={`${rank}위 ${player.nickname}`}
                             >
                                 <View style={styles.resultNameWrapper}>
-                                    <ThemedText style={[styles.choiceLabel, isMe && styles.leaderboardMeText]}>
+                                    <ThemedText style={[styles.choiceLabel, isMe && [styles.leaderboardMeText, { color: textColor }]]}>
                                         {nameDisplay}
                                     </ThemedText>
                                     {isMe ? (
-                                        <View style={styles.meBadge}>
-                                            <ThemedText style={styles.meBadgeText}>나</ThemedText>
+                                        <View style={[styles.meBadge, { backgroundColor: textColor }]}>
+                                            <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
                                         </View>
                                     ) : null}
                                     {player.userId && hostUserId && player.userId === hostUserId && !player.isConnected ? (
                                         <ThemedText style={styles.offlineTag}>오프라인</ThemedText>
                                     ) : null}
                                 </View>
-                                <ThemedText style={[styles.distributionCount, styles.leaderboardScore, isMe && styles.leaderboardMeText]}>
+                                <ThemedText style={[styles.distributionCount, styles.leaderboardScore, isMe && [styles.leaderboardMeText, { color: textColor }]]}>
                                     {player.totalScore}점
                                 </ThemedText>
                             </View>
@@ -1471,11 +1530,11 @@ export default function MatchPlayScreen() {
         if (!pendingAction) return null;
         const seconds = Math.ceil(pendingMs / 1000);
         return (
-            <View style={styles.pendingBanner}>
+            <View style={[styles.pendingBanner, { backgroundColor: backgroundSecondary }]}>
                 <ThemedText type="subtitle" style={styles.pendingTitle}>
                     {scheduleLabel}
                 </ThemedText>
-                <ThemedText style={styles.pendingSubtitle}>
+                <ThemedText style={[styles.pendingSubtitle, { color: textMutedColor }]}>
                     {seconds > 0
                         ? `${seconds}초 후 자동 진행됩니다. 호스트가 취소할 수 있어요.`
                         : '잠시 후 자동으로 실행됩니다.'}
@@ -1495,14 +1554,14 @@ export default function MatchPlayScreen() {
         const seconds = hostGraceRemaining % 60;
         const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         return (
-            <View style={styles.hostBanner}>
+            <View style={[styles.hostBanner, { backgroundColor: backgroundSecondary, borderColor: textColor }]}>
                 <View style={styles.iconMessageRow}>
                     <IconSymbol name="hourglass" size={20} color={warningColor} />
-                    <ThemedText type="subtitle" style={styles.hostBannerTitle}>
+                    <ThemedText type="subtitle" style={[styles.hostBannerTitle, { color: textColor }]}>
                         재접속 대기 중 ({formattedTime})
                     </ThemedText>
                 </View>
-                <ThemedText style={styles.hostBannerSubtitle}>
+                <ThemedText style={[styles.hostBannerSubtitle, { color: textMutedColor }]}>
                     {hostNickname}님 연결을 기다리는 중이에요. 복구되면 자동으로 이어집니다.
                 </ThemedText>
             </View>
@@ -1513,20 +1572,20 @@ export default function MatchPlayScreen() {
         const banners: ReactNode[] = [];
         if (connectionState === 'reconnecting') {
             banners.push(
-                <View key="self_reconnecting" style={styles.connectionBanner}>
+                <View key="self_reconnecting" style={[styles.connectionBanner, { backgroundColor: backgroundSecondary }]}>
                     <View style={styles.connectionBannerRow}>
                         <IconSymbol name="exclamationmark.triangle.fill" size={18} color={warningColor} />
-                        <ThemedText style={styles.connectionBannerText}>연결이 불안정합니다… 다시 연결 중</ThemedText>
+                        <ThemedText style={[styles.connectionBannerText, { color: textColor }]}>연결이 불안정합니다… 다시 연결 중</ThemedText>
                     </View>
                 </View>
             );
         }
         if (!isHost && hostConnectionState === 'waiting') {
             banners.push(
-                <View key="host_reconnecting" style={styles.connectionBanner}>
+                <View key="host_reconnecting" style={[styles.connectionBanner, { backgroundColor: backgroundSecondary }]}>
                     <View style={styles.connectionBannerRow}>
                         <IconSymbol name="exclamationmark.triangle.fill" size={18} color={warningColor} />
-                        <ThemedText style={styles.connectionBannerText}>
+                        <ThemedText style={[styles.connectionBannerText, { color: textColor }]}>
                             호스트 연결이 불안정합니다… 다시 연결 중
                         </ThemedText>
                     </View>
@@ -1546,14 +1605,14 @@ export default function MatchPlayScreen() {
         return (
             <View style={styles.graceOverlay}>
                 <View style={styles.graceBackdrop} />
-                <View style={styles.graceCard}>
-                    <ThemedText style={styles.graceTitle}>연결 대기 중</ThemedText>
-                    <ThemedText style={styles.graceSubtitle}>
+                <View style={[styles.graceCard, { backgroundColor: cardColor }]}>
+                    <ThemedText style={[styles.graceTitle, { color: textColor }]}>연결 대기 중</ThemedText>
+                    <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>
                         연결이 끊겼어요. {graceRemaining}초 안에 복구되면 이어서 진행돼요.
                     </ThemedText>
-                    <ThemedText style={styles.graceTimer}>{formattedTime}</ThemedText>
-                    <View style={styles.graceProgressBar}>
-                        <View style={[styles.graceProgressFill, { width: `${progress * 100}%` }]} />
+                    <ThemedText style={[styles.graceTimer, { color: textColor }]}>{formattedTime}</ThemedText>
+                    <View style={[styles.graceProgressBar, { backgroundColor: borderColor }]}>
+                        <View style={[styles.graceProgressFill, { width: `${progress * 100}%`, backgroundColor: textColor }]} />
                     </View>
                     <Button
                         variant="default"
@@ -1587,12 +1646,12 @@ export default function MatchPlayScreen() {
             return (
                 <View style={styles.graceOverlay}>
                     <View style={styles.graceBackdrop} />
-                    <View style={styles.graceCard}>
+                    <View style={[styles.graceCard, { backgroundColor: cardColor }]}>
                         <View style={styles.graceTitleRow}>
                             <IconSymbol name="crown.fill" size={24} color={warningColor} />
-                            <ThemedText style={styles.graceTitle}>새로운 호스트가 지정되었어요</ThemedText>
+                            <ThemedText style={[styles.graceTitle, { color: textColor }]}>새로운 호스트가 지정되었어요</ThemedText>
                         </View>
-                        <ThemedText style={styles.graceSubtitle}>{nextHostMessage}</ThemedText>
+                        <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>{nextHostMessage}</ThemedText>
                         <Button
                             variant="default"
                             size="lg"
@@ -1621,19 +1680,19 @@ export default function MatchPlayScreen() {
             return (
                 <View style={styles.graceOverlay}>
                     <View style={styles.graceBackdrop} />
-                    <View style={styles.graceCard}>
+                    <View style={[styles.graceCard, { backgroundColor: cardColor }]}>
                         <View style={styles.graceTitleRow}>
                             <IconSymbol name="arrow.triangle.2.circlepath" size={24} color={infoColor} />
-                            <ThemedText style={styles.graceTitle}>호스트 연결이 끊겼습니다.</ThemedText>
+                            <ThemedText style={[styles.graceTitle, { color: textColor }]}>호스트 연결이 끊겼습니다.</ThemedText>
                         </View>
-                        <ThemedText style={styles.graceSubtitle}>
+                        <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>
                             {hostNickname}님 연결을 복구 중이에요. {formattedTime} 안에 돌아오면 계속 진행돼요.
                         </ThemedText>
-                        <View style={styles.graceProgressBar}>
-                            <View style={[styles.graceProgressFill, { width: `${progress * 100}%` }]} />
+                        <View style={[styles.graceProgressBar, { backgroundColor: borderColor }]}>
+                            <View style={[styles.graceProgressFill, { width: `${progress * 100}%`, backgroundColor: textColor }]} />
                         </View>
-                        <ThemedText style={styles.graceTimer}>{formattedTime}</ThemedText>
-                        <ThemedText style={styles.graceSubtitle}>자동으로 재시도하고 있어요.</ThemedText>
+                        <ThemedText style={[styles.graceTimer, { color: textColor }]}>{formattedTime}</ThemedText>
+                        <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>자동으로 재시도하고 있어요.</ThemedText>
                         <Button variant="ghost" size="lg" fullWidth onPress={handleLeave}>
                             나가기
                         </Button>
@@ -1644,12 +1703,12 @@ export default function MatchPlayScreen() {
         return (
             <View style={styles.graceOverlay}>
                 <View style={styles.graceBackdrop} />
-                <View style={styles.graceCard}>
+                <View style={[styles.graceCard, { backgroundColor: cardColor }]}>
                     <View style={styles.graceTitleRow}>
                         <IconSymbol name="face.frown" size={24} color={dangerColor} />
-                        <ThemedText style={styles.graceTitle}>호스트 연결이 오래 끊겼습니다.</ThemedText>
+                        <ThemedText style={[styles.graceTitle, { color: textColor }]}>호스트 연결이 오래 끊겼습니다.</ThemedText>
                     </View>
-                    <ThemedText style={styles.graceSubtitle}>{nextHostMessage}</ThemedText>
+                    <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>{nextHostMessage}</ThemedText>
                     <Button variant="default" size="lg" fullWidth onPress={handleLeave}>
                         나가기
                     </Button>
@@ -1719,18 +1778,18 @@ export default function MatchPlayScreen() {
     const renderPauseNotice = () => {
         if (!isPaused) return null;
         return (
-            <View style={styles.pauseBanner}>
+            <View style={[styles.pauseBanner, { backgroundColor: textColor }]}>
                 <View style={styles.iconHeadingRow}>
-                    <IconSymbol name="pause.circle.fill" size={24} color={infoColor} />
-                    <ThemedText type="subtitle" style={styles.pauseBannerTitle}>
+                    <IconSymbol name="pause.circle.fill" size={24} color={cardColor} />
+                    <ThemedText type="subtitle" style={[styles.pauseBannerTitle, { color: cardColor }]}>
                         게임이 일시정지됐어요
                     </ThemedText>
                 </View>
-                <ThemedText style={styles.pauseBannerSubtitle}>
+                <ThemedText style={[styles.pauseBannerSubtitle, { color: cardColor }]}>
                     {isHost ? '재개 버튼을 눌러 게임을 이어가세요' : '호스트가 곧 게임을 다시 시작할 거예요'}
                 </ThemedText>
                 {pausedRemainingSeconds !== null ? (
-                    <ThemedText style={styles.pauseBannerHint}>재개 시 남은 시간 약 {pausedRemainingSeconds}초</ThemedText>
+                    <ThemedText style={[styles.pauseBannerHint, { color: cardColor }]}>재개 시 남은 시간 약 {pausedRemainingSeconds}초</ThemedText>
                 ) : null}
                 {isHost ? (
                     <Button
@@ -1739,7 +1798,7 @@ export default function MatchPlayScreen() {
                         onPress={handleResume}
                         disabled={isResumePending}
                         loading={isResumePending}
-                        style={styles.resumeButton}
+                        style={{ backgroundColor: backgroundSecondary, borderColor: borderColor }}
                     >
                         재개
                     </Button>
@@ -1749,9 +1808,9 @@ export default function MatchPlayScreen() {
     };
 
     const renderBootstrapping = () => (
-        <View style={styles.centerCard}>
-            <ActivityIndicator size="large" color={Palette.gray900} />
-            <ThemedText style={styles.centerSubtitle}>게임을 준비 중이에요...</ThemedText>
+        <View style={[styles.centerCard, { backgroundColor: cardColor }]}>
+            <ActivityIndicator size="large" color={textColor} />
+            <ThemedText style={[styles.centerSubtitle, { color: textMutedColor }]}>게임을 준비 중이에요...</ThemedText>
         </View>
     );
 
@@ -1791,10 +1850,12 @@ export default function MatchPlayScreen() {
     const leaveControl = connectionState === 'online' ? renderLeaveButton() : null;
     const pauseControl = connectionState === 'online' ? renderPauseControls() : null;
 
+    const background = useThemeColor({}, 'background');
+
     return (
         <>
             <Stack.Screen options={{ headerShown: false }} />
-            <ThemedView style={[styles.container, { paddingTop: insets.top + Spacing.md, paddingBottom: insets.bottom + Spacing.lg }]}>
+            <ThemedView style={[styles.container, { backgroundColor: background, paddingTop: insets.top + Spacing.md, paddingBottom: insets.bottom + Spacing.lg }]}>
                 {/* {isHost ? renderDelaySelector() : null} */}
                 {renderConnectionBanner()}
                 {connectionState === 'online' ? renderPendingBanner() : null}
@@ -1810,6 +1871,7 @@ export default function MatchPlayScreen() {
                 {renderGraceOverlay()}
                 {renderHostGraceOverlay()}
             </ThemedView>
+            {leaveDialogElement}
         </>
     );
 }
@@ -2065,11 +2127,9 @@ const styles = StyleSheet.create({
     },
     explanationText: {
         fontSize: 15,
-        color: Palette.gray700,
         lineHeight: 22,
         paddingVertical: Spacing.sm,
         paddingHorizontal: Spacing.md,
-        backgroundColor: Palette.gray50,
         borderRadius: Radius.md,
     },
     scoreResultBadge: {
@@ -2239,12 +2299,9 @@ const styles = StyleSheet.create({
         backgroundColor: Palette.offWhite,
     },
     leaderboardMeRow: {
-        backgroundColor: Palette.gray100,
         borderWidth: 2,
-        borderColor: Palette.gray900,
     },
     leaderboardMeText: {
-        color: Palette.gray900,
         fontWeight: '700',
     },
     leaderboardScore: {
@@ -2253,13 +2310,11 @@ const styles = StyleSheet.create({
     meBadge: {
         paddingHorizontal: Spacing.sm,
         paddingVertical: 2,
-        backgroundColor: Palette.gray900,
         borderRadius: Radius.sm,
     },
     meBadgeText: {
         fontSize: 11,
         fontWeight: '700',
-        color: Palette.white,
     },
     myRankBadge: {
         padding: Spacing.md,
@@ -2292,31 +2347,23 @@ const styles = StyleSheet.create({
     pauseControls: {
         flexDirection: 'row',
     },
-    resumeButton: {
-        backgroundColor: Palette.gray50,
-        borderColor: Palette.gray200,
-    },
     pauseBanner: {
         padding: Spacing.lg,
-        backgroundColor: Palette.gray900,
         borderRadius: Radius.lg,
         marginBottom: Spacing.md,
         gap: Spacing.md,
         ...Elevation.sm,
     },
     pauseBannerTitle: {
-        color: Palette.white,
         fontWeight: '700',
         fontSize: 18,
     },
     pauseBannerSubtitle: {
         fontSize: 15,
-        color: Palette.gray200,
         lineHeight: 22,
     },
     pauseBannerHint: {
         fontSize: 14,
-        color: Palette.gray200,
     },
     pendingBanner: {
         padding: Spacing.lg,

@@ -871,6 +871,14 @@ export const join = mutation({
                     userId,
                     identityId,
                     isGuest,
+                    guestAvatarId: isGuest
+                        ? (() => {
+                            const key = requireGuestKey(args.guestKey);
+                            const suffix = key.slice(-4);
+                            const parsed = parseInt(suffix, 16);
+                            return Number.isNaN(parsed) ? undefined : parsed % 100;
+                        })()
+                        : undefined,
                     isReady: false,
                 });
             } else {
@@ -882,6 +890,14 @@ export const join = mutation({
                     userId,
                     identityId,
                     isGuest,
+                    guestAvatarId: isGuest
+                        ? (() => {
+                            const key = requireGuestKey(args.guestKey);
+                            const suffix = key.slice(-4);
+                            const parsed = parseInt(suffix, 16);
+                            return Number.isNaN(parsed) ? undefined : parsed % 100;
+                        })()
+                        : undefined,
                     isReady: false,
                 });
             }
@@ -908,6 +924,14 @@ export const join = mutation({
             userId,
             identityId,
             isGuest,
+            guestAvatarId: isGuest
+                ? (() => {
+                    const key = requireGuestKey(args.guestKey);
+                    const suffix = key.slice(-4);
+                    const parsed = parseInt(suffix, 16);
+                    return Number.isNaN(parsed) ? undefined : parsed % 100;
+                })()
+                : undefined,
             nickname,
             isHost: identityId === room.hostIdentity,
             isReady: false,
@@ -1501,19 +1525,39 @@ export const getLobby = query({
             .sort((a, b) => a.joinedAt - b.joinedAt);
         const now = Date.now();
 
+        const userIds = activeParticipants
+            .map((p) => p.userId)
+            .filter((id): id is Id<"users"> => id !== undefined);
+
+        const users =
+            userIds.length > 0
+                ? await Promise.all(userIds.map((id) => ctx.db.get(id)))
+                : [];
+
+        const usersById = new Map(
+            users
+                .filter((u): u is Doc<"users"> => u !== null)
+                .map((u) => [u._id, u])
+        );
+
         return {
             room: normalizedRoom,
             deck: deckMeta,
-            participants: activeParticipants.map((p) => ({
-                participantId: p._id,
-                userId: p.userId ?? null,
-                isGuest: p.isGuest,
-                nickname: p.nickname,
-                isHost: p.isHost,
-                isReady: p.isReady ?? false,
-                joinedAt: p.joinedAt,
-                isConnected: isParticipantConnected(p, now),
-            })),
+            participants: activeParticipants.map((p) => {
+                const user = p.userId ? usersById.get(p.userId) : undefined;
+                return {
+                    participantId: p._id,
+                    userId: p.userId ?? null,
+                    avatarUrl: user?.avatarUrl ?? null,
+                    isGuest: p.isGuest,
+                    guestAvatarId: p.guestAvatarId,
+                    nickname: p.nickname,
+                    isHost: p.isHost,
+                    isReady: p.isReady ?? false,
+                    joinedAt: p.joinedAt,
+                    isConnected: isParticipantConnected(p, now),
+                }
+            }),
             now: Date.now(),
         };
     },

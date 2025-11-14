@@ -34,13 +34,13 @@ export function AuthGate({ children }: AuthGateProps) {
       return {
         isLoading: false,
         headline: '로그인에 문제가 발생했어요',
-        helper: error ?? '잠시 후 다시 시도해주세요.',
+        helper: error ?? '잠시 후 다시 시도해주세요',
       } as const;
     }
     return {
       isLoading: false,
       headline: 'QuizRoom',
-      helper: 'Google 계정으로 간편하게 로그인하세요',
+      helper: 'Google 계정으로 간편하게 로그인하고 \n 실시간 퀴즈 배틀에 합류하세요!',
     } as const;
   }, [status, user, error]);
 
@@ -92,7 +92,7 @@ export function AuthGate({ children }: AuthGateProps) {
 
             {/* Secondary CTA - Guest Mode */}
             <Button
-              variant="outline"
+              variant="secondary"
               size="lg"
               rounded="lg"
               fullWidth

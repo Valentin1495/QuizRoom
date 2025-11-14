@@ -1,7 +1,7 @@
 // components/ui/Avatar.tsx
 import * as Haptics from 'expo-haptics';
 import React, { useMemo } from 'react';
-import { Image, Pressable, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { Image, Pressable, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Colors, Palette, Radius } from '../../constants/theme';
@@ -18,7 +18,7 @@ type AvatarProps = {
     onPress?: () => void;
     accessibilityLabel?: string;
     backgroundColorOverride?: string;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
     textStyle?: TextStyle;
 };
 

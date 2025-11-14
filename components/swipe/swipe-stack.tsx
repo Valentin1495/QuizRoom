@@ -77,7 +77,7 @@ const createSwipeSessionId = (key: string) => `swipe:${key}:${Date.now()}`;
 const ONBOARDING_SLIDES = [
   {
     id: 'slide_1',
-    icon: 'hand.draw' as const,
+    icon: 'hand.draw.fill' as const,
     title: '스와이프로 빠르게 넘기기',
     body: '오른쪽으로 스와이프하면 다음 문항\n왼쪽으로 스와이프하면 스킵/신고',
   },
@@ -125,7 +125,9 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const reportReasonSheetRef = useRef<BottomSheetModal>(null);
   const reportNotesInputRef = useRef<TextInput>(null);
   const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
+    if (__DEV__) {
+      console.log('handleSheetChanges', index);
+    }
   }, []);
   const closeSheet = useCallback(() => {
     bottomSheetRef.current?.dismiss();

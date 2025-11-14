@@ -391,7 +391,9 @@ export function AuthProvider({
   const signOut = useCallback(async () => {
     try {
       await firebaseSignOut(getAuth());
-      console.log("Firebase signOut success");
+      if (__DEV__) {
+        console.log("Firebase signOut success");
+      }
     } catch (err) {
       console.error("Firebase signOut failed", err);
     }

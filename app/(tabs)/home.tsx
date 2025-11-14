@@ -1,7 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery } from 'convex/react';
 import { Link, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { TextInput as RNTextInput } from 'react-native';
 import {
   Alert,
@@ -29,10 +29,10 @@ import { useJoinParty } from '@/lib/api';
 const DAILY_CATEGORY_ICONS: Record<DailyCategory, IconSymbolName> = {
   tech_it: 'desktopcomputer',
   variety_reality: 'tv',
-  drama_movie: 'film.fill',
-  sports_games: 'trophy.fill',
+  drama_movie: 'film',
+  sports_games: 'trophy',
   kpop_music: 'music.note',
-  fashion_life: 'bag.fill',
+  fashion_life: 'bag',
   news_issues: 'newspaper',
 };
 
@@ -141,6 +141,14 @@ export default function HomeScreen() {
     return `Guest ${suffix}`;
   }, [guestKey, isGuest]);
 
+  const guestAvatarId = useMemo(() => {
+    if (!guestKey) return undefined;
+    const suffix = guestKey.slice(-4);
+    const parsed = parseInt(suffix, 16);
+    if (Number.isNaN(parsed)) return undefined;
+    return parsed % 100;
+  }, [guestKey]);
+
   useEffect(() => {
     if (!derivedGuestNickname) return;
     setJoinNickname((prev) =>
@@ -233,9 +241,10 @@ export default function HomeScreen() {
             { backgroundColor: cardBackground, borderColor },
           ]}
         >
-          {isAuthenticated && user?.avatarUrl ? (
+          {isAuthenticated && user ? (
             <Avatar
               uri={user.avatarUrl}
+              name={user.handle}
               size="lg"
               radius={Radius.pill}
             />
@@ -243,6 +252,7 @@ export default function HomeScreen() {
             <GuestAvatar
               size="lg"
               radius={Radius.pill}
+              guestId={guestAvatarId}
             />
           )}
           <View style={styles.welcomeText}>

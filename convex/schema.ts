@@ -317,6 +317,7 @@ export default defineSchema({
     userId: v.optional(v.id("users")),
     identityId: v.string(),
     isGuest: v.boolean(),
+    guestAvatarId: v.optional(v.number()),
     nickname: v.string(),
     isHost: v.boolean(),
     isReady: v.optional(v.boolean()),

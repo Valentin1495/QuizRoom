@@ -78,7 +78,7 @@ export default function ProfileScreen() {
   }, []);
 
   const handleEditProfile = useCallback(() => {
-    Alert.alert('프로필 편집', '프로필 편집 화면은 아직 준비 중이에요.');
+    Alert.alert('프로필 편집', '프로필 편집 기능은 곧 추가될 예정입니다.');
   }, []);
 
   const handleAppleLogin = useCallback(() => {
@@ -155,7 +155,7 @@ export default function ProfileScreen() {
           onSignOut={handleOpenLogoutDialog}
           isSigningOut={isSigningOut}
           onSupport={() =>
-            Alert.alert('문의하기', 'valentink1495@gmail.com으로 연락해주세요.')
+            Alert.alert('문의하기', 'valentink1495@gmail.com\n언제든 편하게 연락주세요!')
           }
           onPolicy={() => Alert.alert('약관 및 정책', '약관 화면은 곧 추가될 예정입니다.')}
           onLogin={handleGoogleLogin}
@@ -355,7 +355,7 @@ function GuestHistoryPlaceholder({
       >
         <View style={styles.modalDialog}>
           <IconSymbol
-            name="lock.fill"
+            name="lock"
             size={28}
             color={textColor}
             style={{ marginBottom: Spacing.sm }}
@@ -368,7 +368,7 @@ function GuestHistoryPlaceholder({
               { color: textColor, textAlign: 'center', marginBottom: Spacing.lg },
             ]}
           >
-            로그인하고 퀴즈 기록을 쌓아보세요!
+            로그인하고 나의 퀴즈 기록을 쌓아보세요!
           </ThemedText>
           <Button
             onPress={onLogin}
@@ -830,7 +830,7 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   sectionStack: {
-    gap: Spacing.sm,
+    gap: Spacing.xl,
   },
   historySection: {
     gap: Spacing.sm,

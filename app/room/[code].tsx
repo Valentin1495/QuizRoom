@@ -7,9 +7,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
+import { Colors, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
@@ -33,6 +34,14 @@ export default function MatchLobbyScreen() {
   const pendingExecutedRef = useRef(false);
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
   const [pendingBannerHeight, setPendingBannerHeight] = useState(0);
+
+  const selfGuestAvatarId = useMemo(() => {
+    if (status !== 'guest' || !guestKey) return undefined;
+    const suffix = guestKey.slice(-4);
+    const parsed = parseInt(suffix, 16);
+    if (Number.isNaN(parsed)) return undefined;
+    return parsed % 100;
+  }, [guestKey, status]);
 
 
   const shouldFetchLobby = roomCode.length > 0 && !hasLeft;
@@ -110,9 +119,11 @@ export default function MatchLobbyScreen() {
 
   // Define neutral palette colors based on the theme
   const primaryColor = theme.primary;
-  const secondaryColor = theme.secondary;
+  const secondaryColor = colorScheme === 'light' ? theme.secondary : theme.cardElevated;
   const accentColor = theme.accent;
   const destructiveColor = theme.destructive;
+  const fallbackAvatarBackground = theme.primary;
+  const participantAvatarBorder = theme.border;
   const destructiveMutedColor = colorScheme === 'light' ? '#FEE2E2' : 'rgba(239, 68, 68, 0.2)';
   const destructiveMutedBgColor = colorScheme === 'light' ? '#FEF2F2' : 'rgba(239, 68, 68, 0.1)';
   const infoMutedColor = colorScheme === 'light' ? '#B45309' : '#FCD34D';
@@ -121,6 +132,11 @@ export default function MatchLobbyScreen() {
   const neutralBannerBorder = colorScheme === 'light' ? '#5460B4' : '#C8D0FF';
   const neutralBannerText = colorScheme === 'light' ? '#2C3A7A' : '#E5EBFF';
   const accentForegroundColor = theme.accentForeground;
+  const readyBadgeReadyColor =
+    colorScheme === 'dark' ? 'rgba(255,255,255,0.17)' : primaryColor;
+  const readyBadgeWaitingColor =
+    colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : mutedColor;
+
 
   const resolveDelayMs = useMemo(() => {
     switch (selectedDelay) {
@@ -404,11 +420,7 @@ export default function MatchLobbyScreen() {
           fontSize: 15,
         },
         deckCardDescription: {
-          color: Palette.gray700,
-          fontSize: 12,
-        },
-        deckCardMeta: {
-          color: Palette.gray700,
+          color: mutedColor,
           fontSize: 12,
         },
         deckCardWarning: {
@@ -441,6 +453,13 @@ export default function MatchLobbyScreen() {
           flexDirection: 'row',
           alignItems: 'center',
           gap: Spacing.xs,
+        },
+        participantAvatar: {
+          borderWidth: 0,
+        },
+        participantTextBlock: {
+          flexDirection: 'column',
+          gap: 2,
         },
         participantName: {
           fontSize: 16,
@@ -475,10 +494,10 @@ export default function MatchLobbyScreen() {
           borderRadius: Radius.pill,
         },
         readyBadgeReady: {
-          backgroundColor: primaryColor,
+          backgroundColor: readyBadgeReadyColor,
         },
         readyBadgeWaiting: {
-          backgroundColor: mutedColor,
+          backgroundColor: readyBadgeWaitingColor,
         },
         readyBadgeLabel: {
           fontSize: 11,
@@ -706,13 +725,50 @@ export default function MatchLobbyScreen() {
                     style={[styles.participantRow, isMe && styles.participantRowMe]}
                   >
                     <View style={styles.participantInfo}>
-                      <ThemedText style={[styles.participantName, isMe && styles.participantNameMe]}>
-                        {participant.nickname}
-                        {isMe ? ' (나)' : ''}
-                      </ThemedText>
-                      {!participant.isConnected ? (
-                        <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
-                      ) : null}
+                      {isMe ? (
+                        status === 'authenticated' && user ? (
+                          <Avatar
+                            uri={user.avatarUrl}
+                            name={user.handle}
+                            size="sm"
+                            radius={Radius.pill}
+                            backgroundColorOverride={fallbackAvatarBackground}
+                            style={[styles.participantAvatar, { borderColor: participantAvatarBorder }]}
+                          />
+                        ) : (
+                          <GuestAvatar
+                            guestId={selfGuestAvatarId}
+                            size="sm"
+                            radius={Radius.pill}
+                            style={[styles.participantAvatar, { borderColor: participantAvatarBorder }]}
+                          />
+                        )
+                      ) : participant.userId ? (
+                        <Avatar
+                          uri={participant.avatarUrl}
+                          name={participant.nickname}
+                          size="sm"
+                          radius={Radius.pill}
+                          backgroundColorOverride={fallbackAvatarBackground}
+                          style={[styles.participantAvatar, { borderColor: participantAvatarBorder }]}
+                        />
+                      ) : (
+                        <GuestAvatar
+                          guestId={participant.guestAvatarId}
+                          size="sm"
+                          radius={Radius.pill}
+                          style={[styles.participantAvatar, { borderColor: participantAvatarBorder }]}
+                        />
+                      )}
+                      <View style={styles.participantTextBlock}>
+                        <ThemedText style={[styles.participantName, isMe && styles.participantNameMe]}>
+                          {participant.nickname}
+                          {isMe ? ' (나)' : ''}
+                        </ThemedText>
+                        {!participant.isConnected ? (
+                          <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
+                        ) : null}
+                      </View>
                     </View>
                     {participant.isHost ? (
                       <View style={styles.hostBadge}>
