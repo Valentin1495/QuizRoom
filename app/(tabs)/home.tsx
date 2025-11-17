@@ -182,12 +182,12 @@ export default function HomeScreen() {
       let message = '코드를 확인하거나 방이 이미 시작되었는지 확인해주세요.';
       if (error instanceof Error) {
         message = error.message.includes('ROOM_FULL')
-          ? '파티가 가득 찼어요. 다른 방을 찾아주세요.'
+          ? '퀴즈룸이 가득 찼어요. 다른 방을 찾아주세요.'
           : error.message.includes('REJOIN_NOT_ALLOWED')
             ? '퀴즈 진행 중에는 다시 입장할 수 없어요. 게임이 끝난 뒤 다시 시도해 주세요.'
             : error.message;
       }
-      Alert.alert('참여 실패', message);
+      Alert.alert('참가 실패', message);
     } finally {
       setIsJoining(false);
     }

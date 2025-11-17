@@ -56,7 +56,6 @@ export default function MatchLobbyScreen() {
   const setReady = useMutation(api.rooms.setReady);
   const cancelPendingAction = useMutation(api.rooms.cancelPendingAction);
   const roomId = lobby?.room._id ?? null;
-  const isHost = lobby?.room.hostId === user?.id;
   const pendingAction = lobby?.room.pendingAction ?? null;
   const pendingBannerAnim = useRef(new Animated.Value(pendingAction ? 1 : 0)).current;
 
@@ -460,6 +459,7 @@ export default function MatchLobbyScreen() {
         participantTextBlock: {
           flexDirection: 'column',
           gap: 2,
+          marginLeft: Spacing.xs,
         },
         participantName: {
           fontSize: 16,
@@ -663,7 +663,7 @@ export default function MatchLobbyScreen() {
                   ? `${pendingSeconds}초 후 자동 진행됩니다. 호스트가 취소할 수 있어요.`
                   : '잠시 후 자동으로 실행됩니다.'}
               </ThemedText>
-              {isHost ? (
+              {isSelfHost ? (
                 <Pressable style={styles.pendingCancelButton} onPress={handleCancelPending}>
                   <ThemedText style={styles.pendingCancelLabel}>취소</ThemedText>
                 </Pressable>
@@ -700,6 +700,9 @@ export default function MatchLobbyScreen() {
                   </ThemedText>
                 </View>
                 <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
+                <ThemedText style={styles.deckCardDescription}>
+                  • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
+                </ThemedText>
                 <ThemedText style={styles.deckCardDescription}>
                   • 총 10라운드로 진행됩니다.
                 </ThemedText>
@@ -817,7 +820,7 @@ export default function MatchLobbyScreen() {
                 {isSelfReady ? '준비 취소' : '준비 완료'}
               </Button>
             ) : null}
-            {isHost ? (
+            {isSelfHost ? (
               <View style={styles.hostControls}>
                 {readySummaryTotal > 0 ? (
                   <ThemedText style={styles.hostHint}>

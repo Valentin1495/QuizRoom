@@ -1162,7 +1162,7 @@ export default function MatchPlayScreen() {
                     );
                 })}
             </View>
-            {isHost && __DEV__ ? (
+            {participants.length <= 1 ? (
                 <Button
                     variant="outline"
                     size="lg"
@@ -1354,11 +1354,11 @@ export default function MatchPlayScreen() {
         </View>
     );
 
-    const renderParticipantAvatar = (participantId: Id<'partyParticipants'>, isSelf: boolean) => {
+    const renderParticipantAvatar = (participantId: Id<'partyParticipants'>) => {
         const participant = participantsById.get(participantId);
         const sharedStyle = [
             styles.leaderboardAvatar,
-            { borderColor: isSelf ? textColor : avatarBorderColor },
+            { borderColor: avatarBorderColor },
         ];
         if (participant?.userId) {
             return (
@@ -1405,8 +1405,7 @@ export default function MatchPlayScreen() {
                         const isMe = meParticipantId !== null && entry.participantId === meParticipantId;
                         const rank = entry.rank ?? index + 1;
                         const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
-                        const rankDisplay = rankEmoji || `${rank}위`;
-                        const nameDisplay = `${rankDisplay} ${entry.nickname}`;
+                        const nameDisplay = entry.nickname;
                         return (
                             <View
                                 key={entry.participantId}
@@ -1419,7 +1418,14 @@ export default function MatchPlayScreen() {
                                 accessibilityLabel={`${rank}위 ${entry.nickname}`}
                             >
                                 <View style={styles.leaderboardNameWrapper}>
-                                    {renderParticipantAvatar(entry.participantId, isMe)}
+                                    <ThemedText
+                                        style={[styles.rankBadgeText, isMe && styles.rankBadgeTextMe]}
+                                        lightColor={Palette.gray900}
+                                        darkColor={Palette.gray25}
+                                    >
+                                        {rankEmoji || rank}
+                                    </ThemedText>
+                                    {renderParticipantAvatar(entry.participantId)}
                                     <View style={styles.leaderboardNameTextGroup}>
                                         <View style={styles.leaderboardNameRow}>
                                             <ThemedText
@@ -1508,8 +1514,7 @@ export default function MatchPlayScreen() {
                         const isMe = meParticipantId !== null && player.participantId === meParticipantId;
                         const rank = player.rank ?? index + 1;
                         const podiumEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
-                        const rankDisplay = podiumEmoji ? `${podiumEmoji} ${rank}위` : `${rank}위`;
-                        const nameDisplay = `${rankDisplay} ${player.nickname}`;
+                        const nameDisplay = player.nickname;
                         return (
                             <View
                                 key={player.participantId}
@@ -1522,7 +1527,14 @@ export default function MatchPlayScreen() {
                                 accessibilityLabel={`${rank}위 ${player.nickname}`}
                             >
                                 <View style={styles.resultNameWrapper}>
-                                    {renderParticipantAvatar(player.participantId, isMe)}
+                                    <ThemedText
+                                        style={[styles.rankBadgeText, isMe && styles.rankBadgeTextMe]}
+                                        lightColor={Palette.gray900}
+                                        darkColor={Palette.gray25}
+                                    >
+                                        {podiumEmoji || rank}
+                                    </ThemedText>
+                                    {renderParticipantAvatar(player.participantId)}
                                     <View style={styles.resultNameTextGroup}>
                                         <View style={styles.leaderboardNameRow}>
                                             <ThemedText style={[styles.choiceLabel, isMe && [styles.leaderboardMeText, { color: textColor }]]}>
@@ -2171,7 +2183,7 @@ const styles = StyleSheet.create({
         paddingVertical: Spacing.md,
         paddingHorizontal: Spacing.md,
         borderRadius: Radius.sm,
-        gap: Spacing.md,
+        gap: Spacing.sm,
     },
     distributionRowDefault: {
         borderRadius: Radius.md,
@@ -2180,7 +2192,7 @@ const styles = StyleSheet.create({
     distributionRowContent: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.md,
+        gap: Spacing.sm,
         flex: 1,
     },
     distributionRowCorrect: {
@@ -2235,10 +2247,20 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.sm,
+        gap: Spacing.xs,
+    },
+    rankBadgeText: {
+        fontSize: 14,
+        fontWeight: '700',
+        minWidth: 32,
+        textAlign: 'center',
+        marginRight: Spacing.xs,
+    },
+    rankBadgeTextMe: {
+        color: Palette.white,
     },
     leaderboardAvatar: {
-        borderWidth: 1,
+        borderWidth: 0,
         borderRadius: Radius.pill,
     },
     leaderboardNameTextGroup: {
@@ -2248,7 +2270,7 @@ const styles = StyleSheet.create({
     leaderboardNameRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.xs,
+        gap: Spacing.sm,
         flexWrap: 'wrap',
     },
     leaderboardScoreWrapper: {
@@ -2261,7 +2283,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.sm,
+        gap: Spacing.xs,
     },
     resultNameTextGroup: {
         flex: 1,

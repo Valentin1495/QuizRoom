@@ -67,6 +67,7 @@ export function Avatar({
     // 게스트/이니셜 라벨
     const label = useMemo(() => {
         if (guestId != null) return `G${pad2(guestId % 100)}`;
+        if (name === null) return `G${pad2(0)}`;
         return initials(name) || 'Q';
     }, [guestId, name]);
 

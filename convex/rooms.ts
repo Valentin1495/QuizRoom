@@ -69,6 +69,26 @@ function deriveGuestNickname(key: string) {
     return `Guest ${suffix}`;
 }
 
+function deriveGuestAvatarId(key: string | null | undefined) {
+    if (!key) return null;
+    const suffix = key.slice(-4);
+    const parsed = parseInt(suffix, 16);
+    if (Number.isNaN(parsed)) return null;
+    return parsed % 100;
+}
+
+function getParticipantGuestAvatarId(participant: ParticipantDoc) {
+    if (!participant.isGuest) return null;
+    if (participant.guestAvatarId != null) {
+        return participant.guestAvatarId;
+    }
+    if (participant.identityId?.startsWith(GUEST_IDENTITY_PREFIX)) {
+        const key = participant.identityId.slice(GUEST_IDENTITY_PREFIX.length);
+        return deriveGuestAvatarId(key);
+    }
+    return null;
+}
+
 async function resolveHostParticipant(
     ctx: MutationCtx,
     room: RoomDoc,
@@ -790,6 +810,12 @@ export const create = mutation({
             userId: userId ?? undefined,
             identityId,
             isGuest: !userId,
+            guestAvatarId: !userId
+                ? (() => {
+                    const key = requireGuestKey(args.guestKey);
+                    return deriveGuestAvatarId(key) ?? undefined;
+                })()
+                : undefined,
             nickname,
             isHost: true,
             isReady: false,
@@ -874,9 +900,7 @@ export const join = mutation({
                     guestAvatarId: isGuest
                         ? (() => {
                             const key = requireGuestKey(args.guestKey);
-                            const suffix = key.slice(-4);
-                            const parsed = parseInt(suffix, 16);
-                            return Number.isNaN(parsed) ? undefined : parsed % 100;
+                            return deriveGuestAvatarId(key) ?? undefined;
                         })()
                         : undefined,
                     isReady: false,
@@ -893,9 +917,7 @@ export const join = mutation({
                     guestAvatarId: isGuest
                         ? (() => {
                             const key = requireGuestKey(args.guestKey);
-                            const suffix = key.slice(-4);
-                            const parsed = parseInt(suffix, 16);
-                            return Number.isNaN(parsed) ? undefined : parsed % 100;
+                            return deriveGuestAvatarId(key) ?? undefined;
                         })()
                         : undefined,
                     isReady: false,
@@ -927,9 +949,7 @@ export const join = mutation({
             guestAvatarId: isGuest
                 ? (() => {
                     const key = requireGuestKey(args.guestKey);
-                    const suffix = key.slice(-4);
-                    const parsed = parseInt(suffix, 16);
-                    return Number.isNaN(parsed) ? undefined : parsed % 100;
+                    return deriveGuestAvatarId(key) ?? undefined;
                 })()
                 : undefined,
             nickname,
@@ -1257,6 +1277,22 @@ export const resume = mutation({
         const now = Date.now();
         const remainingMs = room.pauseState.remainingMs;
 
+        if (previousStatus === "question" && remainingMs !== undefined) {
+            const round = await loadRound(ctx, room._id, room.currentRound);
+            if (round) {
+                const answerWindowMs =
+                    (room.rules?.answerSeconds ?? DEFAULT_RULES.answerSeconds) * 1000;
+                const elapsedBeforePause = Math.max(
+                    0,
+                    Math.min(answerWindowMs, answerWindowMs - remainingMs)
+                );
+                const adjustedStart = now - elapsedBeforePause;
+                await ctx.db.patch(round._id, {
+                    startedAt: adjustedStart,
+                });
+            }
+        }
+
         await ctx.db.patch(room._id, {
             status: previousStatus,
             serverNow: now,
@@ -1309,7 +1345,15 @@ export const submitAnswer = mutation({
         }
 
         const now = Date.now();
-        const elapsed = Math.max(0, now - (round.startedAt || now));
+        const answerWindowMs =
+            (room.rules?.answerSeconds ?? DEFAULT_RULES.answerSeconds) * 1000;
+        const inferredStart =
+            round.startedAt && round.startedAt > 0
+                ? round.startedAt
+                : room.phaseEndsAt
+                    ? Math.max(0, room.phaseEndsAt - answerWindowMs)
+                    : now;
+        const elapsed = Math.max(0, now - inferredStart);
         const isCorrect = question.answerIndex === args.choiceIndex;
         const delta = computeScoreDelta(isCorrect, elapsed, DEFAULT_RULES);
 
@@ -1550,7 +1594,7 @@ export const getLobby = query({
                     userId: p.userId ?? null,
                     avatarUrl: user?.avatarUrl ?? null,
                     isGuest: p.isGuest,
-                    guestAvatarId: p.guestAvatarId,
+                    guestAvatarId: getParticipantGuestAvatarId(p),
                     nickname: p.nickname,
                     isHost: p.isHost,
                     isReady: p.isReady ?? false,
@@ -1754,7 +1798,7 @@ export const getRoomState = query({
                     participantId: p._id,
                     userId: p.userId ?? null,
                     avatarUrl: user?.avatarUrl ?? null,
-                    guestAvatarId: p.guestAvatarId ?? null,
+                    guestAvatarId: getParticipantGuestAvatarId(p),
                     nickname: p.nickname,
                     totalScore: p.totalScore,
                     rank: p.rank,
@@ -1766,7 +1810,7 @@ export const getRoomState = query({
                     participantId: meEntrySource._id,
                     userId: meEntrySource.userId ?? null,
                     avatarUrl: meEntrySource.userId ? usersById.get(meEntrySource.userId)?.avatarUrl ?? null : null,
-                    guestAvatarId: meEntrySource.guestAvatarId ?? null,
+                    guestAvatarId: getParticipantGuestAvatarId(meEntrySource),
                     nickname: meEntrySource.nickname,
                     totalScore: meEntrySource.totalScore,
                     rank: meEntrySource.rank,
@@ -1821,7 +1865,7 @@ export const getRoomState = query({
                     userId: p.userId ?? null,
                     avatarUrl: user?.avatarUrl ?? null,
                     isGuest: p.isGuest,
-                    guestAvatarId: p.guestAvatarId ?? null,
+                    guestAvatarId: getParticipantGuestAvatarId(p),
                     nickname: p.nickname,
                     joinedAt: p.joinedAt,
                     totalScore: p.totalScore,
