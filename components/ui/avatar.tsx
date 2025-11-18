@@ -71,14 +71,16 @@ export function Avatar({
         return initials(name) || 'Q';
     }, [guestId, name]);
 
-    // 앱 토큰 위주 팔레트(뉴트럴 & 약간의 파스텔)
+    // 카드 배경(c.secondary)과 명도차가 충분한 파스텔 색상 위주로 구성
     const fallbackPalette = [
-        c.secondary,              // light: gray50 / dark: gray300
-        c.accent,                 // light: gray200 / dark: gray600
-        Palette.gray100,
-        Palette.gray150,
-        Palette.gray50,
-        '#D7F5E5', '#D0CFFF', '#FFE3D4', '#FDE2F2', // 소량 파스텔
+        '#D7F5E5', // mint
+        '#D0CFFF', // lavender
+        '#FFE3D4', // peach
+        '#FDE2F2', // pink
+        '#C8E6C9', // green
+        '#B3E5FC', // blue
+        '#FFECB3', // yellow
+        '#FFD180', // orange
     ];
 
     const bg = useMemo(() => {

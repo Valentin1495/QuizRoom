@@ -27,6 +27,7 @@ const MAPPING = {
   'crown.fill': 'workspace-premium',
   'arrow.triangle.2.circlepath': 'sync',
   'pause.circle.fill': 'pause-circle',
+  'checkmark.shield': 'how-to-reg',
   // Tab Bar Icons
   'sparkles': 'auto-awesome',
   'square.stack.3d.up.fill': 'layers',

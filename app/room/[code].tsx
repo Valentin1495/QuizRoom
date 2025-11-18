@@ -1,7 +1,8 @@
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -400,7 +401,6 @@ export default function MatchLobbyScreen() {
       StyleSheet.create({
         container: {
           flex: 1,
-          padding: Spacing.lg,
           gap: Spacing.xl,
         },
         centerContainer: {
@@ -424,6 +424,7 @@ export default function MatchLobbyScreen() {
           flex: 1,
         },
         scrollContent: {
+          paddingHorizontal: Spacing.lg,
           paddingBottom: Spacing.xl,
         },
         pendingBannerContainer: {
@@ -494,10 +495,11 @@ export default function MatchLobbyScreen() {
           alignItems: 'center',
           padding: Spacing.md,
           borderRadius: Radius.md,
-          backgroundColor: secondaryColor,
+          backgroundColor: theme.accent,
           gap: Spacing.xs,
         },
         participantCardMe: {
+          backgroundColor: secondaryColor,
           borderWidth: 2,
           borderColor: primaryColor,
         },
@@ -532,16 +534,18 @@ export default function MatchLobbyScreen() {
           flexDirection: 'row',
           alignItems: 'center',
           gap: Spacing.xs,
-          height: 20,
         },
         statusTextReady: {
           color: primaryColor,
           fontWeight: '600',
-          fontSize: 12,
+          fontSize: 13,
         },
         statusTextWaiting: {
           color: mutedColor,
           fontSize: 12,
+        },
+        statusTextWaitingMe: {
+          color: accentForegroundColor,
         },
         hostBadge: {
           paddingHorizontal: Spacing.sm,
@@ -558,19 +562,18 @@ export default function MatchLobbyScreen() {
         emptyText: {
           color: mutedColor,
         },
+        gradient: {
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: -3,
+          height: 3,
+        },
         controlsSection: {
           gap: Spacing.sm,
           paddingTop: Spacing.md,
-          paddingBottom: Spacing.xs,
+          paddingHorizontal: Spacing.lg,
           backgroundColor: theme.background,
-          shadowColor: '#000000',
-          shadowOffset: {
-            width: 0,
-            height: -3,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 3,
-          elevation: 5,
         },
         readySummaryText: {
           fontSize: 13,
@@ -674,7 +677,7 @@ export default function MatchLobbyScreen() {
     <ThemedView
       style={[
         styles.container,
-        { paddingTop: insets.top + Spacing.lg, paddingBottom: insets.bottom + Spacing.lg },
+        { paddingTop: insets.top + Spacing.lg },
       ]}
     >
       <Stack.Screen options={{ headerShown: false }} />
@@ -730,7 +733,7 @@ export default function MatchLobbyScreen() {
           >
             <View style={styles.header}>
               <ThemedText type="title">퀴즈룸</ThemedText>
-              <ThemedText style={styles.headerSubtitle}>라이브 매치를 시작하세요!</ThemedText>
+              <ThemedText style={styles.headerSubtitle}>로비에 입장했어요. 라이브 매치를 시작하세요!</ThemedText>
               <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
                 <View style={styles.codeBadge}>
                   <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
@@ -799,14 +802,18 @@ export default function MatchLobbyScreen() {
                             {participant.isReady ? (
                               <>
                                 <IconSymbol
-                                  name="checkmark.circle.fill"
-                                  size={14}
+                                  name="checkmark.shield"
+                                  size={20}
                                   color={primaryColor}
                                 />
                                 <ThemedText style={styles.statusTextReady}>준비 완료</ThemedText>
                               </>
                             ) : (
-                              <ThemedText style={styles.statusTextWaiting}>대기 중</ThemedText>
+                              <ThemedText
+                                style={[styles.statusTextWaiting, isMe && styles.statusTextWaitingMe]}
+                              >
+                                대기 중
+                              </ThemedText>
                             )}
                           </View>
                         )}
@@ -818,48 +825,58 @@ export default function MatchLobbyScreen() {
             </View>
           </ScrollView>
 
-          <View style={styles.controlsSection}>
-            {readySummaryTotal > 0 ? (
-              <ThemedText style={styles.readySummaryText}>
-                준비 완료 {readyCount}/{readySummaryTotal}
-              </ThemedText>
-            ) : null}
-            {meParticipant && !isSelfHost ? (
+          <View>
+            <LinearGradient
+              colors={
+                colorScheme === 'light'
+                  ? ['rgba(0,0,0,0.05)', 'transparent']
+                  : ['rgba(0,0,0,0.2)', 'transparent']
+              }
+              style={styles.gradient}
+            />
+            <View style={[styles.controlsSection, { paddingBottom: insets.bottom + Spacing.xs }]}>
+              {readySummaryTotal > 0 ? (
+                <ThemedText style={styles.readySummaryText}>
+                  준비 완료 {readyCount}/{readySummaryTotal}
+                </ThemedText>
+              ) : null}
+              {meParticipant && !isSelfHost ? (
+                <Button
+                  variant={isSelfReady ? 'secondary' : 'default'}
+                  size="lg"
+                  onPress={handleToggleReady}
+                  disabled={!!pendingAction}
+                >
+                  {isSelfReady ? '준비 취소' : '준비 완료'}
+                </Button>
+              ) : null}
+              {isSelfHost ? (
+                <View style={styles.hostControls}>
+                  {readySummaryTotal > 0 ? (
+                    <ThemedText style={styles.hostHint}>
+                      {allReady
+                        ? '모든 참가자가 준비를 마쳤어요!'
+                        : '모든 참가자들이 준비 완료하면 시작할 수 있어요.'}
+                    </ThemedText>
+                  ) : null}
+                  <Button
+                    size="lg"
+                    onPress={handleStart}
+                    disabled={!allReady || !!pendingAction}
+                  >
+                    게임 시작
+                  </Button>
+                </View>
+              ) : null}
               <Button
-                variant={isSelfReady ? 'secondary' : 'default'}
+                variant="outline"
+                onPress={handleLeave}
                 size="lg"
-                onPress={handleToggleReady}
                 disabled={!!pendingAction}
               >
-                {isSelfReady ? '준비 취소' : '준비 완료'}
+                나가기
               </Button>
-            ) : null}
-            {isSelfHost ? (
-              <View style={styles.hostControls}>
-                {readySummaryTotal > 0 ? (
-                  <ThemedText style={styles.hostHint}>
-                    {allReady
-                      ? '모든 참가자가 준비를 마쳤어요!'
-                      : '모든 참가자들이 준비 완료하면 시작할 수 있어요.'}
-                  </ThemedText>
-                ) : null}
-                <Button
-                  size="lg"
-                  onPress={handleStart}
-                  disabled={!allReady || !!pendingAction}
-                >
-                  게임 시작
-                </Button>
-              </View>
-            ) : null}
-            <Button
-              variant="outline"
-              onPress={handleLeave}
-              size="lg"
-              disabled={!!pendingAction}
-            >
-              나가기
-            </Button>
+            </View>
           </View>
         </Animated.View>
       </View>
