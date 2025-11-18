@@ -22,6 +22,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
+import { deriveGuestAvatarId, deriveGuestNickname } from '@/lib/guest';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useJoinParty } from '@/lib/api';
@@ -135,19 +136,12 @@ export default function HomeScreen() {
     }
   }, [ensureGuestKey, guestKey, isGuest]);
 
-  const derivedGuestNickname = useMemo(() => {
-    if (!isGuest || !guestKey) return null;
-    const suffix = guestKey.slice(-4).toUpperCase().padStart(4, '0');
-    return `Guest ${suffix}`;
-  }, [guestKey, isGuest]);
+  const derivedGuestNickname = useMemo(
+    () => (isGuest ? deriveGuestNickname(guestKey) : null),
+    [guestKey, isGuest]
+  );
 
-  const guestAvatarId = useMemo(() => {
-    if (!guestKey) return undefined;
-    const suffix = guestKey.slice(-4);
-    const parsed = parseInt(suffix, 16);
-    if (Number.isNaN(parsed)) return undefined;
-    return parsed % 100;
-  }, [guestKey]);
+  const guestAvatarId = useMemo(() => deriveGuestAvatarId(guestKey), [guestKey]);
 
   useEffect(() => {
     if (!derivedGuestNickname) return;

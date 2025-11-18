@@ -14,6 +14,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useCreateParty, useJoinParty, usePartyDecks } from '@/lib/api';
 import { getDeckIcon } from '@/lib/deck-icons';
+import { deriveGuestNickname } from '@/lib/guest';
 
 export default function LiveMatchScreen() {
   const router = useRouter();
@@ -67,11 +68,10 @@ export default function LiveMatchScreen() {
     }
   }, [ensureGuestKey, guestKey, isGuest]);
 
-  const derivedGuestNickname = useMemo(() => {
-    if (!isGuest || !guestKey) return null;
-    const suffix = guestKey.slice(-4).toUpperCase().padStart(4, '0');
-    return `Guest ${suffix}`;
-  }, [guestKey, isGuest]);
+  const derivedGuestNickname = useMemo(
+    () => (isGuest ? deriveGuestNickname(guestKey) : null),
+    [guestKey, isGuest]
+  );
 
   useEffect(() => {
     if (!derivedGuestNickname) return;

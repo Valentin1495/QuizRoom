@@ -22,6 +22,7 @@ import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import type { Doc } from '@/convex/_generated/dataModel';
+import { deriveGuestAvatarId } from '@/lib/guest';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme, useColorSchemeManager } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -102,13 +103,7 @@ export default function ProfileScreen() {
     }
   }, [ensureGuestKey, guestKey, status]);
 
-  const guestAvatarId = useMemo(() => {
-    if (!guestKey) return undefined;
-    const suffix = guestKey.slice(-4);
-    const parsed = parseInt(suffix, 16);
-    if (Number.isNaN(parsed)) return undefined;
-    return parsed % 100;
-  }, [guestKey]);
+  const guestAvatarId = useMemo(() => deriveGuestAvatarId(guestKey), [guestKey]);
 
   if (isLoading) {
     return (

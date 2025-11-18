@@ -3032,33 +3032,34 @@
         "deckSlug": "deck_seed_sports_games",
         "category": "sports_games",
         "type": "mcq",
-        "prompt": "K-리그 2024시즌에서 외국인 선수 최초로 2년 연속 득점왕과 MVP를 동시에 차지한 선수는?",
+        "prompt": "K리그에서 한 시즌 동안 득점왕과 MVP를 동시에 수상한 선수는?",
         "tags": [
             "K리그",
             "MVP",
             "축구",
-            "주민규"
+            "모따",
+            "마시히로 모따"
         ],
         "choices": [
             {
                 "id": "a",
-                "text": "제르소"
-            },
-            {
-                "id": "b",
                 "text": "주민규"
             },
             {
+                "id": "b",
+                "text": "모따"
+            },
+            {
                 "id": "c",
-                "text": "김영권"
+                "text": "무고사"
             },
             {
                 "id": "d",
-                "text": "바코"
+                "text": "이동국"
             }
         ],
         "answerIndex": 1,
-        "explanation": "울산 HD 소속의 주민규 선수는 2024 K리그에서 2년 연속 득점왕과 MVP를 차지하며 K리그 역사에 남을 기록을 세웠습니다.",
+        "explanation": "마시히로 모따는 2007년 K리그에서 포항 스틸러스 소속으로 활약하며 득점왕과 시즌 MVP를 모두 수상한 선수입니다. K리그 역사에서 득점왕과 시즌 MVP를 같은 해에 동시에 받은 사례는 매우 드물며, 대표적으로 1996년 김도훈과 2007년 모따가 있습니다.",
         "difficulty": 0.5,
         "createdAt": 1760775840,
         "qualityScore": 0.5,

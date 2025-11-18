@@ -1,8 +1,8 @@
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Pressable, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -17,6 +17,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { getDeckIcon } from '@/lib/deck-icons';
+import { deriveGuestAvatarId } from '@/lib/guest';
 import { useMutation, useQuery } from 'convex/react';
 
 export default function MatchLobbyScreen() {
@@ -35,13 +36,10 @@ export default function MatchLobbyScreen() {
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
   const [pendingBannerHeight, setPendingBannerHeight] = useState(0);
 
-  const selfGuestAvatarId = useMemo(() => {
-    if (status !== 'guest' || !guestKey) return undefined;
-    const suffix = guestKey.slice(-4);
-    const parsed = parseInt(suffix, 16);
-    if (Number.isNaN(parsed)) return undefined;
-    return parsed % 100;
-  }, [guestKey, status]);
+  const selfGuestAvatarId = useMemo(
+    () => (status === 'guest' ? deriveGuestAvatarId(guestKey) : undefined),
+    [guestKey, status]
+  );
 
 
   const shouldFetchLobby = roomCode.length > 0 && !hasLeft;
@@ -122,7 +120,7 @@ export default function MatchLobbyScreen() {
   const accentColor = theme.accent;
   const destructiveColor = theme.destructive;
   const fallbackAvatarBackground = theme.primary;
-  const participantAvatarBorder = theme.border;
+  const participantAvatarHighlight = theme.primaryForeground ?? theme.primary;
   const destructiveMutedColor = colorScheme === 'light' ? '#FEE2E2' : 'rgba(239, 68, 68, 0.2)';
   const destructiveMutedBgColor = colorScheme === 'light' ? '#FEF2F2' : 'rgba(239, 68, 68, 0.1)';
   const infoMutedColor = colorScheme === 'light' ? '#B45309' : '#FCD34D';
@@ -131,10 +129,74 @@ export default function MatchLobbyScreen() {
   const neutralBannerBorder = colorScheme === 'light' ? '#5460B4' : '#C8D0FF';
   const neutralBannerText = colorScheme === 'light' ? '#2C3A7A' : '#E5EBFF';
   const accentForegroundColor = theme.accentForeground;
+  const borderColor = theme.borderStrong ?? theme.border;
   const readyBadgeReadyColor =
     colorScheme === 'dark' ? 'rgba(255,255,255,0.17)' : primaryColor;
   const readyBadgeWaitingColor =
     colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : mutedColor;
+
+  const renderParticipantAvatar = useCallback(
+    (participant: (typeof participants)[number], isMe: boolean) => {
+      let base: ReactNode;
+      if (isMe) {
+        base =
+          status === 'authenticated' && user ? (
+            <Avatar
+              uri={user.avatarUrl}
+              name={user.handle}
+              size="sm"
+              radius={Radius.pill}
+              backgroundColorOverride={fallbackAvatarBackground}
+              style={styles.participantAvatar}
+            />
+          ) : (
+            <GuestAvatar
+              guestId={selfGuestAvatarId}
+              size="sm"
+              radius={Radius.pill}
+              style={styles.participantAvatar}
+            />
+          );
+      } else if (participant.userId) {
+        base = (
+          <Avatar
+            uri={participant.avatarUrl}
+            name={participant.nickname}
+            size="sm"
+            radius={Radius.pill}
+            backgroundColorOverride={fallbackAvatarBackground}
+            style={styles.participantAvatar}
+          />
+        );
+      } else {
+        base = (
+          <GuestAvatar
+            guestId={participant.guestAvatarId}
+            size="sm"
+            radius={Radius.pill}
+            style={styles.participantAvatar}
+          />
+        );
+      }
+
+      if (!isMe) {
+        return base;
+      }
+
+      return (
+        <View style={[styles.participantAvatarWrapper, { borderColor: participantAvatarHighlight }]}>
+          {base}
+        </View>
+      );
+    },
+    [
+      fallbackAvatarBackground,
+      participantAvatarHighlight,
+      selfGuestAvatarId,
+      status,
+      user,
+    ]
+  );
 
 
   const resolveDelayMs = useMemo(() => {
@@ -375,7 +437,12 @@ export default function MatchLobbyScreen() {
         },
         contentStack: {
           flex: 1,
-          gap: Spacing.xl,
+        },
+        scrollRegion: {
+          flex: 1,
+        },
+        scrollContent: {
+          paddingBottom: Spacing.xl,
         },
         pendingBannerContainer: {
           position: 'absolute',
@@ -433,6 +500,7 @@ export default function MatchLobbyScreen() {
         },
         participantSection: {
           gap: Spacing.md,
+          marginTop: Spacing.xl,
         },
         participantRow: {
           flexDirection: 'row',
@@ -453,9 +521,13 @@ export default function MatchLobbyScreen() {
           alignItems: 'center',
           gap: Spacing.xs,
         },
-        participantAvatar: {
-          borderWidth: 0,
+        participantAvatarWrapper: {
+          padding: 2,
+          borderRadius: Radius.pill,
+          borderWidth: 2,
+          borderColor: participantAvatarHighlight,
         },
+        participantAvatar: {},
         participantTextBlock: {
           flexDirection: 'column',
           gap: 2,
@@ -525,8 +597,11 @@ export default function MatchLobbyScreen() {
           color: mutedColor,
         },
         controlsSection: {
-          marginTop: 'auto',
           gap: Spacing.sm,
+          paddingTop: Spacing.md,
+          paddingBottom: Spacing.xs,
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: borderColor,
         },
         readySummaryText: {
           fontSize: 13,
@@ -678,91 +753,64 @@ export default function MatchLobbyScreen() {
             { marginTop: pendingBannerOffset },
           ]}
         >
-          <View style={styles.header}>
-            <ThemedText type="title">퀴즈룸</ThemedText>
-            <ThemedText style={styles.headerSubtitle}>라이브 매치를 시작하세요!</ThemedText>
-            <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
-              <View style={styles.codeBadge}>
-                <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
-              </View>
-              <ThemedText style={styles.codeBadgeHint}>탭해서 코드 복사</ThemedText>
-            </Pressable>
-            {lobby.deck ? (
-              <View style={styles.deckCard}>
-                <View style={styles.deckCardTitleRow}>
-                  <IconSymbol
-                    name={getDeckIcon(lobby.deck.slug)}
-                    size={20}
-                    color={primaryColor}
-                  />
-                  <ThemedText style={styles.deckCardTitle}>
-                    {lobby.deck.title}
+          <ScrollView
+            style={styles.scrollRegion}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.header}>
+              <ThemedText type="title">퀴즈룸</ThemedText>
+              <ThemedText style={styles.headerSubtitle}>라이브 매치를 시작하세요!</ThemedText>
+              <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
+                <View style={styles.codeBadge}>
+                  <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
+                </View>
+                <ThemedText style={styles.codeBadgeHint}>탭해서 코드 복사</ThemedText>
+              </Pressable>
+              {lobby.deck ? (
+                <View style={styles.deckCard}>
+                  <View style={styles.deckCardTitleRow}>
+                    <IconSymbol
+                      name={getDeckIcon(lobby.deck.slug)}
+                      size={20}
+                      color={primaryColor}
+                    />
+                    <ThemedText style={styles.deckCardTitle}>
+                      {lobby.deck.title}
+                    </ThemedText>
+                  </View>
+                  <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
+                  <ThemedText style={styles.deckCardDescription}>
+                    • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
+                  </ThemedText>
+                  <ThemedText style={styles.deckCardDescription}>
+                    • 총 10라운드로 진행됩니다.
+                  </ThemedText>
+                  <ThemedText style={styles.deckCardWarning}>
+                    • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
                   </ThemedText>
                 </View>
-                <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
-                <ThemedText style={styles.deckCardDescription}>
-                  • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
-                </ThemedText>
-                <ThemedText style={styles.deckCardDescription}>
-                  • 총 10라운드로 진행됩니다.
-                </ThemedText>
-                <ThemedText style={styles.deckCardWarning}>
-                  • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
-                </ThemedText>
-              </View>
-            ) : null}
-          </View>
+              ) : null}
+            </View>
 
-          <View style={styles.participantSection}>
-            <ThemedText style={styles.sectionTitle}>참가자 ({participants.length})</ThemedText>
-            {participants.length === 0 ? (
-              <ThemedText style={styles.emptyText}>
-                친구를 초대해 보세요! 위 코드를 공유해주세요.
-              </ThemedText>
-            ) : (
-              participants.map((participant) => {
-                const isMe = participant.participantId === meParticipant?.participantId;
-                return (
-                  <View
-                    key={participant.participantId}
-                    style={[styles.participantRow, isMe && styles.participantRowMe]}
-                  >
-                    <View style={styles.participantInfo}>
-                      {isMe ? (
-                        status === 'authenticated' && user ? (
-                          <Avatar
-                            uri={user.avatarUrl}
-                            name={user.handle}
-                            size="sm"
-                            radius={Radius.pill}
-                            backgroundColorOverride={fallbackAvatarBackground}
-                            style={[styles.participantAvatar, { borderColor: participantAvatarBorder }]}
-                          />
-                        ) : (
-                          <GuestAvatar
-                            guestId={selfGuestAvatarId}
-                            size="sm"
-                            radius={Radius.pill}
-                            style={[styles.participantAvatar, { borderColor: participantAvatarBorder }]}
-                          />
-                        )
-                      ) : participant.userId ? (
-                        <Avatar
-                          uri={participant.avatarUrl}
-                          name={participant.nickname}
-                          size="sm"
-                          radius={Radius.pill}
-                          backgroundColorOverride={fallbackAvatarBackground}
-                          style={[styles.participantAvatar, { borderColor: participantAvatarBorder }]}
-                        />
-                      ) : (
-                        <GuestAvatar
-                          guestId={participant.guestAvatarId}
-                          size="sm"
-                          radius={Radius.pill}
-                          style={[styles.participantAvatar, { borderColor: participantAvatarBorder }]}
-                        />
-                      )}
+            <View style={styles.participantSection}>
+              <ThemedText style={styles.sectionTitle}>참가자 ({participants.length})</ThemedText>
+              {participants.length === 0 ? (
+                <ThemedText style={styles.emptyText}>
+                  친구를 초대해 보세요! 위 코드를 공유해주세요.
+                </ThemedText>
+              ) : (
+                participants.map((participant) => {
+                  const isMe = participant.participantId === meParticipant?.participantId;
+                  return (
+                    <View
+                      key={participant.participantId}
+                      style={[styles.participantRow, isMe && styles.participantRowMe]}
+                    >
+                      <View style={styles.participantInfo}>
+                        {renderParticipantAvatar(participant, isMe)}
+                      </View>
                       <View style={styles.participantTextBlock}>
                         <ThemedText style={[styles.participantName, isMe && styles.participantNameMe]}>
                           {participant.nickname}
@@ -772,37 +820,37 @@ export default function MatchLobbyScreen() {
                           <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
                         ) : null}
                       </View>
-                    </View>
-                    {participant.isHost ? (
-                      <View style={styles.hostBadge}>
-                        <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>
-                      </View>
-                    ) : (
-                      <View
-                        style={[
-                          styles.readyBadge,
-                          participant.isReady ? styles.readyBadgeReady : styles.readyBadgeWaiting,
-                        ]}
-                      >
-                        <ThemedText
+                      {participant.isHost ? (
+                        <View style={styles.hostBadge}>
+                          <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>
+                        </View>
+                      ) : (
+                        <View
                           style={[
-                            styles.readyBadgeLabel,
-                            participant.isReady
-                              ? styles.readyBadgeLabelReady
-                              : styles.readyBadgeLabelWaiting,
+                            styles.readyBadge,
+                            participant.isReady ? styles.readyBadgeReady : styles.readyBadgeWaiting,
                           ]}
-                          lightColor="#fff"
-                          darkColor="#fff"
                         >
-                          {participant.isReady ? '준비 완료' : '대기 중'}
-                        </ThemedText>
-                      </View>
-                    )}
-                  </View>
-                );
-              })
-            )}
-          </View>
+                          <ThemedText
+                            style={[
+                              styles.readyBadgeLabel,
+                              participant.isReady
+                                ? styles.readyBadgeLabelReady
+                                : styles.readyBadgeLabelWaiting,
+                            ]}
+                            lightColor="#fff"
+                            darkColor="#fff"
+                          >
+                            {participant.isReady ? '준비 완료' : '대기 중'}
+                          </ThemedText>
+                        </View>
+                      )}
+                    </View>
+                  );
+                })
+              )}
+            </View>
+          </ScrollView>
 
           <View style={styles.controlsSection}>
             {readySummaryTotal > 0 ? (

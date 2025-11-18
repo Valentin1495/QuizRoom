@@ -2,6 +2,7 @@ import { ConvexError, v } from "convex/values";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { mutation, query } from "./_generated/server";
+import { deriveGuestAvatarId, deriveGuestNickname } from "../lib/guest";
 import { ensureAuthedUser, getOptionalAuthedUser } from "./lib/auth";
 
 type CtxWithDb = Pick<MutationCtx, "db"> | Pick<QueryCtx, "db">;
@@ -64,19 +65,6 @@ function guestIdentity(key: string) {
     return `${GUEST_IDENTITY_PREFIX}${key}`;
 }
 
-function deriveGuestNickname(key: string) {
-    const suffix = key.slice(-4).toUpperCase().padStart(4, "0");
-    return `Guest ${suffix}`;
-}
-
-function deriveGuestAvatarId(key: string | null | undefined) {
-    if (!key) return null;
-    const suffix = key.slice(-4);
-    const parsed = parseInt(suffix, 16);
-    if (Number.isNaN(parsed)) return null;
-    return parsed % 100;
-}
-
 function getParticipantGuestAvatarId(participant: ParticipantDoc) {
     if (!participant.isGuest) return null;
     if (participant.guestAvatarId != null) {
@@ -84,7 +72,7 @@ function getParticipantGuestAvatarId(participant: ParticipantDoc) {
     }
     if (participant.identityId?.startsWith(GUEST_IDENTITY_PREFIX)) {
         const key = participant.identityId.slice(GUEST_IDENTITY_PREFIX.length);
-        return deriveGuestAvatarId(key);
+        return deriveGuestAvatarId(key) ?? null;
     }
     return null;
 }
@@ -1313,7 +1301,7 @@ export const submitAnswer = mutation({
     },
     handler: async (ctx, args) => {
         const room = await loadRoom(ctx, args.roomId);
-        if (room.status !== "question") {
+        if (room.status !== "question" && room.status !== "grace") {
             throw new ConvexError("ROUND_NOT_ACTIVE");
         }
 
@@ -1792,7 +1780,7 @@ export const getRoomState = query({
                 : undefined;
 
         const leaderboard = (() => {
-            const top = rankedParticipants.slice(0, 3).map((p) => {
+            const top = rankedParticipants.map((p) => {
                 const user = p.userId ? usersById.get(p.userId) : null;
                 return {
                     participantId: p._id,

@@ -55,6 +55,7 @@ export default function MatchPlayScreen() {
     const background = useThemeColor({}, 'background');
     const avatarBorderColor = useThemeColor({}, 'border');
     const avatarFallbackColor = useThemeColor({}, 'primary');
+    const avatarHighlightColor = useThemeColor({}, 'primary');
 
     const [hasLeft, setHasLeft] = useState(false);
     const [isLeaveDialogVisible, setLeaveDialogVisible] = useState(false);
@@ -792,7 +793,8 @@ export default function MatchPlayScreen() {
     }, [disconnectReason, hasLeft, hostIsConnected, hostNickname, isGameStalled, showToast]);
 
     const handleChoicePress = async (choiceIndex: number) => {
-        if (!roomId || roomStatus !== 'question' || !currentRound || !participantArgs) return;
+        const isAnswerWindow = roomStatus === 'question' || roomStatus === 'grace';
+        if (!roomId || !isAnswerWindow || !currentRound || !participantArgs) return;
         setSelectedChoice(choiceIndex);
         try {
             await submitAnswer({
@@ -1354,42 +1356,39 @@ export default function MatchPlayScreen() {
         </View>
     );
 
-    const renderParticipantAvatar = (participantId: Id<'partyParticipants'>) => {
+    const renderParticipantAvatar = (participantId: Id<'partyParticipants'>, isMe: boolean) => {
         const participant = participantsById.get(participantId);
-        const sharedStyle = [
-            styles.leaderboardAvatar,
-            { borderColor: avatarBorderColor },
-        ];
-        if (participant?.userId) {
-            return (
-                <Avatar
-                    uri={participant.avatarUrl}
-                    name={participant.nickname}
-                    size="sm"
-                    radius={Radius.pill}
-                    backgroundColorOverride={avatarFallbackColor}
-                    style={sharedStyle}
-                />
-            );
-        }
-        if (participant) {
-            return (
-                <GuestAvatar
-                    guestId={participant.guestAvatarId ?? 0}
-                    size="sm"
-                    radius={Radius.pill}
-                    style={sharedStyle}
-                />
-            );
-        }
-        return (
+        const avatarNode = participant?.userId ? (
+            <Avatar
+                uri={participant.avatarUrl}
+                name={participant.nickname}
+                size="sm"
+                radius={Radius.pill}
+                backgroundColorOverride={avatarFallbackColor}
+                style={styles.leaderboardAvatar}
+            />
+        ) : participant ? (
+            <GuestAvatar
+                guestId={participant.guestAvatarId ?? 0}
+                size="sm"
+                radius={Radius.pill}
+                style={styles.leaderboardAvatar}
+            />
+        ) : (
             <Avatar
                 name="?"
                 size="sm"
                 radius={Radius.pill}
                 backgroundColorOverride={avatarFallbackColor}
-                style={sharedStyle}
+                style={styles.leaderboardAvatar}
             />
+        );
+
+        if (!isMe) return avatarNode;
+        return (
+            <View style={[styles.leaderboardAvatarWrapper, { borderColor: avatarHighlightColor }]}>
+                {avatarNode}
+            </View>
         );
     };
 
@@ -1419,13 +1418,13 @@ export default function MatchPlayScreen() {
                             >
                                 <View style={styles.leaderboardNameWrapper}>
                                     <ThemedText
-                                        style={[styles.rankBadgeText, isMe && styles.rankBadgeTextMe]}
+                                        style={styles.rankBadgeText}
                                         lightColor={Palette.gray900}
                                         darkColor={Palette.gray25}
                                     >
                                         {rankEmoji || rank}
                                     </ThemedText>
-                                    {renderParticipantAvatar(entry.participantId)}
+                                    {renderParticipantAvatar(entry.participantId, isMe)}
                                     <View style={styles.leaderboardNameTextGroup}>
                                         <View style={styles.leaderboardNameRow}>
                                             <ThemedText
@@ -1433,6 +1432,8 @@ export default function MatchPlayScreen() {
                                                     styles.choiceLabel,
                                                     isMe && [styles.leaderboardMeText, { color: textColor }],
                                                 ]}
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
                                             >
                                                 {nameDisplay}
                                             </ThemedText>
@@ -1528,16 +1529,20 @@ export default function MatchPlayScreen() {
                             >
                                 <View style={styles.resultNameWrapper}>
                                     <ThemedText
-                                        style={[styles.rankBadgeText, isMe && styles.rankBadgeTextMe]}
+                                        style={styles.rankBadgeText}
                                         lightColor={Palette.gray900}
                                         darkColor={Palette.gray25}
                                     >
                                         {podiumEmoji || rank}
                                     </ThemedText>
-                                    {renderParticipantAvatar(player.participantId)}
+                                    {renderParticipantAvatar(player.participantId, isMe)}
                                     <View style={styles.resultNameTextGroup}>
                                         <View style={styles.leaderboardNameRow}>
-                                            <ThemedText style={[styles.choiceLabel, isMe && [styles.leaderboardMeText, { color: textColor }]]}>
+                                            <ThemedText
+                                                style={[styles.choiceLabel, isMe && [styles.leaderboardMeText, { color: textColor }]]}
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                            >
                                                 {nameDisplay}
                                             </ThemedText>
                                             {isMe ? (
@@ -2256,12 +2261,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginRight: Spacing.xs,
     },
-    rankBadgeTextMe: {
-        color: Palette.white,
-    },
-    leaderboardAvatar: {
-        borderWidth: 0,
+    leaderboardAvatar: {},
+    leaderboardAvatarWrapper: {
+        padding: 2,
         borderRadius: Radius.pill,
+        borderWidth: 2,
     },
     leaderboardNameTextGroup: {
         flex: 1,
