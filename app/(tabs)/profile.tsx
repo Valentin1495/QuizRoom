@@ -22,10 +22,10 @@ import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import type { Doc } from '@/convex/_generated/dataModel';
-import { deriveGuestAvatarId } from '@/lib/guest';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme, useColorSchemeManager } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { deriveGuestAvatarId } from '@/lib/guest';
 import { useQuery } from 'convex/react';
 
 type AuthedUser = NonNullable<ReturnType<typeof useAuth>['user']>;
@@ -726,8 +726,8 @@ function ThemePreferencesCard() {
   const mutedColor = useThemeColor({}, 'textMuted');
 
   const options = [
-    { key: 'light', title: '밝은 테마', icon: 'sun.max.fill' },
-    { key: 'dark', title: '어두운 테마', icon: 'moon.fill' },
+    { key: 'light', title: '밝은 테마', icon: 'sun.max' },
+    { key: 'dark', title: '어두운 테마', icon: 'moon' },
   ] as const;
 
   return (

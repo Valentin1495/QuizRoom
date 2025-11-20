@@ -13,7 +13,7 @@ export type PartyDeckDefinition = {
 export const PARTY_DECK_DEFINITIONS: PartyDeckDefinition[] = [
   {
     slug: 'party_pop_culture_mix',
-    title: '대중문화 믹스',
+    title: '대중문화',
     emoji: '🌟',
     description: '음악·예능·드라마를 한 번에 즐기는 올인원 덱',
     sourceCategories: ['kpop_music', 'variety_reality', 'drama_movie', 'fashion_life'],
@@ -21,7 +21,7 @@ export const PARTY_DECK_DEFINITIONS: PartyDeckDefinition[] = [
   },
   {
     slug: 'party_trend_mix',
-    title: '트렌드 믹스',
+    title: '트렌드',
     emoji: '🔥',
     description: '테크, 시사, 라이프스타일 최신 트렌드 총집합',
     sourceCategories: ['tech_it', 'news_issues', 'fashion_life'],
@@ -46,7 +46,7 @@ export const PARTY_DECK_DEFINITIONS: PartyDeckDefinition[] = [
   },
   {
     slug: 'party_showtime_mix',
-    title: '쇼타임 믹스',
+    title: '쇼타임',
     emoji: '🎤',
     description: '음악, 예능, 스포츠까지 무대의 열기를 그대로 모았어요',
     sourceCategories: ['kpop_music', 'variety_reality', 'sports_games'],
@@ -54,7 +54,7 @@ export const PARTY_DECK_DEFINITIONS: PartyDeckDefinition[] = [
   },
   {
     slug: 'party_brainiac_mix',
-    title: '지식 파워 믹스',
+    title: '지식 파워',
     emoji: '🧠',
     description: '뉴스, 테크, 상식 문제로 머리를 깨우는 덱',
     sourceCategories: ['news_issues', 'tech_it', 'general_knowledge'],
@@ -62,7 +62,7 @@ export const PARTY_DECK_DEFINITIONS: PartyDeckDefinition[] = [
   },
   {
     slug: 'party_lifestyle_mix',
-    title: '라이프 & 컬처 믹스',
+    title: '라이프 & 컬처',
     emoji: '🍹',
     description: '패션, 드라마, 라이프스타일 트렌드를 한 번에 즐겨요',
     sourceCategories: ['fashion_life', 'drama_movie', 'general_knowledge'],

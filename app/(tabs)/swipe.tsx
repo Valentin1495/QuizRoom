@@ -58,6 +58,7 @@ export default function SwipeScreen() {
             size="sm"
             rounded="full"
             onPress={handleReset}
+            leftIcon={<IconSymbol name="arrow.2.squarepath" size={18} color={iconColor} />}
             textStyle={styles.resetLabel}
           >
             카테고리 변경

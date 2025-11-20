@@ -1,4 +1,5 @@
 import { SymbolView, SymbolWeight } from 'expo-symbols';
+import type { SFSymbol } from 'sf-symbols-typescript';
 import { OpaqueColorValue, StyleProp, ViewStyle } from 'react-native';
 
 import type { IconSymbolName } from './icon-symbol';
@@ -22,7 +23,9 @@ export function IconSymbol({
       weight={weight}
       tintColor={tintColor}
       resizeMode="scaleAspectFit"
-      name={name}
+      // The shared IconSymbolName list matches our SF Symbols usage even if the
+      // generated type definition is missing a few newer glyphs.
+      name={name as SFSymbol}
       style={[
         {
           width: size,

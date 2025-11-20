@@ -40,7 +40,7 @@ export function AuthGate({ children }: AuthGateProps) {
     return {
       isLoading: false,
       headline: 'QuizRoom',
-      helper: 'Google 계정으로 간편하게 로그인하고 \n 실시간 퀴즈 배틀에 합류하세요!',
+      helper: 'Google 계정으로 간편하게 로그인하고 \n 실시간 지식 배틀에 합류하세요!',
     } as const;
   }, [status, user, error]);
 

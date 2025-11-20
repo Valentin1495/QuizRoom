@@ -76,14 +76,20 @@ const createSwipeSessionId = (key: string) => `swipe:${key}:${Date.now()}`;
 
 const ONBOARDING_SLIDES = [
   {
-    id: 'slide_1',
-    icon: 'hand.draw.fill' as const,
-    title: '스와이프로 빠르게 넘기기',
-    body: '오른쪽으로 스와이프하면 다음 문항\n왼쪽으로 스와이프하면 스킵/신고',
+    id: 'slide_swipe_right',
+    icon: 'hand.point.right' as const,
+    title: '오른쪽으로 스와이프',
+    body: '다음 문제로 넘어가요',
+  },
+  {
+    id: 'slide_swipe_left',
+    icon: 'hand.point.left' as const,
+    title: '왼쪽으로 스와이프',
+    body: '문제를 건너뛰거나 신고할 수 있어요',
   },
   {
     id: 'slide_2',
-    icon: 'checkmark.seal.fill' as const,
+    icon: 'checkmark.seal' as const,
     title: '보기를 선택하면 즉시 채점',
     body: '정답 여부와 해설을 바로 확인하고\n끝없이 이어지는 문제를 풀어보세요',
   },
@@ -112,6 +118,13 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const sheetBorderColor = useThemeColor({}, 'border');
   const sheetTextColor = useThemeColor({}, 'text');
   const sheetMutedColor = useThemeColor({}, 'textMuted');
+  const onboardingCardBackground = useThemeColor({}, 'cardElevated');
+  const onboardingIconBackground = colorScheme === 'dark' ? Palette.gray700 : Palette.gray50;
+  const onboardingIconColor = palette.text;
+  const onboardingTitleColor = palette.text;
+  const onboardingBodyColor = palette.textMuted;
+  const onboardingIndicatorActive = palette.text;
+  const onboardingIndicatorInactive = colorScheme === 'dark' ? Palette.gray700 : Palette.gray200;
   const logHistory = useMutation(api.history.logEntry);
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
 
@@ -916,7 +929,16 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
             </View>
           ) : (
             <View style={styles.statusRow}>
-              <ThemedText style={styles.statusText} lightColor={palette.textMuted} darkColor={palette.textMuted}>남은 카드 {prefetchCount}장</ThemedText>
+              <View style={styles.statusInfo}>
+                <IconSymbol name="rectangle.stack" size={16} color={palette.textMuted} />
+                <ThemedText
+                  style={styles.statusText}
+                  lightColor={palette.textMuted}
+                  darkColor={palette.textMuted}
+                >
+                  남은 카드 {prefetchCount}장
+                </ThemedText>
+              </View>
               <Button
                 variant="ghost"
                 size="sm"
@@ -976,6 +998,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 variant="outline"
                 size="lg"
                 onPress={handleSkip}
+                leftIcon={<IconSymbol name="forward.end" size={18} color={palette.text} />}
               >
                 건너뛰기
               </Button>
@@ -983,6 +1006,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 variant="outline"
                 size="lg"
                 onPress={handleReportAction}
+                leftIcon={<IconSymbol name="flag" size={18} color={palette.text} />}
               >
                 신고하기
               </Button>
@@ -1148,7 +1172,12 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
             },
           ]}
         >
-          <View style={styles.onboardingCard}>
+          <View
+            style={[
+              styles.onboardingCard,
+              { backgroundColor: onboardingCardBackground, borderColor: sheetBorderColor },
+            ]}
+          >
             <View style={styles.onboardingSlidesViewport}>
               <Animated.View
                 {...onboardingPanResponder.panHandlers}
@@ -1169,15 +1198,24 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                     ]}
                   >
                     <View style={styles.onboardingContent}>
-                      <View style={styles.onboardingIconContainer}>
+                      <View
+                        style={[
+                          styles.onboardingIconContainer,
+                          { backgroundColor: onboardingIconBackground },
+                        ]}
+                      >
                         <IconSymbol
                           name={slide.icon}
                           size={56}
-                          color={Palette.gray900}
+                          color={onboardingIconColor}
                         />
                       </View>
-                      <ThemedText style={styles.onboardingTitle}>{slide.title}</ThemedText>
-                      <ThemedText style={styles.onboardingBody}>{slide.body}</ThemedText>
+                      <ThemedText style={[styles.onboardingTitle, { color: onboardingTitleColor }]}>
+                        {slide.title}
+                      </ThemedText>
+                      <ThemedText style={[styles.onboardingBody, { color: onboardingBodyColor }]}>
+                        {slide.body}
+                      </ThemedText>
                     </View>
                   </View>
                 ))}
@@ -1193,7 +1231,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                       styles.onboardingIndicator,
                       {
                         width: indicatorAnims[index],
-                        backgroundColor: index === onboardingSlideIndex ? Palette.gray900 : Palette.gray200,
+                        backgroundColor:
+                          index === onboardingSlideIndex ? onboardingIndicatorActive : onboardingIndicatorInactive,
                       },
                     ]}
                   />
@@ -1255,6 +1294,11 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  statusInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
   },
   sheetButtonHidden: {
     opacity: 0,
@@ -1459,6 +1503,7 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     backgroundColor: Palette.white,
     borderRadius: Radius.lg,
+    borderWidth: 1,
     padding: Spacing.xxl,
     gap: Spacing.xxl,
     overflow: 'hidden',

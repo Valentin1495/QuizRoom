@@ -19,23 +19,13 @@ import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
+import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
-import { deriveGuestAvatarId, deriveGuestNickname } from '@/lib/guest';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useJoinParty } from '@/lib/api';
-
-const DAILY_CATEGORY_ICONS: Record<DailyCategory, IconSymbolName> = {
-  tech_it: 'desktopcomputer',
-  variety_reality: 'tv',
-  drama_movie: 'film',
-  sports_games: 'trophy',
-  kpop_music: 'music.note',
-  fashion_life: 'bag',
-  news_issues: 'newspaper',
-};
+import { deriveGuestAvatarId, deriveGuestNickname } from '@/lib/guest';
 
 function formatTimeLeft(target: Date) {
   const diff = target.getTime() - Date.now();
@@ -173,14 +163,8 @@ export default function HomeScreen() {
       });
       router.replace(`/room/${normalizedCode}`);
     } catch (error) {
-      let message = '코드를 확인하거나 방이 이미 시작되었는지 확인해주세요.';
-      if (error instanceof Error) {
-        message = error.message.includes('ROOM_FULL')
-          ? '퀴즈룸이 가득 찼어요. 다른 방을 찾아주세요.'
-          : error.message.includes('REJOIN_NOT_ALLOWED')
-            ? '퀴즈 진행 중에는 다시 입장할 수 없어요. 게임이 끝난 뒤 다시 시도해 주세요.'
-            : error.message;
-      }
+      const message =
+        error instanceof Error ? error.message : '코드를 확인하거나 방이 이미 시작되었는지 확인해주세요.';
       Alert.alert('참가 실패', message);
     } finally {
       setIsJoining(false);
@@ -266,48 +250,36 @@ export default function HomeScreen() {
           >
             <View style={styles.dailyHeadlineContainer}>
               {dailyHeadline.state === 'loading' ? (
-                <View style={styles.dailyHeadlineSkeletonWrapper}>
+                <View
+                  style={[
+                    styles.dailyHeadlineSkeleton,
+                    { backgroundColor: dailyHeadlineSkeletonColor },
+                  ]}
+                />
+              ) : dailyHeadline.state === 'ready' && dailyHeadline.category ? (
+                <View style={styles.dailyHeadlineRow}>
+                  <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
                   <View
                     style={[
-                      styles.dailyHeadlineSkeletonPrimary,
-                      { backgroundColor: dailyHeadlineSkeletonColor },
+                      styles.dailyHeadlineBadge,
+                      { borderColor, backgroundColor: palette.card },
                     ]}
-                  />
-                  <View
-                    style={[
-                      styles.dailyHeadlineSkeletonSecondary,
-                      { backgroundColor: dailyHeadlineSkeletonColor },
-                    ]}
-                  />
+                  >
+                    <IconSymbol
+                      name={dailyHeadline.category.icon}
+                      size={20}
+                      color={palette.text}
+                    />
+                    <ThemedText style={styles.dailyHeadlineBadgeLabel}>
+                      {dailyHeadline.category.label}
+                    </ThemedText>
+                  </View>
+                  {dailyHeadline.suffix ? (
+                    <ThemedText style={styles.dailyHeadline}>{dailyHeadline.suffix}</ThemedText>
+                  ) : null}
                 </View>
               ) : (
-                <>
-                  {dailyHeadline.state === 'ready' && dailyHeadline.category ? (
-                    <View style={styles.dailyHeadlineRow}>
-                      <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
-                      <View
-                        style={[
-                          styles.dailyHeadlineBadge,
-                          { borderColor, backgroundColor: palette.card },
-                        ]}
-                      >
-                        <IconSymbol
-                          name={dailyHeadline.category.icon}
-                          size={20}
-                          color={palette.text}
-                        />
-                        <ThemedText style={styles.dailyHeadlineBadgeLabel}>
-                          {dailyHeadline.category.label}
-                        </ThemedText>
-                      </View>
-                      {dailyHeadline.suffix ? (
-                        <ThemedText style={styles.dailyHeadline}>{dailyHeadline.suffix}</ThemedText>
-                      ) : null}
-                    </View>
-                  ) : (
-                    <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
-                  )}
-                </>
+                <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
               )}
             </View>
             {hasDailyQuiz ? (
@@ -533,18 +505,9 @@ const styles = StyleSheet.create({
   dailyHeadlineBadgeLabel: {
     fontWeight: '600',
   },
-  dailyHeadlineSkeletonWrapper: {
-    gap: Spacing.xs,
-    paddingVertical: Spacing.xs,
-  },
-  dailyHeadlineSkeletonPrimary: {
+  dailyHeadlineSkeleton: {
     width: '80%',
     height: 24,
-    borderRadius: Radius.sm,
-  },
-  dailyHeadlineSkeletonSecondary: {
-    width: '55%',
-    height: 16,
     borderRadius: Radius.sm,
   },
   timerPill: {

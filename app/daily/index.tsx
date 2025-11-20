@@ -10,7 +10,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
+import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
@@ -20,16 +20,6 @@ import { lightHaptic, mediumHaptic, successHaptic, warningHaptic } from '@/lib/h
 import { useMutation, useQuery } from 'convex/react';
 
 const QUESTION_TIME_LIMIT = 10;
-
-const DAILY_CATEGORY_ICONS: Record<DailyCategory, IconSymbolName> = {
-  tech_it: 'desktopcomputer',
-  variety_reality: 'tv',
-  drama_movie: 'film.fill',
-  sports_games: 'trophy.fill',
-  kpop_music: 'music.note',
-  fashion_life: 'bag.fill',
-  news_issues: 'newspaper',
-};
 
 type DailyQuestion = {
   id: string;
@@ -65,11 +55,13 @@ function formatDuration(ms: number) {
 }
 
 function formatAverageDuration(ms: number) {
-  const seconds = Math.max(0, ms / 1000);
-  if (seconds >= 10) {
-    return `${Math.round(seconds)}초`;
+  const totalSeconds = Math.max(0, Math.round(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  if (minutes === 0) {
+    return `${seconds}초`;
   }
-  return `${seconds.toFixed(1)}초`;
+  return `${minutes}분 ${seconds.toString().padStart(2, '0')}초`;
 }
 
 type ColorMode = 'light' | 'dark';
@@ -808,7 +800,7 @@ export default function DailyQuizScreen() {
           <View style={[styles.introCard, themedStyles.introCard]}>
             <ThemedText type="title">데일리 퀴즈 시작</ThemedText>
             <ThemedText style={styles.introSubtitle}>
-              시간 제한을 선택하고 시작해보세요. 타임어택에서는 문제당 10초 안에 답해야 해요.
+              시간 제한을 선택하고 시작해보세요. 타임어택에서는 문항당 10초 안에 답해야 해요.
             </ThemedText>
             <View style={styles.introButtons}>
               <Button
@@ -889,7 +881,7 @@ export default function DailyQuizScreen() {
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
                 <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
                 <ThemedText type="subtitle">
-                  {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}% ({correctCount} / {totalQuestions}문제)
+                  {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}% - {correctCount}/{totalQuestions}
                 </ThemedText>
               </View>
             </View>

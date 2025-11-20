@@ -26,24 +26,32 @@ export default function TabLayout() {
         name="home"
         options={{
           title: '홈',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="sparkles" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <IconSymbol size={28} name={focused ? 'house.fill' : 'house'} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="swipe"
         options={{
           title: '스와이프',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="square.stack.3d.up.fill" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <IconSymbol
+              size={28}
+              name={focused ? 'square.stack.3d.up.fill' : 'square.stack.3d.up'}
+              color={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="live-match"
         options={{
           title: '라이브 매치',
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color, focused }) => (
             <IconSymbol
               size={isIOS ? 36 : 28}
-              name="person.3.fill"
+              name={focused ? 'person.3.fill' : 'person.3'}
               color={color}
               style={isIOS ? { marginBottom: -4 } : undefined}
             />
@@ -54,7 +62,13 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: '프로필',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.crop.circle" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <IconSymbol
+              size={28}
+              name={focused ? 'person.crop.circle.fill' : 'person.crop.circle'}
+              color={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen name="index" options={{ href: null }} />

@@ -833,7 +833,7 @@ export const join = mutation({
             .withIndex("by_code", (q) => q.eq("code", code))
             .unique();
         if (!room) {
-            throw new ConvexError("ROOM_NOT_FOUND");
+            throw new ConvexError("퀴즈룸을 찾을 수 없어요. 초대 코드를 확인해주세요.");
         }
 
         const refreshResult = await refreshRoomParticipants(ctx, room);
@@ -874,7 +874,7 @@ export const join = mutation({
         if (existingRecord) {
             if (existingRecord.removedAt) {
                 if (room.status !== "lobby") {
-                    throw new ConvexError("REJOIN_NOT_ALLOWED");
+                    throw new ConvexError("퀴즈 진행 중에는 다시 입장할 수 없어요. 게임이 끝난 뒤 다시 시도해 주세요.");
                 }
                 await ctx.db.patch(existingRecord._id, {
                     removedAt: undefined,
@@ -926,7 +926,7 @@ export const join = mutation({
             .collect();
         const participantCount = totalParticipants.filter((p) => !p.removedAt).length;
         if (participantCount >= PARTICIPANT_LIMIT) {
-            throw new ConvexError("ROOM_FULL");
+            throw new ConvexError("퀴즈룸이 가득 찼어요. 다른 방을 찾아주세요.");
         }
 
         const participantId = await ctx.db.insert("partyParticipants", {

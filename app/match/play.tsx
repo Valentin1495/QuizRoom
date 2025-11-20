@@ -1395,7 +1395,7 @@ export default function MatchPlayScreen() {
     const renderLeaderboard = () => (
         <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
             <View style={styles.iconHeadingRow}>
-                <IconSymbol name="trophy.fill" size={28} color={textColor} />
+                <IconSymbol name="trophy" size={28} color={textColor} />
                 <ThemedText type="title" style={styles.cardTitle}>리더보드</ThemedText>
             </View>
             <View style={styles.distributionList}>

@@ -155,14 +155,8 @@ export default function LiveMatchScreen() {
       });
       router.replace(`/room/${normalizedCode}`);
     } catch (error) {
-      let message = '코드를 확인하거나 방이 이미 시작되었는지 확인해주세요.';
-      if (error instanceof Error) {
-        message = error.message.includes('ROOM_FULL')
-          ? '퀴즈룸이 가득 찼어요. 다른 방을 찾아주세요.'
-          : error.message.includes('REJOIN_NOT_ALLOWED')
-            ? '퀴즈 진행 중에는 다시 입장할 수 없어요. 게임이 끝난 뒤 다시 시도해 주세요.'
-            : error.message;
-      }
+      const message =
+        error instanceof Error ? error.message : '코드를 확인하거나 방이 이미 시작되었는지 확인해주세요.';
       Alert.alert('참가 실패', message);
     } finally {
       setIsJoining(false);
@@ -329,14 +323,14 @@ export default function LiveMatchScreen() {
               loading={isRandomizing}
               leftIcon={
                 <IconSymbol
-                  name="questionmark.square"
+                  name="questionmark.circle"
                   size={18}
                   color={themeColors.text}
                   style={Platform.OS === 'android' ? { marginTop: 2 } : undefined}
                 />
               }
             >
-              랜덤으로 추천받기
+              셔플하기
             </Button>
 
             <ThemedText style={styles.deckSectionTitle}>닉네임 입력</ThemedText>
