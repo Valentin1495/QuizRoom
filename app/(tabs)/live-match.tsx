@@ -323,7 +323,7 @@ export default function LiveMatchScreen() {
               loading={isRandomizing}
               leftIcon={
                 <IconSymbol
-                  name="questionmark.circle"
+                  name="shuffle"
                   size={18}
                   color={themeColors.text}
                   style={Platform.OS === 'android' ? { marginTop: 2 } : undefined}

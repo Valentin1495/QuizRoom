@@ -1,5 +1,12 @@
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetScrollView,
+  type BottomSheetBackdropProps
+} from '@gorhom/bottom-sheet';
 import { BlurView } from 'expo-blur';
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -31,6 +38,9 @@ import { useQuery } from 'convex/react';
 type AuthedUser = NonNullable<ReturnType<typeof useAuth>['user']>;
 type QuizHistoryDoc = Doc<'quizHistory'>;
 type HistoryBuckets = (typeof api.history.listHistory)['_returnType'];
+type HistorySectionKey = 'daily' | 'swipe' | 'party';
+
+const HISTORY_PREVIEW_LIMIT = 3;
 
 export default function ProfileScreen() {
   const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey } = useAuth();
@@ -40,6 +50,20 @@ export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
+  const historySheetRef = useRef<BottomSheetModal>(null);
+  const [historySheetSection, setHistorySheetSection] = useState<HistorySectionKey | null>(null);
+  const historySheetSnapPoints = useMemo(() => ['100%'], []);
+  const historySheetBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior="close"
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    []
+  );
 
   const handleOpenLogoutDialog = useCallback(() => {
     setLogoutDialogVisible(true);
@@ -105,6 +129,21 @@ export default function ProfileScreen() {
 
   const guestAvatarId = useMemo(() => deriveGuestAvatarId(guestKey), [guestKey]);
 
+  const handleOpenHistorySheet = useCallback((section: HistorySectionKey) => {
+    setHistorySheetSection(section);
+  }, []);
+
+  const handleCloseHistorySheet = useCallback(() => {
+    historySheetRef.current?.dismiss();
+    setHistorySheetSection(null);
+  }, []);
+
+  useEffect(() => {
+    if (historySheetSection && historySheetRef.current) {
+      historySheetRef.current.present();
+    }
+  }, [historySheetSection]);
+
   if (isLoading) {
     return (
       <ThemedView style={styles.loadingContainer}>
@@ -117,57 +156,70 @@ export default function ProfileScreen() {
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={[
-          styles.contentContainer,
-          { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl },
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        {isAuthenticated && user ? (
-          <ProfileHeader user={user} onEdit={handleEditProfile} onShare={handleShareCard} />
-        ) : (
-          <GuestHeader
-            onGoogleLogin={handleGoogleLogin}
-            onAppleLogin={handleAppleLogin}
-            isLoading={isAuthorizing}
-            guestId={guestAvatarId}
+    <BottomSheetModalProvider>
+      <ThemedView style={styles.container}>
+        <ScrollView
+          contentContainerStyle={[
+            styles.contentContainer,
+            { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          {isAuthenticated && user ? (
+            <ProfileHeader user={user} onEdit={handleEditProfile} onShare={handleShareCard} />
+          ) : (
+            <GuestHeader
+              onGoogleLogin={handleGoogleLogin}
+              onAppleLogin={handleAppleLogin}
+              isLoading={isAuthorizing}
+              guestId={guestAvatarId}
+            />
+          )}
+
+          <QuizHistoryPanel
+            isAuthenticated={isAuthenticated}
+            history={history}
+            onLogin={handleGoogleLogin}
+            loginLoading={isAuthorizing}
+            onOpenSheet={handleOpenHistorySheet}
+            previewLimit={HISTORY_PREVIEW_LIMIT}
           />
-        )}
 
-        <QuizHistoryPanel
-          isAuthenticated={isAuthenticated}
+          <ThemePreferencesCard />
+
+          <FooterSection
+            isAuthenticated={isAuthenticated}
+            onSignOut={handleOpenLogoutDialog}
+            isSigningOut={isSigningOut}
+            onSupport={() =>
+              Alert.alert('문의하기', 'valentink1495@gmail.com\n언제든 편하게 연락주세요!')
+            }
+            onPolicy={() => Alert.alert('약관 및 정책', '약관 화면은 곧 추가될 예정입니다.')}
+            onLogin={handleGoogleLogin}
+            loginLoading={isAuthorizing}
+          />
+        </ScrollView>
+        <HistoryBottomSheet
+          sheetRef={historySheetRef}
+          activeSection={historySheetSection}
           history={history}
-          onLogin={handleGoogleLogin}
-          loginLoading={isAuthorizing}
+          renderBackdrop={historySheetBackdrop}
+          snapPoints={historySheetSnapPoints}
+          topInset={insets.top + Spacing.md}
+          onClose={handleCloseHistorySheet}
         />
-
-        <ThemePreferencesCard />
-
-        <FooterSection
-          isAuthenticated={isAuthenticated}
-          onSignOut={handleOpenLogoutDialog}
-          isSigningOut={isSigningOut}
-          onSupport={() =>
-            Alert.alert('문의하기', 'valentink1495@gmail.com\n언제든 편하게 연락주세요!')
-          }
-          onPolicy={() => Alert.alert('약관 및 정책', '약관 화면은 곧 추가될 예정입니다.')}
-          onLogin={handleGoogleLogin}
-          loginLoading={isAuthorizing}
+        <AlertDialog
+          visible={isLogoutDialogVisible}
+          onClose={handleCloseLogoutDialog}
+          title="로그아웃"
+          description="계정에서 로그아웃하시겠어요?"
+          actions={[
+            { label: '취소', tone: 'secondary' },
+            { label: '로그아웃', tone: 'destructive', onPress: handleSignOut, disabled: isSigningOut },
+          ]}
         />
-      </ScrollView>
-      <AlertDialog
-        visible={isLogoutDialogVisible}
-        onClose={handleCloseLogoutDialog}
-        title="로그아웃"
-        description="계정에서 로그아웃하시겠어요?"
-        actions={[
-          { label: '취소', tone: 'secondary' },
-          { label: '로그아웃', tone: 'destructive', onPress: handleSignOut, disabled: isSigningOut },
-        ]}
-      />
-    </ThemedView>
+      </ThemedView>
+    </BottomSheetModalProvider>
   );
 }
 
@@ -383,11 +435,15 @@ function QuizHistoryPanel({
   history,
   onLogin,
   loginLoading,
+  onOpenSheet,
+  previewLimit,
 }: {
   isAuthenticated: boolean;
   history: HistoryBuckets | undefined;
   onLogin: () => void;
   loginLoading: boolean;
+  onOpenSheet: (section: HistorySectionKey) => void;
+  previewLimit: number;
 }) {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -433,27 +489,60 @@ function QuizHistoryPanel({
     );
   }
 
+  const sections = useMemo(
+    () => ({
+      daily: {
+        key: 'daily' as const,
+        title: '데일리 퀴즈',
+        entries: history.daily,
+        emptyLabel: '데일리 퀴즈를 완료하고 결과를 확인해보세요.',
+        renderItem: (entry: QuizHistoryDoc) => <DailyHistoryRow key={entry._id} entry={entry} />,
+      },
+      swipe: {
+        key: 'swipe' as const,
+        title: '스와이프',
+        entries: history.swipe,
+        emptyLabel: '스와이프 세션을 완주하고 결과를 확인해보세요.',
+        renderItem: (entry: QuizHistoryDoc) => <SwipeHistoryRow key={entry._id} entry={entry} />,
+      },
+      party: {
+        key: 'party' as const,
+        title: '라이브 매치',
+        entries: history.party,
+        emptyLabel: '라이브 매치에 참여하고 결과를 확인해보세요.',
+        renderItem: (entry: QuizHistoryDoc) => <PartyHistoryRow key={entry._id} entry={entry} />,
+      },
+    }),
+    [history]
+  );
+
   return (
     <Card>
       <View style={styles.sectionStack}>
         <ThemedText type="subtitle">퀴즈 히스토리</ThemedText>
         <HistorySection
-          title="데일리 퀴즈"
-          entries={history.daily}
-          emptyLabel="데일리 퀴즈를 완료하고 결과를 확인해보세요."
-          renderItem={(entry) => <DailyHistoryRow key={entry._id} entry={entry} />}
+          title={sections.daily.title}
+          entries={sections.daily.entries}
+          emptyLabel={sections.daily.emptyLabel}
+          renderItem={sections.daily.renderItem}
+          previewLimit={previewLimit}
+          onSeeAll={() => onOpenSheet('daily')}
         />
         <HistorySection
-          title="스와이프"
-          entries={history.swipe}
-          emptyLabel="스와이프 세션을 완주하고 결과를 확인해보세요."
-          renderItem={(entry) => <SwipeHistoryRow key={entry._id} entry={entry} />}
+          title={sections.swipe.title}
+          entries={sections.swipe.entries}
+          emptyLabel={sections.swipe.emptyLabel}
+          renderItem={sections.swipe.renderItem}
+          previewLimit={previewLimit}
+          onSeeAll={() => onOpenSheet('swipe')}
         />
         <HistorySection
-          title="라이브 매치"
-          entries={history.party}
-          emptyLabel="라이브 매치에 참여하고 결과를 확인해보세요."
-          renderItem={(entry) => <PartyHistoryRow key={entry._id} entry={entry} />}
+          title={sections.party.title}
+          entries={sections.party.entries}
+          emptyLabel={sections.party.emptyLabel}
+          renderItem={sections.party.renderItem}
+          previewLimit={previewLimit}
+          onSeeAll={() => onOpenSheet('party')}
         />
       </View>
     </Card>
@@ -465,23 +554,143 @@ function HistorySection({
   entries,
   renderItem,
   emptyLabel,
+  previewLimit,
+  onSeeAll,
 }: {
   title: string;
   entries: QuizHistoryDoc[];
   renderItem: (entry: QuizHistoryDoc) => ReactNode;
   emptyLabel: string;
+  previewLimit: number;
+  onSeeAll: () => void;
 }) {
   const mutedColor = useThemeColor({}, 'textMuted');
+  const hasOverflow = entries.length > previewLimit;
+  const visibleEntries = hasOverflow ? entries.slice(0, previewLimit) : entries;
 
   return (
     <View style={styles.historySection}>
-      <ThemedText style={styles.historySectionTitle}>{title}</ThemedText>
-      {entries.length ? (
-        <View style={styles.historyList}>{entries.map(renderItem)}</View>
+      <View style={styles.historySectionHeader}>
+        <ThemedText style={styles.historySectionTitle}>{title}</ThemedText>
+        {hasOverflow ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            onPress={onSeeAll}
+            textStyle={styles.historySeeAllLabel}
+            contentStyle={styles.historySeeAllContent}
+          >
+            전체보기
+          </Button>
+        ) : null}
+      </View>
+      {visibleEntries.length ? (
+        <View style={styles.historyList}>{visibleEntries.map(renderItem)}</View>
       ) : (
         <ThemedText style={[styles.historyEmpty, { color: mutedColor }]}>{emptyLabel}</ThemedText>
       )}
     </View>
+  );
+}
+
+function HistoryBottomSheet({
+  activeSection,
+  history,
+  sheetRef,
+  renderBackdrop,
+  snapPoints,
+  onClose,
+  topInset,
+}: {
+  activeSection: HistorySectionKey | null;
+  history: HistoryBuckets | undefined;
+  sheetRef: React.RefObject<BottomSheetModal | null>;
+  renderBackdrop: (props: BottomSheetBackdropProps) => ReactNode;
+  snapPoints: string[];
+  onClose: () => void;
+  topInset: number;
+}) {
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? 'light'];
+  const mutedColor = useThemeColor({}, 'textMuted');
+
+  const sections = useMemo(
+    () =>
+      history
+        ? {
+          daily: {
+            title: '데일리 퀴즈 전체 기록',
+            entries: history.daily,
+            emptyLabel: '아직 데일리 기록이 없어요.',
+            renderItem: (entry: QuizHistoryDoc) => <DailyHistoryRow key={entry._id} entry={entry} />,
+          },
+          swipe: {
+            title: '스와이프 전체 기록',
+            entries: history.swipe,
+            emptyLabel: '아직 스와이프 기록이 없어요.',
+            renderItem: (entry: QuizHistoryDoc) => <SwipeHistoryRow key={entry._id} entry={entry} />,
+          },
+          party: {
+            title: '라이브 매치 전체 기록',
+            entries: history.party,
+            emptyLabel: '아직 라이브 매치 기록이 없어요.',
+            renderItem: (entry: QuizHistoryDoc) => <PartyHistoryRow key={entry._id} entry={entry} />,
+          },
+        }
+        : null,
+    [history]
+  );
+
+  const selectedSection = activeSection && sections ? sections[activeSection] : null;
+
+  if (!selectedSection) {
+    return null;
+  }
+
+  return (
+    <BottomSheetModal
+      ref={sheetRef}
+      index={0}
+      snapPoints={snapPoints}
+      backdropComponent={renderBackdrop}
+      backgroundStyle={{ backgroundColor: themeColors.card }}
+      handleIndicatorStyle={{ backgroundColor: themeColors.border }}
+      onDismiss={onClose}
+      topInset={topInset}
+    >
+      <BottomSheetScrollView
+        style={styles.sheetScroll}
+        contentContainerStyle={styles.sheetContent}
+        showsVerticalScrollIndicator
+        scrollEnabled
+        nestedScrollEnabled
+      >
+        <View style={styles.sheetHeader}>
+          <View>
+            <ThemedText type="subtitle">{selectedSection.title}</ThemedText>
+            <ThemedText style={[styles.sheetSubtitle, { color: mutedColor }]}>
+              총 {selectedSection.entries.length}회 | 최신순
+            </ThemedText>
+          </View>
+          <Button
+            variant="ghost"
+            size="sm"
+            onPress={onClose}
+            textStyle={styles.historySeeAllLabel}
+            contentStyle={styles.historySeeAllContent}
+          >
+            닫기
+          </Button>
+        </View>
+        {selectedSection.entries.length ? (
+          <View style={styles.historyList}>{selectedSection.entries.map(selectedSection.renderItem)}</View>
+        ) : (
+          <ThemedText style={[styles.historyEmpty, { color: mutedColor }]}>
+            {selectedSection.emptyLabel}
+          </ThemedText>
+        )}
+      </BottomSheetScrollView>
+    </BottomSheetModal>
   );
 }
 
@@ -830,8 +1039,20 @@ const styles = StyleSheet.create({
   historySection: {
     gap: Spacing.sm,
   },
+  historySectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   historySectionTitle: {
     fontWeight: '600',
+  },
+  historySeeAllLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  historySeeAllContent: {
+    paddingHorizontal: Spacing.xs,
   },
   historyList: {
     gap: Spacing.sm,
@@ -927,5 +1148,23 @@ const styles = StyleSheet.create({
   },
   footerButton: {
     flex: 1,
+  },
+  sheetHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sheetSubtitle: {
+    fontSize: 13,
+    marginTop: Spacing.xs / 2,
+  },
+  sheetScroll: {
+    flex: 1,
+  },
+  sheetContent: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.lg,
+    paddingTop: Spacing.lg,
+    gap: Spacing.md,
   },
 });

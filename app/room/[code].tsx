@@ -3,7 +3,7 @@ import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -135,48 +135,57 @@ export default function MatchLobbyScreen() {
     colorScheme === 'dark' ? 'rgba(255,255,255,0.17)' : primaryColor;
   const readyBadgeWaitingColor =
     colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : mutedColor;
+  const participantIconSize = Platform.OS === 'android' ? 22 : 18;
 
   const renderParticipantAvatar = useCallback(
     (participant: (typeof participants)[number], isMe: boolean) => {
+      const avatarNode = isMe
+        ? status === 'authenticated' && user ? (
+            <Avatar
+              uri={user.avatarUrl}
+              name={user.handle}
+              size="md"
+              radius={Radius.pill}
+              backgroundColorOverride={fallbackAvatarBackground}
+              style={styles.participantAvatar}
+            />
+          ) : (
+            <GuestAvatar
+              guestId={selfGuestAvatarId}
+              size="md"
+              radius={Radius.pill}
+              style={styles.participantAvatar}
+            />
+          )
+        : participant.userId ? (
+            <Avatar
+              uri={participant.avatarUrl}
+              name={participant.nickname}
+              size="md"
+              radius={Radius.pill}
+              backgroundColorOverride={fallbackAvatarBackground}
+              style={styles.participantAvatar}
+            />
+          ) : (
+            <GuestAvatar
+              guestId={participant.guestAvatarId}
+              size="md"
+              radius={Radius.pill}
+              style={styles.participantAvatar}
+            />
+          );
+
       if (isMe) {
-        return status === 'authenticated' && user ? (
-          <Avatar
-            uri={user.avatarUrl}
-            name={user.handle}
-            size="md"
-            radius={Radius.pill}
-            backgroundColorOverride={fallbackAvatarBackground}
-            style={styles.participantAvatar}
-          />
-        ) : (
-          <GuestAvatar
-            guestId={selfGuestAvatarId}
-            size="md"
-            radius={Radius.pill}
-            style={styles.participantAvatar}
-          />
+        return (
+          <View style={[styles.participantAvatarWrapper, { borderColor: participantAvatarHighlight }]}>
+            {avatarNode}
+          </View>
         );
       }
       if (participant.userId) {
-        return (
-          <Avatar
-            uri={participant.avatarUrl}
-            name={participant.nickname}
-            size="md"
-            radius={Radius.pill}
-            backgroundColorOverride={fallbackAvatarBackground}
-            style={styles.participantAvatar}
-          />
-        );
+        return avatarNode;
       }
-      return (
-        <GuestAvatar
-          guestId={participant.guestAvatarId}
-          size="md"
-          radius={Radius.pill}
-          style={styles.participantAvatar}
-        />
-      );
+      return avatarNode;
     },
     [fallbackAvatarBackground, selfGuestAvatarId, status, user]
   );
@@ -441,6 +450,11 @@ export default function MatchLobbyScreen() {
         headerSubtitle: {
           color: mutedColor,
         },
+        codeBadgeRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: Spacing.sm,
+        },
         codeBadge: {
           alignSelf: 'flex-start',
           paddingVertical: Spacing.xs,
@@ -451,6 +465,11 @@ export default function MatchLobbyScreen() {
         codeBadgeText: {
           fontWeight: '600',
           color: primaryColor,
+        },
+        codeBadgeHintRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: Spacing.xs,
         },
         deckCard: {
           marginTop: Spacing.sm,
@@ -481,6 +500,11 @@ export default function MatchLobbyScreen() {
           fontWeight: '700',
           fontSize: 16,
         },
+        sectionTitleRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: Spacing.xs,
+        },
         participantSection: {
           marginTop: Spacing.xl,
         },
@@ -502,6 +526,11 @@ export default function MatchLobbyScreen() {
           backgroundColor: secondaryColor,
           borderWidth: 2,
           borderColor: primaryColor,
+        },
+        participantAvatarWrapper: {
+          padding: 2,
+          borderRadius: Radius.pill,
+          borderWidth: 2,
         },
         participantAvatar: {},
         participantTextBlock: {
@@ -735,10 +764,15 @@ export default function MatchLobbyScreen() {
               <ThemedText type="title">퀴즈룸</ThemedText>
               <ThemedText style={styles.headerSubtitle}>로비에 입장했어요. 라이브 매치를 시작하세요!</ThemedText>
               <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
-                <View style={styles.codeBadge}>
-                  <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
+                <View style={styles.codeBadgeRow}>
+                  <View style={styles.codeBadge}>
+                    <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
+                  </View>
+                  <View style={styles.codeBadgeHintRow}>
+                    <IconSymbol name="document.on.document" size={16} color={mutedColor} />
+                    <ThemedText style={styles.codeBadgeHint}>코드 복사</ThemedText>
+                  </View>
                 </View>
-                <ThemedText style={styles.codeBadgeHint}>탭해서 코드 복사</ThemedText>
               </Pressable>
               {lobby.deck ? (
                 <View style={styles.deckCard}>
@@ -767,7 +801,15 @@ export default function MatchLobbyScreen() {
             </View>
 
             <View style={styles.participantSection}>
-              <ThemedText style={styles.sectionTitle}>참가자 ({participants.length})</ThemedText>
+              <View style={styles.sectionTitleRow}>
+                <IconSymbol
+                  name="person"
+                  size={participantIconSize}
+                  color={theme.text}
+                  style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
+                />
+                <ThemedText style={styles.sectionTitle}>참가자 ({participants.length})</ThemedText>
+              </View>
               {participants.length === 0 ? (
                 <ThemedText style={styles.emptyText}>
                   친구를 초대해 보세요! 위 코드를 공유해주세요.

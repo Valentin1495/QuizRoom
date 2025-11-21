@@ -18,6 +18,7 @@ import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
 import { useConnectionStatus } from '@/hooks/use-connection-status';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { useMutation, useQuery } from 'convex/react';
@@ -45,6 +46,7 @@ export default function MatchPlayScreen() {
     const params = useLocalSearchParams<{ roomId?: string }>();
     const roomIdParam = useMemo(() => params.roomId?.toString() ?? null, [params.roomId]);
     const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'partyRooms'>) : null), [roomIdParam]);
+    const colorScheme = useColorScheme() ?? 'light';
     const textColor = useThemeColor({}, 'text');
     const textMutedColor = useThemeColor({}, 'textMuted');
     const warningColor = useThemeColor({}, 'warning');
@@ -55,7 +57,6 @@ export default function MatchPlayScreen() {
     const background = useThemeColor({}, 'background');
     const avatarBorderColor = useThemeColor({}, 'border');
     const avatarFallbackColor = useThemeColor({}, 'primary');
-    const avatarHighlightColor = useThemeColor({}, 'primary');
 
     const [hasLeft, setHasLeft] = useState(false);
     const [isLeaveDialogVisible, setLeaveDialogVisible] = useState(false);
@@ -1384,12 +1385,7 @@ export default function MatchPlayScreen() {
             />
         );
 
-        if (!isMe) return avatarNode;
-        return (
-            <View style={[styles.leaderboardAvatarWrapper, { borderColor: avatarHighlightColor }]}>
-                {avatarNode}
-            </View>
-        );
+        return avatarNode;
     };
 
     const renderLeaderboard = () => (
@@ -1430,6 +1426,7 @@ export default function MatchPlayScreen() {
                                             <ThemedText
                                                 style={[
                                                     styles.choiceLabel,
+                                                    { flexShrink: 1, minWidth: 0 },
                                                     isMe && [styles.leaderboardMeText, { color: textColor }],
                                                 ]}
                                                 numberOfLines={1}
@@ -1437,24 +1434,31 @@ export default function MatchPlayScreen() {
                                             >
                                                 {nameDisplay}
                                             </ThemedText>
-                                            {isMe ? (
-                                                <View style={[styles.meBadge, { backgroundColor: textColor }]}>
-                                                    <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
-                                                </View>
-                                            ) : null}
                                         </View>
                                     </View>
                                 </View>
-                                <View style={styles.leaderboardScoreWrapper}>
-                                    <ThemedText
-                                        style={[
-                                            styles.distributionCount,
-                                            styles.leaderboardScore,
-                                            isMe && [styles.leaderboardMeText, { color: textColor }],
-                                        ]}
-                                    >
-                                        {entry.totalScore}점
-                                    </ThemedText>
+                                <View
+                                    style={[
+                                        styles.leaderboardScoreWrapper,
+                                        isMe && styles.leaderboardScoreWrapperMe,
+                                    ]}
+                                >
+                                    <View style={styles.leaderboardScoreRow}>
+                                        {isMe ? (
+                                            <View style={[styles.meBadge, { backgroundColor: textColor }]}>
+                                                <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
+                                            </View>
+                                        ) : null}
+                                        <ThemedText
+                                            style={[
+                                                styles.distributionCount,
+                                                styles.leaderboardScore,
+                                                isMe && [styles.leaderboardMeText, { color: textColor }, { marginLeft: Spacing.sm }],
+                                            ]}
+                                        >
+                                            {entry.totalScore}점
+                                        </ThemedText>
+                                    </View>
                                 </View>
                             </View>
                         );
@@ -1539,27 +1543,44 @@ export default function MatchPlayScreen() {
                                     <View style={styles.resultNameTextGroup}>
                                         <View style={styles.leaderboardNameRow}>
                                             <ThemedText
-                                                style={[styles.choiceLabel, isMe && [styles.leaderboardMeText, { color: textColor }]]}
+                                                style={[
+                                                    styles.choiceLabel,
+                                                    { flexShrink: 1, minWidth: 0 },
+                                                    isMe && [styles.leaderboardMeText, { color: textColor }],
+                                                ]}
                                                 numberOfLines={1}
                                                 ellipsizeMode="tail"
                                             >
                                                 {nameDisplay}
                                             </ThemedText>
-                                            {isMe ? (
-                                                <View style={[styles.meBadge, { backgroundColor: textColor }]}>
-                                                    <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
-                                                </View>
-                                            ) : null}
                                         </View>
                                         {player.userId && hostUserId && player.userId === hostUserId && !player.isConnected ? (
                                             <ThemedText style={styles.offlineTag}>오프라인</ThemedText>
                                         ) : null}
                                     </View>
                                 </View>
-                                <View style={styles.leaderboardScoreWrapper}>
-                                    <ThemedText style={[styles.distributionCount, styles.leaderboardScore, isMe && [styles.leaderboardMeText, { color: textColor }]]}>
-                                        {player.totalScore}점
-                                    </ThemedText>
+                                <View
+                                    style={[
+                                        styles.leaderboardScoreWrapper,
+                                        isMe && styles.leaderboardScoreWrapperMe,
+                                    ]}
+                                >
+                                    <View style={styles.leaderboardScoreRow}>
+                                        {isMe ? (
+                                            <View style={[styles.meBadge, { backgroundColor: textColor }]}>
+                                                <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
+                                            </View>
+                                        ) : null}
+                                        <ThemedText
+                                            style={[
+                                                styles.distributionCount,
+                                                styles.leaderboardScore,
+                                                isMe && [styles.leaderboardMeText, { color: textColor }, { marginLeft: Spacing.sm }],
+                                            ]}
+                                        >
+                                            {player.totalScore}점
+                                        </ThemedText>
+                                    </View>
                                 </View>
                             </View>
                         );
@@ -1672,10 +1693,11 @@ export default function MatchPlayScreen() {
         const minutes = Math.floor(graceRemaining / 60);
         const seconds = graceRemaining % 60;
         const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        const graceBackdropColor = colorScheme === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.25)';
         return (
             <View style={styles.graceOverlay}>
-                <View style={styles.graceBackdrop} />
-                <View style={[styles.graceCard, { backgroundColor: cardColor }]}>
+                <View style={[styles.graceBackdrop, { backgroundColor: graceBackdropColor }]} />
+                <View style={[styles.graceCard, { backgroundColor: cardColor, borderColor, borderWidth: 1 }]}>
                     <ThemedText style={[styles.graceTitle, { color: textColor }]}>연결 대기 중</ThemedText>
                     <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>
                         연결이 끊겼어요. {graceRemaining}초 안에 복구되면 이어서 진행돼요.
@@ -1712,11 +1734,12 @@ export default function MatchPlayScreen() {
             }
             return '다른 참가자가 진행을 이어받았어요.';
         })();
+        const graceBackdropColor = colorScheme === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.25)';
         if (promotedToHost) {
             return (
                 <View style={styles.graceOverlay}>
-                    <View style={styles.graceBackdrop} />
-                    <View style={[styles.graceCard, { backgroundColor: cardColor }]}>
+                    <View style={[styles.graceBackdrop, { backgroundColor: graceBackdropColor }]} />
+                    <View style={[styles.graceCard, { backgroundColor: cardColor, borderColor, borderWidth: 1 }]}>
                         <View style={styles.graceTitleRow}>
                             <IconSymbol name="crown.fill" size={24} color={warningColor} />
                             <ThemedText style={[styles.graceTitle, { color: textColor }]}>새로운 호스트가 지정되었어요</ThemedText>
@@ -1749,8 +1772,8 @@ export default function MatchPlayScreen() {
         if (hostConnectionState === 'waiting') {
             return (
                 <View style={styles.graceOverlay}>
-                    <View style={styles.graceBackdrop} />
-                    <View style={[styles.graceCard, { backgroundColor: cardColor }]}>
+                    <View style={[styles.graceBackdrop, { backgroundColor: graceBackdropColor }]} />
+                    <View style={[styles.graceCard, { backgroundColor: cardColor, borderColor, borderWidth: 1 }]}>
                         <View style={styles.graceTitleRow}>
                             <IconSymbol name="arrow.triangle.2.circlepath" size={24} color={infoColor} />
                             <ThemedText style={[styles.graceTitle, { color: textColor }]}>호스트 연결이 끊겼습니다.</ThemedText>
@@ -1772,8 +1795,8 @@ export default function MatchPlayScreen() {
         }
         return (
             <View style={styles.graceOverlay}>
-                <View style={styles.graceBackdrop} />
-                <View style={[styles.graceCard, { backgroundColor: cardColor }]}>
+                <View style={[styles.graceBackdrop, { backgroundColor: graceBackdropColor }]} />
+                <View style={[styles.graceCard, { backgroundColor: cardColor, borderColor, borderWidth: 1 }]}>
                     <View style={styles.graceTitleRow}>
                         <IconSymbol name="face.frown" size={24} color={dangerColor} />
                         <ThemedText style={[styles.graceTitle, { color: textColor }]}>호스트 연결이 오래 끊겼습니다.</ThemedText>
@@ -1869,6 +1892,7 @@ export default function MatchPlayScreen() {
                         disabled={isResumePending}
                         loading={isResumePending}
                         style={{ backgroundColor: background, borderColor: borderColor }}
+                        leftIcon={<IconSymbol name="play.circle.fill" size={18} color={textColor} />}
                     >
                         재개
                     </Button>
@@ -2262,26 +2286,35 @@ const styles = StyleSheet.create({
         marginRight: Spacing.xs,
     },
     leaderboardAvatar: {},
-    leaderboardAvatarWrapper: {
-        padding: 2,
-        borderRadius: Radius.pill,
-        borderWidth: 2,
-    },
     leaderboardNameTextGroup: {
         flex: 1,
         gap: Spacing.xs,
+        minWidth: 0,
     },
     leaderboardNameRow: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: Spacing.sm,
-        flexWrap: 'wrap',
+        flexWrap: 'nowrap',
+        minWidth: 0,
+        flexShrink: 1,
     },
     leaderboardScoreWrapper: {
-        minWidth: 72,
         alignItems: 'flex-end',
         justifyContent: 'center',
         alignSelf: 'stretch',
+        minHeight: 24,
+        paddingLeft: Spacing.xs,
+    },
+    leaderboardScoreWrapperMe: {
+        minWidth: 36,
+        paddingLeft: Spacing.xs / 2,
+    },
+    leaderboardScoreRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        gap: Spacing.xs,
     },
     resultNameWrapper: {
         flex: 1,
@@ -2292,6 +2325,7 @@ const styles = StyleSheet.create({
     resultNameTextGroup: {
         flex: 1,
         gap: Spacing.xs,
+        minWidth: 0,
     },
     distributionCount: {
         fontSize: 15,
@@ -2450,7 +2484,6 @@ const styles = StyleSheet.create({
     },
     graceBackdrop: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(26, 26, 26, 0.45)',
     },
     graceCard: {
         width: '90%',
