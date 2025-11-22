@@ -38,7 +38,7 @@ import { useQuery } from 'convex/react';
 type AuthedUser = NonNullable<ReturnType<typeof useAuth>['user']>;
 type QuizHistoryDoc = Doc<'quizHistory'>;
 type HistoryBuckets = (typeof api.history.listHistory)['_returnType'];
-type HistorySectionKey = 'daily' | 'swipe' | 'party';
+type HistorySectionKey = 'daily' | 'swipe' | 'liveMatch';
 
 const HISTORY_PREVIEW_LIMIT = 3;
 
@@ -194,9 +194,6 @@ export default function ProfileScreen() {
             onSupport={() =>
               Alert.alert('문의하기', 'valentink1495@gmail.com\n언제든 편하게 연락주세요!')
             }
-            onPolicy={() => Alert.alert('약관 및 정책', '약관 화면은 곧 추가될 예정입니다.')}
-            onLogin={handleGoogleLogin}
-            loginLoading={isAuthorizing}
           />
         </ScrollView>
         <HistoryBottomSheet
@@ -474,7 +471,7 @@ function QuizHistoryPanel({
   }
 
   const hasAny =
-    history.daily.length > 0 || history.swipe.length > 0 || history.party.length > 0;
+    history.daily.length > 0 || history.swipe.length > 0 || history.liveMatch.length > 0;
 
   if (!hasAny) {
     return (
@@ -482,7 +479,7 @@ function QuizHistoryPanel({
         <View style={styles.sectionStack}>
           <ThemedText type="subtitle">퀴즈 히스토리</ThemedText>
           <ThemedText style={[styles.statusText, { color: mutedColor }]}>
-            아직 저장된 기록이 없어요. 퀴즈를 플레이하면 여기에 기록이 쌓입니다.
+            아직 기록이 없어요. 퀴즈를 플레이하면 여기에 쌓여요.
           </ThemedText>
         </View>
       </Card>
@@ -505,12 +502,12 @@ function QuizHistoryPanel({
         emptyLabel: '스와이프 세션을 완주하고 결과를 확인해보세요.',
         renderItem: (entry: QuizHistoryDoc) => <SwipeHistoryRow key={entry._id} entry={entry} />,
       },
-      party: {
-        key: 'party' as const,
+      liveMatch: {
+        key: 'liveMatch' as const,
         title: '라이브 매치',
-        entries: history.party,
+        entries: history.liveMatch,
         emptyLabel: '라이브 매치에 참여하고 결과를 확인해보세요.',
-        renderItem: (entry: QuizHistoryDoc) => <PartyHistoryRow key={entry._id} entry={entry} />,
+        renderItem: (entry: QuizHistoryDoc) => <LiveMatchHistoryRow key={entry._id} entry={entry} />,
       },
     }),
     [history]
@@ -537,12 +534,12 @@ function QuizHistoryPanel({
           onSeeAll={() => onOpenSheet('swipe')}
         />
         <HistorySection
-          title={sections.party.title}
-          entries={sections.party.entries}
-          emptyLabel={sections.party.emptyLabel}
-          renderItem={sections.party.renderItem}
+          title={sections.liveMatch.title}
+          entries={sections.liveMatch.entries}
+          emptyLabel={sections.liveMatch.emptyLabel}
+          renderItem={sections.liveMatch.renderItem}
           previewLimit={previewLimit}
-          onSeeAll={() => onOpenSheet('party')}
+          onSeeAll={() => onOpenSheet('liveMatch')}
         />
       </View>
     </Card>
@@ -630,11 +627,11 @@ function HistoryBottomSheet({
             emptyLabel: '아직 스와이프 기록이 없어요.',
             renderItem: (entry: QuizHistoryDoc) => <SwipeHistoryRow key={entry._id} entry={entry} />,
           },
-          party: {
+          liveMatch: {
             title: '라이브 매치 전체 기록',
-            entries: history.party,
+            entries: history.liveMatch,
             emptyLabel: '아직 라이브 매치 기록이 없어요.',
-            renderItem: (entry: QuizHistoryDoc) => <PartyHistoryRow key={entry._id} entry={entry} />,
+            renderItem: (entry: QuizHistoryDoc) => <LiveMatchHistoryRow key={entry._id} entry={entry} />,
           },
         }
         : null,
@@ -713,7 +710,7 @@ type SwipeHistoryPayload = {
   totalScoreDelta: number;
 };
 
-type PartyHistoryPayload = {
+type LiveMatchHistoryPayload = {
   deckSlug?: string;
   deckTitle?: string;
   roomCode?: string;
@@ -839,9 +836,9 @@ function SwipeHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   );
 }
 
-function PartyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
-  const payload = entry.payload as PartyHistoryPayload;
-  const title = payload.deckTitle ?? '파티 매치';
+function LiveMatchHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
+  const payload = entry.payload as LiveMatchHistoryPayload;
+  const title = payload.deckTitle ?? '라이브 매치';
   const rankLabel =
     payload.rank !== undefined
       ? `순위 #${payload.rank}${payload.totalParticipants ? `/${payload.totalParticipants}` : ''}`
@@ -884,37 +881,23 @@ function FooterSection({
   onSignOut,
   isSigningOut,
   onSupport,
-  onPolicy,
 }: {
   isAuthenticated: boolean;
   onSignOut: () => void;
   isSigningOut: boolean;
   onSupport: () => void;
-  onPolicy: () => void;
-  onLogin: () => void;
-  loginLoading: boolean;
 }) {
   return (
     <>
       {isAuthenticated ? (
-        <Card>
-          <ThemedText type="subtitle">계정</ThemedText>
-          <View style={styles.footerActions}>
-            <Button
-              variant="outline"
-              style={styles.footerButton}
-              onPress={onSupport}
-            >
-              문의하기
-            </Button>
-            <Button
-              variant="outline"
-              style={styles.footerButton}
-              onPress={onPolicy}
-            >
-              약관·정책
-            </Button>
-          </View>
+        <View style={styles.footerStandalone}>
+          <Button
+            variant="outline"
+            style={styles.footerButton}
+            onPress={onSupport}
+          >
+            문의하기
+          </Button>
           <Button
             onPress={onSignOut}
             loading={isSigningOut}
@@ -923,7 +906,7 @@ function FooterSection({
           >
             로그아웃
           </Button>
-        </Card>
+        </View>
       ) : null}
     </>
   );
@@ -1148,6 +1131,9 @@ const styles = StyleSheet.create({
   },
   footerButton: {
     flex: 1,
+  },
+  footerStandalone: {
+    gap: Spacing.md,
   },
   sheetHeader: {
     flexDirection: 'row',

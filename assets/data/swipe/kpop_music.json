@@ -1340,33 +1340,33 @@
         "deckSlug": "deck_seed_kpop_music",
         "category": "kpop_music",
         "type": "mcq",
-        "prompt": "2024년 5월 발매된 르세라핌(LE SSERAFIM)의 일본 싱글 'EASY'의 타이틀곡이 아닌 것은?",
+        "prompt": "2023년 1월 25일에 발매된 르세라핌의 일본 데뷔 싱글 'FEARLESS'에 수록된 곡이 아닌 것은?",
         "tags": [
             "LE SSERAFIM",
             "르세라핌",
-            "EASY",
+            "FEARLESS",
             "일본싱글"
         ],
         "choices": [
             {
                 "id": "a",
-                "text": "EASY -Japanese ver.-"
+                "text": "Choices"
             },
             {
                 "id": "b",
-                "text": "Perfect Night -Japanese ver.-"
+                "text": "Blue Flame (Japanese Ver.)"
             },
             {
                 "id": "c",
-                "text": "UNFORGIVEN -Japanese ver.-"
+                "text": "ANTIFRAGILE (Japanese Ver.)"
             },
             {
                 "id": "d",
-                "text": "Smart -Japanese ver.-"
+                "text": "FEARLESS (Japanese Ver.)"
             }
         ],
         "answerIndex": 2,
-        "explanation": "르세라핌의 2024년 5월 일본 싱글 'EASY'에는 'EASY', 'Perfect Night', 'Smart'의 일본어 버전이 수록되었으며, 'UNFORGIVEN'은 이전 싱글의 수록곡입니다.",
+        "explanation": "ANTIFRAGILE (Japanese Ver.)은 르세라핌의 두 번째 일본 싱글 'UNFORGIVEN'에 수록된 B-side(수록곡) 중 하나입니다. 데뷔 싱글 'FEARLESS'에는 포함되지 않았습니다.",
         "difficulty": 0.7,
         "createdAt": 1761505320,
         "qualityScore": 0.5,
@@ -3543,5 +3543,42 @@
         "answerIndex": 1,
         "explanation": "2025년 5월 앨범 판매량 급증은 세븐틴의 'HAPPY BURSTDAY', 보이넥스트도어의 'No Genre', 진(JIN)의 'Echo' 등 대형 아티스트들의 컴백에 힘입은 결과입니다.",
         "difficulty": 0.5
+    },
+    {
+        "deckSlug": "deck_seed_kpop_music",
+        "category": "kpop_music",
+        "type": "mcq",
+        "prompt": "르세라핌이 일본 데뷔 싱글을 발매한 연도는?",
+        "tags": [
+            "르세라핌",
+            "일본데뷔",
+            "FEARLESS",
+            "데뷔연도"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "2022년"
+            },
+            {
+                "id": "b",
+                "text": "2023년"
+            },
+            {
+                "id": "c",
+                "text": "2024년"
+            },
+            {
+                "id": "d",
+                "text": "2025년"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "르세라핌은 2023년 1월 25일 일본 데뷔 싱글 'FEARLESS (Japanese ver.)'를 발매했습니다.",
+        "difficulty": 0.35,
+        "createdAt": 1760775200,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 912
     }
 ]

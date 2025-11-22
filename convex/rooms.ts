@@ -1,8 +1,8 @@
 import { ConvexError, v } from "convex/values";
+import { deriveGuestAvatarId, deriveGuestNickname } from "../lib/guest";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { mutation, query } from "./_generated/server";
-import { deriveGuestAvatarId, deriveGuestNickname } from "../lib/guest";
 import { ensureAuthedUser, getOptionalAuthedUser } from "./lib/auth";
 
 type CtxWithDb = Pick<MutationCtx, "db"> | Pick<QueryCtx, "db">;
@@ -18,8 +18,8 @@ type SchedulePendingActionOptions = {
     patch?: Partial<RoomDoc>;
 };
 
-type RoomDoc = Doc<"partyRooms">;
-type ParticipantDoc = Doc<"partyParticipants">;
+type RoomDoc = Doc<"liveMatchRooms">;
+type ParticipantDoc = Doc<"liveMatchParticipants">;
 
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -32,7 +32,7 @@ const DEFAULT_RULES = {
     leaderboardSeconds: 5,
 };
 
-const LOBBY_EXPIRES_MS = 1000 * 60 * 10;
+const LOBBY_EXPIRES_MS = 1000 * 60;
 const ACTION_DELAY_MIN_MS = 2000;
 const ACTION_DELAY_MAX_MS = 10000;
 const ACTION_DELAY_DEFAULT_MS = 3000;
@@ -99,27 +99,31 @@ async function resolveHostParticipant(
     throw new ConvexError("NOT_AUTHORIZED");
 }
 
-type PartyRules = typeof DEFAULT_RULES;
+type LiveMatchRules = typeof DEFAULT_RULES;
 
 export const cancelPendingAction = mutation({
     args: {
-        roomId: v.id("partyRooms"),
+        roomId: v.id("liveMatchRooms"),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        let room = await loadRoom(ctx, args.roomId);
+        const loadedRoom = await loadRoom(ctx, args.roomId);
+        const activeRoom = await ensureActiveRoom(ctx, loadedRoom);
+        if (!activeRoom) {
+            return;
+        }
+        let room = activeRoom;
         room = (await refreshRoomParticipants(ctx, room)).room;
         if (!room.pendingAction) {
             return;
         }
-        const hostParticipant = await resolveHostParticipant(ctx, room, args.guestKey);
 
         await ctx.db.patch(room._id, {
             pendingAction: undefined,
             version: (room.version ?? 0) + 1,
         });
 
-        await ctx.db.insert("partyLogs", {
+        await ctx.db.insert("liveMatchLogs", {
             roomId: room._id,
             type: "action_cancelled",
             payload: {
@@ -140,7 +144,7 @@ async function generateUniqueCode(ctx: MutationCtx, length = 6) {
             code += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
         }
         const existing = await ctx.db
-            .query("partyRooms")
+            .query("liveMatchRooms")
             .withIndex("by_code", (q) => q.eq("code", code))
             .first();
         if (!existing) {
@@ -150,7 +154,7 @@ async function generateUniqueCode(ctx: MutationCtx, length = 6) {
     throw new ConvexError("FAILED_TO_ALLOCATE_CODE");
 }
 
-async function resolveDeck(ctx: MutationCtx, deckId?: Id<"partyDecks">) {
+async function resolveDeck(ctx: MutationCtx, deckId?: Id<"liveMatchDecks">) {
     if (deckId) {
         const deck = await ctx.db.get(deckId);
         if (!deck || !deck.isActive || deck.totalQuestions === 0 || deck.questionIds.length === 0) {
@@ -159,7 +163,7 @@ async function resolveDeck(ctx: MutationCtx, deckId?: Id<"partyDecks">) {
         return deck;
     }
     const deck = await ctx.db
-        .query("partyDecks")
+        .query("liveMatchDecks")
         .withIndex("by_active_updatedAt", (q) => q.eq("isActive", true))
         .order("desc")
         .first();
@@ -172,12 +176,57 @@ async function resolveDeck(ctx: MutationCtx, deckId?: Id<"partyDecks">) {
     return deck;
 }
 
-async function loadRoom(ctx: CtxWithDb, roomId: Id<"partyRooms">) {
+async function loadRoom(ctx: CtxWithDb, roomId: Id<"liveMatchRooms">) {
     const room = await ctx.db.get(roomId);
     if (!room) {
         throw new ConvexError("ROOM_NOT_FOUND");
     }
     return room;
+}
+
+function isRoomExpired(room: RoomDoc) {
+    return typeof room.expiresAt === "number" && room.expiresAt <= Date.now();
+}
+
+async function deleteRoomCascade(ctx: MutationCtx, room: RoomDoc) {
+    const [participants, rounds, answers, logs] = await Promise.all([
+        ctx.db.query("liveMatchParticipants").withIndex("by_room", (q) => q.eq("roomId", room._id)).collect(),
+        ctx.db.query("liveMatchRounds").withIndex("by_room", (q) => q.eq("roomId", room._id)).collect(),
+        ctx.db.query("liveMatchAnswers").withIndex("by_room_round", (q) => q.eq("roomId", room._id)).collect(),
+        ctx.db.query("liveMatchLogs").withIndex("by_room", (q) => q.eq("roomId", room._id)).collect(),
+    ]);
+
+    await Promise.all([
+        ...participants.map((doc) => ctx.db.delete(doc._id)),
+        ...rounds.map((doc) => ctx.db.delete(doc._id)),
+        ...answers.map((doc) => ctx.db.delete(doc._id)),
+        ...logs.map((doc) => ctx.db.delete(doc._id)),
+    ]);
+
+    await ctx.db.delete(room._id);
+}
+
+async function ensureActiveRoom(ctx: MutationCtx, room: RoomDoc): Promise<RoomDoc | null> {
+    if (!isRoomExpired(room)) {
+        return room;
+    }
+    const participants = await ctx.db
+        .query("liveMatchParticipants")
+        .withIndex("by_room", (q) => q.eq("roomId", room._id))
+        .collect();
+    const activeCount = participants.filter((p) => !p.removedAt).length;
+
+    // Only expire when nobody remains; otherwise extend the expiry window.
+    if (activeCount > 0) {
+        const extendedExpiry = Date.now() + LOBBY_EXPIRES_MS;
+        if (!room.expiresAt || room.expiresAt < extendedExpiry) {
+            await ctx.db.patch(room._id, { expiresAt: extendedExpiry });
+        }
+        return { ...room, expiresAt: extendedExpiry };
+    }
+
+    await deleteRoomCascade(ctx, room);
+    return null;
 }
 
 async function regenerateRoomRounds(
@@ -198,7 +247,7 @@ async function regenerateRoomRounds(
     const questions = await selectQuestions(ctx, deck._id, roundsToSelect);
 
     const existingRounds = await ctx.db
-        .query("partyRounds")
+        .query("liveMatchRounds")
         .withIndex("by_room", (q) => q.eq("roomId", room._id))
         .collect();
     if (existingRounds.length > 0) {
@@ -206,7 +255,7 @@ async function regenerateRoomRounds(
     }
 
     for (let index = 0; index < questions.length; index += 1) {
-        await ctx.db.insert("partyRounds", {
+        await ctx.db.insert("liveMatchRounds", {
             roomId: room._id,
             index,
             questionId: questions[index]._id,
@@ -221,7 +270,7 @@ async function regenerateRoomRounds(
 
 async function resetRoomState(ctx: MutationCtx, room: RoomDoc) {
     const participants = await ctx.db
-        .query("partyParticipants")
+        .query("liveMatchParticipants")
         .withIndex("by_room", (q) => q.eq("roomId", room._id))
         .collect();
     await Promise.all(
@@ -236,7 +285,7 @@ async function resetRoomState(ctx: MutationCtx, room: RoomDoc) {
     );
 
     const answers = await ctx.db
-        .query("partyAnswers")
+        .query("liveMatchAnswers")
         .withIndex("by_room_round", (q) => q.eq("roomId", room._id))
         .collect();
     if (answers.length > 0) {
@@ -245,7 +294,7 @@ async function resetRoomState(ctx: MutationCtx, room: RoomDoc) {
 
     if (!room.deckId) {
         const existingRounds = await ctx.db
-            .query("partyRounds")
+            .query("liveMatchRounds")
             .withIndex("by_room", (q) => q.eq("roomId", room._id))
             .collect();
         await Promise.all(
@@ -265,14 +314,14 @@ async function resetRoomState(ctx: MutationCtx, room: RoomDoc) {
 
 async function loadParticipantByUser(
     ctx: CtxWithDb,
-    roomId: Id<"partyRooms">,
+    roomId: Id<"liveMatchRooms">,
     userId?: Id<"users">
 ) {
     if (!userId) {
         return null;
     }
     const participant = await ctx.db
-        .query("partyParticipants")
+        .query("liveMatchParticipants")
         .withIndex("by_room_user", (q) => q.eq("roomId", roomId).eq("userId", userId))
         .first();
     if (!participant || participant.removedAt) {
@@ -283,11 +332,11 @@ async function loadParticipantByUser(
 
 async function loadParticipantByIdentity(
     ctx: CtxWithDb,
-    roomId: Id<"partyRooms">,
+    roomId: Id<"liveMatchRooms">,
     identityId: string
 ) {
     const participant = await ctx.db
-        .query("partyParticipants")
+        .query("liveMatchParticipants")
         .withIndex("by_room_identity", (q) => q.eq("roomId", roomId).eq("identityId", identityId))
         .first();
     if (!participant || participant.removedAt) {
@@ -298,8 +347,8 @@ async function loadParticipantByIdentity(
 
 async function requireParticipantAccess(
     ctx: MutationCtx,
-    roomId: Id<"partyRooms">,
-    participantId: Id<"partyParticipants">,
+    roomId: Id<"liveMatchRooms">,
+    participantId: Id<"liveMatchParticipants">,
     guestKey?: string
 ): Promise<ParticipantDoc> {
     const participant = await ctx.db.get(participantId);
@@ -322,11 +371,11 @@ async function requireParticipantAccess(
 
 async function loadRound(
     ctx: CtxWithDb,
-    roomId: Id<"partyRooms">,
+    roomId: Id<"liveMatchRooms">,
     index: number
 ) {
     return ctx.db
-        .query("partyRounds")
+        .query("liveMatchRounds")
         .withIndex("by_room_index", (q) => q.eq("roomId", roomId).eq("index", index))
         .unique();
 }
@@ -353,7 +402,7 @@ async function refreshRoomParticipants(
     room: RoomDoc
 ): Promise<{ room: RoomDoc; participants: ParticipantDoc[] }> {
     const participants = await ctx.db
-        .query("partyParticipants")
+        .query("liveMatchParticipants")
         .withIndex("by_room", (q) => q.eq("roomId", room._id))
         .collect();
     const now = Date.now();
@@ -445,7 +494,7 @@ async function refreshRoomParticipants(
                     .filter((participant) => participant._id !== newHost._id && participant.isHost)
                     .map((participant) => ctx.db.patch(participant._id, { isHost: false }))
             );
-            await ctx.db.insert("partyLogs", {
+            await ctx.db.insert("liveMatchLogs", {
                 roomId: room._id,
                 type: "host_transferred",
                 payload: {
@@ -505,7 +554,7 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
             pendingAction: undefined,
             version: (room.version ?? 0) + 1,
         });
-        await ctx.db.insert("partyLogs", {
+        await ctx.db.insert("liveMatchLogs", {
             roomId: room._id,
             type: "action_cancelled",
             payload: {
@@ -525,7 +574,7 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
                     pendingAction: undefined,
                     version: (room.version ?? 0) + 1,
                 });
-                await ctx.db.insert("partyLogs", {
+                await ctx.db.insert("liveMatchLogs", {
                     roomId: room._id,
                     type: "action_cancelled",
                     payload: {
@@ -546,13 +595,13 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
             }
 
             const existingRounds = await ctx.db
-                .query("partyRounds")
+                .query("liveMatchRounds")
                 .withIndex("by_room", (q) => q.eq("roomId", room._id))
                 .collect();
             if (existingRounds.length === 0) {
                 const questions = await selectQuestions(ctx, deckId, room.totalRounds);
                 for (let index = 0; index < questions.length; index += 1) {
-                    await ctx.db.insert("partyRounds", {
+                    await ctx.db.insert("liveMatchRounds", {
                         roomId: room._id,
                         index,
                         questionId: questions[index]._id,
@@ -582,7 +631,7 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
                     pendingAction: undefined,
                     version: (room.version ?? 0) + 1,
                 });
-                await ctx.db.insert("partyLogs", {
+                await ctx.db.insert("liveMatchLogs", {
                     roomId: room._id,
                     type: "action_cancelled",
                     payload: {
@@ -618,7 +667,7 @@ async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
                     pendingAction: undefined,
                     version: (room.version ?? 0) + 1,
                 });
-                await ctx.db.insert("partyLogs", {
+                await ctx.db.insert("liveMatchLogs", {
                     roomId: room._id,
                     type: "action_cancelled",
                     payload: {
@@ -679,7 +728,7 @@ async function schedulePendingAction(
     return { executeAt, delayMs };
 }
 
-async function loadPendingRoom(ctx: MutationCtx, roomId: Id<"partyRooms">) {
+async function loadPendingRoom(ctx: MutationCtx, roomId: Id<"liveMatchRooms">) {
     const room = await ctx.db.get(roomId);
     if (!room) {
         throw new ConvexError("ROOM_NOT_FOUND");
@@ -687,7 +736,7 @@ async function loadPendingRoom(ctx: MutationCtx, roomId: Id<"partyRooms">) {
     return room;
 }
 
-function computeScoreDelta(isCorrect: boolean, elapsedMs: number, rules: PartyRules) {
+function computeScoreDelta(isCorrect: boolean, elapsedMs: number, rules: LiveMatchRules) {
     if (!isCorrect) return 0;
     const base = 100;
     const remainingSeconds = Math.max(0, rules.answerSeconds - elapsedMs / 1000);
@@ -697,7 +746,7 @@ function computeScoreDelta(isCorrect: boolean, elapsedMs: number, rules: PartyRu
 
 async function selectQuestions(
     ctx: MutationCtx,
-    deckId: Id<"partyDecks">,
+    deckId: Id<"liveMatchDecks">,
     rounds: number
 ) {
     const deck = await ctx.db.get(deckId);
@@ -730,7 +779,7 @@ export const listDecks = query({
     args: {},
     handler: async (ctx) => {
         const decks = await ctx.db
-            .query("partyDecks")
+            .query("liveMatchDecks")
             .withIndex("by_active_updatedAt", (q) => q.eq("isActive", true))
             .order("desc")
             .collect();
@@ -749,7 +798,7 @@ export const listDecks = query({
 
 export const create = mutation({
     args: {
-        deckId: v.optional(v.id("partyDecks")),
+        deckId: v.optional(v.id("liveMatchDecks")),
         nickname: v.optional(v.string()),
         guestKey: v.optional(v.string()),
     },
@@ -777,7 +826,7 @@ export const create = mutation({
         const now = Date.now();
         const nickname = sanitizeNickname(args.nickname, nicknameFallback);
 
-        const roomId = await ctx.db.insert("partyRooms", {
+        const roomId = await ctx.db.insert("liveMatchRooms", {
             code,
             hostId: userId ?? undefined,
             hostIdentity: identityId,
@@ -793,7 +842,7 @@ export const create = mutation({
             createdAt: now,
         });
 
-        const participantId = await ctx.db.insert("partyParticipants", {
+        const participantId = await ctx.db.insert("liveMatchParticipants", {
             roomId,
             userId: userId ?? undefined,
             identityId,
@@ -829,11 +878,16 @@ export const join = mutation({
         const identity = await ctx.auth.getUserIdentity();
         const code = args.code.trim().toUpperCase();
         let room = await ctx.db
-            .query("partyRooms")
+            .query("liveMatchRooms")
             .withIndex("by_code", (q) => q.eq("code", code))
             .unique();
         if (!room) {
             throw new ConvexError("퀴즈룸을 찾을 수 없어요. 초대 코드를 확인해주세요.");
+        }
+
+        room = await ensureActiveRoom(ctx, room);
+        if (!room) {
+            return { expired: true };
         }
 
         const refreshResult = await refreshRoomParticipants(ctx, room);
@@ -852,7 +906,7 @@ export const join = mutation({
             identityId = auth.identityId;
             nicknameFallback = user.handle;
             existingRecord = await ctx.db
-                .query("partyParticipants")
+                .query("liveMatchParticipants")
                 .withIndex("by_room_user", (q) => q.eq("roomId", room._id).eq("userId", user._id))
                 .first();
         } else {
@@ -861,7 +915,7 @@ export const join = mutation({
             identityId = guestIdentity(guestKey);
             nicknameFallback = deriveGuestNickname(guestKey);
             existingRecord = await ctx.db
-                .query("partyParticipants")
+                .query("liveMatchParticipants")
                 .withIndex("by_room_identity", (q) => q.eq("roomId", room._id).eq("identityId", identityId))
                 .first();
         }
@@ -921,7 +975,7 @@ export const join = mutation({
         }
 
         const totalParticipants = await ctx.db
-            .query("partyParticipants")
+            .query("liveMatchParticipants")
             .withIndex("by_room", (q) => q.eq("roomId", room._id))
             .collect();
         const participantCount = totalParticipants.filter((p) => !p.removedAt).length;
@@ -929,7 +983,7 @@ export const join = mutation({
             throw new ConvexError("퀴즈룸이 가득 찼어요. 다른 방을 찾아주세요.");
         }
 
-        const participantId = await ctx.db.insert("partyParticipants", {
+        const participantId = await ctx.db.insert("liveMatchParticipants", {
             roomId: room._id,
             userId,
             identityId,
@@ -965,8 +1019,8 @@ export const join = mutation({
 
 export const leave = mutation({
     args: {
-        roomId: v.id("partyRooms"),
-        participantId: v.id("partyParticipants"),
+        roomId: v.id("liveMatchRooms"),
+        participantId: v.id("liveMatchParticipants"),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
@@ -976,7 +1030,10 @@ export const leave = mutation({
             args.participantId,
             args.guestKey
         );
-        const room = await loadRoom(ctx, args.roomId);
+        const room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         await ctx.db.patch(participant._id, {
             removedAt: Date.now(),
             isHost: false,
@@ -989,8 +1046,8 @@ export const leave = mutation({
 
 export const heartbeat = mutation({
     args: {
-        roomId: v.id("partyRooms"),
-        participantId: v.id("partyParticipants"),
+        roomId: v.id("liveMatchRooms"),
+        participantId: v.id("liveMatchParticipants"),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
@@ -1006,8 +1063,11 @@ export const heartbeat = mutation({
         if (!roomDoc) {
             return;
         }
-        const refreshed = await refreshRoomParticipants(ctx, roomDoc as RoomDoc);
-        const room = refreshed.room;
+        const room = await ensureActiveRoom(ctx, roomDoc as RoomDoc);
+        if (!room) {
+            return;
+        }
+        const refreshed = await refreshRoomParticipants(ctx, room);
 
         if (room.pendingAction && room.pendingAction.executeAt <= Date.now()) {
             await performPendingAction(ctx, room);
@@ -1017,8 +1077,8 @@ export const heartbeat = mutation({
 
 export const setReady = mutation({
     args: {
-        roomId: v.id("partyRooms"),
-        participantId: v.id("partyParticipants"),
+        roomId: v.id("liveMatchRooms"),
+        participantId: v.id("liveMatchParticipants"),
         ready: v.boolean(),
         guestKey: v.optional(v.string()),
     },
@@ -1029,7 +1089,10 @@ export const setReady = mutation({
             args.participantId,
             args.guestKey
         );
-        const room = await loadRoom(ctx, args.roomId);
+        const room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         if (room.status !== "lobby") {
             throw new ConvexError("로비 상태에서만 준비를 변경할 수 있어요.");
         }
@@ -1047,12 +1110,15 @@ export const setReady = mutation({
 
 export const start = mutation({
     args: {
-        roomId: v.id("partyRooms"),
+        roomId: v.id("liveMatchRooms"),
         delayMs: v.optional(v.number()),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        let room = await loadRoom(ctx, args.roomId);
+        let room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return { expired: true };
+        }
         const refreshed = await refreshRoomParticipants(ctx, room);
         room = refreshed.room;
         const activeParticipants = refreshed.participants;
@@ -1104,11 +1170,14 @@ export const start = mutation({
 
 export const progress = mutation({
     args: {
-        roomId: v.id("partyRooms"),
+        roomId: v.id("liveMatchRooms"),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        let room = await loadRoom(ctx, args.roomId);
+        let room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         room = (await refreshRoomParticipants(ctx, room)).room;
         await resolveHostParticipant(ctx, room, args.guestKey);
 
@@ -1211,11 +1280,14 @@ export const progress = mutation({
 
 export const pause = mutation({
     args: {
-        roomId: v.id("partyRooms"),
+        roomId: v.id("liveMatchRooms"),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        let room = await loadRoom(ctx, args.roomId);
+        let room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         room = (await refreshRoomParticipants(ctx, room)).room;
         await resolveHostParticipant(ctx, room, args.guestKey);
         if (room.status === "paused") {
@@ -1247,11 +1319,14 @@ export const pause = mutation({
 
 export const resume = mutation({
     args: {
-        roomId: v.id("partyRooms"),
+        roomId: v.id("liveMatchRooms"),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        let room = await loadRoom(ctx, args.roomId);
+        let room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         room = (await refreshRoomParticipants(ctx, room)).room;
         await resolveHostParticipant(ctx, room, args.guestKey);
         if (room.status !== "paused" || !room.pauseState) {
@@ -1293,14 +1368,17 @@ export const resume = mutation({
 
 export const submitAnswer = mutation({
     args: {
-        roomId: v.id("partyRooms"),
-        participantId: v.id("partyParticipants"),
+        roomId: v.id("liveMatchRooms"),
+        participantId: v.id("liveMatchParticipants"),
         choiceIndex: v.number(),
         clientTs: v.number(),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const room = await loadRoom(ctx, args.roomId);
+        const room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         if (room.status !== "question" && room.status !== "grace") {
             throw new ConvexError("ROUND_NOT_ACTIVE");
         }
@@ -1323,7 +1401,7 @@ export const submitAnswer = mutation({
         }
 
         const existing = await ctx.db
-            .query("partyAnswers")
+            .query("liveMatchAnswers")
             .withIndex("by_participant_round", (q) =>
                 q.eq("participantId", participant._id).eq("roundIndex", room.currentRound)
             )
@@ -1345,7 +1423,7 @@ export const submitAnswer = mutation({
         const isCorrect = question.answerIndex === args.choiceIndex;
         const delta = computeScoreDelta(isCorrect, elapsed, DEFAULT_RULES);
 
-        await ctx.db.insert("partyAnswers", {
+        await ctx.db.insert("liveMatchAnswers", {
             roomId: room._id,
             roundIndex: room.currentRound,
             participantId: participant._id,
@@ -1370,11 +1448,14 @@ export const submitAnswer = mutation({
 
 export const finish = mutation({
     args: {
-        roomId: v.id("partyRooms"),
+        roomId: v.id("liveMatchRooms"),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        let room = await loadRoom(ctx, args.roomId);
+        let room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         room = (await refreshRoomParticipants(ctx, room)).room;
         await resolveHostParticipant(ctx, room, args.guestKey);
         await ctx.db.patch(room._id, {
@@ -1390,11 +1471,14 @@ export const finish = mutation({
 
 export const resetToLobby = mutation({
     args: {
-        roomId: v.id("partyRooms"),
+        roomId: v.id("liveMatchRooms"),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        let room = await loadRoom(ctx, args.roomId);
+        let room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         room = (await refreshRoomParticipants(ctx, room)).room;
         await resolveHostParticipant(ctx, room, args.guestKey);
 
@@ -1426,8 +1510,8 @@ export const resetToLobby = mutation({
 
 export const requestLobby = mutation({
     args: {
-        roomId: v.id("partyRooms"),
-        participantId: v.id("partyParticipants"),
+        roomId: v.id("liveMatchRooms"),
+        participantId: v.id("liveMatchParticipants"),
         delayMs: v.optional(v.number()),
         guestKey: v.optional(v.string()),
     },
@@ -1438,7 +1522,10 @@ export const requestLobby = mutation({
             args.participantId,
             args.guestKey
         );
-        let room = await loadRoom(ctx, args.roomId);
+        let room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         room = (await refreshRoomParticipants(ctx, room)).room;
         if (room.status !== "results") {
             throw new ConvexError("NOT_AVAILABLE");
@@ -1452,7 +1539,7 @@ export const requestLobby = mutation({
         const executeAt = Date.now() + delayMs;
 
         if (!participant.isHost) {
-            await ctx.db.insert("partyLogs", {
+            await ctx.db.insert("liveMatchLogs", {
                 roomId: room._id,
                 type: "lobby_request",
                 payload: {
@@ -1483,12 +1570,15 @@ export const requestLobby = mutation({
 
 export const rematch = mutation({
     args: {
-        roomId: v.id("partyRooms"),
+        roomId: v.id("liveMatchRooms"),
         delayMs: v.optional(v.number()),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        let room = await loadRoom(ctx, args.roomId);
+        let room = await ensureActiveRoom(ctx, await loadRoom(ctx, args.roomId));
+        if (!room) {
+            return;
+        }
         room = (await refreshRoomParticipants(ctx, room)).room;
         const hostParticipant = await resolveHostParticipant(ctx, room, args.guestKey);
         if (room.status !== "results" && room.status !== "lobby") {
@@ -1523,7 +1613,7 @@ export const getLobby = query({
     },
     handler: async (ctx, args) => {
         const room = await ctx.db
-            .query("partyRooms")
+            .query("liveMatchRooms")
             .withIndex("by_code", (q) => q.eq("code", args.code.trim().toUpperCase()))
             .unique();
         if (!room) {
@@ -1548,7 +1638,7 @@ export const getLobby = query({
             : null;
 
         const participants = await ctx.db
-            .query("partyParticipants")
+            .query("liveMatchParticipants")
             .withIndex("by_room", (q) => q.eq("roomId", room._id))
             .collect();
 
@@ -1596,7 +1686,7 @@ export const getLobby = query({
 });
 
 type ClientRoomParticipant = {
-    participantId: Id<"partyParticipants">;
+    participantId: Id<"liveMatchParticipants">;
     userId: Id<"users"> | null;
     avatarUrl: string | null;
     isGuest: boolean;
@@ -1618,7 +1708,7 @@ type ClientRoomOkState = {
     status: "ok";
     room: RoomDoc;
     deck: {
-        id: Id<"partyDecks">;
+        id: Id<"liveMatchDecks">;
         slug: string;
         title: string;
         emoji: string;
@@ -1626,7 +1716,7 @@ type ClientRoomOkState = {
         questionCount: number;
     } | null;
     me: {
-        participantId: Id<"partyParticipants">;
+        participantId: Id<"liveMatchParticipants">;
         userId: Id<"users"> | null;
         isGuest: boolean;
         nickname: string;
@@ -1657,7 +1747,7 @@ type ClientRoomOkState = {
         };
         leaderboard?: {
             top: {
-                participantId: Id<"partyParticipants">;
+                participantId: Id<"liveMatchParticipants">;
                 userId: Id<"users"> | null;
                 avatarUrl: string | null;
                 guestAvatarId: number | null;
@@ -1666,7 +1756,7 @@ type ClientRoomOkState = {
                 rank: number;
             }[];
             me?: {
-                participantId: Id<"partyParticipants">;
+                participantId: Id<"liveMatchParticipants">;
                 userId: Id<"users"> | null;
                 avatarUrl: string | null;
                 guestAvatarId: number | null;
@@ -1687,7 +1777,7 @@ export type ClientRoomState =
 
 export const getRoomState = query({
     args: {
-        roomId: v.id("partyRooms"),
+        roomId: v.id("liveMatchRooms"),
         guestKey: v.optional(v.string()),
     },
     handler: async (ctx, args): Promise<ClientRoomState> => {
@@ -1710,12 +1800,12 @@ export const getRoomState = query({
         let meRecord: ParticipantDoc | null = null;
         if (authed) {
             meRecord = await ctx.db
-                .query("partyParticipants")
+                .query("liveMatchParticipants")
                 .withIndex("by_room_user", (q) => q.eq("roomId", room._id).eq("userId", authed.user._id))
                 .first();
         } else if (guestKey) {
             meRecord = await ctx.db
-                .query("partyParticipants")
+                .query("liveMatchParticipants")
                 .withIndex("by_room_identity", (q) => q.eq("roomId", room._id).eq("identityId", guestIdentity(guestKey)))
                 .first();
         } else {
@@ -1728,7 +1818,7 @@ export const getRoomState = query({
         const me = meRecord;
 
         const participants = (await ctx.db
-            .query("partyParticipants")
+            .query("liveMatchParticipants")
             .withIndex("by_room", (q) => q.eq("roomId", room._id))
             .collect()).filter((participant) => !participant.removedAt);
 
@@ -1759,7 +1849,7 @@ export const getRoomState = query({
             }
 
             const answers = await ctx.db
-                .query("partyAnswers")
+                .query("liveMatchAnswers")
                 .withIndex("by_room_round", (q) => q.eq("roomId", room._id).eq("roundIndex", round.index))
                 .collect();
 
@@ -1779,33 +1869,33 @@ export const getRoomState = query({
                 })()
                 : undefined;
 
-        const leaderboard = (() => {
-            const top = rankedParticipants.map((p) => {
-                const user = p.userId ? usersById.get(p.userId) : null;
-                return {
-                    participantId: p._id,
-                    userId: p.userId ?? null,
-                    avatarUrl: user?.avatarUrl ?? null,
-                    guestAvatarId: getParticipantGuestAvatarId(p),
-                    nickname: p.nickname,
-                    totalScore: p.totalScore,
-                    rank: p.rank,
-                };
-            });
-            const meEntrySource = rankedParticipants.find((p) => p._id === me._id);
-            const meEntry = meEntrySource
-                ? {
-                    participantId: meEntrySource._id,
-                    userId: meEntrySource.userId ?? null,
-                    avatarUrl: meEntrySource.userId ? usersById.get(meEntrySource.userId)?.avatarUrl ?? null : null,
-                    guestAvatarId: getParticipantGuestAvatarId(meEntrySource),
-                    nickname: meEntrySource.nickname,
-                    totalScore: meEntrySource.totalScore,
-                    rank: meEntrySource.rank,
-                }
-                : undefined;
-            return { top, me: meEntry };
-        })();
+            const leaderboard = (() => {
+                const top = rankedParticipants.map((p) => {
+                    const user = p.userId ? usersById.get(p.userId) : null;
+                    return {
+                        participantId: p._id,
+                        userId: p.userId ?? null,
+                        avatarUrl: user?.avatarUrl ?? null,
+                        guestAvatarId: getParticipantGuestAvatarId(p),
+                        nickname: p.nickname,
+                        totalScore: p.totalScore,
+                        rank: p.rank,
+                    };
+                });
+                const meEntrySource = rankedParticipants.find((p) => p._id === me._id);
+                const meEntry = meEntrySource
+                    ? {
+                        participantId: meEntrySource._id,
+                        userId: meEntrySource.userId ?? null,
+                        avatarUrl: meEntrySource.userId ? usersById.get(meEntrySource.userId)?.avatarUrl ?? null : null,
+                        guestAvatarId: getParticipantGuestAvatarId(meEntrySource),
+                        nickname: meEntrySource.nickname,
+                        totalScore: meEntrySource.totalScore,
+                        rank: meEntrySource.rank,
+                    }
+                    : undefined;
+                return { top, me: meEntry };
+            })();
 
             currentRound = {
                 index: round.index,

@@ -1,8 +1,8 @@
 import { v } from "convex/values";
-import { mutation } from "../_generated/server";
+import { LIVE_MATCH_DECK_DEFINITIONS } from "../../constants/live-match-decks";
 import type { Id } from "../_generated/dataModel";
+import { mutation } from "../_generated/server";
 import { ensureAuthedUser } from "../lib/auth";
-import { PARTY_DECK_DEFINITIONS } from "../../constants/party-decks";
 
 function uniqueQuestionIds(ids: Id<"questions">[]): Id<"questions">[] {
     const seen = new Set<string>();
@@ -17,14 +17,14 @@ function uniqueQuestionIds(ids: Id<"questions">[]): Id<"questions">[] {
     return result;
 }
 
-export const seedPartyDecks = mutation({
+export const seedLiveMatchDecks = mutation({
     args: {
         dryRun: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
         await ensureAuthedUser(ctx);
         const now = Date.now();
-        const existingDecks = await ctx.db.query("partyDecks").collect();
+        const existingDecks = await ctx.db.query("liveMatchDecks").collect();
         const existingBySlug = new Map(existingDecks.map((deck) => [deck.slug, deck]));
         const seen = new Set<string>();
         const changes: {
@@ -34,7 +34,7 @@ export const seedPartyDecks = mutation({
             reason?: string;
         }[] = [];
 
-        for (const def of PARTY_DECK_DEFINITIONS) {
+        for (const def of LIVE_MATCH_DECK_DEFINITIONS) {
             const fetchLimit = def.questionLimit ?? 120;
             const perCategoryFetch = Math.max(Math.ceil(fetchLimit * 1.5 / def.sourceCategories.length), 30);
             const pool: Id<"questions">[] = [];
@@ -88,7 +88,7 @@ export const seedPartyDecks = mutation({
                 if (existing) {
                     await ctx.db.patch(existing._id, payload);
                 } else {
-                    await ctx.db.insert("partyDecks", {
+                    await ctx.db.insert("liveMatchDecks", {
                         ...payload,
                         createdAt: now,
                     });
@@ -122,3 +122,6 @@ export const seedPartyDecks = mutation({
         return { changes, dryRun: args.dryRun ?? false, total: changes.length };
     },
 });
+
+
+

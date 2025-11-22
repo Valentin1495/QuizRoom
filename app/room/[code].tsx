@@ -29,7 +29,7 @@ export default function MatchLobbyScreen() {
   const roomCode = useMemo(() => (params.code ?? '').toString().toUpperCase(), [params.code]);
 
   const [hasLeft, setHasLeft] = useState(false);
-  const [participantId, setParticipantId] = useState<Id<'partyParticipants'> | null>(null);
+  const [participantId, setParticipantId] = useState<Id<'liveMatchParticipants'> | null>(null);
   const joinAttemptRef = useRef(false);
   const [pendingMs, setPendingMs] = useState(0);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
@@ -121,7 +121,6 @@ export default function MatchLobbyScreen() {
   const accentColor = theme.accent;
   const destructiveColor = theme.destructive;
   const fallbackAvatarBackground = theme.primary;
-  const participantAvatarHighlight = theme.primaryForeground ?? theme.primary;
   const destructiveMutedColor = colorScheme === 'light' ? '#FEE2E2' : 'rgba(239, 68, 68, 0.2)';
   const destructiveMutedBgColor = colorScheme === 'light' ? '#FEF2F2' : 'rgba(239, 68, 68, 0.1)';
   const infoMutedColor = colorScheme === 'light' ? '#B45309' : '#FCD34D';
@@ -141,50 +140,40 @@ export default function MatchLobbyScreen() {
     (participant: (typeof participants)[number], isMe: boolean) => {
       const avatarNode = isMe
         ? status === 'authenticated' && user ? (
-            <Avatar
-              uri={user.avatarUrl}
-              name={user.handle}
-              size="md"
-              radius={Radius.pill}
-              backgroundColorOverride={fallbackAvatarBackground}
-              style={styles.participantAvatar}
-            />
-          ) : (
-            <GuestAvatar
-              guestId={selfGuestAvatarId}
-              size="md"
-              radius={Radius.pill}
-              style={styles.participantAvatar}
-            />
-          )
+          <Avatar
+            uri={user.avatarUrl}
+            name={user.handle}
+            size="md"
+            radius={Radius.pill}
+            backgroundColorOverride={fallbackAvatarBackground}
+            style={styles.participantAvatar}
+          />
+        ) : (
+          <GuestAvatar
+            guestId={selfGuestAvatarId}
+            size="md"
+            radius={Radius.pill}
+            style={styles.participantAvatar}
+          />
+        )
         : participant.userId ? (
-            <Avatar
-              uri={participant.avatarUrl}
-              name={participant.nickname}
-              size="md"
-              radius={Radius.pill}
-              backgroundColorOverride={fallbackAvatarBackground}
-              style={styles.participantAvatar}
-            />
-          ) : (
-            <GuestAvatar
-              guestId={participant.guestAvatarId}
-              size="md"
-              radius={Radius.pill}
-              style={styles.participantAvatar}
-            />
-          );
-
-      if (isMe) {
-        return (
-          <View style={[styles.participantAvatarWrapper, { borderColor: participantAvatarHighlight }]}>
-            {avatarNode}
-          </View>
+          <Avatar
+            uri={participant.avatarUrl}
+            name={participant.nickname}
+            size="md"
+            radius={Radius.pill}
+            backgroundColorOverride={fallbackAvatarBackground}
+            style={styles.participantAvatar}
+          />
+        ) : (
+          <GuestAvatar
+            guestId={participant.guestAvatarId}
+            size="md"
+            radius={Radius.pill}
+            style={styles.participantAvatar}
+          />
         );
-      }
-      if (participant.userId) {
-        return avatarNode;
-      }
+
       return avatarNode;
     },
     [fallbackAvatarBackground, selfGuestAvatarId, status, user]
@@ -217,15 +206,15 @@ export default function MatchLobbyScreen() {
   }, [roomCode]);
 
   const handleToggleReady = useCallback(async () => {
-    if (!roomId || !participantId || isSelfHost) return;
-    try {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      await setReady({
-        roomId,
-        participantId,
-        ready: !isSelfReady,
-        guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
-      });
+        if (!roomId || !participantId || isSelfHost) return;
+        try {
+          await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          await setReady({
+            roomId,
+            participantId,
+            ready: !isSelfReady,
+            guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
+          });
     } catch (error) {
       Alert.alert(
         '준비 상태 변경 실패',
@@ -363,7 +352,7 @@ export default function MatchLobbyScreen() {
       try {
         const key = status === 'guest' ? guestKey ?? (await ensureGuestKey()) : undefined;
         const result = await joinRoom({ code: roomCode, nickname: undefined, guestKey: key });
-        setParticipantId(result.participantId);
+        setParticipantId(result.participantId ?? null);
       } catch (error) {
         joinAttemptRef.current = false;
         console.warn('Failed to join room', error);
@@ -378,7 +367,7 @@ export default function MatchLobbyScreen() {
     if (status !== 'authenticated' || !user) return;
     const me = lobby.participants?.find((participant) => participant.userId && participant.userId === user.id);
     if (me) {
-      setParticipantId(me.participantId);
+      setParticipantId(me.participantId ?? null);
     }
   }, [hasLeft, lobby, participantId, status, user]);
 
@@ -443,6 +432,7 @@ export default function MatchLobbyScreen() {
           right: 0,
           zIndex: 10,
           elevation: 2,
+          paddingHorizontal: Spacing.lg,
         },
         header: {
           gap: Spacing.sm,
@@ -527,19 +517,23 @@ export default function MatchLobbyScreen() {
           borderWidth: 2,
           borderColor: primaryColor,
         },
-        participantAvatarWrapper: {
-          padding: 2,
-          borderRadius: Radius.pill,
-          borderWidth: 2,
-        },
         participantAvatar: {},
         participantTextBlock: {
           alignItems: 'center',
           gap: 2,
+          alignSelf: 'stretch',
+        },
+        participantBottomRow: {
+          marginTop: 'auto',
+          width: '100%',
+          alignItems: 'center',
+          paddingTop: Spacing.sm,
         },
         participantName: {
           fontSize: 16,
           fontWeight: '500',
+          textAlign: 'center',
+          maxWidth: '100%',
         },
         participantNameMe: {
           fontWeight: '700',
@@ -577,6 +571,9 @@ export default function MatchLobbyScreen() {
           color: accentForegroundColor,
         },
         hostBadge: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: Spacing.xs,
           paddingHorizontal: Spacing.sm,
           paddingVertical: 2,
           borderRadius: Radius.pill,
@@ -791,7 +788,7 @@ export default function MatchLobbyScreen() {
                     • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
                   </ThemedText>
                   <ThemedText style={styles.deckCardDescription}>
-                    • 총 10라운드로 진행됩니다.
+                    • 총 10라운드로 진행돼요.
                   </ThemedText>
                   <ThemedText style={styles.deckCardWarning}>
                     • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
@@ -829,36 +826,38 @@ export default function MatchLobbyScreen() {
                             style={[styles.participantName, isMe && styles.participantNameMe]}
                           >
                             {participant.nickname}
-                            {isMe ? ' (나)' : ''}
                           </ThemedText>
                           {!participant.isConnected ? (
                             <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
                           ) : null}
                         </View>
-                        {participant.isHost ? (
-                          <View style={styles.hostBadge}>
-                            <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>
-                          </View>
-                        ) : (
-                          <View style={styles.statusDisplay}>
-                            {participant.isReady ? (
-                              <>
-                                <IconSymbol
-                                  name="checkmark.shield"
-                                  size={20}
-                                  color={primaryColor}
-                                />
-                                <ThemedText style={styles.statusTextReady}>준비 완료</ThemedText>
-                              </>
-                            ) : (
-                              <ThemedText
-                                style={[styles.statusTextWaiting, isMe && styles.statusTextWaitingMe]}
-                              >
-                                대기 중
-                              </ThemedText>
-                            )}
-                          </View>
-                        )}
+                        <View style={styles.participantBottomRow}>
+                          {participant.isHost ? (
+                            <View style={styles.hostBadge}>
+                              <IconSymbol name="crown.fill" size={18} color={accentForegroundColor} />
+                              <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>
+                            </View>
+                          ) : (
+                            <View style={styles.statusDisplay}>
+                              {participant.isReady ? (
+                                <>
+                                  <IconSymbol
+                                    name="checkmark.shield"
+                                    size={20}
+                                    color={primaryColor}
+                                  />
+                                  <ThemedText style={styles.statusTextReady}>준비 완료</ThemedText>
+                                </>
+                              ) : (
+                                <ThemedText
+                                  style={[styles.statusTextWaiting, isMe && styles.statusTextWaitingMe]}
+                                >
+                                  대기 중
+                                </ThemedText>
+                              )}
+                            </View>
+                          )}
+                        </View>
                       </View>
                     );
                   })}

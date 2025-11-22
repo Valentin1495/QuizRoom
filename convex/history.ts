@@ -22,7 +22,7 @@ const swipeHistoryInput = v.object({
   totalScoreDelta: v.number(),
 });
 
-const partyHistoryInput = v.object({
+const liveMatchHistoryInput = v.object({
   deckSlug: v.optional(v.string()),
   deckTitle: v.optional(v.string()),
   roomCode: v.optional(v.string()),
@@ -34,9 +34,9 @@ const partyHistoryInput = v.object({
 });
 
 const historyLogArgs = v.object({
-  mode: v.union(v.literal("daily"), v.literal("swipe"), v.literal("party")),
+  mode: v.union(v.literal("daily"), v.literal("swipe"), v.literal("live_match")),
   sessionId: v.string(),
-  data: v.union(dailyHistoryInput, swipeHistoryInput, partyHistoryInput),
+  data: v.union(dailyHistoryInput, swipeHistoryInput, liveMatchHistoryInput),
 });
 
 export const logEntry = mutation({
@@ -79,23 +79,23 @@ export const listHistory = query({
     const { user } = await ensureAuthedUser(ctx as MutationCtx);
     const limit = Math.max(1, Math.min(args.limit ?? 10, 50));
 
-    const fetchMode = async (mode: "daily" | "swipe" | "party") =>
+    const fetchMode = async (mode: "daily" | "swipe" | "live_match") =>
       ctx.db
         .query("quizHistory")
         .withIndex("by_user_mode_createdAt", (q) => q.eq("userId", user._id).eq("mode", mode))
         .order("desc")
         .take(limit);
 
-    const [daily, swipe, party] = await Promise.all([
+    const [daily, swipe, liveMatch] = await Promise.all([
       fetchMode("daily"),
       fetchMode("swipe"),
-      fetchMode("party"),
+      fetchMode("live_match"),
     ]);
 
     return {
       daily,
       swipe,
-      party,
+      liveMatch,
     };
   },
 });

@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from 'react';
 import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Appearance } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
@@ -35,18 +36,36 @@ export function ColorSchemeProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     let cancelled = false;
 
-    const hydratePreference = async () => {
+    const readStoredScheme = async (): Promise<ColorScheme | null> => {
+      // Prefer AsyncStorage for speed, fall back to SecureStore for older saves
       try {
-        const stored = await SecureStore.getItemAsync(STORAGE_KEY);
-        if (!cancelled && (stored === 'light' || stored === 'dark')) {
-          setColorSchemeState(stored);
+        const stored = await AsyncStorage.getItem(STORAGE_KEY);
+        if (stored === 'light' || stored === 'dark') {
+          return stored;
         }
       } catch {
-        // no-op: prefer system default when storage is unavailable
-      } finally {
-        if (!cancelled) {
-          setIsReady(true);
+        // ignore read errors
+      }
+
+      try {
+        const stored = await SecureStore.getItemAsync(STORAGE_KEY);
+        if (stored === 'light' || stored === 'dark') {
+          return stored;
         }
+      } catch {
+        // ignore secure store read errors
+      }
+
+      return null;
+    };
+
+    const hydratePreference = async () => {
+      const stored = await readStoredScheme();
+      if (!cancelled && stored) {
+        setColorSchemeState(stored);
+      }
+      if (!cancelled) {
+        setIsReady(true);
       }
     };
 
@@ -59,6 +78,8 @@ export function ColorSchemeProvider({ children }: PropsWithChildren) {
 
   const persistPreference = useCallback((next: ColorScheme) => {
     setColorSchemeState(next);
+    // Write to both storages; ignore failures
+    void AsyncStorage.setItem(STORAGE_KEY, next).catch(noop);
     void SecureStore.setItemAsync(STORAGE_KEY, next).catch(noop);
   }, []);
 
@@ -73,6 +94,7 @@ export function ColorSchemeProvider({ children }: PropsWithChildren) {
   const handleToggleColorScheme = useCallback(() => {
     setColorSchemeState(prev => {
       const next = prev === 'dark' ? 'light' : 'dark';
+      void AsyncStorage.setItem(STORAGE_KEY, next).catch(noop);
       void SecureStore.setItemAsync(STORAGE_KEY, next).catch(noop);
       return next;
     });

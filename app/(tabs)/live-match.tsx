@@ -12,7 +12,7 @@ import type { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { useCreateParty, useJoinParty, usePartyDecks } from '@/lib/api';
+import { extractJoinErrorMessage, useCreateLiveMatchRoom, useJoinLiveMatchRoom, useLiveMatchDecks } from '@/lib/api';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestNickname } from '@/lib/guest';
 
@@ -25,22 +25,22 @@ export default function LiveMatchScreen() {
   const mutedColor = useThemeColor({}, 'textMuted');
   const subtleColor = useThemeColor({}, 'textSubtle');
 
-  const [partyCode, setPartyCode] = useState('');
+  const [liveMatchRoomCode, setLiveMatchRoomCode] = useState('');
   const [joinNickname, setJoinNickname] = useState(user?.handle ?? '');
   const [hostNickname, setHostNickname] = useState(user?.handle ?? '');
   const [isCreating, setIsCreating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
-  const [selectedDeckId, setSelectedDeckId] = useState<Id<'partyDecks'> | null>(null);
+  const [selectedDeckId, setSelectedDeckId] = useState<Id<'liveMatchDecks'> | null>(null);
   const [isRandomizing, setIsRandomizing] = useState(false);
   const randomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const randomIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const createParty = useCreateParty();
-  const joinParty = useJoinParty();
-  const { decks: partyDecks, isLoading: isDecksLoading } = usePartyDecks();
+  const createLiveMatchRoom = useCreateLiveMatchRoom();
+  const joinLiveMatchRoom = useJoinLiveMatchRoom();
+  const { decks: liveMatchDecks, isLoading: isDecksLoading } = useLiveMatchDecks();
   const isGuest = status === 'guest';
 
-  const normalizedCode = useMemo(() => partyCode.trim().toUpperCase(), [partyCode]);
+  const normalizedCode = useMemo(() => liveMatchRoomCode.trim().toUpperCase(), [liveMatchRoomCode]);
   const normalizedJoinNickname = useMemo(() => joinNickname.trim(), [joinNickname]);
   const normalizedHostNickname = useMemo(() => hostNickname.trim(), [hostNickname]);
   const isJoinEnabled = normalizedCode.length === 6;
@@ -57,10 +57,10 @@ export default function LiveMatchScreen() {
     colorScheme === 'dark' ? 'rgba(229,229,229,0.12)' : Palette.gray25;
   const deckEmptyTextColor = mutedColor;
   useEffect(() => {
-    if (!isDecksLoading && partyDecks.length > 0 && !selectedDeckId) {
-      setSelectedDeckId(partyDecks[0].id);
+    if (!isDecksLoading && liveMatchDecks.length > 0 && !selectedDeckId) {
+      setSelectedDeckId(liveMatchDecks[0].id);
     }
-  }, [isDecksLoading, partyDecks, selectedDeckId]);
+  }, [isDecksLoading, liveMatchDecks, selectedDeckId]);
 
   useEffect(() => {
     if (isGuest && !guestKey) {
@@ -91,31 +91,31 @@ export default function LiveMatchScreen() {
   }, []);
 
   const handleRandomDeck = useCallback(() => {
-    if (isDecksLoading || partyDecks.length === 0 || isRandomizing) return;
+    if (isDecksLoading || liveMatchDecks.length === 0 || isRandomizing) return;
     setIsRandomizing(true);
     let currentIndex = -1;
     randomIntervalRef.current = setInterval(() => {
-      const next = Math.floor(Math.random() * partyDecks.length);
+      const next = Math.floor(Math.random() * liveMatchDecks.length);
       if (next === currentIndex) {
         return;
       }
       currentIndex = next;
-      setSelectedDeckId(partyDecks[currentIndex].id);
+      setSelectedDeckId(liveMatchDecks[currentIndex].id);
     }, 120);
     randomTimeoutRef.current = setTimeout(() => {
       if (randomIntervalRef.current) {
         clearInterval(randomIntervalRef.current);
         randomIntervalRef.current = null;
       }
-      const finalPick = partyDecks[Math.floor(Math.random() * partyDecks.length)];
+      const finalPick = liveMatchDecks[Math.floor(Math.random() * liveMatchDecks.length)];
       setSelectedDeckId(finalPick.id);
       setIsRandomizing(false);
     }, 1000);
-  }, [isDecksLoading, isRandomizing, partyDecks]);
+  }, [isDecksLoading, isRandomizing, liveMatchDecks]);
 
-  const handleCreateParty = useCallback(async () => {
+  const handleCreateLiveMatchRoom = useCallback(async () => {
     if (status === 'authenticated' && !user) {
-      Alert.alert('로그인이 필요해요', '파티를 만들려면 로그인 후 다시 시도해주세요.');
+      Alert.alert('로그인이 필요해요', '퀴즈룸을 생성하려면 로그인 후 다시 시도해주세요.');
       return;
     }
     setIsCreating(true);
@@ -124,20 +124,20 @@ export default function LiveMatchScreen() {
         status === 'guest'
           ? guestKey ?? (await ensureGuestKey())
           : undefined;
-      const result = await createParty({
+      const result = await createLiveMatchRoom({
         deckId: selectedDeckId ?? undefined,
         nickname: normalizedHostNickname || undefined,
         guestKey: guestKeyValue,
       });
       router.replace(`/room/${result.code}`);
     } catch (err) {
-      Alert.alert('파티 생성 실패', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
+      Alert.alert('퀴즈룸 생성 실패', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
     } finally {
       setIsCreating(false);
     }
-  }, [createParty, ensureGuestKey, guestKey, normalizedHostNickname, router, selectedDeckId, status, user]);
+  }, [createLiveMatchRoom, ensureGuestKey, guestKey, normalizedHostNickname, router, selectedDeckId, status, user]);
 
-  const handleJoinParty = useCallback(async () => {
+  const handleJoinLiveMatchRoom = useCallback(async () => {
     if (!isJoinEnabled) {
       Alert.alert('입력 오류', '초대 코드를 정확히 입력해주세요.');
       return;
@@ -148,20 +148,19 @@ export default function LiveMatchScreen() {
         status === 'guest'
           ? guestKey ?? (await ensureGuestKey())
           : undefined;
-      await joinParty({
+      await joinLiveMatchRoom({
         code: normalizedCode,
         nickname: normalizedJoinNickname || undefined,
         guestKey: guestKeyValue,
       });
       router.replace(`/room/${normalizedCode}`);
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : '코드를 확인하거나 방이 이미 시작되었는지 확인해주세요.';
-      Alert.alert('참가 실패', message);
+      const message = extractJoinErrorMessage(error);
+      Alert.alert('입장 실패', message);
     } finally {
       setIsJoining(false);
     }
-  }, [ensureGuestKey, guestKey, isJoinEnabled, joinParty, normalizedCode, normalizedJoinNickname, router, status]);
+  }, [ensureGuestKey, guestKey, isJoinEnabled, joinLiveMatchRoom, normalizedCode, normalizedJoinNickname, router, status]);
 
   return (
     <>
@@ -195,8 +194,8 @@ export default function LiveMatchScreen() {
               초대 코드를 입력하고 닉네임을 정해주세요
             </ThemedText>
             <TextInput
-              value={partyCode}
-              onChangeText={(value) => setPartyCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+              value={liveMatchRoomCode}
+              onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
               placeholder="A1B2C3"
               autoCapitalize="characters"
               maxLength={6}
@@ -233,7 +232,7 @@ export default function LiveMatchScreen() {
             />
             <Button
               variant='secondary'
-              onPress={handleJoinParty}
+              onPress={handleJoinLiveMatchRoom}
               disabled={isJoining || !isJoinEnabled}
               loading={isJoining}
               size="lg"
@@ -260,8 +259,8 @@ export default function LiveMatchScreen() {
                 <View style={styles.deckLoading}>
                   <ActivityIndicator color={themeColors.primary} />
                 </View>
-              ) : partyDecks.length > 0 ? (
-                partyDecks.map((deck) => {
+              ) : liveMatchDecks.length > 0 ? (
+                liveMatchDecks.map((deck) => {
                   const isSelected = deck.id === selectedDeckId;
                   const platformCardStyle: ViewStyle =
                     Platform.OS === 'ios'
@@ -319,7 +318,7 @@ export default function LiveMatchScreen() {
             <Button
               variant="outline"
               onPress={handleRandomDeck}
-              disabled={isRandomizing || isDecksLoading || partyDecks.length === 0}
+              disabled={isRandomizing || isDecksLoading || liveMatchDecks.length === 0}
               loading={isRandomizing}
               leftIcon={
                 <IconSymbol
@@ -357,7 +356,7 @@ export default function LiveMatchScreen() {
             />
             <Button
               size="lg"
-              onPress={handleCreateParty}
+              onPress={handleCreateLiveMatchRoom}
               disabled={isCreating || (!isDecksLoading && !selectedDeckId)}
               loading={isCreating}
             >

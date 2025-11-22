@@ -1723,15 +1723,15 @@
             },
             {
                 "id": "c",
-                "text": "디토 소비 (Ditto Consumption)"
+                "text": "디토 소비"
             },
             {
                 "id": "d",
-                "text": "덤불 효과 (Bush effect)"
+                "text": "덤불 효과"
             }
         ],
         "answerIndex": 2,
-        "explanation": "디토 소비는 '나도 그래요'라는 뜻의 'Ditto'에서 유래했으며, 특정 인물이나 콘텐츠를 맹신하고 그들이 구매한 것을 그대로 따라 사는 소비 행태를 의미합니다.",
+        "explanation": "디토 소비 (Ditto Consumption)는 '나도 그래요'라는 뜻의 'Ditto'에서 유래했으며, 특정 인물이나 콘텐츠를 맹신하고 그들이 구매한 것을 그대로 따라 사는 소비 행태를 의미합니다.",
         "difficulty": 0.3,
         "createdAt": 1761479800,
         "qualityScore": 0.5,

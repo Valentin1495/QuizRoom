@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ActivityIndicator, Alert, BackHandler, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { showResultToast } from '@/components/common/result-toast';
@@ -17,8 +17,8 @@ import { Elevation, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/hooks/use-auth';
-import { useConnectionStatus } from '@/hooks/use-connection-status';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useConnectionStatus } from '@/hooks/use-connection-status';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { useMutation, useQuery } from 'convex/react';
@@ -45,7 +45,7 @@ export default function MatchPlayScreen() {
     const insets = useSafeAreaInsets();
     const params = useLocalSearchParams<{ roomId?: string }>();
     const roomIdParam = useMemo(() => params.roomId?.toString() ?? null, [params.roomId]);
-    const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'partyRooms'>) : null), [roomIdParam]);
+    const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'liveMatchRooms'>) : null), [roomIdParam]);
     const colorScheme = useColorScheme() ?? 'light';
     const textColor = useThemeColor({}, 'text');
     const textMutedColor = useThemeColor({}, 'textMuted');
@@ -55,7 +55,6 @@ export default function MatchPlayScreen() {
     const cardColor = useThemeColor({}, 'card');
     const borderColor = useThemeColor({}, 'border');
     const background = useThemeColor({}, 'background');
-    const avatarBorderColor = useThemeColor({}, 'border');
     const avatarFallbackColor = useThemeColor({}, 'primary');
 
     const [hasLeft, setHasLeft] = useState(false);
@@ -291,7 +290,7 @@ export default function MatchPlayScreen() {
     const currentRound = roomData?.currentRound ?? null;
     const participants = useMemo(() => roomData?.participants ?? [], [roomData]);
     const participantsById = useMemo(() => {
-        const map = new Map<Id<'partyParticipants'>, (typeof participants)[number]>();
+        const map = new Map<Id<'liveMatchParticipants'>, (typeof participants)[number]>();
         participants.forEach((participant) => map.set(participant.participantId, participant));
         return map;
     }, [participants]);
@@ -346,7 +345,8 @@ export default function MatchPlayScreen() {
     }, [beginReconnecting, handleConnectionRestored, heartbeat, isManualReconnectPending, participantArgs, showToast]);
     const performLeave = useCallback(() => {
         if (hasLeft) return;
-        if (!disconnectReason && participantArgs) {
+        const shouldNotifyServer = roomStatus !== 'results';
+        if (shouldNotifyServer && !disconnectReason && participantArgs) {
             leaveRoom(participantArgs).catch((err) => {
                 if (err instanceof Error && err.message.includes('NOT_IN_ROOM')) {
                     // already removed; just continue
@@ -361,7 +361,7 @@ export default function MatchPlayScreen() {
         lostHostSkipResumeToastRef.current = false;
         setHasLeft(true);
         router.navigate('/(tabs)/live-match');
-    }, [disconnectReason, hasLeft, leaveRoom, participantArgs, router]);
+    }, [disconnectReason, hasLeft, leaveRoom, participantArgs, roomStatus, router]);
 
     const handleLeave = useCallback(() => {
         setLeaveDialogVisible(true);
@@ -963,7 +963,7 @@ export default function MatchPlayScreen() {
         }
         if (authStatus !== 'authenticated' || !user) return;
         if (!roomData) return;
-        const sessionId = `party:${roomData.room._id}:${roomData.room.version ?? 0}`;
+        const sessionId = `live_match:${roomData.room._id}:${roomData.room.version ?? 0}`;
         if (historyLoggedRef.current === sessionId) {
             return;
         }
@@ -977,7 +977,7 @@ export default function MatchPlayScreen() {
         void (async () => {
             try {
                 await logHistory({
-                    mode: 'party',
+                    mode: 'live_match',
                     sessionId,
                     data: {
                         deckSlug: roomData.deck?.slug ?? undefined,
@@ -990,7 +990,7 @@ export default function MatchPlayScreen() {
                     },
                 });
             } catch (error) {
-                console.warn('Failed to log party history', error);
+                console.warn('Failed to log live match history entry', error);
                 historyLoggedRef.current = null;
             }
         })();
@@ -1357,7 +1357,7 @@ export default function MatchPlayScreen() {
         </View>
     );
 
-    const renderParticipantAvatar = (participantId: Id<'partyParticipants'>, isMe: boolean) => {
+    const renderParticipantAvatar = (participantId: Id<'liveMatchParticipants'>) => {
         const participant = participantsById.get(participantId);
         const avatarNode = participant?.userId ? (
             <Avatar
@@ -1391,7 +1391,12 @@ export default function MatchPlayScreen() {
     const renderLeaderboard = () => (
         <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
             <View style={styles.iconHeadingRow}>
-                <IconSymbol name="trophy" size={28} color={textColor} />
+                <IconSymbol
+                    name="rosette"
+                    size={Platform.OS === 'ios' ? 36 : 40}
+                    color={textColor}
+                    style={Platform.OS === 'ios' && { marginTop: -4 }}
+                />
                 <ThemedText type="title" style={styles.cardTitle}>리더보드</ThemedText>
             </View>
             <View style={styles.distributionList}>
@@ -1399,7 +1404,7 @@ export default function MatchPlayScreen() {
                     currentRound.leaderboard.top.map((entry, index) => {
                         const isMe = meParticipantId !== null && entry.participantId === meParticipantId;
                         const rank = entry.rank ?? index + 1;
-                        const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+                        const rankDisplay = rank;
                         const nameDisplay = entry.nickname;
                         return (
                             <View
@@ -1407,7 +1412,7 @@ export default function MatchPlayScreen() {
                                 style={[
                                     styles.distributionRow,
                                     { backgroundColor: background },
-                                    isMe && [styles.leaderboardMeRow, { backgroundColor: background, borderColor: textColor }],
+                                    isMe && [styles.leaderboardMeRow, { borderColor: textColor }],
                                 ]}
                                 accessibilityRole="text"
                                 accessibilityLabel={`${rank}위 ${entry.nickname}`}
@@ -1418,9 +1423,9 @@ export default function MatchPlayScreen() {
                                         lightColor={Palette.gray900}
                                         darkColor={Palette.gray25}
                                     >
-                                        {rankEmoji || rank}
+                                        {rankDisplay}
                                     </ThemedText>
-                                    {renderParticipantAvatar(entry.participantId, isMe)}
+                                    {renderParticipantAvatar(entry.participantId)}
                                     <View style={styles.leaderboardNameTextGroup}>
                                         <View style={styles.leaderboardNameRow}>
                                             <ThemedText
@@ -1437,23 +1442,13 @@ export default function MatchPlayScreen() {
                                         </View>
                                     </View>
                                 </View>
-                                <View
-                                    style={[
-                                        styles.leaderboardScoreWrapper,
-                                        isMe && styles.leaderboardScoreWrapperMe,
-                                    ]}
-                                >
+                                <View style={styles.leaderboardScoreWrapper}>
                                     <View style={styles.leaderboardScoreRow}>
-                                        {isMe ? (
-                                            <View style={[styles.meBadge, { backgroundColor: textColor }]}>
-                                                <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
-                                            </View>
-                                        ) : null}
                                         <ThemedText
                                             style={[
                                                 styles.distributionCount,
                                                 styles.leaderboardScore,
-                                                isMe && [styles.leaderboardMeText, { color: textColor }, { marginLeft: Spacing.sm }],
+                                                isMe && [styles.leaderboardMeText, { color: textColor }],
                                             ]}
                                         >
                                             {entry.totalScore}점
@@ -1500,7 +1495,7 @@ export default function MatchPlayScreen() {
         return (
             <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
                 <View style={styles.iconHeadingRow}>
-                    <IconSymbol name="party.popper" size={28} color={textColor} />
+                    <IconSymbol name="trophy" size={Platform.OS === 'ios' ? 36 : 40} color={textColor} style={Platform.OS === 'ios' ? { marginTop: -6 } : { marginTop: -4 }} />
                     <ThemedText type="title" style={styles.cardTitle}>최종 결과</ThemedText>
                 </View>
                 <View style={[styles.deckSummary, { borderColor: borderColor, backgroundColor: background }]}>
@@ -1526,7 +1521,7 @@ export default function MatchPlayScreen() {
                                 style={[
                                     styles.distributionRow,
                                     { backgroundColor: background },
-                                    isMe && [styles.leaderboardMeRow, { backgroundColor: background, borderColor: textColor }],
+                                    isMe && [styles.leaderboardMeRow, { borderColor: textColor }],
                                 ]}
                                 accessibilityRole="text"
                                 accessibilityLabel={`${rank}위 ${player.nickname}`}
@@ -1539,7 +1534,7 @@ export default function MatchPlayScreen() {
                                     >
                                         {podiumEmoji || rank}
                                     </ThemedText>
-                                    {renderParticipantAvatar(player.participantId, isMe)}
+                                    {renderParticipantAvatar(player.participantId)}
                                     <View style={styles.resultNameTextGroup}>
                                         <View style={styles.leaderboardNameRow}>
                                             <ThemedText
@@ -1559,23 +1554,13 @@ export default function MatchPlayScreen() {
                                         ) : null}
                                     </View>
                                 </View>
-                                <View
-                                    style={[
-                                        styles.leaderboardScoreWrapper,
-                                        isMe && styles.leaderboardScoreWrapperMe,
-                                    ]}
-                                >
+                                <View style={styles.leaderboardScoreWrapper}>
                                     <View style={styles.leaderboardScoreRow}>
-                                        {isMe ? (
-                                            <View style={[styles.meBadge, { backgroundColor: textColor }]}>
-                                                <ThemedText style={[styles.meBadgeText, { color: cardColor }]}>나</ThemedText>
-                                            </View>
-                                        ) : null}
                                         <ThemedText
                                             style={[
                                                 styles.distributionCount,
                                                 styles.leaderboardScore,
-                                                isMe && [styles.leaderboardMeText, { color: textColor }, { marginLeft: Spacing.sm }],
+                                                isMe && [styles.leaderboardMeText, { color: textColor }],
                                             ]}
                                         >
                                             {player.totalScore}점
@@ -1692,6 +1677,7 @@ export default function MatchPlayScreen() {
         const progress = Math.max(0, Math.min(1, graceRemaining / 120));
         const minutes = Math.floor(graceRemaining / 60);
         const seconds = graceRemaining % 60;
+        const graceRemainingLabel = minutes > 0 ? `${minutes}분` : `${seconds}초`;
         const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         const graceBackdropColor = colorScheme === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.25)';
         return (
@@ -1700,7 +1686,8 @@ export default function MatchPlayScreen() {
                 <View style={[styles.graceCard, { backgroundColor: cardColor, borderColor, borderWidth: 1 }]}>
                     <ThemedText style={[styles.graceTitle, { color: textColor }]}>연결 대기 중</ThemedText>
                     <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>
-                        연결이 끊겼어요. {graceRemaining}초 안에 복구되면 이어서 진행돼요.
+                        연결이 끊겼어요.{'\n'}
+                        {graceRemainingLabel} 안에 복구되면 이어서 진행돼요.
                     </ThemedText>
                     <ThemedText style={[styles.graceTimer, { color: textColor }]}>{formattedTime}</ThemedText>
                     <View style={[styles.graceProgressBar, { backgroundColor: borderColor }]}>
@@ -1894,7 +1881,7 @@ export default function MatchPlayScreen() {
                         style={{ backgroundColor: background, borderColor: borderColor }}
                         leftIcon={<IconSymbol name="play.circle.fill" size={18} color={textColor} />}
                     >
-                        재개
+                        재개하기
                     </Button>
                 ) : null}
             </View>
@@ -2279,7 +2266,7 @@ const styles = StyleSheet.create({
         gap: Spacing.xs,
     },
     rankBadgeText: {
-        fontSize: 14,
+        fontSize: 18,
         fontWeight: '700',
         minWidth: 32,
         textAlign: 'center',
@@ -2305,10 +2292,6 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         minHeight: 24,
         paddingLeft: Spacing.xs,
-    },
-    leaderboardScoreWrapperMe: {
-        minWidth: 36,
-        paddingLeft: Spacing.xs / 2,
     },
     leaderboardScoreRow: {
         flexDirection: 'row',
@@ -2368,15 +2351,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
     },
     leaderboardScore: {
-        fontWeight: '700',
-    },
-    meBadge: {
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: 2,
-        borderRadius: Radius.sm,
-    },
-    meBadgeText: {
-        fontSize: 11,
         fontWeight: '700',
     },
     myRankBadge: {
@@ -2507,6 +2481,8 @@ const styles = StyleSheet.create({
     graceTimer: {
         fontSize: 32,
         fontWeight: '700',
+        lineHeight: 38,
+        paddingTop: 2,
     },
     graceProgressBar: {
         width: '100%',

@@ -24,7 +24,7 @@ import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useJoinParty } from '@/lib/api';
+import { extractJoinErrorMessage, useJoinLiveMatchRoom } from '@/lib/api';
 import { deriveGuestAvatarId, deriveGuestNickname } from '@/lib/guest';
 
 function formatTimeLeft(target: Date) {
@@ -43,13 +43,13 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const dailyQuiz = useQuery(api.daily.getDailyQuiz, {});
-  const joinParty = useJoinParty();
+  const joinLiveMatchRoom = useJoinLiveMatchRoom();
   const [timeLeft, setTimeLeft] = useState(() => {
     const nextReset = new Date();
     nextReset.setHours(24, 0, 0, 0);
     return formatTimeLeft(nextReset);
   });
-  const [partyCode, setPartyCode] = useState('');
+  const [liveMatchRoomCode, setLiveMatchRoomCode] = useState('');
   const [joinNickname, setJoinNickname] = useState(user?.handle ?? '');
   const [isJoining, setIsJoining] = useState(false);
   const [isClearingStorage, setIsClearingStorage] = useState(false);
@@ -70,7 +70,7 @@ export default function HomeScreen() {
   const muted = palette.textMuted;
   const subtle = palette.textSubtle;
   const textColor = palette.text;
-  const isCodeValid = useMemo(() => partyCode.trim().length === 6, [partyCode]);
+  const isCodeValid = useMemo(() => liveMatchRoomCode.trim().length === 6, [liveMatchRoomCode]);
 
   const isLoadingDailyQuiz = dailyQuiz === undefined;
   const hasDailyQuiz = Boolean(dailyQuiz);
@@ -145,8 +145,8 @@ export default function HomeScreen() {
     setJoinNickname((prev) => (prev.length === 0 ? user.handle : prev));
   }, [isAuthenticated, user?.handle]);
 
-  const handleJoinParty = useCallback(async () => {
-    const normalizedCode = partyCode.trim().toUpperCase();
+  const handleJoinLiveMatchRoom = useCallback(async () => {
+    const normalizedCode = liveMatchRoomCode.trim().toUpperCase();
     if (normalizedCode.length !== 6) {
       Alert.alert('입력 오류', '초대 코드를 정확히 입력해주세요.');
       return;
@@ -156,25 +156,24 @@ export default function HomeScreen() {
     try {
       const guestKeyValue =
         isGuest ? guestKey ?? (await ensureGuestKey()) : undefined;
-      await joinParty({
+      await joinLiveMatchRoom({
         code: normalizedCode,
         nickname: joinNickname.trim() || undefined,
         guestKey: guestKeyValue,
       });
       router.replace(`/room/${normalizedCode}`);
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : '코드를 확인하거나 방이 이미 시작되었는지 확인해주세요.';
+      const message = extractJoinErrorMessage(error);
       Alert.alert('참가 실패', message);
     } finally {
       setIsJoining(false);
     }
-  }, [ensureGuestKey, guestKey, isGuest, joinNickname, joinParty, partyCode, router]);
+  }, [ensureGuestKey, guestKey, isGuest, joinNickname, joinLiveMatchRoom, liveMatchRoomCode, router]);
 
-  const handleJoinPartySubmit = useCallback(() => {
+  const handleJoinLiveMatchRoomSubmit = useCallback(() => {
     if (!isCodeValid || isJoining) return;
-    void handleJoinParty();
-  }, [handleJoinParty, isCodeValid, isJoining]);
+    void handleJoinLiveMatchRoom();
+  }, [handleJoinLiveMatchRoom, isCodeValid, isJoining]);
 
   const handleClearAsyncStorage = useCallback(() => {
     if (isClearingStorage) return;
@@ -330,8 +329,8 @@ export default function HomeScreen() {
           >
             <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
             <TextInput
-              value={partyCode}
-              onChangeText={(value) => setPartyCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+              value={liveMatchRoomCode}
+              onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
               placeholder="A1B2C3"
               autoCapitalize="characters"
               autoCorrect={false}
@@ -355,7 +354,7 @@ export default function HomeScreen() {
               autoCorrect={false}
               autoComplete="nickname"
               returnKeyType="done"
-              onSubmitEditing={handleJoinPartySubmit}
+              onSubmitEditing={handleJoinLiveMatchRoomSubmit}
               editable={!isGuest}
               selectTextOnFocus={!isGuest}
               style={[
@@ -371,7 +370,7 @@ export default function HomeScreen() {
               rounded="full"
               style={styles.joinButton}
               textStyle={styles.joinButtonLabel}
-              onPress={handleJoinParty}
+              onPress={handleJoinLiveMatchRoom}
               disabled={!isCodeValid}
               loading={isJoining}
               fullWidth

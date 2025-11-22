@@ -33,6 +33,7 @@ import {
   PasswordIcon,
   PauseCircleIcon,
   PlayCircleIcon,
+  RankingIcon,
   SealCheckIcon,
   ShieldCheckIcon,
   ShoppingBagOpenIcon,
@@ -73,6 +74,7 @@ const ICON_MAP = {
   'numbers.rectangle': { component: PasswordIcon },
   'document.on.document': { component: CopyIcon },
   'person': { component: UserIcon },
+  'rosette': { component: RankingIcon },
   // Navigation Icons
   'arrow.left': { component: ArrowLeftIcon },
   'arrow.right': { component: ArrowRightIcon },

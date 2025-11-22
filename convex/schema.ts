@@ -23,7 +23,7 @@ const questionTypeEnum = v.union(
 const matchModeEnum = v.union(
   v.literal("daily"),
   v.literal("swipe"),
-  v.literal("party")
+  v.literal("live_match")
 );
 
 const matchStateEnum = v.union(
@@ -32,7 +32,7 @@ const matchStateEnum = v.union(
   v.literal("finished")
 );
 
-const partyStatusEnum = v.union(
+const liveMatchStatusEnum = v.union(
   v.literal("lobby"),
   v.literal("countdown"),
   v.literal("question"),
@@ -43,7 +43,7 @@ const partyStatusEnum = v.union(
   v.literal("paused")
 );
 
-const partyRules = v.object({
+const liveMatchRules = v.object({
   rounds: v.number(),
   readSeconds: v.number(),
   answerSeconds: v.number(),
@@ -52,14 +52,14 @@ const partyRules = v.object({
   leaderboardSeconds: v.number(),
 });
 
-const partyActionType = v.union(
+const liveMatchActionType = v.union(
   v.literal("start"),
   v.literal("rematch"),
   v.literal("toLobby")
 );
 
-const partyPendingAction = v.object({
-  type: partyActionType,
+const liveMatchPendingAction = v.object({
+  type: liveMatchActionType,
   executeAt: v.number(),
   delayMs: v.number(),
   createdAt: v.number(),
@@ -68,8 +68,8 @@ const partyPendingAction = v.object({
   label: v.string(),
 });
 
-const partyPauseState = v.object({
-  previousStatus: partyStatusEnum,
+const liveMatchPauseState = v.object({
+  previousStatus: liveMatchStatusEnum,
   remainingMs: v.optional(v.number()),
   pausedAt: v.number(),
 });
@@ -101,7 +101,7 @@ const dailyShareTemplate = v.object({
 const quizHistoryModeEnum = v.union(
   v.literal("daily"),
   v.literal("swipe"),
-  v.literal("party"),
+  v.literal("live_match"),
 );
 
 const dailyHistoryPayload = v.object({
@@ -123,7 +123,7 @@ const swipeHistoryPayload = v.object({
   totalScoreDelta: v.number(),
 });
 
-const partyHistoryPayload = v.object({
+const liveMatchHistoryPayload = v.object({
   deckSlug: v.optional(v.string()),
   deckTitle: v.optional(v.string()),
   roomCode: v.optional(v.string()),
@@ -244,40 +244,7 @@ export default defineSchema({
     .index("by_createdAt", ["createdAt"])
     .index("by_promptHash", ["promptHash"]),
 
-
-  matches: defineTable({
-    mode: matchModeEnum,
-    hostId: v.id("users"),
-    deckId: v.optional(v.id("decks")),
-    state: matchStateEnum,
-    createdAt: v.number(),
-    startedAt: v.optional(v.number()),
-    endedAt: v.optional(v.number()),
-    code: v.optional(v.string()),
-  })
-    .index("by_deck", ["deckId"])
-    .index("by_code", ["code"]),
-
-  matchPlayers: defineTable({
-    matchId: v.id("matches"),
-    userId: v.id("users"),
-    identityId: v.string(),
-    score: v.number(),
-    correct: v.number(),
-    timeMs: v.number(),
-    reactions: v.array(
-      v.object({
-        type: v.string(),
-        atMs: v.number(),
-      })
-    ),
-    joinedAt: v.number(),
-  })
-    .index("by_match", ["matchId"])
-    .index("by_user", ["userId"])
-    .index("by_identity", ["matchId", "identityId"]),
-
-  partyDecks: defineTable({
+  liveMatchDecks: defineTable({
     slug: v.string(),
     title: v.string(),
     emoji: v.string(),
@@ -292,13 +259,13 @@ export default defineSchema({
     .index("by_slug", ["slug"])
     .index("by_active_updatedAt", ["isActive", "updatedAt"]),
 
-  partyRooms: defineTable({
+  liveMatchRooms: defineTable({
     code: v.string(),
     hostId: v.optional(v.id("users")),
     hostIdentity: v.string(),
-    status: partyStatusEnum,
-    deckId: v.optional(v.id("partyDecks")),
-    rules: partyRules,
+    status: liveMatchStatusEnum,
+    deckId: v.optional(v.id("liveMatchDecks")),
+    rules: liveMatchRules,
     currentRound: v.number(),
     totalRounds: v.number(),
     serverNow: v.optional(v.number()),
@@ -306,14 +273,14 @@ export default defineSchema({
     expiresAt: v.optional(v.number()),
     version: v.number(),
     createdAt: v.number(),
-    pendingAction: v.optional(partyPendingAction),
-    pauseState: v.optional(partyPauseState),
+    pendingAction: v.optional(liveMatchPendingAction),
+    pauseState: v.optional(liveMatchPauseState),
   })
     .index("by_code", ["code"])
     .index("by_host", ["hostId"]),
 
-  partyParticipants: defineTable({
-    roomId: v.id("partyRooms"),
+  liveMatchParticipants: defineTable({
+    roomId: v.id("liveMatchRooms"),
     userId: v.optional(v.id("users")),
     identityId: v.string(),
     isGuest: v.boolean(),
@@ -334,8 +301,8 @@ export default defineSchema({
     .index("by_room_identity", ["roomId", "identityId"])
     .index("by_identity", ["identityId"]),
 
-  partyRounds: defineTable({
-    roomId: v.id("partyRooms"),
+  liveMatchRounds: defineTable({
+    roomId: v.id("liveMatchRooms"),
     index: v.number(),
     questionId: v.id("questions"),
     startedAt: v.number(),
@@ -345,10 +312,10 @@ export default defineSchema({
     .index("by_room", ["roomId"])
     .index("by_room_index", ["roomId", "index"]),
 
-  partyAnswers: defineTable({
-    roomId: v.id("partyRooms"),
+  liveMatchAnswers: defineTable({
+    roomId: v.id("liveMatchRooms"),
     roundIndex: v.number(),
-    participantId: v.id("partyParticipants"),
+    participantId: v.id("liveMatchParticipants"),
     choiceIndex: v.number(),
     receivedAt: v.number(),
     isCorrect: v.boolean(),
@@ -358,8 +325,8 @@ export default defineSchema({
     .index("by_room_participant", ["roomId", "participantId"])
     .index("by_participant_round", ["participantId", "roundIndex"]),
 
-  partyLogs: defineTable({
-    roomId: v.id("partyRooms"),
+  liveMatchLogs: defineTable({
+    roomId: v.id("liveMatchRooms"),
     type: v.string(),
     payload: v.any(),
     createdAt: v.number(),
@@ -409,7 +376,7 @@ export default defineSchema({
     mode: quizHistoryModeEnum,
     sessionId: v.string(),
     createdAt: v.number(),
-    payload: v.union(dailyHistoryPayload, swipeHistoryPayload, partyHistoryPayload),
+    payload: v.union(dailyHistoryPayload, swipeHistoryPayload, liveMatchHistoryPayload),
   })
     .index("by_user_createdAt", ["userId", "createdAt"])
     .index("by_user_mode_createdAt", ["userId", "mode", "createdAt"])
