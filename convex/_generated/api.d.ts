@@ -17,6 +17,7 @@ import type * as admin_decks from "../admin/decks.js";
 import type * as admin_liveMatchDecks from "../admin/liveMatchDecks.js";
 import type * as admin_seedQuestionsAction from "../admin/seedQuestionsAction.js";
 import type * as admin_upsertMutation from "../admin/upsertMutation.js";
+import type * as crons from "../crons.js";
 import type * as daily from "../daily.js";
 import type * as dailyFallback from "../dailyFallback.js";
 import type * as decks from "../decks.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   "admin/liveMatchDecks": typeof admin_liveMatchDecks;
   "admin/seedQuestionsAction": typeof admin_seedQuestionsAction;
   "admin/upsertMutation": typeof admin_upsertMutation;
+  crons: typeof crons;
   daily: typeof daily;
   dailyFallback: typeof dailyFallback;
   decks: typeof decks;

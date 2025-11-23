@@ -2,7 +2,7 @@ import { ConvexError, v } from "convex/values";
 import { deriveGuestAvatarId, deriveGuestNickname } from "../lib/guest";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { ensureAuthedUser, getOptionalAuthedUser } from "./lib/auth";
 
 type CtxWithDb = Pick<MutationCtx, "db"> | Pick<QueryCtx, "db">;
@@ -225,9 +225,45 @@ async function ensureActiveRoom(ctx: MutationCtx, room: RoomDoc): Promise<RoomDo
         return { ...room, expiresAt: extendedExpiry };
     }
 
-    await deleteRoomCascade(ctx, room);
     return null;
 }
+
+export const cleanupExpiredRooms = internalMutation({
+    args: {
+        limit: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        const now = Date.now();
+        const limit = Math.max(1, Math.min(args.limit ?? 20, 100));
+        const expiredRooms = await ctx.db
+            .query("liveMatchRooms")
+            .withIndex("by_expiresAt", (q) => q.lte("expiresAt", now))
+            .take(limit);
+
+        const deleted: Id<"liveMatchRooms">[] = [];
+        const extended: Id<"liveMatchRooms">[] = [];
+
+        for (const room of expiredRooms) {
+            const participants = await ctx.db
+                .query("liveMatchParticipants")
+                .withIndex("by_room", (q) => q.eq("roomId", room._id))
+                .collect();
+            const activeCount = participants.filter((p) => !p.removedAt).length;
+
+            if (activeCount > 0) {
+                const extendedExpiry = Date.now() + LOBBY_EXPIRES_MS;
+                await ctx.db.patch(room._id, { expiresAt: extendedExpiry });
+                extended.push(room._id);
+                continue;
+            }
+
+            await deleteRoomCascade(ctx, room as RoomDoc);
+            deleted.push(room._id);
+        }
+
+        return { deleted, extended, count: deleted.length, extendedCount: extended.length };
+    },
+});
 
 async function regenerateRoomRounds(
     ctx: MutationCtx,

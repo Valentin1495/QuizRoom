@@ -8,6 +8,7 @@ import {
   ArrowRightIcon,
   ArrowsLeftRightIcon,
   BrainIcon,
+  BroadcastIcon,
   CardsThreeIcon,
   CaretRightIcon,
   CheckCircleIcon,
@@ -74,7 +75,8 @@ const ICON_MAP = {
   'numbers.rectangle': { component: PasswordIcon },
   'document.on.document': { component: CopyIcon },
   'person': { component: UserIcon },
-  'rosette': { component: RankingIcon },
+  'medal': { component: RankingIcon },
+  'dot.radiowaves.left.and.right': { component: BroadcastIcon },
   // Navigation Icons
   'arrow.left': { component: ArrowLeftIcon },
   'arrow.right': { component: ArrowRightIcon },

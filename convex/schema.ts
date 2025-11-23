@@ -277,7 +277,8 @@ export default defineSchema({
     pauseState: v.optional(liveMatchPauseState),
   })
     .index("by_code", ["code"])
-    .index("by_host", ["hostId"]),
+    .index("by_host", ["hostId"])
+    .index("by_expiresAt", ["expiresAt"]),
 
   liveMatchParticipants: defineTable({
     roomId: v.id("liveMatchRooms"),

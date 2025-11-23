@@ -125,6 +125,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const onboardingBodyColor = palette.textMuted;
   const onboardingIndicatorActive = palette.text;
   const onboardingIndicatorInactive = colorScheme === 'dark' ? Palette.gray700 : Palette.gray200;
+  const dangerColor = palette.danger;
   const logHistory = useMutation(api.history.logEntry);
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
 
@@ -1006,7 +1007,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 variant="outline"
                 size="lg"
                 onPress={handleReportAction}
-                leftIcon={<IconSymbol name="flag" size={18} color={palette.text} />}
+                leftIcon={<IconSymbol name="flag" size={18} color={dangerColor} />}
+                textStyle={{ color: dangerColor }}
               >
                 신고하기
               </Button>

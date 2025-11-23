@@ -324,6 +324,38 @@ export default function MatchPlayScreen() {
     const pauseToastActiveRef = useRef(false);
     const pauseToastHostRef = useRef<string | null>(null);
     const historyLoggedRef = useRef<string | null>(null);
+    const logLiveMatchHistoryOnce = useCallback(async () => {
+        if (historyLoggedRef.current) return;
+        if (authStatus !== 'authenticated' || !user || !roomData) return;
+        if (roomStatus !== 'results') return;
+        const sessionId = `live_match:${roomData.room._id}:${roomData.room.version ?? 0}`;
+        const meEntry = participants.find(
+            (participant) => participant.participantId === roomData.me.participantId
+        );
+        if (!meEntry) {
+            console.warn('live_match history skipped: missing participant entry');
+            return;
+        }
+        historyLoggedRef.current = sessionId;
+        try {
+            await logHistory({
+                mode: 'live_match',
+                sessionId,
+                data: {
+                    deckSlug: roomData.deck?.slug ?? undefined,
+                    deckTitle: roomData.deck?.title ?? undefined,
+                    roomCode: roomData.room.code,
+                    rank: meEntry.rank ?? undefined,
+                    totalParticipants: participants.length,
+                    totalScore: meEntry.totalScore,
+                    answered: meEntry.answers,
+                },
+            });
+        } catch (error) {
+            console.warn('Failed to log live match history entry', error);
+            historyLoggedRef.current = null;
+        }
+    }, [authStatus, logHistory, participants, roomData, roomStatus, user]);
     const participantConnectivityRef = useRef<Map<string, boolean>>(new Map());
     const wasHostRef = useRef<boolean | null>(null);
     const roomStatusRef = useRef<string | null>(null);
@@ -345,6 +377,7 @@ export default function MatchPlayScreen() {
     }, [beginReconnecting, handleConnectionRestored, heartbeat, isManualReconnectPending, participantArgs, showToast]);
     const performLeave = useCallback(() => {
         if (hasLeft) return;
+        void logLiveMatchHistoryOnce();
         const shouldNotifyServer = roomStatus !== 'results';
         if (shouldNotifyServer && !disconnectReason && participantArgs) {
             leaveRoom(participantArgs).catch((err) => {
@@ -361,11 +394,16 @@ export default function MatchPlayScreen() {
         lostHostSkipResumeToastRef.current = false;
         setHasLeft(true);
         router.navigate('/(tabs)/live-match');
-    }, [disconnectReason, hasLeft, leaveRoom, participantArgs, roomStatus, router]);
+    }, [disconnectReason, hasLeft, leaveRoom, logLiveMatchHistoryOnce, participantArgs, roomStatus, router]);
 
     const handleLeave = useCallback(() => {
+        // On results screen, exit immediately without confirmation modal
+        if (roomStatus === 'results') {
+            performLeave();
+            return;
+        }
         setLeaveDialogVisible(true);
-    }, []);
+    }, [performLeave, roomStatus]);
 
     const handleConfirmLeave = useCallback(() => {
         setLeaveDialogVisible(false);
@@ -961,47 +999,8 @@ export default function MatchPlayScreen() {
             historyLoggedRef.current = null;
             return;
         }
-        if (authStatus !== 'authenticated' || !user) return;
-        if (!roomData) return;
-        const sessionId = `live_match:${roomData.room._id}:${roomData.room.version ?? 0}`;
-        if (historyLoggedRef.current === sessionId) {
-            return;
-        }
-        const meEntry = participants.find(
-            (participant) => participant.participantId === roomData.me.participantId
-        );
-        if (!meEntry) {
-            return;
-        }
-        historyLoggedRef.current = sessionId;
-        void (async () => {
-            try {
-                await logHistory({
-                    mode: 'live_match',
-                    sessionId,
-                    data: {
-                        deckSlug: roomData.deck?.slug ?? undefined,
-                        deckTitle: roomData.deck?.title ?? undefined,
-                        roomCode: roomData.room.code,
-                        rank: meEntry.rank ?? undefined,
-                        totalParticipants: participants.length,
-                        totalScore: meEntry.totalScore,
-                        answered: meEntry.answers,
-                    },
-                });
-            } catch (error) {
-                console.warn('Failed to log live match history entry', error);
-                historyLoggedRef.current = null;
-            }
-        })();
-    }, [
-        authStatus,
-        logHistory,
-        participants,
-        roomData,
-        roomStatus,
-        user,
-    ]);
+        void logLiveMatchHistoryOnce();
+    }, [logLiveMatchHistoryOnce, roomStatus]);
 
     const leaveDialogElement = (
         <AlertDialog
@@ -1392,7 +1391,7 @@ export default function MatchPlayScreen() {
         <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
             <View style={styles.iconHeadingRow}>
                 <IconSymbol
-                    name="rosette"
+                    name="dot.radiowaves.left.and.right"
                     size={Platform.OS === 'ios' ? 36 : 40}
                     color={textColor}
                     style={Platform.OS === 'ios' && { marginTop: -4 }}
@@ -1490,12 +1489,12 @@ export default function MatchPlayScreen() {
         const deckInfo = roomData?.deck;
         const deckTitle = deckInfo?.title ?? '랜덤 덱';
         const deckDescription =
-            deckInfo?.description ?? '게임을 만들 때 랜덤으로 선택된 덱입니다.';
+            deckInfo?.description ?? '퀴즈룸 생성 시 랜덤으로 선택된 덱입니다.';
 
         return (
             <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
                 <View style={styles.iconHeadingRow}>
-                    <IconSymbol name="trophy" size={Platform.OS === 'ios' ? 36 : 40} color={textColor} style={Platform.OS === 'ios' ? { marginTop: -6 } : { marginTop: -4 }} />
+                    <IconSymbol name="medal" size={Platform.OS === 'ios' ? 36 : 40} color={textColor} style={Platform.OS === 'ios' ? { marginTop: -6 } : { marginTop: -4 }} />
                     <ThemedText type="title" style={styles.cardTitle}>최종 결과</ThemedText>
                 </View>
                 <View style={[styles.deckSummary, { borderColor: borderColor, backgroundColor: background }]}>
@@ -1752,9 +1751,10 @@ export default function MatchPlayScreen() {
         if (isHost) return null;
         if (!hostParticipant && hostConnectionState !== 'expired') return null;
         const progress = Math.max(0, Math.min(1, hostGraceRemaining / HOST_GRACE_SECONDS));
-        const formattedTime = `${Math.floor(hostGraceRemaining / 60)}:${(hostGraceRemaining % 60)
-            .toString()
-            .padStart(2, '0')}`;
+        const minutes = Math.floor(hostGraceRemaining / 60);
+        const seconds = hostGraceRemaining % 60;
+        const hostGraceRemainingLabel = minutes > 0 ? `${minutes}분` : `${seconds}초`;
+        const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
         if (hostConnectionState === 'waiting') {
             return (
@@ -1766,7 +1766,7 @@ export default function MatchPlayScreen() {
                             <ThemedText style={[styles.graceTitle, { color: textColor }]}>호스트 연결이 끊겼습니다.</ThemedText>
                         </View>
                         <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>
-                            {hostNickname}님 연결을 복구 중이에요. {formattedTime} 안에 돌아오면 계속 진행돼요.
+                            {hostNickname}님 연결을 복구 중이에요. {hostGraceRemainingLabel} 안에 돌아오면 계속 진행돼요.
                         </ThemedText>
                         <View style={[styles.graceProgressBar, { backgroundColor: borderColor }]}>
                             <View style={[styles.graceProgressFill, { width: `${progress * 100}%`, backgroundColor: textColor }]} />

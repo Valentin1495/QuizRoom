@@ -206,15 +206,15 @@ export default function MatchLobbyScreen() {
   }, [roomCode]);
 
   const handleToggleReady = useCallback(async () => {
-        if (!roomId || !participantId || isSelfHost) return;
-        try {
-          await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          await setReady({
-            roomId,
-            participantId,
-            ready: !isSelfReady,
-            guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
-          });
+    if (!roomId || !participantId || isSelfHost) return;
+    try {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      await setReady({
+        roomId,
+        participantId,
+        ready: !isSelfReady,
+        guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
+      });
     } catch (error) {
       Alert.alert(
         '준비 상태 변경 실패',
@@ -805,7 +805,7 @@ export default function MatchLobbyScreen() {
                   color={theme.text}
                   style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
                 />
-                <ThemedText style={styles.sectionTitle}>참가자 ({participants.length})</ThemedText>
+                <ThemedText style={styles.sectionTitle}>{participants.length}</ThemedText>
               </View>
               {participants.length === 0 ? (
                 <ThemedText style={styles.emptyText}>
