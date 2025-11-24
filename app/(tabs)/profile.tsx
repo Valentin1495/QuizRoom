@@ -845,7 +845,7 @@ function LiveMatchHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
       : '순위 정보 없음';
   const answeredLabel =
     payload.answered !== undefined && payload.answered !== null
-      ? `${payload.answered}문항 참여`
+      ? `${payload.answered}라운드 참여`
       : null;
 
   const colorScheme = useColorScheme();

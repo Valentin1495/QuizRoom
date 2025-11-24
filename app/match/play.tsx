@@ -324,38 +324,6 @@ export default function MatchPlayScreen() {
     const pauseToastActiveRef = useRef(false);
     const pauseToastHostRef = useRef<string | null>(null);
     const historyLoggedRef = useRef<string | null>(null);
-    const logLiveMatchHistoryOnce = useCallback(async () => {
-        if (historyLoggedRef.current) return;
-        if (authStatus !== 'authenticated' || !user || !roomData) return;
-        if (roomStatus !== 'results') return;
-        const sessionId = `live_match:${roomData.room._id}:${roomData.room.version ?? 0}`;
-        const meEntry = participants.find(
-            (participant) => participant.participantId === roomData.me.participantId
-        );
-        if (!meEntry) {
-            console.warn('live_match history skipped: missing participant entry');
-            return;
-        }
-        historyLoggedRef.current = sessionId;
-        try {
-            await logHistory({
-                mode: 'live_match',
-                sessionId,
-                data: {
-                    deckSlug: roomData.deck?.slug ?? undefined,
-                    deckTitle: roomData.deck?.title ?? undefined,
-                    roomCode: roomData.room.code,
-                    rank: meEntry.rank ?? undefined,
-                    totalParticipants: participants.length,
-                    totalScore: meEntry.totalScore,
-                    answered: meEntry.answers,
-                },
-            });
-        } catch (error) {
-            console.warn('Failed to log live match history entry', error);
-            historyLoggedRef.current = null;
-        }
-    }, [authStatus, logHistory, participants, roomData, roomStatus, user]);
     const participantConnectivityRef = useRef<Map<string, boolean>>(new Map());
     const wasHostRef = useRef<boolean | null>(null);
     const roomStatusRef = useRef<string | null>(null);
@@ -377,7 +345,6 @@ export default function MatchPlayScreen() {
     }, [beginReconnecting, handleConnectionRestored, heartbeat, isManualReconnectPending, participantArgs, showToast]);
     const performLeave = useCallback(() => {
         if (hasLeft) return;
-        void logLiveMatchHistoryOnce();
         const shouldNotifyServer = roomStatus !== 'results';
         if (shouldNotifyServer && !disconnectReason && participantArgs) {
             leaveRoom(participantArgs).catch((err) => {
@@ -394,7 +361,7 @@ export default function MatchPlayScreen() {
         lostHostSkipResumeToastRef.current = false;
         setHasLeft(true);
         router.navigate('/(tabs)/live-match');
-    }, [disconnectReason, hasLeft, leaveRoom, logLiveMatchHistoryOnce, participantArgs, roomStatus, router]);
+    }, [disconnectReason, hasLeft, leaveRoom, participantArgs, roomStatus, router]);
 
     const handleLeave = useCallback(() => {
         // On results screen, exit immediately without confirmation modal
@@ -999,8 +966,47 @@ export default function MatchPlayScreen() {
             historyLoggedRef.current = null;
             return;
         }
-        void logLiveMatchHistoryOnce();
-    }, [logLiveMatchHistoryOnce, roomStatus]);
+        if (authStatus !== 'authenticated' || !user) return;
+        if (!roomData) return;
+        const sessionId = `live_match:${roomData.room._id}:results`;
+        if (historyLoggedRef.current === sessionId) {
+            return;
+        }
+        const meEntry = participants.find(
+            (participant) => participant.participantId === roomData.me.participantId
+        );
+        if (!meEntry) {
+            return;
+        }
+        historyLoggedRef.current = sessionId;
+        void (async () => {
+            try {
+                await logHistory({
+                    mode: 'live_match',
+                    sessionId,
+                    data: {
+                        deckSlug: roomData.deck?.slug ?? undefined,
+                        deckTitle: roomData.deck?.title ?? undefined,
+                        roomCode: roomData.room.code,
+                        rank: meEntry.rank ?? undefined,
+                        totalParticipants: participants.length,
+                        totalScore: meEntry.totalScore,
+                        answered: meEntry.answers,
+                    },
+                });
+            } catch (error) {
+                console.warn('Failed to log live match history entry', error);
+                historyLoggedRef.current = null;
+            }
+        })();
+    }, [
+        authStatus,
+        logHistory,
+        participants,
+        roomData,
+        roomStatus,
+        user,
+    ]);
 
     const leaveDialogElement = (
         <AlertDialog
@@ -1713,7 +1719,7 @@ export default function MatchPlayScreen() {
     const renderHostGraceOverlay = () => {
         const nextHostMessage = (() => {
             if (hostParticipant && meParticipantId && hostParticipant.participantId === meParticipantId) {
-                return '당신이 진행을 이어받았어요. 게임을 계속 진행해 주세요!';
+                return '당신이 진행을 이어받았어요.\n게임을 계속 진행해 주세요!';
             }
             if (hostParticipant) {
                 return `${hostNickname}님이 진행을 이어받았어요.`;
@@ -1766,7 +1772,8 @@ export default function MatchPlayScreen() {
                             <ThemedText style={[styles.graceTitle, { color: textColor }]}>호스트 연결이 끊겼습니다.</ThemedText>
                         </View>
                         <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>
-                            {hostNickname}님 연결을 복구 중이에요. {hostGraceRemainingLabel} 안에 돌아오면 계속 진행돼요.
+                            {hostNickname}님 연결을 복구 중이에요.{'\n'}
+                            {hostGraceRemainingLabel} 안에 돌아오면 계속 진행돼요.
                         </ThemedText>
                         <View style={[styles.graceProgressBar, { backgroundColor: borderColor }]}>
                             <View style={[styles.graceProgressFill, { width: `${progress * 100}%`, backgroundColor: textColor }]} />

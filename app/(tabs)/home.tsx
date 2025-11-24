@@ -115,7 +115,6 @@ export default function HomeScreen() {
   const isGuest = authStatus === 'guest';
   const greetingName = isAuthenticated ? user.handle : '';
 
-
   // const handleAppleLogin = useCallback(() => {
   //   Alert.alert('Apple 로그인', 'Apple 로그인은 준비 중이에요. 잠시만 기다려 주세요!');
   // }, []);

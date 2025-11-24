@@ -32,13 +32,14 @@ const DEFAULT_RULES = {
     leaderboardSeconds: 5,
 };
 
-const LOBBY_EXPIRES_MS = 1000 * 60;
+const LOBBY_EXPIRES_MS = 1000 * 60 * 10;
 const ACTION_DELAY_MIN_MS = 2000;
 const ACTION_DELAY_MAX_MS = 10000;
 const ACTION_DELAY_DEFAULT_MS = 3000;
 const PARTICIPANT_LIMIT = 10;
 const PARTICIPANT_TIMEOUT_MS = 30 * 1000;
 const PARTICIPANT_OFFLINE_GRACE_MS = 2 * 60 * 1000;
+const STALE_SCAN_LIMIT = 100;
 
 const GUEST_IDENTITY_PREFIX = "guest:";
 
@@ -244,24 +245,63 @@ export const cleanupExpiredRooms = internalMutation({
         const extended: Id<"liveMatchRooms">[] = [];
 
         for (const room of expiredRooms) {
-            const participants = await ctx.db
-                .query("liveMatchParticipants")
-                .withIndex("by_room", (q) => q.eq("roomId", room._id))
-                .collect();
+            const { room: refreshedRoom, participants } = await refreshRoomParticipants(
+                ctx,
+                room as RoomDoc
+            );
             const activeCount = participants.filter((p) => !p.removedAt).length;
 
             if (activeCount > 0) {
                 const extendedExpiry = Date.now() + LOBBY_EXPIRES_MS;
-                await ctx.db.patch(room._id, { expiresAt: extendedExpiry });
-                extended.push(room._id);
+                await ctx.db.patch(refreshedRoom._id, { expiresAt: extendedExpiry });
+                extended.push(refreshedRoom._id);
                 continue;
             }
 
-            await deleteRoomCascade(ctx, room as RoomDoc);
-            deleted.push(room._id);
+            await deleteRoomCascade(ctx, refreshedRoom as RoomDoc);
+            deleted.push(refreshedRoom._id);
         }
 
         return { deleted, extended, count: deleted.length, extendedCount: extended.length };
+    },
+});
+
+export const cleanupStaleParticipants = internalMutation({
+    args: {
+        limit: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        const limit = Math.max(1, Math.min(args.limit ?? 20, STALE_SCAN_LIMIT));
+        const rooms = await ctx.db.query("liveMatchRooms").take(limit);
+        let roomsScanned = 0;
+        let roomsReset = 0;
+        let participantsPruned = 0;
+
+        for (const room of rooms) {
+            roomsScanned += 1;
+            const participants = await ctx.db
+                .query("liveMatchParticipants")
+                .withIndex("by_room", (q) => q.eq("roomId", room._id))
+                .collect();
+            const activeBefore = participants.filter((p) => !p.removedAt).length;
+
+            const { room: updatedRoom, participants: activeAfterList } = await refreshRoomParticipants(
+                ctx,
+                room as RoomDoc
+            );
+
+            const activeAfter = activeAfterList.length;
+            participantsPruned += Math.max(0, activeBefore - activeAfter);
+            if (activeBefore > 0 && activeAfter === 0 && updatedRoom.status === "lobby") {
+                roomsReset += 1;
+            }
+        }
+
+        return {
+            roomsScanned,
+            roomsReset,
+            participantsPruned,
+        };
     },
 });
 
@@ -1216,6 +1256,11 @@ export const progress = mutation({
         }
         room = (await refreshRoomParticipants(ctx, room)).room;
         await resolveHostParticipant(ctx, room, args.guestKey);
+
+        // Prevent skipping active countdown/grace windows due to client drift or repeated clicks.
+        if (room.status === "countdown" && room.phaseEndsAt && room.phaseEndsAt > Date.now()) {
+            return;
+        }
 
         switch (room.status) {
             case "countdown": {

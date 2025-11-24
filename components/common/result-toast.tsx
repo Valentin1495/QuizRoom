@@ -165,6 +165,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
+    maxWidth: '90%',
+    flexWrap: 'wrap',
     shadowColor: '#00000040',
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -172,10 +174,13 @@ const styles = StyleSheet.create({
   },
   message: {
     fontWeight: '700',
+    flexShrink: 1,
+    flexWrap: 'wrap',
   },
   meta: {
     fontWeight: '600',
     opacity: 0.85,
+    flexShrink: 1,
   },
   ctaContainer: {
     marginLeft: Spacing.sm,

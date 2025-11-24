@@ -3606,18 +3606,18 @@
             },
             {
                 "id": "b",
-                "text": "3억 원"
+                "text": "2억 원"
             },
             {
                 "id": "c",
-                "text": "5억 원"
+                "text": "3억 원"
             },
             {
                 "id": "d",
-                "text": "2억 원"
+                "text": "5억 원"
             }
         ],
-        "answerIndex": 1,
+        "answerIndex": 2,
         "explanation": "피지컬: 100'의 최종 우승자에게는 우승 타이틀과 함께 '3억 원'의 상금이 주어졌습니다.",
         "difficulty": 0.5,
         "createdAt": 1761407640,
