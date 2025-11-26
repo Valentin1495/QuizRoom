@@ -6,8 +6,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InlineLevelBadge } from '@/components/common/level-badge';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Accordion } from '@/components/ui/accordion';
 import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -19,6 +21,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestAvatarId } from '@/lib/guest';
+import { calculateLevel } from '@/lib/level';
 import { useMutation, useQuery } from 'convex/react';
 
 export default function MatchLobbyScreen() {
@@ -463,10 +466,9 @@ export default function MatchLobbyScreen() {
         },
         deckCard: {
           marginTop: Spacing.sm,
-          padding: Spacing.md,
+          padding: Spacing.sm,
           borderRadius: Radius.md,
           backgroundColor: accentColor,
-          gap: Spacing.xs,
         },
         deckCardTitleRow: {
           flexDirection: 'row',
@@ -537,6 +539,13 @@ export default function MatchLobbyScreen() {
         },
         participantNameMe: {
           fontWeight: '700',
+        },
+        participantNameRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: Spacing.xs,
+          flexWrap: 'wrap',
         },
         codeBadgeWrapper: {
           flexDirection: 'row',
@@ -772,17 +781,22 @@ export default function MatchLobbyScreen() {
                 </View>
               </Pressable>
               {lobby.deck ? (
-                <View style={styles.deckCard}>
-                  <View style={styles.deckCardTitleRow}>
-                    <IconSymbol
-                      name={getDeckIcon(lobby.deck.slug)}
-                      size={20}
-                      color={primaryColor}
-                    />
-                    <ThemedText style={styles.deckCardTitle}>
-                      {lobby.deck.title}
-                    </ThemedText>
-                  </View>
+                <Accordion
+                  style={styles.deckCard}
+                  defaultOpen
+                  title={
+                    <View style={styles.deckCardTitleRow}>
+                      <IconSymbol
+                        name={getDeckIcon(lobby.deck.slug)}
+                        size={20}
+                        color={primaryColor}
+                      />
+                      <ThemedText style={styles.deckCardTitle}>
+                        {lobby.deck.title}
+                      </ThemedText>
+                    </View>
+                  }
+                >
                   <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
                   <ThemedText style={styles.deckCardDescription}>
                     • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
@@ -790,10 +804,11 @@ export default function MatchLobbyScreen() {
                   <ThemedText style={styles.deckCardDescription}>
                     • 총 10라운드로 진행돼요.
                   </ThemedText>
+                  <ThemedText style={styles.deckCardDescription}>• 최대 10명까지 참여할 수 있어요.</ThemedText>
                   <ThemedText style={styles.deckCardWarning}>
                     • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
                   </ThemedText>
-                </View>
+                </Accordion>
               ) : null}
             </View>
 
@@ -822,11 +837,16 @@ export default function MatchLobbyScreen() {
                       >
                         {renderParticipantAvatar(participant, isMe)}
                         <View style={styles.participantTextBlock}>
-                          <ThemedText
-                            style={[styles.participantName, isMe && styles.participantNameMe]}
-                          >
-                            {participant.nickname}
-                          </ThemedText>
+                          <View style={styles.participantNameRow}>
+                            <ThemedText
+                              style={[styles.participantName, isMe && styles.participantNameMe]}
+                            >
+                              {participant.nickname}
+                            </ThemedText>
+                            {participant.xp != null && (
+                              <InlineLevelBadge level={calculateLevel(participant.xp).level} size="sm" />
+                            )}
+                          </View>
                           {!participant.isConnected ? (
                             <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
                           ) : null}

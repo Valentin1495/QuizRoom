@@ -352,6 +352,15 @@ const weightedSample = (items: WeightedQuestion[], count: number) => {
 const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
 
+// 콤보 배수 계산 함수
+const getComboMultiplier = (streak: number): number => {
+  if (streak >= 10) return 3.0;
+  if (streak >= 7) return 2.5;
+  if (streak >= 5) return 2.0;
+  if (streak >= 3) return 1.5;
+  return 1.0;
+};
+
 const mapDifficultyToElo = (difficulty?: number | null) => {
   const normalized = difficulty ?? 0.5;
   const elo = Math.round(1200 + (normalized - 0.5) * 800);
@@ -805,14 +814,19 @@ export const submitAnswer = mutation({
       elo: updatedQuestionElo,
     });
 
-    const scoreDelta = Math.round((result - expected) * 100);
+    // 콤보 배수 적용된 점수 계산
+    const newStreak = isCorrect ? user.streak + 1 : 0;
+    const comboMultiplier = getComboMultiplier(newStreak);
+    const baseScoreDelta = Math.round((result - expected) * 100);
+    const scoreDelta = isCorrect ? Math.round(baseScoreDelta * comboMultiplier) : baseScoreDelta;
 
     return {
       isCorrect,
       correctChoiceId: correctEntry.choice.id,
       explanation: question.explanation ?? null,
       scoreDelta,
-      streak: isCorrect ? user.streak + 1 : 0,
+      streak: newStreak,
+      comboMultiplier: isCorrect ? comboMultiplier : 1.0,
       nextQuestionElo: updatedQuestionElo,
       expected,
       timeMs,

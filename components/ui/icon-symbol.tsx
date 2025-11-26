@@ -120,6 +120,7 @@ const ICON_MAP = {
   'music.microphone': { component: MicrophoneStageIcon },
   'die.face.5': { component: DiceFiveIcon },
   'flame': { component: FlameIcon },
+  'flame.fill': { component: FlameIcon, defaultWeight: 'fill' },
   'star': { component: StarIcon },
   'shuffle': { component: ShuffleIcon },
   // Onboarding Icons

@@ -601,15 +601,8 @@ async function refreshRoomParticipants(
     return { room: updatedRoom, participants: activeParticipants };
 }
 
-function attachRanks<T extends { totalScore: number }>(items: T[]) {
-    const ranked: (T & { rank: number })[] = [];
-    for (let index = 0; index < items.length; index += 1) {
-        const item = items[index];
-        const previous = ranked[index - 1];
-        const rank = previous && previous.totalScore === item.totalScore ? previous.rank : index + 1;
-        ranked.push({ ...item, rank });
-    }
-    return ranked;
+function attachRanks<T>(items: T[]) {
+    return items.map((item, index) => ({ ...item, rank: index + 1 }));
 }
 
 async function performPendingAction(ctx: MutationCtx, room: RoomDoc) {
@@ -812,12 +805,23 @@ async function loadPendingRoom(ctx: MutationCtx, roomId: Id<"liveMatchRooms">) {
     return room;
 }
 
-function computeScoreDelta(isCorrect: boolean, elapsedMs: number, rules: LiveMatchRules) {
-    if (!isCorrect) return 0;
+// 콤보 배수 계산 함수
+function getComboMultiplier(streak: number): number {
+    if (streak >= 10) return 3.0;
+    if (streak >= 7) return 2.5;
+    if (streak >= 5) return 2.0;
+    if (streak >= 3) return 1.5;
+    return 1.0;
+}
+
+function computeScoreDelta(isCorrect: boolean, elapsedMs: number, rules: LiveMatchRules, streak: number = 0) {
+    if (!isCorrect) return { score: 0, multiplier: 1.0 };
     const base = 100;
     const remainingSeconds = Math.max(0, rules.answerSeconds - elapsedMs / 1000);
     const bonus = Math.ceil((remainingSeconds / rules.answerSeconds) * 50);
-    return base + bonus;
+    const baseScore = base + bonus;
+    const multiplier = getComboMultiplier(streak);
+    return { score: Math.round(baseScore * multiplier), multiplier };
 }
 
 async function selectQuestions(
@@ -1502,7 +1506,11 @@ export const submitAnswer = mutation({
                     : now;
         const elapsed = Math.max(0, now - inferredStart);
         const isCorrect = question.answerIndex === args.choiceIndex;
-        const delta = computeScoreDelta(isCorrect, elapsed, DEFAULT_RULES);
+
+        // 콤보 계산: 정답이면 streak +1, 오답이면 리셋
+        const currentStreak = participant.currentStreak ?? 0;
+        const newStreak = isCorrect ? currentStreak + 1 : 0;
+        const { score: delta, multiplier } = computeScoreDelta(isCorrect, elapsed, DEFAULT_RULES, newStreak);
 
         await ctx.db.insert("liveMatchAnswers", {
             roomId: room._id,
@@ -1517,12 +1525,15 @@ export const submitAnswer = mutation({
         const totalAnswers = participant.answers + 1;
         const totalAvg = participant.avgResponseMs * participant.answers;
         const newAvg = (totalAvg + elapsed) / totalAnswers;
+        const newMaxStreak = Math.max(participant.maxStreak ?? 0, newStreak);
 
         await ctx.db.patch(participant._id, {
             totalScore: participant.totalScore + delta,
             answers: totalAnswers,
             avgResponseMs: newAvg,
             lastSeenAt: now,
+            currentStreak: newStreak,
+            maxStreak: newMaxStreak,
         });
     },
 });
@@ -1547,6 +1558,115 @@ export const finish = mutation({
             pendingAction: undefined,
             pauseState: undefined,
         });
+    },
+});
+
+// === 실시간 리액션 시스템 ===
+
+const REACTION_COOLDOWN_MS = 1000; // 스팸 방지: 1초 쿨다운
+const VALID_EMOJIS = ["clap", "fire", "skull", "laugh"] as const;
+type ReactionEmoji = typeof VALID_EMOJIS[number];
+
+export const sendReaction = mutation({
+    args: {
+        roomId: v.id("liveMatchRooms"),
+        participantId: v.id("liveMatchParticipants"),
+        emoji: v.string(),
+        guestKey: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const room = await loadRoom(ctx, args.roomId);
+        if (!room || room.status === "lobby" || room.status === "results") {
+            return { success: false, reason: "INVALID_ROOM_STATE" };
+        }
+
+        const participant = await requireParticipantAccess(
+            ctx,
+            room._id,
+            args.participantId,
+            args.guestKey
+        );
+
+        // 유효한 이모지인지 확인
+        if (!VALID_EMOJIS.includes(args.emoji as ReactionEmoji)) {
+            return { success: false, reason: "INVALID_EMOJI" };
+        }
+
+        // 스팸 방지: 쿨다운 확인
+        const now = Date.now();
+        const recentReaction = await ctx.db
+            .query("liveMatchReactions")
+            .withIndex("by_room", (q) => q.eq("roomId", room._id))
+            .filter((q) => q.eq(q.field("participantId"), participant._id))
+            .order("desc")
+            .first();
+
+        if (recentReaction && now - recentReaction.createdAt < REACTION_COOLDOWN_MS) {
+            return { success: false, reason: "COOLDOWN" };
+        }
+
+        // 리액션 저장
+        await ctx.db.insert("liveMatchReactions", {
+            roomId: room._id,
+            participantId: participant._id,
+            roundIndex: room.currentRound,
+            emoji: args.emoji,
+            createdAt: now,
+        });
+
+        return { success: true };
+    },
+});
+
+// Bandwidth optimization: limit reactions fetched and only get recent ones
+const REACTION_FETCH_LIMIT = 100;
+const REACTION_RECENT_WINDOW_MS = 5000;
+const REACTION_RECENT_LIMIT = 20;
+
+export const getReactionCounts = query({
+    args: {
+        roomId: v.id("liveMatchRooms"),
+        roundIndex: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        const room = await ctx.db.get(args.roomId);
+        if (!room) {
+            return { counts: {}, recent: [] };
+        }
+
+        const roundIndex = args.roundIndex ?? room.currentRound;
+
+        // Bandwidth optimization: limit to recent reactions only
+        const recentCutoff = Date.now() - REACTION_RECENT_WINDOW_MS;
+        const reactions = await ctx.db
+            .query("liveMatchReactions")
+            .withIndex("by_room_round", (q) =>
+                q.eq("roomId", args.roomId).eq("roundIndex", roundIndex)
+            )
+            .filter((q) => q.gte(q.field("createdAt"), recentCutoff))
+            .take(REACTION_FETCH_LIMIT);
+
+        // 이모지별 카운트 (최근 reactions 기준)
+        const counts: Record<string, number> = {};
+        for (const emoji of VALID_EMOJIS) {
+            counts[emoji] = 0;
+        }
+        for (const reaction of reactions) {
+            if (reaction.emoji in counts) {
+                counts[reaction.emoji]++;
+            }
+        }
+
+        // 최근 리액션 (플로팅 애니메이션용)
+        const recent = reactions
+            .sort((a, b) => b.createdAt - a.createdAt)
+            .slice(0, REACTION_RECENT_LIMIT)
+            .map((r) => ({
+                emoji: r.emoji,
+                createdAt: r.createdAt,
+            }));
+
+        return { counts, recent };
     },
 });
 
@@ -1759,6 +1879,7 @@ export const getLobby = query({
                     isReady: p.isReady ?? false,
                     joinedAt: p.joinedAt,
                     isConnected: isParticipantConnected(p, now),
+                    xp: user?.xp ?? null,  // 레벨 표시용
                 }
             }),
             now: Date.now(),
@@ -1770,19 +1891,18 @@ type ClientRoomParticipant = {
     participantId: Id<"liveMatchParticipants">;
     userId: Id<"users"> | null;
     avatarUrl: string | null;
-    isGuest: boolean;
     guestAvatarId: number | null;
     nickname: string;
     totalScore: number;
     isHost: boolean;
-    answers: number;
-    avgResponseMs: number;
     rank: number;
     isConnected: boolean;
-    joinedAt: number;
-    isReady: boolean;
+    // Bandwidth optimization: removed isGuest, joinedAt, avgResponseMs, isReady
+    // Keep these for host connection state monitoring
     lastSeenAt: number;
     disconnectedAt: number | null;
+    // Keep for history logging
+    answers: number;
 };
 
 type ClientRoomOkState = {
@@ -1904,7 +2024,20 @@ export const getRoomState = query({
             .collect()).filter((participant) => !participant.removedAt);
 
         const now = Date.now();
-        participants.sort((a, b) => b.totalScore - a.totalScore || a.avgResponseMs - b.avgResponseMs);
+        participants.sort((a, b) => {
+            if (b.totalScore !== a.totalScore) {
+                return b.totalScore - a.totalScore;
+            }
+            const avgA = a.answers > 0 ? a.avgResponseMs : Number.MAX_SAFE_INTEGER;
+            const avgB = b.answers > 0 ? b.avgResponseMs : Number.MAX_SAFE_INTEGER;
+            if (avgA !== avgB) {
+                return avgA - avgB; // faster average is better
+            }
+            if (b.answers !== a.answers) {
+                return b.answers - a.answers; // more answered is better
+            }
+            return a.joinedAt - b.joinedAt; // earlier join wins as final tiebreaker
+        });
         const rankedParticipants = attachRanks(participants);
 
         const participantUserIds = rankedParticipants
@@ -1950,33 +2083,37 @@ export const getRoomState = query({
                 })()
                 : undefined;
 
-            const leaderboard = (() => {
-                const top = rankedParticipants.map((p) => {
-                    const user = p.userId ? usersById.get(p.userId) : null;
-                    return {
-                        participantId: p._id,
-                        userId: p.userId ?? null,
-                        avatarUrl: user?.avatarUrl ?? null,
-                        guestAvatarId: getParticipantGuestAvatarId(p),
-                        nickname: p.nickname,
-                        totalScore: p.totalScore,
-                        rank: p.rank,
-                    };
-                });
-                const meEntrySource = rankedParticipants.find((p) => p._id === me._id);
-                const meEntry = meEntrySource
-                    ? {
-                        participantId: meEntrySource._id,
-                        userId: meEntrySource.userId ?? null,
-                        avatarUrl: meEntrySource.userId ? usersById.get(meEntrySource.userId)?.avatarUrl ?? null : null,
-                        guestAvatarId: getParticipantGuestAvatarId(meEntrySource),
-                        nickname: meEntrySource.nickname,
-                        totalScore: meEntrySource.totalScore,
-                        rank: meEntrySource.rank,
-                    }
-                    : undefined;
-                return { top, me: meEntry };
-            })();
+            // Bandwidth optimization: only include leaderboard in reveal/leaderboard/results phases
+            const shouldIncludeLeaderboard = room.status === "reveal" || room.status === "leaderboard" || room.status === "results";
+            const leaderboard = shouldIncludeLeaderboard
+                ? (() => {
+                    const top = rankedParticipants.map((p) => {
+                        const user = p.userId ? usersById.get(p.userId) : null;
+                        return {
+                            participantId: p._id,
+                            userId: p.userId ?? null,
+                            avatarUrl: user?.avatarUrl ?? null,
+                            guestAvatarId: getParticipantGuestAvatarId(p),
+                            nickname: p.nickname,
+                            totalScore: p.totalScore,
+                            rank: p.rank,
+                        };
+                    });
+                    const meEntrySource = rankedParticipants.find((p) => p._id === me._id);
+                    const meEntry = meEntrySource
+                        ? {
+                            participantId: meEntrySource._id,
+                            userId: meEntrySource.userId ?? null,
+                            avatarUrl: meEntrySource.userId ? usersById.get(meEntrySource.userId)?.avatarUrl ?? null : null,
+                            guestAvatarId: getParticipantGuestAvatarId(meEntrySource),
+                            nickname: meEntrySource.nickname,
+                            totalScore: meEntrySource.totalScore,
+                            rank: meEntrySource.rank,
+                        }
+                        : undefined;
+                    return { top, me: meEntry };
+                })()
+                : undefined;
 
             currentRound = {
                 index: round.index,
@@ -2017,25 +2154,22 @@ export const getRoomState = query({
                 lastSeenAt: me.lastSeenAt,
                 disconnectedAt: me.disconnectedAt ?? null,
             },
+            // Bandwidth optimization: reduced participant payload
             participants: rankedParticipants.map((p) => {
                 const user = p.userId ? usersById.get(p.userId) : null;
                 return {
                     participantId: p._id,
                     userId: p.userId ?? null,
                     avatarUrl: user?.avatarUrl ?? null,
-                    isGuest: p.isGuest,
                     guestAvatarId: getParticipantGuestAvatarId(p),
                     nickname: p.nickname,
-                    joinedAt: p.joinedAt,
                     totalScore: p.totalScore,
                     isHost: p.isHost,
-                    answers: p.answers,
-                    avgResponseMs: p.avgResponseMs,
                     rank: p.rank,
-                    isReady: p.isReady ?? false,
                     isConnected: isParticipantConnected(p, now),
                     lastSeenAt: p.lastSeenAt,
                     disconnectedAt: p.disconnectedAt ?? null,
+                    answers: p.answers,
                 };
             }),
             currentRound,

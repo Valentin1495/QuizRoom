@@ -7,8 +7,8 @@ import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Toast from 'react-native-toast-message';
 import 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,

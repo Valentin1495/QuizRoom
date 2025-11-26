@@ -294,6 +294,8 @@ export default defineSchema({
     totalScore: v.number(),
     avgResponseMs: v.number(),
     answers: v.number(),
+    currentStreak: v.optional(v.number()),  // 콤보 시스템: 현재 연속 정답
+    maxStreak: v.optional(v.number()),       // 콤보 시스템: 최고 연속 정답
     removedAt: v.optional(v.number()),
     disconnectedAt: v.optional(v.number()),
   })
@@ -332,6 +334,16 @@ export default defineSchema({
     payload: v.any(),
     createdAt: v.number(),
   }).index("by_room", ["roomId"]),
+
+  liveMatchReactions: defineTable({
+    roomId: v.id("liveMatchRooms"),
+    participantId: v.id("liveMatchParticipants"),
+    roundIndex: v.number(),
+    emoji: v.string(),  // "clap" | "fire" | "skull" | "laugh"
+    createdAt: v.number(),
+  })
+    .index("by_room_round", ["roomId", "roundIndex"])
+    .index("by_room", ["roomId"]),
 
   reports: defineTable({
     deckId: v.id("decks"),

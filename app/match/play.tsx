@@ -5,6 +5,9 @@ import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet,
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { showResultToast } from '@/components/common/result-toast';
+import { FloatingReactions } from '@/components/live-match/floating-reactions';
+import { CompactReactionBar, type ReactionEmoji } from '@/components/live-match/reaction-bar';
+import { ReactionCounter } from '@/components/live-match/reaction-counter';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -91,11 +94,21 @@ export default function MatchPlayScreen() {
         queryArgs
     );
     const roomData = roomState && roomState.status === 'ok' ? roomState : null;
+
+    // 리액션 쿼리 - Bandwidth optimization: only subscribe during active game phases
+    const REACTION_ACTIVE_PHASES = ['question', 'grace', 'reveal', 'leaderboard'];
+    const reactionCountsArgs = useMemo(() => {
+        if (!roomId || !roomData) return 'skip' as const;
+        if (!REACTION_ACTIVE_PHASES.includes(roomData.room.status)) return 'skip' as const;
+        return { roomId };
+    }, [roomId, roomData]);
+    const reactionCounts = useQuery(api.rooms.getReactionCounts, reactionCountsArgs);
     const progressRoom = useMutation(api.rooms.progress);
     const pauseRoom = useMutation(api.rooms.pause);
     const resumeRoom = useMutation(api.rooms.resume);
     const heartbeat = useMutation(api.rooms.heartbeat);
     const submitAnswer = useMutation(api.rooms.submitAnswer);
+    const sendReaction = useMutation(api.rooms.sendReaction);
     const resetRoom = useMutation(api.rooms.resetToLobby);
     const rematchRoom = useMutation(api.rooms.rematch);
     const leaveRoom = useMutation(api.rooms.leave);
@@ -461,6 +474,8 @@ export default function MatchPlayScreen() {
     }, [serverOffsetMs]);
 
 
+    // Bandwidth optimization: increased heartbeat interval from 5s to 8s
+    const HEARTBEAT_INTERVAL_MS = 8000;
     useEffect(() => {
         if (hasLeft || disconnectReason || !participantArgs) return;
         const tick = async () => {
@@ -477,10 +492,12 @@ export default function MatchPlayScreen() {
             }
         };
         void tick();
-        const interval = setInterval(tick, 5000);
+        const interval = setInterval(tick, HEARTBEAT_INTERVAL_MS);
         return () => clearInterval(interval);
     }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, heartbeat, notifyForcedExit, participantArgs]);
 
+    // Bandwidth optimization: reduced pendingAction check interval from 200ms to 500ms
+    const PENDING_CHECK_INTERVAL_MS = 500;
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
         pendingHeartbeatRef.current = false;
@@ -511,7 +528,7 @@ export default function MatchPlayScreen() {
         };
 
         update();
-        const interval = setInterval(update, 200);
+        const interval = setInterval(update, PENDING_CHECK_INTERVAL_MS);
         return () => clearInterval(interval);
     }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, heartbeat, notifyForcedExit, participantArgs, pendingAction, serverOffsetMs]);
 
@@ -797,6 +814,19 @@ export default function MatchPlayScreen() {
             waitingToastRef.current.shownForSession = false;
         }
     }, [disconnectReason, hasLeft, hostIsConnected, hostNickname, isGameStalled, showToast]);
+
+    // 리액션 핸들러
+    const handleReaction = useCallback(async (emoji: ReactionEmoji) => {
+        if (!roomId || !participantArgs) return;
+        try {
+            await sendReaction({
+                ...participantArgs,
+                emoji,
+            });
+        } catch (err) {
+            console.warn('Failed to send reaction', err);
+        }
+    }, [participantArgs, roomId, sendReaction]);
 
     const handleChoicePress = async (choiceIndex: number) => {
         const isAnswerWindow = roomStatus === 'question' || roomStatus === 'grace';
@@ -1495,7 +1525,7 @@ export default function MatchPlayScreen() {
         const deckInfo = roomData?.deck;
         const deckTitle = deckInfo?.title ?? '랜덤 덱';
         const deckDescription =
-            deckInfo?.description ?? '퀴즈룸 생성 시 랜덤으로 선택된 덱입니다.';
+            deckInfo?.description ?? '방 생성 시 랜덤으로 선택된 덱입니다.';
 
         return (
             <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
@@ -1956,6 +1986,18 @@ export default function MatchPlayScreen() {
                 {content}
                 {renderGraceOverlay()}
                 {renderHostGraceOverlay()}
+                {/* 실시간 리액션 시스템 */}
+                {reactionCounts && (
+                    <FloatingReactions reactions={reactionCounts.recent} />
+                )}
+                {roomStatus !== 'lobby' && roomStatus !== 'results' && connectionState === 'online' && (
+                    <View style={styles.reactionBarContainer}>
+                        <CompactReactionBar onReaction={handleReaction} disabled={!participantArgs} />
+                        {reactionCounts && Object.values(reactionCounts.counts).some(c => c > 0) && (
+                            <ReactionCounter counts={reactionCounts.counts} compact />
+                        )}
+                    </View>
+                )}
             </ThemedView>
             {leaveDialogElement}
         </>
@@ -1966,6 +2008,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: Spacing.lg,
+    },
+    reactionBarContainer: {
+        position: 'absolute',
+        bottom: 100,
+        left: 0,
+        right: 0,
+        alignItems: 'center',
+        gap: Spacing.sm,
     },
     delayPresetRow: {
         flexDirection: 'row',

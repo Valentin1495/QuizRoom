@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { LevelBadge, XpProgressBar } from '@/components/common/level-badge';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AlertDialog } from '@/components/ui/alert-dialog';
@@ -259,10 +260,14 @@ function ProfileHeader({
           backgroundColorOverride={fallbackBackground}
         />
         <View style={styles.headerContent}>
-          <ThemedText type="subtitle">{user.handle}</ThemedText>
+          <View style={styles.headerNameRow}>
+            <ThemedText type="subtitle">{user.handle}</ThemedText>
+            <LevelBadge xp={user.xp} size="sm" />
+          </View>
           <ThemedText style={[styles.statusText, { color: mutedColor }]}>{statusLine}</ThemedText>
         </View>
       </View>
+      <XpProgressBar xp={user.xp} height={6} showLabel />
       <View style={styles.headerActions}>
         <Button
           onPress={onEdit}
@@ -1007,6 +1012,11 @@ const styles = StyleSheet.create({
   headerContent: {
     flex: 1,
     gap: Spacing.xs,
+  },
+  headerNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
   },
   statusText: {
     fontSize: 14,

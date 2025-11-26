@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { LevelBadge } from '@/components/common/level-badge';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Avatar, GuestAvatar } from '@/components/ui/avatar';
@@ -232,9 +233,14 @@ export default function HomeScreen() {
             />
           )}
           <View style={styles.welcomeText}>
-            <ThemedText type="subtitle" style={styles.welcomeGreeting}>
-              안녕하세요. {greetingName}
-            </ThemedText>
+            <View style={styles.welcomeNameRow}>
+              <ThemedText type="subtitle" style={styles.welcomeGreeting}>
+                안녕하세요. {greetingName}
+              </ThemedText>
+              {isAuthenticated && user && (
+                <LevelBadge xp={user.xp} size="sm" />
+              )}
+            </View>
           </View>
         </View>
 
@@ -316,7 +322,7 @@ export default function HomeScreen() {
                 style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
               />
               <ThemedText style={styles.timerLabel}>
-                남은 시간: {timeLeft}
+                {timeLeft}
               </ThemedText>
             </View>
           </View>
@@ -463,6 +469,11 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     alignItems: 'center',
+  },
+  welcomeNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
   },
   welcomeGreeting: {
     textAlign: 'center',

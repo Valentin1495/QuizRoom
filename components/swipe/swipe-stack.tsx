@@ -19,6 +19,7 @@ import {
   View,
 } from 'react-native';
 
+import { ComboIndicator } from '@/components/common/combo-indicator';
 import { hideResultToast, showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
@@ -131,6 +132,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<SwipeFeedback | null>(null);
+  const [currentStreak, setCurrentStreak] = useState(0);
   const startTimeRef = useRef<number>(Date.now());
 
   const [sheetFeedback, setSheetFeedback] = useState<SwipeFeedback | null>(null);
@@ -357,6 +359,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         if (stillCurrent) {
           setFeedback(confirmedFeedback);
           setSheetFeedback(confirmedFeedback);
+          setCurrentStreak(responseStreak);
         }
         if (response.isCorrect !== optimisticIsCorrect) {
           if (response.isCorrect) {
@@ -416,6 +419,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     setReportQuestionId(null);
     setReportSubject(null);
     setIsSubmittingReport(false);
+    setCurrentStreak(0);
     currentQuestionIdRef.current = null;
     startTimeRef.current = Date.now();
     setSessionStats(INITIAL_SESSION_STATS);
@@ -940,17 +944,22 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                   남은 카드 {prefetchCount}장
                 </ThemedText>
               </View>
-              <Button
-                variant="ghost"
-                size="sm"
-                rounded="full"
-                onPress={handleOpenSheet}
-                disabled={!(feedback?.status === 'confirmed' && feedback.explanation)}
-                style={!(feedback?.status === 'confirmed' && feedback.explanation) && styles.sheetButtonHidden}
-                textStyle={!(feedback?.status === 'confirmed' && feedback.explanation) && styles.sheetButtonTextHidden}
-              >
-                해설 보기
-              </Button>
+              <View style={styles.statusRightSection}>
+                {currentStreak >= 1 && (
+                  <ComboIndicator streak={currentStreak} size="sm" />
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  rounded="full"
+                  onPress={handleOpenSheet}
+                  disabled={!(feedback?.status === 'confirmed' && feedback.explanation)}
+                  style={!(feedback?.status === 'confirmed' && feedback.explanation) && styles.sheetButtonHidden}
+                  textStyle={!(feedback?.status === 'confirmed' && feedback.explanation) && styles.sheetButtonTextHidden}
+                >
+                  해설 보기
+                </Button>
+              </View>
             </View>
           )}
           <View style={styles.stackWrapper}>
@@ -1301,6 +1310,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
+  },
+  statusRightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
   },
   sheetButtonHidden: {
     opacity: 0,
