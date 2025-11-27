@@ -20,13 +20,14 @@ interface AccordionProps extends PropsWithChildren {
   title: string | React.ReactNode;
   defaultOpen?: boolean;
   style?: StyleProp<ViewStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
 }
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-export function Accordion({ title, defaultOpen = true, children, style }: AccordionProps) {
+export function Accordion({ title, defaultOpen = true, children, style, contentStyle }: AccordionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [contentHeight, setContentHeight] = useState(0);
   const progress = useRef(new Animated.Value(defaultOpen ? 1 : 0)).current;
@@ -50,6 +51,10 @@ export function Accordion({ title, defaultOpen = true, children, style }: Accord
     outputRange: [0, contentHeight || 1],
   });
   const opacity = progress;
+  const rotate = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['90deg', '-90deg'],
+  });
 
   return (
     <View style={[styles.container, { borderColor, backgroundColor: cardColor }, style]}>
@@ -65,19 +70,16 @@ export function Accordion({ title, defaultOpen = true, children, style }: Accord
         ) : (
           title
         )}
-        <IconSymbol
-          name="chevron.right"
-          size={18}
-          color={textColor}
-          style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
-        />
+        <Animated.View style={{ transform: [{ rotate }] }}>
+          <IconSymbol name="chevron.right" size={18} color={textColor} />
+        </Animated.View>
       </Pressable>
       <Animated.View
         style={[styles.contentWrapper, { maxHeight, opacity }]}
         pointerEvents={isOpen ? 'auto' : 'none'}
       >
         <View
-          style={styles.content}
+          style={[styles.content, contentStyle]}
           onLayout={(e) => {
             const height = e.nativeEvent.layout.height;
             if (height && height !== contentHeight) {

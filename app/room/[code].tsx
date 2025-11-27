@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { InlineLevelBadge } from '@/components/common/level-badge';
+import { LevelBadge } from '@/components/common/level-badge';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Accordion } from '@/components/ui/accordion';
@@ -21,7 +21,8 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestAvatarId } from '@/lib/guest';
-import { calculateLevel } from '@/lib/level';
+import { calculateLevel, getLevelColor, getLevelTitle } from '@/lib/level';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet';
 import { useMutation, useQuery } from 'convex/react';
 
 export default function MatchLobbyScreen() {
@@ -39,6 +40,8 @@ export default function MatchLobbyScreen() {
   const pendingExecutedRef = useRef(false);
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
   const [pendingBannerHeight, setPendingBannerHeight] = useState(0);
+  const levelSheetRef = useRef<BottomSheetModal>(null);
+  const [levelSheetData, setLevelSheetData] = useState<{ level: number; title: string; name: string } | null>(null);
 
   const selfGuestAvatarId = useMemo(
     () => (status === 'guest' ? deriveGuestAvatarId(guestKey) : undefined),
@@ -138,9 +141,31 @@ export default function MatchLobbyScreen() {
   const readyBadgeWaitingColor =
     colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : mutedColor;
   const participantIconSize = Platform.OS === 'android' ? 22 : 18;
+  const isDark = colorScheme === 'dark';
+
+  const openLevelSheet = useCallback((level: number, title: string, name: string) => {
+    setLevelSheetData({ level, title, name });
+    levelSheetRef.current?.present();
+  }, []);
+
+  const closeLevelSheet = useCallback(() => {
+    levelSheetRef.current?.dismiss();
+    setLevelSheetData(null);
+  }, []);
 
   const renderParticipantAvatar = useCallback(
-    (participant: (typeof participants)[number], isMe: boolean) => {
+    (
+      participant: (typeof participants)[number],
+      isMe: boolean,
+      levelInfo?: ReturnType<typeof calculateLevel>,
+      levelTitle?: string
+    ) => {
+      const levelColor = levelInfo ? getLevelColor(levelInfo.level, isDark) : undefined;
+      const handlePressLevel = () => {
+        if (!levelInfo || !levelTitle) return;
+        openLevelSheet(levelInfo.level, levelTitle, participant.nickname);
+      };
+
       const avatarNode = isMe
         ? status === 'authenticated' && user ? (
           <Avatar
@@ -177,9 +202,17 @@ export default function MatchLobbyScreen() {
           />
         );
 
-      return avatarNode;
+      return levelInfo ? (
+        <Pressable onPress={handlePressLevel}>
+          <View style={[styles.participantAvatarRing, { borderColor: levelColor }]}>
+            {avatarNode}
+          </View>
+        </Pressable>
+      ) : (
+        avatarNode
+      );
     },
-    [fallbackAvatarBackground, selfGuestAvatarId, status, user]
+    [fallbackAvatarBackground, isDark, openLevelSheet, selfGuestAvatarId, status, user]
   );
 
 
@@ -466,7 +499,6 @@ export default function MatchLobbyScreen() {
         },
         deckCard: {
           marginTop: Spacing.sm,
-          padding: Spacing.sm,
           borderRadius: Radius.md,
           backgroundColor: accentColor,
         },
@@ -487,6 +519,12 @@ export default function MatchLobbyScreen() {
           color: destructiveColor,
           fontSize: 12,
           fontWeight: '600',
+        },
+        deckCardContent: {
+          paddingHorizontal: Spacing.md,
+          paddingBottom: Spacing.md,
+          paddingTop: Spacing.xs,
+          gap: Spacing.xs,
         },
         sectionTitle: {
           fontWeight: '700',
@@ -518,6 +556,11 @@ export default function MatchLobbyScreen() {
           backgroundColor: secondaryColor,
           borderWidth: 2,
           borderColor: primaryColor,
+        },
+        participantAvatarRing: {
+          padding: 2,
+          borderRadius: Radius.pill,
+          borderWidth: 2,
         },
         participantAvatar: {},
         participantTextBlock: {
@@ -603,6 +646,16 @@ export default function MatchLobbyScreen() {
           right: 0,
           top: -3,
           height: 3,
+        },
+        levelSheetContent: {
+          gap: Spacing.md,
+          alignItems: 'center',
+          paddingHorizontal: Spacing.md,
+          paddingTop: Spacing.md,
+          paddingBottom: Spacing.xxl,
+        },
+        levelSheetName: {
+          fontWeight: '700',
         },
         controlsSection: {
           gap: Spacing.sm,
@@ -709,133 +762,140 @@ export default function MatchLobbyScreen() {
   }
 
   return (
-    <ThemedView
-      style={[
-        styles.container,
-        { paddingTop: insets.top + Spacing.lg },
-      ]}
-    >
-      <Stack.Screen options={{ headerShown: false }} />
-      <View style={styles.contentWrapper}>
-        <Animated.View
-          pointerEvents={pendingAction ? 'auto' : 'none'}
-          style={[
-            styles.pendingBannerContainer,
-            {
-              opacity: pendingBannerOpacity,
-              transform: [{ translateY: pendingBannerTranslateY }],
-            },
-          ]}
-        >
-          {pendingAction ? (
-            <View
-              style={styles.pendingBanner}
-              onLayout={(event) => {
-                const { height } = event.nativeEvent.layout;
-                if (height && Math.abs(height - pendingBannerHeight) > 0.5) {
-                  setPendingBannerHeight(height);
-                }
-              }}
-            >
-              <ThemedText type="subtitle" style={styles.pendingTitle}>
-                {pendingAction.label}
-              </ThemedText>
-              <ThemedText style={styles.pendingSubtitle}>
-                {pendingSeconds > 0
-                  ? `${pendingSeconds}초 후 자동 진행됩니다. 호스트가 취소할 수 있어요.`
-                  : '잠시 후 자동으로 실행됩니다.'}
-              </ThemedText>
-              {isSelfHost ? (
-                <Pressable style={styles.pendingCancelButton} onPress={handleCancelPending}>
-                  <ThemedText style={styles.pendingCancelLabel}>취소</ThemedText>
-                </Pressable>
-              ) : null}
-            </View>
-          ) : null}
-        </Animated.View>
-
-        <Animated.View
-          style={[
-            styles.contentStack,
-            { marginTop: pendingBannerOffset },
-          ]}
-        >
-          <ScrollView
-            style={styles.scrollRegion}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
+    <BottomSheetModalProvider>
+      <ThemedView
+        style={[
+          styles.container,
+          { paddingTop: insets.top + Spacing.lg },
+        ]}
+      >
+        <Stack.Screen options={{ headerShown: false }} />
+        <View style={styles.contentWrapper}>
+          <Animated.View
+            pointerEvents={pendingAction ? 'auto' : 'none'}
+            style={[
+              styles.pendingBannerContainer,
+              {
+                opacity: pendingBannerOpacity,
+                transform: [{ translateY: pendingBannerTranslateY }],
+              },
+            ]}
           >
-            <View style={styles.header}>
-              <ThemedText type="title">퀴즈룸</ThemedText>
-              <ThemedText style={styles.headerSubtitle}>로비에 입장했어요. 라이브 매치를 시작하세요!</ThemedText>
-              <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
-                <View style={styles.codeBadgeRow}>
-                  <View style={styles.codeBadge}>
-                    <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
-                  </View>
-                  <View style={styles.codeBadgeHintRow}>
-                    <IconSymbol name="document.on.document" size={16} color={mutedColor} />
-                    <ThemedText style={styles.codeBadgeHint}>코드 복사</ThemedText>
-                  </View>
-                </View>
-              </Pressable>
-              {lobby.deck ? (
-                <Accordion
-                  style={styles.deckCard}
-                  defaultOpen
-                  title={
-                    <View style={styles.deckCardTitleRow}>
-                      <IconSymbol
-                        name={getDeckIcon(lobby.deck.slug)}
-                        size={20}
-                        color={primaryColor}
-                      />
-                      <ThemedText style={styles.deckCardTitle}>
-                        {lobby.deck.title}
-                      </ThemedText>
-                    </View>
+            {pendingAction ? (
+              <View
+                style={styles.pendingBanner}
+                onLayout={(event) => {
+                  const { height } = event.nativeEvent.layout;
+                  if (height && Math.abs(height - pendingBannerHeight) > 0.5) {
+                    setPendingBannerHeight(height);
                   }
-                >
-                  <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
-                  <ThemedText style={styles.deckCardDescription}>
-                    • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
-                  </ThemedText>
-                  <ThemedText style={styles.deckCardDescription}>
-                    • 총 10라운드로 진행돼요.
-                  </ThemedText>
-                  <ThemedText style={styles.deckCardDescription}>• 최대 10명까지 참여할 수 있어요.</ThemedText>
-                  <ThemedText style={styles.deckCardWarning}>
-                    • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
-                  </ThemedText>
-                </Accordion>
-              ) : null}
-            </View>
-
-            <View style={styles.participantSection}>
-              <View style={styles.sectionTitleRow}>
-                <IconSymbol
-                  name="person"
-                  size={participantIconSize}
-                  color={theme.text}
-                  style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
-                />
-                <ThemedText style={styles.sectionTitle}>{participants.length}</ThemedText>
-              </View>
-              {participants.length === 0 ? (
-                <ThemedText style={styles.emptyText}>
-                  친구를 초대해 보세요! 위 코드를 공유해주세요.
+                }}
+              >
+                <ThemedText type="subtitle" style={styles.pendingTitle}>
+                  {pendingAction.label}
                 </ThemedText>
-              ) : (
+                <ThemedText style={styles.pendingSubtitle}>
+                  {pendingSeconds > 0
+                    ? `${pendingSeconds}초 후 자동 진행됩니다. 호스트가 취소할 수 있어요.`
+                    : '잠시 후 자동으로 실행됩니다.'}
+                </ThemedText>
+                {isSelfHost ? (
+                  <Pressable style={styles.pendingCancelButton} onPress={handleCancelPending}>
+                    <ThemedText style={styles.pendingCancelLabel}>취소</ThemedText>
+                  </Pressable>
+                ) : null}
+              </View>
+            ) : null}
+          </Animated.View>
+
+          <Animated.View
+            style={[
+              styles.contentStack,
+              { marginTop: pendingBannerOffset },
+            ]}
+          >
+            <ScrollView
+              style={styles.scrollRegion}
+              contentContainerStyle={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.header}>
+                <ThemedText type="title">퀴즈룸</ThemedText>
+                <ThemedText style={styles.headerSubtitle}>로비에 입장했어요. 라이브 매치를 시작하세요!</ThemedText>
+                <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
+                  <View style={styles.codeBadgeRow}>
+                    <View style={styles.codeBadge}>
+                      <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
+                    </View>
+                    <View style={styles.codeBadgeHintRow}>
+                      <IconSymbol name="document.on.document" size={16} color={mutedColor} />
+                      <ThemedText style={styles.codeBadgeHint}>코드 복사</ThemedText>
+                    </View>
+                  </View>
+                </Pressable>
+                {lobby.deck ? (
+                  <Accordion
+                    style={styles.deckCard}
+                    contentStyle={styles.deckCardContent}
+                    defaultOpen
+                    title={
+                      <View style={styles.deckCardTitleRow}>
+                        <IconSymbol
+                          name={getDeckIcon(lobby.deck.slug)}
+                          size={20}
+                          color={primaryColor}
+                        />
+                        <ThemedText style={styles.deckCardTitle}>
+                          {lobby.deck.title}
+                        </ThemedText>
+                      </View>
+                    }
+                  >
+                    <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
+                    <ThemedText style={styles.deckCardDescription}>
+                      • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
+                    </ThemedText>
+                    <ThemedText style={styles.deckCardDescription}>
+                      • 총 10라운드로 진행돼요.
+                    </ThemedText>
+                    <ThemedText style={styles.deckCardDescription}>• 최대 10명까지 참여할 수 있어요.</ThemedText>
+                    <ThemedText style={styles.deckCardWarning}>
+                      • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
+                    </ThemedText>
+                  </Accordion>
+                ) : null}
+              </View>
+
+              <View style={styles.participantSection}>
+                <View style={styles.sectionTitleRow}>
+                  <IconSymbol
+                    name="person"
+                    size={participantIconSize}
+                    color={theme.text}
+                    style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
+                  />
+                  <ThemedText style={styles.sectionTitle}>{participants.length}</ThemedText>
+                </View>
+                {participants.length === 0 ? (
+                  <ThemedText style={styles.emptyText}>
+                    친구를 초대해 보세요! 위 코드를 공유해주세요.
+                  </ThemedText>
+                ) : (
                 <View style={styles.participantGrid}>
                   {participants.map((participant) => {
                     const isMe = participant.participantId === meParticipant?.participantId;
+                    const levelInfo = participant.xp != null ? calculateLevel(participant.xp) : null;
+                    const levelTitle = levelInfo ? getLevelTitle(levelInfo.level) : null;
+                    const handlePressCard = levelInfo && levelTitle ? () => openLevelSheet(levelInfo.level, levelTitle, participant.nickname) : undefined;
                     return (
-                      <View
+                      <Pressable
                         key={participant.participantId}
                         style={[styles.participantCard, isMe && styles.participantCardMe]}
+                        onPress={handlePressCard}
+                        disabled={!handlePressCard}
                       >
-                        {renderParticipantAvatar(participant, isMe)}
+                        {renderParticipantAvatar(participant, isMe, levelInfo ?? undefined, levelTitle ?? undefined)}
                         <View style={styles.participantTextBlock}>
                           <View style={styles.participantNameRow}>
                             <ThemedText
@@ -843,104 +903,122 @@ export default function MatchLobbyScreen() {
                             >
                               {participant.nickname}
                             </ThemedText>
-                            {participant.xp != null && (
-                              <InlineLevelBadge level={calculateLevel(participant.xp).level} size="sm" />
-                            )}
                           </View>
-                          {!participant.isConnected ? (
-                            <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
-                          ) : null}
-                        </View>
+                            {!participant.isConnected ? (
+                              <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
+                            ) : null}
+                          </View>
                         <View style={styles.participantBottomRow}>
                           {participant.isHost ? (
                             <View style={styles.hostBadge}>
                               <IconSymbol name="crown.fill" size={18} color={accentForegroundColor} />
                               <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>
-                            </View>
-                          ) : (
-                            <View style={styles.statusDisplay}>
-                              {participant.isReady ? (
-                                <>
-                                  <IconSymbol
-                                    name="checkmark.shield"
-                                    size={20}
-                                    color={primaryColor}
-                                  />
-                                  <ThemedText style={styles.statusTextReady}>준비 완료</ThemedText>
-                                </>
-                              ) : (
-                                <ThemedText
-                                  style={[styles.statusTextWaiting, isMe && styles.statusTextWaitingMe]}
-                                >
-                                  대기 중
-                                </ThemedText>
-                              )}
-                            </View>
-                          )}
-                        </View>
-                      </View>
+                              </View>
+                            ) : (
+                              <View style={styles.statusDisplay}>
+                                {participant.isReady ? (
+                                  <>
+                                    <IconSymbol
+                                      name="checkmark.shield"
+                                      size={20}
+                                      color={primaryColor}
+                                    />
+                                    <ThemedText style={styles.statusTextReady}>준비 완료</ThemedText>
+                                  </>
+                                ) : (
+                                  <ThemedText
+                                    style={[styles.statusTextWaiting, isMe && styles.statusTextWaitingMe]}
+                                  >
+                                    대기 중
+                                  </ThemedText>
+                                )}
+                              </View>
+                            )}
+                          </View>
+                      </Pressable>
                     );
                   })}
                 </View>
               )}
-            </View>
-          </ScrollView>
+              </View>
+            </ScrollView>
 
-          <View>
-            <LinearGradient
-              colors={
-                colorScheme === 'light'
-                  ? ['rgba(0,0,0,0.05)', 'transparent']
-                  : ['rgba(0,0,0,0.2)', 'transparent']
-              }
-              style={styles.gradient}
-            />
-            <View style={[styles.controlsSection, { paddingBottom: insets.bottom + Spacing.xs }]}>
-              {readySummaryTotal > 0 ? (
-                <ThemedText style={styles.readySummaryText}>
-                  준비 완료 {readyCount}/{readySummaryTotal}
-                </ThemedText>
-              ) : null}
-              {meParticipant && !isSelfHost ? (
+            <View>
+              <LinearGradient
+                colors={
+                  colorScheme === 'light'
+                    ? ['rgba(0,0,0,0.05)', 'transparent']
+                    : ['rgba(0,0,0,0.2)', 'transparent']
+                }
+                style={styles.gradient}
+              />
+              <View style={[styles.controlsSection, { paddingBottom: insets.bottom + Spacing.xs }]}>
+                {readySummaryTotal > 0 ? (
+                  <ThemedText style={styles.readySummaryText}>
+                    준비 완료 {readyCount}/{readySummaryTotal}
+                  </ThemedText>
+                ) : null}
+                {meParticipant && !isSelfHost ? (
+                  <Button
+                    variant={isSelfReady ? 'secondary' : 'default'}
+                    size="lg"
+                    onPress={handleToggleReady}
+                    disabled={!!pendingAction}
+                  >
+                    {isSelfReady ? '준비 취소' : '준비 완료'}
+                  </Button>
+                ) : null}
+                {isSelfHost ? (
+                  <View style={styles.hostControls}>
+                    {readySummaryTotal > 0 ? (
+                      <ThemedText style={styles.hostHint}>
+                        {allReady
+                          ? '모든 참가자가 준비를 마쳤어요!'
+                          : '모든 참가자들이 준비 완료하면 시작할 수 있어요.'}
+                      </ThemedText>
+                    ) : null}
+                    <Button
+                      size="lg"
+                      onPress={handleStart}
+                      disabled={!allReady || !!pendingAction}
+                    >
+                      게임 시작
+                    </Button>
+                  </View>
+                ) : null}
                 <Button
-                  variant={isSelfReady ? 'secondary' : 'default'}
+                  variant="outline"
+                  onPress={handleLeave}
                   size="lg"
-                  onPress={handleToggleReady}
                   disabled={!!pendingAction}
                 >
-                  {isSelfReady ? '준비 취소' : '준비 완료'}
+                  나가기
                 </Button>
-              ) : null}
-              {isSelfHost ? (
-                <View style={styles.hostControls}>
-                  {readySummaryTotal > 0 ? (
-                    <ThemedText style={styles.hostHint}>
-                      {allReady
-                        ? '모든 참가자가 준비를 마쳤어요!'
-                        : '모든 참가자들이 준비 완료하면 시작할 수 있어요.'}
-                    </ThemedText>
-                  ) : null}
-                  <Button
-                    size="lg"
-                    onPress={handleStart}
-                    disabled={!allReady || !!pendingAction}
-                  >
-                    게임 시작
-                  </Button>
-                </View>
-              ) : null}
-              <Button
-                variant="outline"
-                onPress={handleLeave}
-                size="lg"
-                disabled={!!pendingAction}
-              >
-                나가기
-              </Button>
+              </View>
             </View>
-          </View>
-        </Animated.View>
-      </View>
-    </ThemedView>
+          </Animated.View>
+        </View>
+
+        <BottomSheetModal
+          ref={levelSheetRef}
+          onDismiss={closeLevelSheet}
+          backgroundStyle={{ backgroundColor: theme.card }}
+          handleIndicatorStyle={{ backgroundColor: mutedColor }}
+          enablePanDownToClose
+        >
+          {levelSheetData ? (
+            <BottomSheetView style={styles.levelSheetContent}>
+              <LevelBadge level={levelSheetData.level} showTitle />
+              <ThemedText type="title" style={styles.levelSheetName}>
+                {levelSheetData.name}
+              </ThemedText>
+              <Button variant="secondary" size="lg" fullWidth onPress={closeLevelSheet}>
+                닫기
+              </Button>
+            </BottomSheetView>
+          ) : null}
+        </BottomSheetModal>
+      </ThemedView>
+    </BottomSheetModalProvider>
   );
 }

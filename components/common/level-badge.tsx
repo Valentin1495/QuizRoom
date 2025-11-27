@@ -142,7 +142,7 @@ export function LevelBadge({
             />
           </View>
           <ThemedText style={[styles.progressText, { color: palette.textMuted }]}>
-            {levelInfo.current}/{levelInfo.next} XP
+            {levelInfo.current.toLocaleString()}/{levelInfo.next.toLocaleString()} XP
           </ThemedText>
         </View>
       )}
@@ -206,7 +206,7 @@ export function XpProgressBar({
       {showLabel && (
         <View style={styles.xpBarLabelRow}>
           <ThemedText style={[styles.xpBarLabel, { color: palette.textMuted }]}>
-            {levelInfo.current} / {levelInfo.next} XP
+            {levelInfo.current.toLocaleString()} / {levelInfo.next.toLocaleString()} XP
           </ThemedText>
           <ThemedText style={[styles.xpBarLabel, { color: levelColor }]}>
             {levelInfo.progress}%
@@ -318,4 +318,3 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
 });
-

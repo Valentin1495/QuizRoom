@@ -1,4 +1,4 @@
-import type { IconSymbolName } from '@/components/ui/icon-symbol';
+import type { IconSymbolName } from '../components/ui/icon-symbol';
 
 export type DailyCategory =
   | 'tech_it'

@@ -1,9 +1,7 @@
 import {
-  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
-  type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -127,6 +125,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const onboardingIndicatorActive = palette.text;
   const onboardingIndicatorInactive = colorScheme === 'dark' ? Palette.gray700 : Palette.gray200;
   const dangerColor = palette.danger;
+  const sheetStatBackground = colorScheme === 'dark' ? palette.cardElevated : palette.card;
+  const sheetStatBorder = palette.border;
   const logHistory = useMutation(api.history.logEntry);
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
 
@@ -183,6 +183,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const [reportSubject, setReportSubject] = useState<SwipeFeedQuestion | null>(null);
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
   const [activeCardHeight, setActiveCardHeight] = useState<number | null>(null);
+  const [cardOffset, setCardOffset] = useState(0);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingSlideIndex, setOnboardingSlideIndex] = useState(0);
   const onboardingFadeAnim = useRef(new Animated.Value(0)).current;
@@ -241,6 +242,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       setFeedback(null);
       setSheetFeedback(null);
       setActiveCardHeight(null);
+      setCardOffset(0);
       hideResultToast();
       closeSheet();
       closeActionsSheet();
@@ -403,6 +405,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     closeSheet();
     closeReportReasonSheet();
     hideResultToast();
+    setCardOffset((prev) => prev + 1);
   }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current, skip]);
 
   const handleReset = useCallback(async () => {
@@ -437,6 +440,10 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       return;
     }
     closeSheet();
+    setSelectedIndex(null);
+    setFeedback(null);
+    setSheetFeedback(null);
+    setCardOffset((prev) => prev + 1);
     advance();
   }, [advance, closeSheet, current, feedback]);
 
@@ -859,19 +866,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     [activeCardHeight]
   );
 
-  const renderBackdrop = useCallback(
-    (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        opacity={0.35}
-        pressBehavior="close"
-      />
-    ),
-    []
-  );
-
   if (!current && !showCompletion) {
     return (
       <View style={styles.emptyState}>
@@ -972,7 +966,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 key={card.id}
                 card={card}
                 index={index}
-                cardNumber={sessionStats.answered + index + 1}
+                cardNumber={cardOffset + index + 1}
                 isActive={index === 0}
                 selectedIndex={index === 0 ? selectedIndex : null}
                 feedback={index === 0 ? feedback : null}
@@ -995,7 +989,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               borderColor: palette.border,
             },
           ]}
-          backdropComponent={renderBackdrop}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
@@ -1008,6 +1001,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 variant="outline"
                 size="lg"
                 onPress={handleSkip}
+                disabled={!!feedback}
                 leftIcon={<IconSymbol name="forward.end" size={18} color={palette.text} />}
               >
                 건너뛰기
@@ -1041,7 +1035,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               borderColor: palette.border,
             },
           ]}
-          backdropComponent={renderBackdrop}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
@@ -1132,7 +1125,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               borderColor: palette.border,
             },
           ]}
-          backdropComponent={renderBackdrop}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
@@ -1144,7 +1136,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 {sheetFeedback.explanation ?? '해설이 없습니다.'}
               </ThemedText>
               <View style={styles.sheetStatsRow}>
-                <View style={styles.sheetStat}>
+                <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
                   <ThemedText style={styles.sheetStatLabel}>점수 변화</ThemedText>
                   <ThemedText style={styles.sheetStatValue}>
                     {sheetFeedback.scoreDelta >= 0
@@ -1152,7 +1144,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                       : sheetFeedback.scoreDelta}
                   </ThemedText>
                 </View>
-                <View style={styles.sheetStat}>
+                <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
                   <ThemedText style={styles.sheetStatLabel}>현재 연속 정답</ThemedText>
                   <ThemedText style={styles.sheetStatValue}>{sheetFeedback.streak}</ThemedText>
                 </View>
@@ -1485,12 +1477,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: Palette.gray25,
+    borderWidth: 1,
   },
   sheetStatLabel: {
     fontSize: 12,
     marginBottom: 4,
-    color: Palette.gray900,
+    color: Palette.gray500,
   },
   sheetStatValue: {
     fontSize: 16,

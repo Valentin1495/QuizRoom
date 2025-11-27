@@ -1,4 +1,4 @@
-import type { DailyCategory } from "@/constants/daily";
+import type { DailyCategory } from "../constants/daily";
 
 type FallbackQuestion = {
   id: string;

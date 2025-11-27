@@ -50,7 +50,7 @@ export function getLevelColor(level: number, isDark: boolean): string {
   if (level >= 15) return '#FFD700';     // 골드 - 금색
   if (level >= 10) return '#C0C0C0';     // 실버 - 은색
   if (level >= 5) return '#CD7F32';      // 브론즈 - 동색
-  return isDark ? '#71717A' : '#A1A1AA'; // 아이언 - 회색
+  return isDark ? '#9CA3AF' : '#6B7280'; // 아이언 - 대비를 높인 중간톤 그레이
 }
 
 // 레벨별 배경 색상 (더 연한 버전)
@@ -71,4 +71,3 @@ export function getXpToNextLevel(xp: number): number {
   const info = calculateLevel(xp);
   return info.next - info.current;
 }
-

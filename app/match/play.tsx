@@ -39,7 +39,9 @@ type ConnectionState = 'online' | 'reconnecting' | 'grace' | 'expired';
 type HostConnectionState = 'online' | 'waiting' | 'expired';
 const HOST_GRACE_SECONDS = 30;
 const HOST_GRACE_MS = HOST_GRACE_SECONDS * 1000;
-const HOST_HEARTBEAT_GRACE_MS = 7000;
+// Bandwidth optimization: increased from 7000 to 10000 to accommodate 8-second heartbeat interval
+// This value must be greater than HEARTBEAT_INTERVAL_MS (8000) to prevent false offline detection
+const HOST_HEARTBEAT_GRACE_MS = 10000;
 const HOST_SNAPSHOT_STALE_THRESHOLD_MS = HOST_HEARTBEAT_GRACE_MS * 2;
 
 export default function MatchPlayScreen() {
@@ -475,6 +477,7 @@ export default function MatchPlayScreen() {
 
 
     // Bandwidth optimization: increased heartbeat interval from 5s to 8s
+    // Note: HOST_HEARTBEAT_GRACE_MS (10s) must be greater than this value to prevent false offline detection
     const HEARTBEAT_INTERVAL_MS = 8000;
     useEffect(() => {
         if (hasLeft || disconnectReason || !participantArgs) return;

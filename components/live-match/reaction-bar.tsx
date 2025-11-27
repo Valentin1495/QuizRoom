@@ -11,8 +11,8 @@ export type ReactionEmoji = 'clap' | 'fire' | 'skull' | 'laugh';
 const REACTION_CONFIG: { emoji: ReactionEmoji; icon: string; label: string }[] = [
   { emoji: 'clap', icon: '👏', label: '박수' },
   { emoji: 'fire', icon: '🔥', label: '불꽃' },
-  { emoji: 'skull', icon: '💀', label: '아웃' },
-  { emoji: 'laugh', icon: '😂', label: '웃김' },
+  { emoji: 'skull', icon: '💀', label: '해골' },
+  { emoji: 'laugh', icon: '😂', label: '웃음' },
 ];
 
 export type ReactionBarProps = {
@@ -25,7 +25,7 @@ export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }:
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const palette = Colors[colorScheme ?? 'light'];
-  
+
   const [cooldowns, setCooldowns] = useState<Record<ReactionEmoji, boolean>>({
     clap: false,
     fire: false,
@@ -36,10 +36,10 @@ export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }:
   const handlePress = useCallback(
     (emoji: ReactionEmoji) => {
       if (disabled || cooldowns[emoji]) return;
-      
+
       lightHaptic();
       onReaction(emoji);
-      
+
       // 쿨다운 시작
       setCooldowns((prev) => ({ ...prev, [emoji]: true }));
       setTimeout(() => {
@@ -54,7 +54,7 @@ export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }:
       {REACTION_CONFIG.map(({ emoji, icon, label }) => {
         const isOnCooldown = cooldowns[emoji];
         const isDisabled = disabled || isOnCooldown;
-        
+
         return (
           <Pressable
             key={emoji}
@@ -85,7 +85,7 @@ export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }:
 export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  
+
   const [cooldowns, setCooldowns] = useState<Record<ReactionEmoji, boolean>>({
     clap: false,
     fire: false,
@@ -96,10 +96,10 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
   const handlePress = useCallback(
     (emoji: ReactionEmoji) => {
       if (disabled || cooldowns[emoji]) return;
-      
+
       mediumHaptic();
       onReaction(emoji);
-      
+
       setCooldowns((prev) => ({ ...prev, [emoji]: true }));
       setTimeout(() => {
         setCooldowns((prev) => ({ ...prev, [emoji]: false }));
@@ -113,7 +113,7 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
       {REACTION_CONFIG.map(({ emoji, icon }) => {
         const isOnCooldown = cooldowns[emoji];
         const isDisabled = disabled || isOnCooldown;
-        
+
         return (
           <Pressable
             key={emoji}

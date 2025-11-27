@@ -243,7 +243,7 @@ function ProfileHeader({
   const statusLine =
     user.streak > 0
       ? `🔥 연속 ${user.streak}일 출석 중`
-      : '퀴즈에 도전하고 스트릭을 쌓아보세요!';
+      : '퀴즈를 연속으로 플레이하고\n스트릭을 이어가세요!';
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
@@ -582,7 +582,7 @@ function HistorySection({
             textStyle={styles.historySeeAllLabel}
             contentStyle={styles.historySeeAllContent}
           >
-            전체보기
+            전체 보기
           </Button>
         ) : null}
       </View>
