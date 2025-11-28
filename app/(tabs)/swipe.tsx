@@ -65,6 +65,7 @@ export default function SwipeScreen() {
           </Button>
         </View>
         <SwipeStack
+          key={selectedCategory.slug}
           category={selectedCategory.slug}
           tags={selectedCategory.sampleTags}
           setSelectedCategory={setSelectedCategory}

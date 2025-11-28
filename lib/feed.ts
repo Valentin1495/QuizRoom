@@ -330,6 +330,15 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
         setCursor(response.nextCursor ?? null);
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      // NOT_AUTHENTICATED는 토큰 만료로 인한 일시적 상태일 수 있음 - 조용히 무시하고 재시도 대기
+      if (errorMessage.includes('NOT_AUTHENTICATED')) {
+        if (__DEV__) {
+          console.log('[Feed] Auth expired, waiting for token refresh...');
+        }
+        // hasMore를 유지해서 인증 복구 후 재시도 가능하게 함
+        return;
+      }
       console.error('Failed to fetch more:', error);
       setHasMore(false);
     } finally {

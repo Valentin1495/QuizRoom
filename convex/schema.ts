@@ -142,6 +142,7 @@ export default defineSchema({
     avatarUrl: v.optional(v.string()),
     interests: v.array(v.string()),
     streak: v.number(),
+    lastStreakDate: v.optional(v.string()),
     xp: v.number(),
     totalCorrect: v.number(),
     totalPlayed: v.number(),

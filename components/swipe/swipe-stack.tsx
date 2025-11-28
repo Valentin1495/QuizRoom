@@ -56,6 +56,7 @@ type SessionStats = {
   totalTimeMs: number;
   totalScoreDelta: number;
   maxStreak: number;
+  skipped: number;
 };
 
 const INITIAL_SESSION_STATS: SessionStats = {
@@ -64,6 +65,7 @@ const INITIAL_SESSION_STATS: SessionStats = {
   totalTimeMs: 0,
   totalScoreDelta: 0,
   maxStreak: 0,
+  skipped: 0,
 };
 
 const MIN_STACK_HEIGHT = 420;
@@ -127,12 +129,14 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const dangerColor = palette.danger;
   const sheetStatBackground = colorScheme === 'dark' ? palette.cardElevated : palette.card;
   const sheetStatBorder = palette.border;
+  const logStreakProgress = useMutation(api.users.logStreakProgress);
   const logHistory = useMutation(api.history.logEntry);
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<SwipeFeedback | null>(null);
   const [currentStreak, setCurrentStreak] = useState(0);
+  const currentStreakRef = useRef(0);
   const startTimeRef = useRef<number>(Date.now());
 
   const [sheetFeedback, setSheetFeedback] = useState<SwipeFeedback | null>(null);
@@ -174,6 +178,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   );
   const [sessionId, setSessionId] = useState<string>(() => createSwipeSessionId(filterKey));
   const sessionLoggedRef = useRef(false);
+  const streakLoggedRef = useRef(false);
   const previousFilterKey = useRef<string | null>(null);
   const currentQuestionIdRef = useRef<string | null>(null);
   type ReportPayload = Parameters<typeof reportQuestion>[0];
@@ -191,6 +196,16 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const indicatorAnims = useRef(
     ONBOARDING_SLIDES.map(() => new Animated.Value(8))
   ).current;
+
+  // 새로 진입/리프레시 시 세션 스트릭 및 스탯을 초기화해 이전 세션이 이어지지 않도록 함
+  useEffect(() => {
+    setCurrentStreak(0);
+    currentStreakRef.current = 0;
+    setSessionStats(INITIAL_SESSION_STATS);
+    sessionLoggedRef.current = false;
+    streakLoggedRef.current = false;
+    startTimeRef.current = Date.now();
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -250,6 +265,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       reset();
       setSessionId(createSwipeSessionId(filterKey));
       sessionLoggedRef.current = false;
+      streakLoggedRef.current = false;
     }
   }, [
     closeActionsSheet,
@@ -276,6 +292,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     closeSheet();
     closeActionsSheet();
     closeReportReasonSheet();
+    streakLoggedRef.current = false;
     startTimeRef.current = Date.now();
   }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current]);
 
@@ -338,30 +355,31 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               : null,
           explanation: response.explanation,
           scoreDelta: response.scoreDelta,
-          streak: response.streak,
+          streak: response.isCorrect ? currentStreakRef.current + 1 : 0,
         };
         const measuredTimeMs = Math.max(0, response.timeMs ?? timeMs);
         const scoreDelta = response.scoreDelta ?? 0;
-        const responseStreak = response.streak ?? 0;
+        const nextStreak = response.isCorrect ? currentStreakRef.current + 1 : 0;
         setSessionStats((prev) => {
           const answered = prev.answered + 1;
           const correct = prev.correct + (response.isCorrect ? 1 : 0);
           const totalTimeMs = prev.totalTimeMs + measuredTimeMs;
           const totalScoreDelta = prev.totalScoreDelta + scoreDelta;
-          const maxStreak = Math.max(prev.maxStreak, responseStreak);
+          const maxStreak = Math.max(prev.maxStreak, nextStreak);
           return {
             answered,
             correct,
             totalTimeMs,
             totalScoreDelta,
             maxStreak,
+            skipped: prev.skipped,
           };
         });
         const stillCurrent = currentQuestionIdRef.current === questionId;
         if (stillCurrent) {
           setFeedback(confirmedFeedback);
           setSheetFeedback(confirmedFeedback);
-          setCurrentStreak(responseStreak);
+          setCurrentStreak(nextStreak);
         }
         if (response.isCorrect !== optimisticIsCorrect) {
           if (response.isCorrect) {
@@ -378,7 +396,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
             message: response.isCorrect ? '정답으로 정정했어요.' : '오답으로 정정했어요.',
             kind: response.isCorrect ? 'success' : 'error',
             scoreDelta,
-            streak: responseStreak,
+            streak: nextStreak,
           });
         }
       } catch (error) {
@@ -405,6 +423,11 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     closeSheet();
     closeReportReasonSheet();
     hideResultToast();
+    setCurrentStreak(0);
+    setSessionStats((prev) => ({
+      ...prev,
+      skipped: prev.skipped + 1,
+    }));
     setCardOffset((prev) => prev + 1);
   }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current, skip]);
 
@@ -434,6 +457,10 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       console.warn('Reset failed:', error);
     }
   }, [closeActionsSheet, closeReportReasonSheet, closeSheet, filterKey, reset]);
+
+  useEffect(() => {
+    currentStreakRef.current = currentStreak;
+  }, [currentStreak]);
 
   const handleNext = useCallback(() => {
     if (!current || !feedback) {
@@ -508,6 +535,13 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     return Math.round((sessionStats.correct / sessionStats.answered) * 100);
   }, [sessionStats.answered, sessionStats.correct]);
 
+  const totalViewed = sessionStats.answered + sessionStats.skipped;
+
+  const processedPercent = useMemo(() => {
+    if (!totalViewed) return null;
+    return Math.round((sessionStats.answered / totalViewed) * 100);
+  }, [sessionStats.answered, totalViewed]);
+
   const averageSeconds = useMemo(() => {
     if (!sessionStats.answered) return null;
     return sessionStats.totalTimeMs / sessionStats.answered / 1000;
@@ -519,31 +553,34 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     return fixed.replace(/\.0+$/, '');
   }, [averageSeconds]);
 
+  const totalResponseLabel = useMemo(() => {
+    if (!sessionStats.answered) return null;
+    const totalSeconds = Math.round(sessionStats.totalTimeMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    if (minutes > 0) {
+      return `${minutes}분 ${seconds}초`;
+    }
+    return `${seconds}초`;
+  }, [sessionStats.answered, sessionStats.totalTimeMs]);
+
+  const totalXpEarned = useMemo(() => {
+    if (!sessionStats.answered) return 0;
+    const incorrect = sessionStats.answered - sessionStats.correct;
+    return sessionStats.correct * 15 + incorrect * 5;
+  }, [sessionStats.answered, sessionStats.correct]);
+
   const completionTitle = useMemo(() => {
     const answered = sessionStats.answered;
     if (!answered) return '🎉 스와이프 완주!';
     return `🎉 ${answered}문항 완주!`;
   }, [sessionStats.answered]);
 
-  const completionHighlight = useMemo(() => {
-    if (!sessionStats.answered || accuracyPercent === null) {
-      return '문항을 풀면 결과 요약을 볼 수 있어요.';
-    }
-    return `정답률 ${accuracyPercent}% · 평균 반응속도 ${formattedAverageSeconds}초 ⚡`;
-  }, [accuracyPercent, formattedAverageSeconds, sessionStats.answered]);
-
   const totalScoreLabel = useMemo(() => {
     if (!sessionStats.answered) return '+0';
     const value = Math.round(sessionStats.totalScoreDelta);
     return `${value >= 0 ? '+' : ''}${value}`;
   }, [sessionStats.answered, sessionStats.totalScoreDelta]);
-
-  const completionContext = useMemo(() => {
-    if (!sessionStats.answered) {
-      return '다음 카드도 빠르게 스와이프해보세요!';
-    }
-    return `정답 ${sessionStats.correct}/${sessionStats.answered}문항`;
-  }, [sessionStats.answered, sessionStats.correct]);
 
   useEffect(() => {
     if (!showCompletion) {
@@ -593,6 +630,27 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     sessionStats.totalTimeMs,
     showCompletion,
     tags,
+  ]);
+
+  useEffect(() => {
+    if (!showCompletion) return;
+    if (sessionStats.answered < 20) return; // 스와이프 완주 조건
+    if (authStatus !== 'authenticated') return;
+    if (streakLoggedRef.current) return;
+    streakLoggedRef.current = true;
+    void (async () => {
+      try {
+        await logStreakProgress({ mode: 'swipe', answered: sessionStats.answered });
+      } catch (error) {
+        console.warn('Failed to log swipe streak', error);
+        streakLoggedRef.current = false;
+      }
+    })();
+  }, [
+    authStatus,
+    logStreakProgress,
+    sessionStats.answered,
+    showCompletion,
   ]);
 
   const handleOpenSheet = useCallback(() => {
@@ -892,14 +950,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
           {showCompletion ? (
             <View style={styles.completionCard}>
               <ThemedText style={styles.completionTitle}>{completionTitle}</ThemedText>
-              <ThemedText
-                style={styles.completionHighlight}
-                lightColor={palette.primary}
-                darkColor={palette.primary}
-              >
-                {completionHighlight}
-              </ThemedText>
-              <ThemedText style={styles.completionContext}>{completionContext}</ThemedText>
               <View style={styles.completionMetrics}>
                 <View style={styles.completionMetric}>
                   <ThemedText style={styles.completionMetricLabel}>최고 연속 정답</ThemedText>
@@ -910,6 +960,40 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 <View style={styles.completionMetric}>
                   <ThemedText style={styles.completionMetricLabel}>획득 점수</ThemedText>
                   <ThemedText style={styles.completionMetricValue}>{totalScoreLabel}</ThemedText>
+                </View>
+                <View style={styles.completionMetric}>
+                  <ThemedText style={styles.completionMetricLabel}>정답률</ThemedText>
+                  <ThemedText style={styles.completionMetricValue}>
+                    {accuracyPercent !== null ? `${accuracyPercent}%` : '-'}
+                  </ThemedText>
+                  <ThemedText style={styles.completionMetricHint}>
+                    정답 {sessionStats.correct}/{Math.max(sessionStats.answered, 1)}
+                  </ThemedText>
+                </View>
+                <View style={styles.completionMetric}>
+                  <ThemedText style={styles.completionMetricLabel}>완료율</ThemedText>
+                  <ThemedText style={styles.completionMetricValue}>
+                    {processedPercent !== null ? `${processedPercent}%` : '-'}
+                  </ThemedText>
+                  <ThemedText style={styles.completionMetricHint}>
+                    응답 {sessionStats.answered}/{Math.max(totalViewed, 1)}
+                  </ThemedText>
+                </View>
+                <View style={styles.completionMetric}>
+                  <ThemedText style={styles.completionMetricLabel}>총 소요시간</ThemedText>
+                  <ThemedText style={styles.completionMetricValue}>
+                    {totalResponseLabel ?? '-'}
+                  </ThemedText>
+                  <ThemedText style={styles.completionMetricHint}>
+                    평균 {averageSeconds !== null ? `${formattedAverageSeconds}초` : '-'}
+                  </ThemedText>
+                </View>
+                <View style={styles.completionMetric}>
+                  <ThemedText style={styles.completionMetricLabel}>획득 XP</ThemedText>
+                  <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
+                  <ThemedText style={styles.completionMetricHint}>
+                    정답 +15 · 오답 +5
+                  </ThemedText>
                 </View>
               </View>
               <ThemedText style={styles.completionNote} lightColor={palette.textMuted} darkColor={palette.textMuted}>
@@ -928,20 +1012,22 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
             </View>
           ) : (
             <View style={styles.statusRow}>
-              <View style={styles.statusInfo}>
-                <IconSymbol name="rectangle.stack" size={16} color={palette.textMuted} />
-                <ThemedText
-                  style={styles.statusText}
-                  lightColor={palette.textMuted}
-                  darkColor={palette.textMuted}
-                >
-                  남은 카드 {prefetchCount}장
-                </ThemedText>
-              </View>
-              <View style={styles.statusRightSection}>
+              <View style={styles.statusLeft}>
+                <View style={styles.statusInfo}>
+                  <IconSymbol name="rectangle.stack" size={16} color={palette.textMuted} />
+                  <ThemedText
+                    style={styles.statusText}
+                    lightColor={palette.textMuted}
+                    darkColor={palette.textMuted}
+                  >
+                    남은 카드 {prefetchCount}장
+                  </ThemedText>
+                </View>
                 {currentStreak >= 1 && (
                   <ComboIndicator streak={currentStreak} size="sm" />
                 )}
+              </View>
+              <View style={styles.statusRight}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -1288,11 +1374,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
     gap: Spacing.sm,
     marginBottom: Spacing.md,
     marginTop: 0,
     position: 'relative',
     zIndex: 2,
+  },
+  statusLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    flexShrink: 1,
   },
   statusText: {
     fontSize: 12,
@@ -1303,7 +1396,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.xs,
   },
-  statusRightSection: {
+  statusRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
@@ -1326,10 +1419,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
   },
-  completionHighlight: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
   completionContext: {
     fontSize: 13,
     color: Palette.gray500,
@@ -1340,22 +1429,33 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   completionMetric: {
-    flex: 1,
+    flexBasis: '47%',
+    flexGrow: 1,
+    flexShrink: 1,
+    maxWidth: '50%',
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
     backgroundColor: 'rgba(229, 229, 229, 0.08)', // Neutral tint
     borderWidth: 1,
     borderColor: Palette.gray100,
+    gap: Spacing.xs / 2,
   },
   completionMetricLabel: {
     fontSize: 12,
     color: Palette.gray500,
-    marginBottom: Spacing.xs,
+    textAlign: 'left',
   },
   completionMetricValue: {
     fontSize: 16,
     fontWeight: '700',
+    textAlign: 'left',
+  },
+  completionMetricHint: {
+    fontSize: 12,
+    color: Palette.gray500,
+    marginTop: 2,
+    textAlign: 'left',
   },
   completionNote: {
     fontSize: 13,

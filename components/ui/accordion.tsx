@@ -24,7 +24,11 @@ interface AccordionProps extends PropsWithChildren {
 }
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
+  // Avoid calling the no-op Fabric implementation; only enable on the old architecture.
+  const isFabric = (global as typeof globalThis & { nativeFabricUIManager?: object }).nativeFabricUIManager != null;
+  if (!isFabric) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
 }
 
 export function Accordion({ title, defaultOpen = true, children, style, contentStyle }: AccordionProps) {

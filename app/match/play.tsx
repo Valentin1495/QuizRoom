@@ -116,6 +116,7 @@ export default function MatchPlayScreen() {
     const leaveRoom = useMutation(api.rooms.leave);
     const requestLobby = useMutation(api.rooms.requestLobby);
     const logHistory = useMutation(api.history.logEntry);
+    const logStreakProgress = useMutation(api.users.logStreakProgress);
     useEffect(() => {
         if (!disconnectReason && isWatchingState && roomState?.status === 'not_in_room') {
             notifyForcedExit();
@@ -339,6 +340,7 @@ export default function MatchPlayScreen() {
     const pauseToastActiveRef = useRef(false);
     const pauseToastHostRef = useRef<string | null>(null);
     const historyLoggedRef = useRef<string | null>(null);
+    const streakLoggedRef = useRef(false);
     const participantConnectivityRef = useRef<Map<string, boolean>>(new Map());
     const wasHostRef = useRef<boolean | null>(null);
     const roomStatusRef = useRef<string | null>(null);
@@ -997,6 +999,7 @@ export default function MatchPlayScreen() {
     useEffect(() => {
         if (roomStatus !== 'results') {
             historyLoggedRef.current = null;
+            streakLoggedRef.current = false;
             return;
         }
         if (authStatus !== 'authenticated' || !user) return;
@@ -1027,9 +1030,14 @@ export default function MatchPlayScreen() {
                         answered: meEntry.answers,
                     },
                 });
+                if (!streakLoggedRef.current) {
+                    await logStreakProgress({ mode: 'live_match' });
+                    streakLoggedRef.current = true;
+                }
             } catch (error) {
                 console.warn('Failed to log live match history entry', error);
                 historyLoggedRef.current = null;
+                streakLoggedRef.current = false;
             }
         })();
     }, [
@@ -1038,6 +1046,7 @@ export default function MatchPlayScreen() {
         participants,
         roomData,
         roomStatus,
+        logStreakProgress,
         user,
     ]);
 

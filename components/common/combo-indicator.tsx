@@ -60,6 +60,18 @@ export function ComboIndicator({ streak, multiplier, showGauge = false, size = '
 
   const actualMultiplier = multiplier ?? getComboMultiplier(streak);
   const comboColor = getComboColor(streak, isDark);
+  const labelColor =
+    streak < 3
+      ? palette.text
+      : streak >= 7 && streak < 10
+        ? isDark
+          ? '#FCE08A'
+          : '#6B4B00'
+        : comboColor;
+  const multiplierTextColor =
+    streak >= 7 && streak < 10
+      ? '#2B1C00' // 골드 배지에서 대비 확보
+      : '#FFFFFF';
   const progress = getComboProgress(streak);
   const nextThreshold = getNextComboThreshold(streak);
 
@@ -136,17 +148,17 @@ export function ComboIndicator({ streak, multiplier, showGauge = false, size = '
         />
         
         {/* 불꽃 아이콘 */}
-        <IconSymbol name="flame.fill" size={sizeStyles.icon} color={comboColor} />
+        <IconSymbol name="flame.fill" size={sizeStyles.icon} color={labelColor} />
         
         {/* 연속 정답 수 */}
-        <ThemedText style={[sizeStyles.text, { color: comboColor }]}>
+        <ThemedText style={[sizeStyles.text, { color: labelColor }]}>
           {streak}
         </ThemedText>
         
         {/* 배수 표시 (3연속 이상) */}
         {actualMultiplier > 1 && (
           <View style={[styles.multiplierBadge, { backgroundColor: comboColor }]}>
-            <ThemedText style={styles.multiplierText}>
+            <ThemedText style={[styles.multiplierText, { color: multiplierTextColor }]}>
               x{actualMultiplier.toFixed(1)}
             </ThemedText>
           </View>
@@ -248,7 +260,6 @@ const styles = StyleSheet.create({
   multiplierText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#FFFFFF',
   },
   gaugeContainer: {
     width: '100%',
@@ -285,4 +296,3 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-

@@ -6,7 +6,7 @@ import {
   getAuth,
   getIdToken,
   GoogleAuthProvider,
-  onAuthStateChanged,
+  onIdTokenChanged,
   signInWithCredential,
 } from "@react-native-firebase/auth";
 import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
@@ -22,7 +22,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Platform } from "react-native";
+import { AppState, Platform } from "react-native";
 
 type AuthStatus = "loading" | "unauthenticated" | "authorizing" | "authenticated" | "guest" | "error" | "upgrading";
 
@@ -357,7 +357,7 @@ export function AuthProvider({
   );
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(getAuth(), async (firebaseUser: FirebaseAuthTypes.User | null) => {
+    const unsubscribe = onIdTokenChanged(getAuth(), async (firebaseUser: FirebaseAuthTypes.User | null) => {
       if (!firebaseUser) {
         const fallbackStatus =
           lastSettledStatusRef.current === "guest" ? "guest" : "unauthenticated";
@@ -366,7 +366,8 @@ export function AuthProvider({
       }
 
       try {
-        const idToken = await getIdToken(firebaseUser);
+        // Force refresh to avoid stale/expired tokens causing NOT_AUTHENTICATED on Convex.
+        const idToken = await getIdToken(firebaseUser, true);
         const existing = tokensRef.current;
         if (existing?.idToken === idToken) {
           return;
@@ -379,7 +380,7 @@ export function AuthProvider({
             "firebase",
         });
       } catch (err) {
-        console.error("Failed to process Firebase auth state change", err);
+        console.error("Failed to process Firebase id token change", err);
         setStatus("error");
         setError(err instanceof Error ? err.message : "로그인 정보를 불러오지 못했습니다.");
       }
@@ -387,6 +388,40 @@ export function AuthProvider({
 
     return unsubscribe;
   }, [clearAuthState, setAuthTokens]);
+
+  // 앱이 포커스로 돌아올 때 토큰 갱신 (idle 상태에서 토큰 만료 방지)
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", async (nextAppState) => {
+      if (nextAppState === "active" && status === "authenticated") {
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          try {
+            const freshToken = await getIdToken(currentUser, true);
+            const existing = tokensRef.current;
+            if (existing?.idToken !== freshToken) {
+              if (__DEV__) {
+                console.log("[Auth] Refreshing token on app focus");
+              }
+              await setAuthTokens({
+                idToken: freshToken,
+                provider:
+                  currentUser.providerData[0]?.providerId ??
+                  currentUser.providerId ??
+                  "firebase",
+              });
+            }
+          } catch (err) {
+            if (__DEV__) {
+              console.warn("[Auth] Failed to refresh token on app focus", err);
+            }
+          }
+        }
+      }
+    });
+
+    return () => subscription.remove();
+  }, [setAuthTokens, status]);
 
   const signOut = useCallback(async () => {
     try {

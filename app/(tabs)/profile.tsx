@@ -44,7 +44,7 @@ type HistorySectionKey = 'daily' | 'swipe' | 'liveMatch';
 const HISTORY_PREVIEW_LIMIT = 3;
 
 export default function ProfileScreen() {
-  const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey } = useAuth();
+  const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey, isConvexReady } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
   const insets = useSafeAreaInsets();
@@ -79,7 +79,7 @@ export default function ProfileScreen() {
   const isAuthenticated = status === 'authenticated' && !!user;
   const history = useQuery(
     api.history.listHistory,
-    status === 'authenticated' ? { limit: 10 } : 'skip'
+    status === 'authenticated' && isConvexReady ? { limit: 10 } : 'skip'
   );
 
   const handleSignOut = useCallback(async () => {
@@ -243,7 +243,7 @@ function ProfileHeader({
   const statusLine =
     user.streak > 0
       ? `🔥 연속 ${user.streak}일 출석 중`
-      : '퀴즈를 연속으로 플레이하고\n스트릭을 이어가세요!';
+      : '퀴즈를 매일 플레이하고\n스트릭을 이어가세요!';
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');

@@ -351,11 +351,13 @@ export default function DailyQuizScreen() {
   const [results, setResults] = useState<QuestionResult[]>([]);
   const shareTemplate = dailyQuiz?.shareTemplate ?? null;
   const updateStats = useMutation(api.users.updateStats);
+  const logStreak = useMutation(api.users.logStreakProgress);
   const logHistory = useMutation(api.history.logEntry);
   const { status: authStatus } = useAuth();
   const [quizStartedAt, setQuizStartedAt] = useState<number | null>(null);
   const [quizDurationMs, setQuizDurationMs] = useState<number | null>(null);
   const historyLoggedRef = useRef<string | null>(null);
+  const streakLoggedRef = useRef(false);
 
   // 타이머 pulse 애니메이션
   const timerPulseOpacity = useSharedValue(1);
@@ -611,6 +613,24 @@ export default function DailyQuizScreen() {
       updateStats({ correct: correctCount });
     }
   }, [authStatus, phase, correctCount, updateStats]);
+
+  useEffect(() => {
+    if (phase !== 'finished') {
+      streakLoggedRef.current = false;
+      return;
+    }
+    if (authStatus !== 'authenticated') return;
+    if (streakLoggedRef.current) return;
+    streakLoggedRef.current = true;
+    void (async () => {
+      try {
+        await logStreak({ mode: 'daily' });
+      } catch (error) {
+        console.warn('Failed to log daily streak', error);
+        streakLoggedRef.current = false;
+      }
+    })();
+  }, [authStatus, phase, logStreak]);
 
   useEffect(() => {
     if (phase === 'finished' && quizDurationMs === null && quizStartedAt !== null) {

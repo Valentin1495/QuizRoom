@@ -2,6 +2,19 @@ import { v } from "convex/values";
 import { mutation, MutationCtx, query } from "./_generated/server";
 import { ensureAuthedUser } from "./lib/auth";
 
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+function getKstDateKey(ts: number = Date.now()): string {
+  const kstMs = ts + KST_OFFSET_MS;
+  return new Date(kstMs).toISOString().slice(0, 10); // YYYY-MM-DD
+}
+function diffDays(from?: string | null, to?: string | null): number | null {
+  if (!from || !to) return null;
+  const fromMs = Date.parse(from);
+  const toMs = Date.parse(to);
+  if (Number.isNaN(fromMs) || Number.isNaN(toMs)) return null;
+  return Math.floor((toMs - fromMs) / (24 * 60 * 60 * 1000));
+}
+
 // XP -> 레벨 변환 함수
 export function calculateLevel(xp: number): { 
   level: number; 
@@ -90,11 +103,41 @@ export const updateStats = mutation({
     const { user } = await ensureAuthedUser(ctx as MutationCtx);
 
     await ctx.db.patch(user._id, {
-      streak: user.streak + 1,
       xp: user.xp + correct * 10,
       totalCorrect: user.totalCorrect + correct,
       totalPlayed: user.totalPlayed + 5,
     });
+  },
+});
+
+export const logStreakProgress = mutation({
+  args: {
+    mode: v.union(v.literal("daily"), v.literal("swipe"), v.literal("live_match")),
+    answered: v.optional(v.number()),
+    dateKey: v.optional(v.string()),
+  },
+  handler: async (ctx, { mode, answered, dateKey }) => {
+    const { user } = await ensureAuthedUser(ctx as MutationCtx);
+    const today = dateKey ?? getKstDateKey();
+    const lastDate = user.lastStreakDate ?? null;
+
+    if (mode === "swipe" && (answered ?? 0) < 20) {
+      return { updated: false, reason: "insufficient_swipe_answers", streak: user.streak };
+    }
+
+    if (lastDate === today) {
+      return { updated: false, reason: "already_logged", streak: user.streak };
+    }
+
+    const delta = diffDays(lastDate, today);
+    const nextStreak = delta === 1 ? user.streak + 1 : 1;
+
+    await ctx.db.patch(user._id, {
+      streak: nextStreak,
+      lastStreakDate: today,
+    });
+
+    return { updated: true, streak: nextStreak, lastDate, date: today };
   },
 });
 

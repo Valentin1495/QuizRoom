@@ -25,7 +25,8 @@ const NOVELTY_BONUS = 0.2;
 const MIN_WEIGHT = 0.0001;
 const RECENT_ANSWERS_LOOKBACK = 120;
 const TOKEN_VERSION = "v1";
-const TOKEN_TTL_MS = 1000 * 60 * 10;
+// Allow idle users to answer without token expiry complaints; aligned with typical session length.
+const TOKEN_TTL_MS = 1000 * 60 * 30;
 const ANSWER_TOKEN_SECRET =
   process.env.ANSWER_TOKEN_SECRET ?? "quizroom-dev-secret";
 type QuestionDoc = Doc<"questions">;

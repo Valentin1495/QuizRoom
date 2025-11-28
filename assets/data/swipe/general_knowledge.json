@@ -716,19 +716,19 @@
         "choices": [
             {
                 "id": "a",
-                "text": "줍줍"
+                "text": "줍줍(무순위 청약)"
             },
             {
                 "id": "b",
-                "text": "무순위 청약"
-            },
-            {
-                "id": "c",
                 "text": "분양권 전매"
             },
             {
-                "id": "d",
+                "id": "c",
                 "text": "착공 지연"
+            },
+            {
+                "id": "d",
+                "text": "재건축 초과이익"
             }
         ],
         "answerIndex": 1,
@@ -2652,7 +2652,7 @@
             },
             {
                 "id": "d",
-                "text": "자율주행 트램"
+                "text": "자율주행 트램(Autonomous Tram)"
             }
         ],
         "answerIndex": 2,
@@ -3296,7 +3296,7 @@
         "deckSlug": "deck_seed_general_knowledge",
         "category": "general_knowledge",
         "type": "mcq",
-        "prompt": "국제 스포츠계에서 러시아와 벨라루스 선수들이 소속 국기 없이 중립 자격으로 참가하는 선수를 일컫는 공식 용어는?",
+        "prompt": "러시아와 벨라루스 출신 선수들이 국기·국호 없이 중립 신분으로 참가할 때 사용하는 공식 명칭은?",
         "tags": [
             "스포츠",
             "올림픽",
