@@ -2640,7 +2640,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "랜섬웨어"
+                "text": "랜섬웨어 (Ransomware)"
             },
             {
                 "id": "b",
@@ -2652,7 +2652,7 @@
             },
             {
                 "id": "d",
-                "text": "멀웨어"
+                "text": "멀웨어 (Malware)"
             }
         ],
         "answerIndex": 2,
@@ -2989,7 +2989,7 @@
             }
         ],
         "answerIndex": 2,
-        "explanation": "메타버스(Metaverse)는 '가상(Meta)'과 '현실(Universe)'의 합성어로, 사회적, 경제적 활동이 이루어지는 가상 세계를 의미하며 MZ세대에게 중요한 플랫폼이 되었습니다.",
+        "explanation": "메타버스 (Metaverse)는 '가상(Meta)'과 '현실(Universe)'의 합성어로, 사회적, 경제적 활동이 이루어지는 가상 세계를 의미하며 MZ세대에게 중요한 플랫폼이 되었습니다.",
         "difficulty": 0.3,
         "createdAt": 1761480100,
         "qualityScore": 0.5,

@@ -572,8 +572,15 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
 
   const completionTitle = useMemo(() => {
     const answered = sessionStats.answered;
-    if (!answered) return '🎉 스와이프 완주!';
-    return `🎉 ${answered}문항 완주!`;
+    const completed = answered >= 20;
+    return {
+      icon: completed ? 'party.popper' : 'rectangle.grid.2x2',
+      label: completed
+        ? `${answered}문항 완주!`
+        : answered > 0
+          ? `${answered}문항 풀이 요약`
+          : '스와이프 요약',
+    } as const;
   }, [sessionStats.answered]);
 
   const totalScoreLabel = useMemo(() => {
@@ -949,7 +956,10 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         >
           {showCompletion ? (
             <View style={styles.completionCard}>
-              <ThemedText style={styles.completionTitle}>{completionTitle}</ThemedText>
+              <View style={styles.completionHeader}>
+                <IconSymbol name={completionTitle.icon} size={28} color={palette.text} />
+                <ThemedText style={styles.completionTitle}>{completionTitle.label}</ThemedText>
+              </View>
               <View style={styles.completionMetrics}>
                 <View style={styles.completionMetric}>
                   <ThemedText style={styles.completionMetricLabel}>최고 연속 정답</ThemedText>
@@ -967,7 +977,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                     {accuracyPercent !== null ? `${accuracyPercent}%` : '-'}
                   </ThemedText>
                   <ThemedText style={styles.completionMetricHint}>
-                    정답 {sessionStats.correct}/{Math.max(sessionStats.answered, 1)}
+                    {sessionStats.correct}/{Math.max(sessionStats.answered, 1)} - 정답/응답
                   </ThemedText>
                 </View>
                 <View style={styles.completionMetric}>
@@ -976,7 +986,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                     {processedPercent !== null ? `${processedPercent}%` : '-'}
                   </ThemedText>
                   <ThemedText style={styles.completionMetricHint}>
-                    응답 {sessionStats.answered}/{Math.max(totalViewed, 1)}
+                    {sessionStats.answered}/{Math.max(totalViewed, 1)} - 응답/(응답+스킵)
                   </ThemedText>
                 </View>
                 <View style={styles.completionMetric}>
@@ -992,13 +1002,10 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                   <ThemedText style={styles.completionMetricLabel}>획득 XP</ThemedText>
                   <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
                   <ThemedText style={styles.completionMetricHint}>
-                    정답 +15 · 오답 +5
+                    정답 시 +15{'\n'}오답 시 +5
                   </ThemedText>
                 </View>
               </View>
-              <ThemedText style={styles.completionNote} lightColor={palette.textMuted} darkColor={palette.textMuted}>
-                다시 도전해서 연속 정답 횟수를 늘려보세요.
-              </ThemedText>
               <View style={styles.completionActions}>
                 <Pressable style={styles.primaryButton} onPress={handleReset}>
                   <ThemedText style={styles.primaryButtonLabel} lightColor="#fff" darkColor="#fff">
@@ -1419,6 +1426,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
   },
+  completionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
   completionContext: {
     fontSize: 13,
     color: Palette.gray500,
@@ -1456,9 +1468,6 @@ const styles = StyleSheet.create({
     color: Palette.gray500,
     marginTop: 2,
     textAlign: 'left',
-  },
-  completionNote: {
-    fontSize: 13,
   },
   completionActions: {
     flexDirection: 'row',
