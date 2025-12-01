@@ -5,6 +5,7 @@ import type { Doc, Id } from "./_generated/dataModel";
 import type { QueryCtx } from "./_generated/server";
 import { mutation, query } from "./_generated/server";
 import { ensureAuthedUser, getAuthedUser } from "./lib/auth";
+import { applyStreakBonus, getStreakMultiplier } from "./users";
 
 const DEFAULT_FEED_LIMIT = 20;
 const MAX_FEED_LIMIT = 50;
@@ -791,10 +792,14 @@ export const submitAnswer = mutation({
     const nextLastResetAt = resetExpired ? now : lastResetAt || now;
 
     const existingSwipe = swipePref ?? {};
+    // 스트릭 보너스 적용 (정답일 때만 XP 지급)
+    const baseXp = isCorrect ? 15 : 0;
+    const xpGain = isCorrect ? applyStreakBonus(baseXp, user.streak) : 0;
+
     await ctx.db.patch(user._id, {
       skill: updatedSkill,
       streak: isCorrect ? user.streak + 1 : 0,
-      xp: user.xp + (isCorrect ? 15 : 5),
+      xp: user.xp + xpGain,
       totalPlayed: user.totalPlayed + 1,
       totalCorrect: user.totalCorrect + (isCorrect ? 1 : 0),
       sessionPref: {
@@ -821,6 +826,7 @@ export const submitAnswer = mutation({
     const baseScoreDelta = Math.round((result - expected) * 100);
     const scoreDelta = isCorrect ? Math.round(baseScoreDelta * comboMultiplier) : baseScoreDelta;
 
+    const streakMultiplier = getStreakMultiplier(user.streak);
     return {
       isCorrect,
       correctChoiceId: correctEntry.choice.id,
@@ -831,6 +837,8 @@ export const submitAnswer = mutation({
       nextQuestionElo: updatedQuestionElo,
       expected,
       timeMs,
+      xpGain,
+      streakMultiplier: isCorrect && streakMultiplier > 1 ? streakMultiplier : null,
     };
   },
 });
@@ -974,6 +982,53 @@ export const toggleBookmark = mutation({
     });
 
     return { bookmarked: true };
+  },
+});
+
+// 스와이프 세션 XP 상수
+const SWIPE_SESSION_THRESHOLD = 20;     // 세션 완료 기준 문제 수
+const SWIPE_COMPLETION_BONUS = 30;      // 세션 완료 시 +30 XP
+const SWIPE_PERFECT_BONUS = 50;         // 전부 정답 시 +50 XP
+
+export const completeSwipeSession = mutation({
+  args: {
+    answered: v.number(),
+    correct: v.number(),
+  },
+  handler: async (ctx, { answered, correct }) => {
+    const { user } = await ensureAuthedUser(ctx);
+
+    // 세션 기준 미달
+    if (answered < SWIPE_SESSION_THRESHOLD) {
+      return {
+        success: false,
+        reason: "insufficient_answers",
+        xpGain: 0,
+      };
+    }
+
+    // 완료 보너스 계산
+    let bonusXp = SWIPE_COMPLETION_BONUS;
+
+    // 퍼펙트 보너스 (모두 정답)
+    if (correct >= answered) {
+      bonusXp += SWIPE_PERFECT_BONUS;
+    }
+
+    // 스트릭 보너스 적용
+    const xpGain = applyStreakBonus(bonusXp, user.streak);
+
+    await ctx.db.patch(user._id, {
+      xp: user.xp + xpGain,
+    });
+
+    return {
+      success: true,
+      xpGain,
+      completionBonus: SWIPE_COMPLETION_BONUS,
+      perfectBonus: correct >= answered ? SWIPE_PERFECT_BONUS : 0,
+      streakMultiplier: getStreakMultiplier(user.streak),
+    };
   },
 });
 

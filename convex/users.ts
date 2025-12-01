@@ -16,26 +16,26 @@ function diffDays(from?: string | null, to?: string | null): number | null {
 }
 
 // XP -> 레벨 변환 함수
-export function calculateLevel(xp: number): { 
-  level: number; 
-  current: number; 
-  next: number; 
+export function calculateLevel(xp: number): {
+  level: number;
+  current: number;
+  next: number;
   progress: number;
   totalXpForLevel: number;
 } {
   let level = 1;
   let totalXp = 0;
-  
+
   // 레벨당 필요 XP: 100 * level^1.5
   while (totalXp + Math.floor(100 * Math.pow(level, 1.5)) <= xp) {
     totalXp += Math.floor(100 * Math.pow(level, 1.5));
     level++;
   }
-  
+
   const current = xp - totalXp;
   const next = Math.floor(100 * Math.pow(level, 1.5));
   const progress = Math.min(100, Math.round((current / next) * 100));
-  
+
   return { level, current, next, progress, totalXpForLevel: totalXp };
 }
 
@@ -50,6 +50,23 @@ export function getLevelTitle(level: number): string {
   if (level >= 10) return '실버';
   if (level >= 5) return '브론즈';
   return '아이언';
+}
+
+// 스트릭 보너스 배율 (연속 플레이 일수에 따라 차등)
+export function getStreakMultiplier(streak: number): number {
+  if (streak >= 7) return 2.0;  // 7일+ 연속: ×2.0
+  if (streak >= 6) return 1.8;  // 6일 연속: ×1.8
+  if (streak >= 5) return 1.6;  // 5일 연속: ×1.6
+  if (streak >= 4) return 1.4;  // 4일 연속: ×1.4
+  if (streak >= 3) return 1.25; // 3일 연속: ×1.25
+  if (streak >= 2) return 1.1;  // 2일 연속: ×1.1
+  return 1.0;                   // 1일 이하: ×1.0
+}
+
+// 스트릭 보너스 적용
+export function applyStreakBonus(baseXp: number, streak: number): number {
+  const multiplier = getStreakMultiplier(streak);
+  return Math.round(baseXp * multiplier);
 }
 
 export const ensureSelf = mutation({
@@ -95,18 +112,45 @@ export const getSelfStats = query({
   },
 });
 
+// 데일리 퀴즈 XP 상수
+const DAILY_XP_PER_CORRECT = 10;    // 정답당 +10 XP
+const DAILY_COMPLETION_BONUS = 50;   // 6문제 완료 시 +50 XP
+const DAILY_PERFECT_BONUS = 30;      // 6문제 전부 정답 시 추가 +30 XP
+const DAILY_TOTAL_QUESTIONS = 6;
+
 export const updateStats = mutation({
   args: {
     correct: v.number(),
+    total: v.optional(v.number()), // 총 문제 수 (완료 여부 판단용)
   },
-  handler: async (ctx, { correct }) => {
+  handler: async (ctx, { correct, total }) => {
     const { user } = await ensureAuthedUser(ctx as MutationCtx);
 
+    // 기본 정답 XP
+    let xpGain = correct * DAILY_XP_PER_CORRECT;
+
+    // 완료 보너스 (6문제 모두 풀었을 때)
+    const questionsAnswered = total ?? DAILY_TOTAL_QUESTIONS;
+    if (questionsAnswered >= DAILY_TOTAL_QUESTIONS) {
+      xpGain += DAILY_COMPLETION_BONUS;
+
+      // 퍼펙트 보너스 (6문제 전부 정답)
+      if (correct >= DAILY_TOTAL_QUESTIONS) {
+        xpGain += DAILY_PERFECT_BONUS;
+      }
+    }
+
     await ctx.db.patch(user._id, {
-      xp: user.xp + correct * 10,
+      xp: user.xp + xpGain,
       totalCorrect: user.totalCorrect + correct,
-      totalPlayed: user.totalPlayed + 5,
+      totalPlayed: user.totalPlayed + questionsAnswered,
     });
+
+    return {
+      xpGain,
+      completionBonus: questionsAnswered >= DAILY_TOTAL_QUESTIONS ? DAILY_COMPLETION_BONUS : 0,
+      perfectBonus: correct >= DAILY_TOTAL_QUESTIONS ? DAILY_PERFECT_BONUS : 0,
+    };
   },
 });
 

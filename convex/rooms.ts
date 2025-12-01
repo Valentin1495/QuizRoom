@@ -4,6 +4,7 @@ import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { internalMutation, mutation, query } from "./_generated/server";
 import { ensureAuthedUser, getOptionalAuthedUser } from "./lib/auth";
+import { applyStreakBonus } from "./users";
 
 type CtxWithDb = Pick<MutationCtx, "db"> | Pick<QueryCtx, "db">;
 
@@ -1538,6 +1539,14 @@ export const submitAnswer = mutation({
     },
 });
 
+// 라이브 매치 XP 상수
+const LIVE_MATCH_PARTICIPATION_XP = 30;  // 참여 보너스
+const LIVE_MATCH_RANK_XP: Record<number, number> = {
+    1: 100,  // 1등
+    2: 50,   // 2등
+    3: 30,   // 3등
+};
+
 export const finish = mutation({
     args: {
         roomId: v.id("liveMatchRooms"),
@@ -1548,8 +1557,58 @@ export const finish = mutation({
         if (!room) {
             return;
         }
-        room = (await refreshRoomParticipants(ctx, room)).room;
+        const refreshed = await refreshRoomParticipants(ctx, room);
+        room = refreshed.room;
+        const participants = refreshed.participants;
         await resolveHostParticipant(ctx, room, args.guestKey);
+
+        // 각 참가자의 정답 수 조회
+        const allAnswers = await ctx.db
+            .query("liveMatchAnswers")
+            .withIndex("by_room_round", (q) => q.eq("roomId", room._id))
+            .collect();
+
+        const correctCountByParticipant = new Map<Id<"liveMatchParticipants">, number>();
+        for (const answer of allAnswers) {
+            if (answer.isCorrect) {
+                const current = correctCountByParticipant.get(answer.participantId) ?? 0;
+                correctCountByParticipant.set(answer.participantId, current + 1);
+            }
+        }
+
+        // 참가자 점수 순 정렬 및 랭킹 부여
+        const sortedParticipants = [...participants].sort((a, b) => {
+            if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
+            const correctA = correctCountByParticipant.get(a._id) ?? 0;
+            const correctB = correctCountByParticipant.get(b._id) ?? 0;
+            if (correctB !== correctA) return correctB - correctA;
+            return a.joinedAt - b.joinedAt;
+        });
+        const rankedParticipants = attachRanks(sortedParticipants);
+
+        // 인증된 사용자에게 XP 지급
+        for (const participant of rankedParticipants) {
+            if (!participant.userId) continue; // 게스트는 XP 지급 안함
+
+            const user = await ctx.db.get(participant.userId);
+            if (!user) continue;
+
+            // 기본 참여 XP + 순위 보너스
+            let baseXp = LIVE_MATCH_PARTICIPATION_XP;
+            const rankBonus = LIVE_MATCH_RANK_XP[participant.rank] ?? 0;
+            baseXp += rankBonus;
+
+            // 스트릭 보너스 적용
+            const xpGain = applyStreakBonus(baseXp, user.streak);
+
+            const correctCount = correctCountByParticipant.get(participant._id) ?? 0;
+            await ctx.db.patch(user._id, {
+                xp: user.xp + xpGain,
+                totalPlayed: user.totalPlayed + room.totalRounds,
+                totalCorrect: user.totalCorrect + correctCount,
+            });
+        }
+
         await ctx.db.patch(room._id, {
             status: "results",
             serverNow: Date.now(),

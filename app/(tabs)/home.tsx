@@ -1,3 +1,4 @@
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery } from 'convex/react';
 import { Link, useRouter } from 'expo-router';
@@ -6,6 +7,7 @@ import type { TextInput as RNTextInput } from 'react-native';
 import {
   Alert,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -14,6 +16,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge } from '@/components/common/level-badge';
+import { LevelInfoSheet } from '@/components/common/level-info-sheet';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Avatar, GuestAvatar } from '@/components/ui/avatar';
@@ -27,6 +30,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { extractJoinErrorMessage, useJoinLiveMatchRoom } from '@/lib/api';
 import { deriveGuestAvatarId, deriveGuestNickname } from '@/lib/guest';
+import { calculateLevel } from '@/lib/level';
 
 function formatTimeLeft(target: Date) {
   const diff = target.getTime() - Date.now();
@@ -55,6 +59,7 @@ export default function HomeScreen() {
   const [isJoining, setIsJoining] = useState(false);
   const [isClearingStorage, setIsClearingStorage] = useState(false);
   const joinNicknameInputRef = useRef<RNTextInput | null>(null);
+  const levelSheetRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -115,6 +120,7 @@ export default function HomeScreen() {
   const isAuthenticated = authStatus === 'authenticated' && !!user;
   const isGuest = authStatus === 'guest';
   const greetingName = isAuthenticated ? user.handle : '';
+  const currentLevel = useMemo(() => (user ? calculateLevel(user.xp).level : 1), [user]);
 
   // const handleAppleLogin = useCallback(() => {
   //   Alert.alert('Apple 로그인', 'Apple 로그인은 준비 중이에요. 잠시만 기다려 주세요!');
@@ -202,219 +208,232 @@ export default function HomeScreen() {
     );
   }, [isClearingStorage]);
 
-  return (
-    <ThemedView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl + insets.bottom },
-        ]}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <View
-          style={[
-            styles.welcomeCard,
-            { backgroundColor: cardBackground, borderColor },
-          ]}
-        >
-          {isAuthenticated && user ? (
-            <Avatar
-              uri={user.avatarUrl}
-              name={user.handle}
-              size="lg"
-              radius={Radius.pill}
-            />
-          ) : (
-            <GuestAvatar
-              size="lg"
-              radius={Radius.pill}
-              guestId={guestAvatarId}
-            />
-          )}
-          <View style={styles.welcomeText}>
-            <View style={styles.welcomeNameRow}>
-              <ThemedText type="subtitle" style={styles.welcomeGreeting}>
-                안녕하세요. {greetingName}
-              </ThemedText>
-              {isAuthenticated && user && (
-                <LevelBadge xp={user.xp} size="sm" />
-              )}
-            </View>
-          </View>
-        </View>
+  const openLevelSheet = useCallback(() => {
+    levelSheetRef.current?.present();
+  }, []);
 
-        <View style={styles.section}>
-          <SectionHeader title="데일리 퀴즈" tagline="60초 OX 퀴즈" muted={muted} />
+  const closeLevelSheet = useCallback(() => {
+    levelSheetRef.current?.dismiss();
+  }, []);
+
+  return (
+    <BottomSheetModalProvider>
+      <ThemedView style={styles.container}>
+        <ScrollView
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl + insets.bottom },
+          ]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <View
             style={[
-              styles.dailyCard,
+              styles.welcomeCard,
               { backgroundColor: cardBackground, borderColor },
             ]}
           >
-            <View style={styles.dailyHeadlineContainer}>
-              {dailyHeadline.state === 'loading' ? (
-                <View
-                  style={[
-                    styles.dailyHeadlineSkeleton,
-                    { backgroundColor: dailyHeadlineSkeletonColor },
-                  ]}
-                />
-              ) : dailyHeadline.state === 'ready' && dailyHeadline.category ? (
-                <View style={styles.dailyHeadlineRow}>
-                  <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
+            {isAuthenticated && user ? (
+              <Avatar
+                uri={user.avatarUrl}
+                name={user.handle}
+                size="lg"
+                radius={Radius.pill}
+              />
+            ) : (
+              <GuestAvatar
+                size="lg"
+                radius={Radius.pill}
+                guestId={guestAvatarId}
+              />
+            )}
+            {isAuthenticated && user ? (
+              <Pressable onPress={openLevelSheet} hitSlop={8}>
+                <LevelBadge xp={user.xp} size="sm" showTitle />
+              </Pressable>
+            ) : null}
+            <View style={styles.welcomeText}>
+              <View style={styles.welcomeNameRow}>
+                <ThemedText type="subtitle" style={styles.welcomeGreeting}>
+                  안녕하세요. {greetingName}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <SectionHeader title="데일리 퀴즈" tagline="60초 OX 퀴즈" muted={muted} />
+            <View
+              style={[
+                styles.dailyCard,
+                { backgroundColor: cardBackground, borderColor },
+              ]}
+            >
+              <View style={styles.dailyHeadlineContainer}>
+                {dailyHeadline.state === 'loading' ? (
                   <View
                     style={[
-                      styles.dailyHeadlineBadge,
-                      { borderColor, backgroundColor: palette.card },
+                      styles.dailyHeadlineSkeleton,
+                      { backgroundColor: dailyHeadlineSkeletonColor },
                     ]}
-                  >
-                    <IconSymbol
-                      name={dailyHeadline.category.icon}
-                      size={20}
-                      color={palette.text}
-                    />
-                    <ThemedText style={styles.dailyHeadlineBadgeLabel}>
-                      {dailyHeadline.category.label}
-                    </ThemedText>
+                  />
+                ) : dailyHeadline.state === 'ready' && dailyHeadline.category ? (
+                  <View style={styles.dailyHeadlineRow}>
+                    <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
+                    <View
+                      style={[
+                        styles.dailyHeadlineBadge,
+                        { borderColor, backgroundColor: palette.card },
+                      ]}
+                    >
+                      <IconSymbol
+                        name={dailyHeadline.category.icon}
+                        size={20}
+                        color={palette.text}
+                      />
+                      <ThemedText style={styles.dailyHeadlineBadgeLabel}>
+                        {dailyHeadline.category.label}
+                      </ThemedText>
+                    </View>
+                    {dailyHeadline.suffix ? (
+                      <ThemedText style={styles.dailyHeadline}>{dailyHeadline.suffix}</ThemedText>
+                    ) : null}
                   </View>
-                  {dailyHeadline.suffix ? (
-                    <ThemedText style={styles.dailyHeadline}>{dailyHeadline.suffix}</ThemedText>
-                  ) : null}
-                </View>
+                ) : (
+                  <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
+                )}
+              </View>
+              {hasDailyQuiz ? (
+                <Link href="/daily" asChild>
+                  <Button
+                    variant="default"
+                    size="lg"
+                    rounded="full"
+                    style={styles.primaryButton}
+                  >
+                    {dailyCTA}
+                  </Button>
+                </Link>
               ) : (
-                <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
-              )}
-            </View>
-            {hasDailyQuiz ? (
-              <Link href="/daily" asChild>
                 <Button
                   variant="default"
                   size="lg"
                   rounded="full"
                   style={styles.primaryButton}
+                  loading={isLoadingDailyQuiz}
+                  disabled={!isLoadingDailyQuiz}
                 >
                   {dailyCTA}
                 </Button>
-              </Link>
-            ) : (
+              )}
+              <View
+                style={[
+                  styles.timerPill,
+                  { borderColor },
+                ]}
+              >
+                <IconSymbol
+                  name='hourglass'
+                  size={18}
+                  color={textColor}
+                  style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
+                />
+                <ThemedText style={styles.timerLabel}>
+                  {timeLeft}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" muted={muted} />
+            <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
+            >
+              <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
+              <TextInput
+                value={liveMatchRoomCode}
+                onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+                placeholder="A1B2C3"
+                autoCapitalize="characters"
+                autoCorrect={false}
+                autoComplete="off"
+                importantForAutofill="no"
+                submitBehavior="submit"
+                returnKeyType="next"
+                onSubmitEditing={() => joinNicknameInputRef.current?.focus()}
+                maxLength={6}
+                style={[styles.partyInput, { backgroundColor: palette.background, borderColor, color: palette.text, letterSpacing: 4 }]}
+                placeholderTextColor={muted}
+                editable={!isJoining}
+              />
+              <TextInput
+                ref={joinNicknameInputRef}
+                value={joinNickname}
+                onChangeText={setJoinNickname}
+                placeholder="닉네임"
+                maxLength={24}
+                autoCapitalize="none"
+                autoCorrect={false}
+                autoComplete="nickname"
+                returnKeyType="done"
+                onSubmitEditing={handleJoinLiveMatchRoomSubmit}
+                editable={!isGuest}
+                selectTextOnFocus={!isGuest}
+                style={[
+                  styles.partyInput,
+                  { backgroundColor: palette.background, borderColor, color: palette.text },
+                  isGuest && { backgroundColor: palette.cardElevated, color: subtle },
+                ]}
+                placeholderTextColor={muted}
+              />
               <Button
                 variant="default"
                 size="lg"
                 rounded="full"
-                style={styles.primaryButton}
-                loading={isLoadingDailyQuiz}
-                disabled={!isLoadingDailyQuiz}
+                style={styles.joinButton}
+                textStyle={styles.joinButtonLabel}
+                onPress={handleJoinLiveMatchRoom}
+                disabled={!isCodeValid}
+                loading={isJoining}
+                fullWidth
               >
-                {dailyCTA}
+                {isJoining ? '참가 중…' : '참가하기'}
               </Button>
-            )}
-            <View
-              style={[
-                styles.timerPill,
-                { borderColor },
-              ]}
-            >
-              <IconSymbol
-                name='hourglass'
-                size={18}
-                color={textColor}
-                style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
-              />
-              <ThemedText style={styles.timerLabel}>
-                {timeLeft}
-              </ThemedText>
+              <Link href="/live-match" asChild>
+                <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.right' size={16} color={textColor} />}>
+                  새 퀴즈룸 만들기
+                </Button>
+              </Link>
             </View>
           </View>
-        </View>
 
-        <View style={styles.section}>
-          <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" muted={muted} />
-          <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
-          >
-            <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
-            <TextInput
-              value={liveMatchRoomCode}
-              onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
-              placeholder="A1B2C3"
-              autoCapitalize="characters"
-              autoCorrect={false}
-              autoComplete="off"
-              importantForAutofill="no"
-              submitBehavior="submit"
-              returnKeyType="next"
-              onSubmitEditing={() => joinNicknameInputRef.current?.focus()}
-              maxLength={6}
-              style={[styles.partyInput, { backgroundColor: palette.background, borderColor, color: palette.text, letterSpacing: 4 }]}
-              placeholderTextColor={muted}
-              editable={!isJoining}
-            />
-            <TextInput
-              ref={joinNicknameInputRef}
-              value={joinNickname}
-              onChangeText={setJoinNickname}
-              placeholder="닉네임"
-              maxLength={24}
-              autoCapitalize="none"
-              autoCorrect={false}
-              autoComplete="nickname"
-              returnKeyType="done"
-              onSubmitEditing={handleJoinLiveMatchRoomSubmit}
-              editable={!isGuest}
-              selectTextOnFocus={!isGuest}
-              style={[
-                styles.partyInput,
-                { backgroundColor: palette.background, borderColor, color: palette.text },
-                isGuest && { backgroundColor: palette.cardElevated, color: subtle },
-              ]}
-              placeholderTextColor={muted}
-            />
-            <Button
-              variant="default"
-              size="lg"
-              rounded="full"
-              style={styles.joinButton}
-              textStyle={styles.joinButtonLabel}
-              onPress={handleJoinLiveMatchRoom}
-              disabled={!isCodeValid}
-              loading={isJoining}
-              fullWidth
-            >
-              {isJoining ? '참가 중…' : '참가하기'}
-            </Button>
-            <Link href="/live-match" asChild>
-              <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.right' size={16} color={textColor} />}>
-                새 퀴즈룸 만들기
-              </Button>
-            </Link>
-          </View>
-        </View>
-
-        {__DEV__ ? (
-          <View style={styles.section}>
-            <SectionHeader title="디버그" tagline="개발 중 전용 도구" muted={muted} />
-            <View style={[styles.debugCard, { backgroundColor: cardBackground, borderColor }]}>
-              <ThemedText style={styles.debugTitle}>AsyncStorage 초기화</ThemedText>
-              <ThemedText style={[styles.debugDescription, { color: muted }]}>
-                로컬에 저장된 온보딩, 세션 등 모든 값을 삭제합니다. 개발 중에만 사용하세요.
-              </ThemedText>
-              <Button
-                variant="destructive"
-                size="md"
-                rounded="full"
-                onPress={handleClearAsyncStorage}
-                loading={isClearingStorage}
-                disabled={isClearingStorage}
-                style={styles.debugButton}
-                textStyle={styles.debugButtonLabel}
-              >
-                AsyncStorage 초기화
-              </Button>
+          {__DEV__ ? (
+            <View style={styles.section}>
+              <SectionHeader title="디버그" tagline="개발 중 전용 도구" muted={muted} />
+              <View style={[styles.debugCard, { backgroundColor: cardBackground, borderColor }]}>
+                <ThemedText style={styles.debugTitle}>AsyncStorage 초기화</ThemedText>
+                <ThemedText style={[styles.debugDescription, { color: muted }]}>
+                  로컬에 저장된 온보딩, 세션 등 모든 값을 삭제합니다. 개발 중에만 사용하세요.
+                </ThemedText>
+                <Button
+                  variant="destructive"
+                  size="md"
+                  rounded="full"
+                  onPress={handleClearAsyncStorage}
+                  loading={isClearingStorage}
+                  disabled={isClearingStorage}
+                  style={styles.debugButton}
+                  textStyle={styles.debugButtonLabel}
+                >
+                  AsyncStorage 초기화
+                </Button>
+              </View>
             </View>
-          </View>
-        ) : null}
-      </ScrollView>
-    </ThemedView>
+          ) : null}
+        </ScrollView>
+        <LevelInfoSheet sheetRef={levelSheetRef} currentLevel={currentLevel} currentXp={user?.xp ?? 0} onClose={closeLevelSheet} />
+      </ThemedView>
+    </BottomSheetModalProvider>
   );
 }
 

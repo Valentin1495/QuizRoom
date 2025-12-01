@@ -955,66 +955,162 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
           bounces={false}
         >
           {showCompletion ? (
-            <View style={styles.completionCard}>
+            <View
+              style={[
+                styles.completionCard,
+                { backgroundColor: palette.card, borderColor: palette.border },
+              ]}
+            >
               <View style={styles.completionHeader}>
                 <IconSymbol name={completionTitle.icon} size={28} color={palette.text} />
                 <ThemedText style={styles.completionTitle}>{completionTitle.label}</ThemedText>
               </View>
               <View style={styles.completionMetrics}>
-                <View style={styles.completionMetric}>
-                  <ThemedText style={styles.completionMetricLabel}>최고 연속 정답</ThemedText>
+                <View
+                  style={[
+                    styles.completionMetric,
+                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                  ]}
+                >
+                  <ThemedText
+                    style={styles.completionMetricLabel}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
+                    최고 연속 정답
+                  </ThemedText>
                   <ThemedText style={styles.completionMetricValue}>
                     {sessionStats.maxStreak}문항
                   </ThemedText>
                 </View>
-                <View style={styles.completionMetric}>
-                  <ThemedText style={styles.completionMetricLabel}>획득 점수</ThemedText>
+                <View
+                  style={[
+                    styles.completionMetric,
+                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                  ]}
+                >
+                  <ThemedText
+                    style={styles.completionMetricLabel}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
+                    획득 점수
+                  </ThemedText>
                   <ThemedText style={styles.completionMetricValue}>{totalScoreLabel}</ThemedText>
                 </View>
-                <View style={styles.completionMetric}>
-                  <ThemedText style={styles.completionMetricLabel}>정답률</ThemedText>
+                <View
+                  style={[
+                    styles.completionMetric,
+                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                  ]}
+                >
+                  <ThemedText
+                    style={styles.completionMetricLabel}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
+                    정답률
+                  </ThemedText>
                   <ThemedText style={styles.completionMetricValue}>
                     {accuracyPercent !== null ? `${accuracyPercent}%` : '-'}
                   </ThemedText>
-                  <ThemedText style={styles.completionMetricHint}>
+                  <ThemedText
+                    style={styles.completionMetricHint}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
                     {sessionStats.correct}/{Math.max(sessionStats.answered, 1)} - 정답/응답
                   </ThemedText>
                 </View>
-                <View style={styles.completionMetric}>
-                  <ThemedText style={styles.completionMetricLabel}>완료율</ThemedText>
+                <View
+                  style={[
+                    styles.completionMetric,
+                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                  ]}
+                >
+                  <ThemedText
+                    style={styles.completionMetricLabel}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
+                    완료율
+                  </ThemedText>
                   <ThemedText style={styles.completionMetricValue}>
                     {processedPercent !== null ? `${processedPercent}%` : '-'}
                   </ThemedText>
-                  <ThemedText style={styles.completionMetricHint}>
+                  <ThemedText
+                    style={styles.completionMetricHint}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
                     {sessionStats.answered}/{Math.max(totalViewed, 1)} - 응답/(응답+스킵)
                   </ThemedText>
                 </View>
-                <View style={styles.completionMetric}>
-                  <ThemedText style={styles.completionMetricLabel}>총 소요시간</ThemedText>
+                <View
+                  style={[
+                    styles.completionMetric,
+                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                  ]}
+                >
+                  <ThemedText
+                    style={styles.completionMetricLabel}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
+                    총 소요시간
+                  </ThemedText>
                   <ThemedText style={styles.completionMetricValue}>
                     {totalResponseLabel ?? '-'}
                   </ThemedText>
-                  <ThemedText style={styles.completionMetricHint}>
+                  <ThemedText
+                    style={styles.completionMetricHint}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
                     평균 {averageSeconds !== null ? `${formattedAverageSeconds}초` : '-'}
                   </ThemedText>
                 </View>
-                <View style={styles.completionMetric}>
-                  <ThemedText style={styles.completionMetricLabel}>획득 XP</ThemedText>
+                <View
+                  style={[
+                    styles.completionMetric,
+                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                  ]}
+                >
+                  <ThemedText
+                    style={styles.completionMetricLabel}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
+                    획득 XP
+                  </ThemedText>
                   <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
-                  <ThemedText style={styles.completionMetricHint}>
-                    정답 시 +15{'\n'}오답 시 +5
+                  <ThemedText
+                    style={[styles.completionMetricHint, styles.completionMetricHintTight]}
+                    lightColor={palette.textMuted}
+                    darkColor={Palette.gray200}
+                  >
+                    정답 시 +15 {'\n'}오답 시 +5
                   </ThemedText>
                 </View>
               </View>
               <View style={styles.completionActions}>
-                <Pressable style={styles.primaryButton} onPress={handleReset}>
-                  <ThemedText style={styles.primaryButtonLabel} lightColor="#fff" darkColor="#fff">
-                    다시 도전
-                  </ThemedText>
-                </Pressable>
-                <Pressable style={styles.secondaryButton} onPress={() => setSelectedCategory(null)}>
-                  <ThemedText style={styles.secondaryButtonLabel}>다른 카테고리</ThemedText>
-                </Pressable>
+                <Button
+                  size="lg"
+                  fullWidth
+                  onPress={handleReset}
+                  style={styles.completionActionButton}
+                >
+                  다시 도전
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  fullWidth
+                  onPress={() => setSelectedCategory(null)}
+                  style={styles.completionActionButton}
+                >
+                  카테고리 변경
+                </Button>
               </View>
             </View>
           ) : (
@@ -1419,8 +1515,6 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     borderRadius: Radius.lg,
     borderWidth: 1,
-    borderColor: Palette.gray100,
-    backgroundColor: 'rgba(229, 229, 229, 0.08)', // Neutral tint
   },
   completionTitle: {
     fontSize: 18,
@@ -1448,52 +1542,32 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
-    backgroundColor: 'rgba(229, 229, 229, 0.08)', // Neutral tint
     borderWidth: 1,
-    borderColor: Palette.gray100,
     gap: Spacing.xs / 2,
   },
   completionMetricLabel: {
     fontSize: 12,
-    color: Palette.gray500,
     textAlign: 'left',
   },
   completionMetricValue: {
     fontSize: 16,
     fontWeight: '700',
     textAlign: 'left',
+    lineHeight: 20,
   },
   completionMetricHint: {
     fontSize: 12,
-    color: Palette.gray500,
-    marginTop: 2,
     textAlign: 'left',
+  },
+  completionMetricHintTight: {
+    lineHeight: 16,
   },
   completionActions: {
     flexDirection: 'row',
     gap: Spacing.sm,
   },
-  primaryButton: {
+  completionActionButton: {
     flex: 1,
-    backgroundColor: Palette.gray900,
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.md,
-    alignItems: 'center',
-  },
-  primaryButtonLabel: {
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: Palette.gray500,
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.md,
-    alignItems: 'center',
-  },
-  secondaryButtonLabel: {
-    fontWeight: '600',
-    color: Palette.gray500,
   },
   emptyState: {
     flex: 1,

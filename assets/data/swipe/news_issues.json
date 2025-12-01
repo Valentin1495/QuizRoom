@@ -2788,7 +2788,7 @@
         "choices": [
             {
                 "id": "a",
-                "text": "QR 코드"
+                "text": "QR 코드 (QR Code)"
             },
             {
                 "id": "b",
@@ -2796,7 +2796,7 @@
             },
             {
                 "id": "c",
-                "text": "메타데이터"
+                "text": "메타데이터 (Metadata)"
             },
             {
                 "id": "d",

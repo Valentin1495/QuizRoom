@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import {
   ActivityIndicator,
   Alert,
+  Pressable,
   ScrollView,
   StyleSheet,
   View,
@@ -19,6 +20,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge, XpProgressBar } from '@/components/common/level-badge';
+import { LevelInfoSheet } from '@/components/common/level-info-sheet';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AlertDialog } from '@/components/ui/alert-dialog';
@@ -34,6 +36,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme, useColorSchemeManager } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { deriveGuestAvatarId } from '@/lib/guest';
+import { calculateLevel } from '@/lib/level';
 import { useQuery } from 'convex/react';
 
 type AuthedUser = NonNullable<ReturnType<typeof useAuth>['user']>;
@@ -52,6 +55,7 @@ export default function ProfileScreen() {
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
   const historySheetRef = useRef<BottomSheetModal>(null);
+  const levelSheetRef = useRef<BottomSheetModal>(null);
   const [historySheetSection, setHistorySheetSection] = useState<HistorySectionKey | null>(null);
   const historySheetSnapPoints = useMemo(() => ['100%'], []);
   const historySheetBackdrop = useCallback(
@@ -129,6 +133,7 @@ export default function ProfileScreen() {
   }, [ensureGuestKey, guestKey, status]);
 
   const guestAvatarId = useMemo(() => deriveGuestAvatarId(guestKey), [guestKey]);
+  const currentLevel = useMemo(() => (user ? calculateLevel(user.xp).level : 1), [user]);
 
   const handleOpenHistorySheet = useCallback((section: HistorySectionKey) => {
     setHistorySheetSection(section);
@@ -144,6 +149,14 @@ export default function ProfileScreen() {
       historySheetRef.current.present();
     }
   }, [historySheetSection]);
+
+  const openLevelSheet = useCallback(() => {
+    levelSheetRef.current?.present();
+  }, []);
+
+  const closeLevelSheet = useCallback(() => {
+    levelSheetRef.current?.dismiss();
+  }, []);
 
   if (isLoading) {
     return (
@@ -167,7 +180,12 @@ export default function ProfileScreen() {
           showsVerticalScrollIndicator={false}
         >
           {isAuthenticated && user ? (
-            <ProfileHeader user={user} onEdit={handleEditProfile} onShare={handleShareCard} />
+            <ProfileHeader
+              user={user}
+              onEdit={handleEditProfile}
+              onShare={handleShareCard}
+              onOpenLevelSheet={openLevelSheet}
+            />
           ) : (
             <GuestHeader
               onGoogleLogin={handleGoogleLogin}
@@ -206,6 +224,12 @@ export default function ProfileScreen() {
           topInset={insets.top + Spacing.md}
           onClose={handleCloseHistorySheet}
         />
+        <LevelInfoSheet
+          sheetRef={levelSheetRef}
+          currentLevel={currentLevel}
+          currentXp={user?.xp ?? 0}
+          onClose={closeLevelSheet}
+        />
         <AlertDialog
           visible={isLogoutDialogVisible}
           onClose={handleCloseLogoutDialog}
@@ -235,10 +259,12 @@ function ProfileHeader({
   user,
   onEdit,
   onShare,
+  onOpenLevelSheet,
 }: {
   user: AuthedUser;
   onEdit: () => void;
   onShare: () => void;
+  onOpenLevelSheet: () => void;
 }) {
   const statusLine =
     user.streak > 0
@@ -262,7 +288,9 @@ function ProfileHeader({
         <View style={styles.headerContent}>
           <View style={styles.headerNameRow}>
             <ThemedText type="subtitle">{user.handle}</ThemedText>
-            <LevelBadge xp={user.xp} size="sm" />
+            <Pressable onPress={onOpenLevelSheet} hitSlop={8}>
+              <LevelBadge xp={user.xp} size="sm" showTitle />
+            </Pressable>
           </View>
           <ThemedText style={[styles.statusText, { color: mutedColor }]}>{statusLine}</ThemedText>
         </View>

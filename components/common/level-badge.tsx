@@ -253,15 +253,15 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   titleSm: {
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  titleMd: {
     fontSize: 12,
     fontWeight: '600',
   },
-  titleLg: {
+  titleMd: {
     fontSize: 14,
+    fontWeight: '600',
+  },
+  titleLg: {
+    fontSize: 16,
     fontWeight: '600',
   },
   compactBadge: {

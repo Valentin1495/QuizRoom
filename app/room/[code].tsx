@@ -1,3 +1,4 @@
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,6 +8,7 @@ import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Platform, Pres
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge } from '@/components/common/level-badge';
+import { LevelInfoSheet } from '@/components/common/level-info-sheet';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Accordion } from '@/components/ui/accordion';
@@ -21,8 +23,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestAvatarId } from '@/lib/guest';
-import { calculateLevel, getLevelColor, getLevelTitle } from '@/lib/level';
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet';
+import { calculateLevel } from '@/lib/level';
 import { useMutation, useQuery } from 'convex/react';
 
 export default function MatchLobbyScreen() {
@@ -40,8 +41,6 @@ export default function MatchLobbyScreen() {
   const pendingExecutedRef = useRef(false);
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
   const [pendingBannerHeight, setPendingBannerHeight] = useState(0);
-  const levelSheetRef = useRef<BottomSheetModal>(null);
-  const [levelSheetData, setLevelSheetData] = useState<{ level: number; title: string; name: string } | null>(null);
 
   const selfGuestAvatarId = useMemo(
     () => (status === 'guest' ? deriveGuestAvatarId(guestKey) : undefined),
@@ -85,12 +84,30 @@ export default function MatchLobbyScreen() {
     outputRange: [-12, 0],
   });
   const pendingBannerOpacity = pendingBannerAnim;
+  const levelSheetRef = useRef<BottomSheetModal>(null);
 
   const participants = lobby?.participants ?? [];
   const meParticipant = useMemo(
     () => participants.find((participant) => participant.participantId === participantId) ?? null,
     [participants, participantId]
   );
+  const myLevel = useMemo(() => {
+    if (status === 'authenticated' && user) {
+      return calculateLevel(user.xp).level;
+    }
+    if (meParticipant?.xp != null) {
+      return calculateLevel(meParticipant.xp).level;
+    }
+    return 1;
+  }, [meParticipant?.xp, status, user]);
+
+  const openLevelSheet = useCallback(() => {
+    levelSheetRef.current?.present();
+  }, []);
+
+  const closeLevelSheet = useCallback(() => {
+    levelSheetRef.current?.dismiss();
+  }, []);
   const readyCount = useMemo(
     () =>
       participants.filter((participant) => !participant.isHost && participant.isReady).length,
@@ -143,29 +160,12 @@ export default function MatchLobbyScreen() {
   const participantIconSize = Platform.OS === 'android' ? 22 : 18;
   const isDark = colorScheme === 'dark';
 
-  const openLevelSheet = useCallback((level: number, title: string, name: string) => {
-    setLevelSheetData({ level, title, name });
-    levelSheetRef.current?.present();
-  }, []);
-
-  const closeLevelSheet = useCallback(() => {
-    levelSheetRef.current?.dismiss();
-    setLevelSheetData(null);
-  }, []);
-
   const renderParticipantAvatar = useCallback(
     (
       participant: (typeof participants)[number],
       isMe: boolean,
-      levelInfo?: ReturnType<typeof calculateLevel>,
-      levelTitle?: string
+      levelInfo?: ReturnType<typeof calculateLevel>
     ) => {
-      const levelColor = levelInfo ? getLevelColor(levelInfo.level, isDark) : undefined;
-      const handlePressLevel = () => {
-        if (!levelInfo || !levelTitle) return;
-        openLevelSheet(levelInfo.level, levelTitle, participant.nickname);
-      };
-
       const avatarNode = isMe
         ? status === 'authenticated' && user ? (
           <Avatar
@@ -202,17 +202,9 @@ export default function MatchLobbyScreen() {
           />
         );
 
-      return levelInfo ? (
-        <Pressable onPress={handlePressLevel}>
-          <View style={[styles.participantAvatarRing, { borderColor: levelColor }]}>
-            {avatarNode}
-          </View>
-        </Pressable>
-      ) : (
-        avatarNode
-      );
+      return avatarNode;
     },
-    [fallbackAvatarBackground, isDark, openLevelSheet, selfGuestAvatarId, status, user]
+    [fallbackAvatarBackground, selfGuestAvatarId, status, user]
   );
 
 
@@ -557,11 +549,6 @@ export default function MatchLobbyScreen() {
           borderWidth: 2,
           borderColor: primaryColor,
         },
-        participantAvatarRing: {
-          padding: 2,
-          borderRadius: Radius.pill,
-          borderWidth: 2,
-        },
         participantAvatar: {},
         participantTextBlock: {
           alignItems: 'center',
@@ -646,16 +633,6 @@ export default function MatchLobbyScreen() {
           right: 0,
           top: -3,
           height: 3,
-        },
-        levelSheetContent: {
-          gap: Spacing.md,
-          alignItems: 'center',
-          paddingHorizontal: Spacing.md,
-          paddingTop: Spacing.md,
-          paddingBottom: Spacing.xxl,
-        },
-        levelSheetName: {
-          fontWeight: '700',
         },
         controlsSection: {
           gap: Spacing.sm,
@@ -882,37 +859,42 @@ export default function MatchLobbyScreen() {
                     친구를 초대해 보세요! 위 코드를 공유해주세요.
                   </ThemedText>
                 ) : (
-                <View style={styles.participantGrid}>
-                  {participants.map((participant) => {
-                    const isMe = participant.participantId === meParticipant?.participantId;
-                    const levelInfo = participant.xp != null ? calculateLevel(participant.xp) : null;
-                    const levelTitle = levelInfo ? getLevelTitle(levelInfo.level) : null;
-                    const handlePressCard = levelInfo && levelTitle ? () => openLevelSheet(levelInfo.level, levelTitle, participant.nickname) : undefined;
-                    return (
-                      <Pressable
-                        key={participant.participantId}
-                        style={[styles.participantCard, isMe && styles.participantCardMe]}
-                        onPress={handlePressCard}
-                        disabled={!handlePressCard}
-                      >
-                        {renderParticipantAvatar(participant, isMe, levelInfo ?? undefined, levelTitle ?? undefined)}
-                        <View style={styles.participantTextBlock}>
-                          <View style={styles.participantNameRow}>
-                            <ThemedText
-                              style={[styles.participantName, isMe && styles.participantNameMe]}
-                            >
-                              {participant.nickname}
-                            </ThemedText>
-                          </View>
+                  <View style={styles.participantGrid}>
+                    {participants.map((participant) => {
+                      const isMe = participant.participantId === meParticipant?.participantId;
+                      const levelInfo = participant.xp != null ? calculateLevel(participant.xp) : null;
+                      return (
+                        <View
+                          key={participant.participantId}
+                          style={[styles.participantCard, isMe && styles.participantCardMe]}
+                        >
+                          {renderParticipantAvatar(participant, isMe, levelInfo ?? undefined)}
+                          <View style={styles.participantTextBlock}>
+                            <View style={styles.participantNameRow}>
+                              <ThemedText
+                                style={[styles.participantName, isMe && styles.participantNameMe]}
+                              >
+                                {participant.nickname}
+                              </ThemedText>
+                            </View>
+                            {levelInfo ? (
+                              isMe ? (
+                                <Pressable onPress={openLevelSheet} hitSlop={8}>
+                                  <LevelBadge xp={participant.xp ?? undefined} size="sm" showTitle />
+                                </Pressable>
+                              ) : (
+                                <LevelBadge xp={participant.xp ?? undefined} size="sm" showTitle />
+                              )
+                            ) : null}
                             {!participant.isConnected ? (
                               <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
                             ) : null}
                           </View>
-                        <View style={styles.participantBottomRow}>
-                          {participant.isHost ? (
-                            <View style={styles.hostBadge}>
-                              <IconSymbol name="crown.fill" size={18} color={accentForegroundColor} />
-                              <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>
+                          <View style={styles.participantBottomRow}>
+                            {participant.isHost ? (
+                              <View style={styles.hostBadge}>
+                                <IconSymbol name="crown.fill" size={18} color={accentForegroundColor} />
+                                <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>
                               </View>
                             ) : (
                               <View style={styles.statusDisplay}>
@@ -935,11 +917,11 @@ export default function MatchLobbyScreen() {
                               </View>
                             )}
                           </View>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-              )}
+                        </View>
+                      );
+                    })}
+                  </View>
+                )}
               </View>
             </ScrollView>
 
@@ -998,26 +980,7 @@ export default function MatchLobbyScreen() {
             </View>
           </Animated.View>
         </View>
-
-        <BottomSheetModal
-          ref={levelSheetRef}
-          onDismiss={closeLevelSheet}
-          backgroundStyle={{ backgroundColor: theme.card }}
-          handleIndicatorStyle={{ backgroundColor: mutedColor }}
-          enablePanDownToClose
-        >
-          {levelSheetData ? (
-            <BottomSheetView style={styles.levelSheetContent}>
-              <LevelBadge level={levelSheetData.level} showTitle />
-              <ThemedText type="title" style={styles.levelSheetName}>
-                {levelSheetData.name}
-              </ThemedText>
-              <Button variant="secondary" size="lg" fullWidth onPress={closeLevelSheet}>
-                닫기
-              </Button>
-            </BottomSheetView>
-          ) : null}
-        </BottomSheetModal>
+        <LevelInfoSheet sheetRef={levelSheetRef} currentLevel={myLevel} currentXp={user?.xp ?? meParticipant?.xp ?? 0} onClose={closeLevelSheet} />
       </ThemedView>
     </BottomSheetModalProvider>
   );

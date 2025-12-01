@@ -75,7 +75,7 @@ export default function SwipeScreen() {
         visible={showResetDialog}
         onClose={() => setShowResetDialog(false)}
         title="카테고리를 변경하시겠어요?"
-        description={`${selectedCategory.title} 카테고리에서 진행 중인 점수와 스트릭이 초기화돼요.`}
+        description={`${selectedCategory.title} 카테고리에서 진행 중인 점수와 스트릭 등이 초기화돼요.`}
         actions={[
           {
             label: '취소',
