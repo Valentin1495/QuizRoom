@@ -1,6 +1,7 @@
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,7 @@ const LEVEL_TIERS = [
   { title: '마스터', from: 40, emoji: '💠', desc: '퀴즈 달인' },
   { title: '다이아몬드', from: 30, emoji: '💎', desc: '상위권 도전자' },
   { title: '플래티넘', from: 20, emoji: '✨', desc: '숙련된 플레이어' },
-  { title: '골드', from: 15, emoji: '🏅', desc: '중급 플레이어' },
+  { title: '골드', from: 15, emoji: '🥇', desc: '중급 플레이어' },
   { title: '실버', from: 10, emoji: '🥈', desc: '성장 중인 플레이어' },
   { title: '브론즈', from: 5, emoji: '🥉', desc: '입문자' },
   { title: '아이언', from: 1, emoji: '🪙', desc: '시작하는 단계' },
@@ -36,9 +37,9 @@ const XP_SOURCES = [
   { action: '스와이프 완주', xp: '+30', icon: '⭐' },
   { action: '스와이프 퍼펙트', xp: '+50', icon: '🎉' },
   { action: '라이브 매치 참여', xp: '+30', icon: '🥊' },
-  { action: '라이브 매치 동메달', xp: '+30', icon: '🥉' },
-  { action: '라이브 매치 은메달', xp: '+50', icon: '🥈' },
-  { action: '라이브 매치 금메달', xp: '+100', icon: '🥇' },
+  { action: '라이브 매치 3위', xp: '+30', icon: '🥉' },
+  { action: '라이브 매치 준우승', xp: '+50', icon: '🥈' },
+  { action: '라이브 매치 우승', xp: '+100', icon: '🥇' },
 ];
 
 const STREAK_BONUSES = [
@@ -62,6 +63,7 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
   const isDark = colorScheme === 'dark';
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
+  const insets = useSafeAreaInsets();
   const currentTitle = getLevelTitle(currentLevel);
   const levelInfo = calculateLevel(currentXp);
   const nextTier = getNextTierInfo(currentLevel);
@@ -75,10 +77,16 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
 
   const xpToNextTier = nextTier ? nextTier.xpNeeded - currentXp : 0;
 
+  // 노치를 침범하지 않는 최대 높이 계산
+  const screenHeight = Dimensions.get('window').height;
+  const maxSheetHeight = screenHeight - insets.top - 8; // 노치 + 여유 8px
+  const snapPoints = useMemo(() => [maxSheetHeight], [maxSheetHeight]);
+
   return (
     <BottomSheetModal
       ref={sheetRef}
-      snapPoints={['85%']}
+      snapPoints={snapPoints}
+      topInset={insets.top + 8}
       backgroundStyle={{ backgroundColor: themeColors.card }}
       handleIndicatorStyle={{ backgroundColor: themeColors.border }}
       onDismiss={onClose}
@@ -105,21 +113,16 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
         >
           <View style={styles.currentStatusTop}>
             <LevelBadge level={currentLevel} size="lg" showTitle />
-            <View style={styles.currentStatusInfo}>
-              <ThemedText type="defaultSemiBold" style={{ fontSize: 18 }}>
-                Lv.{currentLevel} {currentTitle}
-              </ThemedText>
-              <ThemedText style={[styles.xpText, { color: mutedColor }]}>
-                총 {currentXp.toLocaleString()} XP
-              </ThemedText>
-            </View>
+            <ThemedText type="defaultSemiBold" style={[styles.xpText]}>
+              총 {currentXp.toLocaleString()} XP
+            </ThemedText>
           </View>
 
           {/* 다음 레벨 진행률 */}
           <View style={styles.progressSection}>
             <View style={styles.progressLabelRow}>
               <ThemedText style={[styles.progressLabel, { color: mutedColor }]}>
-                다음 레벨까지
+                다음 레벨까지 진행률 {levelInfo.progress}%
               </ThemedText>
               <ThemedText style={[styles.progressLabel, { color: mutedColor }]}>
                 {levelInfo.current.toLocaleString()} / {levelInfo.next.toLocaleString()} XP
@@ -151,8 +154,8 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
             ]}
           >
             <View style={styles.nextTierHeader}>
-              <ThemedText style={styles.nextTierEmoji}>🎯</ThemedText>
-              <ThemedText type="defaultSemiBold">다음 목표</ThemedText>
+              <ThemedText style={styles.nextTierEmoji}>🏁</ThemedText>
+              <ThemedText type="defaultSemiBold">다음 목표 티어</ThemedText>
             </View>
             <View style={styles.nextTierContent}>
               <View style={styles.nextTierBadgeWrap}>
@@ -163,7 +166,7 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
                   {nextTier.title}
                 </ThemedText>
                 <ThemedText style={[styles.nextTierDesc, { color: mutedColor }]}>
-                  Lv.{nextTier.fromLevel} 도달 시 승급
+                  승급까지 {nextTier.fromLevel - currentLevel}레벨
                 </ThemedText>
               </View>
               <View style={styles.nextTierXp}>
@@ -231,35 +234,54 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
           <ThemedText style={[styles.sectionDesc, { color: mutedColor }]}>
             연속으로 플레이하면 XP 보너스! (스와이프/라이브 매치)
           </ThemedText>
-          <View style={[styles.xpSourcesCard, { backgroundColor: themeColors.cardElevated }]}>
-            {STREAK_BONUSES.map((bonus, index) => (
-              <View
-                key={bonus.days}
-                style={[
-                  styles.xpSourceRow,
-                  index < STREAK_BONUSES.length - 1 && {
-                    borderBottomWidth: StyleSheet.hairlineWidth,
-                    borderBottomColor: themeColors.border,
-                  },
-                ]}
-              >
-                <View style={styles.streakBadge}>
-                  <ThemedText style={styles.streakBadgeIcon}>🔥</ThemedText>
+          <View style={[styles.streakCard, { backgroundColor: themeColors.cardElevated }]}>
+            {STREAK_BONUSES.map((bonus, index) => {
+              const intensity = bonus.level / 7; // 0.28 ~ 1.0
+              return (
+                <View
+                  key={bonus.days}
+                  style={[
+                    styles.streakRow,
+                    index < STREAK_BONUSES.length - 1 && {
+                      borderBottomWidth: StyleSheet.hairlineWidth,
+                      borderBottomColor: themeColors.border,
+                    },
+                  ]}
+                >
+                  <View style={styles.streakContentRow}>
+                    {Array.from({ length: bonus.level }).map((_, i) => (
+                      <ThemedText
+                        key={i}
+                        style={[
+                          styles.streakIcon,
+                          { opacity: 0.5 + (i / bonus.level) * 0.5 },
+                        ]}
+                      >
+                        🔥
+                      </ThemedText>
+                    ))}
+                    <ThemedText style={[styles.streakDaysText, { color: mutedColor }]}>
+                      {bonus.days}
+                    </ThemedText>
+                  </View>
                   <View
                     style={[
-                      styles.streakBadgeLevelContainer,
-                      { borderColor: themeColors.cardElevated },
+                      styles.streakMultiplierChip,
+                      { backgroundColor: `rgba(34, 197, 94, ${0.08 + intensity * 0.12})` },
                     ]}
                   >
-                    <ThemedText style={styles.streakBadgeLevelText}>{bonus.level}</ThemedText>
+                    <ThemedText
+                      style={[
+                        styles.streakMultiplierText,
+                        { opacity: 0.7 + intensity * 0.3 },
+                      ]}
+                    >
+                      {bonus.multiplier}
+                    </ThemedText>
                   </View>
                 </View>
-                <ThemedText style={styles.xpSourceAction}>{bonus.days}</ThemedText>
-                <View style={styles.streakMultiplierChip}>
-                  <ThemedText style={styles.streakMultiplierText}>{bonus.multiplier}</ThemedText>
-                </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
         </View>
 
@@ -359,12 +381,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.md,
   },
-  currentStatusInfo: {
-    flex: 1,
-    gap: 2,
-  },
   xpText: {
-    fontSize: 13,
+    fontSize: 16,
   },
   progressSection: {
     gap: Spacing.xs,
@@ -467,46 +485,41 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  streakBadge: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  streakCard: {
+    borderRadius: Radius.md,
+    overflow: 'hidden',
+  },
+  streakRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255, 149, 0, 0.1)',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
   },
-  streakBadgeIcon: {
-    fontSize: 24,
-  },
-  streakBadgeLevelContainer: {
-    position: 'absolute',
-    right: -2,
-    bottom: -2,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#FB923C',
+  streakContentRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
+    flex: 1,
   },
-  streakBadgeLevelText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: 'white',
-    lineHeight: 12, // Adjust line height for better vertical centering
+  streakIcon: {
+    fontSize: 14,
+    marginRight: -2,
+  },
+  streakDaysText: {
+    fontSize: 13,
+    marginLeft: Spacing.sm,
   },
   streakMultiplierChip: {
     paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
+    paddingVertical: 4,
     borderRadius: Radius.pill,
-    backgroundColor: 'rgba(34, 197, 94, 0.1)',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(34, 197, 94, 0.3)',
+    minWidth: 52,
+    alignItems: 'center',
   },
   streakMultiplierText: {
     color: '#16A34A',
     fontWeight: '700',
+    fontSize: 13,
   },
   levelList: {
     gap: Spacing.sm,
