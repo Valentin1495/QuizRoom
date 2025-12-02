@@ -42,12 +42,12 @@ const XP_SOURCES = [
 ];
 
 const STREAK_BONUSES = [
-  { days: '2일 연속', multiplier: '×1.1', icon: '🔥' },
-  { days: '3일 연속', multiplier: '×1.25', icon: '🔥' },
-  { days: '4일 연속', multiplier: '×1.4', icon: '🔥🔥' },
-  { days: '5일 연속', multiplier: '×1.6', icon: '🔥🔥' },
-  { days: '6일 연속', multiplier: '×1.8', icon: '🔥🔥🔥' },
-  { days: '7일+ 연속', multiplier: '×2.0', icon: '🔥🔥🔥' },
+  { days: '2일 연속', multiplier: '×1.1', level: 2 },
+  { days: '3일 연속', multiplier: '×1.25', level: 3 },
+  { days: '4일 연속', multiplier: '×1.4', level: 4 },
+  { days: '5일 연속', multiplier: '×1.6', level: 5 },
+  { days: '6일 연속', multiplier: '×1.8', level: 6 },
+  { days: '7일+ 연속', multiplier: '×2.0', level: 7 },
 ];
 
 type LevelInfoSheetProps = {
@@ -243,11 +243,18 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
                   },
                 ]}
               >
-                <ThemedText style={styles.xpSourceIcon}>{bonus.icon}</ThemedText>
+                <View style={styles.streakIconContainer}>
+                  <View style={styles.streakFireCircle}>
+                    <ThemedText style={styles.streakFireIcon}>🔥</ThemedText>
+                  </View>
+                  <View style={styles.streakLevelBadge}>
+                    <ThemedText style={styles.streakLevelText}>{bonus.level}</ThemedText>
+                  </View>
+                </View>
                 <ThemedText style={styles.xpSourceAction}>{bonus.days}</ThemedText>
-                <ThemedText style={[styles.xpSourceXp, { color: '#22C55E' }]}>
-                  {bonus.multiplier}
-                </ThemedText>
+                <View style={styles.streakMultiplierChip}>
+                  <ThemedText style={styles.streakMultiplierText}>{bonus.multiplier}</ThemedText>
+                </View>
               </View>
             ))}
           </View>
@@ -312,7 +319,7 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
                       Lv.{tier.from}+
                     </ThemedText>
                     <ThemedText style={[styles.levelTileXp, { color: mutedColor }]}>
-                      {requiredXp > 0 ? `${requiredXp.toLocaleString()} XP` : '시작'}
+                      {requiredXp.toLocaleString()} XP
                     </ThemedText>
                   </View>
                 </View>
@@ -445,6 +452,16 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     gap: Spacing.sm,
   },
+  streakFireCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 149, 0, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.3)',
+  },
   xpSourceIcon: {
     fontSize: 16,
     width: 24,
@@ -456,6 +473,40 @@ const styles = StyleSheet.create({
   xpSourceXp: {
     fontSize: 14,
     fontWeight: '600',
+  },
+  streakIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  streakFireIcon: {
+    fontSize: 18,
+  },
+  streakLevelBadge: {
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+    backgroundColor: '#FB923C',
+  },
+  streakLevelText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  streakMultiplierChip: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(34, 197, 94, 0.3)',
+  },
+  streakMultiplierText: {
+    color: '#16A34A',
+    fontWeight: '700',
   },
   levelList: {
     gap: Spacing.sm,
