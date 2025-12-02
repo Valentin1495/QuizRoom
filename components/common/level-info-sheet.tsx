@@ -243,12 +243,15 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
                   },
                 ]}
               >
-                <View style={styles.streakIconContainer}>
-                  <View style={styles.streakFireCircle}>
-                    <ThemedText style={styles.streakFireIcon}>🔥</ThemedText>
-                  </View>
-                  <View style={styles.streakLevelBadge}>
-                    <ThemedText style={styles.streakLevelText}>{bonus.level}</ThemedText>
+                <View style={styles.streakBadge}>
+                  <ThemedText style={styles.streakBadgeIcon}>🔥</ThemedText>
+                  <View
+                    style={[
+                      styles.streakBadgeLevelContainer,
+                      { borderColor: themeColors.cardElevated },
+                    ]}
+                  >
+                    <ThemedText style={styles.streakBadgeLevelText}>{bonus.level}</ThemedText>
                   </View>
                 </View>
                 <ThemedText style={styles.xpSourceAction}>{bonus.days}</ThemedText>
@@ -452,16 +455,6 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     gap: Spacing.sm,
   },
-  streakFireCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255, 149, 0, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 149, 0, 0.3)',
-  },
   xpSourceIcon: {
     fontSize: 16,
     width: 24,
@@ -474,27 +467,34 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  streakIconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  streakFireIcon: {
-    fontSize: 18,
-  },
-  streakLevelBadge: {
-    minWidth: 20,
-    height: 20,
-    borderRadius: 10,
+  streakBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 5,
-    backgroundColor: '#FB923C',
+    backgroundColor: 'rgba(255, 149, 0, 0.1)',
   },
-  streakLevelText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#FFFFFF',
+  streakBadgeIcon: {
+    fontSize: 24,
+  },
+  streakBadgeLevelContainer: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#FB923C',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+  },
+  streakBadgeLevelText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: 'white',
+    lineHeight: 12, // Adjust line height for better vertical centering
   },
   streakMultiplierChip: {
     paddingHorizontal: Spacing.sm,
