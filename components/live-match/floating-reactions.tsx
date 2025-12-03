@@ -25,6 +25,7 @@ export type FloatingReactionsProps = {
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const ANIMATION_DURATION = 3000;
 const MAX_VISIBLE = 15;
+const EMOJI_TRAVEL_DISTANCE = SCREEN_HEIGHT * 0.5; // 이동 거리 조정
 
 export function FloatingReactions({ reactions }: FloatingReactionsProps) {
   const [floatingEmojis, setFloatingEmojis] = useState<FloatingEmoji[]>([]);
@@ -80,7 +81,7 @@ export function FloatingReactions({ reactions }: FloatingReactionsProps) {
       {floatingEmojis.map((emoji) => {
         const translateY = emoji.anim.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -SCREEN_HEIGHT * 0.6],
+          outputRange: [0, -EMOJI_TRAVEL_DISTANCE],
         });
         const opacity = emoji.anim.interpolate({
           inputRange: [0, 0.7, 1],
@@ -118,14 +119,15 @@ export function FloatingReactions({ reactions }: FloatingReactionsProps) {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    overflow: 'hidden',
+    zIndex: 9999,
+    elevation: 9999, // Android용
   },
   emoji: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 100, // 리액션 바 위에서 시작
   },
   emojiText: {
     fontSize: 32,
+    lineHeight: 40, // ThemedText 기본 lineHeight(24)보다 크게 설정해 이모지가 잘리지 않도록 보정
   },
 });
-

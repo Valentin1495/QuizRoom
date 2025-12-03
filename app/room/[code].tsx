@@ -552,7 +552,7 @@ export default function MatchLobbyScreen() {
         participantAvatar: {},
         participantTextBlock: {
           alignItems: 'center',
-          gap: 2,
+          gap: Platform.OS === 'android' ? Spacing.sm : 2,
           alignSelf: 'stretch',
         },
         participantBottomRow: {

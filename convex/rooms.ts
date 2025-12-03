@@ -1986,6 +1986,8 @@ type ClientRoomOkState = {
         avgResponseMs: number;
         lastSeenAt: number;
         disconnectedAt: number | null;
+        currentStreak: number;
+        maxStreak: number;
     };
     participants: ClientRoomParticipant[];
     currentRound?: {
@@ -2212,6 +2214,8 @@ export const getRoomState = query({
                 avgResponseMs: me.avgResponseMs,
                 lastSeenAt: me.lastSeenAt,
                 disconnectedAt: me.disconnectedAt ?? null,
+                currentStreak: me.currentStreak ?? 0,
+                maxStreak: me.maxStreak ?? 0,
             },
             // Bandwidth optimization: reduced participant payload
             participants: rankedParticipants.map((p) => {

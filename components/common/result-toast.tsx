@@ -5,7 +5,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export type ToastKind = 'success' | 'error' | 'neutral';
+export type ToastKind = 'success' | 'error' | 'neutral' | 'combo' | 'combo_hot' | 'combo_fire';
 
 export type ResultToastOptions = {
   message: string;
@@ -81,6 +81,57 @@ const TOAST_COLORS: Record<ToastKind, { light: ToastTone; dark: ToastTone }> = {
       meta: '#C8D0FF',
       ctaBackground: 'rgba(62, 75, 168, 0.85)',
       ctaText: '#E5EBFF',
+    },
+  },
+  // 콤보용 색상 (3-4콤보: 주황)
+  combo: {
+    light: {
+      background: 'rgba(255, 237, 219, 0.92)',
+      text: '#8B4513',
+      meta: '#D2691E',
+      ctaBackground: 'rgba(210, 105, 30, 0.12)',
+      ctaText: '#8B4513',
+    },
+    dark: {
+      background: 'rgba(180, 100, 30, 0.9)',
+      text: '#FFECD2',
+      meta: '#FFD4A8',
+      ctaBackground: 'rgba(210, 130, 50, 0.85)',
+      ctaText: '#FFECD2',
+    },
+  },
+  // 콤보용 색상 (5-6콤보: 핫핑크)
+  combo_hot: {
+    light: {
+      background: 'rgba(255, 224, 240, 0.92)',
+      text: '#9B1B5A',
+      meta: '#DB2777',
+      ctaBackground: 'rgba(219, 39, 119, 0.12)',
+      ctaText: '#9B1B5A',
+    },
+    dark: {
+      background: 'rgba(157, 40, 100, 0.9)',
+      text: '#FFE4F0',
+      meta: '#FFB8D9',
+      ctaBackground: 'rgba(200, 60, 130, 0.85)',
+      ctaText: '#FFE4F0',
+    },
+  },
+  // 콤보용 색상 (7+콤보: 레드/골드)
+  combo_fire: {
+    light: {
+      background: 'rgba(255, 220, 200, 0.92)',
+      text: '#B22222',
+      meta: '#FF4500',
+      ctaBackground: 'rgba(255, 69, 0, 0.12)',
+      ctaText: '#B22222',
+    },
+    dark: {
+      background: 'rgba(180, 50, 30, 0.9)',
+      text: '#FFE4D4',
+      meta: '#FFA07A',
+      ctaBackground: 'rgba(220, 80, 50, 0.85)',
+      ctaText: '#FFE4D4',
     },
   },
 };

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -8,12 +8,44 @@ import { lightHaptic, mediumHaptic } from '@/lib/haptics';
 
 export type ReactionEmoji = 'clap' | 'fire' | 'skull' | 'laugh';
 
+// Emoji type to icon mapping (exported for use in ReactionLayer)
+export const EMOJI_MAP: Record<ReactionEmoji, string> = {
+  clap: '👏',
+  fire: '🔥',
+  skull: '💀',
+  laugh: '😂',
+};
+
 const REACTION_CONFIG: { emoji: ReactionEmoji; icon: string; label: string }[] = [
   { emoji: 'clap', icon: '👏', label: '박수' },
   { emoji: 'fire', icon: '🔥', label: '불꽃' },
   { emoji: 'skull', icon: '💀', label: '해골' },
   { emoji: 'laugh', icon: '😂', label: '웃음' },
 ];
+
+// Rate limiter for server calls: allows 5 calls per second (200ms interval)
+const RATE_LIMIT_WINDOW_MS = 1000;
+const RATE_LIMIT_MAX_CALLS = 5;
+
+export function useReactionRateLimiter() {
+  const callTimestamps = useRef<number[]>([]);
+
+  const canSendToServer = useCallback(() => {
+    const now = Date.now();
+    // Remove timestamps older than the window
+    callTimestamps.current = callTimestamps.current.filter(
+      (ts) => now - ts < RATE_LIMIT_WINDOW_MS
+    );
+
+    if (callTimestamps.current.length < RATE_LIMIT_MAX_CALLS) {
+      callTimestamps.current.push(now);
+      return true;
+    }
+    return false;
+  }, []);
+
+  return { canSendToServer };
+}
 
 export type ReactionBarProps = {
   onReaction: (emoji: ReactionEmoji) => void;
@@ -81,7 +113,10 @@ export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }:
   );
 }
 
-// 컴팩트 버전 (작은 화면용)
+// Short cooldown to prevent accidental double-taps while allowing rapid tapping
+const COMPACT_BUTTON_COOLDOWN_MS = 120;
+
+// 컴팩트 버전 (게임 화면용)
 export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -100,37 +135,49 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
       mediumHaptic();
       onReaction(emoji);
 
+      // Short cooldown to prevent accidental double-taps
       setCooldowns((prev) => ({ ...prev, [emoji]: true }));
       setTimeout(() => {
         setCooldowns((prev) => ({ ...prev, [emoji]: false }));
-      }, 1000);
+      }, COMPACT_BUTTON_COOLDOWN_MS);
     },
     [cooldowns, disabled, onReaction]
   );
 
   return (
-    <View style={styles.compactContainer}>
+    <View
+      style={[
+        styles.compactContainer,
+        {
+          backgroundColor: isDark
+            ? 'rgba(30, 30, 40, 0.85)'
+            : 'rgba(255, 255, 255, 0.9)',
+          shadowColor: isDark ? '#000' : '#00000040',
+        },
+      ]}
+    >
       {REACTION_CONFIG.map(({ emoji, icon }) => {
         const isOnCooldown = cooldowns[emoji];
-        const isDisabled = disabled || isOnCooldown;
+        // Only visually disable if explicitly disabled, not for brief cooldown
+        const isVisuallyDisabled = disabled;
 
         return (
           <Pressable
             key={emoji}
             onPress={() => handlePress(emoji)}
-            disabled={isDisabled}
+            disabled={disabled || isOnCooldown}
             style={({ pressed }) => [
               styles.compactButton,
               {
                 backgroundColor: isDark
-                  ? 'rgba(255,255,255,0.08)'
-                  : 'rgba(0,0,0,0.04)',
+                  ? 'rgba(255,255,255,0.12)'
+                  : 'rgba(0,0,0,0.06)',
               },
               pressed && styles.compactButtonPressed,
-              isDisabled && styles.buttonDisabled,
+              isVisuallyDisabled && styles.buttonDisabled,
             ]}
           >
-            <ThemedText style={[styles.compactEmoji, isDisabled && styles.emojiDisabled]}>
+            <ThemedText style={[styles.compactEmoji, isVisuallyDisabled && styles.emojiDisabled]}>
               {icon}
             </ThemedText>
           </Pressable>
@@ -172,19 +219,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.pill,
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
   },
   compactButton: {
-    width: 40,
-    height: 40,
+    width: 48,
+    height: 48,
     borderRadius: Radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },
   compactButtonPressed: {
-    transform: [{ scale: 0.85 }],
+    transform: [{ scale: 0.88 }],
+  },
+  buttonCooldown: {
+    opacity: 0.5,
   },
   compactEmoji: {
-    fontSize: 20,
+    fontSize: 24,
+    lineHeight: 32,
   },
 });
 

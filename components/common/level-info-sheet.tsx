@@ -189,7 +189,7 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
               />
             </View>
             <ThemedText style={[styles.tierProgressText, { color: mutedColor }]}>
-              {currentTitle} → {nextTier.title} 진행률 {tierProgress}%
+              {currentTitle} → {nextTier.title}까지 레벨 진행률 {tierProgress}%
             </ThemedText>
           </View>
         )}

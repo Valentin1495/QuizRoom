@@ -5,9 +5,13 @@ import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet,
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { showResultToast } from '@/components/common/result-toast';
-import { FloatingReactions } from '@/components/live-match/floating-reactions';
-import { CompactReactionBar, type ReactionEmoji } from '@/components/live-match/reaction-bar';
-import { ReactionCounter } from '@/components/live-match/reaction-counter';
+import {
+    CompactReactionBar,
+    EMOJI_MAP,
+    useReactionRateLimiter,
+    type ReactionEmoji,
+} from '@/components/live-match/reaction-bar';
+import { ReactionLayer, type ReactionLayerRef } from '@/components/live-match/reaction-layer';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -30,6 +34,15 @@ function computeTimeLeft(expiresAt?: number | null, now?: number) {
     if (!expiresAt || !now) return null;
     const diff = Math.max(0, expiresAt - now);
     return Math.ceil(diff / 1000);
+}
+
+// 콤보 배수 계산 (서버와 동일한 로직)
+function getComboMultiplier(streak: number): number {
+    if (streak >= 10) return 3.0;
+    if (streak >= 7) return 2.5;
+    if (streak >= 5) return 2.0;
+    if (streak >= 3) return 1.5;
+    return 1.0;
 }
 
 const FORCED_EXIT_MESSAGE = '세션이 더 이상 유지되지 않아 방과의 연결이 종료됐어요. 다시 참여하려면 초대 코드를 입력해 주세요.';
@@ -70,6 +83,11 @@ export default function MatchPlayScreen() {
     const [isManualReconnectPending, setIsManualReconnectPending] = useState(false);
     const [hostConnectionState, setHostConnectionState] = useState<HostConnectionState>('online');
     const [hostGraceRemaining, setHostGraceRemaining] = useState(HOST_GRACE_SECONDS);
+
+    // Reaction system
+    const reactionLayerRef = useRef<ReactionLayerRef>(null);
+    const { canSendToServer } = useReactionRateLimiter();
+
     useEffect(() => {
         if (authStatus === 'guest' && !guestKey) {
             void ensureGuestKey();
@@ -97,14 +115,6 @@ export default function MatchPlayScreen() {
     );
     const roomData = roomState && roomState.status === 'ok' ? roomState : null;
 
-    // 리액션 쿼리 - Bandwidth optimization: only subscribe during active game phases
-    const REACTION_ACTIVE_PHASES = ['question', 'grace', 'reveal', 'leaderboard'];
-    const reactionCountsArgs = useMemo(() => {
-        if (!roomId || !roomData) return 'skip' as const;
-        if (!REACTION_ACTIVE_PHASES.includes(roomData.room.status)) return 'skip' as const;
-        return { roomId };
-    }, [roomId, roomData]);
-    const reactionCounts = useQuery(api.rooms.getReactionCounts, reactionCountsArgs);
     const progressRoom = useMutation(api.rooms.progress);
     const pauseRoom = useMutation(api.rooms.pause);
     const resumeRoom = useMutation(api.rooms.resume);
@@ -151,6 +161,7 @@ export default function MatchPlayScreen() {
     const [promotedToHost, setPromotedToHost] = useState(false);
     const [justReconnected, setJustReconnected] = useState(false);
     const [delayPreset] = useState<'rapid' | 'standard' | 'chill'>('chill');
+    const [showConnectionWarning, setShowConnectionWarning] = useState(false);
     const { phase: socketPhase, hasEverConnected: socketHasEverConnected } = useConnectionStatus();
 
     const resolveDelay = useCallback(() => {
@@ -295,6 +306,18 @@ export default function MatchPlayScreen() {
             beginReconnecting();
         }
     }, [beginReconnecting, handleConnectionRestored, socketHasEverConnected, socketPhase]);
+
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout> | null = null;
+        if (connectionState === 'reconnecting') {
+            timer = setTimeout(() => setShowConnectionWarning(true), 1500);
+        } else {
+            setShowConnectionWarning(false);
+        }
+        return () => {
+            if (timer) clearTimeout(timer);
+        };
+    }, [connectionState]);
     useEffect(() => () => {
         clearConnectionTimers();
     }, [clearConnectionTimers]);
@@ -302,7 +325,78 @@ export default function MatchPlayScreen() {
         stopHostGraceTimer();
     }, [stopHostGraceTimer]);
 
-    const roomStatus = roomData?.room.status ?? 'lobby';
+    // 상태 안정화: 깜빡임 방지를 위한 디바운스 로직
+    // 초기값을 null로 설정하여 서버 데이터 수신 전 리다이렉트 방지
+    const [stableRoomStatus, setStableRoomStatus] = useState<string | null>(null);
+    const [stablePauseState, setStablePauseState] = useState<{
+        remainingMs?: number;
+        previousStatus: string;
+        pausedAt: number;
+    } | null>(null);
+    const statusDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const hasReceivedInitialStatus = useRef(false);
+
+    const rawRoomStatus = (roomData?.room.status ?? null) as string | null;
+    const rawPauseState = roomData?.room.pauseState ?? null;
+
+    useEffect(() => {
+        // roomData가 없으면 이전 상태 유지
+        if (!rawRoomStatus) return;
+
+        // 첫 번째 상태는 항상 즉시 반영 (초기 로딩)
+        if (!hasReceivedInitialStatus.current) {
+            hasReceivedInitialStatus.current = true;
+            setStableRoomStatus(rawRoomStatus);
+            setStablePauseState(rawPauseState);
+            return;
+        }
+
+        // paused 상태로 진입하는 경우: 즉시 반영
+        if (rawRoomStatus === 'paused') {
+            if (statusDebounceRef.current) {
+                clearTimeout(statusDebounceRef.current);
+                statusDebounceRef.current = null;
+            }
+            setStableRoomStatus('paused');
+            setStablePauseState(rawPauseState);
+            return;
+        }
+
+        // paused에서 다른 상태로 나가는 경우: 디바운스 적용 (깜빡임 방지)
+        if (stableRoomStatus === 'paused' && rawRoomStatus !== 'paused') {
+            // 300ms 동안 paused가 아닌 상태가 유지되면 전환
+            if (!statusDebounceRef.current) {
+                statusDebounceRef.current = setTimeout(() => {
+                    setStableRoomStatus(rawRoomStatus);
+                    setStablePauseState(rawPauseState);
+                    statusDebounceRef.current = null;
+                }, 300);
+            }
+            return;
+        }
+
+        // 일반 상태 변화: 즉시 반영
+        if (statusDebounceRef.current) {
+            clearTimeout(statusDebounceRef.current);
+            statusDebounceRef.current = null;
+        }
+        setStableRoomStatus(rawRoomStatus);
+        setStablePauseState(rawPauseState);
+    }, [rawRoomStatus, rawPauseState, stableRoomStatus]);
+
+    // 컴포넌트 언마운트 시 타이머 정리
+    useEffect(() => {
+        return () => {
+            if (statusDebounceRef.current) {
+                clearTimeout(statusDebounceRef.current);
+            }
+        };
+    }, []);
+
+    const roomStatus = stableRoomStatus;
+    const pauseState = stablePauseState;
+    const isPaused = roomStatus === 'paused';
+
     const currentRound = roomData?.currentRound ?? null;
     const participants = useMemo(() => roomData?.participants ?? [], [roomData]);
     const participantsById = useMemo(() => {
@@ -320,8 +414,7 @@ export default function MatchPlayScreen() {
     const totalRounds = roomData?.room.totalRounds ?? 0;
     const isFinalLeaderboard =
         roomStatus === 'leaderboard' && totalRounds > 0 && (roomData?.room.currentRound ?? 0) + 1 >= totalRounds;
-    const pauseState = roomData?.room.pauseState ?? null;
-    const isPaused = roomStatus === 'paused';
+
     const pausedPreviousStatus = pauseState?.previousStatus ?? null;
     const pausedRemainingSeconds =
         pauseState?.remainingMs !== undefined && pauseState.remainingMs !== null
@@ -575,6 +668,7 @@ export default function MatchPlayScreen() {
     const syncedNow = roomState ? localNowMs - serverOffsetMs : undefined;
     const timeLeft = computeTimeLeft(roomData?.room.phaseEndsAt ?? null, syncedNow);
     const isHostWaitingPhase =
+        roomStatus !== null &&
         ['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(roomStatus) &&
         timeLeft !== null &&
         timeLeft <= 0 &&
@@ -765,9 +859,9 @@ export default function MatchPlayScreen() {
             return;
         }
 
-        if (roomStatus === 'lobby' && roomData?.room.code) {
+        // roomStatus가 null이면 아직 서버 데이터를 받지 못한 상태이므로 리다이렉트하지 않음
+        if (roomStatus && roomStatus === 'lobby' && roomData?.room.code) {
             router.replace({ pathname: '/room/[code]', params: { code: roomData.room.code } });
-
         }
     }, [disconnectReason, roomStatus, roomData?.room.code, router]);
 
@@ -787,6 +881,55 @@ export default function MatchPlayScreen() {
         }
         roomStatusRef.current = roomStatus;
     }, [connectionState, disconnectReason, hasLeft, isHost, isPaused, roomStatus, showToast]);
+
+    // 콤보 달성 시 토스트 및 햅틱 피드백
+    const prevStreakRef = useRef<number>(0);
+    const comboToastShownForRoundRef = useRef<number | null>(null);
+    useEffect(() => {
+        if (hasLeft || disconnectReason) return;
+        if (roomStatus !== 'reveal') return;
+
+        const me = roomData?.me;
+        const myAnswer = currentRound?.myAnswer;
+        const roundIndex = currentRound?.index ?? null;
+
+        if (!me || !myAnswer || roundIndex === null) return;
+        if (!myAnswer.isCorrect) {
+            prevStreakRef.current = 0;
+            return;
+        }
+
+        // 이미 이 라운드에서 토스트를 보여줬으면 스킵
+        if (comboToastShownForRoundRef.current === roundIndex) return;
+
+        const streak = me.currentStreak;
+        const multiplier = getComboMultiplier(streak);
+
+        // 3콤보 이상이고, 새로운 콤보 단계에 도달했을 때
+        if (streak >= 3 && streak > prevStreakRef.current) {
+            comboToastShownForRoundRef.current = roundIndex;
+
+            // 콤보 단계별 색상 및 햅틱
+            let toastKind: 'combo' | 'combo_hot' | 'combo_fire' = 'combo';
+            if (streak >= 7) {
+                toastKind = 'combo_fire';
+                void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            } else if (streak >= 5) {
+                toastKind = 'combo_hot';
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            } else {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }
+
+            showResultToast({
+                message: `🔥 ${streak}콤보!`,
+                kind: toastKind,
+                scoreDelta: myAnswer.scoreDelta,
+            });
+        }
+
+        prevStreakRef.current = streak;
+    }, [hasLeft, disconnectReason, roomStatus, roomData?.me, currentRound]);
 
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
@@ -820,18 +963,22 @@ export default function MatchPlayScreen() {
         }
     }, [disconnectReason, hasLeft, hostIsConnected, hostNickname, isGameStalled, showToast]);
 
-    // 리액션 핸들러
-    const handleReaction = useCallback(async (emoji: ReactionEmoji) => {
+    // 리액션 핸들러 - 로컬 애니메이션과 서버 호출 분리
+    const handleReaction = useCallback((emoji: ReactionEmoji) => {
+        // 1. 로컬 애니메이션은 항상 즉시 트리거
+        reactionLayerRef.current?.triggerReaction(EMOJI_MAP[emoji]);
+
+        // 2. 서버 호출은 rate limit 적용
         if (!roomId || !participantArgs) return;
-        try {
-            await sendReaction({
-                ...participantArgs,
-                emoji,
-            });
-        } catch (err) {
+        if (!canSendToServer()) return; // Skip server call if rate limited
+
+        sendReaction({
+            ...participantArgs,
+            emoji,
+        }).catch((err) => {
             console.warn('Failed to send reaction', err);
-        }
-    }, [participantArgs, roomId, sendReaction]);
+        });
+    }, [canSendToServer, participantArgs, roomId, sendReaction]);
 
     const handleChoicePress = async (choiceIndex: number) => {
         const isAnswerWindow = roomStatus === 'question' || roomStatus === 'grace';
@@ -914,7 +1061,7 @@ export default function MatchPlayScreen() {
             autoAdvanceTriggeredRef.current = false;
         }
         if (!isHost) return;
-        if (!['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(roomStatus)) return;
+        if (!roomStatus || !['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(roomStatus)) return;
         if (timeLeft === null) return;
         if (timeLeft > 0) return;
         if (autoAdvanceTriggeredRef.current) return;
@@ -1385,6 +1532,31 @@ export default function MatchPlayScreen() {
                         <ThemedText style={[styles.scoreResultText, { color: cardColor }]}>
                             {currentRound.myAnswer.isCorrect ? '정답!' : '오답'} {currentRound.myAnswer.scoreDelta > 0 ? `+${currentRound.myAnswer.scoreDelta}점` : ''}
                         </ThemedText>
+                        {currentRound.myAnswer.isCorrect && roomData?.me && roomData.me.currentStreak >= 3 && (() => {
+                            const streak = roomData.me.currentStreak;
+                            const isDark = colorScheme === 'dark';
+                            // 라이트모드: scoreResultBadge 배경이 어두움 → 밝은 콤보 배지
+                            // 다크모드: scoreResultBadge 배경이 밝음 → 어두운 콤보 배지
+                            const comboBg = isDark
+                                ? (streak >= 7 ? '#1a1a2e' : streak >= 5 ? '#2d132c' : '#2c2c2c')
+                                : (streak >= 7 ? '#FFE8E8' : streak >= 5 ? '#F3E5F5' : '#FFF3E0');
+                            const comboTextColor = isDark ? '#FFFFFF' : '#1a1a1a';
+                            const multiplierColor = streak >= 7
+                                ? (isDark ? '#FF6B6B' : '#D32F2F')
+                                : streak >= 5
+                                    ? (isDark ? '#E040FB' : '#9C27B0')
+                                    : (isDark ? '#FFB74D' : '#E65100');
+                            return (
+                                <View style={[styles.comboBadge, { backgroundColor: comboBg }]}>
+                                    <ThemedText style={[styles.comboBadgeText, { color: comboTextColor }]}>
+                                        🔥 {streak}콤보
+                                    </ThemedText>
+                                    <ThemedText style={[styles.comboMultiplierText, { color: multiplierColor }]}>
+                                        ×{getComboMultiplier(streak).toFixed(1)}
+                                    </ThemedText>
+                                </View>
+                            );
+                        })()}
                     </View>
                 ) : (
                     <ThemedText style={[styles.scoreResultText, { color: cardColor }]}>이번 라운드에 응시하지 않았어요</ThemedText>
@@ -1693,7 +1865,7 @@ export default function MatchPlayScreen() {
 
     const renderConnectionBanner = () => {
         const banners: ReactNode[] = [];
-        if (connectionState === 'reconnecting') {
+        if (connectionState === 'reconnecting' && showConnectionWarning) {
             banners.push(
                 <View key="self_reconnecting" style={[styles.connectionBanner, { backgroundColor: background }]}>
                     <View style={styles.connectionBannerRow}>
@@ -1981,7 +2153,7 @@ export default function MatchPlayScreen() {
     const pauseControl = connectionState === 'online' ? renderPauseControls() : null;
 
     return (
-        <>
+        <View style={styles.rootContainer}>
             <Stack.Screen options={{ headerShown: false }} />
             <ThemedView style={[styles.container, { backgroundColor: background, paddingTop: insets.top + Spacing.md, paddingBottom: insets.bottom + Spacing.lg }]}>
                 {/* {isHost ? renderDelaySelector() : null} */}
@@ -1998,36 +2170,33 @@ export default function MatchPlayScreen() {
                 {content}
                 {renderGraceOverlay()}
                 {renderHostGraceOverlay()}
-                {/* 실시간 리액션 시스템 */}
-                {reactionCounts && (
-                    <FloatingReactions reactions={reactionCounts.recent} />
-                )}
-                {roomStatus !== 'lobby' && roomStatus !== 'results' && connectionState === 'online' && (
-                    <View style={styles.reactionBarContainer}>
+                {roomStatus && !['lobby', 'results', 'question', 'paused'].includes(roomStatus) && connectionState === 'online' && (
+                    <View style={[styles.reactionBarContainer, { bottom: insets.bottom + 16 }]}>
                         <CompactReactionBar onReaction={handleReaction} disabled={!participantArgs} />
-                        {reactionCounts && Object.values(reactionCounts.counts).some(c => c > 0) && (
-                            <ReactionCounter counts={reactionCounts.counts} compact />
-                        )}
                     </View>
                 )}
             </ThemedView>
+            {/* 실시간 리액션 시스템 - 로컬 애니메이션 오버레이 */}
+            <ReactionLayer ref={reactionLayerRef} />
             {leaveDialogElement}
-        </>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    rootContainer: {
+        flex: 1,
+    },
     container: {
         flex: 1,
         paddingHorizontal: Spacing.lg,
     },
     reactionBarContainer: {
         position: 'absolute',
-        bottom: 100,
         left: 0,
         right: 0,
         alignItems: 'center',
-        gap: Spacing.sm,
+        zIndex: 100,
     },
     delayPresetRow: {
         flexDirection: 'row',
@@ -2258,6 +2427,24 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         textAlign: 'center',
+    },
+    comboBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: 4,
+        borderRadius: Radius.pill,
+        marginLeft: Spacing.xs,
+        gap: 4,
+    },
+    comboBadgeText: {
+        fontSize: 13,
+        fontWeight: '700',
+        color: '#FFFFFF',
+    },
+    comboMultiplierText: {
+        fontSize: 13,
+        fontWeight: '800',
     },
     distributionList: {
         gap: Spacing.sm,
