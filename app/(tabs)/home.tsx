@@ -1,6 +1,5 @@
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useQuery } from 'convex/react';
 import { Link, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { TextInput as RNTextInput } from 'react-native';
@@ -25,9 +24,9 @@ import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
-import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useDailyQuiz } from '@/hooks/use-daily-quiz';
 import { extractJoinErrorMessage, useJoinLiveMatchRoom } from '@/lib/api';
 import { deriveGuestAvatarId, deriveGuestNickname } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
@@ -47,7 +46,7 @@ export default function HomeScreen() {
   const { status: authStatus, user, guestKey, ensureGuestKey } = useAuth();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
-  const dailyQuiz = useQuery(api.daily.getDailyQuiz, {});
+  const dailyQuiz = useDailyQuiz();
   const joinLiveMatchRoom = useJoinLiveMatchRoom();
   const [timeLeft, setTimeLeft] = useState(() => {
     const nextReset = new Date();
@@ -96,9 +95,10 @@ export default function HomeScreen() {
       return { state: 'loading', prefix: '', category: null, suffix: '' };
     }
     if (hasDailyQuiz) {
-      const label = dailyCategoryCopy?.label ?? '데일리 퀴즈';
-      const icon =
-        (dailyQuiz?.category && DAILY_CATEGORY_ICONS[dailyQuiz.category as DailyCategory]) ?? 'sparkles';
+      const label = dailyCategoryCopy?.label ?? '오늘의 퀴즈';
+      const icon: IconSymbolName = dailyQuiz?.category
+        ? DAILY_CATEGORY_ICONS[dailyQuiz.category as DailyCategory] ?? 'sparkles'
+        : 'sparkles';
       return {
         state: 'ready',
         prefix: '오늘의 카테고리는',
@@ -106,7 +106,7 @@ export default function HomeScreen() {
         suffix: '',
       };
     }
-    return { state: 'pending', prefix: '데일리 퀴즈가 준비 중이에요', category: null, suffix: '' };
+    return { state: 'pending', prefix: '오늘의 퀴즈가 준비 중이에요', category: null, suffix: '' };
   }, [
     dailyCategoryCopy?.label,
     dailyQuiz?.category,
@@ -262,7 +262,7 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.section}>
-            <SectionHeader title="데일리 퀴즈" tagline="60초 OX 퀴즈" muted={muted} />
+            <SectionHeader title="오늘의 퀴즈" tagline="60초오늘의 퀴즈" muted={muted} />
             <View
               style={[
                 styles.dailyCard,
@@ -401,7 +401,7 @@ export default function HomeScreen() {
               </Button>
               <Link href="/live-match" asChild>
                 <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.right' size={16} color={textColor} />}>
-                  새 퀴즈룸 만들기
+                  오늘의 퀴즈룸 만들기
                 </Button>
               </Link>
             </View>

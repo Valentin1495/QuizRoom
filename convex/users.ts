@@ -112,7 +112,7 @@ export const getSelfStats = query({
   },
 });
 
-// 데일리 퀴즈 XP 상수
+// 오늘의 퀴즈 XP 상수
 const DAILY_XP_PER_CORRECT = 10;    // 정답당 +10 XP
 const DAILY_COMPLETION_BONUS = 50;   // 6문제 완료 시 +50 XP
 const DAILY_PERFECT_BONUS = 30;      // 6문제 전부 정답 시 추가 +30 XP

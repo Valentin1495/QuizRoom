@@ -395,7 +395,7 @@ function GuestHistoryPlaceholder({
     <View style={styles.guestHistoryContainer}>
       <View style={styles.guestHistoryContent}>
         <View style={styles.historySection}>
-          <ThemedText style={styles.historySectionTitle}>데일리 퀴즈</ThemedText>
+          <ThemedText style={styles.historySectionTitle}>오늘의 퀴즈</ThemedText>
           <View style={styles.historyList}>
             {[1].map((i) => (
               <PlaceholderRow key={i} />
@@ -523,9 +523,9 @@ function QuizHistoryPanel({
     () => ({
       daily: {
         key: 'daily' as const,
-        title: '데일리 퀴즈',
+        title: '오늘의 퀴즈',
         entries: history.daily,
-        emptyLabel: '데일리 퀴즈를 완료하고 결과를 확인해보세요.',
+        emptyLabel: '오늘의 퀴즈를 완료하고 결과를 확인해보세요.',
         renderItem: (entry: QuizHistoryDoc) => <DailyHistoryRow key={entry._id} entry={entry} />,
       },
       swipe: {
@@ -649,7 +649,7 @@ function HistoryBottomSheet({
       history
         ? {
           daily: {
-            title: '데일리 퀴즈 전체 기록',
+            title: '오늘의 퀴즈 전체 기록',
             entries: history.daily,
             emptyLabel: '아직 데일리 기록이 없어요.',
             renderItem: (entry: QuizHistoryDoc) => <DailyHistoryRow key={entry._id} entry={entry} />,

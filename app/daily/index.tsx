@@ -15,9 +15,10 @@ import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useDailyQuiz } from '@/hooks/use-daily-quiz';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { lightHaptic, mediumHaptic, successHaptic, warningHaptic } from '@/lib/haptics';
-import { useMutation, useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 
 const QUESTION_TIME_LIMIT = 10;
 
@@ -338,7 +339,7 @@ export default function DailyQuizScreen() {
   const params = useLocalSearchParams<{ date?: string | string[] }>();
   const resolvedDate = Array.isArray(params.date) ? params.date[0] : params.date;
   const tint = useThemeColor({}, 'tint');
-  const dailyQuiz = useQuery(api.daily.getDailyQuiz, { date: resolvedDate });
+  const dailyQuiz = useDailyQuiz(resolvedDate);
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme() ?? 'light';
   const palette = Colors[colorScheme];
@@ -818,7 +819,7 @@ export default function DailyQuizScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={[styles.introCard, themedStyles.introCard]}>
-            <ThemedText type="title">데일리 퀴즈 시작</ThemedText>
+            <ThemedText type="title">오늘의 퀴즈 시작</ThemedText>
             <ThemedText style={styles.introSubtitle}>
               시간 제한을 선택하고 시작해보세요. 타임어택에서는 문항당 10초 안에 답해야 해요.
             </ThemedText>
@@ -887,7 +888,7 @@ export default function DailyQuizScreen() {
           showsVerticalScrollIndicator={false}
         >
           <Animated.View>
-            <ThemedText type="title">데일리 퀴즈 결과</ThemedText>
+            <ThemedText type="title">오늘의 퀴즈 결과</ThemedText>
           </Animated.View>
           <View style={styles.summaryStats}>
             <View style={styles.summaryStatsRow}>
