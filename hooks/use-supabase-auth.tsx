@@ -7,22 +7,23 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import * as SecureStore from 'expo-secure-store';
 import {
   createContext,
-  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
+  type ReactNode,
 } from 'react';
 import { AppState, Platform } from 'react-native';
 
-import { supabase, type User } from '@/lib/supabase';
+import { supabase, type Database, type User } from '@/lib/supabase';
+
+type UserInsert = Database['public']['Tables']['users']['Insert'];
 
 // Configure Google Sign-In
 GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-  iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+  webClientId: '726867887633-8buje4l38mrpp0p98i8vh1k0jijqvuol.apps.googleusercontent.com',
 });
 
 type AuthStatus =
@@ -147,8 +148,15 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Fetch user profile from database
+  // Supports account linking: if user exists with same email but different identity_id,
+  // update the identity_id to link the accounts (migration from Convex/Firebase)
   const fetchUserProfile = useCallback(async (authUserId: string) => {
     try {
+      if (__DEV__) {
+        console.log('[SupabaseAuth] fetchUserProfile called with:', authUserId);
+      }
+
+      // First, try to find user by identity_id (Supabase Auth ID)
       const { data, error: fetchError } = await supabase
         .from('users')
         .select('*')
@@ -156,40 +164,91 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
         .single();
 
       if (fetchError) {
-        // User doesn't exist yet, create one
+        if (__DEV__) {
+          console.log('[SupabaseAuth] User not found by identity_id, error:', fetchError.code);
+        }
+
+        // User not found by identity_id
         if (fetchError.code === 'PGRST116') {
           const { data: { user: authUser } } = await supabase.auth.getUser();
           if (!authUser) throw new Error('No auth user');
 
-          const newUser = {
+          const email = authUser.email;
+
+          // Try to find existing user by email (for account linking from Convex migration)
+          if (email) {
+            // Check if there's a user with matching handle (email prefix) from migration
+            const emailPrefix = email.split('@')[0];
+            const { data: existingByHandle } = await supabase
+              .from('users')
+              .select('*')
+              .eq('handle', emailPrefix)
+              .single() as { data: User | null };
+
+            if (existingByHandle) {
+              // Found existing user! Update identity_id to link accounts
+              if (__DEV__) {
+                console.log('[SupabaseAuth] Linking existing account:', existingByHandle.handle);
+              }
+              const { data: linkedUser, error: linkError } = await (supabase
+                .from('users') as any)
+                .update({
+                  identity_id: authUserId,
+                  avatar_url: authUser.user_metadata.avatar_url || authUser.user_metadata.picture || existingByHandle.avatar_url,
+                })
+                .eq('id', existingByHandle.id)
+                .select()
+                .single();
+
+              if (linkError) throw linkError;
+              return linkedUser;
+            }
+          }
+
+          // No existing user found, create new one
+          if (__DEV__) {
+            console.log('[SupabaseAuth] Creating new user for:', authUser.email);
+          }
+
+          const newUser: UserInsert = {
             identity_id: authUserId,
             provider: authUser.app_metadata.provider || 'unknown',
             handle: authUser.user_metadata.name || authUser.email?.split('@')[0] || `user-${authUserId.slice(-6)}`,
             avatar_url: authUser.user_metadata.avatar_url || authUser.user_metadata.picture,
-            interests: [],
+            interests: [] as string[],
             streak: 0,
             xp: 0,
             total_correct: 0,
             total_played: 0,
-            cosmetics: [],
-            skill: { global: 1200, tags: [] },
+            cosmetics: [] as string[],
+            skill: { global: 1200, tags: [] as { tag: string; rating: number }[] },
           };
 
           const { data: insertedUser, error: insertError } = await supabase
             .from('users')
-            .insert(newUser)
+            .insert(newUser as any)
             .select()
             .single();
 
-          if (insertError) throw insertError;
-          return insertedUser;
+          if (insertError) {
+            console.error('[SupabaseAuth] Failed to create user:', insertError);
+            throw insertError;
+          }
+
+          if (__DEV__) {
+            console.log('[SupabaseAuth] New user created:', (insertedUser as User)?.handle);
+          }
+          return insertedUser as User;
         }
         throw fetchError;
       }
 
-      return data;
+      if (__DEV__) {
+        console.log('[SupabaseAuth] Found existing user:', (data as User)?.handle);
+      }
+      return data as User;
     } catch (err) {
-      console.error('Failed to fetch user profile', err);
+      console.error('[SupabaseAuth] fetchUserProfile error:', err);
       throw err;
     }
   }, []);
@@ -224,14 +283,20 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
           return;
         }
 
-        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
           try {
+            if (__DEV__) {
+              console.log('[SupabaseAuth] Fetching user profile for:', session.user.id);
+            }
             const dbUser = await fetchUserProfile(session.user.id);
+            if (__DEV__) {
+              console.log('[SupabaseAuth] User profile loaded:', dbUser?.handle);
+            }
             setUser(toAuthedUser(dbUser));
             setStatus('authenticated');
             setError(null);
           } catch (err) {
-            console.error('Failed to load user after auth', err);
+            console.error('[SupabaseAuth] Failed to load user after auth', err);
             setStatus('error');
             setError(err instanceof Error ? err.message : '사용자 정보를 불러오지 못했습니다.');
           }
@@ -240,23 +305,9 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       }
     );
 
-    // Initial session check
-    (async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          const dbUser = await fetchUserProfile(session.user.id);
-          setUser(toAuthedUser(dbUser));
-          setStatus('authenticated');
-        } else {
-          setStatus('unauthenticated');
-        }
-      } catch (err) {
-        console.error('Failed to check initial session', err);
-        setStatus('unauthenticated');
-      }
-      setIsReady(true);
-    })();
+    // Note: INITIAL_SESSION event fires immediately on subscription,
+    // so we don't need a separate manual session check here.
+    // This avoids race conditions and duplicate profile fetches.
 
     return () => {
       subscription.unsubscribe();

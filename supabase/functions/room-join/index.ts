@@ -184,6 +184,9 @@ serve(async (req) => {
         total_score: 0,
         avg_response_ms: 0,
         answers: 0,
+        removed_at: null,
+        disconnected_at: null,
+        last_seen_at: new Date().toISOString(),
       })
       .select()
       .single();

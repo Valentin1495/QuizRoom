@@ -24,9 +24,9 @@ import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
-import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useDailyQuiz } from '@/hooks/use-daily-quiz';
+import { useAuth } from '@/hooks/use-unified-auth';
 import { extractJoinErrorMessage, useJoinLiveMatchRoom } from '@/lib/api';
 import { deriveGuestAvatarId, deriveGuestNickname } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
@@ -43,7 +43,7 @@ function formatTimeLeft(target: Date) {
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { status: authStatus, user, guestKey, ensureGuestKey } = useAuth();
+  const { status: authStatus, user, guestKey, ensureGuestKey, isConvexReady } = useAuth();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const dailyQuiz = useDailyQuiz();
@@ -160,8 +160,8 @@ export default function HomeScreen() {
 
     setIsJoining(true);
     try {
-      const guestKeyValue =
-        isGuest ? guestKey ?? (await ensureGuestKey()) : undefined;
+      const needsGuestKey = !isAuthenticated || isConvexReady === false;
+      const guestKeyValue = needsGuestKey ? guestKey ?? (await ensureGuestKey()) : undefined;
       await joinLiveMatchRoom({
         code: normalizedCode,
         nickname: joinNickname.trim() || undefined,
@@ -401,7 +401,7 @@ export default function HomeScreen() {
               </Button>
               <Link href="/live-match" asChild>
                 <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.right' size={16} color={textColor} />}>
-                  오늘의 퀴즈룸 만들기
+                  퀴즈룸 만들기
                 </Button>
               </Link>
             </View>

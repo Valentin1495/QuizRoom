@@ -158,11 +158,17 @@ export function useDeckFeed(options?: { tag?: string; limit?: number }) {
 // Live Match Deck Hooks
 // ============================================
 
-export function useLiveMatchDecks() {
+export function useLiveMatchDecks(options?: { enabled?: boolean }) {
+  const enabled = options?.enabled ?? true;
   const [decks, setDecks] = useState<LiveMatchDeck[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
 
   useEffect(() => {
+    if (!enabled) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchDecks = async () => {
       setIsLoading(true);
       try {
@@ -179,24 +185,226 @@ export function useLiveMatchDecks() {
     };
 
     fetchDecks();
-  }, []);
+  }, [enabled]);
 
   return { decks, isLoading };
+}
+
+// ============================================
+// Live Match Room Hooks
+// ============================================
+
+type LobbyRoom = {
+  _id: string;
+  code: string;
+  hostId: string | null;
+  hostIdentity: string;
+  status: string;
+  deckId: string | null;
+  rules: {
+    rounds: number;
+    readSeconds: number;
+    answerSeconds: number;
+    graceSeconds: number;
+    revealSeconds: number;
+    leaderboardSeconds: number;
+  };
+  currentRound: number;
+  totalRounds: number;
+  phaseEndsAt: number | null;
+  pendingAction: {
+    type: string;
+    executeAt: number;
+    delayMs: number;
+    createdAt: number;
+    initiatedBy: string | null;
+    initiatedIdentity: string;
+    label: string;
+  } | null;
+  pauseState: unknown | null;
+  serverNow: number;
+  expiresAt: number;
+  startedAt: number | null;
+  version: number;
+};
+
+type LobbyDeck = {
+  id: string;
+  slug: string;
+  title: string;
+  emoji: string;
+  description: string;
+  questionCount: number;
+};
+
+type LobbyParticipant = {
+  participantId: string;
+  odUserId: string | null;
+  userId: string | null;
+  avatarUrl: string | null;
+  isGuest: boolean;
+  guestAvatarId: number | null;
+  nickname: string;
+  isHost: boolean;
+  isReady: boolean;
+  joinedAt: number;
+  isConnected: boolean;
+  xp: number | null;
+};
+
+type LobbyData = {
+  room: LobbyRoom;
+  deck: LobbyDeck | null;
+  participants: LobbyParticipant[];
+  now: number;
+};
+
+export function useLobby(code: string, options?: { enabled?: boolean }) {
+  const enabled = options?.enabled ?? true;
+  const shouldFetch = enabled && code.length > 0;
+  const [lobby, setLobby] = useState<LobbyData | null>(null);
+  const [isLoading, setIsLoading] = useState(shouldFetch);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchLobby = useCallback(async () => {
+    if (!shouldFetch) return;
+
+    try {
+      console.log('[Lobby] Fetching lobby for code:', code);
+      const { data: result, error: fetchError } = await supabase.functions.invoke(
+        'room-lobby',
+        { body: { code } }
+      );
+
+      console.log('[Lobby] Response:', JSON.stringify(result, null, 2));
+      if (fetchError) {
+        console.error('[Lobby] Fetch error:', fetchError);
+        throw fetchError;
+      }
+      setLobby(result?.data ?? null);
+      setError(null);
+    } catch (err) {
+      console.error('[Lobby] Failed to fetch lobby:', err);
+      setError(err instanceof Error ? err : new Error('Failed to fetch lobby'));
+    }
+  }, [code, shouldFetch]);
+
+  useEffect(() => {
+    if (!shouldFetch) {
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    fetchLobby().finally(() => setIsLoading(false));
+  }, [fetchLobby, shouldFetch]);
+
+  return { lobby, isLoading, error, refetch: fetchLobby };
+}
+
+export function useCreateLiveMatchRoom() {
+  return useCallback(
+    async (args: { deckId?: string; nickname?: string; guestKey?: string }) => {
+      console.log('[RoomCreate] Creating room with:', args);
+      const { data: result, error } = await supabase.functions.invoke('room-create', {
+        body: {
+          deckId: args.deckId,
+          nickname: args.nickname,
+          guestKey: args.guestKey,
+        },
+      });
+
+      console.log('[RoomCreate] Response:', JSON.stringify(result, null, 2));
+      if (error) {
+        console.error('[RoomCreate] Error:', error);
+        throw error;
+      }
+      if (result?.error) throw new Error(result.error);
+
+      return {
+        roomId: result.data.roomId as string,
+        code: result.data.code as string,
+        participantId: result.data.participantId as string,
+        pendingAction: result.data.pendingAction ?? null,
+      };
+    },
+    []
+  );
+}
+
+export function useJoinLiveMatchRoom() {
+  return useCallback(
+    async (args: { code: string; nickname?: string; guestKey?: string }) => {
+      const { data: result, error } = await supabase.functions.invoke('room-join', {
+        body: {
+          code: args.code,
+          nickname: args.nickname,
+          guestKey: args.guestKey,
+        },
+      });
+
+      if (error) throw error;
+      if (result?.error) throw new Error(result.error);
+
+      // Check for expired room
+      if (result.data?.expired) {
+        throw new Error(ROOM_EXPIRED_MESSAGE);
+      }
+
+      return {
+        roomId: result.data.roomId as string,
+        participantId: result.data.participantId as string,
+        pendingAction: result.data.pendingAction ?? null,
+      };
+    },
+    []
+  );
+}
+
+type RoomActionParams = {
+  roomId: string;
+  participantId?: string;
+  guestKey?: string;
+  [key: string]: unknown;
+};
+
+/**
+ * Hook for calling room-action Edge Function
+ * Supports: heartbeat, setReady, leave, start, progress, submitAnswer, sendReaction, rematch
+ */
+export function useRoomAction() {
+  return useCallback(
+    async (action: string, params: RoomActionParams) => {
+      const { data: result, error } = await supabase.functions.invoke('room-action', {
+        body: { action, ...params },
+      });
+      if (error) throw error;
+      if (result?.error) throw new Error(result.error);
+      return result?.data;
+    },
+    []
+  );
 }
 
 // ============================================
 // Quiz History Hooks
 // ============================================
 
-export function useQuizHistory(limit = 10) {
+export function useQuizHistory(limit = 10, options?: { enabled?: boolean }) {
+  const enabled = options?.enabled ?? true;
   const [history, setHistory] = useState<{
     daily: QuizHistoryEntry[];
     swipe: QuizHistoryEntry[];
     liveMatch: QuizHistoryEntry[];
   }>({ daily: [], swipe: [], liveMatch: [] });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
 
   useEffect(() => {
+    if (!enabled) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchHistory = async () => {
       setIsLoading(true);
       try {
@@ -212,7 +420,7 @@ export function useQuizHistory(limit = 10) {
     };
 
     fetchHistory();
-  }, [limit]);
+  }, [limit, enabled]);
 
   return { history, isLoading };
 }

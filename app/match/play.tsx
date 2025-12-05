@@ -21,29 +21,15 @@ import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Elevation, Palette, Radius, Spacing } from '@/constants/theme';
-import { api } from '@/convex/_generated/api';
-import type { Id } from '@/convex/_generated/dataModel';
-import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useConnectionStatus } from '@/hooks/use-connection-status';
+import { computeTimeLeft, getComboMultiplier, useGameActions, useLiveGame } from '@/hooks/use-live-game';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
-import { useMutation, useQuery } from 'convex/react';
+import { supabase } from '@/lib/supabase-api';
 
-function computeTimeLeft(expiresAt?: number | null, now?: number) {
-    if (!expiresAt || !now) return null;
-    const diff = Math.max(0, expiresAt - now);
-    return Math.ceil(diff / 1000);
-}
-
-// 콤보 배수 계산 (서버와 동일한 로직)
-function getComboMultiplier(streak: number): number {
-    if (streak >= 10) return 3.0;
-    if (streak >= 7) return 2.5;
-    if (streak >= 5) return 2.0;
-    if (streak >= 3) return 1.5;
-    return 1.0;
-}
+// computeTimeLeft and getComboMultiplier are now imported from use-live-game
 
 const FORCED_EXIT_MESSAGE = '세션이 더 이상 유지되지 않아 방과의 연결이 종료됐어요. 다시 참여하려면 초대 코드를 입력해 주세요.';
 const EXPIRED_MESSAGE = '연결이 오래 끊겼습니다.\n이번 퀴즈는 종료되었어요.';
@@ -61,9 +47,9 @@ export default function MatchPlayScreen() {
     const router = useRouter();
     const { user, status: authStatus, guestKey, ensureGuestKey } = useAuth();
     const insets = useSafeAreaInsets();
-    const params = useLocalSearchParams<{ roomId?: string }>();
-    const roomIdParam = useMemo(() => params.roomId?.toString() ?? null, [params.roomId]);
-    const roomId = useMemo(() => (roomIdParam ? (roomIdParam as Id<'liveMatchRooms'>) : null), [roomIdParam]);
+    const params = useLocalSearchParams<{ roomId?: string; participantId?: string }>();
+    const roomId = useMemo(() => params.roomId?.toString() ?? null, [params.roomId]);
+    const initialParticipantId = useMemo(() => params.participantId?.toString() ?? null, [params.participantId]);
     const colorScheme = useColorScheme() ?? 'light';
     const textColor = useThemeColor({}, 'text');
     const textMutedColor = useThemeColor({}, 'textMuted');
@@ -93,48 +79,49 @@ export default function MatchPlayScreen() {
             void ensureGuestKey();
         }
     }, [ensureGuestKey, guestKey, authStatus]);
-    const queryArgs = useMemo(() => {
-        if (!roomId || hasLeft || disconnectReason) {
-            return 'skip' as const;
-        }
-        if (authStatus === 'authenticated') {
-            return user ? { roomId } : ('skip' as const);
-        }
-        if (authStatus === 'guest') {
-            return guestKey ? { roomId, guestKey } : ('skip' as const);
-        }
-        return 'skip' as const;
+
+    // Participant ID from route params or game state
+    const [participantId, setParticipantId] = useState<string | null>(initialParticipantId);
+
+    const shouldFetch = useMemo(() => {
+        if (!roomId || hasLeft || disconnectReason) return false;
+        if (authStatus === 'authenticated') return !!user;
+        if (authStatus === 'guest') return !!guestKey;
+        return false;
     }, [authStatus, disconnectReason, guestKey, hasLeft, roomId, user]);
-    const isWatchingState = queryArgs !== 'skip';
+
+    const isWatchingState = shouldFetch && !!participantId;
+
     const notifyForcedExit = useCallback(() => {
         setDisconnectReason((prev) => prev ?? FORCED_EXIT_MESSAGE);
     }, []);
-    const roomState = useQuery(
-        api.rooms.getRoomState,
-        queryArgs
-    );
-    const roomData = roomState && roomState.status === 'ok' ? roomState : null;
 
-    const progressRoom = useMutation(api.rooms.progress);
-    const pauseRoom = useMutation(api.rooms.pause);
-    const resumeRoom = useMutation(api.rooms.resume);
-    const heartbeat = useMutation(api.rooms.heartbeat);
-    const submitAnswer = useMutation(api.rooms.submitAnswer);
-    const sendReaction = useMutation(api.rooms.sendReaction);
-    const resetRoom = useMutation(api.rooms.resetToLobby);
-    const rematchRoom = useMutation(api.rooms.rematch);
-    const leaveRoom = useMutation(api.rooms.leave);
-    const requestLobby = useMutation(api.rooms.requestLobby);
-    const logHistory = useMutation(api.history.logEntry);
-    const logStreakProgress = useMutation(api.users.logStreakProgress);
+    // Use Supabase game state hook
+    const { gameState, refetch: refetchGameState } = useLiveGame(
+        roomId,
+        participantId,
+        { enabled: isWatchingState, guestKey: guestKey ?? undefined }
+    );
+
+    const roomData = gameState.status === 'ok' ? gameState : null;
+
+    // Update participantId from game state if not set
     useEffect(() => {
-        if (!disconnectReason && isWatchingState && roomState?.status === 'not_in_room') {
+        if (roomData?.me?.participantId && !participantId) {
+            setParticipantId(roomData.me.participantId);
+        }
+    }, [roomData?.me?.participantId, participantId]);
+
+    // Use Supabase game actions
+    const gameActions = useGameActions();
+
+    useEffect(() => {
+        if (!disconnectReason && isWatchingState && gameState.status === 'not_in_room') {
             notifyForcedExit();
         }
-    }, [disconnectReason, isWatchingState, notifyForcedExit, roomState?.status]);
+    }, [disconnectReason, isWatchingState, notifyForcedExit, gameState.status]);
 
     const pendingAction = roomData?.room.pendingAction ?? null;
-    const cancelPendingAction = useMutation(api.rooms.cancelPendingAction);
     const meParticipantId = roomData?.me.participantId ?? null;
     const participantArgs = useMemo(() => {
         if (!roomId || !meParticipantId) {
@@ -148,6 +135,27 @@ export default function MatchPlayScreen() {
         }
         return { roomId, participantId: meParticipantId };
     }, [authStatus, guestKey, meParticipantId, roomId]);
+
+    // History logging (simplified for Supabase)
+    const logHistory = useCallback(async (entry: { deckId: string; mode: string; score: number; correctCount: number; totalCount: number }) => {
+        if (!user) return;
+        try {
+            await supabase.from('quiz_history').insert({
+                user_id: user.id,
+                deck_id: entry.deckId,
+                mode: entry.mode,
+                score: entry.score,
+                correct_count: entry.correctCount,
+                total_count: entry.totalCount,
+            });
+        } catch (err) {
+            console.error('[Play] Failed to log history:', err);
+        }
+    }, [user]);
+
+    const logStreakProgress = useCallback(async () => {
+        // Streak progress is handled by the finish action on the server
+    }, []);
 
     const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
     const [serverOffsetMs, setServerOffsetMs] = useState(0);
@@ -444,7 +452,9 @@ export default function MatchPlayScreen() {
         if (!participantArgs || isManualReconnectPending) return;
         setIsManualReconnectPending(true);
         try {
-            await heartbeat(participantArgs);
+            await supabase.functions.invoke('room-action', {
+                body: { action: 'heartbeat', ...participantArgs },
+            });
             handleConnectionRestored();
         } catch {
             beginReconnecting();
@@ -452,12 +462,12 @@ export default function MatchPlayScreen() {
         } finally {
             setIsManualReconnectPending(false);
         }
-    }, [beginReconnecting, handleConnectionRestored, heartbeat, isManualReconnectPending, participantArgs, showToast]);
+    }, [beginReconnecting, handleConnectionRestored, isManualReconnectPending, participantArgs, showToast]);
     const performLeave = useCallback(() => {
         if (hasLeft) return;
         const shouldNotifyServer = roomStatus !== 'results';
         if (shouldNotifyServer && !disconnectReason && participantArgs) {
-            leaveRoom(participantArgs).catch((err) => {
+            gameActions.leave(participantArgs).catch((err) => {
                 if (err instanceof Error && err.message.includes('NOT_IN_ROOM')) {
                     // already removed; just continue
                 } else {
@@ -573,12 +583,15 @@ export default function MatchPlayScreen() {
 
     // Bandwidth optimization: increased heartbeat interval from 5s to 8s
     // Note: HOST_HEARTBEAT_GRACE_MS (10s) must be greater than this value to prevent false offline detection
+    // Note: useLiveGame already handles heartbeat internally, this is for additional connection state monitoring
     const HEARTBEAT_INTERVAL_MS = 8000;
     useEffect(() => {
         if (hasLeft || disconnectReason || !participantArgs) return;
         const tick = async () => {
             try {
-                await heartbeat(participantArgs);
+                await supabase.functions.invoke('room-action', {
+                    body: { action: 'heartbeat', ...participantArgs },
+                });
                 handleConnectionRestored();
             } catch (err) {
                 if (err instanceof Error && err.message.includes('NOT_IN_ROOM')) {
@@ -592,7 +605,7 @@ export default function MatchPlayScreen() {
         void tick();
         const interval = setInterval(tick, HEARTBEAT_INTERVAL_MS);
         return () => clearInterval(interval);
-    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, heartbeat, notifyForcedExit, participantArgs]);
+    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, notifyForcedExit, participantArgs]);
 
     // Bandwidth optimization: reduced pendingAction check interval from 200ms to 500ms
     const PENDING_CHECK_INTERVAL_MS = 500;
@@ -611,7 +624,9 @@ export default function MatchPlayScreen() {
                 pendingHeartbeatRef.current = true;
                 void (async () => {
                     try {
-                        await heartbeat(participantArgs);
+                        await supabase.functions.invoke('room-action', {
+                            body: { action: 'heartbeat', ...participantArgs },
+                        });
                         handleConnectionRestored();
                     } catch (error) {
                         pendingHeartbeatRef.current = false;
@@ -972,23 +987,22 @@ export default function MatchPlayScreen() {
         if (!roomId || !participantArgs) return;
         if (!canSendToServer()) return; // Skip server call if rate limited
 
-        sendReaction({
+        gameActions.sendReaction({
             ...participantArgs,
             emoji,
         }).catch((err) => {
             console.warn('Failed to send reaction', err);
         });
-    }, [canSendToServer, participantArgs, roomId, sendReaction]);
+    }, [canSendToServer, gameActions, participantArgs, roomId]);
 
     const handleChoicePress = async (choiceIndex: number) => {
         const isAnswerWindow = roomStatus === 'question' || roomStatus === 'grace';
         if (!roomId || !isAnswerWindow || !currentRound || !participantArgs) return;
         setSelectedChoice(choiceIndex);
         try {
-            await submitAnswer({
+            await gameActions.submitAnswer({
                 ...participantArgs,
                 choiceIndex,
-                clientTs: Date.now(),
             });
         } catch (err) {
             if (err instanceof Error && err.message.includes('ROUND_NOT_ACTIVE')) {
@@ -1000,14 +1014,14 @@ export default function MatchPlayScreen() {
     };
 
     const handleAdvance = useCallback(async () => {
-        if (!roomId) return;
+        if (!roomId || !meParticipantId) return;
         if (!isHost) {
             showToast('지금은 호스트가 아니에요. 다른 참가자가 진행을 이어받았어요.', 'not_host_cannot_progress');
             return;
         }
         try {
             const key = await resolveHostGuestKey();
-            await progressRoom({ roomId, guestKey: key });
+            await gameActions.progress({ roomId, participantId: meParticipantId, guestKey: key });
         } catch (err) {
             if (err instanceof Error && err.message.includes('NOT_AUTHORIZED')) {
                 showToast('지금은 호스트가 아니에요. 다른 참가자가 진행을 이어받았어요.', 'not_authorized_progress');
@@ -1015,10 +1029,10 @@ export default function MatchPlayScreen() {
             }
             Alert.alert('상태 전환 실패', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         }
-    }, [isHost, progressRoom, resolveHostGuestKey, roomId, showToast]);
+    }, [gameActions, isHost, meParticipantId, resolveHostGuestKey, roomId, showToast]);
 
     const handlePause = useCallback(async () => {
-        if (!roomId || !isHost) return;
+        if (!roomId || !meParticipantId || !isHost) return;
         if (isPausePending) return;
         if (!isPausableStatus) return;
         if (pendingAction) {
@@ -1028,27 +1042,27 @@ export default function MatchPlayScreen() {
         setIsPausePending(true);
         try {
             const key = await resolveHostGuestKey();
-            await pauseRoom({ roomId, guestKey: key });
+            await gameActions.pause({ roomId, participantId: meParticipantId, guestKey: key });
         } catch (err) {
             Alert.alert('일시정지하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         } finally {
             setIsPausePending(false);
         }
-    }, [isHost, isPausePending, isPausableStatus, pauseRoom, pendingAction, resolveHostGuestKey, roomId]);
+    }, [gameActions, isHost, isPausePending, isPausableStatus, meParticipantId, pendingAction, resolveHostGuestKey, roomId]);
 
     const handleResume = useCallback(async () => {
-        if (!roomId || !isHost || !isPaused) return;
+        if (!roomId || !meParticipantId || !isHost || !isPaused) return;
         if (isResumePending) return;
         setIsResumePending(true);
         try {
             const key = await resolveHostGuestKey();
-            await resumeRoom({ roomId, guestKey: key });
+            await gameActions.resume({ roomId, participantId: meParticipantId, guestKey: key });
         } catch (err) {
             Alert.alert('재개하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         } finally {
             setIsResumePending(false);
         }
-    }, [isHost, isPaused, isResumePending, resolveHostGuestKey, resumeRoom, roomId]);
+    }, [gameActions, isHost, isPaused, isResumePending, meParticipantId, resolveHostGuestKey, roomId]);
 
     const autoAdvancePhaseRef = useRef<string | null>(null);
     const autoAdvanceTriggeredRef = useRef(false);
@@ -1078,7 +1092,7 @@ export default function MatchPlayScreen() {
     }, [hasLeft, isLobbyPending, isRematchPending, roomStatus]);
 
     const handleRematch = useCallback(async () => {
-        if (!roomId) return;
+        if (!roomId || !meParticipantId) return;
         if (!isHost) {
             showToast('호스트가 리매치를 시작하면 진행돼요');
             return;
@@ -1092,21 +1106,21 @@ export default function MatchPlayScreen() {
         setIsRematchPending(true);
         try {
             const key = await resolveHostGuestKey();
-            await rematchRoom({ roomId, delayMs: resolveDelay(), guestKey: key });
+            await gameActions.rematch({ roomId, participantId: meParticipantId, delayMs: resolveDelay(), guestKey: key });
         } catch (err) {
             Alert.alert('리매치를 시작하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         } finally {
             setIsRematchPending(false);
         }
-    }, [isHost, isLobbyPending, isRematchPending, pendingAction, rematchRoom, resolveHostGuestKey, roomId, roomStatus, showToast, resolveDelay]);
+    }, [gameActions, isHost, isLobbyPending, isRematchPending, meParticipantId, pendingAction, resolveHostGuestKey, roomId, roomStatus, showToast, resolveDelay]);
 
     const handleReturnToLobby = useCallback(async () => {
-        if (!roomId || !participantArgs) return;
+        if (!roomId || !participantArgs || !meParticipantId) return;
         if (!isHost) {
             if (isLobbyPending) return;
             setIsLobbyPending(true);
             try {
-                await requestLobby({ ...participantArgs, delayMs: resolveDelay() });
+                await gameActions.requestLobby({ ...participantArgs, delayMs: resolveDelay() });
                 showToast('호스트가 대기실로 이동하면 전환돼요');
             } catch (err) {
                 Alert.alert('요청을 보내지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
@@ -1124,24 +1138,24 @@ export default function MatchPlayScreen() {
         setIsLobbyPending(true);
         try {
             const key = await resolveHostGuestKey();
-            await resetRoom({ roomId, guestKey: key });
+            await gameActions.resetToLobby({ roomId, participantId: meParticipantId, guestKey: key });
         } catch (err) {
             Alert.alert('대기실로 돌아가지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         } finally {
             setIsLobbyPending(false);
         }
-    }, [isHost, isLobbyPending, isRematchPending, participantArgs, pendingAction, requestLobby, resolveHostGuestKey, resetRoom, roomId, roomStatus, showToast, resolveDelay]);
+    }, [gameActions, isHost, isLobbyPending, isRematchPending, meParticipantId, participantArgs, pendingAction, resolveHostGuestKey, roomId, roomStatus, showToast, resolveDelay]);
 
     const handleCancelPending = useCallback(async () => {
-        if (!roomId || !pendingAction) return;
+        if (!roomId || !meParticipantId || !pendingAction) return;
         try {
             const key = await resolveHostGuestKey();
-            await cancelPendingAction({ roomId, guestKey: key });
+            await gameActions.cancelPendingAction({ roomId, participantId: meParticipantId, guestKey: key });
             showToast('매치가 취소되었어요');
         } catch (err) {
             Alert.alert('취소하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
         }
-    }, [cancelPendingAction, pendingAction, resolveHostGuestKey, roomId, showToast]);
+    }, [gameActions, meParticipantId, pendingAction, resolveHostGuestKey, roomId, showToast]);
 
     useEffect(() => {
         if (roomStatus !== 'results') {

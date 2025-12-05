@@ -13,10 +13,10 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
-import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useDailyQuiz } from '@/hooks/use-daily-quiz';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useAuth } from '@/hooks/use-unified-auth';
 import { lightHaptic, mediumHaptic, successHaptic, warningHaptic } from '@/lib/haptics';
 import { useMutation } from 'convex/react';
 

@@ -2,6 +2,7 @@ import { AuthGate } from '@/components/auth-gate';
 import { resultToastConfig } from '@/components/common/result-toast';
 import { AuthProvider } from '@/hooks/use-auth';
 import { ColorSchemeProvider, useColorScheme } from '@/hooks/use-color-scheme';
+import { SupabaseAuthProvider } from '@/hooks/use-supabase-auth';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Stack } from 'expo-router';
@@ -31,21 +32,25 @@ export default function RootLayout() {
 function RootLayoutContent() {
   const colorScheme = useColorScheme();
 
+  // Both providers are always present to allow gradual migration
+  // AuthGate and components use FEATURE_FLAGS.auth to decide which to use
   return (
     <ConvexProvider client={convex}>
       <AuthProvider client={convex}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <AuthGate>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen name="daily/index" />
-              <Stack.Screen name="room" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-            </Stack>
-            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-            <Toast config={resultToastConfig} />
-          </AuthGate>
-        </ThemeProvider>
+        <SupabaseAuthProvider>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <AuthGate>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="daily/index" />
+                <Stack.Screen name="room" options={{ headerShown: false }} />
+                <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+              </Stack>
+              <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+              <Toast config={resultToastConfig} />
+            </AuthGate>
+          </ThemeProvider>
+        </SupabaseAuthProvider>
       </AuthProvider>
     </ConvexProvider>
   );

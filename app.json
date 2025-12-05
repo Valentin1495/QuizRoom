@@ -65,15 +65,12 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "d0c16cb3-beee-43b2-b3e0-929a71bab461"
+        "projectId": "ef233841-8db2-4214-b29c-4172cc79cd7c"
       }
     },
     "owner": "eunho_xiv",
     "runtimeVersion": {
       "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/d0c16cb3-beee-43b2-b3e0-929a71bab461"
     }
   }
 }

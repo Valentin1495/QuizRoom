@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { api } from '@/convex/_generated/api';
 import type { Doc, Id } from '@/convex/_generated/dataModel';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-unified-auth';
 import { resolveGuestSources, type GuestSwipeSource } from '@/lib/guest-feed';
 import { useConvex, useMutation } from 'convex/react';
 

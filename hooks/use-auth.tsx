@@ -507,3 +507,6 @@ export function useAuth() {
   }
   return ctx;
 }
+
+// Alias for use in components that need to explicitly use Convex auth
+export { useAuth as useConvexAuth };

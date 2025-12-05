@@ -8,18 +8,18 @@ import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
-import type { Id } from '@/convex/_generated/dataModel';
-import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useLiveMatchDecks } from '@/hooks/use-live-match-decks';
+import { extractJoinErrorMessage, useCreateLiveMatchRoom, useJoinLiveMatchRoom } from '@/hooks/use-live-match-room';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { extractJoinErrorMessage, useCreateLiveMatchRoom, useJoinLiveMatchRoom, useLiveMatchDecks } from '@/lib/api';
+import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestNickname } from '@/lib/guest';
 
 export default function LiveMatchScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { user, status, guestKey, ensureGuestKey } = useAuth();
+  const { user, status, guestKey, ensureGuestKey, isConvexReady } = useAuth();
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
@@ -30,7 +30,7 @@ export default function LiveMatchScreen() {
   const [hostNickname, setHostNickname] = useState(user?.handle ?? '');
   const [isCreating, setIsCreating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
-  const [selectedDeckId, setSelectedDeckId] = useState<Id<'liveMatchDecks'> | null>(null);
+  const [selectedDeckId, setSelectedDeckId] = useState<string | null>(null);
   const [isRandomizing, setIsRandomizing] = useState(false);
   const randomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const randomIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -120,10 +120,8 @@ export default function LiveMatchScreen() {
     }
     setIsCreating(true);
     try {
-      const guestKeyValue =
-        status === 'guest'
-          ? guestKey ?? (await ensureGuestKey())
-          : undefined;
+      const needsGuestKey = status !== 'authenticated' || isConvexReady === false;
+      const guestKeyValue = needsGuestKey ? guestKey ?? (await ensureGuestKey()) : undefined;
       const result = await createLiveMatchRoom({
         deckId: selectedDeckId ?? undefined,
         nickname: normalizedHostNickname || undefined,
@@ -144,10 +142,8 @@ export default function LiveMatchScreen() {
     }
     setIsJoining(true);
     try {
-      const guestKeyValue =
-        status === 'guest'
-          ? guestKey ?? (await ensureGuestKey())
-          : undefined;
+      const needsGuestKey = status !== 'authenticated' || isConvexReady === false;
+      const guestKeyValue = needsGuestKey ? guestKey ?? (await ensureGuestKey()) : undefined;
       await joinLiveMatchRoom({
         code: normalizedCode,
         nickname: normalizedJoinNickname || undefined,
@@ -357,7 +353,7 @@ export default function LiveMatchScreen() {
             <Button
               size="lg"
               onPress={handleCreateLiveMatchRoom}
-              disabled={isCreating || (!isDecksLoading && !selectedDeckId)}
+              disabled={isCreating || isRandomizing || (!isDecksLoading && !selectedDeckId)}
               loading={isCreating}
             >
               생성하기

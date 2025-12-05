@@ -16,15 +16,13 @@ import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Radius, Spacing } from '@/constants/theme';
-import { api } from '@/convex/_generated/api';
-import type { Id } from '@/convex/_generated/dataModel';
-import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useLiveLobby, useRoomActions } from '@/hooks/use-live-lobby';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestAvatarId } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
-import { useMutation, useQuery } from 'convex/react';
 
 export default function MatchLobbyScreen() {
   const router = useRouter();
@@ -34,8 +32,9 @@ export default function MatchLobbyScreen() {
   const roomCode = useMemo(() => (params.code ?? '').toString().toUpperCase(), [params.code]);
 
   const [hasLeft, setHasLeft] = useState(false);
-  const [participantId, setParticipantId] = useState<Id<'liveMatchParticipants'> | null>(null);
+  const [participantId, setParticipantId] = useState<string | null>(null);
   const joinAttemptRef = useRef(false);
+  const [optimisticReady, setOptimisticReady] = useState<boolean | null>(null);
   const [pendingMs, setPendingMs] = useState(0);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
   const pendingExecutedRef = useRef(false);
@@ -49,16 +48,8 @@ export default function MatchLobbyScreen() {
 
 
   const shouldFetchLobby = roomCode.length > 0 && !hasLeft;
-  const lobby = useQuery(
-    api.rooms.getLobby,
-    shouldFetchLobby ? { code: roomCode } : 'skip'
-  );
-  const joinRoom = useMutation(api.rooms.join);
-  const leaveRoom = useMutation(api.rooms.leave);
-  const heartbeat = useMutation(api.rooms.heartbeat);
-  const startRoom = useMutation(api.rooms.start);
-  const setReady = useMutation(api.rooms.setReady);
-  const cancelPendingAction = useMutation(api.rooms.cancelPendingAction);
+  const { lobby, isLoading: isLobbyLoading } = useLiveLobby(roomCode, { enabled: shouldFetchLobby });
+  const roomActions = useRoomActions();
   const roomId = lobby?.room._id ?? null;
   const pendingAction = lobby?.room.pendingAction ?? null;
   const pendingBannerAnim = useRef(new Animated.Value(pendingAction ? 1 : 0)).current;
@@ -110,8 +101,15 @@ export default function MatchLobbyScreen() {
   }, []);
   const readyCount = useMemo(
     () =>
-      participants.filter((participant) => !participant.isHost && participant.isReady).length,
-    [participants]
+      participants.filter((participant) => {
+        if (participant.isHost) return false;
+        // Use optimistic state for self
+        if (participant.participantId === participantId && optimisticReady !== null) {
+          return optimisticReady;
+        }
+        return participant.isReady;
+      }).length,
+    [participants, participantId, optimisticReady]
   );
   const readyTotal = useMemo(
     () => participants.filter((participant) => !participant.isHost).length,
@@ -123,7 +121,7 @@ export default function MatchLobbyScreen() {
     }
     return readyCount === readyTotal;
   }, [participants.length, readyCount, readyTotal]);
-  const isSelfReady = meParticipant?.isReady ?? false;
+  const isSelfReady = optimisticReady ?? meParticipant?.isReady ?? false;
   const isSelfHost = meParticipant?.isHost ?? false;
   const readySummaryTotal = useMemo(() => readyTotal, [readyTotal]);
   const pendingSeconds = Math.ceil(pendingMs / 1000);
@@ -235,21 +233,31 @@ export default function MatchLobbyScreen() {
 
   const handleToggleReady = useCallback(async () => {
     if (!roomId || !participantId || isSelfHost) return;
+
+    const newReadyState = !isSelfReady;
+
+    // Optimistic update - immediately toggle UI
+    setOptimisticReady(newReadyState);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
     try {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      await setReady({
+      await roomActions.setReady({
         roomId,
         participantId,
-        ready: !isSelfReady,
+        ready: newReadyState,
         guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
       });
+      // Clear optimistic state on success, let server data take over
+      setOptimisticReady(null);
     } catch (error) {
+      // Rollback on failure
+      setOptimisticReady(null);
       Alert.alert(
         '준비 상태 변경 실패',
         error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
       );
     }
-  }, [guestKey, isSelfHost, isSelfReady, participantId, roomId, setReady, status]);
+  }, [guestKey, isSelfHost, isSelfReady, participantId, roomActions, roomId, status]);
 
   const handleStart = useCallback(async () => {
     if (!roomId) return;
@@ -264,8 +272,9 @@ export default function MatchLobbyScreen() {
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       const key = await resolveHostGuestKey();
-      await startRoom({
+      await roomActions.start({
         roomId,
+        participantId: participantId ?? '',
         delayMs: resolveDelayMs,
         guestKey: key,
       });
@@ -279,19 +288,19 @@ export default function MatchLobbyScreen() {
         error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
       );
     }
-  }, [allReady, pendingAction, resolveDelayMs, resolveHostGuestKey, roomId, startRoom]);
+  }, [allReady, pendingAction, resolveDelayMs, resolveHostGuestKey, roomActions, roomId]);
 
   const handleLeave = useCallback(() => {
     if (hasLeft) return;
     setHasLeft(true);
     if (roomId && participantId) {
       const guestKeyValue = status === 'guest' ? guestKey ?? undefined : undefined;
-      leaveRoom({ roomId, participantId, guestKey: guestKeyValue }).catch((error) => {
+      roomActions.leave({ roomId, participantId, guestKey: guestKeyValue }).catch((error) => {
         console.warn('Failed to leave room', error);
       });
     }
     router.replace('/(tabs)/live-match');
-  }, [guestKey, hasLeft, leaveRoom, participantId, roomId, router, status]);
+  }, [guestKey, hasLeft, participantId, roomActions, roomId, router, status]);
 
   useEffect(() => {
     if (hasLeft) return;
@@ -324,7 +333,7 @@ export default function MatchLobbyScreen() {
         pendingExecutedRef.current = true;
         void (async () => {
           try {
-            await heartbeat({
+            await roomActions.heartbeat({
               roomId,
               participantId,
               guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
@@ -343,7 +352,7 @@ export default function MatchLobbyScreen() {
     update();
     const interval = setInterval(update, 200);
     return () => clearInterval(interval);
-  }, [guestKey, hasLeft, heartbeat, participantId, pendingAction, roomId, serverOffsetMs, status]);
+  }, [guestKey, hasLeft, participantId, pendingAction, roomActions, roomId, serverOffsetMs, status]);
 
   useEffect(() => {
     if (hasLeft || !roomId || !participantId) return;
@@ -354,7 +363,7 @@ export default function MatchLobbyScreen() {
       guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
     };
     const sendHeartbeat = () =>
-      heartbeat(args).catch((error: unknown) => {
+      roomActions.heartbeat(args).catch((error: unknown) => {
         if (error instanceof Error && error.message.includes('NOT_IN_ROOM')) {
           setParticipantId(null);
           joinAttemptRef.current = false;
@@ -365,12 +374,12 @@ export default function MatchLobbyScreen() {
       void sendHeartbeat();
     }, 5000);
     return () => clearInterval(interval);
-  }, [guestKey, hasLeft, heartbeat, participantId, roomId, status]);
+  }, [guestKey, hasLeft, participantId, roomActions, roomId, status]);
 
   useEffect(() => {
     if (hasLeft) return;
     if (!roomCode) return;
-    if (lobby === undefined) return;
+    if (isLobbyLoading) return;
     if (!lobby) return;
     if (participantId) return;
     if (status === 'guest' && !guestKey) return;
@@ -379,14 +388,14 @@ export default function MatchLobbyScreen() {
     void (async () => {
       try {
         const key = status === 'guest' ? guestKey ?? (await ensureGuestKey()) : undefined;
-        const result = await joinRoom({ code: roomCode, nickname: undefined, guestKey: key });
+        const result = await roomActions.join({ code: roomCode, nickname: undefined, guestKey: key });
         setParticipantId(result.participantId ?? null);
       } catch (error) {
         joinAttemptRef.current = false;
         console.warn('Failed to join room', error);
       }
     })();
-  }, [ensureGuestKey, guestKey, hasLeft, joinRoom, lobby, participantId, roomCode, status]);
+  }, [ensureGuestKey, guestKey, hasLeft, isLobbyLoading, lobby, participantId, roomActions, roomCode, status]);
 
   useEffect(() => {
     if (hasLeft) return;
@@ -405,22 +414,26 @@ export default function MatchLobbyScreen() {
     if (!participantId) return;
     if (lobby.room.status !== 'lobby') {
       setHasLeft(true);
-      router.replace({ pathname: '/match/play', params: { roomId: lobby.room._id } });
+      router.replace({
+        pathname: '/match/play',
+        params: { roomId: lobby.room._id, participantId: participantId ?? undefined }
+      });
     }
   }, [hasLeft, lobby, participantId, router]);
 
   const handleCancelPending = useCallback(async () => {
-    if (!roomId) return;
+    if (!roomId || !participantId) return;
     try {
       const key = await resolveHostGuestKey();
-      await cancelPendingAction({
+      await roomActions.cancelPendingAction({
         roomId,
+        participantId,
         guestKey: key,
       });
     } catch (error) {
       Alert.alert('취소 실패', error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
     }
-  }, [cancelPendingAction, resolveHostGuestKey, roomId]);
+  }, [participantId, resolveHostGuestKey, roomActions, roomId]);
 
   const styles = useMemo(
     () =>
@@ -715,7 +728,7 @@ export default function MatchLobbyScreen() {
     return null;
   }
 
-  if (lobby === undefined) {
+  if (isLobbyLoading) {
     return (
       <ThemedView style={styles.centerContainer}>
         <ActivityIndicator size="large" color={primaryColor} />
@@ -898,7 +911,7 @@ export default function MatchLobbyScreen() {
                               </View>
                             ) : (
                               <View style={styles.statusDisplay}>
-                                {participant.isReady ? (
+                                {(isMe && optimisticReady !== null ? optimisticReady : participant.isReady) ? (
                                   <>
                                     <IconSymbol
                                       name="checkmark.shield"

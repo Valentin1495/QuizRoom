@@ -22,7 +22,26 @@ const DEFAULT_RULES = {
 };
 
 const ACTION_DELAY_DEFAULT_MS = 3000;
+const ACTION_DELAY_MIN_MS = 2000;
+const ACTION_DELAY_MAX_MS = 10000;
 const LOBBY_EXPIRES_MS = 1000 * 60 * 10;
+
+const PAUSABLE_STATUSES = new Set(['countdown', 'question', 'grace', 'reveal', 'leaderboard']);
+
+// XP rewards
+const LIVE_MATCH_PARTICIPATION_XP = 30;
+const LIVE_MATCH_RANK_XP: Record<number, number> = { 1: 100, 2: 50, 3: 30 };
+
+function clampDelay(delayMs?: number) {
+  if (!delayMs || Number.isNaN(delayMs)) return ACTION_DELAY_DEFAULT_MS;
+  return Math.min(Math.max(delayMs, ACTION_DELAY_MIN_MS), ACTION_DELAY_MAX_MS);
+}
+
+function applyStreakBonus(baseXp: number, streak: number): number {
+  if (streak >= 7) return Math.round(baseXp * 1.5);
+  if (streak >= 3) return Math.round(baseXp * 1.25);
+  return baseXp;
+}
 
 function getComboMultiplier(streak: number): number {
   if (streak >= 10) return 3.0;
@@ -86,6 +105,79 @@ serve(async (req) => {
           .from('live_match_participants')
           .update({ last_seen_at: nowIso, disconnected_at: null })
           .eq('id', participantId);
+
+        // Execute pending action if time has come
+        if (room.pending_action && room.pending_action.executeAt <= now) {
+          const pendingAction = room.pending_action;
+
+          if (pendingAction.type === 'start' && room.status === 'lobby') {
+            const rules = room.rules || DEFAULT_RULES;
+            await supabase
+              .from('live_match_rooms')
+              .update({
+                status: 'countdown',
+                current_round: 0,
+                server_now: now,
+                phase_ends_at: now + rules.readSeconds * 1000,
+                expires_at: now + LOBBY_EXPIRES_MS,
+                version: room.version + 1,
+                pending_action: null,
+                pause_state: null,
+              })
+              .eq('id', roomId);
+          } else if (pendingAction.type === 'rematch' && (room.status === 'results' || room.status === 'lobby')) {
+            const rules = room.rules || DEFAULT_RULES;
+
+            // Get deck for new questions
+            const { data: deck } = await supabase
+              .from('live_match_decks')
+              .select('question_ids')
+              .eq('id', room.deck_id)
+              .single();
+
+            if (deck?.question_ids?.length) {
+              const shuffled = [...deck.question_ids].sort(() => Math.random() - 0.5);
+              const selectedIds = shuffled.slice(0, room.total_rounds);
+
+              for (let i = 0; i < selectedIds.length; i++) {
+                await supabase.from('live_match_rounds').insert({
+                  room_id: roomId,
+                  index: i,
+                  question_id: selectedIds[i],
+                  started_at: 0,
+                });
+              }
+            }
+
+            await supabase
+              .from('live_match_rooms')
+              .update({
+                status: 'countdown',
+                current_round: 0,
+                server_now: now,
+                phase_ends_at: now + rules.readSeconds * 1000,
+                expires_at: now + LOBBY_EXPIRES_MS,
+                version: room.version + 1,
+                pending_action: null,
+                pause_state: null,
+              })
+              .eq('id', roomId);
+          } else if (pendingAction.type === 'toLobby' && room.status === 'results') {
+            await supabase
+              .from('live_match_rooms')
+              .update({
+                status: 'lobby',
+                current_round: 0,
+                server_now: now,
+                phase_ends_at: null,
+                expires_at: now + LOBBY_EXPIRES_MS,
+                version: room.version + 1,
+                pending_action: null,
+                pause_state: null,
+              })
+              .eq('id', roomId);
+          }
+        }
 
         return new Response(
           JSON.stringify({ data: { ok: true } }),
@@ -409,7 +501,7 @@ serve(async (req) => {
         await supabase.from('live_match_answers').delete().eq('room_id', roomId);
         await supabase.from('live_match_rounds').delete().eq('room_id', roomId);
 
-        const delayMs = params.delayMs ?? ACTION_DELAY_DEFAULT_MS;
+        const delayMs = clampDelay(params.delayMs);
         const executeAt = now + delayMs;
 
         await supabase
@@ -423,6 +515,281 @@ serve(async (req) => {
               initiatedBy: participant.user_id,
               initiatedIdentity: participant.identity_id,
               label: '리매치',
+            },
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
+
+        return new Response(
+          JSON.stringify({ data: { ok: true } }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
+
+      case 'pause': {
+        if (!participant.is_host) {
+          throw new Error('NOT_AUTHORIZED');
+        }
+        if (room.status === 'paused') {
+          return new Response(
+            JSON.stringify({ data: { ok: true, alreadyPaused: true } }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          );
+        }
+        if (!PAUSABLE_STATUSES.has(room.status)) {
+          throw new Error('INVALID_STATE');
+        }
+        if (room.pending_action) {
+          throw new Error('ACTION_PENDING');
+        }
+
+        const remainingMs = room.phase_ends_at ? Math.max(0, room.phase_ends_at - now) : undefined;
+
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            status: 'paused',
+            server_now: now,
+            phase_ends_at: null,
+            pause_state: {
+              previousStatus: room.status,
+              remainingMs,
+              pausedAt: now,
+            },
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
+
+        return new Response(
+          JSON.stringify({ data: { ok: true } }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
+
+      case 'resume': {
+        if (!participant.is_host) {
+          throw new Error('NOT_AUTHORIZED');
+        }
+        if (room.status !== 'paused' || !room.pause_state) {
+          throw new Error('INVALID_STATE');
+        }
+
+        const previousStatus = room.pause_state.previousStatus;
+        const remainingMs = room.pause_state.remainingMs;
+
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            status: previousStatus,
+            server_now: now,
+            phase_ends_at: remainingMs !== undefined ? now + remainingMs : null,
+            pause_state: null,
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
+
+        return new Response(
+          JSON.stringify({ data: { ok: true } }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
+
+      case 'cancelPendingAction': {
+        if (!room.pending_action) {
+          return new Response(
+            JSON.stringify({ data: { ok: true, noPendingAction: true } }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          );
+        }
+
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            pending_action: null,
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
+
+        await supabase.from('live_match_logs').insert({
+          room_id: roomId,
+          type: 'action_cancelled',
+          payload: {
+            type: room.pending_action.type,
+            cancelledAt: now,
+          },
+        });
+
+        return new Response(
+          JSON.stringify({ data: { ok: true } }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
+
+      case 'finish': {
+        if (!participant.is_host) {
+          throw new Error('NOT_AUTHORIZED');
+        }
+
+        // Get all participants
+        const { data: participants } = await supabase
+          .from('live_match_participants')
+          .select('*')
+          .eq('room_id', roomId)
+          .is('removed_at', null);
+
+        if (!participants) {
+          throw new Error('NO_PARTICIPANTS');
+        }
+
+        // Get all answers for correct count
+        const { data: allAnswers } = await supabase
+          .from('live_match_answers')
+          .select('participant_id, is_correct')
+          .eq('room_id', roomId);
+
+        const correctCountByParticipant = new Map<string, number>();
+        for (const answer of allAnswers || []) {
+          if (answer.is_correct) {
+            const current = correctCountByParticipant.get(answer.participant_id) ?? 0;
+            correctCountByParticipant.set(answer.participant_id, current + 1);
+          }
+        }
+
+        // Sort by score and assign ranks
+        const sortedParticipants = [...participants].sort((a, b) => {
+          if (b.total_score !== a.total_score) return b.total_score - a.total_score;
+          const correctA = correctCountByParticipant.get(a.id) ?? 0;
+          const correctB = correctCountByParticipant.get(b.id) ?? 0;
+          if (correctB !== correctA) return correctB - correctA;
+          return new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime();
+        });
+
+        // Award XP to authenticated users
+        for (let i = 0; i < sortedParticipants.length; i++) {
+          const p = sortedParticipants[i];
+          if (!p.user_id) continue;
+
+          const { data: user } = await supabase
+            .from('users')
+            .select('xp, streak, total_played, total_correct')
+            .eq('id', p.user_id)
+            .single();
+
+          if (!user) continue;
+
+          const rank = i + 1;
+          let baseXp = LIVE_MATCH_PARTICIPATION_XP;
+          baseXp += LIVE_MATCH_RANK_XP[rank] ?? 0;
+          const xpGain = applyStreakBonus(baseXp, user.streak);
+          const correctCount = correctCountByParticipant.get(p.id) ?? 0;
+
+          await supabase
+            .from('users')
+            .update({
+              xp: user.xp + xpGain,
+              total_played: user.total_played + room.total_rounds,
+              total_correct: user.total_correct + correctCount,
+            })
+            .eq('id', p.user_id);
+        }
+
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            status: 'results',
+            server_now: now,
+            phase_ends_at: null,
+            version: room.version + 1,
+            pending_action: null,
+            pause_state: null,
+          })
+          .eq('id', roomId);
+
+        return new Response(
+          JSON.stringify({ data: { ok: true } }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
+
+      case 'resetToLobby': {
+        if (!participant.is_host) {
+          throw new Error('NOT_AUTHORIZED');
+        }
+        if (room.status !== 'results' && room.status !== 'lobby') {
+          throw new Error('INVALID_STATE');
+        }
+
+        // Reset participants
+        await supabase
+          .from('live_match_participants')
+          .update({ total_score: 0, answers: 0, avg_response_ms: 0, is_ready: false, current_streak: 0 })
+          .eq('room_id', roomId);
+
+        // Delete old answers and rounds
+        await supabase.from('live_match_answers').delete().eq('room_id', roomId);
+        await supabase.from('live_match_rounds').delete().eq('room_id', roomId);
+
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            status: 'lobby',
+            current_round: 0,
+            server_now: now,
+            phase_ends_at: null,
+            expires_at: now + LOBBY_EXPIRES_MS,
+            version: room.version + 1,
+            pending_action: null,
+            pause_state: null,
+          })
+          .eq('id', roomId);
+
+        return new Response(
+          JSON.stringify({ data: { ok: true } }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
+
+      case 'requestLobby': {
+        if (room.status !== 'results') {
+          throw new Error('NOT_AVAILABLE');
+        }
+        if (room.pending_action) {
+          throw new Error('ACTION_PENDING');
+        }
+
+        const delayMs = clampDelay(params.delayMs);
+        const executeAt = now + delayMs;
+
+        // If not host, just log the request
+        if (!participant.is_host) {
+          await supabase.from('live_match_logs').insert({
+            room_id: roomId,
+            type: 'lobby_request',
+            payload: {
+              participantId: participantId,
+              userId: participant.user_id,
+              nickname: participant.nickname,
+              delayMs,
+            },
+          });
+
+          return new Response(
+            JSON.stringify({ data: { ok: true, logged: true } }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          );
+        }
+
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            pending_action: {
+              type: 'toLobby',
+              executeAt,
+              delayMs,
+              createdAt: now,
+              initiatedBy: participant.user_id,
+              initiatedIdentity: participant.identity_id,
+              label: '대기실로',
             },
             version: room.version + 1,
           })

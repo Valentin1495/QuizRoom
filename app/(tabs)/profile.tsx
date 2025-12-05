@@ -30,24 +30,21 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { categories } from '@/constants/categories';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Radius, Spacing } from '@/constants/theme';
-import { api } from '@/convex/_generated/api';
-import type { Doc } from '@/convex/_generated/dataModel';
-import { useAuth } from '@/hooks/use-auth';
 import { useColorScheme, useColorSchemeManager } from '@/hooks/use-color-scheme';
+import { useQuizHistory, type HistoryBuckets, type QuizHistoryDoc } from '@/hooks/use-quiz-history';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useAuth } from '@/hooks/use-unified-auth';
 import { deriveGuestAvatarId } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
-import { useQuery } from 'convex/react';
 
 type AuthedUser = NonNullable<ReturnType<typeof useAuth>['user']>;
-type QuizHistoryDoc = Doc<'quizHistory'>;
-type HistoryBuckets = (typeof api.history.listHistory)['_returnType'];
 type HistorySectionKey = 'daily' | 'swipe' | 'liveMatch';
+type HistoryEntry = QuizHistoryDoc & { id?: string };
 
 const HISTORY_PREVIEW_LIMIT = 3;
 
 export default function ProfileScreen() {
-  const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey, isConvexReady } = useAuth();
+  const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey, isReady } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
   const insets = useSafeAreaInsets();
@@ -81,10 +78,10 @@ export default function ProfileScreen() {
   const isLoading = status === 'loading';
   const isAuthorizing = status === 'authorizing' || status === 'upgrading';
   const isAuthenticated = status === 'authenticated' && !!user;
-  const history = useQuery(
-    api.history.listHistory,
-    status === 'authenticated' && isConvexReady ? { limit: 10 } : 'skip'
-  );
+  const history = useQuizHistory({
+    limit: 10,
+    enabled: status === 'authenticated' && isReady,
+  });
 
   const handleSignOut = useCallback(async () => {
     if (isSigningOut) return;
@@ -526,21 +523,23 @@ function QuizHistoryPanel({
         title: '오늘의 퀴즈',
         entries: history.daily,
         emptyLabel: '오늘의 퀴즈를 완료하고 결과를 확인해보세요.',
-        renderItem: (entry: QuizHistoryDoc) => <DailyHistoryRow key={entry._id} entry={entry} />,
+        renderItem: (entry: HistoryEntry) => <DailyHistoryRow key={entry._id ?? entry.id} entry={entry} />,
       },
       swipe: {
         key: 'swipe' as const,
         title: '스와이프',
         entries: history.swipe,
         emptyLabel: '스와이프 세션을 완주하고 결과를 확인해보세요.',
-        renderItem: (entry: QuizHistoryDoc) => <SwipeHistoryRow key={entry._id} entry={entry} />,
+        renderItem: (entry: HistoryEntry) => <SwipeHistoryRow key={entry._id ?? entry.id} entry={entry} />,
       },
       liveMatch: {
         key: 'liveMatch' as const,
         title: '라이브 매치',
         entries: history.liveMatch,
         emptyLabel: '라이브 매치에 참여하고 결과를 확인해보세요.',
-        renderItem: (entry: QuizHistoryDoc) => <LiveMatchHistoryRow key={entry._id} entry={entry} />,
+        renderItem: (entry: HistoryEntry) => (
+          <LiveMatchHistoryRow key={entry._id ?? entry.id} entry={entry} />
+        ),
       },
     }),
     [history]
@@ -588,8 +587,8 @@ function HistorySection({
   onSeeAll,
 }: {
   title: string;
-  entries: QuizHistoryDoc[];
-  renderItem: (entry: QuizHistoryDoc) => ReactNode;
+  entries: HistoryEntry[];
+  renderItem: (entry: HistoryEntry) => ReactNode;
   emptyLabel: string;
   previewLimit: number;
   onSeeAll: () => void;
