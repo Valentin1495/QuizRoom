@@ -11,9 +11,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
-const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
+// Convex client only for legacy daily quiz feature
+const convexUrl = process.env.EXPO_PUBLIC_CONVEX_URL;
+const convex = convexUrl ? new ConvexReactClient(convexUrl, {
   unsavedChangesWarning: false,
-});
+}) : null;
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -32,26 +34,34 @@ export default function RootLayout() {
 function RootLayoutContent() {
   const colorScheme = useColorScheme();
 
-  // Both providers are always present to allow gradual migration
-  // AuthGate and components use FEATURE_FLAGS.auth to decide which to use
-  return (
-    <ConvexProvider client={convex}>
-      <AuthProvider client={convex}>
-        <SupabaseAuthProvider>
-          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <AuthGate>
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="daily/index" />
-                <Stack.Screen name="room" options={{ headerShown: false }} />
-                <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-              </Stack>
-              <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-              <Toast config={resultToastConfig} />
-            </AuthGate>
-          </ThemeProvider>
-        </SupabaseAuthProvider>
-      </AuthProvider>
-    </ConvexProvider>
+  const content = (
+    <SupabaseAuthProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <AuthGate>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="daily/index" />
+            <Stack.Screen name="room" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+          </Stack>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+          <Toast config={resultToastConfig} />
+        </AuthGate>
+      </ThemeProvider>
+    </SupabaseAuthProvider>
   );
+
+  // Convex provider only if Convex URL is configured (for legacy daily quiz)
+  if (convex) {
+    return (
+      <ConvexProvider client={convex}>
+        <AuthProvider client={convex}>
+          {content}
+        </AuthProvider>
+      </ConvexProvider>
+    );
+  }
+
+  // Supabase only
+  return content;
 }

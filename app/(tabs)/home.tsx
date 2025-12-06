@@ -26,8 +26,8 @@ import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useDailyQuiz } from '@/hooks/use-daily-quiz';
+import { extractJoinErrorMessage, useJoinLiveMatchRoom } from '@/hooks/use-live-match-room';
 import { useAuth } from '@/hooks/use-unified-auth';
-import { extractJoinErrorMessage, useJoinLiveMatchRoom } from '@/lib/api';
 import { deriveGuestAvatarId, deriveGuestNickname } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
 
@@ -160,7 +160,7 @@ export default function HomeScreen() {
 
     setIsJoining(true);
     try {
-      const needsGuestKey = !isAuthenticated || isConvexReady === false;
+      const needsGuestKey = authStatus !== 'authenticated' || isConvexReady === false;
       const guestKeyValue = needsGuestKey ? guestKey ?? (await ensureGuestKey()) : undefined;
       await joinLiveMatchRoom({
         code: normalizedCode,
@@ -174,7 +174,7 @@ export default function HomeScreen() {
     } finally {
       setIsJoining(false);
     }
-  }, [ensureGuestKey, guestKey, isGuest, joinNickname, joinLiveMatchRoom, liveMatchRoomCode, router]);
+  }, [authStatus, ensureGuestKey, guestKey, isConvexReady, joinNickname, joinLiveMatchRoom, liveMatchRoomCode, router]);
 
   const handleJoinLiveMatchRoomSubmit = useCallback(() => {
     if (!isCodeValid || isJoining) return;

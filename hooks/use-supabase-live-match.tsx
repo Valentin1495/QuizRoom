@@ -6,11 +6,19 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { supabase, type LiveMatchRoom } from '@/lib/supabase';
+import { supabase, type Database } from '@/lib/supabase';
 
 // ============================================
 // Types
 // ============================================
+
+type LiveMatchRoom = Database['public']['Tables']['live_match_rooms']['Row'];
+type LiveMatchDeck = Database['public']['Tables']['live_match_decks']['Row'];
+type LiveMatchParticipant = Database['public']['Tables']['live_match_participants']['Row'];
+type LiveMatchRound = Database['public']['Tables']['live_match_rounds']['Row'];
+type Question = Database['public']['Tables']['questions']['Row'];
+type LiveMatchAnswer = Database['public']['Tables']['live_match_answers']['Row'];
+type LiveMatchReaction = Database['public']['Tables']['live_match_reactions']['Row'];
 
 type RoomState = {
   room: LiveMatchRoom | null;
@@ -24,7 +32,7 @@ type RoomState = {
 
 type ParticipantView = {
   participantId: string;
-  oderId: string | null;
+  userId: string | null;
   avatarUrl: string | null;
   guestAvatarId: number | null;
   nickname: string;
@@ -103,7 +111,7 @@ export function useLiveMatchRoom(roomId: string | null, guestKey?: string) {
         .from('live_match_rooms')
         .select('*')
         .eq('id', roomId)
-        .single();
+        .single<LiveMatchRoom>();
 
       if (roomError || !room) {
         setState(prev => ({
@@ -121,7 +129,7 @@ export function useLiveMatchRoom(roomId: string | null, guestKey?: string) {
           .from('live_match_decks')
           .select('*')
           .eq('id', room.deck_id)
-          .single();
+          .single<LiveMatchDeck>();
 
         if (deckData) {
           deck = {
@@ -141,7 +149,8 @@ export function useLiveMatchRoom(roomId: string | null, guestKey?: string) {
         .select('*')
         .eq('room_id', roomId)
         .is('removed_at', null)
-        .order('total_score', { ascending: false });
+        .order('total_score', { ascending: false })
+        .returns<LiveMatchParticipant[]>();
 
       // Get user identity
       const { data: { user } } = await supabase.auth.getUser();
@@ -173,71 +182,80 @@ export function useLiveMatchRoom(roomId: string | null, guestKey?: string) {
 
       // Get current round
       let currentRound: RoundView | null = null;
-      if (room.status !== 'lobby' && room.status !== 'results') {
+      if (room.status !== 'lobby' && room.status !== 'countdown' && room.status !== 'paused') {
         const { data: round } = await supabase
           .from('live_match_rounds')
-          .select('*, questions(*)')
+          .select('*')
           .eq('room_id', roomId)
           .eq('index', room.current_round)
-          .single();
+          .single<LiveMatchRound>();
 
-        if (round?.questions) {
-          const question = round.questions;
-          const meParticipant = (participants ?? []).find(p => p.identity_id === identity);
+        if (round?.question_id) {
+          // Get question
+          const { data: question } = await supabase
+            .from('questions')
+            .select('*')
+            .eq('id', round.question_id)
+            .single<Question>();
 
-          // Get my answer
-          let myAnswer;
-          if (meParticipant) {
-            const { data: answer } = await supabase
-              .from('live_match_answers')
-              .select('*')
-              .eq('room_id', roomId)
-              .eq('round_index', room.current_round)
-              .eq('participant_id', meParticipant.id)
-              .single();
+          if (question) {
+            const meParticipant = (participants ?? []).find(p => p.identity_id === identity);
 
-            if (answer) {
-              myAnswer = {
-                choiceIndex: answer.choice_index,
-                isCorrect: answer.is_correct,
-                scoreDelta: answer.score_delta,
+            // Get my answer
+            let myAnswer;
+            if (meParticipant) {
+              const { data: answer } = await supabase
+                .from('live_match_answers')
+                .select('*')
+                .eq('room_id', roomId)
+                .eq('round_index', room.current_round)
+                .eq('participant_id', meParticipant.id)
+                .single<LiveMatchAnswer>();
+
+              if (answer) {
+                myAnswer = {
+                  choiceIndex: answer.choice_index,
+                  isCorrect: answer.is_correct,
+                  scoreDelta: answer.score_delta,
+                };
+              }
+            }
+
+            // Get reveal data
+            let reveal;
+            if (room.status === 'grace' || room.status === 'question') {
+              const { data: answers } = await supabase
+                .from('live_match_answers')
+                .select('*')
+                .eq('room_id', roomId)
+                .eq('round_index', room.current_round)
+                .returns<LiveMatchAnswer[]>();
+
+              const distribution = new Array(question.choices.length).fill(0);
+              (answers ?? []).forEach(ans => {
+                if (ans.choice_index >= 0 && ans.choice_index < distribution.length) {
+                  distribution[ans.choice_index]++;
+                }
+              });
+
+              reveal = {
+                correctChoice: question.answer_index,
+                distribution,
               };
             }
-          }
 
-          // Get reveal data
-          let reveal;
-          if (room.status === 'reveal' || room.status === 'leaderboard' || room.status === 'results') {
-            const { data: answers } = await supabase
-              .from('live_match_answers')
-              .select('*')
-              .eq('room_id', roomId)
-              .eq('round_index', room.current_round);
-
-            const distribution = new Array(question.choices.length).fill(0);
-            (answers ?? []).forEach(ans => {
-              if (ans.choice_index >= 0 && ans.choice_index < distribution.length) {
-                distribution[ans.choice_index]++;
-              }
-            });
-
-            reveal = {
-              correctChoice: question.answer_index,
-              distribution,
+            currentRound = {
+              index: room.current_round,
+              question: {
+                id: question.id,
+                prompt: question.prompt,
+                explanation: question.explanation,
+                choices: question.choices,
+              },
+              myAnswer,
+              reveal,
             };
           }
-
-          currentRound = {
-            index: room.current_round,
-            question: {
-              id: question.id,
-              prompt: question.prompt,
-              explanation: question.explanation,
-              choices: question.choices,
-            },
-            myAnswer,
-            reveal,
-          };
         }
       }
 
@@ -395,7 +413,8 @@ export function useReactionCounts(roomId: string | null, roundIndex?: number) {
         .eq('round_index', roundIndex ?? 0)
         .gte('created_at', new Date(Date.now() - 5000).toISOString())
         .order('created_at', { ascending: false })
-        .limit(100);
+        .limit(100)
+        .returns<Pick<LiveMatchReaction, 'emoji' | 'created_at'>[]>();
 
       const newCounts: ReactionCount = { clap: 0, fire: 0, skull: 0, laugh: 0 };
       (data ?? []).forEach(r => {

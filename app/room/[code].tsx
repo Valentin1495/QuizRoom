@@ -35,6 +35,7 @@ export default function MatchLobbyScreen() {
   const [participantId, setParticipantId] = useState<string | null>(null);
   const joinAttemptRef = useRef(false);
   const [optimisticReady, setOptimisticReady] = useState<boolean | null>(null);
+  const lastServerReadyState = useRef<boolean | null>(null);
   const [pendingMs, setPendingMs] = useState(0);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
   const pendingExecutedRef = useRef(false);
@@ -99,6 +100,20 @@ export default function MatchLobbyScreen() {
   const closeLevelSheet = useCallback(() => {
     levelSheetRef.current?.dismiss();
   }, []);
+  // Track server state and clear optimistic update when it arrives
+  useEffect(() => {
+    if (meParticipant && meParticipant.isReady !== lastServerReadyState.current) {
+      lastServerReadyState.current = meParticipant.isReady;
+      // Server state changed - clear optimistic update
+      if (optimisticReady !== null) {
+        setOptimisticReady(null);
+      }
+    }
+  }, [meParticipant?.isReady, optimisticReady]);
+
+  const isSelfReady = optimisticReady !== null ? optimisticReady : (meParticipant?.isReady ?? false);
+  const isSelfHost = meParticipant?.isHost ?? false;
+
   const readyCount = useMemo(
     () =>
       participants.filter((participant) => {
@@ -121,8 +136,6 @@ export default function MatchLobbyScreen() {
     }
     return readyCount === readyTotal;
   }, [participants.length, readyCount, readyTotal]);
-  const isSelfReady = optimisticReady ?? meParticipant?.isReady ?? false;
-  const isSelfHost = meParticipant?.isHost ?? false;
   const readySummaryTotal = useMemo(() => readyTotal, [readyTotal]);
   const pendingSeconds = Math.ceil(pendingMs / 1000);
 
@@ -234,6 +247,9 @@ export default function MatchLobbyScreen() {
   const handleToggleReady = useCallback(async () => {
     if (!roomId || !participantId || isSelfHost) return;
 
+    // Prevent toggling while optimistic update is pending
+    if (optimisticReady !== null) return;
+
     const newReadyState = !isSelfReady;
 
     // Optimistic update - immediately toggle UI
@@ -247,8 +263,7 @@ export default function MatchLobbyScreen() {
         ready: newReadyState,
         guestKey: status === 'guest' ? guestKey ?? undefined : undefined,
       });
-      // Clear optimistic state on success, let server data take over
-      setOptimisticReady(null);
+      // Success - optimistic state will be cleared by useEffect when server update arrives
     } catch (error) {
       // Rollback on failure
       setOptimisticReady(null);
@@ -257,7 +272,7 @@ export default function MatchLobbyScreen() {
         error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
       );
     }
-  }, [guestKey, isSelfHost, isSelfReady, participantId, roomActions, roomId, status]);
+  }, [guestKey, isSelfHost, isSelfReady, participantId, roomActions, roomId, status, optimisticReady]);
 
   const handleStart = useCallback(async () => {
     if (!roomId) return;
@@ -813,17 +828,17 @@ export default function MatchLobbyScreen() {
               <View style={styles.header}>
                 <ThemedText type="title">퀴즈룸</ThemedText>
                 <ThemedText style={styles.headerSubtitle}>로비에 입장했어요. 라이브 매치를 시작하세요!</ThemedText>
-                <Pressable style={styles.codeBadgeWrapper} onPress={handleCopyCode}>
+                <View style={styles.codeBadgeWrapper}>
                   <View style={styles.codeBadgeRow}>
                     <View style={styles.codeBadge}>
                       <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
                     </View>
-                    <View style={styles.codeBadgeHintRow}>
+                    <Pressable style={styles.codeBadgeHintRow} onPress={handleCopyCode}>
                       <IconSymbol name="document.on.document" size={16} color={mutedColor} />
                       <ThemedText style={styles.codeBadgeHint}>코드 복사</ThemedText>
-                    </View>
+                    </Pressable>
                   </View>
-                </Pressable>
+                </View>
                 {lobby.deck ? (
                   <Accordion
                     style={styles.deckCard}

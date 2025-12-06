@@ -137,21 +137,11 @@ export default function MatchPlayScreen() {
     }, [authStatus, guestKey, meParticipantId, roomId]);
 
     // History logging (simplified for Supabase)
-    const logHistory = useCallback(async (entry: { deckId: string; mode: string; score: number; correctCount: number; totalCount: number }) => {
-        if (!user) return;
-        try {
-            await supabase.from('quiz_history').insert({
-                user_id: user.id,
-                deck_id: entry.deckId,
-                mode: entry.mode,
-                score: entry.score,
-                correct_count: entry.correctCount,
-                total_count: entry.totalCount,
-            });
-        } catch (err) {
-            console.error('[Play] Failed to log history:', err);
-        }
-    }, [user]);
+    const logHistory = useCallback(async (_entry: { mode: string; sessionId?: string; data?: unknown }) => {
+        // History logging is now handled by the server
+        // This is kept for API compatibility
+        return;
+    }, []);
 
     const logStreakProgress = useCallback(async () => {
         // Streak progress is handled by the finish action on the server
@@ -408,13 +398,13 @@ export default function MatchPlayScreen() {
     const currentRound = roomData?.currentRound ?? null;
     const participants = useMemo(() => roomData?.participants ?? [], [roomData]);
     const participantsById = useMemo(() => {
-        const map = new Map<Id<'liveMatchParticipants'>, (typeof participants)[number]>();
+        const map = new Map<string, (typeof participants)[number]>();
         participants.forEach((participant) => map.set(participant.participantId, participant));
         return map;
     }, [participants]);
     const hostUserId = roomData?.room.hostId ?? null;
     const hostParticipant = useMemo(
-        () => (hostUserId ? participants.find((p) => p.userId === hostUserId) : null),
+        () => (hostUserId ? participants.find((p) => p.odUserId === hostUserId) : null),
         [participants, hostUserId]
     );
     const hostNickname = hostParticipant?.nickname ?? '호스트';
@@ -481,7 +471,7 @@ export default function MatchPlayScreen() {
         lostHostSkipResumeToastRef.current = false;
         setHasLeft(true);
         router.navigate('/(tabs)/live-match');
-    }, [disconnectReason, hasLeft, leaveRoom, participantArgs, roomStatus, router]);
+    }, [disconnectReason, gameActions, hasLeft, participantArgs, roomStatus, router]);
 
     const handleLeave = useCallback(() => {
         // On results screen, exit immediately without confirmation modal
@@ -643,7 +633,7 @@ export default function MatchPlayScreen() {
         update();
         const interval = setInterval(update, PENDING_CHECK_INTERVAL_MS);
         return () => clearInterval(interval);
-    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, heartbeat, notifyForcedExit, participantArgs, pendingAction, serverOffsetMs]);
+    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, notifyForcedExit, participantArgs, pendingAction, serverOffsetMs]);
 
     useEffect(() => {
         setSelectedChoice(null);
@@ -680,7 +670,7 @@ export default function MatchPlayScreen() {
         }
     }, [disconnectReason, hasLeft, resetHostGraceState]);
 
-    const syncedNow = roomState ? localNowMs - serverOffsetMs : undefined;
+    const syncedNow = roomData ? localNowMs - serverOffsetMs : undefined;
     const timeLeft = computeTimeLeft(roomData?.room.phaseEndsAt ?? null, syncedNow);
     const isHostWaitingPhase =
         roomStatus !== null &&
@@ -821,7 +811,7 @@ export default function MatchPlayScreen() {
         }
         participants.forEach((participant) => {
             currentIds.add(participant.participantId);
-            const isHostParticipant = participant.userId && hostUserId && participant.userId === hostUserId;
+            const isHostParticipant = participant.odUserId && hostUserId && participant.odUserId === hostUserId;
             const isMeParticipant = meParticipantId !== null && participant.participantId === meParticipantId;
             if (isHostParticipant || isMeParticipant) {
                 map.set(participant.participantId, participant.isConnected);
@@ -1192,7 +1182,7 @@ export default function MatchPlayScreen() {
                     },
                 });
                 if (!streakLoggedRef.current) {
-                    await logStreakProgress({ mode: 'live_match' });
+                    await logStreakProgress();
                     streakLoggedRef.current = true;
                 }
             } catch (error) {
@@ -1267,7 +1257,7 @@ export default function MatchPlayScreen() {
         return null;
     }
 
-    if (roomState === undefined) {
+    if (gameState.status === 'loading') {
         return (
             <>
                 <Stack.Screen options={{ headerShown: false }} />
@@ -1280,7 +1270,7 @@ export default function MatchPlayScreen() {
         );
     }
 
-    if (!roomState) {
+    if (!roomData) {
         return (
             <>
                 <Stack.Screen options={{ headerShown: false }} />
@@ -1590,9 +1580,9 @@ export default function MatchPlayScreen() {
         </View>
     );
 
-    const renderParticipantAvatar = (participantId: Id<'liveMatchParticipants'>) => {
+    const renderParticipantAvatar = (participantId: string) => {
         const participant = participantsById.get(participantId);
-        const avatarNode = participant?.userId ? (
+        const avatarNode = participant?.odUserId ? (
             <Avatar
                 uri={participant.avatarUrl}
                 name={participant.nickname}
@@ -1782,7 +1772,7 @@ export default function MatchPlayScreen() {
                                                 {nameDisplay}
                                             </ThemedText>
                                         </View>
-                                        {player.userId && hostUserId && player.userId === hostUserId && !player.isConnected ? (
+                                        {player.odUserId && hostUserId && player.odUserId === hostUserId && !player.isConnected ? (
                                             <ThemedText style={styles.offlineTag}>오프라인</ThemedText>
                                         ) : null}
                                     </View>
