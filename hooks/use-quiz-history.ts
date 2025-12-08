@@ -31,31 +31,91 @@ export function useQuizHistory(options?: {
   limit?: number;
   enabled?: boolean;
 }): HistoryBuckets | undefined {
+  return useQuizHistoryImpl(options);
+}
+
+// Determine which backend to use at module init.
+// If Convex URL is missing we default to Supabase to avoid provider errors.
+const USE_SUPABASE_HISTORY =
+  FEATURE_FLAGS.quizHistory || !process.env.EXPO_PUBLIC_CONVEX_URL;
+
+function useSupabaseHistory(options?: {
+  limit?: number;
+  enabled?: boolean;
+}): HistoryBuckets | undefined {
   const limit = options?.limit ?? 10;
   const enabled = options?.enabled ?? true;
-  const useSupabase = FEATURE_FLAGS.quizHistory;
 
-  // Convex query (only runs when feature flag is off)
+  const { history: supabaseResult, isLoading } = useSupabaseQuizHistory(
+    enabled ? limit : 0,
+    { enabled }
+  );
+
+  if (!enabled || isLoading) return undefined;
+  return normalizeSupabaseHistory(supabaseResult);
+}
+
+function useConvexHistory(options?: {
+  limit?: number;
+  enabled?: boolean;
+}): HistoryBuckets | undefined {
+  const limit = options?.limit ?? 10;
+  const enabled = options?.enabled ?? true;
+
   const convexResult = useQuery(
     api.history.listHistory,
-    useSupabase || !enabled ? 'skip' : { limit }
+    !enabled ? 'skip' : { limit }
   );
 
-  // Supabase query (only runs when feature flag is on)
-  const { history: supabaseResult, isLoading: supabaseLoading } = useSupabaseQuizHistory(
-    useSupabase && enabled ? limit : 0,
-    { enabled: useSupabase && enabled }
-  );
-
-  // If using Supabase
-  if (useSupabase) {
-    if (!enabled) return undefined;
-    if (supabaseLoading) return undefined;
-    // Convert Supabase format to Convex-compatible format
-    return supabaseResult as unknown as HistoryBuckets;
-  }
-
-  // If using Convex
   if (!enabled) return undefined;
   return convexResult as HistoryBuckets | undefined;
+}
+
+const useQuizHistoryImpl = USE_SUPABASE_HISTORY ? useSupabaseHistory : useConvexHistory;
+
+type SupabaseHistoryEntry = {
+  id?: string;
+  user_id?: string;
+  mode?: 'daily' | 'swipe' | 'live_match';
+  session_id?: string;
+  created_at?: string;
+  createdAt?: number;
+  payload?: unknown;
+};
+
+type SupabaseHistoryBuckets = {
+  daily?: SupabaseHistoryEntry[];
+  swipe?: SupabaseHistoryEntry[];
+  liveMatch?: SupabaseHistoryEntry[];
+};
+
+function normalizeSupabaseHistory(data: SupabaseHistoryBuckets): HistoryBuckets {
+  const mapEntry = (entry: SupabaseHistoryEntry, mode: keyof HistoryBuckets): QuizHistoryDoc => {
+    const createdAt = parseTimestamp(entry.created_at ?? entry.createdAt);
+    const sessionId = entry.session_id ?? '';
+    return {
+      _id: (entry.id ?? sessionId ?? `${mode}-${createdAt}`) as QuizHistoryDoc['_id'],
+      _creationTime: createdAt,
+      userId: (entry.user_id ?? 'supabase') as QuizHistoryDoc['userId'],
+      mode: mode === 'liveMatch' ? 'liveMatch' : mode,
+      sessionId,
+      createdAt,
+      payload: entry.payload ?? {},
+    };
+  };
+
+  return {
+    daily: (data.daily ?? []).map((entry) => mapEntry(entry, 'daily')),
+    swipe: (data.swipe ?? []).map((entry) => mapEntry(entry, 'swipe')),
+    liveMatch: (data.liveMatch ?? []).map((entry) => mapEntry(entry, 'liveMatch')),
+  };
+}
+
+function parseTimestamp(value: string | number | undefined) {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string') {
+    const parsed = Date.parse(value);
+    if (!Number.isNaN(parsed)) return parsed;
+  }
+  return Date.now();
 }

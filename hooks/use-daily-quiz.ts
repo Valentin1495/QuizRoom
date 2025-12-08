@@ -34,26 +34,13 @@ export type DailyQuiz = {
  * @param date Optional date string (YYYY-MM-DD format, KST)
  */
 export function useDailyQuiz(date?: string): DailyQuiz | null | undefined {
-  const useSupabase = FEATURE_FLAGS.dailyQuiz;
-
-  // Convex query (only runs when feature flag is off)
-  const convexQuiz = useQuery(
-    api.daily.getDailyQuiz,
-    useSupabase ? 'skip' : { date }
-  );
-
-  // Supabase query (only runs when feature flag is on)
-  const { quiz: supabaseQuiz, isLoading: supabaseLoading } = useSupabaseDailyQuiz(
-    date,
-    { enabled: useSupabase }
-  );
-
-  // If using Supabase
-  if (useSupabase) {
-    if (supabaseLoading) return undefined; // loading state
+  if (FEATURE_FLAGS.dailyQuiz) {
+    // Supabase-only path
+    const { quiz: supabaseQuiz, isLoading } = useSupabaseDailyQuiz(date);
+    if (isLoading) return undefined;
     return supabaseQuiz as DailyQuiz | null;
   }
 
-  // If using Convex
-  return convexQuiz as DailyQuiz | null | undefined;
+  // Convex-only path
+  return useQuery(api.daily.getDailyQuiz, { date }) as DailyQuiz | null | undefined;
 }

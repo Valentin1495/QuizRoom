@@ -5,23 +5,15 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
 import { Elevation, Radius, Spacing } from '@/constants/theme';
-import { useConvexAuth } from '@/hooks/use-auth';
-import { useSupabaseAuth } from '@/hooks/use-supabase-auth';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { FEATURE_FLAGS } from '@/lib/feature-flags';
+import { useAuth } from '@/hooks/use-unified-auth';
 
 type AuthGateProps = {
   children: ReactNode;
 };
 
 export function AuthGate({ children }: AuthGateProps) {
-  // Use appropriate auth based on feature flag
-  const convexAuth = useConvexAuth();
-  const supabaseAuth = useSupabaseAuth();
-
-  const { status, user, error, signInWithGoogle, enterGuestMode } = FEATURE_FLAGS.auth
-    ? supabaseAuth
-    : convexAuth;
+  const { status, user, error, signInWithGoogle, enterGuestMode } = useAuth();
   const primaryColor = useThemeColor({}, 'primary');
 
   const { isLoading, headline, helper } = useMemo(() => {

@@ -13,11 +13,13 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
+import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useDailyQuiz } from '@/hooks/use-daily-quiz';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { lightHaptic, mediumHaptic, successHaptic, warningHaptic } from '@/lib/haptics';
+import { useLogQuizHistory } from '@/lib/supabase-api';
 import { useMutation } from 'convex/react';
 
 const QUESTION_TIME_LIMIT = 10;
@@ -321,6 +323,25 @@ const SUMMARY_STATUS_COLORS = {
   },
 } as const;
 
+type DailyHistoryPayload = {
+  date: string;
+  correct: number;
+  total: number;
+  timerMode?: string;
+  durationMs?: number;
+  category?: string;
+};
+
+type DailyQuizActions = {
+  updateStats: (params: { correct: number; total?: number }) => Promise<unknown> | void;
+  logStreak: (params: { mode: 'daily'; answered?: number; dateKey?: string }) => Promise<unknown> | void;
+  logHistory: (params: {
+    mode: 'daily';
+    sessionId: string;
+    data: DailyHistoryPayload;
+  }) => Promise<unknown> | void;
+};
+
 const getSummaryAppearance = (mode: ColorMode, status: SummaryStatus): SummaryAppearance => {
   const isDark = mode === 'dark';
   const palette = SUMMARY_STATUS_COLORS[status];
@@ -334,7 +355,7 @@ const getSummaryAppearance = (mode: ColorMode, status: SummaryStatus): SummaryAp
   };
 };
 
-export default function DailyQuizScreen() {
+function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQuizActions) {
   const router = useRouter();
   const params = useLocalSearchParams<{ date?: string | string[] }>();
   const resolvedDate = Array.isArray(params.date) ? params.date[0] : params.date;
@@ -351,9 +372,6 @@ export default function DailyQuizScreen() {
   const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null);
   const [results, setResults] = useState<QuestionResult[]>([]);
   const shareTemplate = dailyQuiz?.shareTemplate ?? null;
-  const updateStats = useMutation(api.users.updateStats);
-  const logStreak = useMutation(api.users.logStreakProgress);
-  const logHistory = useMutation(api.history.logEntry);
   const { status: authStatus } = useAuth();
   const [quizStartedAt, setQuizStartedAt] = useState<number | null>(null);
   const [quizDurationMs, setQuizDurationMs] = useState<number | null>(null);
@@ -611,9 +629,9 @@ export default function DailyQuizScreen() {
       return;
     }
     if (phase === 'finished' && correctCount > 0) {
-      updateStats({ correct: correctCount });
+      updateStats({ correct: correctCount, total: totalQuestions });
     }
-  }, [authStatus, phase, correctCount, updateStats]);
+  }, [authStatus, phase, correctCount, totalQuestions, updateStats]);
 
   useEffect(() => {
     if (phase !== 'finished') {
@@ -1524,3 +1542,50 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+function ConvexDailyQuizScreen() {
+  const updateStats = useMutation(api.users.updateStats);
+  const logStreak = useMutation(api.users.logStreakProgress);
+  const logHistory = useMutation(api.history.logEntry);
+
+  return (
+    <DailyQuizScreenContent
+      updateStats={updateStats}
+      logStreak={logStreak}
+      logHistory={logHistory}
+    />
+  );
+}
+
+function SupabaseDailyQuizScreen() {
+  const logSupabaseHistory = useLogQuizHistory();
+  const noopUpdateStats = useCallback(
+    async (_params: { correct: number; total?: number }) => undefined,
+    []
+  );
+  const noopLogStreak = useCallback(
+    async (_params: { mode: 'daily'; answered?: number; dateKey?: string }) => undefined,
+    []
+  );
+  const handleLogHistory = useCallback(
+    async (params: { mode: 'daily'; sessionId: string; data: DailyHistoryPayload }) => {
+      await logSupabaseHistory(params);
+    },
+    [logSupabaseHistory]
+  );
+
+  return (
+    <DailyQuizScreenContent
+      updateStats={noopUpdateStats}
+      logStreak={noopLogStreak}
+      logHistory={handleLogHistory}
+    />
+  );
+}
+
+export default function DailyQuizScreen() {
+  if (FEATURE_FLAGS.dailyQuiz) {
+    return <SupabaseDailyQuizScreen />;
+  }
+  return <ConvexDailyQuizScreen />;
+}

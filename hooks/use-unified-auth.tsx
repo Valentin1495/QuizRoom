@@ -54,11 +54,8 @@ export type UnifiedAuthContextValue = {
  * When FEATURE_FLAGS.auth is true: Uses Supabase Auth
  */
 export function useUnifiedAuth(): UnifiedAuthContextValue {
-  // Always call both hooks (React rules) but only use one based on flag
-  const convexAuth = useConvexAuth();
-  const supabaseAuth = useSupabaseAuth();
-
   if (FEATURE_FLAGS.auth) {
+    const supabaseAuth = useSupabaseAuth();
     // Use Supabase Auth
     return {
       status: supabaseAuth.status,
@@ -87,6 +84,7 @@ export function useUnifiedAuth(): UnifiedAuthContextValue {
   }
 
   // Use Convex/Firebase Auth (default)
+  const convexAuth = useConvexAuth();
   return {
     status: convexAuth.status,
     user: convexAuth.user ? {

@@ -67,7 +67,6 @@ export default function SwipeScreen() {
         <SwipeStack
           key={selectedCategory.slug}
           category={selectedCategory.slug}
-          tags={selectedCategory.sampleTags}
           setSelectedCategory={setSelectedCategory}
         />
       </ThemedView>

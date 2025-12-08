@@ -21,21 +21,20 @@ import { AnswerSheet } from './answer-sheet';
 
 export type SwipeFeedback =
   | {
-    status: 'optimistic';
-    isCorrect: boolean;
-    correctChoiceId: string;
-    correctChoiceIndex: number | null;
-  }
+      status: 'optimistic';
+      isCorrect: boolean;
+      correctChoiceId: string | null;
+      correctChoiceIndex: number | null;
+    }
   | {
-    status: 'confirmed';
-    isCorrect: boolean;
-    correctChoiceId: string;
-    correctChoiceIndex: number | null;
-    explanation: string | null;
-    scoreDelta: number;
-    streak: number;
-  };
-
+      status: 'confirmed';
+      isCorrect: boolean;
+      correctChoiceId: string | null;
+      correctChoiceIndex: number | null;
+      explanation: string | null;
+      scoreDelta: number;
+      streak: number;
+    };
 export type SwipeCardProps = {
   card: SwipeFeedQuestion;
   index: number;

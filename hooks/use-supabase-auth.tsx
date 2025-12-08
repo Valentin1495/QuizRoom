@@ -275,10 +275,14 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
         }
 
         if (event === 'SIGNED_OUT' || !session) {
-          const fallbackStatus =
-            lastSettledStatusRef.current === 'guest' ? 'guest' : 'unauthenticated';
+          // This event can be triggered by a manual signOut, a token refresh failure,
+          // or on initial load for a user with no session.
+          // We transition to 'unauthenticated' if the app is loading or if a logged-in
+          // user signs out. This avoids overriding the 'guest' state.
+          if (status === 'loading' || status === 'authenticated') {
+            setStatus('unauthenticated');
+          }
           setUser(null);
-          setStatus(fallbackStatus);
           setIsReady(true);
           return;
         }
@@ -384,7 +388,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
   // Sign out
   const signOut = useCallback(async () => {
     try {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut({ scope: 'local' });
       await GoogleSignin.signOut().catch(() => undefined);
     } catch (err) {
       console.error('Sign out failed', err);
@@ -396,12 +400,10 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
 
   // Enter guest mode
   const enterGuestMode = useCallback(async () => {
-    try {
-      await supabase.auth.signOut();
-      await GoogleSignin.signOut().catch(() => undefined);
-    } catch (err) {
-      console.warn('Sign out failed during guest mode transition', err);
-    }
+    // Call the unified signOut function to ensure the session is cleared
+    await signOut();
+    // Then, explicitly set the status to guest
+    setStatus('guest');
 
     // Ensure guest key exists
     let key = guestKey;
@@ -416,11 +418,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
         await storeGuestKeyValue(key);
       }
     }
-
-    setUser(null);
-    setStatus('guest');
-    setError(null);
-  }, [guestKey]);
+  }, [signOut, guestKey]);
 
   // Ensure guest key
   const ensureGuestKey = useCallback(async () => {

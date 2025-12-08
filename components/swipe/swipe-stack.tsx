@@ -23,13 +23,14 @@ import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Elevation, Palette, Radius, Spacing } from '@/constants/theme';
-import { api } from '@/convex/_generated/api';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
+import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { useSwipeFeed, type SwipeFeedQuestion } from '@/lib/feed';
 import { errorHaptic, lightHaptic, mediumHaptic, successHaptic } from '@/lib/haptics';
-import { useMutation } from 'convex/react';
+import { useLogQuizHistory } from '@/lib/supabase-api';
+import { supabase } from '@/lib/supabase-index';
 
 import type { CategoryMeta } from '@/constants/categories';
 import type { SwipeFeedback } from './swipe-card';
@@ -96,6 +97,37 @@ const ONBOARDING_SLIDES = [
   },
 ] as const;
 
+type SwipeHistoryParams = {
+  mode: 'swipe';
+  sessionId: string;
+  data: {
+    category: string;
+    tags?: string[];
+    answered: number;
+    correct: number;
+    maxStreak: number;
+    avgResponseMs: number;
+    totalScoreDelta: number;
+  };
+};
+
+type SwipeStreakParams = { mode: 'swipe'; answered?: number };
+
+function useSwipeLoggers() {
+  const logSupabaseHistory = useLogQuizHistory();
+  const logHistory = useCallback(
+    async (params: SwipeHistoryParams) => {
+      await logSupabaseHistory(params);
+    },
+    [logSupabaseHistory]
+  );
+  const logStreakProgress = useCallback(
+    async (_params: SwipeStreakParams) => undefined,
+    []
+  );
+  return { logHistory, logStreakProgress };
+}
+
 export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackProps) {
   const {
     current,
@@ -110,6 +142,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     reportQuestion,
     reset,
     isGuest,
+    sessionKey,
   } = useSwipeFeed({ category, tags, limit: 20 });
   const { signInWithGoogle, status: authStatus } = useAuth();
   const colorScheme = useColorScheme();
@@ -129,8 +162,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const dangerColor = palette.danger;
   const sheetStatBackground = colorScheme === 'dark' ? palette.cardElevated : palette.card;
   const sheetStatBorder = palette.border;
-  const logStreakProgress = useMutation(api.users.logStreakProgress);
-  const logHistory = useMutation(api.history.logEntry);
+  const { logHistory, logStreakProgress } = useSwipeLoggers();
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -360,6 +392,49 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         const measuredTimeMs = Math.max(0, response.timeMs ?? timeMs);
         const scoreDelta = response.scoreDelta ?? 0;
         const nextStreak = response.isCorrect ? currentStreakRef.current + 1 : 0;
+        if (FEATURE_FLAGS.auth) {
+          const safeSessionKey = sessionKey ?? `swipe-${Date.now().toString(36)}`;
+          const payload = {
+            questionId: current.id?.toString?.() ?? '',
+            category: current.category,
+            tags: current.tags ?? [],
+            choiceId: selectedChoice.id,
+            isCorrect: response.isCorrect,
+            timeMs: measuredTimeMs,
+            answerToken: (current as { answerToken?: string }).answerToken,
+            sessionKey: safeSessionKey,
+            deckSlug: current.deckSlug,
+            prompt: current.prompt,
+            difficulty: current.difficulty,
+            metadata: { source: 'swipe' },
+          };
+          try {
+            const { data, error } = await supabase.functions.invoke('log-swipe-answer', { body: payload });
+            if (error) {
+              let bodyText: string | null = null;
+              let status: number | undefined;
+              try {
+                if ((error as any)?.context?.response) {
+                  const resp = (error as any).context.response as Response;
+                  status = resp.status;
+                  bodyText = await resp.text();
+                }
+              } catch {
+                bodyText = null;
+              }
+              console.warn('Failed to log swipe answer to Supabase', {
+                message: error?.message,
+                status,
+                body: bodyText,
+                payload,
+              });
+            } else if (__DEV__) {
+              console.log('Logged swipe answer to Supabase', data);
+            }
+          } catch (err) {
+            console.warn('Failed to log swipe answer to Supabase', err);
+          }
+        }
         setSessionStats((prev) => {
           const answered = prev.answered + 1;
           const correct = prev.correct + (response.isCorrect ? 1 : 0);
