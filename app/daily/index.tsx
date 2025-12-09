@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -13,13 +14,14 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
-import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useDailyQuiz } from '@/hooks/use-daily-quiz';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
+import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { lightHaptic, mediumHaptic, successHaptic, warningHaptic } from '@/lib/haptics';
 import { useLogQuizHistory } from '@/lib/supabase-api';
+import { supabase } from '@/lib/supabase-index';
 import { useMutation } from 'convex/react';
 
 const QUESTION_TIME_LIMIT = 10;
@@ -180,6 +182,10 @@ const DARK_PRESSED_BORDER = '#454545';
 const DARK_DIM_BG = '#3A3A3A';
 const DARK_DIM_TEXT = '#A3A3A3';
 
+const PER_ANSWER_XP = 10;
+const COMPLETION_XP = 50;
+const PERFECT_BONUS_XP = 30;
+
 const createChoiceAppearance = (
   backgroundColor: string,
   borderColor: string,
@@ -333,7 +339,7 @@ type DailyHistoryPayload = {
 };
 
 type DailyQuizActions = {
-  updateStats: (params: { correct: number; total?: number }) => Promise<unknown> | void;
+  updateStats: (params: { correct: number; total?: number; sessionId?: string }) => Promise<unknown> | void;
   logStreak: (params: { mode: 'daily'; answered?: number; dateKey?: string }) => Promise<unknown> | void;
   logHistory: (params: {
     mode: 'daily';
@@ -364,6 +370,7 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme() ?? 'light';
   const palette = Colors[colorScheme];
+  const mutedText = useThemeColor({}, 'textMuted');
   const themedStyles = useMemo(() => getDailyThemeStyles(colorScheme), [colorScheme]);
   const [phase, setPhase] = useState<Phase>('intro');
   const [timerMode, setTimerMode] = useState<TimerMode | null>(null);
@@ -377,6 +384,10 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
   const [quizDurationMs, setQuizDurationMs] = useState<number | null>(null);
   const historyLoggedRef = useRef<string | null>(null);
   const streakLoggedRef = useRef(false);
+  const statsLoggedRef = useRef<string | null>(null);
+  const xpStoredRef = useRef<string | null>(null);
+  const perfectCelebratedRef = useRef(false);
+  const [awardedXp, setAwardedXp] = useState<number | null>(null);
 
   // 타이머 pulse 애니메이션
   const timerPulseOpacity = useSharedValue(1);
@@ -610,6 +621,19 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
 
   const correctCount = sortedResults.filter((entry) => entry.isCorrect).length;
   const totalAnswered = sortedResults.length;
+  const isPerfect = totalQuestions > 0 && correctCount === totalQuestions;
+  useEffect(() => {
+    if (!dailySessionKey) {
+      setAwardedXp(null);
+      return;
+    }
+    const dateKey = dailySessionKey.replace(/^daily:/, '');
+    void AsyncStorage.getItem(`daily:xp:${dateKey}`)
+      .then((value) => {
+        setAwardedXp(value ? Number(value) : null);
+      })
+      .catch(() => setAwardedXp(null));
+  }, [dailySessionKey]);
   const totalDurationDisplay = useMemo(() => {
     if (quizDurationMs === null) {
       return '--';
@@ -617,21 +641,24 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
     return formatDuration(quizDurationMs);
   }, [quizDurationMs]);
 
-  const averageDurationDisplay = useMemo(() => {
-    if (quizDurationMs === null || totalAnswered === 0) {
-      return '--';
-    }
-    return formatAverageDuration(quizDurationMs / totalAnswered);
-  }, [quizDurationMs, totalAnswered]);
-
   useEffect(() => {
     if (authStatus !== 'authenticated') {
+      statsLoggedRef.current = null;
       return;
     }
-    if (phase === 'finished' && correctCount > 0) {
-      updateStats({ correct: correctCount, total: totalQuestions });
-    }
-  }, [authStatus, phase, correctCount, totalQuestions, updateStats]);
+    if (phase !== 'finished' || correctCount <= 0 || !dailySessionKey) return;
+    if (statsLoggedRef.current === dailySessionKey) return;
+
+    statsLoggedRef.current = dailySessionKey;
+    void (async () => {
+      try {
+        await updateStats({ correct: correctCount, total: totalQuestions, sessionId: dailySessionKey });
+      } catch (err) {
+        console.warn('Failed to update daily stats', err);
+        statsLoggedRef.current = null;
+      }
+    })();
+  }, [authStatus, phase, correctCount, totalQuestions, updateStats, dailySessionKey]);
 
   useEffect(() => {
     if (phase !== 'finished') {
@@ -644,12 +671,16 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
     void (async () => {
       try {
         await logStreak({ mode: 'daily' });
+        if (dailySessionKey) {
+          const dateKey = dailySessionKey.replace(/^daily:/, '');
+          await AsyncStorage.setItem(`daily:completed:${dateKey}`, '1');
+        }
       } catch (error) {
         console.warn('Failed to log daily streak', error);
         streakLoggedRef.current = false;
       }
     })();
-  }, [authStatus, phase, logStreak]);
+  }, [authStatus, phase, logStreak, dailySessionKey]);
 
   useEffect(() => {
     if (phase === 'finished' && quizDurationMs === null && quizStartedAt !== null) {
@@ -660,6 +691,7 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
   useEffect(() => {
     if (phase !== 'finished') {
       historyLoggedRef.current = null;
+      xpStoredRef.current = null;
       return;
     }
     if (authStatus !== 'authenticated') return;
@@ -700,6 +732,23 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
     timerMode,
     totalQuestions,
   ]);
+
+  useEffect(() => {
+    if (phase !== 'finished') return;
+    if (!dailySessionKey) return;
+    if (xpStoredRef.current === dailySessionKey) return;
+    const dateKey = dailySessionKey.replace(/^daily:/, '');
+    const perAnswerXp = correctCount * PER_ANSWER_XP;
+    const completionXp = totalQuestions > 0 ? COMPLETION_XP : 0;
+    const perfectXp = isPerfect ? PERFECT_BONUS_XP : 0;
+    const totalXpEarned = perAnswerXp + completionXp + perfectXp;
+    xpStoredRef.current = dailySessionKey;
+    void AsyncStorage.setItem(`daily:xp:${dateKey}`, String(totalXpEarned))
+      .then(() => setAwardedXp(totalXpEarned))
+      .catch(() => {
+        xpStoredRef.current = null;
+      });
+  }, [correctCount, dailySessionKey, isPerfect, phase, totalQuestions]);
   const unansweredCount = totalQuestions - totalAnswered;
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const allAnswered = unansweredCount === 0;
@@ -736,8 +785,14 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
         withTiming(1.05, { duration: 450 }),
         withTiming(1, { duration: 450 })
       );
+      if (isPerfect && !perfectCelebratedRef.current) {
+        perfectCelebratedRef.current = true;
+        successHaptic();
+      }
+    } else {
+      perfectCelebratedRef.current = false;
     }
-  }, [celebrationScale, phase]);
+  }, [celebrationScale, isPerfect, phase]);
 
   const shareEmoji = shareTemplate?.emoji ?? '⚡';
   const shareHeadline = shareTemplate?.headline ?? '문제당 10초 스피드런!';
@@ -841,6 +896,25 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
             <ThemedText style={styles.introSubtitle}>
               시간 제한을 선택하고 시작해보세요. 타임어택에서는 문항당 10초 안에 답해야 해요.
             </ThemedText>
+            <View
+              style={[
+                styles.xpCard,
+                { backgroundColor: palette.cardElevated, borderColor: palette.border },
+              ]}
+            >
+              <View style={styles.xpCardHeader}>
+                <IconSymbol name="sparkles" size={18} color={palette.primary} />
+                <ThemedText style={styles.xpCardTitle}>XP 지급 규칙</ThemedText>
+              </View>
+              <View style={styles.xpRewards}>
+                <ThemedText style={styles.xpRewardRow}>정답 1개당 +{PER_ANSWER_XP} XP</ThemedText>
+                <ThemedText style={styles.xpRewardRow}>끝까지 완주하면 +{COMPLETION_XP} XP</ThemedText>
+                <ThemedText style={styles.xpRewardRow}>전부 정답이면 추가 +{PERFECT_BONUS_XP} XP</ThemedText>
+              </View>
+              <ThemedText style={[styles.xpFootnote, { color: mutedText }]}>
+                XP는 하루 1회만 지급돼요
+              </ThemedText>
+            </View>
             <View style={styles.introButtons}>
               <Button
                 size="lg"
@@ -896,6 +970,11 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
   }
 
   if (phase === 'finished') {
+    const perAnswerXp = correctCount * PER_ANSWER_XP;
+    const completionXp = totalQuestions > 0 ? COMPLETION_XP : 0;
+    const perfectXp = isPerfect ? PERFECT_BONUS_XP : 0;
+    const totalXpEarned = perAnswerXp + completionXp + perfectXp;
+
     return (
       <ThemedView style={[styles.container, styles.summaryContainer]}>
         <ScrollView
@@ -905,9 +984,32 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
           ]}
           showsVerticalScrollIndicator={false}
         >
-          <Animated.View>
-            <ThemedText type="title">오늘의 퀴즈 결과</ThemedText>
-          </Animated.View>
+          <View>
+            <ThemedText type="title">
+              오늘의 퀴즈 결과
+            </ThemedText>
+          </View>
+          {isPerfect ? (
+            <Animated.View
+              style={[
+                styles.perfectBanner,
+                celebrationAnimatedStyle,
+                {
+                  backgroundColor: palette.card,
+                  borderColor: palette.primary,
+                  borderWidth: 1,
+                },
+              ]}
+            >
+              <ThemedText
+                style={styles.perfectBannerText}
+                lightColor={palette.primary}
+                darkColor={palette.primary}
+              >
+                퍼펙트! 💯
+              </ThemedText>
+            </Animated.View>
+          ) : null}
           <View style={styles.summaryStats}>
             <View style={styles.summaryStatsRow}>
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
@@ -925,13 +1027,15 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
               </View>
             </View>
             <View style={styles.summaryStatsRow}>
+              {awardedXp === null ? (
+                <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
+                  <ThemedText style={styles.summaryStatLabel}>획득 XP</ThemedText>
+                  <ThemedText type="subtitle">{totalXpEarned}</ThemedText>
+                </View>
+              ) : null}
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
-                <ThemedText style={styles.summaryStatLabel}>총 소요 시간</ThemedText>
-                <ThemedText type="subtitle">{totalDurationDisplay}</ThemedText>
-              </View>
-              <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
-                <ThemedText style={styles.summaryStatLabel}>평균 소요 시간</ThemedText>
-                <ThemedText type="subtitle">{averageDurationDisplay}</ThemedText>
+                <ThemedText style={styles.summaryStatLabel}>소요 시간</ThemedText>
+                <ThemedText type="subtitle">총 {totalDurationDisplay}</ThemedText>
               </View>
             </View>
           </View>
@@ -1306,6 +1410,37 @@ const styles = StyleSheet.create({
   introButtonPressed: {
     opacity: 0.96,
   },
+  xpCard: {
+    marginTop: Spacing.sm,
+    padding: Spacing.md,
+    borderRadius: Radius.lg,
+    borderWidth: 1,
+    borderColor: Palette.gray200,
+    backgroundColor: Palette.gray50,
+    gap: Spacing.xs,
+  },
+  xpCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  xpCardTitle: {
+    fontWeight: '700',
+  },
+  xpRewards: {
+    gap: 4,
+  },
+  xpRewardRow: {
+    fontWeight: '500',
+  },
+  xpTotal: {
+    fontWeight: '700',
+    marginTop: Spacing.xs,
+  },
+  xpFootnote: {
+    fontSize: 12,
+    color: Palette.gray600,
+  },
   retryButton: {
     marginTop: Spacing.lg,
     paddingVertical: Spacing.md,
@@ -1455,6 +1590,19 @@ const styles = StyleSheet.create({
   summaryList: {
     gap: Spacing.xl,
   },
+  perfectBanner: {
+    marginTop: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    alignSelf: 'flex-start',
+  },
+  perfectBannerText: {
+    fontWeight: '700',
+  },
   summaryRow: {
     gap: Spacing.md,
     padding: Spacing.lg,
@@ -1559,8 +1707,9 @@ function ConvexDailyQuizScreen() {
 
 function SupabaseDailyQuizScreen() {
   const logSupabaseHistory = useLogQuizHistory();
+  const { status: authStatus, applyUserDelta, user } = useAuth();
   const noopUpdateStats = useCallback(
-    async (_params: { correct: number; total?: number }) => undefined,
+    async (_params: { correct: number; total?: number; sessionId?: string }) => undefined,
     []
   );
   const noopLogStreak = useCallback(
@@ -1574,9 +1723,36 @@ function SupabaseDailyQuizScreen() {
     [logSupabaseHistory]
   );
 
+  const updateStats = useCallback(
+    async (params: { correct: number; total?: number; sessionId?: string }) => {
+      if (authStatus !== 'authenticated') return;
+      if (!params.sessionId) return;
+      try {
+        const { data, error } = await supabase.functions.invoke('log-daily-result', {
+          body: { correct: params.correct, total: params.total, sessionId: params.sessionId },
+        });
+        if (error) {
+          console.warn('log-daily-result error', error);
+          return;
+        }
+        const payload = (data as { data?: { xpGain?: number; totalCorrect?: number; totalPlayed?: number; xp?: number } })?.data;
+        if (payload && applyUserDelta) {
+          applyUserDelta({
+            xp: payload.xp ?? (user?.xp ?? 0) + (payload.xpGain ?? 0),
+            totalCorrect: payload.totalCorrect ?? user?.totalCorrect,
+            totalPlayed: payload.totalPlayed ?? user?.totalPlayed,
+          });
+        }
+      } catch (err) {
+        console.warn('Failed to update daily stats', err);
+      }
+    },
+    [applyUserDelta, authStatus, user?.totalCorrect, user?.totalPlayed, user?.xp]
+  );
+
   return (
     <DailyQuizScreenContent
-      updateStats={noopUpdateStats}
+      updateStats={updateStats}
       logStreak={noopLogStreak}
       logHistory={handleLogHistory}
     />

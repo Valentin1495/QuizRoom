@@ -80,7 +80,7 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
   // 노치를 침범하지 않는 최대 높이 계산
   const screenHeight = Dimensions.get('window').height;
   const maxSheetHeight = screenHeight - insets.top - 8; // 노치 + 여유 8px
-  const snapPoints = useMemo(() => [maxSheetHeight], [maxSheetHeight]);
+  const snapPoints = useMemo(() => ['60%', maxSheetHeight], [maxSheetHeight]);
 
   return (
     <BottomSheetModal

@@ -59,6 +59,7 @@ type AuthContextValue = {
   isReady: boolean;
   refreshUser: () => Promise<void>;
   resetUser: () => Promise<void>;
+  applyUserDelta: (delta: Partial<Pick<AuthedUser, 'xp' | 'streak' | 'totalCorrect' | 'totalPlayed'>>) => void;
 };
 
 const GUEST_KEY_STORAGE_KEY = 'quizroomGuestKey';
@@ -325,6 +326,59 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     }
   }, [status]);
 
+  // Realtime subscription to user row for live XP/stats updates
+  useEffect(() => {
+    let cancelled = false;
+    const setup = async () => {
+      if (status !== 'authenticated') return;
+      const { data: { session } } = await supabase.auth.getSession();
+      const identityId = session?.user?.id;
+      if (!identityId) return;
+
+      // Initial fetch to ensure we sync with server state
+      const { data: dbUser } = await supabase
+        .from('users')
+        .select('*')
+        .eq('identity_id', identityId)
+        .single();
+      if (dbUser && !cancelled) {
+        setUser(toAuthedUser(dbUser));
+      }
+
+      const channel = supabase
+        .channel(`user-updates-${identityId}`)
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'users', filter: `identity_id=eq.${identityId}` },
+          (payload) => {
+            const row = payload.new as User;
+            if (!cancelled) {
+              setUser(toAuthedUser(row));
+            }
+          }
+        )
+        .subscribe((status) => {
+          if (__DEV__) {
+            console.log('[SupabaseAuth] user realtime status:', status);
+          }
+        });
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    };
+
+    let cleanup: (() => void) | undefined;
+    setup().then((fn) => {
+      cleanup = fn;
+    });
+
+    return () => {
+      cancelled = true;
+      if (cleanup) cleanup();
+    };
+  }, [status, toAuthedUser]);
+
   // Sign in with Google
   const signInWithGoogle = useCallback(async () => {
     const previousStatus = lastSettledStatusRef.current;
@@ -449,6 +503,20 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     }
   }, [fetchUserProfile, toAuthedUser]);
 
+  // Optimistically apply user stat deltas (e.g., XP gain) in UI
+  const applyUserDelta = useCallback((delta: Partial<Pick<AuthedUser, 'xp' | 'streak' | 'totalCorrect' | 'totalPlayed'>>) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        xp: delta.xp !== undefined ? delta.xp : prev.xp,
+        streak: delta.streak !== undefined ? delta.streak : prev.streak,
+        totalCorrect: delta.totalCorrect !== undefined ? delta.totalCorrect : prev.totalCorrect,
+        totalPlayed: delta.totalPlayed !== undefined ? delta.totalPlayed : prev.totalPlayed,
+      };
+    });
+  }, []);
+
   // Reset/delete user
   const resetUser = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -494,6 +562,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       isReady,
       refreshUser,
       resetUser,
+      applyUserDelta,
     }),
     [
       status,
@@ -507,6 +576,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       isReady,
       refreshUser,
       resetUser,
+      applyUserDelta,
     ]
   );
 

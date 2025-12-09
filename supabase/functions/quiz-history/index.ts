@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Quiz History Edge Function
  * Replaces convex/history.ts
@@ -95,32 +96,32 @@ serve(async (req) => {
     if (action === 'log') {
       const { mode, sessionId, data } = params;
 
-      // Check for existing entry
-      const { data: existing } = await supabase
-        .from('quiz_history')
-        .select('id')
-        .eq('user_id', dbUser.id)
-        .eq('mode', mode)
-        .eq('session_id', sessionId)
-        .single();
-
-      if (existing) {
-        // Update existing
-        const { data: updated, error } = await supabase
+      // For daily mode, allow duplicates; for others, upsert by sessionId
+      if (mode !== 'daily') {
+        const { data: existing } = await supabase
           .from('quiz_history')
-          .update({ payload: data, created_at: new Date().toISOString() })
-          .eq('id', existing.id)
-          .select()
+          .select('id')
+          .eq('user_id', dbUser.id)
+          .eq('mode', mode)
+          .eq('session_id', sessionId)
           .single();
 
-        if (error) throw error;
-        return new Response(
-          JSON.stringify({ data: updated }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-        );
+        if (existing) {
+          const { data: updated, error } = await supabase
+            .from('quiz_history')
+            .update({ payload: data, created_at: new Date().toISOString() })
+            .eq('id', existing.id)
+            .select()
+            .single();
+
+          if (error) throw error;
+          return new Response(
+            JSON.stringify({ data: updated }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          );
+        }
       }
 
-      // Insert new
       const { data: inserted, error } = await supabase
         .from('quiz_history')
         .insert({
@@ -146,7 +147,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in quiz history:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     );
   }

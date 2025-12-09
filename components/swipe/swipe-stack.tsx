@@ -74,6 +74,17 @@ const ONBOARDING_KEY = '@swipe_onboarding_completed';
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const ONBOARDING_SLIDE_WIDTH = Math.max(Math.min(WINDOW_WIDTH - Spacing.xl * 2, 400), 280);
 
+const getComboMultiplier = (streak: number) => {
+  if (streak >= 10) return 3.0;
+  if (streak >= 7) return 2.5;
+  if (streak >= 5) return 2.0;
+  if (streak >= 3) return 1.5;
+  return 1.0;
+};
+
+const supabaseAnonKey =
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? process.env.EXPO_PUBLIC_SUPABASE_API_KEY;
+
 const createSwipeSessionId = (key: string) => `swipe:${key}:${Date.now()}`;
 
 const ONBOARDING_SLIDES = [
@@ -94,6 +105,12 @@ const ONBOARDING_SLIDES = [
     icon: 'checkmark.seal' as const,
     title: '보기를 선택하면 즉시 채점',
     body: '정답 여부와 해설을 바로 확인하고\n끝없이 이어지는 문제를 풀어보세요',
+  },
+  {
+    id: 'slide_score_combo',
+    icon: 'star.circle' as const,
+    title: '콤보를 이으면 점수 폭발!',
+    body: '정답을 연속으로 맞히면 콤보 배수가 발동해 점수와 XP가 크게 올라요',
   },
 ] as const;
 
@@ -144,7 +161,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     isGuest,
     sessionKey,
   } = useSwipeFeed({ category, tags, limit: 20 });
-  const { signInWithGoogle, status: authStatus } = useAuth();
+  const { signInWithGoogle, status: authStatus, applyUserDelta, user } = useAuth();
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
   const sheetSurface = useThemeColor({}, 'card');
@@ -228,6 +245,19 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const indicatorAnims = useRef(
     ONBOARDING_SLIDES.map(() => new Animated.Value(8))
   ).current;
+
+  const getFunctionAuthHeaders = useCallback(async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (token) {
+        return { Authorization: `Bearer ${token}` };
+      }
+    } catch (err) {
+      console.warn('Failed to resolve function auth headers', err);
+    }
+    return supabaseAnonKey ? { Authorization: `Bearer ${supabaseAnonKey}` } : undefined;
+  }, []);
 
   // 새로 진입/리프레시 시 세션 스트릭 및 스탯을 초기화해 이전 세션이 이어지지 않도록 함
   useEffect(() => {
@@ -343,6 +373,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         return;
       }
       setSelectedIndex(choiceIndex);
+      const prevStreakBeforeAnswer = currentStreakRef.current;
       const questionId = current.id;
       const optimisticIsCorrect = selectedChoice.id === current.correctChoiceId;
       const optimisticCorrectIndexRaw =
@@ -355,6 +386,21 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         correctChoiceIndex: optimisticCorrectIndexRaw >= 0 ? optimisticCorrectIndexRaw : null,
       };
       setFeedback(optimisticFeedback);
+      // Optimistically update streak and sheet data so UI reflects immediately
+      const optimisticStreak = optimisticIsCorrect ? prevStreakBeforeAnswer + 1 : 0;
+      currentStreakRef.current = optimisticStreak;
+      setCurrentStreak(optimisticStreak);
+      if (current.explanation) {
+        setSheetFeedback({
+          status: 'confirmed',
+          isCorrect: optimisticIsCorrect,
+          correctChoiceId: current.correctChoiceId,
+          correctChoiceIndex: optimisticCorrectIndexRaw >= 0 ? optimisticCorrectIndexRaw : null,
+          explanation: current.explanation ?? null,
+          scoreDelta: optimisticIsCorrect ? 15 : -5,
+          streak: optimisticStreak,
+        });
+      }
       hideResultToast();
       if (optimisticIsCorrect) {
         lightHaptic(); // 정답 시 가벼운 햅틱
@@ -377,6 +423,11 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         );
         const confirmedCorrectIndex =
           correctIndex >= 0 ? correctIndex : current.correctChoiceIndex ?? correctIndex;
+        const measuredTimeMs = Math.max(0, response.timeMs ?? timeMs);
+        const nextStreak = response.isCorrect ? prevStreakBeforeAnswer + 1 : 0;
+        const comboMultiplier = response.isCorrect ? getComboMultiplier(nextStreak) : 1;
+        const baseScoreDelta = response.scoreDelta ?? (response.isCorrect ? 15 : -5);
+        const scoreDelta = response.isCorrect ? Math.round(baseScoreDelta * comboMultiplier) : baseScoreDelta;
         const confirmedFeedback: SwipeFeedback = {
           status: 'confirmed',
           isCorrect: response.isCorrect,
@@ -386,12 +437,9 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               ? confirmedCorrectIndex
               : null,
           explanation: response.explanation,
-          scoreDelta: response.scoreDelta,
-          streak: response.isCorrect ? currentStreakRef.current + 1 : 0,
+          scoreDelta,
+          streak: nextStreak,
         };
-        const measuredTimeMs = Math.max(0, response.timeMs ?? timeMs);
-        const scoreDelta = response.scoreDelta ?? 0;
-        const nextStreak = response.isCorrect ? currentStreakRef.current + 1 : 0;
         if (FEATURE_FLAGS.auth) {
           const safeSessionKey = sessionKey ?? `swipe-${Date.now().toString(36)}`;
           const payload = {
@@ -409,16 +457,18 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
             metadata: { source: 'swipe' },
           };
           try {
-            const { data, error } = await supabase.functions.invoke('log-swipe-answer', { body: payload });
+            const headers = await getFunctionAuthHeaders();
+            const { data, error } = await supabase.functions.invoke('log-swipe-answer', {
+              headers,
+              body: payload,
+            });
             if (error) {
               let bodyText: string | null = null;
               let status: number | undefined;
               try {
-                if ((error as any)?.context?.response) {
-                  const resp = (error as any).context.response as Response;
-                  status = resp.status;
-                  bodyText = await resp.text();
-                }
+                const resp = ((error as any)?.context ?? (error as any)?.response) as Response | undefined;
+                status = resp?.status;
+                if (resp) bodyText = await resp.text();
               } catch {
                 bodyText = null;
               }
@@ -430,6 +480,15 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               });
             } else if (__DEV__) {
               console.log('Logged swipe answer to Supabase', data);
+            }
+            const payloadData = (data as { data?: { xpGain?: number; streak?: number; totalCorrect?: number; totalPlayed?: number } })?.data;
+            if (payloadData && typeof payloadData.xpGain === 'number' && applyUserDelta) {
+              applyUserDelta({
+                xp: (user?.xp ?? 0) + (payloadData.xpGain ?? 0),
+                streak: payloadData.streak ?? user?.streak,
+                totalCorrect: payloadData.totalCorrect ?? user?.totalCorrect,
+                totalPlayed: payloadData.totalPlayed ?? user?.totalPlayed,
+              });
             }
           } catch (err) {
             console.warn('Failed to log swipe answer to Supabase', err);
@@ -486,7 +545,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         });
       }
     },
-    [current, feedback, submitAnswer]
+    [current, feedback, submitAnswer, sessionKey, getFunctionAuthHeaders, applyUserDelta, user]
   );
 
   const handleSkip = useCallback(() => {
@@ -736,11 +795,25 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   ]);
 
   const handleOpenSheet = useCallback(() => {
-    if (feedback?.status === 'confirmed' && feedback.explanation) {
-      setSheetFeedback(feedback);
-      bottomSheetRef.current?.present();
-    }
-  }, [feedback]);
+    const explanation =
+      (feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation || null;
+    if (!explanation) return;
+
+    const sheetData: SwipeFeedback = feedback && 'explanation' in feedback
+      ? feedback
+      : {
+        status: 'confirmed',
+        isCorrect: feedback?.isCorrect ?? false,
+        correctChoiceId: feedback?.correctChoiceId ?? current?.correctChoiceId ?? null,
+        correctChoiceIndex: feedback?.correctChoiceIndex ?? current?.correctChoiceIndex ?? null,
+        explanation,
+        scoreDelta: feedback && 'scoreDelta' in feedback ? Number(feedback.scoreDelta) || 0 : 0,
+        streak: feedback && 'streak' in feedback ? Number(feedback.streak) || 0 : currentStreakRef.current,
+      };
+
+    setSheetFeedback(sheetData);
+    bottomSheetRef.current?.present();
+  }, [current, feedback]);
 
   const handleSheetDismiss = useCallback(() => {
     setSheetFeedback(null);
@@ -1094,7 +1167,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                     lightColor={palette.textMuted}
                     darkColor={Palette.gray200}
                   >
-                    {sessionStats.correct}/{Math.max(sessionStats.answered, 1)} - 정답/응답
+                    {sessionStats.correct}/{Math.max(sessionStats.answered, 1)} {'\n'}정답/응답
                   </ThemedText>
                 </View>
                 <View
@@ -1118,7 +1191,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                     lightColor={palette.textMuted}
                     darkColor={Palette.gray200}
                   >
-                    {sessionStats.answered}/{Math.max(totalViewed, 1)} - 응답/(응답+스킵)
+                    {sessionStats.answered}/{Math.max(totalViewed, 1)} {'\n'}응답/(응답+스킵)
                   </ThemedText>
                 </View>
                 <View
@@ -1159,13 +1232,6 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                     획득 XP
                   </ThemedText>
                   <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
-                  <ThemedText
-                    style={[styles.completionMetricHint, styles.completionMetricHintTight]}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
-                  >
-                    정답 시 +15 {'\n'}오답 시 +5
-                  </ThemedText>
                 </View>
               </View>
               <View style={styles.completionActions}>
@@ -1211,9 +1277,17 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                   size="sm"
                   rounded="full"
                   onPress={handleOpenSheet}
-                  disabled={!(feedback?.status === 'confirmed' && feedback.explanation)}
-                  style={!(feedback?.status === 'confirmed' && feedback.explanation) && styles.sheetButtonHidden}
-                  textStyle={!(feedback?.status === 'confirmed' && feedback.explanation) && styles.sheetButtonTextHidden}
+                  disabled={selectedIndex === null || !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)}
+                  style={
+                    (selectedIndex === null ||
+                      !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)) &&
+                    styles.sheetButtonHidden
+                  }
+                  textStyle={
+                    (selectedIndex === null ||
+                      !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)) &&
+                    styles.sheetButtonTextHidden
+                  }
                 >
                   해설 보기
                 </Button>
@@ -1401,7 +1475,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
               </ThemedText>
               <View style={styles.sheetStatsRow}>
                 <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
-                  <ThemedText style={styles.sheetStatLabel}>점수 변화</ThemedText>
+                  <ThemedText style={[styles.sheetStatLabel, { color: sheetMutedColor }]}>점수 변화</ThemedText>
                   <ThemedText style={styles.sheetStatValue}>
                     {sheetFeedback.scoreDelta >= 0
                       ? `+${sheetFeedback.scoreDelta}`
@@ -1409,7 +1483,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                   </ThemedText>
                 </View>
                 <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
-                  <ThemedText style={styles.sheetStatLabel}>현재 연속 정답</ThemedText>
+                  <ThemedText style={[styles.sheetStatLabel, { color: sheetMutedColor }]}>현재 연속 정답</ThemedText>
                   <ThemedText style={styles.sheetStatValue}>{sheetFeedback.streak}</ThemedText>
                 </View>
               </View>
@@ -1634,9 +1708,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'left',
   },
-  completionMetricHintTight: {
-    lineHeight: 16,
-  },
   completionActions: {
     flexDirection: 'row',
     gap: Spacing.sm,
@@ -1792,6 +1863,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.lg,
     width: '100%',
+    paddingHorizontal: Spacing.lg,
   },
   onboardingIconContainer: {
     width: 96,

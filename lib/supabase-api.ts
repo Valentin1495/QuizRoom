@@ -85,6 +85,8 @@ export function useDailyQuiz(date?: string, options?: { enabled?: boolean }) {
   const [data, setData] = useState<DailyQuiz | null>(null);
   const [isLoading, setIsLoading] = useState(enabled);
   const [error, setError] = useState<Error | null>(null);
+  const supabaseAnonKey =
+    process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? process.env.EXPO_PUBLIC_SUPABASE_API_KEY ?? '';
 
   useEffect(() => {
     if (!enabled) {
@@ -97,14 +99,21 @@ export function useDailyQuiz(date?: string, options?: { enabled?: boolean }) {
       try {
         const { data: result, error: fetchError } = await supabase.functions.invoke(
           'daily-quiz',
-          { body: { date } }
+          {
+            headers: supabaseAnonKey ? { Authorization: `Bearer ${supabaseAnonKey}` } : undefined,
+            body: { date },
+          }
         );
 
         if (fetchError) throw fetchError;
-        setData(result?.data ?? null);
+        // Normalize empty response to null for guests as well
+        const payload = (result as { data?: DailyQuiz | null })?.data ?? null;
+        setData(payload);
         setError(null);
       } catch (err) {
+        console.warn('Failed to fetch daily quiz', err);
         setError(err instanceof Error ? err : new Error('Failed to fetch daily quiz'));
+        setData(null);
       } finally {
         setIsLoading(false);
       }

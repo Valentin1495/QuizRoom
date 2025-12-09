@@ -37,6 +37,7 @@ import {
   RankingIcon,
   SealCheckIcon,
   ShieldCheckIcon,
+  ShootingStarIcon,
   ShoppingBagOpenIcon,
   ShuffleIcon,
   SkipForwardIcon,
@@ -129,6 +130,7 @@ const ICON_MAP = {
   'hand.point.right': { component: HandSwipeRightIcon },
   'hand.point.left': { component: HandSwipeLeftIcon },
   'checkmark.seal': { component: SealCheckIcon },
+  'star.circle': { component: ShootingStarIcon },
 } as const satisfies Record<string, IconMapping>;
 
 export type IconSymbolName = keyof typeof ICON_MAP;

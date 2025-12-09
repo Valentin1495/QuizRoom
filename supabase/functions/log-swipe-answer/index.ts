@@ -19,6 +19,19 @@ const isStringArray = (v: unknown): v is string[] =>
 const isUuid = (value: string) =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 
+const getStreakMultiplier = (streak: number) => {
+  if (streak >= 7) return 2.0;
+  if (streak >= 6) return 1.8;
+  if (streak >= 5) return 1.6;
+  if (streak >= 4) return 1.4;
+  if (streak >= 3) return 1.25;
+  if (streak >= 2) return 1.1;
+  return 1.0;
+};
+
+const applyStreakBonus = (baseXp: number, streak: number) =>
+  Math.round(baseXp * getStreakMultiplier(streak));
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -59,28 +72,45 @@ serve(async (req) => {
     const safeTimeMs = Math.max(0, Math.round(timeMs));
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
 
     const authHeader = req.headers.get('Authorization');
 
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: authHeader ? { Authorization: authHeader } : {},
-      },
+    if (!serviceRoleKey || !supabaseUrl) {
+      console.error('FATAL: SUPABASE_SERVICE_ROLE_KEY or SUPABASE_URL is not set.');
+      return new Response(
+        JSON.stringify({ error: 'Function is not configured correctly.' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Admin client (bypass RLS)
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
     });
+
+    // Auth-only client to decode the incoming Authorization header
+    const supabaseAuth =
+      authHeader && supabaseAnonKey
+        ? createClient(supabaseUrl, supabaseAnonKey, {
+          auth: { autoRefreshToken: false, persistSession: false },
+          global: { headers: { Authorization: authHeader } },
+        })
+        : null;
 
     // Auth context
     let authUser = null;
-    if (authHeader) {
-      const { data: authData } = await supabase.auth.getUser();
+    if (authHeader && supabaseAuth) {
+      const { data: authData } = await supabaseAuth.auth.getUser();
       authUser = authData?.user ?? null;
     }
 
     // Authenticated users: only when questionId is UUID and answerToken present
     if (authUser && isUuid(questionId) && isString(answerToken)) {
-      const { data: dbUser, error: userError } = await supabase
+      const { data: dbUser, error: userError } = await supabaseAdmin
         .from('users')
-        .select('id')
+        .select('id, xp, streak, total_played, total_correct')
         .eq('identity_id', authUser.id)
         .single();
 
@@ -91,7 +121,7 @@ serve(async (req) => {
         );
       }
 
-      const { data: inserted, error: insertError } = await supabase
+      const { data: inserted, error: insertError } = await supabaseAdmin
         .from('answers')
         .insert({
           user_id: dbUser.id,
@@ -113,8 +143,36 @@ serve(async (req) => {
         );
       }
 
+      // XP/스탯 업데이트 (정답일 때만 XP 지급)
+      const currentStreak = dbUser.streak ?? 0;
+      const baseXp = isCorrect ? 15 : 0;
+      const xpGain = isCorrect ? applyStreakBonus(baseXp, currentStreak) : 0;
+      const nextStreak = isCorrect ? currentStreak + 1 : 0;
+
+      const updatedTotalPlayed = (dbUser.total_played ?? 0) + 1;
+      const updatedTotalCorrect = (dbUser.total_correct ?? 0) + (isCorrect ? 1 : 0);
+
+      await supabaseAdmin
+        .from('users')
+        .update({
+          xp: (dbUser.xp ?? 0) + xpGain,
+          streak: nextStreak,
+          total_played: updatedTotalPlayed,
+          total_correct: updatedTotalCorrect,
+        })
+        .eq('id', dbUser.id);
+
       return new Response(
-        JSON.stringify({ data: { table: 'answers', id: inserted?.id } }),
+        JSON.stringify({
+          data: {
+            table: 'answers',
+            id: inserted?.id,
+            xpGain,
+            streak: nextStreak,
+            totalPlayed: updatedTotalPlayed,
+            totalCorrect: updatedTotalCorrect,
+          },
+        }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
@@ -127,7 +185,7 @@ serve(async (req) => {
       );
     }
 
-    const { data: guestInserted, error: guestError } = await supabase
+    const { data: guestInserted, error: guestError } = await supabaseAdmin
       .from('guest_swipe_answers')
       .insert({
         session_key: sessionKey,

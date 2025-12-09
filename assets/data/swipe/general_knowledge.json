@@ -2463,11 +2463,11 @@
             },
             {
                 "id": "c",
-                "text": "인코더"
+                "text": "인코더(Encoder)"
             },
             {
                 "id": "d",
-                "text": "디코더"
+                "text": "디코더(Decoder)"
             }
         ],
         "answerIndex": 0,

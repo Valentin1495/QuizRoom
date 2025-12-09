@@ -48,8 +48,8 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 
-    if (!serviceRoleKey) {
-      console.error('FATAL: SUPABASE_SERVICE_ROLE_KEY is not set.');
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error('FATAL: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not set.');
       return new Response(
         JSON.stringify({ error: 'Function is not configured correctly.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -65,7 +65,7 @@ serve(async (req) => {
     });
 
     const requestedLimit = Math.min(Math.max(Number(limit) || DEFAULT_LIMIT, 1), MAX_LIMIT);
-    const tagFilter = isStringArray(tags) ? tags : null;
+    const tagFilter = isStringArray(tags) && tags.length ? tags : null;
 
     const normalizedCategory = category.trim().toLowerCase();
 
@@ -104,6 +104,7 @@ serve(async (req) => {
     const { data, error } = await query;
 
     if (error) {
+      console.error('swipe-feed query error', { code: error.code, message: error.message });
       return new Response(
         JSON.stringify({ error: error.message, code: error.code }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },

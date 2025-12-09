@@ -36,6 +36,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { deriveGuestAvatarId } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
+import { useUserStats } from '@/lib/supabase-api';
 
 type AuthedUser = NonNullable<ReturnType<typeof useAuth>['user']>;
 type HistorySectionKey = 'daily' | 'swipe' | 'liveMatch';
@@ -45,6 +46,7 @@ const HISTORY_PREVIEW_LIMIT = 3;
 
 export default function ProfileScreen() {
   const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey, isReady } = useAuth();
+  const { stats: supabaseStats } = useUserStats();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
   const insets = useSafeAreaInsets();
@@ -79,7 +81,7 @@ export default function ProfileScreen() {
   const isAuthorizing = status === 'authorizing' || status === 'upgrading';
   const isAuthenticated = status === 'authenticated' && !!user;
   const history = useQuizHistory({
-    limit: 10,
+    limit: 60,
     enabled: status === 'authenticated' && isReady,
   });
 
@@ -130,7 +132,40 @@ export default function ProfileScreen() {
   }, [ensureGuestKey, guestKey, status]);
 
   const guestAvatarId = useMemo(() => deriveGuestAvatarId(guestKey), [guestKey]);
-  const currentLevel = useMemo(() => (user ? calculateLevel(user.xp).level : 1), [user]);
+  // Prefer in-memory user (updated via Realtime/applyUserDelta) over cached stats.
+  const xpValue = user?.xp ?? supabaseStats?.xp ?? 0;
+  const baseStreak = user?.streak ?? supabaseStats?.streak ?? 0;
+  const currentLevel = useMemo(() => calculateLevel(xpValue).level, [xpValue]);
+
+  const activityStreak = useMemo(() => {
+    if (!history) return null;
+    const allEntries = [
+      ...(history.daily ?? []),
+      ...(history.swipe ?? []),
+      ...(history.liveMatch ?? []),
+    ];
+    if (!allEntries.length) return 0;
+    const dates = new Set<string>();
+    allEntries.forEach((entry) => {
+      const d = new Date(entry.createdAt);
+      const key = d.toISOString().slice(0, 10); // UTC-based date key
+      dates.add(key);
+    });
+    let streak = 0;
+    const today = new Date();
+    for (;;) {
+      const key = new Date(today.getTime() - streak * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .slice(0, 10);
+      if (dates.has(key)) {
+        streak += 1;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }, [history]);
+  const displayStreak = activityStreak ?? baseStreak;
 
   const handleOpenHistorySheet = useCallback((section: HistorySectionKey) => {
     setHistorySheetSection(section);
@@ -179,6 +214,8 @@ export default function ProfileScreen() {
           {isAuthenticated && user ? (
             <ProfileHeader
               user={user}
+              xp={xpValue}
+              streak={displayStreak}
               onEdit={handleEditProfile}
               onShare={handleShareCard}
               onOpenLevelSheet={openLevelSheet}
@@ -224,7 +261,7 @@ export default function ProfileScreen() {
         <LevelInfoSheet
           sheetRef={levelSheetRef}
           currentLevel={currentLevel}
-          currentXp={user?.xp ?? 0}
+          currentXp={xpValue}
           onClose={closeLevelSheet}
         />
         <AlertDialog
@@ -254,19 +291,25 @@ function Card({ children, style }: { children: ReactNode; style?: StyleProp<View
 
 function ProfileHeader({
   user,
+  xp,
+  streak,
   onEdit,
   onShare,
   onOpenLevelSheet,
 }: {
   user: AuthedUser;
+  xp: number;
+  streak: number;
   onEdit: () => void;
   onShare: () => void;
   onOpenLevelSheet: () => void;
 }) {
   const statusLine =
-    user.streak > 0
-      ? `🔥 연속 ${user.streak}일 출석 중`
-      : '퀴즈를 매일 플레이하고\n스트릭을 이어가세요!';
+    streak > 1
+      ? `🔥 연속 ${streak}일 출석 중`
+      : streak === 1
+        ? '🚀 스트릭 시작! 1일 차 돌입'
+        : '퀴즈를 매일 플레이하고\n스트릭을 이어가세요!';
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
@@ -286,13 +329,13 @@ function ProfileHeader({
           <View style={styles.headerNameRow}>
             <ThemedText type="subtitle">{user.handle}</ThemedText>
             <Pressable onPress={onOpenLevelSheet} hitSlop={8}>
-              <LevelBadge xp={user.xp} size="sm" showTitle />
+              <LevelBadge xp={xp} size="sm" showTitle />
             </Pressable>
           </View>
           <ThemedText style={[styles.statusText, { color: mutedColor }]}>{statusLine}</ThemedText>
         </View>
       </View>
-      <XpProgressBar xp={user.xp} height={6} showLabel />
+      <XpProgressBar xp={xp} height={6} showLabel />
       <View style={styles.headerActions}>
         <Button
           onPress={onEdit}
@@ -730,6 +773,8 @@ type DailyHistoryPayload = {
   timerMode?: string;
   durationMs?: number;
   category?: string;
+  xpGain?: number;
+  xp?: number;
 };
 
 type SwipeHistoryPayload = {
@@ -738,7 +783,7 @@ type SwipeHistoryPayload = {
   answered: number;
   correct: number;
   maxStreak: number;
-  avgResponseMs: number;
+  durationMs?: number;
   totalScoreDelta: number;
 };
 
@@ -790,7 +835,7 @@ function DailyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   const payload = entry.payload as DailyHistoryPayload;
   const accuracy = computeAccuracy(payload.correct, payload.total);
   const durationLabel = formatSecondsLabel(payload.durationMs);
-  const modeLabel = payload.timerMode === 'timed' ? '타임어택 모드' : '자유 모드';
+  const modeLabel = payload.timerMode === 'timed' ? '타임어택 모드' : '릴랙스 모드';
   const categoryLabel = payload.category
     ? resolveDailyCategoryCopy(payload.category)?.label ?? payload.category
     : null;
@@ -801,6 +846,14 @@ function DailyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   if (categoryLabel) {
     detailParts.push(`${categoryLabel}`);
   }
+  const xpEarned = payload.xpGain ?? payload.xp;
+  const detailLine = [
+    modeLabel,
+    durationLabel,
+    xpEarned ? `XP +${xpEarned}` : null,
+  ]
+    .filter(Boolean)
+    .join(' | ');
 
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -823,7 +876,7 @@ function DailyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
         정답률 {accuracy}% ({payload.correct}/{payload.total})
       </ThemedText>
       <ThemedText style={[styles.historyRowDetail, { color: mutedColor }]}>
-        {detailParts.slice(0, 2).join(' | ')}
+        {detailLine}
       </ThemedText>
     </View>
   );
@@ -832,10 +885,11 @@ function DailyHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
 function SwipeHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   const payload = entry.payload as SwipeHistoryPayload;
   const accuracy = computeAccuracy(payload.correct, payload.answered);
-  const avgSecondsLabel = formatAverageSeconds(payload.avgResponseMs);
   const categoryMeta = categories.find((category) => category.slug === payload.category);
   const categoryLabel = categoryMeta ? categoryMeta.title : payload.category;
   const categoryIcon = categoryMeta?.icon ?? 'lightbulb';
+  const totalDurationLabel = formatSecondsLabel(payload.durationMs);
+  const totalXpLabel = payload.totalScoreDelta !== undefined ? `총 XP ${payload.totalScoreDelta >= 0 ? `+${payload.totalScoreDelta}` : payload.totalScoreDelta}` : null;
 
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -861,8 +915,9 @@ function SwipeHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
         정답률 {accuracy}% ({payload.correct}/{payload.answered}) | 🔥 최고 {payload.maxStreak}연속
       </ThemedText>
       <ThemedText style={[styles.historyRowDetail, { color: mutedColor }]}>
-        평균 반응속도 {avgSecondsLabel} | 점수{' '}
-        {payload.totalScoreDelta >= 0 ? `+${payload.totalScoreDelta}` : payload.totalScoreDelta}
+        {totalDurationLabel ? `총 소요 ${totalDurationLabel} | ` : ''}
+        점수 {payload.totalScoreDelta >= 0 ? `+${payload.totalScoreDelta}` : payload.totalScoreDelta}
+        {totalXpLabel ? ` | ${totalXpLabel}` : ''}
       </ThemedText>
     </View>
   );

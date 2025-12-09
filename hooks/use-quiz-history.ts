@@ -75,8 +75,8 @@ const useQuizHistoryImpl = USE_SUPABASE_HISTORY ? useSupabaseHistory : useConvex
 
 type SupabaseHistoryEntry = {
   id?: string;
-  user_id?: string;
-  mode?: 'daily' | 'swipe' | 'live_match';
+  user_id?: string | null;
+  mode?: 'daily' | 'swipe' | 'live_match' | 'liveMatch';
   session_id?: string;
   created_at?: string;
   createdAt?: number;
@@ -93,14 +93,16 @@ function normalizeSupabaseHistory(data: SupabaseHistoryBuckets): HistoryBuckets 
   const mapEntry = (entry: SupabaseHistoryEntry, mode: keyof HistoryBuckets): QuizHistoryDoc => {
     const createdAt = parseTimestamp(entry.created_at ?? entry.createdAt);
     const sessionId = entry.session_id ?? '';
+    const normalizedMode =
+      entry.mode === 'live_match' || entry.mode === 'liveMatch' ? 'liveMatch' : mode;
     return {
       _id: (entry.id ?? sessionId ?? `${mode}-${createdAt}`) as QuizHistoryDoc['_id'],
       _creationTime: createdAt,
       userId: (entry.user_id ?? 'supabase') as QuizHistoryDoc['userId'],
-      mode: mode === 'liveMatch' ? 'liveMatch' : mode,
+      mode: normalizedMode as QuizHistoryDoc['mode'],
       sessionId,
       createdAt,
-      payload: entry.payload ?? {},
+      payload: (entry.payload as QuizHistoryDoc['payload']) ?? ({} as QuizHistoryDoc['payload']),
     };
   };
 

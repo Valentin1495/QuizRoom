@@ -79,6 +79,8 @@ export default function HomeScreen() {
 
   const isLoadingDailyQuiz = dailyQuiz === undefined;
   const hasDailyQuiz = Boolean(dailyQuiz);
+  const [isDailyCompleted, setIsDailyCompleted] = useState(false);
+  const [dailyXpEarned, setDailyXpEarned] = useState<number | null>(null);
 
   const dailyCategoryCopy = useMemo(
     () => resolveDailyCategoryCopy(dailyQuiz?.category),
@@ -114,13 +116,39 @@ export default function HomeScreen() {
     isLoadingDailyQuiz,
   ]);
 
-  const dailyCTA = hasDailyQuiz ? '시작하기' : isLoadingDailyQuiz ? '불러오는 중' : '준비 중';
+  const dailyCTA = hasDailyQuiz
+    ? isDailyCompleted
+      ? `완료! +${dailyXpEarned} XP 💪`
+      : '시작하기'
+    : isLoadingDailyQuiz
+      ? '불러오는 중'
+      : '준비 중';
   const dailyHeadlineSkeletonColor = colorScheme === 'dark' ? palette.border : Palette.gray100;
 
   const isAuthenticated = authStatus === 'authenticated' && !!user;
   const isGuest = authStatus === 'guest';
   const greetingName = isAuthenticated ? user.handle : '';
   const currentLevel = useMemo(() => (user ? calculateLevel(user.xp).level : 1), [user]);
+
+  useEffect(() => {
+    const loadCompletion = async () => {
+      if (!dailyQuiz?.availableDate) {
+        setIsDailyCompleted(false);
+        setDailyXpEarned(null);
+        return;
+      }
+      const dateKey = dailyQuiz.availableDate;
+      const completionKey = `daily:completed:${dateKey}`;
+      const xpKey = `daily:xp:${dateKey}`;
+      const [flag, xp] = await Promise.all([
+        AsyncStorage.getItem(completionKey),
+        AsyncStorage.getItem(xpKey),
+      ]);
+      setIsDailyCompleted(flag === '1');
+      setDailyXpEarned(xp ? Number(xp) : null);
+    };
+    loadCompletion();
+  }, [dailyQuiz?.availableDate]);
 
   // const handleAppleLogin = useCallback(() => {
   //   Alert.alert('Apple 로그인', 'Apple 로그인은 준비 중이에요. 잠시만 기다려 주세요!');
@@ -262,7 +290,7 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.section}>
-            <SectionHeader title="오늘의 퀴즈" tagline="60초오늘의 퀴즈" muted={muted} />
+            <SectionHeader title="오늘의 퀴즈" tagline="60초 O/X 퀴즈" muted={muted} />
             <View
               style={[
                 styles.dailyCard,

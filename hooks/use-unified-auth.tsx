@@ -45,6 +45,7 @@ export type UnifiedAuthContextValue = {
   resetUser: () => Promise<void>;
   // Convex-specific (only available when using Convex auth)
   isConvexReady?: boolean;
+  applyUserDelta?: (delta: { xp?: number; streak?: number; totalCorrect?: number; totalPlayed?: number }) => void;
 };
 
 /**
@@ -80,6 +81,7 @@ export function useUnifiedAuth(): UnifiedAuthContextValue {
       refreshUser: supabaseAuth.refreshUser,
       resetUser: supabaseAuth.resetUser,
       isConvexReady: false, // Convex won't be authenticated in Supabase mode
+      applyUserDelta: supabaseAuth.applyUserDelta,
     };
   }
 
