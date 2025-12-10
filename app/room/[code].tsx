@@ -52,8 +52,19 @@ export default function MatchLobbyScreen() {
   const { lobby, isLoading: isLobbyLoading } = useLiveLobby(roomCode, { enabled: shouldFetchLobby });
   const roomActions = useRoomActions();
   const roomId = lobby?.room._id ?? null;
-  const pendingAction = lobby?.room.pendingAction ?? null;
+  const pendingActionServer = lobby?.room.pendingAction ?? null;
+  const [localPendingAction, setLocalPendingAction] = useState<{
+    label: string;
+    executeAt: number;
+  } | null>(null);
+  const pendingAction = pendingActionServer ?? localPendingAction;
   const pendingBannerAnim = useRef(new Animated.Value(pendingAction ? 1 : 0)).current;
+
+  useEffect(() => {
+    if (pendingActionServer) {
+      setLocalPendingAction(null);
+    }
+  }, [pendingActionServer]);
 
   useEffect(() => {
     Animated.timing(pendingBannerAnim, {
@@ -287,6 +298,12 @@ export default function MatchLobbyScreen() {
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       const key = await resolveHostGuestKey();
+      const executeAt = Date.now() - serverOffsetMs + resolveDelayMs;
+      setLocalPendingAction({
+        label: '라이브 매치 시작 준비 중...',
+        executeAt,
+      });
+      setPendingMs(resolveDelayMs);
       await roomActions.start({
         roomId,
         participantId: participantId ?? '',
@@ -294,6 +311,7 @@ export default function MatchLobbyScreen() {
         guestKey: key,
       });
     } catch (error) {
+      setLocalPendingAction(null);
       if (error instanceof Error && error.message.includes('ACTION_PENDING')) {
         Alert.alert('이미 시작을 준비 중이에요', '곧 자동으로 시작돼요. 잠시만 기다려주세요!');
         return;
@@ -303,7 +321,16 @@ export default function MatchLobbyScreen() {
         error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
       );
     }
-  }, [allReady, pendingAction, resolveDelayMs, resolveHostGuestKey, roomActions, roomId]);
+  }, [
+    allReady,
+    pendingAction,
+    participantId,
+    resolveDelayMs,
+    resolveHostGuestKey,
+    roomActions,
+    roomId,
+    serverOffsetMs,
+  ]);
 
   const handleLeave = useCallback(() => {
     if (hasLeft) return;

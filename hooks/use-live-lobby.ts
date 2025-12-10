@@ -125,6 +125,7 @@ export function useLiveLobby(code: string, options?: { enabled?: boolean }) {
     if (!shouldFetch || !lobby?.room?._id) return;
 
     const roomId = lobby.room._id;
+    console.log('[LiveLobby] Subscribing realtime for room', roomId);
 
     const channel = supabase
       .channel(`room:${roomId}`)
@@ -136,7 +137,9 @@ export function useLiveLobby(code: string, options?: { enabled?: boolean }) {
           table: 'live_match_participants',
           filter: `room_id=eq.${roomId}`,
         },
-        () => {
+        (payload) => {
+          const participantId = (payload.new as any)?.id ?? (payload.old as any)?.id;
+          console.log('[LiveLobby] participants change', payload.eventType, participantId);
           void fetchLobby();
         }
       )
@@ -148,13 +151,40 @@ export function useLiveLobby(code: string, options?: { enabled?: boolean }) {
           table: 'live_match_rooms',
           filter: `id=eq.${roomId}`,
         },
-        () => {
-          void fetchLobby();
+        (payload) => {
+          const pending = (payload.new as any)?.pending_action;
+          const serverNow = payload.commit_timestamp
+            ? new Date(payload.commit_timestamp).getTime()
+            : undefined;
+          console.log('[LiveLobby] room update', payload.eventType, pending, serverNow);
+          setLobby((prev) => {
+            if (!prev) return prev;
+            if (prev.room._id !== roomId) return prev;
+            return {
+              ...prev,
+              room: {
+                ...prev.room,
+                pendingAction: pending
+                  ? {
+                    type: pending.type,
+                    executeAt: pending.executeAt ?? pending.execute_at,
+                    delayMs: pending.delayMs ?? pending.delay_ms,
+                    createdAt: pending.createdAt ?? pending.created_at,
+                    initiatedBy: pending.initiatedBy ?? pending.initiated_by,
+                    initiatedIdentity: pending.initiatedIdentity ?? pending.initiated_identity,
+                    label: pending.label ?? '',
+                  }
+                  : null,
+                serverNow: serverNow ?? (payload.new as any)?.now ?? prev.room.serverNow,
+              },
+            };
+          });
         }
       )
       .subscribe();
 
     return () => {
+      console.log('[LiveLobby] Unsubscribing realtime for room', roomId);
       void supabase.removeChannel(channel);
     };
   }, [shouldFetch, lobby?.room?._id, fetchLobby]);

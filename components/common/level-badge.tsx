@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, Platform, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Colors, Radius, Spacing } from '@/constants/theme';
@@ -101,6 +101,9 @@ export function LevelBadge({
     );
   }
 
+  const numAlignFix = Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : null;
+  const titleAlignFix = Platform.OS === 'android' ? { transform: [{ translateY: -0.5 }] } : null;
+
   return (
     <View style={styles.container}>
       <Animated.View
@@ -111,11 +114,11 @@ export function LevelBadge({
           { transform: [{ scale: scaleAnim }] },
         ]}
       >
-        <ThemedText style={[sizeStyles.text, { color: levelColor }]}>
+        <ThemedText style={[sizeStyles.text, { color: levelColor }, numAlignFix]}>
           Lv.{levelInfo.level}
         </ThemedText>
         {showTitle && (
-          <ThemedText style={[sizeStyles.title, { color: levelColor }]}>
+          <ThemedText style={[sizeStyles.title, { color: levelColor }, titleAlignFix]}>
             {levelTitle}
           </ThemedText>
         )}
