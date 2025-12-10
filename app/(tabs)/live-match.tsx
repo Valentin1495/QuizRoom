@@ -353,7 +353,7 @@ export default function LiveMatchScreen() {
             <Button
               size="lg"
               onPress={handleCreateLiveMatchRoom}
-              disabled={isCreating || isRandomizing || (!isDecksLoading && !selectedDeckId)}
+              disabled={isCreating || isRandomizing || isDecksLoading || !selectedDeckId}
               loading={isCreating}
             >
               생성하기

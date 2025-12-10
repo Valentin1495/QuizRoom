@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge } from '@/components/common/level-badge';
 import { LevelInfoSheet } from '@/components/common/level-info-sheet';
+import { showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Accordion } from '@/components/ui/accordion';
@@ -49,7 +50,11 @@ export default function MatchLobbyScreen() {
 
 
   const shouldFetchLobby = roomCode.length > 0 && !hasLeft;
-  const { lobby, isLoading: isLobbyLoading } = useLiveLobby(roomCode, { enabled: shouldFetchLobby });
+  const {
+    lobby,
+    isLoading: isLobbyLoading,
+    refetch: refetchLobby,
+  } = useLiveLobby(roomCode, { enabled: shouldFetchLobby });
   const roomActions = useRoomActions();
   const roomId = lobby?.room._id ?? null;
   const pendingActionServer = lobby?.room.pendingAction ?? null;
@@ -124,6 +129,10 @@ export default function MatchLobbyScreen() {
 
   const isSelfReady = optimisticReady !== null ? optimisticReady : (meParticipant?.isReady ?? false);
   const isSelfHost = meParticipant?.isHost ?? false;
+  const isStartPending = !!pendingAction && (pendingAction as any).type === 'start';
+  const shouldShowHostPendingBanner = !!pendingAction && isSelfHost;
+  const shouldShowParticipantPendingBanner = !!pendingAction && !isSelfHost && isStartPending;
+  const shouldShowPendingBanner = !!pendingAction;
 
   const readyCount = useMemo(
     () =>
@@ -171,7 +180,6 @@ export default function MatchLobbyScreen() {
   const infoMutedColor = colorScheme === 'light' ? '#B45309' : '#FCD34D';
   const infoMutedBgColor = colorScheme === 'light' ? '#FEF9C3' : 'rgba(252, 211, 77, 0.1)';
   const neutralBannerBg = colorScheme === 'light' ? '#E8EDFF' : 'rgba(44, 58, 122, 0.9)';
-  const neutralBannerBorder = colorScheme === 'light' ? '#5460B4' : '#C8D0FF';
   const neutralBannerText = colorScheme === 'light' ? '#2C3A7A' : '#E5EBFF';
   const accentForegroundColor = theme.accentForeground;
   const borderColor = theme.borderStrong ?? theme.border;
@@ -295,6 +303,24 @@ export default function MatchLobbyScreen() {
       Alert.alert('이미 예약된 작업이 있어요');
       return;
     }
+
+    // 서버 기준 최신 대기실 상태로 한 번 더 확인
+    const freshLobby = await refetchLobby();
+    const participantsNow = freshLobby?.participants ?? participants;
+    const nonHostNow = participantsNow.filter((participant) => !participant.isHost);
+    const allReadyNow =
+      nonHostNow.length === 0
+        ? participantsNow.length > 0
+        : nonHostNow.every((participant) => participant.isReady);
+
+    if (!allReadyNow) {
+      Alert.alert(
+        '아직 준비되지 않았어요',
+        '누군가 방금 준비를 취소했어요. 모두 준비되면 다시 시작해 주세요.'
+      );
+      return;
+    }
+
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       const key = await resolveHostGuestKey();
@@ -325,6 +351,8 @@ export default function MatchLobbyScreen() {
     allReady,
     pendingAction,
     participantId,
+    participants,
+    refetchLobby,
     resolveDelayMs,
     resolveHostGuestKey,
     roomActions,
@@ -455,6 +483,7 @@ export default function MatchLobbyScreen() {
     if (!lobby) return;
     if (!participantId) return;
     if (lobby.room.status !== 'lobby') {
+      showResultToast({ message: '퀴즈가 시작됐어요!' });
       setHasLeft(true);
       router.replace({
         pathname: '/match/play',
@@ -462,20 +491,6 @@ export default function MatchLobbyScreen() {
       });
     }
   }, [hasLeft, lobby, participantId, router]);
-
-  const handleCancelPending = useCallback(async () => {
-    if (!roomId || !participantId) return;
-    try {
-      const key = await resolveHostGuestKey();
-      await roomActions.cancelPendingAction({
-        roomId,
-        participantId,
-        guestKey: key,
-      });
-    } catch (error) {
-      Alert.alert('취소 실패', error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
-    }
-  }, [participantId, resolveHostGuestKey, roomActions, roomId]);
 
   const styles = useMemo(
     () =>
@@ -730,22 +745,6 @@ export default function MatchLobbyScreen() {
         pendingSubtitle: {
           color: neutralBannerText,
         },
-        pendingCancelButton: {
-          alignSelf: 'stretch',
-          width: '100%',
-          paddingVertical: Spacing.sm,
-          paddingHorizontal: Spacing.md,
-          borderRadius: Radius.pill,
-          backgroundColor: neutralBannerBg,
-          borderWidth: 1,
-          borderColor: neutralBannerBorder,
-        },
-        pendingCancelLabel: {
-          width: '100%',
-          textAlign: 'center',
-          color: neutralBannerText,
-          fontWeight: '600',
-        },
       }),
     [
       colorScheme,
@@ -761,7 +760,6 @@ export default function MatchLobbyScreen() {
       infoMutedBgColor,
       accentForegroundColor,
       neutralBannerBg,
-      neutralBannerBorder,
       neutralBannerText,
     ]
   );
@@ -804,7 +802,7 @@ export default function MatchLobbyScreen() {
         <Stack.Screen options={{ headerShown: false }} />
         <View style={styles.contentWrapper}>
           <Animated.View
-            pointerEvents={pendingAction ? 'auto' : 'none'}
+            pointerEvents={shouldShowHostPendingBanner ? 'auto' : 'none'}
             style={[
               styles.pendingBannerContainer,
               {
@@ -813,37 +811,57 @@ export default function MatchLobbyScreen() {
               },
             ]}
           >
-            {pendingAction ? (
-              <View
-                style={styles.pendingBanner}
-                onLayout={(event) => {
-                  const { height } = event.nativeEvent.layout;
-                  if (height && Math.abs(height - pendingBannerHeight) > 0.5) {
-                    setPendingBannerHeight(height);
-                  }
-                }}
-              >
-                <ThemedText type="subtitle" style={styles.pendingTitle}>
-                  {pendingAction.label}
-                </ThemedText>
-                <ThemedText style={styles.pendingSubtitle}>
-                  {pendingSeconds > 0
-                    ? `${pendingSeconds}초 후 자동 진행됩니다. 호스트가 취소할 수 있어요.`
-                    : '잠시 후 자동으로 실행됩니다.'}
-                </ThemedText>
-                {isSelfHost ? (
-                  <Pressable style={styles.pendingCancelButton} onPress={handleCancelPending}>
-                    <ThemedText style={styles.pendingCancelLabel}>취소</ThemedText>
-                  </Pressable>
+            {shouldShowPendingBanner ? (
+              <>
+                {shouldShowHostPendingBanner ? (
+                  <View
+                    style={styles.pendingBanner}
+                    onLayout={(event) => {
+                      const { height } = event.nativeEvent.layout;
+                      if (height && Math.abs(height - pendingBannerHeight) > 0.5) {
+                        setPendingBannerHeight(height);
+                      }
+                    }}
+                  >
+                    <ThemedText type="subtitle" style={styles.pendingTitle}>
+                      {pendingAction.label}
+                    </ThemedText>
+                    <ThemedText style={styles.pendingSubtitle}>
+                      {pendingSeconds > 0
+                        ? `${pendingSeconds}초 후 자동으로 진행됩니다.`
+                        : '잠시 후 자동으로 실행됩니다.'}
+                    </ThemedText>
+                  </View>
                 ) : null}
-              </View>
+
+                {shouldShowParticipantPendingBanner ? (
+                  <View
+                    style={styles.pendingBanner}
+                    onLayout={(event) => {
+                      const { height } = event.nativeEvent.layout;
+                      if (height && Math.abs(height - pendingBannerHeight) > 0.5) {
+                        setPendingBannerHeight(height);
+                      }
+                    }}
+                  >
+                    <ThemedText type="subtitle" style={styles.pendingTitle}>
+                      게임이 곧 시작돼요
+                    </ThemedText>
+                    <ThemedText style={styles.pendingSubtitle}>
+                      {pendingSeconds > 0
+                        ? `호스트가 시작을 눌렀어요. 약 ${pendingSeconds}초 후 자동으로 시작돼요.`
+                        : '호스트가 시작을 눌렀어요. 곧 자동으로 시작돼요.'}
+                    </ThemedText>
+                  </View>
+                ) : null}
+              </>
             ) : null}
           </Animated.View>
 
           <Animated.View
             style={[
               styles.contentStack,
-              { marginTop: pendingBannerOffset },
+              { marginTop: shouldShowPendingBanner ? pendingBannerOffset : 0 },
             ]}
           >
             <ScrollView
@@ -854,7 +872,9 @@ export default function MatchLobbyScreen() {
             >
               <View style={styles.header}>
                 <ThemedText type="title">퀴즈룸</ThemedText>
-                <ThemedText style={styles.headerSubtitle}>로비에 입장했어요. 라이브 매치를 시작하세요!</ThemedText>
+                <ThemedText style={styles.headerSubtitle}>
+                  대기실에 입장했어요. {'\n'}게임을 시작하면 화면이 자동으로 넘어가고, {'\n'}네트워크 상황에 따라 1~2초 정도 지연될 수 있어요.
+                </ThemedText>
                 <View style={styles.codeBadgeWrapper}>
                   <View style={styles.codeBadgeRow}>
                     <View style={styles.codeBadge}>
