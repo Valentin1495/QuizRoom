@@ -24,6 +24,7 @@ import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestAvatarId } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
+import { ROOM_IN_PROGRESS_MESSAGE } from '@/lib/supabase-api';
 
 export default function MatchLobbyScreen() {
   const router = useRouter();
@@ -42,6 +43,7 @@ export default function MatchLobbyScreen() {
   const pendingExecutedRef = useRef(false);
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
   const [pendingBannerHeight, setPendingBannerHeight] = useState(0);
+  const [isStarting, setIsStarting] = useState(false);
 
   const selfGuestAvatarId = useMemo(
     () => (status === 'guest' ? deriveGuestAvatarId(guestKey) : undefined),
@@ -295,6 +297,7 @@ export default function MatchLobbyScreen() {
 
   const handleStart = useCallback(async () => {
     if (!roomId) return;
+    if (isStarting) return;
     if (!allReady) {
       Alert.alert('아직 준비되지 않았어요', '모든 참가자가 준비 완료 상태가 되어야 시작할 수 있어요.');
       return;
@@ -304,24 +307,26 @@ export default function MatchLobbyScreen() {
       return;
     }
 
-    // 서버 기준 최신 대기실 상태로 한 번 더 확인
-    const freshLobby = await refetchLobby();
-    const participantsNow = freshLobby?.participants ?? participants;
-    const nonHostNow = participantsNow.filter((participant) => !participant.isHost);
-    const allReadyNow =
-      nonHostNow.length === 0
-        ? participantsNow.length > 0
-        : nonHostNow.every((participant) => participant.isReady);
-
-    if (!allReadyNow) {
-      Alert.alert(
-        '아직 준비되지 않았어요',
-        '누군가 방금 준비를 취소했어요. 모두 준비되면 다시 시작해 주세요.'
-      );
-      return;
-    }
+    setIsStarting(true);
 
     try {
+      // 서버 기준 최신 대기실 상태로 한 번 더 확인
+      const freshLobby = await refetchLobby();
+      const participantsNow = freshLobby?.participants ?? participants;
+      const nonHostNow = participantsNow.filter((participant) => !participant.isHost);
+      const allReadyNow =
+        nonHostNow.length === 0
+          ? participantsNow.length > 0
+          : nonHostNow.every((participant) => participant.isReady);
+
+      if (!allReadyNow) {
+        Alert.alert(
+          '아직 준비되지 않았어요',
+          '누군가 방금 준비를 취소했어요. 모두 준비되면 다시 시작해 주세요.'
+        );
+        return;
+      }
+
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       const key = await resolveHostGuestKey();
       const executeAt = Date.now() - serverOffsetMs + resolveDelayMs;
@@ -346,9 +351,12 @@ export default function MatchLobbyScreen() {
         '시작 실패',
         error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
       );
+    } finally {
+      setIsStarting(false);
     }
   }, [
     allReady,
+    isStarting,
     pendingAction,
     participantId,
     participants,
@@ -462,10 +470,23 @@ export default function MatchLobbyScreen() {
         setParticipantId(result.participantId ?? null);
       } catch (error) {
         joinAttemptRef.current = false;
+        const message = error instanceof Error ? error.message : '';
+        if (message.includes(ROOM_IN_PROGRESS_MESSAGE)) {
+          Alert.alert('게임이 이미 시작됐어요', ROOM_IN_PROGRESS_MESSAGE, [
+            {
+              text: '확인',
+              onPress: () => {
+                setHasLeft(true);
+                router.replace('/(tabs)/live-match');
+              },
+            },
+          ]);
+          return;
+        }
         console.warn('Failed to join room', error);
       }
     })();
-  }, [ensureGuestKey, guestKey, hasLeft, isLobbyLoading, lobby, participantId, roomActions, roomCode, status]);
+  }, [ROOM_IN_PROGRESS_MESSAGE, ensureGuestKey, guestKey, hasLeft, isLobbyLoading, lobby, participantId, roomActions, roomCode, router, status]);
 
   useEffect(() => {
     if (hasLeft) return;
@@ -483,7 +504,7 @@ export default function MatchLobbyScreen() {
     if (!lobby) return;
     if (!participantId) return;
     if (lobby.room.status !== 'lobby') {
-      showResultToast({ message: '퀴즈가 시작됐어요!' });
+      showResultToast({ message: '게임을 시작합니다!' });
       setHasLeft(true);
       router.replace({
         pathname: '/match/play',
@@ -848,9 +869,7 @@ export default function MatchLobbyScreen() {
                       게임이 곧 시작돼요
                     </ThemedText>
                     <ThemedText style={styles.pendingSubtitle}>
-                      {pendingSeconds > 0
-                        ? `호스트가 시작을 눌렀어요. 약 ${pendingSeconds}초 후 자동으로 시작돼요.`
-                        : '호스트가 시작을 눌렀어요. 곧 자동으로 시작돼요.'}
+                      호스트가 시작을 눌렀어요. 곧 자동으로 시작돼요.
                     </ThemedText>
                   </View>
                 ) : null}
@@ -1037,9 +1056,10 @@ export default function MatchLobbyScreen() {
                     <Button
                       size="lg"
                       onPress={handleStart}
+                      loading={isStarting}
                       disabled={!allReady || !!pendingAction}
                     >
-                      게임 시작
+                      {isStarting ? '시작 준비 중...' : '게임 시작'}
                     </Button>
                   </View>
                 ) : null}

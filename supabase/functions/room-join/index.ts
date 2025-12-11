@@ -3,13 +3,29 @@
  * Replaces convex/rooms.ts - join
  */
 
+// @ts-ignore - Deno runtime import
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+// @ts-ignore - Deno runtime import
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+
+// Deno type hints for editor
+declare const Deno: {
+  env: {
+    get(key: string): string | undefined;
+  };
+};
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+function respondError(message: string, status = 200) {
+  return new Response(
+    JSON.stringify({ error: message }),
+    { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status }
+  );
+}
 
 const PARTICIPANT_LIMIT = 10;
 
@@ -27,7 +43,7 @@ function deriveGuestAvatarId(guestKey: string) {
   return Math.abs(hash) % 20;
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -51,7 +67,7 @@ serve(async (req) => {
       .single();
 
     if (roomError || !room) {
-      throw new Error('퀴즈룸을 찾을 수 없어요. 초대 코드를 확인해주세요.');
+      return respondError('퀴즈룸을 찾을 수 없어요. 초대 코드를 확인해주세요.');
     }
 
     // Check expiry
@@ -63,8 +79,8 @@ serve(async (req) => {
     }
 
     let userId: string | null = null;
-    let identityId: string;
-    let nicknameFallback: string;
+    let identityId = '';
+    let nicknameFallback = '';
     let isGuest = true;
 
     // Check if authenticated
@@ -94,7 +110,7 @@ serve(async (req) => {
 
     // Guest mode
     if (!userId) {
-      if (!guestKey) throw new Error('GUEST_AUTH_REQUIRED');
+      if (!guestKey) return respondError('GUEST_AUTH_REQUIRED');
       identityId = `guest:${guestKey}`;
       nicknameFallback = deriveGuestNickname(guestKey);
     }
@@ -126,7 +142,7 @@ serve(async (req) => {
       // Rejoin
       if (existingParticipant.removed_at) {
         if (room.status !== 'lobby') {
-          throw new Error('퀴즈 진행 중에는 다시 입장할 수 없어요. 게임이 끝난 뒤 다시 시도해 주세요.');
+          return respondError('현재 게임이 진행 중이에요. 종료 후 다시 시도해 주세요.');
         }
       }
 
@@ -158,6 +174,11 @@ serve(async (req) => {
       );
     }
 
+    // Prevent new participants from joining once the game has started
+    if (room.status !== 'lobby') {
+      return respondError('현재 게임이 진행 중이에요. 종료 후 다시 시도해 주세요.');
+    }
+
     // Check participant limit
     const { count } = await supabase
       .from('live_match_participants')
@@ -166,7 +187,7 @@ serve(async (req) => {
       .is('removed_at', null);
 
     if ((count ?? 0) >= PARTICIPANT_LIMIT) {
-      throw new Error('퀴즈룸이 가득 찼어요. 다른 방을 찾아주세요.');
+      return respondError('퀴즈룸이 가득 찼어요. 다른 방을 찾아주세요.');
     }
 
     // Create new participant
@@ -205,9 +226,7 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error('Error joining room:', error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
-    );
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return respondError(message);
   }
 });

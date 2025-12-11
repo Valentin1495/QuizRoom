@@ -12,7 +12,6 @@ import {
   CardsThreeIcon,
   CaretRightIcon,
   CheckCircleIcon,
-  ClockAfternoonIcon,
   ConfettiIcon,
   CopyIcon,
   CrownIcon,
@@ -100,7 +99,6 @@ const ICON_MAP = {
   'pause.circle.fill': { component: PauseCircleIcon, defaultWeight: 'fill' },
   'play.circle.fill': { component: PlayCircleIcon, defaultWeight: 'fill' },
   'checkmark.shield': { component: ShieldCheckIcon },
-  'clock.badge.checkmark': { component: ClockAfternoonIcon },
   // Tab Bar Icons
   'house': { component: HouseLineIcon },
   'house.fill': { component: HouseLineIcon, defaultWeight: 'fill' },

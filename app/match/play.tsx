@@ -151,15 +151,16 @@ export default function MatchPlayScreen() {
     const [serverOffsetMs, setServerOffsetMs] = useState(0);
     const serverOffsetRef = useRef(0);
     const [localNowMs, setLocalNowMs] = useState(() => Date.now());
+    const [phaseCountdownMs, setPhaseCountdownMs] = useState<number | null>(null);
+    const phaseExpiryKeyRef = useRef<string | null>(null);
     const [isRematchPending, setIsRematchPending] = useState(false);
     const [isLobbyPending, setIsLobbyPending] = useState(false);
-    const [isPausePending, setIsPausePending] = useState(false);
-    const [isResumePending, setIsResumePending] = useState(false);
     const [isGameStalled, setIsGameStalled] = useState(false);
     const [promotedToHost, setPromotedToHost] = useState(false);
     const [justReconnected, setJustReconnected] = useState(false);
     const [delayPreset] = useState<'rapid' | 'standard' | 'chill'>('chill');
     const [showConnectionWarning, setShowConnectionWarning] = useState(false);
+    const serverNowBaseRef = useRef<{ serverNow: number; receivedAt: number } | null>(null);
     const { phase: socketPhase, hasEverConnected: socketHasEverConnected } = useConnectionStatus();
 
     const resolveDelay = useCallback(() => {
@@ -414,11 +415,6 @@ export default function MatchPlayScreen() {
         roomStatus === 'leaderboard' && totalRounds > 0 && (roomData?.room.currentRound ?? 0) + 1 >= totalRounds;
 
     const pausedPreviousStatus = pauseState?.previousStatus ?? null;
-    const pausedRemainingSeconds =
-        pauseState?.remainingMs !== undefined && pauseState.remainingMs !== null
-            ? Math.ceil(pauseState.remainingMs / 1000)
-            : null;
-    const isPausableStatus = roomStatus === 'question';
 
     const [pendingMs, setPendingMs] = useState(0);
     const pendingHeartbeatRef = useRef(false);
@@ -562,13 +558,53 @@ export default function MatchPlayScreen() {
     }, []);
 
     useEffect(() => {
-        if (roomData?.now) {
-            setServerOffsetMs(Date.now() - roomData.now);
+        const serverNowCandidate = roomData?.room.serverNow ?? roomData?.now;
+        if (!serverNowCandidate) return;
+        const receivedAt = Date.now();
+        const drift = Math.abs(serverNowCandidate - receivedAt);
+        const MAX_DRIFT_MS = 2 * 60 * 1000; // ignore obviously wrong server clocks
+        const useServerNow = drift > MAX_DRIFT_MS ? receivedAt : serverNowCandidate;
+        if (drift > MAX_DRIFT_MS && __DEV__ && !serverNowWarningShownRef.current) {
+            console.warn('[MatchPlay] Ignoring serverNow with large drift', { serverNowCandidate, receivedAt, drift });
+            serverNowWarningShownRef.current = true;
         }
-    }, [roomData?.now]);
+        setServerOffsetMs(receivedAt - useServerNow);
+        serverNowBaseRef.current = { serverNow: useServerNow, receivedAt };
+    }, [roomData?.now, roomData?.room.serverNow]);
     useEffect(() => {
         serverOffsetRef.current = serverOffsetMs;
     }, [serverOffsetMs]);
+
+    useEffect(() => {
+        if (!__DEV__) return;
+        const status = roomData?.room.status ?? 'unknown';
+        const endsAt = roomData?.room.phaseEndsAt ?? null;
+        const serverNow = roomData?.room.serverNow ?? roomData?.now ?? null;
+        const key = `${status}-${endsAt ?? 'none'}-${serverNow ?? 'none'}`;
+        if (lastRoomLogRef.current === key) return;
+        lastRoomLogRef.current = key;
+        console.log('[MatchPlay] phase', { status, phaseEndsAt: endsAt, serverNow, round: roomData?.room.currentRound });
+    }, [roomData?.now, roomData?.room.phaseEndsAt, roomData?.room.serverNow, roomData?.room.status, roomData?.room.currentRound]);
+
+    useEffect(() => {
+        if (hasLeft || disconnectReason) {
+            setPhaseCountdownMs(null);
+            return;
+        }
+        const deadline = roomData?.room.phaseEndsAt ?? null;
+        if (!deadline) {
+            setPhaseCountdownMs(null);
+            return;
+        }
+        const update = () => {
+            const base = serverNowBaseRef.current;
+            const serverNow = base ? base.serverNow + (Date.now() - base.receivedAt) : Date.now() - serverOffsetRef.current;
+            setPhaseCountdownMs(deadline - serverNow);
+        };
+        update();
+        const interval = setInterval(update, 100);
+        return () => clearInterval(interval);
+    }, [disconnectReason, hasLeft, roomData?.room.phaseEndsAt]);
 
 
     // Bandwidth optimization: increased heartbeat interval from 5s to 8s
@@ -608,7 +644,9 @@ export default function MatchPlayScreen() {
         }
 
         const update = () => {
-            const diff = pendingAction.executeAt - (Date.now() - serverOffsetMs);
+            const base = serverNowBaseRef.current;
+            const serverNow = base ? base.serverNow + (Date.now() - base.receivedAt) : Date.now() - serverOffsetMs;
+            const diff = pendingAction.executeAt - serverNow;
             setPendingMs(Math.max(0, diff));
             if (diff <= 0 && participantArgs && !pendingHeartbeatRef.current) {
                 pendingHeartbeatRef.current = true;
@@ -670,8 +708,23 @@ export default function MatchPlayScreen() {
         }
     }, [disconnectReason, hasLeft, resetHostGraceState]);
 
-    const syncedNow = roomData ? localNowMs - serverOffsetMs : undefined;
-    const timeLeft = computeTimeLeft(roomData?.room.phaseEndsAt ?? null, syncedNow);
+    const syncedNow = useMemo(() => {
+        const base = serverNowBaseRef.current;
+        if (base) {
+            return base.serverNow + (Date.now() - base.receivedAt);
+        }
+        if (roomData) {
+            return localNowMs - serverOffsetMs;
+        }
+        return null;
+    }, [localNowMs, roomData, serverOffsetMs]);
+    const timeLeft = useMemo(() => {
+        if (phaseCountdownMs !== null) {
+            return Math.max(0, Math.ceil(phaseCountdownMs / 1000));
+        }
+        if (!roomData?.room.phaseEndsAt || syncedNow == null) return null;
+        return computeTimeLeft(roomData.room.phaseEndsAt, syncedNow);
+    }, [phaseCountdownMs, roomData?.room.phaseEndsAt, syncedNow]);
     const isHostWaitingPhase =
         roomStatus !== null &&
         ['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(roomStatus) &&
@@ -685,16 +738,46 @@ export default function MatchPlayScreen() {
     const hostDisconnectedAt = hostParticipant?.disconnectedAt ?? null;
     const hostLastSeenAt = hostParticipant?.lastSeenAt ?? null;
     const hostDisconnectedElapsedMs =
-        hostDisconnectedAt !== null && syncedNow !== undefined ? Math.max(0, syncedNow - hostDisconnectedAt) : null;
+        hostDisconnectedAt !== null && syncedNow !== null ? Math.max(0, syncedNow - hostDisconnectedAt) : null;
     const hostLagMs =
-        hostLastSeenAt !== null && syncedNow !== undefined ? Math.max(0, syncedNow - hostLastSeenAt) : null;
+        hostLastSeenAt !== null && syncedNow !== null ? Math.max(0, syncedNow - hostLastSeenAt) : null;
     const hostSnapshotAgeMs =
-        roomServerNow !== null && syncedNow !== undefined ? Math.max(0, syncedNow - roomServerNow) : null;
+        roomServerNow !== null && syncedNow !== null ? Math.max(0, syncedNow - roomServerNow) : null;
     const hostSnapshotFresh =
         hostSnapshotAgeMs !== null && hostSnapshotAgeMs <= HOST_SNAPSHOT_STALE_THRESHOLD_MS;
     const hostGraceElapsedMs =
         hostDisconnectedElapsedMs ??
         (hostSnapshotFresh && hostLagMs !== null && hostLagMs > HOST_HEARTBEAT_GRACE_MS ? hostLagMs : 0);
+
+    const pausedRemainingSeconds = useMemo(() => {
+        if (!pauseState || pauseState.remainingMs == null) return null;
+        const baseRemaining = Math.max(0, pauseState.remainingMs);
+        if (syncedNow == null || pauseState.pausedAt == null) {
+            return Math.ceil(baseRemaining / 1000);
+        }
+        const elapsed = Math.max(0, syncedNow - pauseState.pausedAt);
+        const remaining = Math.max(0, baseRemaining - elapsed);
+        return Math.ceil(remaining / 1000);
+    }, [pauseState, syncedNow]);
+
+    useEffect(() => {
+        const deadline = roomData?.room.phaseEndsAt ?? null;
+        const key = deadline ? `${roomId ?? 'none'}-${deadline}-${roomStatus ?? 'unknown'}` : null;
+        if (!deadline || phaseCountdownMs === null) {
+            phaseExpiryKeyRef.current = null;
+            return;
+        }
+        if (phaseCountdownMs <= 0) {
+            if (phaseExpiryKeyRef.current !== key) {
+                phaseExpiryKeyRef.current = key;
+                if (!isHost) {
+                    void refetchGameState();
+                }
+            }
+        } else if (phaseExpiryKeyRef.current && phaseExpiryKeyRef.current !== key) {
+            phaseExpiryKeyRef.current = null;
+        }
+    }, [isHost, phaseCountdownMs, refetchGameState, roomData?.room.phaseEndsAt, roomId, roomStatus]);
 
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
@@ -718,7 +801,7 @@ export default function MatchPlayScreen() {
             return;
         }
 
-        if (syncedNow !== undefined && roomServerNow !== null && syncedNow - roomServerNow > 7000) {
+        if (syncedNow !== null && roomServerNow !== null && syncedNow - roomServerNow > 7000) {
             beginReconnecting();
             return;
         }
@@ -1021,57 +1104,77 @@ export default function MatchPlayScreen() {
         }
     }, [gameActions, isHost, meParticipantId, resolveHostGuestKey, roomId, showToast]);
 
-    const handlePause = useCallback(async () => {
-        if (!roomId || !meParticipantId || !isHost) return;
-        if (isPausePending) return;
-        if (!isPausableStatus) return;
-        if (pendingAction) {
-            Alert.alert('일시정지할 수 없어요', '예약된 작업을 먼저 취소해주세요.');
-            return;
-        }
-        setIsPausePending(true);
-        try {
-            const key = await resolveHostGuestKey();
-            await gameActions.pause({ roomId, participantId: meParticipantId, guestKey: key });
-        } catch (err) {
-            Alert.alert('일시정지하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
-        } finally {
-            setIsPausePending(false);
-        }
-    }, [gameActions, isHost, isPausePending, isPausableStatus, meParticipantId, pendingAction, resolveHostGuestKey, roomId]);
-
-    const handleResume = useCallback(async () => {
-        if (!roomId || !meParticipantId || !isHost || !isPaused) return;
-        if (isResumePending) return;
-        setIsResumePending(true);
-        try {
-            const key = await resolveHostGuestKey();
-            await gameActions.resume({ roomId, participantId: meParticipantId, guestKey: key });
-        } catch (err) {
-            Alert.alert('재개하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
-        } finally {
-            setIsResumePending(false);
-        }
-    }, [gameActions, isHost, isPaused, isResumePending, meParticipantId, resolveHostGuestKey, roomId]);
-
     const autoAdvancePhaseRef = useRef<string | null>(null);
     const autoAdvanceTriggeredRef = useRef(false);
+    const phaseSyncRef = useRef<string | null>(null);
+    const countdownStallRef = useRef<string | null>(null);
+    const serverNowWarningShownRef = useRef(false);
+    const lastStateRefetchRef = useRef<number>(0);
+    const lastRoomLogRef = useRef<string | null>(null);
+    const lastAutoAdvanceLogRef = useRef<string | null>(null);
+    const lastAutoAdvanceSecondRef = useRef<number | null>(null);
 
     useEffect(() => {
         if (hasLeft || connectionState !== 'online') return;
-        const guardKey = `${roomId ?? 'none'}-${roomStatus}-${roomData?.room.currentRound ?? 'final'}`;
+        const guardKey = `${roomId ?? 'none'}-${roomStatus}-${roomData?.room.currentRound ?? 'final'}-${roomData?.room.phaseEndsAt ?? 'none'}`;
         if (autoAdvancePhaseRef.current !== guardKey) {
             autoAdvancePhaseRef.current = guardKey;
             autoAdvanceTriggeredRef.current = false;
         }
+        if (__DEV__ && isHost && roomStatus) {
+            const secondMark = phaseCountdownMs != null ? Math.floor(phaseCountdownMs / 1000) : null;
+            const logKey = `${guardKey}-${secondMark ?? 'null'}-${autoAdvanceTriggeredRef.current}`;
+            if (lastAutoAdvanceLogRef.current !== logKey || lastAutoAdvanceSecondRef.current !== secondMark) {
+                lastAutoAdvanceLogRef.current = logKey;
+                lastAutoAdvanceSecondRef.current = secondMark;
+                console.log('[MatchPlay] autoAdvanceCheck', {
+                    roomStatus,
+                    phaseCountdownMs,
+                    secondMark,
+                    triggered: autoAdvanceTriggeredRef.current,
+                });
+            }
+        }
         if (!isHost) return;
         if (!roomStatus || !['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(roomStatus)) return;
-        if (timeLeft === null) return;
-        if (timeLeft > 0) return;
+        if (phaseCountdownMs === null) return;
+        if (phaseCountdownMs > 0) return;
         if (autoAdvanceTriggeredRef.current) return;
         autoAdvanceTriggeredRef.current = true;
+        if (__DEV__) {
+            console.log('[MatchPlay] autoAdvance', { roomStatus, phaseCountdownMs });
+        }
         handleAdvance();
-    }, [connectionState, handleAdvance, hasLeft, isHost, roomData?.room.currentRound, roomId, roomStatus, timeLeft]);
+    }, [connectionState, handleAdvance, hasLeft, isHost, roomData?.room.currentRound, roomData?.room.phaseEndsAt, roomId, roomStatus, phaseCountdownMs]);
+
+    useEffect(() => {
+        if (phaseCountdownMs === null) {
+            phaseSyncRef.current = null;
+            countdownStallRef.current = null;
+            return;
+        }
+        const key = `${roomId ?? 'none'}-${roomStatus}-${roomData?.room.phaseEndsAt ?? 'none'}`;
+        if (phaseCountdownMs <= 600 && phaseSyncRef.current !== key) {
+            phaseSyncRef.current = key;
+            void refetchGameState();
+        }
+        if (roomStatus === 'countdown' && phaseCountdownMs <= -1200) {
+            if (countdownStallRef.current !== key) {
+                countdownStallRef.current = key;
+                void refetchGameState();
+            }
+        }
+        if (phaseCountdownMs <= 0) {
+            const now = Date.now();
+            if (now - lastStateRefetchRef.current > 800) {
+                lastStateRefetchRef.current = now;
+                void refetchGameState();
+            }
+        }
+        if (roomStatus === 'countdown' && phaseCountdownMs === null) {
+            void refetchGameState();
+        }
+    }, [phaseCountdownMs, refetchGameState, roomData?.room.phaseEndsAt, roomId, roomStatus]);
 
     useEffect(() => {
         if (hasLeft) return;
@@ -1263,7 +1366,7 @@ export default function MatchPlayScreen() {
                 <Stack.Screen options={{ headerShown: false }} />
                 <ThemedView style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={textColor} />
-                    <ThemedText style={[styles.loadingLabel, { color: textMutedColor }]}>게임을 불러오는 중...</ThemedText>
+                    <ThemedText style={[styles.loadingLabel, { color: textMutedColor }]}>퀴즈를 불러오는 중...</ThemedText>
                 </ThemedView>
                 {leaveDialogElement}
             </>
@@ -2062,24 +2165,6 @@ export default function MatchPlayScreen() {
     //     </View>
     // );
 
-    const renderPauseControls = () => {
-        if (!isHost || isPaused || !isPausableStatus) return null;
-        const disabled = isPausePending || !!pendingAction;
-        return (
-            <View style={styles.pauseControls}>
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    rounded="full"
-                    onPress={handlePause}
-                    disabled={disabled}
-                >
-                    일시정지
-                </Button>
-            </View>
-        );
-    };
-
     const renderPauseNotice = () => {
         if (!isPaused) return null;
         return (
@@ -2091,23 +2176,10 @@ export default function MatchPlayScreen() {
                     </ThemedText>
                 </View>
                 <ThemedText style={[styles.pauseBannerSubtitle, { color: cardColor }]}>
-                    {isHost ? '재개 버튼을 눌러 게임을 이어가세요' : '호스트가 곧 게임을 다시 시작할 거예요'}
+                    호스트가 일시정지를 해제할 때까지 기다려주세요.
                 </ThemedText>
                 {pausedRemainingSeconds !== null ? (
                     <ThemedText style={[styles.pauseBannerHint, { color: cardColor }]}>재개 시 남은 시간 약 {pausedRemainingSeconds}초</ThemedText>
-                ) : null}
-                {isHost ? (
-                    <Button
-                        variant="secondary"
-                        rounded="full"
-                        onPress={handleResume}
-                        disabled={isResumePending}
-                        loading={isResumePending}
-                        style={{ backgroundColor: background, borderColor: borderColor }}
-                        leftIcon={<IconSymbol name="play.circle.fill" size={18} color={textColor} />}
-                    >
-                        재개하기
-                    </Button>
                 ) : null}
             </View>
         );
@@ -2121,7 +2193,7 @@ export default function MatchPlayScreen() {
     );
 
     let content: React.ReactNode | null = null;
-    if (roomStatus === 'countdown' && (roomData?.room.currentRound ?? 0) > 0) {
+    if (roomStatus === 'countdown') {
         content = renderCountdown();
     } else if (roomStatus === 'lobby') {
         content = renderReturning();
@@ -2154,7 +2226,6 @@ export default function MatchPlayScreen() {
     }
 
     const leaveControl = connectionState === 'online' ? renderLeaveButton() : null;
-    const pauseControl = connectionState === 'online' ? renderPauseControls() : null;
 
     return (
         <View style={styles.rootContainer}>
@@ -2164,9 +2235,8 @@ export default function MatchPlayScreen() {
                 {renderConnectionBanner()}
                 {connectionState === 'online' ? renderPendingBanner() : null}
                 {connectionState === 'online' && hostBannerVisible ? renderHostBanner() : null}
-                {leaveControl || pauseControl ? (
+                {leaveControl ? (
                     <View style={styles.sessionControls}>
-                        {pauseControl}
                         {leaveControl}
                     </View>
                 ) : null}
@@ -2636,9 +2706,6 @@ const styles = StyleSheet.create({
     },
     leaveControl: {
         paddingHorizontal: Spacing.lg,
-    },
-    pauseControls: {
-        flexDirection: 'row',
     },
     pauseBanner: {
         padding: Spacing.lg,

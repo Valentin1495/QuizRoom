@@ -16,6 +16,7 @@ import {
   type ReactNode,
 } from 'react';
 import { AppState, Platform } from 'react-native';
+import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
 
 import { supabase, type Database, type User } from '@/lib/supabase';
 
@@ -62,12 +63,47 @@ type AuthContextValue = {
   applyUserDelta: (delta: Partial<Pick<AuthedUser, 'xp' | 'streak' | 'totalCorrect' | 'totalPlayed'>>) => void;
 };
 
+const PROFILE_FETCH_TIMEOUT_MS = 20000;
 const GUEST_KEY_STORAGE_KEY = 'quizroomGuestKey';
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 function generateGuestKey() {
   return `gr-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function buildFallbackUserFromSession(sessionUser: SupabaseAuthUser): AuthedUser {
+  const handle =
+    sessionUser.user_metadata?.name ||
+    sessionUser.email?.split('@')[0] ||
+    `user-${sessionUser.id.slice(-6)}`;
+  const avatarUrl =
+    sessionUser.user_metadata?.avatar_url ||
+    sessionUser.user_metadata?.picture ||
+    undefined;
+  return {
+    id: sessionUser.id,
+    handle,
+    avatarUrl,
+    provider: sessionUser.app_metadata?.provider || 'unknown',
+    streak: 0,
+    xp: 0,
+    totalCorrect: 0,
+    totalPlayed: 0,
+    interests: [],
+  };
+}
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string) {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  return Promise.race<T>([
+    promise,
+    new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label} timed out after ${timeoutMs}ms`)), timeoutMs);
+    }),
+  ]).finally(() => {
+    if (timer) clearTimeout(timer);
+  });
 }
 
 async function storeGuestKeyValue(value: string) {
@@ -293,17 +329,37 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
             if (__DEV__) {
               console.log('[SupabaseAuth] Fetching user profile for:', session.user.id);
             }
-            const dbUser = await fetchUserProfile(session.user.id);
+            const startedAt = Date.now();
+            const dbUser = await withTimeout(
+              fetchUserProfile(session.user.id),
+              PROFILE_FETCH_TIMEOUT_MS,
+              'fetchUserProfile'
+            );
             if (__DEV__) {
-              console.log('[SupabaseAuth] User profile loaded:', dbUser?.handle);
+              console.log(
+                '[SupabaseAuth] User profile loaded:',
+                dbUser?.handle,
+                `(took ${Date.now() - startedAt}ms)`
+              );
             }
             setUser(toAuthedUser(dbUser));
             setStatus('authenticated');
             setError(null);
           } catch (err) {
             console.error('[SupabaseAuth] Failed to load user after auth', err);
-            setStatus('error');
-            setError(err instanceof Error ? err.message : '사용자 정보를 불러오지 못했습니다.');
+            const message = err instanceof Error ? err.message : '';
+            const fallback = session?.user ? buildFallbackUserFromSession(session.user) : null;
+            const isTimeout = message.includes('timed out');
+            if (isTimeout && fallback) {
+              console.warn('[SupabaseAuth] Using fallback profile from session due to timeout');
+              setUser(fallback);
+              setStatus('authenticated');
+              setError('프로필 동기화가 지연되어 임시 프로필로 시작했어요. 잠시 후 다시 시도합니다.');
+            } else {
+              await supabase.auth.signOut({ scope: 'local' }).catch(() => undefined);
+              setStatus('error');
+              setError(err instanceof Error ? err.message : '사용자 정보를 불러오지 못했습니다.');
+            }
           }
           setIsReady(true);
         }
@@ -496,7 +552,11 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     if (!session) return;
 
     try {
-      const dbUser = await fetchUserProfile(session.user.id);
+      const dbUser = await withTimeout(
+        fetchUserProfile(session.user.id),
+        PROFILE_FETCH_TIMEOUT_MS,
+        'refreshUserProfile'
+      );
       setUser(toAuthedUser(dbUser));
     } catch (err) {
       console.error('Failed to refresh user', err);

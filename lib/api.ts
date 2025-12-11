@@ -8,7 +8,7 @@ export const ROOM_EXPIRED_MESSAGE = '퀴즈룸이 만료됐어요. 새로 생성
 export const ROOM_NOT_FOUND_MESSAGE = '퀴즈룸을 찾을 수 없어요. 초대 코드를 확인해주세요.';
 export const ROOM_FULL_MESSAGE = '퀴즈룸이 가득 찼어요. 다른 방을 찾아주세요.';
 export const ROOM_IN_PROGRESS_MESSAGE =
-  '퀴즈 진행 중에는 다시 입장할 수 없어요. 게임이 끝난 뒤 다시 시도해 주세요.';
+  '현재 게임이 진행 중이에요. 종료 후 다시 시도해 주세요.';
 
 export function extractJoinErrorMessage(error: unknown) {
   const message = error instanceof Error ? error.message : null;
