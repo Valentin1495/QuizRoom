@@ -112,13 +112,19 @@ serve(async (req) => {
 
           if (pendingAction.type === 'start' && room.status === 'lobby') {
             const rules = room.rules || DEFAULT_RULES;
+            // First round should start immediately with a question.
+            await supabase
+              .from('live_match_rounds')
+              .update({ started_at: now })
+              .eq('room_id', roomId)
+              .eq('index', 0);
             await supabase
               .from('live_match_rooms')
               .update({
-                status: 'countdown',
+                status: 'question',
                 current_round: 0,
                 server_now: now,
-                phase_ends_at: now + rules.readSeconds * 1000,
+                phase_ends_at: now + rules.answerSeconds * 1000,
                 expires_at: now + LOBBY_EXPIRES_MS,
                 version: room.version + 1,
                 pending_action: null,
@@ -149,13 +155,19 @@ serve(async (req) => {
               }
             }
 
+            // First round should start immediately with a question.
+            await supabase
+              .from('live_match_rounds')
+              .update({ started_at: now })
+              .eq('room_id', roomId)
+              .eq('index', 0);
             await supabase
               .from('live_match_rooms')
               .update({
-                status: 'countdown',
+                status: 'question',
                 current_round: 0,
                 server_now: now,
-                phase_ends_at: now + rules.readSeconds * 1000,
+                phase_ends_at: now + rules.answerSeconds * 1000,
                 expires_at: now + LOBBY_EXPIRES_MS,
                 version: room.version + 1,
                 pending_action: null,

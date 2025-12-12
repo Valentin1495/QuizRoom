@@ -35,7 +35,7 @@
 - [x] `room-action` - 방 액션 (heartbeat, setReady, leave, start, progress, submitAnswer, sendReaction, rematch)
 
 ### 6. 실시간 기능
-- [x] 라이브 매치 훅 (`hooks/use-supabase-live-match.tsx`)
+- [x] 라이브 매치 훅 (`hooks/use-live-lobby.ts`, `hooks/use-live-game.ts`)
 - [x] Presence 통합
 - [x] Realtime 구독
 
@@ -138,11 +138,12 @@ const decks = useQuery(api.rooms.listDecks);
 const createRoom = useMutation(api.rooms.create);
 
 // After (Supabase)
-import { useLiveMatchDecks, useCreateRoom } from '@/hooks/use-supabase-live-match';
+import { useLiveMatchDecks } from '@/hooks/use-live-match-decks';
+import { useCreateLiveMatchRoom } from '@/hooks/use-live-match-room';
 import { useDeckFeed } from '@/lib/supabase-api';
 
 const { decks } = useLiveMatchDecks();
-const createRoom = useCreateRoom();
+const createRoom = useCreateLiveMatchRoom();
 ```
 
 #### 라이브 매치 훅 교체
@@ -156,18 +157,15 @@ const roomState = useQuery(api.rooms.getRoomState, { roomId, guestKey });
 const submitAnswer = useMutation(api.rooms.submitAnswer);
 
 // After (Supabase)
-import { 
-  useLiveMatchRoom, 
-  useRoomAction,
-  useHeartbeat 
-} from '@/hooks/use-supabase-live-match';
+import { useLiveGame, useGameActions } from '@/hooks/use-live-game';
 
-const { room, participants, me, currentRound } = useLiveMatchRoom(roomId, guestKey);
-const roomAction = useRoomAction();
-useHeartbeat(roomId, participantId, guestKey);
+const { gameState } = useLiveGame(roomId, participantId, { enabled: true, guestKey });
+const roomData = gameState.status === 'ok' ? gameState : null;
+const { room, participants, me, currentRound } = roomData ?? {};
+const gameActions = useGameActions();
 
 // Submit answer
-await roomAction('submitAnswer', { roomId, participantId, guestKey, choiceIndex });
+await gameActions.submitAnswer({ roomId, participantId, guestKey, choiceIndex });
 ```
 
 ## 병행 운영 가이드

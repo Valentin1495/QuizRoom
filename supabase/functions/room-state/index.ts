@@ -230,6 +230,7 @@ serve(async (req: Request) => {
           id: question.id,
           prompt: question.prompt,
           explanation: question.explanation ?? null,
+          answerIndex: question.answer_index,
           choices: question.choices.map((choice: any, idx: number) => ({
             id: choice.id ?? `${question.id}-${idx}`,
             text: choice.text,

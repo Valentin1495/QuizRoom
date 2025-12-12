@@ -48,9 +48,10 @@ export {
 // ============================================
 // Live Match Hooks
 // ============================================
-export {
-  useCreateRoom, useHeartbeat, useJoinRoom, useLiveMatchRoom, useReactionCounts, useRoomAction, useRoomPresence
-} from '../hooks/use-supabase-live-match';
+// Live match hooks have been migrated to Edge Function-based flows:
+// - hooks/use-live-match-room.ts (create/join)
+// - hooks/use-live-lobby.ts (lobby state/actions)
+// - hooks/use-live-game.ts (game state/actions)
 
 // ============================================
 // Provider

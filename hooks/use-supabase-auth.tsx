@@ -64,6 +64,8 @@ type AuthContextValue = {
 };
 
 const PROFILE_FETCH_TIMEOUT_MS = 20000;
+// On initial app boot, don't block UI for the full profile timeout.
+const PROFILE_GATE_TIMEOUT_MS = 5000;
 const GUEST_KEY_STORAGE_KEY = 'quizroomGuestKey';
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -165,6 +167,17 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
   const [guestKey, setGuestKey] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
   const lastSettledStatusRef = useRef<AuthStatus>('loading');
+  const statusRef = useRef<AuthStatus>('loading');
+  const userRef = useRef<AuthedUser | null>(null);
+  const authRequestIdRef = useRef(0);
+
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
+
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
   // Initialize guest key
   useEffect(() => {
@@ -311,12 +324,15 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
           console.log('[SupabaseAuth] Auth state changed:', event);
         }
 
+        const currentStatus = statusRef.current;
+        const currentUser = userRef.current;
+
         if (event === 'SIGNED_OUT' || !session) {
           // This event can be triggered by a manual signOut, a token refresh failure,
           // or on initial load for a user with no session.
           // We transition to 'unauthenticated' if the app is loading or if a logged-in
           // user signs out. This avoids overriding the 'guest' state.
-          if (status === 'loading' || status === 'authenticated') {
+          if (currentStatus === 'loading' || currentStatus === 'authenticated') {
             setStatus('unauthenticated');
           }
           setUser(null);
@@ -325,16 +341,24 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
         }
 
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
+          const requestId = ++authRequestIdRef.current;
+          const gateOnTimeout = currentStatus === 'loading';
+          const fallback = session?.user ? buildFallbackUserFromSession(session.user) : null;
+          const profilePromise = fetchUserProfile(session.user.id);
+
           try {
             if (__DEV__) {
               console.log('[SupabaseAuth] Fetching user profile for:', session.user.id);
             }
             const startedAt = Date.now();
             const dbUser = await withTimeout(
-              fetchUserProfile(session.user.id),
-              PROFILE_FETCH_TIMEOUT_MS,
+              profilePromise,
+              gateOnTimeout ? PROFILE_GATE_TIMEOUT_MS : PROFILE_FETCH_TIMEOUT_MS,
               'fetchUserProfile'
             );
+            if (requestId !== authRequestIdRef.current) {
+              return;
+            }
             if (__DEV__) {
               console.log(
                 '[SupabaseAuth] User profile loaded:',
@@ -346,19 +370,52 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
             setStatus('authenticated');
             setError(null);
           } catch (err) {
-            console.error('[SupabaseAuth] Failed to load user after auth', err);
+            if (requestId !== authRequestIdRef.current) {
+              return;
+            }
             const message = err instanceof Error ? err.message : '';
-            const fallback = session?.user ? buildFallbackUserFromSession(session.user) : null;
             const isTimeout = message.includes('timed out');
             if (isTimeout && fallback) {
-              console.warn('[SupabaseAuth] Using fallback profile from session due to timeout');
-              setUser(fallback);
-              setStatus('authenticated');
-              setError('프로필 동기화가 지연되어 임시 프로필로 시작했어요. 잠시 후 다시 시도합니다.');
+              if (__DEV__) {
+                console.warn('[SupabaseAuth] Profile fetch timed out; using fallback and retrying in background');
+              }
+              if (currentStatus === 'authenticated' && currentUser) {
+                if (__DEV__) {
+                  console.warn('[SupabaseAuth] Profile refresh timed out; keeping existing user');
+                }
+              } else {
+                console.warn('[SupabaseAuth] Using fallback profile from session due to timeout');
+                setUser(fallback);
+                setStatus('authenticated');
+                setError(
+                  gateOnTimeout
+                    ? '프로필 동기화가 지연되어 임시 프로필로 시작했어요. 잠시 후 다시 시도합니다.'
+                    : null
+                );
+
+                // Continue syncing profile in the background; update when it eventually resolves.
+                profilePromise
+                  .then((lateUser) => {
+                    if (authRequestIdRef.current !== requestId) return;
+                    setUser(toAuthedUser(lateUser));
+                    setError(null);
+                  })
+                  .catch((lateErr) => {
+                    if (__DEV__) {
+                      console.warn('[SupabaseAuth] Late profile fetch failed', lateErr);
+                    }
+                  });
+              }
             } else {
-              await supabase.auth.signOut({ scope: 'local' }).catch(() => undefined);
-              setStatus('error');
-              setError(err instanceof Error ? err.message : '사용자 정보를 불러오지 못했습니다.');
+              console.error('[SupabaseAuth] Failed to load user after auth', err);
+              if (currentStatus === 'authenticated' && currentUser) {
+                // Don't kick the user out for background refresh failures.
+                setError(err instanceof Error ? err.message : '사용자 정보를 불러오지 못했습니다.');
+              } else {
+                await supabase.auth.signOut({ scope: 'local' }).catch(() => undefined);
+                setStatus('error');
+                setError(err instanceof Error ? err.message : '사용자 정보를 불러오지 못했습니다.');
+              }
             }
           }
           setIsReady(true);

@@ -229,122 +229,12 @@ export function useLiveMatchDecks(options?: { enabled?: boolean }) {
   return { decks, isLoading };
 }
 
-// ============================================
-// Live Match Room Hooks
-// ============================================
-
-type LobbyRoom = {
-  _id: string;
-  code: string;
-  hostId: string | null;
-  hostIdentity: string;
-  status: string;
-  deckId: string | null;
-  rules: {
-    rounds: number;
-    readSeconds: number;
-    answerSeconds: number;
-    graceSeconds: number;
-    revealSeconds: number;
-    leaderboardSeconds: number;
-  };
-  currentRound: number;
-  totalRounds: number;
-  phaseEndsAt: number | null;
-  pendingAction: {
-    type: string;
-    executeAt: number;
-    delayMs: number;
-    createdAt: number;
-    initiatedBy: string | null;
-    initiatedIdentity: string;
-    label: string;
-  } | null;
-  pauseState: unknown | null;
-  serverNow: number;
-  expiresAt: number;
-  startedAt: number | null;
-  version: number;
-};
-
-type LobbyDeck = {
-  id: string;
-  slug: string;
-  title: string;
-  emoji: string;
-  description: string;
-  questionCount: number;
-};
-
-type LobbyParticipant = {
-  participantId: string;
-  odUserId: string | null;
-  userId: string | null;
-  avatarUrl: string | null;
-  isGuest: boolean;
-  guestAvatarId: number | null;
-  nickname: string;
-  isHost: boolean;
-  isReady: boolean;
-  joinedAt: number;
-  isConnected: boolean;
-  xp: number | null;
-};
-
-type LobbyData = {
-  room: LobbyRoom;
-  deck: LobbyDeck | null;
-  participants: LobbyParticipant[];
-  now: number;
-};
-
-export function useLobby(code: string, options?: { enabled?: boolean }) {
-  const enabled = options?.enabled ?? true;
-  const shouldFetch = enabled && code.length > 0;
-  const [lobby, setLobby] = useState<LobbyData | null>(null);
-  const [isLoading, setIsLoading] = useState(shouldFetch);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchLobby = useCallback(async () => {
-    if (!shouldFetch) return;
-
-    try {
-      console.log('[Lobby] Fetching lobby for code:', code);
-      const { data: result, error: fetchError } = await supabase.functions.invoke(
-        'room-lobby',
-        { body: { code } }
-      );
-
-      console.log('[Lobby] Response:', JSON.stringify(result, null, 2));
-      if (fetchError) {
-        console.error('[Lobby] Fetch error:', fetchError);
-        throw fetchError;
-      }
-      setLobby(result?.data ?? null);
-      setError(null);
-    } catch (err) {
-      console.error('[Lobby] Failed to fetch lobby:', err);
-      setError(err instanceof Error ? err : new Error('Failed to fetch lobby'));
-    }
-  }, [code, shouldFetch]);
-
-  useEffect(() => {
-    if (!shouldFetch) {
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    fetchLobby().finally(() => setIsLoading(false));
-  }, [fetchLobby, shouldFetch]);
-
-  return { lobby, isLoading, error, refetch: fetchLobby };
-}
-
 export function useCreateLiveMatchRoom() {
   return useCallback(
     async (args: { deckId?: string; nickname?: string; guestKey?: string }) => {
-      console.log('[RoomCreate] Creating room with:', args);
+      if (__DEV__) {
+        console.log('[RoomCreate] Creating room with:', args);
+      }
       const { data: result, error } = await supabase.functions.invoke('room-create', {
         body: {
           deckId: args.deckId,
@@ -353,7 +243,9 @@ export function useCreateLiveMatchRoom() {
         },
       });
 
-      console.log('[RoomCreate] Response:', JSON.stringify(result, null, 2));
+      if (__DEV__) {
+        console.log('[RoomCreate] Response:', JSON.stringify(result, null, 2));
+      }
       if (error) {
         console.error('[RoomCreate] Error:', error);
         throw error;

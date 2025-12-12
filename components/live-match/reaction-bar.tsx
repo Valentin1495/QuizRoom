@@ -1,8 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Animated, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { lightHaptic, mediumHaptic } from '@/lib/haptics';
 
@@ -56,7 +56,6 @@ export type ReactionBarProps = {
 export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }: ReactionBarProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const palette = Colors[colorScheme ?? 'light'];
 
   const [cooldowns, setCooldowns] = useState<Record<ReactionEmoji, boolean>>({
     clap: false,
@@ -128,6 +127,33 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
     laugh: false,
   });
 
+  const [expanded, setExpanded] = useState(false);
+  const expandAnim = useRef(new Animated.Value(0)).current;
+
+  const open = useCallback(() => {
+    mediumHaptic();
+    setExpanded(true);
+    expandAnim.setValue(0);
+    Animated.timing(expandAnim, {
+      toValue: 1,
+      duration: 160,
+      useNativeDriver: true,
+    }).start();
+  }, [expandAnim]);
+
+  const close = useCallback(() => {
+    lightHaptic();
+    Animated.timing(expandAnim, {
+      toValue: 0,
+      duration: 140,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) {
+        setExpanded(false);
+      }
+    });
+  }, [expandAnim]);
+
   const handlePress = useCallback(
     (emoji: ReactionEmoji) => {
       if (disabled || cooldowns[emoji]) return;
@@ -144,35 +170,67 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
     [cooldowns, disabled, onReaction]
   );
 
+  const panelBg = isDark ? 'rgba(20, 20, 28, 0.96)' : 'rgba(255, 255, 255, 0.98)';
+  const panelBorderColor = isDark ? 'rgba(255, 255, 255, 0.18)' : 'rgba(0, 0, 0, 0.12)';
+  const buttonBg = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)';
+  const shadowColor = isDark ? '#000' : '#00000040';
+  const rippleColor = isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.10)';
+
+  if (!expanded) {
+    return (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="리액션 펼치기"
+        android_ripple={{ color: rippleColor, borderless: true }}
+        onPress={() => {
+          open();
+        }}
+        style={({ pressed }) => [
+          styles.toggleButton,
+          { backgroundColor: panelBg, shadowColor, borderColor: panelBorderColor },
+          pressed && styles.toggleButtonPressed,
+          disabled && styles.buttonDisabled,
+        ]}
+      >
+        <View pointerEvents="none">
+          <ThemedText style={styles.toggleEmoji}>{REACTION_CONFIG[0].icon}</ThemedText>
+        </View>
+      </Pressable>
+    );
+  }
+
   return (
-    <View
+    <Animated.View
       style={[
-        styles.compactContainer,
+        styles.expandedContainer,
+        { backgroundColor: panelBg, shadowColor, borderColor: panelBorderColor },
         {
-          backgroundColor: isDark
-            ? 'rgba(30, 30, 40, 0.85)'
-            : 'rgba(255, 255, 255, 0.9)',
-          shadowColor: isDark ? '#000' : '#00000040',
+          opacity: expandAnim,
+          transform: [
+            {
+              translateX: expandAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [16, 0],
+              }),
+            },
+          ],
         },
       ]}
     >
       {REACTION_CONFIG.map(({ emoji, icon }) => {
         const isOnCooldown = cooldowns[emoji];
-        // Only visually disable if explicitly disabled, not for brief cooldown
         const isVisuallyDisabled = disabled;
 
         return (
           <Pressable
             key={emoji}
+            accessibilityRole="button"
+            accessibilityLabel={`${emoji} 리액션`}
             onPress={() => handlePress(emoji)}
             disabled={disabled || isOnCooldown}
             style={({ pressed }) => [
               styles.compactButton,
-              {
-                backgroundColor: isDark
-                  ? 'rgba(255,255,255,0.12)'
-                  : 'rgba(0,0,0,0.06)',
-              },
+              { backgroundColor: buttonBg },
               pressed && styles.compactButtonPressed,
               isVisuallyDisabled && styles.buttonDisabled,
             ]}
@@ -183,7 +241,23 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
           </Pressable>
         );
       })}
-    </View>
+
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="리액션 접기"
+        onPress={() => {
+          close();
+        }}
+        style={({ pressed }) => [
+          styles.compactButton,
+          { backgroundColor: buttonBg },
+          pressed && styles.compactButtonPressed,
+          disabled && styles.buttonDisabled,
+        ]}
+      >
+        <ThemedText style={[styles.compactEmoji, disabled && styles.emojiDisabled]}>›</ThemedText>
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -244,5 +318,37 @@ const styles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 32,
   },
+  toggleButton: {
+    width: 48,
+    height: 48,
+    borderRadius: Radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    shadowOpacity: 0.15,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 10,
+  },
+  toggleButtonPressed: {
+    transform: [{ scale: 0.92 }],
+    opacity: 0.9,
+  },
+  toggleEmoji: {
+    fontSize: 24,
+    lineHeight: 32,
+  },
+  expandedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
+    shadowOpacity: 0.15,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 10,
+  },
 });
-

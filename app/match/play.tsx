@@ -3,12 +3,12 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 import { showResultToast } from '@/components/common/result-toast';
 import {
     CompactReactionBar,
     EMOJI_MAP,
-    useReactionRateLimiter,
     type ReactionEmoji,
 } from '@/components/live-match/reaction-bar';
 import { ReactionLayer, type ReactionLayerRef } from '@/components/live-match/reaction-layer';
@@ -38,6 +38,10 @@ type ConnectionState = 'online' | 'reconnecting' | 'grace' | 'expired';
 type HostConnectionState = 'online' | 'waiting' | 'expired';
 const HOST_GRACE_SECONDS = 30;
 const HOST_GRACE_MS = HOST_GRACE_SECONDS * 1000;
+const REACTION_BATCH_WINDOW_MS = 250;
+const REACTION_TOKEN_BUCKET_CAPACITY = 30;
+const REACTION_TOKEN_BUCKET_REFILL_PER_SEC = 20;
+const REACTION_MAX_SPAWN_PER_BROADCAST = 30;
 // Bandwidth optimization: increased from 7000 to 10000 to accommodate 8-second heartbeat interval
 // This value must be greater than HEARTBEAT_INTERVAL_MS (8000) to prevent false offline detection
 const HOST_HEARTBEAT_GRACE_MS = 10000;
@@ -72,7 +76,20 @@ export default function MatchPlayScreen() {
 
     // Reaction system
     const reactionLayerRef = useRef<ReactionLayerRef>(null);
-    const { canSendToServer } = useReactionRateLimiter();
+    const reactionBroadcastChannelRef = useRef<RealtimeChannel | null>(null);
+    const reactionBroadcastReadyRef = useRef(false);
+    const pendingReactionCountsRef = useRef<Record<ReactionEmoji, number>>({
+        clap: 0,
+        fire: 0,
+        skull: 0,
+        laugh: 0,
+    });
+    const reactionFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const reactionTokenBucketRef = useRef<{ tokens: number; lastRefillMs: number }>({
+        tokens: REACTION_TOKEN_BUCKET_CAPACITY,
+        lastRefillMs: Date.now(),
+    });
+    const reactionBroadcastSeqRef = useRef(0);
 
     useEffect(() => {
         if (authStatus === 'guest' && !guestKey) {
@@ -136,6 +153,154 @@ export default function MatchPlayScreen() {
         return { roomId, participantId: meParticipantId };
     }, [authStatus, guestKey, meParticipantId, roomId]);
 
+    useEffect(() => {
+        if (!roomId || hasLeft || disconnectReason) return;
+
+        const channel = supabase.channel(`live-match-reactions-broadcast:${roomId}`, {
+            config: {
+                broadcast: { self: false },
+            },
+        });
+
+        channel.on('broadcast', { event: 'reaction' }, ({ payload }) => {
+            const data = payload as
+                | {
+                    roomId?: unknown;
+                    emoji?: unknown;
+                    count?: unknown;
+                    senderId?: unknown;
+                }
+                | null
+                | undefined;
+
+            if (!data) return;
+            if (data.roomId !== roomId) return;
+
+            const senderId = typeof data.senderId === 'string' ? data.senderId : null;
+            if (senderId && meParticipantId && senderId === meParticipantId) return;
+
+            const emojiKey = typeof data.emoji === 'string' ? data.emoji : null;
+            const countRaw = typeof data.count === 'number' ? data.count : Number(data.count);
+            const count = Number.isFinite(countRaw) ? Math.max(1, Math.floor(countRaw)) : 1;
+
+            if (!emojiKey) return;
+            if (emojiKey !== 'clap' && emojiKey !== 'fire' && emojiKey !== 'skull' && emojiKey !== 'laugh') return;
+
+            const icon = EMOJI_MAP[emojiKey];
+            const burst = Math.min(count, REACTION_MAX_SPAWN_PER_BROADCAST);
+            for (let i = 0; i < burst; i++) {
+                setTimeout(() => {
+                    reactionLayerRef.current?.triggerReaction(icon);
+                }, i * 18);
+            }
+        });
+
+        reactionBroadcastChannelRef.current = channel;
+        reactionBroadcastReadyRef.current = false;
+
+        channel.subscribe((status) => {
+            reactionBroadcastReadyRef.current = status === 'SUBSCRIBED';
+        });
+
+        return () => {
+            reactionBroadcastReadyRef.current = false;
+            reactionBroadcastChannelRef.current = null;
+            void supabase.removeChannel(channel);
+        };
+    }, [disconnectReason, hasLeft, meParticipantId, roomId]);
+
+    const refillReactionTokens = useCallback(() => {
+        const now = Date.now();
+        const bucket = reactionTokenBucketRef.current;
+        const elapsedMs = now - bucket.lastRefillMs;
+        if (elapsedMs <= 0) return;
+
+        const refill = (elapsedMs / 1000) * REACTION_TOKEN_BUCKET_REFILL_PER_SEC;
+        bucket.tokens = Math.min(REACTION_TOKEN_BUCKET_CAPACITY, bucket.tokens + refill);
+        bucket.lastRefillMs = now;
+    }, []);
+
+    const consumeReactionTokens = useCallback((requested: number) => {
+        refillReactionTokens();
+        const bucket = reactionTokenBucketRef.current;
+        const allowed = Math.max(0, Math.min(requested, Math.floor(bucket.tokens)));
+        bucket.tokens -= allowed;
+        return allowed;
+    }, [refillReactionTokens]);
+
+    const flushReactionBroadcast = useCallback(() => {
+        if (reactionFlushTimerRef.current) {
+            clearTimeout(reactionFlushTimerRef.current);
+            reactionFlushTimerRef.current = null;
+        }
+
+        const channel = reactionBroadcastChannelRef.current;
+        if (!channel || !reactionBroadcastReadyRef.current) {
+            reactionFlushTimerRef.current = setTimeout(flushReactionBroadcast, REACTION_BATCH_WINDOW_MS);
+            return;
+        }
+
+        if (!roomId || !meParticipantId) {
+            return;
+        }
+
+        const counts = pendingReactionCountsRef.current;
+        const snapshot: Record<ReactionEmoji, number> = {
+            clap: counts.clap,
+            fire: counts.fire,
+            skull: counts.skull,
+            laugh: counts.laugh,
+        };
+
+        counts.clap = 0;
+        counts.fire = 0;
+        counts.skull = 0;
+        counts.laugh = 0;
+
+        const total = snapshot.clap + snapshot.fire + snapshot.skull + snapshot.laugh;
+        if (total <= 0) return;
+
+        const now = Date.now();
+        const senderId = meParticipantId;
+        const baseId = `${senderId}-${now}-${reactionBroadcastSeqRef.current++}`;
+
+        (Object.keys(snapshot) as ReactionEmoji[]).forEach((emoji) => {
+            const requested = snapshot[emoji] ?? 0;
+            if (requested <= 0) return;
+
+            const allowed = consumeReactionTokens(requested);
+            if (allowed <= 0) return;
+
+            void channel.send({
+                type: 'broadcast',
+                event: 'reaction',
+                payload: {
+                    id: `${baseId}-${emoji}`,
+                    roomId,
+                    emoji,
+                    count: allowed,
+                    senderId,
+                    ts: now,
+                },
+            });
+        });
+    }, [consumeReactionTokens, meParticipantId, roomId]);
+
+    const queueReactionBroadcast = useCallback((emoji: ReactionEmoji) => {
+        pendingReactionCountsRef.current[emoji] += 1;
+        if (reactionFlushTimerRef.current) return;
+        reactionFlushTimerRef.current = setTimeout(flushReactionBroadcast, REACTION_BATCH_WINDOW_MS);
+    }, [flushReactionBroadcast]);
+
+    useEffect(() => {
+        return () => {
+            if (reactionFlushTimerRef.current) {
+                clearTimeout(reactionFlushTimerRef.current);
+                reactionFlushTimerRef.current = null;
+            }
+        };
+    }, []);
+
     // History logging (simplified for Supabase)
     const logHistory = useCallback(async (_entry: { mode: string; sessionId?: string; data?: unknown }) => {
         // History logging is now handled by the server
@@ -148,6 +313,7 @@ export default function MatchPlayScreen() {
     }, []);
 
     const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
+    const answerSubmitLockRef = useRef(false);
     const [serverOffsetMs, setServerOffsetMs] = useState(0);
     const serverOffsetRef = useRef(0);
     const [localNowMs, setLocalNowMs] = useState(() => Date.now());
@@ -161,6 +327,7 @@ export default function MatchPlayScreen() {
     const [delayPreset] = useState<'rapid' | 'standard' | 'chill'>('chill');
     const [showConnectionWarning, setShowConnectionWarning] = useState(false);
     const serverNowBaseRef = useRef<{ serverNow: number; receivedAt: number } | null>(null);
+    const lastServerNowCandidateRef = useRef<number | null>(null);
     const { phase: socketPhase, hasEverConnected: socketHasEverConnected } = useConnectionStatus();
 
     const resolveDelay = useCallback(() => {
@@ -558,8 +725,19 @@ export default function MatchPlayScreen() {
     }, []);
 
     useEffect(() => {
-        const serverNowCandidate = roomData?.room.serverNow ?? roomData?.now;
-        if (!serverNowCandidate) return;
+        // Prefer room-scoped serverNow, which only updates on real phase changes.
+        // Falling back to per-response now on every poll can cause countdown jitter
+        // under variable network latency, so only use it for initial bootstrapping.
+        const primaryNow = roomData?.room.serverNow ?? null;
+        const fallbackNow = roomData?.now ?? null;
+        const hasBase = serverNowBaseRef.current !== null;
+        const serverNowCandidate = primaryNow ?? (!hasBase ? fallbackNow : null);
+        if (serverNowCandidate == null) return;
+        if (hasBase && lastServerNowCandidateRef.current === serverNowCandidate) {
+            return;
+        }
+        lastServerNowCandidateRef.current = serverNowCandidate;
+
         const receivedAt = Date.now();
         const drift = Math.abs(serverNowCandidate - receivedAt);
         const MAX_DRIFT_MS = 2 * 60 * 1000; // ignore obviously wrong server clocks
@@ -675,6 +853,7 @@ export default function MatchPlayScreen() {
 
     useEffect(() => {
         setSelectedChoice(null);
+        answerSubmitLockRef.current = false;
     }, [roomData?.currentRound?.index]);
 
     useEffect(() => {
@@ -718,6 +897,11 @@ export default function MatchPlayScreen() {
         }
         return null;
     }, [localNowMs, roomData, serverOffsetMs]);
+    const phaseRemainingMs = useMemo(() => {
+        const deadline = roomData?.room.phaseEndsAt ?? null;
+        if (!deadline || syncedNow == null) return null;
+        return deadline - syncedNow;
+    }, [roomData?.room.phaseEndsAt, syncedNow]);
     const timeLeft = useMemo(() => {
         if (phaseCountdownMs !== null) {
             return Math.max(0, Math.ceil(phaseCountdownMs / 1000));
@@ -991,7 +1175,6 @@ export default function MatchPlayScreen() {
         if (comboToastShownForRoundRef.current === roundIndex) return;
 
         const streak = me.currentStreak;
-        const multiplier = getComboMultiplier(streak);
 
         // 3콤보 이상이고, 새로운 콤보 단계에 도달했을 때
         if (streak >= 3 && streak > prevStreakRef.current) {
@@ -1056,21 +1239,17 @@ export default function MatchPlayScreen() {
         // 1. 로컬 애니메이션은 항상 즉시 트리거
         reactionLayerRef.current?.triggerReaction(EMOJI_MAP[emoji]);
 
-        // 2. 서버 호출은 rate limit 적용
-        if (!roomId || !participantArgs) return;
-        if (!canSendToServer()) return; // Skip server call if rate limited
-
-        gameActions.sendReaction({
-            ...participantArgs,
-            emoji,
-        }).catch((err) => {
-            console.warn('Failed to send reaction', err);
-        });
-    }, [canSendToServer, gameActions, participantArgs, roomId]);
+        // 2. 외부 단말기엔 batching + realtime broadcast로 전파
+        if (!roomId || !meParticipantId) return;
+        queueReactionBroadcast(emoji);
+    }, [meParticipantId, queueReactionBroadcast, roomId]);
 
     const handleChoicePress = async (choiceIndex: number) => {
         const isAnswerWindow = roomStatus === 'question' || roomStatus === 'grace';
         if (!roomId || !isAnswerWindow || !currentRound || !participantArgs) return;
+        if (answerSubmitLockRef.current) return;
+        if (selectedChoice !== null || currentRound.myAnswer !== undefined) return;
+        answerSubmitLockRef.current = true;
         setSelectedChoice(choiceIndex);
         try {
             await gameActions.submitAnswer({
@@ -1086,23 +1265,28 @@ export default function MatchPlayScreen() {
         }
     };
 
-    const handleAdvance = useCallback(async () => {
-        if (!roomId || !meParticipantId) return;
+    const handleAdvance = useCallback(async (): Promise<boolean> => {
+        if (!roomId || !meParticipantId) return false;
         if (!isHost) {
             showToast('지금은 호스트가 아니에요. 다른 참가자가 진행을 이어받았어요.', 'not_host_cannot_progress');
-            return;
+            return false;
+        }
+        if (pendingAction || isPaused) {
+            return false;
         }
         try {
             const key = await resolveHostGuestKey();
             await gameActions.progress({ roomId, participantId: meParticipantId, guestKey: key });
+            return true;
         } catch (err) {
             if (err instanceof Error && err.message.includes('NOT_AUTHORIZED')) {
                 showToast('지금은 호스트가 아니에요. 다른 참가자가 진행을 이어받았어요.', 'not_authorized_progress');
-                return;
+                return false;
             }
             Alert.alert('상태 전환 실패', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
+            return false;
         }
-    }, [gameActions, isHost, meParticipantId, resolveHostGuestKey, roomId, showToast]);
+    }, [gameActions, isHost, isPaused, meParticipantId, pendingAction, resolveHostGuestKey, roomId, showToast]);
 
     const autoAdvancePhaseRef = useRef<string | null>(null);
     const autoAdvanceTriggeredRef = useRef(false);
@@ -1122,14 +1306,14 @@ export default function MatchPlayScreen() {
             autoAdvanceTriggeredRef.current = false;
         }
         if (__DEV__ && isHost && roomStatus) {
-            const secondMark = phaseCountdownMs != null ? Math.floor(phaseCountdownMs / 1000) : null;
+            const secondMark = phaseRemainingMs != null ? Math.floor(phaseRemainingMs / 1000) : null;
             const logKey = `${guardKey}-${secondMark ?? 'null'}-${autoAdvanceTriggeredRef.current}`;
             if (lastAutoAdvanceLogRef.current !== logKey || lastAutoAdvanceSecondRef.current !== secondMark) {
                 lastAutoAdvanceLogRef.current = logKey;
                 lastAutoAdvanceSecondRef.current = secondMark;
                 console.log('[MatchPlay] autoAdvanceCheck', {
                     roomStatus,
-                    phaseCountdownMs,
+                    phaseRemainingMs,
                     secondMark,
                     triggered: autoAdvanceTriggeredRef.current,
                 });
@@ -1137,15 +1321,22 @@ export default function MatchPlayScreen() {
         }
         if (!isHost) return;
         if (!roomStatus || !['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(roomStatus)) return;
-        if (phaseCountdownMs === null) return;
-        if (phaseCountdownMs > 0) return;
+        if (phaseRemainingMs === null) return;
+        if (phaseRemainingMs > 0) return;
+        if (pendingAction || isPaused) return;
+        if (!roomId || !meParticipantId) return;
         if (autoAdvanceTriggeredRef.current) return;
+        const attemptKey = guardKey;
         autoAdvanceTriggeredRef.current = true;
         if (__DEV__) {
-            console.log('[MatchPlay] autoAdvance', { roomStatus, phaseCountdownMs });
+            console.log('[MatchPlay] autoAdvance', { roomStatus, phaseRemainingMs });
         }
-        handleAdvance();
-    }, [connectionState, handleAdvance, hasLeft, isHost, roomData?.room.currentRound, roomData?.room.phaseEndsAt, roomId, roomStatus, phaseCountdownMs]);
+        void handleAdvance().then((ok) => {
+            if (!ok && autoAdvancePhaseRef.current === attemptKey) {
+                autoAdvanceTriggeredRef.current = false;
+            }
+        });
+    }, [connectionState, handleAdvance, hasLeft, isHost, isPaused, meParticipantId, pendingAction, roomData?.room.currentRound, roomData?.room.phaseEndsAt, roomId, roomStatus, phaseRemainingMs]);
 
     useEffect(() => {
         if (phaseCountdownMs === null) {
@@ -1388,17 +1579,19 @@ export default function MatchPlayScreen() {
         );
     }
 
+    const canSendReaction = connectionState === 'online' && !!participantArgs;
+    const persistentReactionBar = (
+        <View style={styles.reactionBarInCard}>
+            <CompactReactionBar onReaction={handleReaction} disabled={!canSendReaction} />
+        </View>
+    );
+
     const renderCountdown = () => (
         <View style={[styles.centerCard, { backgroundColor: cardColor }]}>
             <ThemedText type="title" style={styles.cardTitle}>다음 라운드 준비!</ThemedText>
             <ThemedText style={[styles.centerSubtitle, { color: textMutedColor }]}>
                 <ThemedText style={[styles.timerHighlight, { color: textColor }]}>{timeLeft ?? '...'}</ThemedText>초 후 시작
             </ThemedText>
-            {isHost && !hostIsConnected ? (
-                <Button variant='secondary' size="lg" fullWidth onPress={handleAdvance}>
-                    바로 진행
-                </Button>
-            ) : null}
         </View>
     );
 
@@ -1430,7 +1623,7 @@ export default function MatchPlayScreen() {
             <View style={styles.choiceList}>
                 {currentRound?.question?.choices.map((choice, index) => {
                     const isSelected = selectedChoice === index || currentRound?.myAnswer?.choiceIndex === index;
-                    const isDisabled = currentRound?.myAnswer !== undefined || isPaused;
+                    const isDisabled = currentRound?.myAnswer !== undefined || isPaused || selectedChoice !== null;
                     return (
                         <Pressable
                             key={choice.id}
@@ -1487,13 +1680,24 @@ export default function MatchPlayScreen() {
         </View>
     );
 
+    const rawCorrectChoiceIndex = currentRound?.reveal?.correctChoice;
+    const revealCorrectChoiceIndex =
+        typeof rawCorrectChoiceIndex === 'number' && rawCorrectChoiceIndex >= 0
+            ? rawCorrectChoiceIndex
+            : currentRound?.question?.answerIndex ?? null;
+    const revealDistribution =
+        currentRound?.reveal?.distribution ??
+        (currentRound?.question?.choices
+            ? new Array(currentRound.question.choices.length).fill(0)
+            : []);
+
     const renderReveal = () => (
         <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
             <ThemedText type="title" style={styles.cardTitle}>정답 공개</ThemedText>
             <View style={[styles.correctAnswerBadge, { backgroundColor: background, borderColor: textColor }]}>
                 <ThemedText style={[styles.correctAnswerLabel, { color: textColor }]}>
                     정답은 <ThemedText style={[styles.correctAnswerHighlight, { color: textColor }]}>
-                        {currentRound?.reveal ? String.fromCharCode(65 + currentRound.reveal.correctChoice) : '?'}
+                        {revealCorrectChoiceIndex !== null ? String.fromCharCode(65 + revealCorrectChoiceIndex) : '?'}
                     </ThemedText> 입니다
                 </ThemedText>
             </View>
@@ -1502,8 +1706,8 @@ export default function MatchPlayScreen() {
             ) : null}
             <View style={styles.distributionList}>
                 {currentRound?.question?.choices.map((choice, index) => {
-                    const count = currentRound?.reveal?.distribution[index] ?? 0;
-                    const isCorrect = currentRound?.reveal?.correctChoice === index;
+                    const count = revealDistribution[index] ?? 0;
+                    const isCorrect = revealCorrectChoiceIndex === index;
                     const isMine = currentRound?.myAnswer?.choiceIndex === index;
                     const answeredCorrectly = currentRound?.myAnswer?.isCorrect ?? false;
                     const variant: 'correct' | 'incorrect' | 'selected' | 'default' = isCorrect
@@ -1669,17 +1873,6 @@ export default function MatchPlayScreen() {
                     <ThemedText style={[styles.scoreResultText, { color: cardColor }]}>이번 라운드에 응시하지 않았어요</ThemedText>
                 )}
             </View>
-            {isHost ? (
-                <Button
-                    variant="outline"
-                    size="lg"
-                    fullWidth
-                    onPress={handleAdvance}
-                    disabled={isPaused}
-                >
-                    리더보드 보기
-                </Button>
-            ) : null}
         </View>
     );
 
@@ -1800,16 +1993,6 @@ export default function MatchPlayScreen() {
                     ? `${timeLeft ?? '-'}초 후 최종 결과 화면으로 이동해요`
                     : `다음 라운드 준비까지 ${timeLeft ?? '-'}초`}
             </ThemedText>
-            {isHost && !pendingAction ? (
-                <Button
-                    size="lg"
-                    fullWidth
-                    onPress={handleAdvance}
-                    disabled={isPaused}
-                >
-                    {isFinalLeaderboard ? '최종 결과 보기' : '바로 진행'}
-                </Button>
-            ) : null}
         </View>
     );
     const renderResults = () => {
@@ -2241,14 +2424,12 @@ export default function MatchPlayScreen() {
                     </View>
                 ) : null}
                 {connectionState === 'online' ? renderPauseNotice() : null}
-                {content}
+                <View style={styles.stageContainer}>
+                    {content}
+                    {persistentReactionBar}
+                </View>
                 {renderGraceOverlay()}
                 {renderHostGraceOverlay()}
-                {roomStatus && !['lobby', 'results', 'question', 'paused'].includes(roomStatus) && connectionState === 'online' && (
-                    <View style={[styles.reactionBarContainer, { bottom: insets.bottom + 16 }]}>
-                        <CompactReactionBar onReaction={handleReaction} disabled={!participantArgs} />
-                    </View>
-                )}
             </ThemedView>
             {/* 실시간 리액션 시스템 - 로컬 애니메이션 오버레이 */}
             <ReactionLayer ref={reactionLayerRef} />
@@ -2265,11 +2446,14 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: Spacing.lg,
     },
-    reactionBarContainer: {
+    stageContainer: {
+        flex: 1,
+        position: 'relative',
+    },
+    reactionBarInCard: {
         position: 'absolute',
-        left: 0,
-        right: 0,
-        alignItems: 'center',
+        right: Spacing.xl,
+        bottom: Spacing.xl,
         zIndex: 100,
     },
     delayPresetRow: {

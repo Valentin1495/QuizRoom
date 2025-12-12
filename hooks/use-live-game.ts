@@ -97,6 +97,7 @@ export type GameQuestion = {
   prompt: string;
   explanation: string | null;
   choices: GameChoice[];
+  answerIndex?: number;
 };
 
 export type GameMyAnswer = {
@@ -151,6 +152,13 @@ export type GameState = {
 
 const POLL_INTERVAL_MS = 1000; // Poll every second during active game
 const HEARTBEAT_INTERVAL_MS = 5000;
+const PARTICIPANT_TIMEOUT_MS = 30 * 1000;
+
+function isParticipantConnected(lastSeenAt: string | null, disconnectedAt: string | null, now: number): boolean {
+  if (disconnectedAt) return false;
+  if (!lastSeenAt) return false;
+  return now - new Date(lastSeenAt).getTime() < PARTICIPANT_TIMEOUT_MS;
+}
 
 export function useLiveGame(
   roomId: string | null,
@@ -179,7 +187,43 @@ export function useLiveGame(
       if (fetchError) throw fetchError;
 
       if (result?.data) {
-        setGameState(result.data);
+        setGameState((prev) => {
+          let incoming = result.data as GameState;
+          if (prev.status === 'ok' && incoming.status === 'ok') {
+            const incomingVersion = incoming.room.version;
+            const prevVersion = prev.room.version;
+            if (
+              typeof incomingVersion === 'number' &&
+              typeof prevVersion === 'number' &&
+              incomingVersion < prevVersion
+            ) {
+              if (__DEV__) {
+                console.log('[Game] Ignoring stale room-state snapshot', {
+                  incomingVersion,
+                  prevVersion,
+                });
+              }
+              return prev;
+            }
+
+            if (
+              prev.currentRound &&
+              incoming.currentRound &&
+              prev.currentRound.index === incoming.currentRound.index &&
+              prev.currentRound.reveal &&
+              !incoming.currentRound.reveal
+            ) {
+              incoming = {
+                ...incoming,
+                currentRound: {
+                  ...incoming.currentRound,
+                  reveal: prev.currentRound.reveal,
+                },
+              };
+            }
+          }
+          return incoming;
+        });
         setError(null);
       } else if (result?.error) {
         throw new Error(result.error);
@@ -235,7 +279,71 @@ export function useLiveGame(
           table: 'live_match_rooms',
           filter: `id=eq.${roomId}`,
         },
-        () => {
+        (payload) => {
+          const row = payload.new as any;
+          const commitTsMs = payload.commit_timestamp
+            ? new Date(payload.commit_timestamp).getTime()
+            : Date.now();
+          const incomingVersion =
+            typeof row?.version === 'number' ? row.version : null;
+
+          const pending = row?.pending_action;
+          const normalizedPending = pending
+            ? {
+                type: pending.type,
+                executeAt: pending.executeAt ?? pending.execute_at,
+                delayMs: pending.delayMs ?? pending.delay_ms,
+                createdAt: pending.createdAt ?? pending.created_at,
+                initiatedBy: pending.initiatedBy ?? pending.initiated_by,
+                initiatedIdentity: pending.initiatedIdentity ?? pending.initiated_identity,
+                label: pending.label ?? '',
+              }
+            : null;
+
+          const pause = row?.pause_state;
+          const normalizedPause = pause
+            ? {
+                previousStatus: pause.previousStatus ?? pause.previous_status ?? 'unknown',
+                remainingMs: pause.remainingMs ?? pause.remaining_ms,
+                pausedAt: pause.pausedAt ?? pause.paused_at ?? commitTsMs,
+              }
+            : null;
+
+          setGameState((prev) => {
+            if (prev.status !== 'ok') return prev;
+            if (prev.room._id !== roomId) return prev;
+            if (incomingVersion !== null && incomingVersion < prev.room.version) {
+              return prev;
+            }
+            return {
+              ...prev,
+              room: {
+                ...prev.room,
+                status: row?.status ?? prev.room.status,
+                currentRound:
+                  typeof row?.current_round === 'number'
+                    ? row.current_round
+                    : prev.room.currentRound,
+                phaseEndsAt:
+                  typeof row?.phase_ends_at === 'number' || row?.phase_ends_at === null
+                    ? row.phase_ends_at
+                    : prev.room.phaseEndsAt,
+                pendingAction: normalizedPending,
+                pauseState: normalizedPause,
+                serverNow:
+                  typeof row?.server_now === 'number' ? row.server_now : prev.room.serverNow,
+                expiresAt:
+                  typeof row?.expires_at === 'number' || row?.expires_at === null
+                    ? row.expires_at
+                    : prev.room.expiresAt,
+                hostId: row?.host_id ?? prev.room.hostId,
+                hostIdentity: row?.host_identity ?? prev.room.hostIdentity,
+                version: incomingVersion ?? prev.room.version,
+              },
+              now: commitTsMs,
+            };
+          });
+
           void fetchGameState();
         }
       )
@@ -247,7 +355,82 @@ export function useLiveGame(
           table: 'live_match_participants',
           filter: `room_id=eq.${roomId}`,
         },
-        () => {
+        (payload) => {
+          const row = payload.new as any;
+          const oldRow = payload.old as any;
+          const participantRowId = row?.id ?? oldRow?.id;
+          if (!participantRowId) {
+            void fetchGameState();
+            return;
+          }
+
+          const commitTsMs = payload.commit_timestamp
+            ? new Date(payload.commit_timestamp).getTime()
+            : Date.now();
+
+          setGameState((prev) => {
+            if (prev.status !== 'ok') return prev;
+            if (prev.room._id !== roomId) return prev;
+
+            const participants = [...prev.participants];
+            const idx = participants.findIndex((p) => p.participantId === participantRowId);
+
+            const removed = !!row?.removed_at;
+            if (payload.eventType === 'DELETE' || removed) {
+              if (idx >= 0) {
+                participants.splice(idx, 1);
+              }
+              return { ...prev, participants, now: commitTsMs };
+            }
+
+            const base = idx >= 0 ? participants[idx] : null;
+            const lastSeenAtMs = row?.last_seen_at
+              ? new Date(row.last_seen_at).getTime()
+              : base?.lastSeenAt ?? commitTsMs;
+            const disconnectedAtMs = row?.disconnected_at
+              ? new Date(row.disconnected_at).getTime()
+              : null;
+
+            const merged: GameParticipant = {
+              participantId: participantRowId,
+              odUserId: row?.user_id ?? base?.odUserId ?? null,
+              avatarUrl: base?.avatarUrl ?? null,
+              guestAvatarId: row?.guest_avatar_id ?? base?.guestAvatarId ?? null,
+              nickname: row?.nickname ?? base?.nickname ?? '플레이어',
+              totalScore:
+                typeof row?.total_score === 'number' ? row.total_score : base?.totalScore ?? 0,
+              isHost: typeof row?.is_host === 'boolean' ? row.is_host : base?.isHost ?? false,
+              rank: base?.rank ?? 0,
+              isConnected: isParticipantConnected(row?.last_seen_at ?? null, row?.disconnected_at ?? null, commitTsMs),
+              lastSeenAt: lastSeenAtMs,
+              disconnectedAt: disconnectedAtMs,
+              answers:
+                typeof row?.answers === 'number' ? row.answers : base?.answers ?? 0,
+            };
+
+            if (idx >= 0) {
+              participants[idx] = merged;
+            } else {
+              participants.push(merged);
+            }
+
+            let me = prev.me;
+            if (participantRowId === prev.me.participantId) {
+              me = {
+                ...prev.me,
+                odUserId: merged.odUserId,
+                nickname: merged.nickname,
+                totalScore: merged.totalScore,
+                isHost: merged.isHost,
+                answers: merged.answers,
+                lastSeenAt: merged.lastSeenAt,
+                disconnectedAt: merged.disconnectedAt,
+              };
+            }
+
+            return { ...prev, participants, me, now: commitTsMs };
+          });
+
           void fetchGameState();
         }
       )
@@ -259,7 +442,62 @@ export function useLiveGame(
           table: 'live_match_answers',
           filter: `room_id=eq.${roomId}`,
         },
-        () => {
+        (payload) => {
+          const row = payload.new as any;
+          const commitTsMs = payload.commit_timestamp
+            ? new Date(payload.commit_timestamp).getTime()
+            : Date.now();
+
+          setGameState((prev) => {
+            if (prev.status !== 'ok') return prev;
+            if (prev.room._id !== roomId) return prev;
+            if (!prev.currentRound) return prev;
+            if (typeof row?.round_index !== 'number' || row.round_index !== prev.currentRound.index) {
+              return prev;
+            }
+
+            const choicesLen = prev.currentRound.question.choices.length;
+            const prevDistribution =
+              prev.currentRound.reveal?.distribution ?? new Array(choicesLen).fill(0);
+            const distribution = [...prevDistribution];
+            const choiceIndex =
+              typeof row?.choice_index === 'number' ? row.choice_index : null;
+            if (choiceIndex !== null && choiceIndex >= 0 && choiceIndex < distribution.length) {
+              distribution[choiceIndex] += 1;
+            }
+
+            const knownCorrect =
+              typeof prev.currentRound.question.answerIndex === 'number'
+                ? prev.currentRound.question.answerIndex
+                : prev.currentRound.reveal?.correctChoice ?? -1;
+
+            const reveal: GameReveal = {
+              correctChoice: knownCorrect,
+              distribution,
+            };
+
+            const isMine = row?.participant_id === prev.me.participantId;
+            const safeChoiceIndex =
+              typeof row?.choice_index === 'number' ? row.choice_index : 0;
+            const myAnswer = isMine
+              ? ({
+                  choiceIndex: safeChoiceIndex,
+                  isCorrect: !!row.is_correct,
+                  scoreDelta: typeof row.score_delta === 'number' ? row.score_delta : 0,
+                } as GameMyAnswer)
+              : prev.currentRound.myAnswer;
+
+            return {
+              ...prev,
+              currentRound: {
+                ...prev.currentRound,
+                myAnswer,
+                reveal,
+              },
+              now: commitTsMs,
+            };
+          });
+
           void fetchGameState();
         }
       )
