@@ -95,6 +95,7 @@ export default function MatchLobbyScreen() {
   });
   const pendingBannerOpacity = pendingBannerAnim;
   const levelSheetRef = useRef<BottomSheetModal>(null);
+  const [levelSheetTarget, setLevelSheetTarget] = useState<{ xp: number; level: number } | null>(null);
 
   const participants = lobby?.participants ?? [];
   const meParticipant = useMemo(
@@ -111,11 +112,14 @@ export default function MatchLobbyScreen() {
     return 1;
   }, [meParticipant?.xp, status, user]);
 
-  const openLevelSheet = useCallback(() => {
+  const openLevelSheet = useCallback((xp?: number | null) => {
+    if (xp == null) return;
+    setLevelSheetTarget({ xp, level: calculateLevel(xp).level });
     levelSheetRef.current?.present();
   }, []);
 
   const closeLevelSheet = useCallback(() => {
+    setLevelSheetTarget(null);
     levelSheetRef.current?.dismiss();
   }, []);
   // Track server state and clear optimistic update when it arrives
@@ -954,10 +958,11 @@ export default function MatchLobbyScreen() {
                   </ThemedText>
                 ) : (
                   <View style={styles.participantGrid}>
-                    {participants.map((participant) => {
-                      const isMe = participant.participantId === meParticipant?.participantId;
-                      const levelInfo = participant.xp != null ? calculateLevel(participant.xp) : null;
-                      return (
+	                    {participants.map((participant) => {
+	                      const isMe = participant.participantId === meParticipant?.participantId;
+	                      const displayXp = isMe && status === 'authenticated' && user ? user.xp : participant.xp;
+	                      const levelInfo = displayXp != null ? calculateLevel(displayXp) : null;
+	                      return (
                         <View
                           key={participant.participantId}
                           style={[styles.participantCard, isMe && styles.participantCardMe]}
@@ -971,18 +976,19 @@ export default function MatchLobbyScreen() {
                                 {participant.nickname}
                               </ThemedText>
                             </View>
-                            {levelInfo ? (
-                              isMe ? (
-                                <Pressable onPress={openLevelSheet} hitSlop={8}>
-                                  <LevelBadge xp={participant.xp ?? undefined} size="sm" showTitle />
-                                </Pressable>
-                              ) : (
-                                <LevelBadge xp={participant.xp ?? undefined} size="sm" showTitle />
-                              )
-                            ) : null}
-                            {!participant.isConnected ? (
-                              <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
-                            ) : null}
+	                            {levelInfo ? (
+	                              <Pressable
+	                                onPress={() => {
+	                                  openLevelSheet(displayXp);
+	                                }}
+	                                hitSlop={8}
+	                              >
+	                                <LevelBadge xp={displayXp ?? undefined} size="sm" showTitle />
+	                              </Pressable>
+	                            ) : null}
+	                            {!participant.isConnected ? (
+	                              <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
+	                            ) : null}
                           </View>
                           <View style={styles.participantBottomRow}>
                             {participant.isHost ? (
@@ -1074,9 +1080,15 @@ export default function MatchLobbyScreen() {
               </View>
             </View>
           </Animated.View>
-        </View>
-        <LevelInfoSheet sheetRef={levelSheetRef} currentLevel={myLevel} currentXp={user?.xp ?? meParticipant?.xp ?? 0} onClose={closeLevelSheet} />
-      </ThemedView>
-    </BottomSheetModalProvider>
-  );
+	        </View>
+	        <LevelInfoSheet
+	          sheetRef={levelSheetRef}
+	          currentLevel={levelSheetTarget?.level ?? myLevel}
+	          currentXp={levelSheetTarget?.xp ?? user?.xp ?? meParticipant?.xp ?? 0}
+	          variant="compact"
+	          onClose={closeLevelSheet}
+	        />
+	      </ThemedView>
+	    </BottomSheetModalProvider>
+	  );
 }

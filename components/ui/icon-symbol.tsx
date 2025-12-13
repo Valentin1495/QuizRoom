@@ -5,8 +5,8 @@ import type { Icon, IconWeight } from 'phosphor-react-native';
 import {
   ArrowClockwiseIcon,
   ArrowLeftIcon,
-  ArrowRightIcon,
   ArrowsLeftRightIcon,
+  ArrowUpRightIcon,
   BrainIcon,
   BroadcastIcon,
   CardsThreeIcon,
@@ -82,7 +82,7 @@ const ICON_MAP = {
   'dot.radiowaves.left.and.right': { component: BroadcastIcon },
   // Navigation Icons
   'arrow.left': { component: ArrowLeftIcon },
-  'arrow.right': { component: ArrowRightIcon },
+  'arrow.up.forward': { component: ArrowUpRightIcon },
   'chevron.right': { component: CaretRightIcon },
   'forward.end': { component: SkipForwardIcon },
   'flag': { component: FlagIcon },
@@ -141,7 +141,7 @@ export type IconSymbolName = keyof typeof ICON_MAP;
  */
 const SIZE_ADJUSTMENT_LIST: IconSymbolName[] = [
   'arrow.left',
-  'arrow.right',
+  'arrow.up.forward',
   'chevron.right',
   'sun.max',
   'moon',

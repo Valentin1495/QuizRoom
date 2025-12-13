@@ -1,9 +1,9 @@
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import * as Haptics from 'expo-haptics';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { RealtimeChannel } from '@supabase/supabase-js';
 
 import { showResultToast } from '@/components/common/result-toast';
 import {
@@ -81,8 +81,9 @@ export default function MatchPlayScreen() {
     const pendingReactionCountsRef = useRef<Record<ReactionEmoji, number>>({
         clap: 0,
         fire: 0,
-        skull: 0,
         laugh: 0,
+        hundred: 0,
+        party: 0,
     });
     const reactionFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const reactionTokenBucketRef = useRef<{ tokens: number; lastRefillMs: number }>({
@@ -184,9 +185,9 @@ export default function MatchPlayScreen() {
             const count = Number.isFinite(countRaw) ? Math.max(1, Math.floor(countRaw)) : 1;
 
             if (!emojiKey) return;
-            if (emojiKey !== 'clap' && emojiKey !== 'fire' && emojiKey !== 'skull' && emojiKey !== 'laugh') return;
+            if (emojiKey !== 'clap' && emojiKey !== 'fire' && emojiKey !== 'hundred' && emojiKey !== 'party' && emojiKey !== 'laugh') return;
 
-            const icon = EMOJI_MAP[emojiKey];
+            const icon = EMOJI_MAP[emojiKey as ReactionEmoji];
             const burst = Math.min(count, REACTION_MAX_SPAWN_PER_BROADCAST);
             for (let i = 0; i < burst; i++) {
                 setTimeout(() => {
@@ -248,16 +249,18 @@ export default function MatchPlayScreen() {
         const snapshot: Record<ReactionEmoji, number> = {
             clap: counts.clap,
             fire: counts.fire,
-            skull: counts.skull,
+            hundred: counts.hundred,
+            party: counts.party,
             laugh: counts.laugh,
         };
 
         counts.clap = 0;
         counts.fire = 0;
-        counts.skull = 0;
+        counts.hundred = 0;
+        counts.party = 0;
         counts.laugh = 0;
 
-        const total = snapshot.clap + snapshot.fire + snapshot.skull + snapshot.laugh;
+        const total = snapshot.clap + snapshot.fire + snapshot.hundred + snapshot.party + snapshot.laugh;
         if (total <= 0) return;
 
         const now = Date.now();
@@ -2022,7 +2025,15 @@ export default function MatchPlayScreen() {
                     {participants.map((player, index) => {
                         const isMe = meParticipantId !== null && player.participantId === meParticipantId;
                         const rank = player.rank ?? index + 1;
-                        const podiumEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+                        const usePodiumEmoji = participants.length >= 3;
+                        const podiumEmoji =
+                            usePodiumEmoji && rank === 1
+                                ? '🥇'
+                                : usePodiumEmoji && rank === 2
+                                    ? '🥈'
+                                    : usePodiumEmoji && rank === 3
+                                        ? '🥉'
+                                        : '';
                         const nameDisplay = player.nickname;
                         return (
                             <View
@@ -2452,7 +2463,7 @@ const styles = StyleSheet.create({
     },
     reactionBarInCard: {
         position: 'absolute',
-        right: Spacing.xl,
+        right: Spacing.md,
         bottom: Spacing.xl,
         zIndex: 100,
     },

@@ -51,6 +51,185 @@ function getComboMultiplier(streak: number): number {
   return 1.0;
 }
 
+async function awardLiveMatchXpOnce(args: {
+  supabase: any;
+  roomId: string;
+  room: any;
+  participants: any[];
+}) {
+  const { supabase, roomId, room, participants } = args;
+
+  const { data: existingAward } = await supabase
+    .from('live_match_logs')
+    .select('id')
+    .eq('room_id', roomId)
+    .eq('type', 'xp_awarded')
+    .limit(1)
+    .maybeSingle();
+
+  if (existingAward) {
+    console.log('[RoomAction] xp already awarded', { roomId });
+    return { awarded: false, alreadyAwarded: true };
+  }
+
+  console.log('[RoomAction] awarding xp', { roomId, participants: participants.length });
+
+  const { data: allAnswers } = await supabase
+    .from('live_match_answers')
+    .select('participant_id, is_correct')
+    .eq('room_id', roomId);
+
+  const correctCountByParticipant = new Map<string, number>();
+  for (const answer of allAnswers || []) {
+    if (answer.is_correct) {
+      const current = correctCountByParticipant.get(answer.participant_id) ?? 0;
+      correctCountByParticipant.set(answer.participant_id, current + 1);
+    }
+  }
+
+  // Rank ordering must match supabase/functions/room-state for consistency.
+  const sortedParticipants = [...participants].sort((a, b) => {
+    if (b.total_score !== a.total_score) return b.total_score - a.total_score;
+    const avgA = a.answers > 0 ? a.avg_response_ms : Number.MAX_SAFE_INTEGER;
+    const avgB = b.answers > 0 ? b.avg_response_ms : Number.MAX_SAFE_INTEGER;
+    if (avgA !== avgB) return avgA - avgB;
+    if (b.answers !== a.answers) return b.answers - a.answers;
+    return new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime();
+  });
+
+  for (let i = 0; i < sortedParticipants.length; i++) {
+    const p = sortedParticipants[i];
+    if (!p.user_id) continue;
+
+    const { data: user } = await supabase
+      .from('users')
+      .select('xp, streak, total_played, total_correct')
+      .eq('id', p.user_id)
+      .single();
+
+    if (!user) continue;
+
+    const rank = i + 1;
+    let baseXp = LIVE_MATCH_PARTICIPATION_XP;
+    baseXp += LIVE_MATCH_RANK_XP[rank] ?? 0;
+    const xpGain = applyStreakBonus(baseXp, user.streak);
+    const correctCount = correctCountByParticipant.get(p.id) ?? 0;
+
+    await supabase
+      .from('users')
+      .update({
+        xp: user.xp + xpGain,
+        total_played: user.total_played + room.total_rounds,
+        total_correct: user.total_correct + correctCount,
+      })
+      .eq('id', p.user_id);
+
+    console.log('[RoomAction] xp updated', { roomId, userId: p.user_id, rank, xpGain });
+  }
+
+  await supabase.from('live_match_logs').insert({
+    room_id: roomId,
+    type: 'xp_awarded',
+    payload: { at: Date.now() },
+  });
+
+  console.log('[RoomAction] xp award complete', { roomId });
+  return { awarded: true, alreadyAwarded: false };
+}
+
+async function logLiveMatchHistoryOnce(args: {
+  supabase: any;
+  roomId: string;
+  room: any;
+  participants: any[];
+  now: number;
+}) {
+  const { supabase, roomId, room, participants, now } = args;
+
+  const sessionId = `live_match:${roomId}:results`;
+  const createdAt = new Date(now).toISOString();
+
+  let deckSlug: string | undefined;
+  let deckTitle: string | undefined;
+  if (room.deck_id) {
+    const { data: deck } = await supabase
+      .from('live_match_decks')
+      .select('slug, title')
+      .eq('id', room.deck_id)
+      .maybeSingle();
+    deckSlug = deck?.slug ?? undefined;
+    deckTitle = deck?.title ?? undefined;
+  }
+
+  const { data: allAnswers } = await supabase
+    .from('live_match_answers')
+    .select('participant_id, is_correct')
+    .eq('room_id', roomId);
+
+  const correctCountByParticipant = new Map<string, number>();
+  for (const answer of allAnswers || []) {
+    if (answer.is_correct) {
+      const current = correctCountByParticipant.get(answer.participant_id) ?? 0;
+      correctCountByParticipant.set(answer.participant_id, current + 1);
+    }
+  }
+
+  // Rank ordering must match supabase/functions/room-state for consistency.
+  const sortedParticipants = [...participants].sort((a, b) => {
+    if (b.total_score !== a.total_score) return b.total_score - a.total_score;
+    const avgA = a.answers > 0 ? a.avg_response_ms : Number.MAX_SAFE_INTEGER;
+    const avgB = b.answers > 0 ? b.avg_response_ms : Number.MAX_SAFE_INTEGER;
+    if (avgA !== avgB) return avgA - avgB;
+    if (b.answers !== a.answers) return b.answers - a.answers;
+    return new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime();
+  });
+
+  for (let i = 0; i < sortedParticipants.length; i++) {
+    const p = sortedParticipants[i];
+    if (!p.user_id) continue;
+
+    const rank = i + 1;
+    const payload = {
+      deckSlug,
+      deckTitle,
+      roomCode: room.code,
+      rank,
+      totalParticipants: participants.length,
+      totalScore: p.total_score ?? 0,
+      answered: p.answers ?? 0,
+      correct: correctCountByParticipant.get(p.id) ?? 0,
+    };
+
+    const { data: existing } = await supabase
+      .from('quiz_history')
+      .select('id')
+      .eq('user_id', p.user_id)
+      .eq('mode', 'live_match')
+      .eq('session_id', sessionId)
+      .limit(1)
+      .maybeSingle();
+
+    if (existing?.id) {
+      await supabase
+        .from('quiz_history')
+        .update({ payload, created_at: createdAt })
+        .eq('id', existing.id);
+    } else {
+      await supabase
+        .from('quiz_history')
+        .insert({
+          user_id: p.user_id,
+          mode: 'live_match',
+          session_id: sessionId,
+          payload,
+          created_at: createdAt,
+        });
+    }
+  }
+
+  console.log('[RoomAction] live match history logged', { roomId, sessionId });
+}
+
 function computeScoreDelta(isCorrect: boolean, elapsedMs: number, rules: any, streak = 0) {
   if (!isCorrect) return { score: 0, multiplier: 1.0 };
   const base = 100;
@@ -339,13 +518,23 @@ serve(async (req) => {
             newPhaseEndsAt = now + rules.leaderboardSeconds * 1000;
             break;
           }
-          case 'leaderboard': {
-            const nextRound = room.current_round + 1;
-            if (nextRound >= room.total_rounds) {
-              newStatus = 'results';
-              newPhaseEndsAt = null;
-            } else {
-              newStatus = 'countdown';
+	          case 'leaderboard': {
+	            const nextRound = room.current_round + 1;
+	            if (nextRound >= room.total_rounds) {
+	              const { data: participants } = await supabase
+	                .from('live_match_participants')
+	                .select('*')
+	                .eq('room_id', roomId)
+	                .is('removed_at', null);
+
+	              if (participants?.length) {
+	                await awardLiveMatchXpOnce({ supabase, roomId, room, participants });
+	                await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
+	              }
+	              newStatus = 'results';
+	              newPhaseEndsAt = null;
+	            } else {
+	              newStatus = 'countdown';
               newRound = nextRound;
               newPhaseEndsAt = now + rules.readSeconds * 1000;
             }
@@ -637,10 +826,10 @@ serve(async (req) => {
         );
       }
 
-      case 'finish': {
-        if (!participant.is_host) {
-          throw new Error('NOT_AUTHORIZED');
-        }
+	      case 'finish': {
+	        if (!participant.is_host) {
+	          throw new Error('NOT_AUTHORIZED');
+	        }
 
         // Get all participants
         const { data: participants } = await supabase
@@ -649,65 +838,15 @@ serve(async (req) => {
           .eq('room_id', roomId)
           .is('removed_at', null);
 
-        if (!participants) {
-          throw new Error('NO_PARTICIPANTS');
-        }
+	        if (!participants) {
+	          throw new Error('NO_PARTICIPANTS');
+	        }
+	        await awardLiveMatchXpOnce({ supabase, roomId, room, participants });
+	        await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
 
-        // Get all answers for correct count
-        const { data: allAnswers } = await supabase
-          .from('live_match_answers')
-          .select('participant_id, is_correct')
-          .eq('room_id', roomId);
-
-        const correctCountByParticipant = new Map<string, number>();
-        for (const answer of allAnswers || []) {
-          if (answer.is_correct) {
-            const current = correctCountByParticipant.get(answer.participant_id) ?? 0;
-            correctCountByParticipant.set(answer.participant_id, current + 1);
-          }
-        }
-
-        // Sort by score and assign ranks
-        const sortedParticipants = [...participants].sort((a, b) => {
-          if (b.total_score !== a.total_score) return b.total_score - a.total_score;
-          const correctA = correctCountByParticipant.get(a.id) ?? 0;
-          const correctB = correctCountByParticipant.get(b.id) ?? 0;
-          if (correctB !== correctA) return correctB - correctA;
-          return new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime();
-        });
-
-        // Award XP to authenticated users
-        for (let i = 0; i < sortedParticipants.length; i++) {
-          const p = sortedParticipants[i];
-          if (!p.user_id) continue;
-
-          const { data: user } = await supabase
-            .from('users')
-            .select('xp, streak, total_played, total_correct')
-            .eq('id', p.user_id)
-            .single();
-
-          if (!user) continue;
-
-          const rank = i + 1;
-          let baseXp = LIVE_MATCH_PARTICIPATION_XP;
-          baseXp += LIVE_MATCH_RANK_XP[rank] ?? 0;
-          const xpGain = applyStreakBonus(baseXp, user.streak);
-          const correctCount = correctCountByParticipant.get(p.id) ?? 0;
-
-          await supabase
-            .from('users')
-            .update({
-              xp: user.xp + xpGain,
-              total_played: user.total_played + room.total_rounds,
-              total_correct: user.total_correct + correctCount,
-            })
-            .eq('id', p.user_id);
-        }
-
-        await supabase
-          .from('live_match_rooms')
-          .update({
+	        await supabase
+	          .from('live_match_rooms')
+	          .update({
             status: 'results',
             server_now: now,
             phase_ends_at: null,

@@ -6,21 +6,23 @@ import { Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { lightHaptic, mediumHaptic } from '@/lib/haptics';
 
-export type ReactionEmoji = 'clap' | 'fire' | 'skull' | 'laugh';
+export type ReactionEmoji = 'clap' | 'fire' | 'laugh' | 'hundred' | 'party';
 
 // Emoji type to icon mapping (exported for use in ReactionLayer)
 export const EMOJI_MAP: Record<ReactionEmoji, string> = {
   clap: '👏',
   fire: '🔥',
-  skull: '💀',
   laugh: '😂',
+  hundred: '💯',
+  party: '🎉',
 };
 
 const REACTION_CONFIG: { emoji: ReactionEmoji; icon: string; label: string }[] = [
   { emoji: 'clap', icon: '👏', label: '박수' },
   { emoji: 'fire', icon: '🔥', label: '불꽃' },
-  { emoji: 'skull', icon: '💀', label: '해골' },
   { emoji: 'laugh', icon: '😂', label: '웃음' },
+  { emoji: 'hundred', icon: '💯', label: '완벽' },
+  { emoji: 'party', icon: '🎉', label: '축하' },
 ];
 
 // Rate limiter for server calls: allows 5 calls per second (200ms interval)
@@ -60,7 +62,8 @@ export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }:
   const [cooldowns, setCooldowns] = useState<Record<ReactionEmoji, boolean>>({
     clap: false,
     fire: false,
-    skull: false,
+    hundred: false,
+    party: false,
     laugh: false,
   });
 
@@ -82,7 +85,7 @@ export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }:
 
   return (
     <View style={styles.container}>
-      {REACTION_CONFIG.map(({ emoji, icon, label }) => {
+      {REACTION_CONFIG.map(({ emoji, icon }) => {
         const isOnCooldown = cooldowns[emoji];
         const isDisabled = disabled || isOnCooldown;
 
@@ -123,7 +126,8 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
   const [cooldowns, setCooldowns] = useState<Record<ReactionEmoji, boolean>>({
     clap: false,
     fire: false,
-    skull: false,
+    hundred: false,
+    party: false,
     laugh: false,
   });
 

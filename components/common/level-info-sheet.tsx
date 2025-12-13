@@ -55,10 +55,17 @@ type LevelInfoSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal | null>;
   currentLevel: number;
   currentXp: number;
+  variant?: 'full' | 'compact';
   onClose: () => void;
 };
 
-export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: LevelInfoSheetProps) {
+export function LevelInfoSheet({
+  sheetRef,
+  currentLevel,
+  currentXp,
+  variant = 'full',
+  onClose,
+}: LevelInfoSheetProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -70,12 +77,18 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
 
   // 다음 티어까지의 진행률 계산
   const currentTierStart = LEVEL_TIERS.find((t) => t.title === currentTitle)?.from ?? 1;
-  const nextTierLevel = nextTier?.fromLevel ?? currentLevel;
-  const tierProgress = nextTier
-    ? Math.min(100, Math.round(((currentLevel - currentTierStart) / (nextTierLevel - currentTierStart)) * 100))
-    : 100;
+  const currentTierStartXp = getTotalXpForLevel(currentTierStart);
+  const nextTierStartXp = nextTier?.xpNeeded ?? currentTierStartXp;
+  const tierXpSpan = Math.max(1, nextTierStartXp - currentTierStartXp);
+  const tierXpProgress = Math.min(
+    100,
+    Math.max(0, Math.round(((currentXp - currentTierStartXp) / tierXpSpan) * 100))
+  );
+  const tierXpCurrent = Math.max(0, currentXp - currentTierStartXp);
+  const tierXpTarget = tierXpSpan;
 
-  const xpToNextTier = nextTier ? nextTier.xpNeeded - currentXp : 0;
+  const xpToNextTier = nextTier ? Math.max(0, nextTier.xpNeeded - currentXp) : 0;
+  const showExtended = variant === 'full';
 
   // 노치를 침범하지 않는 최대 높이 계산
   const screenHeight = Dimensions.get('window').height;
@@ -122,10 +135,10 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
           <View style={styles.progressSection}>
             <View style={styles.progressLabelRow}>
               <ThemedText style={[styles.progressLabel, { color: mutedColor }]}>
-                다음 레벨까지 진행률 {levelInfo.progress}%
+                {levelInfo.current.toLocaleString()} / {levelInfo.next.toLocaleString()} XP ({levelInfo.progress}%)
               </ThemedText>
               <ThemedText style={[styles.progressLabel, { color: mutedColor }]}>
-                {levelInfo.current.toLocaleString()} / {levelInfo.next.toLocaleString()} XP
+                Lv.{levelInfo.level + 1}
               </ThemedText>
             </View>
             <View style={[styles.progressBar, { backgroundColor: themeColors.border }]}>
@@ -182,179 +195,186 @@ export function LevelInfoSheet({ sheetRef, currentLevel, currentXp, onClose }: L
                 style={[
                   styles.tierProgressFill,
                   {
-                    width: `${tierProgress}%`,
+                    width: `${tierXpProgress}%`,
                     backgroundColor: '#A855F7',
                   },
                 ]}
               />
             </View>
             <ThemedText style={[styles.tierProgressText, { color: mutedColor }]}>
-              {currentTitle} → {nextTier.title}까지 레벨 진행률 {tierProgress}%
+              {tierXpProgress}% ({tierXpCurrent.toLocaleString()}/
+              {tierXpTarget.toLocaleString()} XP)
             </ThemedText>
           </View>
         )}
 
-        {/* XP 획득 방법 */}
-        <View style={styles.section}>
-          <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
-            💡 XP 획득 방법
-          </ThemedText>
-          <View style={[styles.xpSourcesCard, { backgroundColor: themeColors.cardElevated }]}>
-            {XP_SOURCES.map((source, index) => (
-              <View
-                key={source.action}
-                style={[
-                  styles.xpSourceRow,
-                  index < XP_SOURCES.length - 1 && {
-                    borderBottomWidth: StyleSheet.hairlineWidth,
-                    borderBottomColor: themeColors.border,
-                  },
-                ]}
-              >
-                <ThemedText style={styles.xpSourceIcon}>{source.icon}</ThemedText>
-                <ThemedText style={styles.xpSourceAction}>{source.action}</ThemedText>
-                <ThemedText
-                  style={[
-                    styles.xpSourceXp,
-                    { color: themeColors.primary },
-                  ]}
-                >
-                  {source.xp}
-                </ThemedText>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* 스트릭 보너스 */}
-        <View style={styles.section}>
-          <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
-            🔥 스트릭 보너스
-          </ThemedText>
-          <ThemedText style={[styles.sectionDesc, { color: mutedColor }]}>
-            연속으로 플레이하면 XP 보너스! (스와이프/라이브 매치)
-          </ThemedText>
-          <View style={[styles.streakCard, { backgroundColor: themeColors.cardElevated }]}>
-            {STREAK_BONUSES.map((bonus, index) => {
-              const intensity = bonus.level / 7; // 0.28 ~ 1.0
-              return (
-                <View
-                  key={bonus.days}
-                  style={[
-                    styles.streakRow,
-                    index < STREAK_BONUSES.length - 1 && {
-                      borderBottomWidth: StyleSheet.hairlineWidth,
-                      borderBottomColor: themeColors.border,
-                    },
-                  ]}
-                >
-                  <View style={styles.streakContentRow}>
-                    {Array.from({ length: bonus.level }).map((_, i) => (
-                      <ThemedText
-                        key={i}
-                        style={[
-                          styles.streakIcon,
-                          { opacity: 0.5 + (i / bonus.level) * 0.5 },
-                        ]}
-                      >
-                        🔥
-                      </ThemedText>
-                    ))}
-                    <ThemedText style={[styles.streakDaysText, { color: mutedColor }]}>
-                      {bonus.days}
-                    </ThemedText>
-                  </View>
+        {showExtended ? (
+          <>
+            {/* XP 획득 방법 */}
+            <View style={styles.section}>
+              <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+                💡 XP 획득 방법
+              </ThemedText>
+              <View style={[styles.xpSourcesCard, { backgroundColor: themeColors.cardElevated }]}>
+                {XP_SOURCES.map((source, index) => (
                   <View
+                    key={source.action}
                     style={[
-                      styles.streakMultiplierChip,
-                      { backgroundColor: `rgba(34, 197, 94, ${0.08 + intensity * 0.12})` },
+                      styles.xpSourceRow,
+                      index < XP_SOURCES.length - 1 && {
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                        borderBottomColor: themeColors.border,
+                      },
                     ]}
                   >
+                    <ThemedText style={styles.xpSourceIcon}>{source.icon}</ThemedText>
+                    <ThemedText style={styles.xpSourceAction}>{source.action}</ThemedText>
                     <ThemedText
                       style={[
-                        styles.streakMultiplierText,
-                        { opacity: 0.7 + intensity * 0.3 },
+                        styles.xpSourceXp,
+                        { color: themeColors.primary },
                       ]}
                     >
-                      {bonus.multiplier}
+                      {source.xp}
                     </ThemedText>
                   </View>
-                </View>
-              );
-            })}
-          </View>
-        </View>
+                ))}
+              </View>
+            </View>
 
-        {/* 티어 목록 */}
-        <View style={styles.section}>
-          <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
-            🏆 티어 목록
-          </ThemedText>
-          <ThemedText style={[styles.sectionDesc, { color: mutedColor }]}>
-            레벨이 올라갈수록 필요 XP가 늘어나요
-          </ThemedText>
-          <View style={styles.levelList}>
-            {LEVEL_TIERS.map((tier, index) => {
-              const nextHigher = LEVEL_TIERS[index - 1]?.from ?? Infinity;
-              const isActive = currentLevel >= tier.from && currentLevel < nextHigher;
-              const requiredXp = getTotalXpForLevel(tier.from);
-
-              return (
-                <View
-                  key={tier.title}
-                  style={[
-                    styles.levelRow,
-                    {
-                      borderColor: isActive ? getLevelColor(tier.from, isDark) : themeColors.border,
-                      backgroundColor: isActive
-                        ? isDark
-                          ? 'rgba(255,255,255,0.08)'
-                          : 'rgba(0,0,0,0.04)'
-                        : themeColors.cardElevated,
-                      borderWidth: isActive ? 2 : StyleSheet.hairlineWidth,
-                    },
-                  ]}
-                >
-                  <View style={styles.levelRowLeft}>
-                    <LevelBadge level={tier.from} size="sm" />
-                    <View style={styles.levelRowText}>
-                      <View style={styles.levelTitleRow}>
-                        <ThemedText style={styles.levelTileTitle}>{tier.emoji}</ThemedText>
+            {/* 스트릭 보너스 */}
+            <View style={styles.section}>
+              <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+                🔥 스트릭 보너스
+              </ThemedText>
+              <ThemedText style={[styles.sectionDesc, { color: mutedColor }]}>
+                연속으로 플레이하면 XP 보너스! (스와이프/라이브 매치)
+              </ThemedText>
+              <View style={[styles.streakCard, { backgroundColor: themeColors.cardElevated }]}>
+                {STREAK_BONUSES.map((bonus, index) => {
+                  const intensity = bonus.level / 7; // 0.28 ~ 1.0
+                  return (
+                    <View
+                      key={bonus.days}
+                      style={[
+                        styles.streakRow,
+                        index < STREAK_BONUSES.length - 1 && {
+                          borderBottomWidth: StyleSheet.hairlineWidth,
+                          borderBottomColor: themeColors.border,
+                        },
+                      ]}
+                    >
+                      <View style={styles.streakContentRow}>
+                        {Array.from({ length: bonus.level }).map((_, i) => (
+                          <ThemedText
+                            key={i}
+                            style={[
+                              styles.streakIcon,
+                              { opacity: 0.5 + (i / bonus.level) * 0.5 },
+                            ]}
+                          >
+                            🔥
+                          </ThemedText>
+                        ))}
+                        <ThemedText style={[styles.streakDaysText, { color: mutedColor }]}>
+                          {bonus.days}
+                        </ThemedText>
+                      </View>
+                      <View
+                        style={[
+                          styles.streakMultiplierChip,
+                          { backgroundColor: `rgba(34, 197, 94, ${0.08 + intensity * 0.12})` },
+                        ]}
+                      >
                         <ThemedText
                           style={[
-                            styles.levelTileTitle,
-                            { color: getLevelColor(tier.from, isDark) },
+                            styles.streakMultiplierText,
+                            { opacity: 0.7 + intensity * 0.3 },
                           ]}
                         >
-                          {tier.title}
+                          {bonus.multiplier}
                         </ThemedText>
-                        {isActive && (
-                          <View style={[styles.activeBadge, { backgroundColor: getLevelColor(tier.from, isDark) }]}>
-                            <ThemedText style={styles.activeBadgeText}>진행 중</ThemedText>
-                          </View>
-                        )}
                       </View>
-                      <ThemedText style={[styles.levelTileDesc, { color: mutedColor }]}>
-                        {tier.desc}
-                      </ThemedText>
                     </View>
-                  </View>
-                  <View style={styles.levelRowRight}>
-                    <ThemedText style={[styles.levelTileRange, { color: mutedColor }]}>
-                      Lv.{tier.from}+
-                    </ThemedText>
-                    <ThemedText style={[styles.levelTileXp, { color: mutedColor }]}>
-                      {requiredXp.toLocaleString()} XP
-                    </ThemedText>
-                  </View>
-                </View>
-              );
-            })}
-          </View>
-        </View>
+                  );
+                })}
+              </View>
+            </View>
 
-        {/* 하단 여백 */}
-        <View style={{ height: 40 }} />
+            {/* 티어 목록 */}
+            <View style={styles.section}>
+              <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+                🏆 티어 목록
+              </ThemedText>
+              <ThemedText style={[styles.sectionDesc, { color: mutedColor }]}>
+                레벨이 올라갈수록 필요 XP가 늘어나요
+              </ThemedText>
+              <View style={styles.levelList}>
+                {LEVEL_TIERS.map((tier, index) => {
+                  const nextHigher = LEVEL_TIERS[index - 1]?.from ?? Infinity;
+                  const isActive = currentLevel >= tier.from && currentLevel < nextHigher;
+                  const requiredXp = getTotalXpForLevel(tier.from);
+
+                  return (
+                    <View
+                      key={tier.title}
+                      style={[
+                        styles.levelRow,
+                        {
+                          borderColor: isActive ? getLevelColor(tier.from, isDark) : themeColors.border,
+                          backgroundColor: isActive
+                            ? isDark
+                              ? 'rgba(255,255,255,0.08)'
+                              : 'rgba(0,0,0,0.04)'
+                            : themeColors.cardElevated,
+                          borderWidth: isActive ? 2 : StyleSheet.hairlineWidth,
+                        },
+                      ]}
+                    >
+                      <View style={styles.levelRowLeft}>
+                        <LevelBadge level={tier.from} size="sm" />
+                        <View style={styles.levelRowText}>
+                          <View style={styles.levelTitleRow}>
+                            <ThemedText style={styles.levelTileTitle}>{tier.emoji}</ThemedText>
+                            <ThemedText
+                              style={[
+                                styles.levelTileTitle,
+                                { color: getLevelColor(tier.from, isDark) },
+                              ]}
+                            >
+                              {tier.title}
+                            </ThemedText>
+                            {isActive && (
+                              <View style={[styles.activeBadge, { backgroundColor: getLevelColor(tier.from, isDark) }]}>
+                                <ThemedText style={styles.activeBadgeText}>진행 중</ThemedText>
+                              </View>
+                            )}
+                          </View>
+                          <ThemedText style={[styles.levelTileDesc, { color: mutedColor }]}>
+                            {tier.desc}
+                          </ThemedText>
+                        </View>
+                      </View>
+                      <View style={styles.levelRowRight}>
+                        <ThemedText style={[styles.levelTileRange, { color: mutedColor }]}>
+                          Lv.{tier.from}+
+                        </ThemedText>
+                        <ThemedText style={[styles.levelTileXp, { color: mutedColor }]}>
+                          {requiredXp.toLocaleString()} XP
+                        </ThemedText>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+
+            {/* 하단 여백 */}
+            <View style={{ height: 40 }} />
+          </>
+        ) : (
+          <View style={{ height: 12 }} />
+        )}
       </BottomSheetScrollView>
     </BottomSheetModal>
   );

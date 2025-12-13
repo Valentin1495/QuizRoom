@@ -209,10 +209,10 @@ export function XpProgressBar({
       {showLabel && (
         <View style={styles.xpBarLabelRow}>
           <ThemedText style={[styles.xpBarLabel, { color: palette.textMuted }]}>
-            {levelInfo.current.toLocaleString()} / {levelInfo.next.toLocaleString()} XP
+            {levelInfo.current.toLocaleString()} / {levelInfo.next.toLocaleString()} XP ({levelInfo.progress}%)
           </ThemedText>
           <ThemedText style={[styles.xpBarLabel, { color: levelColor }]}>
-            {levelInfo.progress}%
+            🌟 레벨 업!
           </ThemedText>
         </View>
       )}

@@ -17,6 +17,7 @@ import {
   type StyleProp,
   type ViewStyle
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge, XpProgressBar } from '@/components/common/level-badge';
@@ -45,11 +46,12 @@ type HistoryEntry = QuizHistoryDoc & { id?: string };
 const HISTORY_PREVIEW_LIMIT = 3;
 
 export default function ProfileScreen() {
-  const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey, isReady } = useAuth();
+  const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey, isReady, refreshUser } = useAuth();
   const { stats: supabaseStats } = useUserStats();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
   const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
@@ -130,6 +132,13 @@ export default function ProfileScreen() {
       void ensureGuestKey();
     }
   }, [ensureGuestKey, guestKey, status]);
+
+  useEffect(() => {
+    if (!isFocused) return;
+    if (!isReady) return;
+    if (status !== 'authenticated') return;
+    void refreshUser();
+  }, [isFocused, isReady, refreshUser, status]);
 
   const guestAvatarId = useMemo(() => deriveGuestAvatarId(guestKey), [guestKey]);
   // Prefer in-memory user (updated via Realtime/applyUserDelta) over cached stats.
@@ -559,34 +568,31 @@ function QuizHistoryPanel({
     );
   }
 
-  const sections = useMemo(
-    () => ({
-      daily: {
-        key: 'daily' as const,
-        title: '오늘의 퀴즈',
-        entries: history.daily,
-        emptyLabel: '오늘의 퀴즈를 완료하고 결과를 확인해보세요.',
-        renderItem: (entry: HistoryEntry) => <DailyHistoryRow key={entry._id ?? entry.id} entry={entry} />,
-      },
-      swipe: {
-        key: 'swipe' as const,
-        title: '스와이프',
-        entries: history.swipe,
-        emptyLabel: '스와이프 세션을 완주하고 결과를 확인해보세요.',
-        renderItem: (entry: HistoryEntry) => <SwipeHistoryRow key={entry._id ?? entry.id} entry={entry} />,
-      },
-      liveMatch: {
-        key: 'liveMatch' as const,
-        title: '라이브 매치',
-        entries: history.liveMatch,
-        emptyLabel: '라이브 매치에 참여하고 결과를 확인해보세요.',
-        renderItem: (entry: HistoryEntry) => (
-          <LiveMatchHistoryRow key={entry._id ?? entry.id} entry={entry} />
-        ),
-      },
-    }),
-    [history]
-  );
+  const sections = {
+    daily: {
+      key: 'daily' as const,
+      title: '오늘의 퀴즈',
+      entries: history.daily,
+      emptyLabel: '오늘의 퀴즈를 완료하고 결과를 확인해보세요.',
+      renderItem: (entry: HistoryEntry) => <DailyHistoryRow key={entry._id ?? entry.id} entry={entry} />,
+    },
+    swipe: {
+      key: 'swipe' as const,
+      title: '스와이프',
+      entries: history.swipe,
+      emptyLabel: '스와이프 세션을 완주하고 결과를 확인해보세요.',
+      renderItem: (entry: HistoryEntry) => <SwipeHistoryRow key={entry._id ?? entry.id} entry={entry} />,
+    },
+    liveMatch: {
+      key: 'liveMatch' as const,
+      title: '라이브 매치',
+      entries: history.liveMatch,
+      emptyLabel: '라이브 매치에 참여하고 결과를 확인해보세요.',
+      renderItem: (entry: HistoryEntry) => (
+        <LiveMatchHistoryRow key={entry._id ?? entry.id} entry={entry} />
+      ),
+    },
+  };
 
   return (
     <Card>

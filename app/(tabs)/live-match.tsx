@@ -15,6 +15,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestNickname } from '@/lib/guest';
+import { saveRecentLiveMatchDeck } from '@/lib/recent-selections';
 
 export default function LiveMatchScreen() {
   const router = useRouter();
@@ -61,6 +62,13 @@ export default function LiveMatchScreen() {
       setSelectedDeckId(liveMatchDecks[0].id);
     }
   }, [isDecksLoading, liveMatchDecks, selectedDeckId]);
+
+  useEffect(() => {
+    if (!selectedDeckId) return;
+    const selectedDeck = liveMatchDecks.find((deck) => deck.id === selectedDeckId);
+    if (!selectedDeck) return;
+    void saveRecentLiveMatchDeck(selectedDeck);
+  }, [liveMatchDecks, selectedDeckId]);
 
   useEffect(() => {
     if (isGuest && !guestKey) {

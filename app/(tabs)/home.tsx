@@ -1,12 +1,11 @@
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 import { Link, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { TextInput as RNTextInput } from 'react-native';
 import {
   Alert,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -14,11 +13,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { LevelBadge } from '@/components/common/level-badge';
-import { LevelInfoSheet } from '@/components/common/level-info-sheet';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -26,10 +22,12 @@ import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useDailyQuiz } from '@/hooks/use-daily-quiz';
-import { extractJoinErrorMessage, useJoinLiveMatchRoom } from '@/hooks/use-live-match-room';
+import { extractJoinErrorMessage, useCreateLiveMatchRoom, useJoinLiveMatchRoom } from '@/hooks/use-live-match-room';
 import { useAuth } from '@/hooks/use-unified-auth';
-import { deriveGuestAvatarId, deriveGuestNickname } from '@/lib/guest';
-import { calculateLevel } from '@/lib/level';
+import { getDeckIcon } from '@/lib/deck-icons';
+import { deriveGuestNickname } from '@/lib/guest';
+import type { RecentLiveMatchDeck, RecentSwipeCategory } from '@/lib/recent-selections';
+import { loadRecentLiveMatchDeck, loadRecentSwipeCategory } from '@/lib/recent-selections';
 
 function formatTimeLeft(target: Date) {
   const diff = target.getTime() - Date.now();
@@ -46,8 +44,10 @@ export default function HomeScreen() {
   const { status: authStatus, user, guestKey, ensureGuestKey, isConvexReady } = useAuth();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
   const dailyQuiz = useDailyQuiz();
   const joinLiveMatchRoom = useJoinLiveMatchRoom();
+  const createLiveMatchRoom = useCreateLiveMatchRoom();
   const [timeLeft, setTimeLeft] = useState(() => {
     const nextReset = new Date();
     nextReset.setHours(24, 0, 0, 0);
@@ -57,8 +57,10 @@ export default function HomeScreen() {
   const [joinNickname, setJoinNickname] = useState(user?.handle ?? '');
   const [isJoining, setIsJoining] = useState(false);
   const [isClearingStorage, setIsClearingStorage] = useState(false);
+  const [isQuickCreating, setIsQuickCreating] = useState(false);
   const joinNicknameInputRef = useRef<RNTextInput | null>(null);
-  const levelSheetRef = useRef<BottomSheetModal>(null);
+  const [recentSwipeCategory, setRecentSwipeCategory] = useState<RecentSwipeCategory | null>(null);
+  const [recentLiveMatchDeck, setRecentLiveMatchDeck] = useState<RecentLiveMatchDeck | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -127,8 +129,6 @@ export default function HomeScreen() {
 
   const isAuthenticated = authStatus === 'authenticated' && !!user;
   const isGuest = authStatus === 'guest';
-  const greetingName = isAuthenticated ? user.handle : '';
-  const currentLevel = useMemo(() => (user ? calculateLevel(user.xp).level : 1), [user]);
 
   useEffect(() => {
     const loadCompletion = async () => {
@@ -165,7 +165,17 @@ export default function HomeScreen() {
     [guestKey, isGuest]
   );
 
-  const guestAvatarId = useMemo(() => deriveGuestAvatarId(guestKey), [guestKey]);
+  useEffect(() => {
+    if (!isFocused) return;
+    void (async () => {
+      const [category, deck] = await Promise.all([
+        loadRecentSwipeCategory(),
+        loadRecentLiveMatchDeck(),
+      ]);
+      setRecentSwipeCategory(category);
+      setRecentLiveMatchDeck(deck);
+    })();
+  }, [isFocused]);
 
   useEffect(() => {
     if (!derivedGuestNickname) return;
@@ -209,6 +219,54 @@ export default function HomeScreen() {
     void handleJoinLiveMatchRoom();
   }, [handleJoinLiveMatchRoom, isCodeValid, isJoining]);
 
+  const handleQuickStartSwipe = useCallback(() => {
+    const slug = recentSwipeCategory?.slug;
+    if (!slug) {
+      router.push('/swipe');
+      return;
+    }
+    router.push({ pathname: '/swipe', params: { category: slug } });
+  }, [recentSwipeCategory?.slug, router]);
+
+  const handleQuickCreateRoom = useCallback(async () => {
+    if (isQuickCreating) return;
+    if (!recentLiveMatchDeck?.id) {
+      router.push('/live-match');
+      return;
+    }
+
+    setIsQuickCreating(true);
+    try {
+      const needsGuestKey = authStatus !== 'authenticated' || isConvexReady === false;
+      const guestKeyValue = needsGuestKey ? guestKey ?? (await ensureGuestKey()) : undefined;
+      const nickname = user?.handle ?? derivedGuestNickname ?? undefined;
+
+      const result = await createLiveMatchRoom({
+        deckId: recentLiveMatchDeck.id,
+        nickname,
+        guestKey: guestKeyValue,
+      });
+
+      router.replace(`/room/${result.code}`);
+    } catch (error) {
+      const message = extractJoinErrorMessage(error);
+      Alert.alert('생성 실패', message);
+    } finally {
+      setIsQuickCreating(false);
+    }
+  }, [
+    authStatus,
+    createLiveMatchRoom,
+    derivedGuestNickname,
+    ensureGuestKey,
+    guestKey,
+    isConvexReady,
+    isQuickCreating,
+    recentLiveMatchDeck?.id,
+    router,
+    user?.handle,
+  ]);
+
   const handleClearAsyncStorage = useCallback(() => {
     if (isClearingStorage) return;
     Alert.alert(
@@ -236,232 +294,243 @@ export default function HomeScreen() {
     );
   }, [isClearingStorage]);
 
-  const openLevelSheet = useCallback(() => {
-    levelSheetRef.current?.present();
-  }, []);
-
-  const closeLevelSheet = useCallback(() => {
-    levelSheetRef.current?.dismiss();
-  }, []);
-
   return (
-    <BottomSheetModalProvider>
-      <ThemedView style={styles.container}>
-        <ScrollView
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl + insets.bottom },
-          ]}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+    <ThemedView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl + insets.bottom },
+        ]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.section}>
+          <SectionHeader title="빠른 시작" tagline="최근 선택으로 바로 플레이" muted={muted} />
+          <View style={[styles.quickStartCard, { backgroundColor: cardBackground, borderColor }]}>
+            <View style={styles.quickStartRow}>
+              <View style={styles.quickStartRowLeft}>
+                <IconSymbol
+                  name={(recentSwipeCategory?.icon as IconSymbolName) ?? 'rectangle.grid.2x2'}
+                  size={24}
+                  color={textColor}
+                  style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
+                />
+                <View style={styles.quickStartRowText}>
+                  <ThemedText type="defaultSemiBold">스와이프</ThemedText>
+                  <ThemedText style={[styles.quickStartHint, { color: muted }]}>
+                    {recentSwipeCategory?.title ?? '최근 카테고리 없음'}
+                  </ThemedText>
+                </View>
+              </View>
+              <Button
+                variant="secondary"
+                size="sm"
+                rounded="full"
+                onPress={handleQuickStartSwipe}
+              >
+                시작
+              </Button>
+            </View>
+
+            <View style={styles.quickStartRow}>
+              <View style={styles.quickStartRowLeft}>
+                <IconSymbol
+                  name={recentLiveMatchDeck?.slug ? getDeckIcon(recentLiveMatchDeck.slug) : 'sparkles'}
+                  size={24}
+                  color={textColor}
+                  style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
+                />
+                <View style={styles.quickStartRowText}>
+                  <ThemedText type="defaultSemiBold">퀴즈룸 생성</ThemedText>
+                  <ThemedText style={[styles.quickStartHint, { color: muted }]}>
+                    {recentLiveMatchDeck?.title ?? '최근 덱 없음'}
+                  </ThemedText>
+                </View>
+              </View>
+              <Button
+                variant="default"
+                size="sm"
+                rounded="full"
+                onPress={handleQuickCreateRoom}
+                loading={isQuickCreating}
+              >
+                {recentLiveMatchDeck ? '생성' : '선택'}
+              </Button>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <SectionHeader title="오늘의 퀴즈" tagline="60초 O/X 퀴즈" muted={muted} />
           <View
             style={[
-              styles.welcomeCard,
+              styles.dailyCard,
               { backgroundColor: cardBackground, borderColor },
             ]}
           >
-            {isAuthenticated && user ? (
-              <Avatar
-                uri={user.avatarUrl}
-                name={user.handle}
-                size="lg"
-                radius={Radius.pill}
-              />
-            ) : (
-              <GuestAvatar
-                size="lg"
-                radius={Radius.pill}
-                guestId={guestAvatarId}
-              />
-            )}
-            {isAuthenticated && user ? (
-              <Pressable onPress={openLevelSheet} hitSlop={8}>
-                <LevelBadge xp={user.xp} size="sm" showTitle />
-              </Pressable>
-            ) : null}
-            <View style={styles.welcomeText}>
-              <View style={styles.welcomeNameRow}>
-                <ThemedText type="subtitle" style={styles.welcomeGreeting}>
-                  안녕하세요. {greetingName}
-                </ThemedText>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <SectionHeader title="오늘의 퀴즈" tagline="60초 O/X 퀴즈" muted={muted} />
-            <View
-              style={[
-                styles.dailyCard,
-                { backgroundColor: cardBackground, borderColor },
-              ]}
-            >
-              <View style={styles.dailyHeadlineContainer}>
-                {dailyHeadline.state === 'loading' ? (
+            <View style={styles.dailyHeadlineContainer}>
+              {dailyHeadline.state === 'loading' ? (
+                <View
+                  style={[
+                    styles.dailyHeadlineSkeleton,
+                    { backgroundColor: dailyHeadlineSkeletonColor },
+                  ]}
+                />
+              ) : dailyHeadline.state === 'ready' && dailyHeadline.category ? (
+                <View style={styles.dailyHeadlineRow}>
+                  <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
                   <View
                     style={[
-                      styles.dailyHeadlineSkeleton,
-                      { backgroundColor: dailyHeadlineSkeletonColor },
+                      styles.dailyHeadlineBadge,
+                      { borderColor, backgroundColor: palette.card },
                     ]}
-                  />
-                ) : dailyHeadline.state === 'ready' && dailyHeadline.category ? (
-                  <View style={styles.dailyHeadlineRow}>
-                    <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
-                    <View
-                      style={[
-                        styles.dailyHeadlineBadge,
-                        { borderColor, backgroundColor: palette.card },
-                      ]}
-                    >
-                      <IconSymbol
-                        name={dailyHeadline.category.icon}
-                        size={20}
-                        color={palette.text}
-                      />
-                      <ThemedText style={styles.dailyHeadlineBadgeLabel}>
-                        {dailyHeadline.category.label}
-                      </ThemedText>
-                    </View>
-                    {dailyHeadline.suffix ? (
-                      <ThemedText style={styles.dailyHeadline}>{dailyHeadline.suffix}</ThemedText>
-                    ) : null}
-                  </View>
-                ) : (
-                  <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
-                )}
-              </View>
-              {hasDailyQuiz ? (
-                <Link href="/daily" asChild>
-                  <Button
-                    variant="default"
-                    size="lg"
-                    rounded="full"
-                    style={styles.primaryButton}
                   >
-                    {dailyCTA}
-                  </Button>
-                </Link>
+                    <IconSymbol
+                      name={dailyHeadline.category.icon}
+                      size={20}
+                      color={palette.text}
+                    />
+                    <ThemedText style={styles.dailyHeadlineBadgeLabel}>
+                      {dailyHeadline.category.label}
+                    </ThemedText>
+                  </View>
+                  {dailyHeadline.suffix ? (
+                    <ThemedText style={styles.dailyHeadline}>{dailyHeadline.suffix}</ThemedText>
+                  ) : null}
+                </View>
               ) : (
+                <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
+              )}
+            </View>
+            {hasDailyQuiz ? (
+              <Link href="/daily" asChild>
                 <Button
                   variant="default"
                   size="lg"
                   rounded="full"
                   style={styles.primaryButton}
-                  loading={isLoadingDailyQuiz}
-                  disabled={!isLoadingDailyQuiz}
                 >
                   {dailyCTA}
                 </Button>
-              )}
-              <View
-                style={[
-                  styles.timerPill,
-                  { borderColor },
-                ]}
-              >
-                <IconSymbol
-                  name='hourglass'
-                  size={18}
-                  color={textColor}
-                  style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
-                />
-                <ThemedText style={styles.timerLabel}>
-                  {timeLeft}
-                </ThemedText>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" muted={muted} />
-            <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
-            >
-              <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
-              <TextInput
-                value={liveMatchRoomCode}
-                onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
-                placeholder="A1B2C3"
-                autoCapitalize="characters"
-                autoCorrect={false}
-                autoComplete="off"
-                importantForAutofill="no"
-                submitBehavior="submit"
-                returnKeyType="next"
-                onSubmitEditing={() => joinNicknameInputRef.current?.focus()}
-                maxLength={6}
-                style={[styles.partyInput, { backgroundColor: palette.background, borderColor, color: palette.text, letterSpacing: 4 }]}
-                placeholderTextColor={muted}
-                editable={!isJoining}
-              />
-              <TextInput
-                ref={joinNicknameInputRef}
-                value={joinNickname}
-                onChangeText={setJoinNickname}
-                placeholder="닉네임"
-                maxLength={24}
-                autoCapitalize="none"
-                autoCorrect={false}
-                autoComplete="nickname"
-                returnKeyType="done"
-                onSubmitEditing={handleJoinLiveMatchRoomSubmit}
-                editable={!isGuest}
-                selectTextOnFocus={!isGuest}
-                style={[
-                  styles.partyInput,
-                  { backgroundColor: palette.background, borderColor, color: palette.text },
-                  isGuest && { backgroundColor: palette.cardElevated, color: subtle },
-                ]}
-                placeholderTextColor={muted}
-              />
+              </Link>
+            ) : (
               <Button
                 variant="default"
                 size="lg"
                 rounded="full"
-                style={styles.joinButton}
-                textStyle={styles.joinButtonLabel}
-                onPress={handleJoinLiveMatchRoom}
-                disabled={!isCodeValid}
-                loading={isJoining}
-                fullWidth
+                style={styles.primaryButton}
+                loading={isLoadingDailyQuiz}
+                disabled={!isLoadingDailyQuiz}
               >
-                {isJoining ? '참가 중…' : '참가하기'}
+                {dailyCTA}
               </Button>
-              <Link href="/live-match" asChild>
-                <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.right' size={16} color={textColor} />}>
-                  퀴즈룸 만들기
-                </Button>
-              </Link>
+            )}
+            <View
+              style={[
+                styles.timerPill,
+                { borderColor },
+              ]}
+            >
+              <IconSymbol
+                name='hourglass'
+                size={18}
+                color={textColor}
+                style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
+              />
+              <ThemedText style={styles.timerLabel}>
+                {timeLeft}
+              </ThemedText>
             </View>
           </View>
+        </View>
 
-          {__DEV__ ? (
-            <View style={styles.section}>
-              <SectionHeader title="디버그" tagline="개발 중 전용 도구" muted={muted} />
-              <View style={[styles.debugCard, { backgroundColor: cardBackground, borderColor }]}>
-                <ThemedText style={styles.debugTitle}>AsyncStorage 초기화</ThemedText>
-                <ThemedText style={[styles.debugDescription, { color: muted }]}>
-                  로컬에 저장된 온보딩, 세션 등 모든 값을 삭제합니다. 개발 중에만 사용하세요.
-                </ThemedText>
-                <Button
-                  variant="destructive"
-                  size="md"
-                  rounded="full"
-                  onPress={handleClearAsyncStorage}
-                  loading={isClearingStorage}
-                  disabled={isClearingStorage}
-                  style={styles.debugButton}
-                  textStyle={styles.debugButtonLabel}
-                >
-                  AsyncStorage 초기화
-                </Button>
-              </View>
+        <View style={styles.section}>
+          <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" muted={muted} />
+          <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
+          >
+            <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
+            <TextInput
+              value={liveMatchRoomCode}
+              onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+              placeholder="A1B2C3"
+              autoCapitalize="characters"
+              autoCorrect={false}
+              autoComplete="off"
+              importantForAutofill="no"
+              submitBehavior="submit"
+              returnKeyType="next"
+              onSubmitEditing={() => joinNicknameInputRef.current?.focus()}
+              maxLength={6}
+              style={[styles.partyInput, { backgroundColor: palette.background, borderColor, color: palette.text, letterSpacing: 4 }]}
+              placeholderTextColor={muted}
+              editable={!isJoining}
+            />
+            <TextInput
+              ref={joinNicknameInputRef}
+              value={joinNickname}
+              onChangeText={setJoinNickname}
+              placeholder="닉네임"
+              maxLength={24}
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="nickname"
+              returnKeyType="done"
+              onSubmitEditing={handleJoinLiveMatchRoomSubmit}
+              editable={!isGuest}
+              selectTextOnFocus={!isGuest}
+              style={[
+                styles.partyInput,
+                { backgroundColor: palette.background, borderColor, color: palette.text },
+                isGuest && { backgroundColor: palette.cardElevated, color: subtle },
+              ]}
+              placeholderTextColor={muted}
+            />
+            <Button
+              variant="default"
+              size="lg"
+              rounded="full"
+              style={styles.joinButton}
+              textStyle={styles.joinButtonLabel}
+              onPress={handleJoinLiveMatchRoom}
+              disabled={!isCodeValid}
+              loading={isJoining}
+              fullWidth
+            >
+              {isJoining ? '참가 중…' : '참가하기'}
+            </Button>
+            <Link href="/live-match" asChild>
+              <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.up.forward' size={16} color={textColor} />}>
+                퀴즈룸 만들기
+              </Button>
+            </Link>
+          </View>
+        </View>
+
+        {__DEV__ ? (
+          <View style={styles.section}>
+            <SectionHeader title="디버그" tagline="개발 중 전용 도구" muted={muted} />
+            <View style={[styles.debugCard, { backgroundColor: cardBackground, borderColor }]}>
+              <ThemedText style={styles.debugTitle}>AsyncStorage 초기화</ThemedText>
+              <ThemedText style={[styles.debugDescription, { color: muted }]}>
+                로컬에 저장된 온보딩, 세션 등 모든 값을 삭제합니다. 개발 중에만 사용하세요.
+              </ThemedText>
+              <Button
+                variant="destructive"
+                size="md"
+                rounded="full"
+                onPress={handleClearAsyncStorage}
+                loading={isClearingStorage}
+                disabled={isClearingStorage}
+                style={styles.debugButton}
+                textStyle={styles.debugButtonLabel}
+              >
+                AsyncStorage 초기화
+              </Button>
             </View>
-          ) : null}
-        </ScrollView>
-        <LevelInfoSheet sheetRef={levelSheetRef} currentLevel={currentLevel} currentXp={user?.xp ?? 0} onClose={closeLevelSheet} />
-      </ThemedView>
-    </BottomSheetModalProvider>
+          </View>
+        ) : null}
+      </ScrollView>
+    </ThemedView>
   );
 }
 
@@ -483,12 +552,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     gap: Spacing.xl,
   },
-  welcomeCard: {
+  quickStartCard: {
     borderWidth: 1,
     borderRadius: Radius.lg,
     padding: Spacing.lg,
-    alignItems: 'center',
     gap: Spacing.md,
+  },
+  quickStartRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.md,
+    paddingVertical: Spacing.xs,
+  },
+  quickStartRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    flex: 1,
+  },
+  quickStartRowText: {
+    flex: 1,
+    gap: 2,
+  },
+  quickStartHint: {
+    fontSize: 12,
   },
   avatarFrame: {
     width: 60,
@@ -513,17 +601,6 @@ const styles = StyleSheet.create({
   avatarInitial: {
     fontSize: 28,
     fontWeight: '700',
-  },
-  welcomeText: {
-    alignItems: 'center',
-  },
-  welcomeNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  welcomeGreeting: {
-    textAlign: 'center',
   },
   section: {
     gap: Spacing.lg,

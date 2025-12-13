@@ -1,5 +1,6 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -11,14 +12,32 @@ import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { CategoryMeta } from '@/constants/categories';
+import { categories } from '@/constants/categories';
 import { Spacing } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { saveRecentSwipeCategory } from '@/lib/recent-selections';
 
 export default function SwipeScreen() {
+  const params = useLocalSearchParams<{ category?: string }>();
   const [selectedCategory, setSelectedCategory] = useState<CategoryMeta | null>(null);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const insets = useSafeAreaInsets();
   const iconColor = useThemeColor({}, 'text');
+
+  useEffect(() => {
+    if (selectedCategory) return;
+    const slug = typeof params.category === 'string' ? params.category : undefined;
+    if (!slug) return;
+    const found = categories.find((category) => category.slug === slug);
+    if (!found) return;
+    setSelectedCategory(found);
+    void saveRecentSwipeCategory(found);
+  }, [params.category, selectedCategory]);
+
+  const handleSelectCategory = useCallback((category: CategoryMeta) => {
+    setSelectedCategory(category);
+    void saveRecentSwipeCategory(category);
+  }, []);
 
   const handleReset = useCallback(() => {
     if (!selectedCategory) {
@@ -37,7 +56,7 @@ export default function SwipeScreen() {
   if (!selectedCategory) {
     return (
       <ThemedView style={[styles.container, topStyle]}>
-        <CategoryPicker onSelect={setSelectedCategory} />
+        <CategoryPicker onSelect={handleSelectCategory} />
       </ThemedView>
     );
   }
