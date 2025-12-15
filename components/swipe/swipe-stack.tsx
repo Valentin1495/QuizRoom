@@ -741,19 +741,34 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     sessionLoggedRef.current = true;
     void (async () => {
       try {
-        await logHistory({
-          mode: 'swipe',
-          sessionId,
-          data: {
-            category,
-            tags: tags && tags.length ? tags : undefined,
-            answered: sessionStats.answered,
-            correct: sessionStats.correct,
-            maxStreak: sessionStats.maxStreak,
-            avgResponseMs,
-            totalScoreDelta: sessionStats.totalScoreDelta,
-          },
-        });
+        const data = {
+          category,
+          tags: tags && tags.length ? tags : undefined,
+          answered: sessionStats.answered,
+          correct: sessionStats.correct,
+          maxStreak: sessionStats.maxStreak,
+          avgResponseMs,
+          totalScoreDelta: sessionStats.totalScoreDelta,
+        };
+
+        if (FEATURE_FLAGS.auth) {
+          const headers = await getFunctionAuthHeaders();
+          const { data: result, error } = await supabase.functions.invoke('log-swipe-result', {
+            headers,
+            body: { sessionId, data },
+          });
+          if (error) {
+            console.warn('Failed to log swipe result', error);
+          }
+          const payload = (result as { data?: { xpGain?: number; xp?: number } })?.data;
+          if (payload && typeof payload.xp === 'number' && applyUserDelta) {
+            applyUserDelta({ xp: payload.xp });
+          } else if (payload && typeof payload.xpGain === 'number' && applyUserDelta && user) {
+            applyUserDelta({ xp: (user.xp ?? 0) + payload.xpGain });
+          }
+        } else {
+          await logHistory({ mode: 'swipe', sessionId, data });
+        }
       } catch (error) {
         console.warn('Failed to log swipe history', error);
         sessionLoggedRef.current = false;
@@ -771,6 +786,9 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     sessionStats.totalTimeMs,
     showCompletion,
     tags,
+    getFunctionAuthHeaders,
+    applyUserDelta,
+    user,
   ]);
 
   useEffect(() => {

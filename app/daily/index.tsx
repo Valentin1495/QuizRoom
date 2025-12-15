@@ -1735,10 +1735,13 @@ function SupabaseDailyQuizScreen() {
           console.warn('log-daily-result error', error);
           return;
         }
-        const payload = (data as { data?: { xpGain?: number; totalCorrect?: number; totalPlayed?: number; xp?: number } })?.data;
+        const payload = (data as {
+          data?: { xpGain?: number; totalCorrect?: number; totalPlayed?: number; xp?: number; streak?: number };
+        })?.data;
         if (payload && applyUserDelta) {
           applyUserDelta({
             xp: payload.xp ?? (user?.xp ?? 0) + (payload.xpGain ?? 0),
+            streak: payload.streak ?? user?.streak,
             totalCorrect: payload.totalCorrect ?? user?.totalCorrect,
             totalPlayed: payload.totalPlayed ?? user?.totalPlayed,
           });
@@ -1747,7 +1750,7 @@ function SupabaseDailyQuizScreen() {
         console.warn('Failed to update daily stats', err);
       }
     },
-    [applyUserDelta, authStatus, user?.totalCorrect, user?.totalPlayed, user?.xp]
+    [applyUserDelta, authStatus, user?.streak, user?.totalCorrect, user?.totalPlayed, user?.xp]
   );
 
   return (

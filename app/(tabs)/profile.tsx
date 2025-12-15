@@ -154,18 +154,21 @@ export default function ProfileScreen() {
       ...(history.liveMatch ?? []),
     ];
     if (!allEntries.length) return 0;
+
+    const getKstDayKey = (ms: number) => {
+      const kstMs = ms + 9 * 60 * 60 * 1000;
+      return new Date(kstMs).toISOString().slice(0, 10);
+    };
+
     const dates = new Set<string>();
     allEntries.forEach((entry) => {
       const d = new Date(entry.createdAt);
-      const key = d.toISOString().slice(0, 10); // UTC-based date key
+      const key = getKstDayKey(d.getTime());
       dates.add(key);
     });
     let streak = 0;
-    const today = new Date();
     for (;;) {
-      const key = new Date(today.getTime() - streak * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .slice(0, 10);
+      const key = getKstDayKey(Date.now() - streak * 24 * 60 * 60 * 1000);
       if (dates.has(key)) {
         streak += 1;
       } else {
@@ -174,7 +177,7 @@ export default function ProfileScreen() {
     }
     return streak;
   }, [history]);
-  const displayStreak = activityStreak ?? baseStreak;
+  const displayStreak = Math.max(baseStreak, activityStreak ?? 0);
 
   const handleOpenHistorySheet = useCallback((section: HistorySectionKey) => {
     setHistorySheetSection(section);

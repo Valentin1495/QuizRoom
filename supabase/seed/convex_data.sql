@@ -1,3 +1,5 @@
+-- Convex import seed data (DO NOT run as migration on remote DBs with existing data)
+-- This file was moved out of `supabase/migrations/` to avoid accidental production inserts.
 -- users
 INSERT INTO users (id, identity_id, provider, handle, avatar_url, interests, streak, last_streak_date, xp, total_correct, total_played, cosmetics, skill, session_pref, created_at) VALUES
 ('578a1a12-3567-5616-9013-f27aec055825', 'securetoken.google.com|https://securetoken.google.com/quizroom-3737d|xxKyjfxIgARLFyoGSwJ4YvkQCSX2', 'securetoken.google.com', 'userkqcsx2', 'https://avatars.dicebear.com/api/initials/quizroom.png', '{}'::text[], 0, NULL, 0, 0, 0, '{}'::text[], '{"global":1200,"tags":[]}'::jsonb, NULL, '2025-10-22T12:38:02.934Z'),
@@ -1668,4 +1670,3 @@ INSERT INTO answers (id, user_id, question_id, answer_token, category, choice_id
 ('cd99120c-0d04-5660-b04c-675b99b2a521', '889cd370-1bd3-585e-b745-d750e245d7de', 'f5c92c6d-9e5b-594b-b7ab-e91f5140bf3f', 'v1:jh74dak6dqx6zwbk049rrr4a317t41b0:3256373954:drama_movie:1762243761342:5687b7669e4b208e64161027', 'drama_movie', 'd', FALSE, 289306, '{"킬러들의쇼핑몰","이동욱","김혜준","킬러"}'::text[], '2025-11-04T08:14:11.648Z'),
 ('cb64da65-5204-57de-91fa-f993a2929d1b', '889cd370-1bd3-585e-b745-d750e245d7de', 'f3b103aa-1011-5801-a743-c0492ae6d3fe', 'v1:jh797x8gn3xcegympxsndxq31d7t4kvw:4192533100:variety_reality:1762783140039:c0e4ee7370558d8817101a63', 'variety_reality', 'a', FALSE, 4867, '{"신서유기","tvN","용볼","소원"}'::text[], '2025-11-10T13:59:05.950Z'),
 ('f167ed96-fb5c-5b78-8c7e-cea6433b82a3', '889cd370-1bd3-585e-b745-d750e245d7de', 'f70541d2-748f-5e60-a901-9e4a27a5ae7b', 'v1:jh7dh82ak60p7ks6trrg9qjted7t5fbp:540636474:fashion_life:1762781610974:7bc428584b54bfae1634ff7b', 'fashion_life', 'c', FALSE, 5220, '{"실용세대","가성비","효율성"}'::text[], '2025-11-10T13:33:37.216Z');
-

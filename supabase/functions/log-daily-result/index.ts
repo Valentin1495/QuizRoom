@@ -20,6 +20,40 @@ const DAILY_TOTAL_QUESTIONS = 6;
 const isNumber = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 const isString = (v: unknown): v is string => typeof v === 'string' && v.trim().length > 0;
 
+function getKstDayKey(ms: number) {
+  const kstMs = ms + 9 * 60 * 60 * 1000;
+  return new Date(kstMs).toISOString().slice(0, 10);
+}
+
+async function ensureActivityStreak(supabaseAdmin: any, dbUser: { id: string; streak?: number | null }) {
+  const now = Date.now();
+  const dayKey = getKstDayKey(now);
+  const yesterdayKey = getKstDayKey(now - 24 * 60 * 60 * 1000);
+
+  const { error: insertError } = await supabaseAdmin
+    .from('user_activity_days')
+    .insert({ user_id: dbUser.id, day_key: dayKey });
+
+  if (insertError) {
+    // 23505 = unique_violation (already marked today)
+    if (insertError.code === '23505') {
+      return { dayKey, streak: dbUser.streak ?? 0, changed: false };
+    }
+    throw insertError;
+  }
+
+  const { data: yesterdayRow } = await supabaseAdmin
+    .from('user_activity_days')
+    .select('day_key')
+    .eq('user_id', dbUser.id)
+    .eq('day_key', yesterdayKey)
+    .maybeSingle();
+
+  const nextStreak = yesterdayRow ? (dbUser.streak ?? 0) + 1 : 1;
+  await supabaseAdmin.from('users').update({ streak: nextStreak }).eq('id', dbUser.id);
+  return { dayKey, streak: nextStreak, changed: true };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -75,11 +109,11 @@ serve(async (req) => {
       );
     }
 
-    const { data: dbUser, error: userError } = await supabaseAdmin
-      .from('users')
-      .select('id, xp, total_correct, total_played')
-      .eq('identity_id', authUser.id)
-      .single();
+	    const { data: dbUser, error: userError } = await supabaseAdmin
+	      .from('users')
+	      .select('id, xp, streak, total_correct, total_played')
+	      .eq('identity_id', authUser.id)
+	      .single();
 
     if (userError || !dbUser) {
       return new Response(
@@ -88,6 +122,7 @@ serve(async (req) => {
       );
     }
 
+    const activity = await ensureActivityStreak(supabaseAdmin, dbUser);
     const questionsAnswered = isNumber(total) ? total : DAILY_TOTAL_QUESTIONS;
 
     // Block duplicate rewards for the same sessionId (any existing row counts)
@@ -99,20 +134,21 @@ serve(async (req) => {
       .eq('session_id', sessionId)
       .limit(1);
 
-    if (!rewardCheckError && (existingRewards?.length ?? 0) > 0) {
-      return new Response(
-        JSON.stringify({
-          data: {
-            alreadyClaimed: true,
-            xpGain: 0,
-            totalCorrect: dbUser.total_correct ?? 0,
-            totalPlayed: dbUser.total_played ?? 0,
-            xp: dbUser.xp ?? 0,
-          },
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-      );
-    }
+	    if (!rewardCheckError && (existingRewards?.length ?? 0) > 0) {
+	      return new Response(
+	        JSON.stringify({
+	          data: {
+	            alreadyClaimed: true,
+	            xpGain: 0,
+	            totalCorrect: dbUser.total_correct ?? 0,
+	            totalPlayed: dbUser.total_played ?? 0,
+	            xp: dbUser.xp ?? 0,
+	            streak: activity.streak,
+	          },
+	        }),
+	        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+	      );
+	    }
 
     let xpGain = correct * DAILY_XP_PER_CORRECT;
 
@@ -154,6 +190,7 @@ serve(async (req) => {
           totalCorrect: updated.data?.total_correct ?? (dbUser.total_correct ?? 0) + correct,
           totalPlayed: updated.data?.total_played ?? (dbUser.total_played ?? 0) + questionsAnswered,
           xp: updated.data?.xp ?? (dbUser.xp ?? 0) + xpGain,
+          streak: activity.streak,
         },
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }

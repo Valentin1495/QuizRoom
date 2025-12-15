@@ -32,6 +32,44 @@ const PAUSABLE_STATUSES = new Set(['countdown', 'question', 'grace', 'reveal', '
 const LIVE_MATCH_PARTICIPATION_XP = 30;
 const LIVE_MATCH_RANK_XP: Record<number, number> = { 1: 100, 2: 50, 3: 30 };
 
+function getKstDayKey(ms: number) {
+  const kstMs = ms + 9 * 60 * 60 * 1000;
+  return new Date(kstMs).toISOString().slice(0, 10);
+}
+
+async function ensureActivityStreakForUser(args: {
+  supabase: any;
+  userId: string;
+  currentStreak: number;
+  nowMs: number;
+}) {
+  const { supabase, userId, currentStreak, nowMs } = args;
+  const dayKey = getKstDayKey(nowMs);
+  const yesterdayKey = getKstDayKey(nowMs - 24 * 60 * 60 * 1000);
+
+  const { error: insertError } = await supabase
+    .from('user_activity_days')
+    .insert({ user_id: userId, day_key: dayKey });
+
+  if (insertError) {
+    if (insertError.code === '23505') {
+      return { dayKey, streak: currentStreak, changed: false };
+    }
+    throw insertError;
+  }
+
+  const { data: yesterdayRow } = await supabase
+    .from('user_activity_days')
+    .select('day_key')
+    .eq('user_id', userId)
+    .eq('day_key', yesterdayKey)
+    .maybeSingle();
+
+  const nextStreak = yesterdayRow ? currentStreak + 1 : 1;
+  await supabase.from('users').update({ streak: nextStreak }).eq('id', userId);
+  return { dayKey, streak: nextStreak, changed: true };
+}
+
 function clampDelay(delayMs?: number) {
   if (!delayMs || Number.isNaN(delayMs)) return ACTION_DELAY_DEFAULT_MS;
   return Math.min(Math.max(delayMs, ACTION_DELAY_MIN_MS), ACTION_DELAY_MAX_MS);
@@ -56,8 +94,9 @@ async function awardLiveMatchXpOnce(args: {
   roomId: string;
   room: any;
   participants: any[];
+  nowMs: number;
 }) {
-  const { supabase, roomId, room, participants } = args;
+  const { supabase, roomId, room, participants, nowMs } = args;
 
   const { data: existingAward } = await supabase
     .from('live_match_logs')
@@ -67,12 +106,12 @@ async function awardLiveMatchXpOnce(args: {
     .limit(1)
     .maybeSingle();
 
-  if (existingAward) {
-    console.log('[RoomAction] xp already awarded', { roomId });
-    return { awarded: false, alreadyAwarded: true };
+  const shouldAwardXp = !existingAward;
+  if (!shouldAwardXp) {
+    console.log('[RoomAction] xp already awarded; ensuring streak only', { roomId });
+  } else {
+    console.log('[RoomAction] awarding xp', { roomId, participants: participants.length });
   }
-
-  console.log('[RoomAction] awarding xp', { roomId, participants: participants.length });
 
   const { data: allAnswers } = await supabase
     .from('live_match_answers')
@@ -109,32 +148,45 @@ async function awardLiveMatchXpOnce(args: {
 
     if (!user) continue;
 
+    const activity = await ensureActivityStreakForUser({
+      supabase,
+      userId: p.user_id,
+      currentStreak: user.streak ?? 0,
+      nowMs,
+    });
+
     const rank = i + 1;
     let baseXp = LIVE_MATCH_PARTICIPATION_XP;
     baseXp += LIVE_MATCH_RANK_XP[rank] ?? 0;
-    const xpGain = applyStreakBonus(baseXp, user.streak);
+    const xpGain = shouldAwardXp ? applyStreakBonus(baseXp, activity.streak) : 0;
     const correctCount = correctCountByParticipant.get(p.id) ?? 0;
 
-    await supabase
-      .from('users')
-      .update({
-        xp: user.xp + xpGain,
-        total_played: user.total_played + room.total_rounds,
-        total_correct: user.total_correct + correctCount,
-      })
-      .eq('id', p.user_id);
+    if (shouldAwardXp) {
+      await supabase
+        .from('users')
+        .update({
+          xp: user.xp + xpGain,
+          total_played: user.total_played + room.total_rounds,
+          total_correct: user.total_correct + correctCount,
+        })
+        .eq('id', p.user_id);
 
-    console.log('[RoomAction] xp updated', { roomId, userId: p.user_id, rank, xpGain });
+      console.log('[RoomAction] xp updated', { roomId, userId: p.user_id, rank, xpGain, streak: activity.streak });
+    } else if (activity.changed) {
+      console.log('[RoomAction] streak updated', { roomId, userId: p.user_id, streak: activity.streak });
+    }
   }
 
-  await supabase.from('live_match_logs').insert({
-    room_id: roomId,
-    type: 'xp_awarded',
-    payload: { at: Date.now() },
-  });
+  if (shouldAwardXp) {
+    await supabase.from('live_match_logs').insert({
+      room_id: roomId,
+      type: 'xp_awarded',
+      payload: { at: nowMs },
+    });
 
-  console.log('[RoomAction] xp award complete', { roomId });
-  return { awarded: true, alreadyAwarded: false };
+    console.log('[RoomAction] xp award complete', { roomId });
+  }
+  return { awarded: shouldAwardXp, alreadyAwarded: !shouldAwardXp };
 }
 
 async function logLiveMatchHistoryOnce(args: {
@@ -527,10 +579,10 @@ serve(async (req) => {
 	                .eq('room_id', roomId)
 	                .is('removed_at', null);
 
-	              if (participants?.length) {
-	                await awardLiveMatchXpOnce({ supabase, roomId, room, participants });
-	                await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
-	              }
+		              if (participants?.length) {
+		                await awardLiveMatchXpOnce({ supabase, roomId, room, participants, nowMs: now });
+		                await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
+		              }
 	              newStatus = 'results';
 	              newPhaseEndsAt = null;
 	            } else {
@@ -841,8 +893,8 @@ serve(async (req) => {
 	        if (!participants) {
 	          throw new Error('NO_PARTICIPANTS');
 	        }
-	        await awardLiveMatchXpOnce({ supabase, roomId, room, participants });
-	        await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
+		        await awardLiveMatchXpOnce({ supabase, roomId, room, participants, nowMs: now });
+		        await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
 
 	        await supabase
 	          .from('live_match_rooms')

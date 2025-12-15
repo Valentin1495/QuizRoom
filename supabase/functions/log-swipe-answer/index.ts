@@ -32,6 +32,39 @@ const getStreakMultiplier = (streak: number) => {
 const applyStreakBonus = (baseXp: number, streak: number) =>
   Math.round(baseXp * getStreakMultiplier(streak));
 
+const getKstDayKey = (ms: number) => {
+  const kstMs = ms + 9 * 60 * 60 * 1000;
+  return new Date(kstMs).toISOString().slice(0, 10);
+};
+
+async function ensureActivityStreak(supabaseAdmin: any, dbUser: { id: string; streak?: number | null }) {
+  const now = Date.now();
+  const dayKey = getKstDayKey(now);
+  const yesterdayKey = getKstDayKey(now - 24 * 60 * 60 * 1000);
+
+  const { error: insertError } = await supabaseAdmin
+    .from('user_activity_days')
+    .insert({ user_id: dbUser.id, day_key: dayKey });
+
+  if (insertError) {
+    if (insertError.code === '23505') {
+      return { dayKey, streak: dbUser.streak ?? 0, changed: false };
+    }
+    throw insertError;
+  }
+
+  const { data: yesterdayRow } = await supabaseAdmin
+    .from('user_activity_days')
+    .select('day_key')
+    .eq('user_id', dbUser.id)
+    .eq('day_key', yesterdayKey)
+    .maybeSingle();
+
+  const nextStreak = yesterdayRow ? (dbUser.streak ?? 0) + 1 : 1;
+  await supabaseAdmin.from('users').update({ streak: nextStreak }).eq('id', dbUser.id);
+  return { dayKey, streak: nextStreak, changed: true };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -121,6 +154,8 @@ serve(async (req) => {
         );
       }
 
+      const activity = await ensureActivityStreak(supabaseAdmin, dbUser);
+
       const { data: inserted, error: insertError } = await supabaseAdmin
         .from('answers')
         .insert({
@@ -144,10 +179,9 @@ serve(async (req) => {
       }
 
       // XP/스탯 업데이트 (정답일 때만 XP 지급)
-      const currentStreak = dbUser.streak ?? 0;
+      const currentStreak = activity.streak ?? (dbUser.streak ?? 0);
       const baseXp = isCorrect ? 15 : 0;
       const xpGain = isCorrect ? applyStreakBonus(baseXp, currentStreak) : 0;
-      const nextStreak = isCorrect ? currentStreak + 1 : 0;
 
       const updatedTotalPlayed = (dbUser.total_played ?? 0) + 1;
       const updatedTotalCorrect = (dbUser.total_correct ?? 0) + (isCorrect ? 1 : 0);
@@ -156,7 +190,6 @@ serve(async (req) => {
         .from('users')
         .update({
           xp: (dbUser.xp ?? 0) + xpGain,
-          streak: nextStreak,
           total_played: updatedTotalPlayed,
           total_correct: updatedTotalCorrect,
         })
@@ -168,7 +201,7 @@ serve(async (req) => {
             table: 'answers',
             id: inserted?.id,
             xpGain,
-            streak: nextStreak,
+            streak: currentStreak,
             totalPlayed: updatedTotalPlayed,
             totalCorrect: updatedTotalCorrect,
           },
