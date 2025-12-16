@@ -67,6 +67,8 @@ const PROFILE_FETCH_TIMEOUT_MS = 20000;
 // On initial app boot, don't block UI for the full profile timeout.
 const PROFILE_GATE_TIMEOUT_MS = 5000;
 const GUEST_KEY_STORAGE_KEY = 'quizroomGuestKey';
+// NOTE: SecureStore keys must match /^[A-Za-z0-9._-]+$/ (no ":" etc)
+const PROFILE_CACHE_KEY_PREFIX = 'quizroomProfileCache_';
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
@@ -125,6 +127,56 @@ async function loadGuestKeyValue(): Promise<string | null> {
   return SecureStore.getItemAsync(GUEST_KEY_STORAGE_KEY);
 }
 
+function buildProfileCacheKey(identityId: string) {
+  const safeId = identityId.replace(/[^A-Za-z0-9._-]/g, '_');
+  return `${PROFILE_CACHE_KEY_PREFIX}${safeId}`;
+}
+
+async function storeProfileCache(identityId: string, value: AuthedUser) {
+  try {
+    const key = buildProfileCacheKey(identityId);
+    const serialized = JSON.stringify(value);
+    if (Platform.OS === 'web') {
+      if (typeof window === 'undefined') return;
+      window.localStorage.setItem(key, serialized);
+      return;
+    }
+    await SecureStore.setItemAsync(key, serialized);
+  } catch (err) {
+    console.warn('[SupabaseAuth] Failed to store profile cache', err);
+  }
+}
+
+async function loadProfileCache(identityId: string): Promise<AuthedUser | null> {
+  const key = buildProfileCacheKey(identityId);
+  try {
+    const raw =
+      Platform.OS === 'web'
+        ? typeof window === 'undefined'
+          ? null
+          : window.localStorage.getItem(key)
+        : await SecureStore.getItemAsync(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<AuthedUser> | null;
+    if (!parsed || typeof parsed !== 'object') return null;
+    if (
+      typeof parsed.id !== 'string' ||
+      typeof parsed.handle !== 'string' ||
+      typeof parsed.provider !== 'string' ||
+      typeof parsed.streak !== 'number' ||
+      typeof parsed.xp !== 'number' ||
+      typeof parsed.totalCorrect !== 'number' ||
+      typeof parsed.totalPlayed !== 'number' ||
+      !Array.isArray(parsed.interests)
+    ) {
+      return null;
+    }
+    return parsed as AuthedUser;
+  } catch {
+    return null;
+  }
+}
+
 // XP -> 레벨 변환 함수
 function calculateLevel(xp: number): {
   level: number;
@@ -170,6 +222,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
   const statusRef = useRef<AuthStatus>('loading');
   const userRef = useRef<AuthedUser | null>(null);
   const authRequestIdRef = useRef(0);
+  const identityIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     statusRef.current = status;
@@ -343,10 +396,41 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
           const requestId = ++authRequestIdRef.current;
           const gateOnTimeout = currentStatus === 'loading';
+          identityIdRef.current = session?.user?.id ?? null;
           const fallback = session?.user ? buildFallbackUserFromSession(session.user) : null;
           const profilePromise = fetchUserProfile(session.user.id);
 
           try {
+            if (gateOnTimeout) {
+              const cached = await loadProfileCache(session.user.id);
+              if (cached) {
+                if (requestId !== authRequestIdRef.current) {
+                  return;
+                }
+                setUser(cached);
+                setStatus('authenticated');
+                setError('프로필을 동기화 중이에요…');
+                setIsReady(true);
+
+                profilePromise
+                  .then((lateUser) => {
+                    if (authRequestIdRef.current !== requestId) return;
+                    const authed = toAuthedUser(lateUser);
+                    setUser(authed);
+                    setError(null);
+                    void storeProfileCache(session.user.id, authed);
+                  })
+                  .catch((lateErr) => {
+                    if (__DEV__) {
+                      console.warn('[SupabaseAuth] Late profile fetch failed', lateErr);
+                    }
+                    // Keep cached profile; surface a non-blocking banner message.
+                    setError('프로필 동기화에 실패했어요. 네트워크 상태를 확인해주세요.');
+                  });
+                return;
+              }
+            }
+
             if (__DEV__) {
               console.log('[SupabaseAuth] Fetching user profile for:', session.user.id);
             }
@@ -366,9 +450,11 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
                 `(took ${Date.now() - startedAt}ms)`
               );
             }
-            setUser(toAuthedUser(dbUser));
+            const authed = toAuthedUser(dbUser);
+            setUser(authed);
             setStatus('authenticated');
             setError(null);
+            void storeProfileCache(session.user.id, authed);
           } catch (err) {
             if (requestId !== authRequestIdRef.current) {
               return;
@@ -397,8 +483,10 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
                 profilePromise
                   .then((lateUser) => {
                     if (authRequestIdRef.current !== requestId) return;
-                    setUser(toAuthedUser(lateUser));
+                    const authed = toAuthedUser(lateUser);
+                    setUser(authed);
                     setError(null);
+                    void storeProfileCache(session.user.id, authed);
                   })
                   .catch((lateErr) => {
                     if (__DEV__) {
@@ -446,6 +534,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       if (status !== 'authenticated') return;
       const { data: { session } } = await supabase.auth.getSession();
       const identityId = session?.user?.id;
+      identityIdRef.current = identityId ?? null;
       if (!identityId) return;
 
       // Initial fetch to ensure we sync with server state
@@ -455,7 +544,9 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
         .eq('identity_id', identityId)
         .single();
       if (dbUser && !cancelled) {
-        setUser(toAuthedUser(dbUser));
+        const authed = toAuthedUser(dbUser);
+        setUser(authed);
+        void storeProfileCache(identityId, authed);
       }
 
       const channel = supabase
@@ -624,13 +715,18 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
   const applyUserDelta = useCallback((delta: Partial<Pick<AuthedUser, 'xp' | 'streak' | 'totalCorrect' | 'totalPlayed'>>) => {
     setUser((prev) => {
       if (!prev) return prev;
-      return {
+      const next = {
         ...prev,
         xp: delta.xp !== undefined ? delta.xp : prev.xp,
         streak: delta.streak !== undefined ? delta.streak : prev.streak,
         totalCorrect: delta.totalCorrect !== undefined ? delta.totalCorrect : prev.totalCorrect,
         totalPlayed: delta.totalPlayed !== undefined ? delta.totalPlayed : prev.totalPlayed,
       };
+      const identityId = identityIdRef.current;
+      if (identityId) {
+        void storeProfileCache(identityId, next);
+      }
+      return next;
     });
   }, []);
 

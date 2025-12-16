@@ -909,15 +909,14 @@ export default function MatchLobbyScreen() {
                     </Pressable>
                   </View>
                 </View>
-                {lobby.deck ? (
-                  <Accordion
-                    style={styles.deckCard}
-                    contentStyle={styles.deckCardContent}
-                    defaultOpen
-                    title={
-                      <View style={styles.deckCardTitleRow}>
-                        <IconSymbol
-                          name={getDeckIcon(lobby.deck.slug)}
+	                {lobby.deck ? (
+	                  <Accordion
+	                    style={styles.deckCard}
+	                    contentStyle={styles.deckCardContent}
+	                    title={
+	                      <View style={styles.deckCardTitleRow}>
+	                        <IconSymbol
+	                          name={getDeckIcon(lobby.deck.slug)}
                           size={20}
                           color={primaryColor}
                         />
@@ -929,12 +928,15 @@ export default function MatchLobbyScreen() {
                   >
                     <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
                     <ThemedText style={styles.deckCardDescription}>
-                      • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
-                    </ThemedText>
-                    <ThemedText style={styles.deckCardDescription}>
                       • 총 10라운드로 진행돼요.
                     </ThemedText>
                     <ThemedText style={styles.deckCardDescription}>• 최대 10명까지 참여할 수 있어요.</ThemedText>
+                    <ThemedText style={styles.deckCardDescription}>
+                      • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
+                    </ThemedText>
+                    <ThemedText style={styles.deckCardDescription}>
+                      • 연속 정답으로 콤보 배수를 쌓아 더 높은 점수를 노려보세요!
+                    </ThemedText>
                     <ThemedText style={styles.deckCardWarning}>
                       • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
                     </ThemedText>
@@ -958,11 +960,11 @@ export default function MatchLobbyScreen() {
                   </ThemedText>
                 ) : (
                   <View style={styles.participantGrid}>
-	                    {participants.map((participant) => {
-	                      const isMe = participant.participantId === meParticipant?.participantId;
-	                      const displayXp = isMe && status === 'authenticated' && user ? user.xp : participant.xp;
-	                      const levelInfo = displayXp != null ? calculateLevel(displayXp) : null;
-	                      return (
+                    {participants.map((participant) => {
+                      const isMe = participant.participantId === meParticipant?.participantId;
+                      const displayXp = isMe && status === 'authenticated' && user ? user.xp : participant.xp;
+                      const levelInfo = displayXp != null ? calculateLevel(displayXp) : null;
+                      return (
                         <View
                           key={participant.participantId}
                           style={[styles.participantCard, isMe && styles.participantCardMe]}
@@ -976,19 +978,19 @@ export default function MatchLobbyScreen() {
                                 {participant.nickname}
                               </ThemedText>
                             </View>
-	                            {levelInfo ? (
-	                              <Pressable
-	                                onPress={() => {
-	                                  openLevelSheet(displayXp);
-	                                }}
-	                                hitSlop={8}
-	                              >
-	                                <LevelBadge xp={displayXp ?? undefined} size="sm" showTitle />
-	                              </Pressable>
-	                            ) : null}
-	                            {!participant.isConnected ? (
-	                              <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
-	                            ) : null}
+                            {levelInfo ? (
+                              <Pressable
+                                onPress={() => {
+                                  openLevelSheet(displayXp);
+                                }}
+                                hitSlop={8}
+                              >
+                                <LevelBadge xp={displayXp ?? undefined} size="sm" showTitle />
+                              </Pressable>
+                            ) : null}
+                            {!participant.isConnected ? (
+                              <ThemedText style={styles.participantStatus}>오프라인</ThemedText>
+                            ) : null}
                           </View>
                           <View style={styles.participantBottomRow}>
                             {participant.isHost ? (
@@ -1080,15 +1082,15 @@ export default function MatchLobbyScreen() {
               </View>
             </View>
           </Animated.View>
-	        </View>
-	        <LevelInfoSheet
-	          sheetRef={levelSheetRef}
-	          currentLevel={levelSheetTarget?.level ?? myLevel}
-	          currentXp={levelSheetTarget?.xp ?? user?.xp ?? meParticipant?.xp ?? 0}
-	          variant="compact"
-	          onClose={closeLevelSheet}
-	        />
-	      </ThemedView>
-	    </BottomSheetModalProvider>
-	  );
+        </View>
+        <LevelInfoSheet
+          sheetRef={levelSheetRef}
+          currentLevel={levelSheetTarget?.level ?? myLevel}
+          currentXp={levelSheetTarget?.xp ?? user?.xp ?? meParticipant?.xp ?? 0}
+          variant="compact"
+          onClose={closeLevelSheet}
+        />
+      </ThemedView>
+    </BottomSheetModalProvider>
+  );
 }

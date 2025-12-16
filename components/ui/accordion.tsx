@@ -6,8 +6,8 @@ import {
   Pressable,
   StyleSheet,
   UIManager,
-  type StyleProp,
   View,
+  type StyleProp,
   type ViewStyle,
 } from 'react-native';
 
@@ -31,7 +31,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   }
 }
 
-export function Accordion({ title, defaultOpen = true, children, style, contentStyle }: AccordionProps) {
+export function Accordion({ title, defaultOpen = false, children, style, contentStyle }: AccordionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [contentHeight, setContentHeight] = useState(0);
   const progress = useRef(new Animated.Value(defaultOpen ? 1 : 0)).current;

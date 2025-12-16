@@ -1662,17 +1662,6 @@ export default function MatchPlayScreen() {
                     );
                 })}
             </View>
-            {participants.length <= 1 ? (
-                <Button
-                    variant="outline"
-                    size="lg"
-                    fullWidth
-                    onPress={handleAdvance}
-                    disabled={isPaused}
-                >
-                    정답 공개
-                </Button>
-            ) : null}
         </View>
     );
 

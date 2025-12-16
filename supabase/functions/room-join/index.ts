@@ -20,6 +20,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const LOBBY_EXPIRES_MS = 1000 * 60 * 10;
+
 function respondError(message: string, status = 200) {
   return new Response(
     JSON.stringify({ error: message }),
@@ -71,11 +73,25 @@ serve(async (req: Request) => {
     }
 
     // Check expiry
-    if (room.expires_at && room.expires_at <= Date.now()) {
-      return new Response(
-        JSON.stringify({ data: { expired: true } }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-      );
+    const nowMs = Date.now();
+    if (room.expires_at && room.expires_at <= nowMs) {
+      // If participants are still active, treat room as alive and extend expiry.
+      const { count: activeCount } = await supabase
+        .from('live_match_participants')
+        .select('*', { count: 'exact', head: true })
+        .eq('room_id', room.id)
+        .is('removed_at', null);
+
+      if ((activeCount ?? 0) > 0) {
+        const nextExpiry = nowMs + LOBBY_EXPIRES_MS;
+        await supabase.from('live_match_rooms').update({ expires_at: nextExpiry }).eq('id', room.id);
+        room.expires_at = nextExpiry;
+      } else {
+        return new Response(
+          JSON.stringify({ data: { expired: true } }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
     }
 
     let userId: string | null = null;
@@ -162,6 +178,11 @@ serve(async (req: Request) => {
         })
         .eq('id', existingParticipant.id);
 
+      await supabase
+        .from('live_match_rooms')
+        .update({ expires_at: nowMs + LOBBY_EXPIRES_MS })
+        .eq('id', room.id);
+
       return new Response(
         JSON.stringify({
           data: {
@@ -213,6 +234,11 @@ serve(async (req: Request) => {
       .single();
 
     if (participantError) throw participantError;
+
+    await supabase
+      .from('live_match_rooms')
+      .update({ expires_at: nowMs + LOBBY_EXPIRES_MS })
+      .eq('id', room.id);
 
     return new Response(
       JSON.stringify({

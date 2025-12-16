@@ -1,5 +1,6 @@
 import { useMemo, type ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -15,6 +16,7 @@ type AuthGateProps = {
 export function AuthGate({ children }: AuthGateProps) {
   const { status, user, error, signInWithGoogle, enterGuestMode } = useAuth();
   const primaryColor = useThemeColor({}, 'primary');
+  const insets = useSafeAreaInsets();
 
   const { isLoading, headline, helper } = useMemo(() => {
     if (status === 'authenticated' && user) {
@@ -44,12 +46,22 @@ export function AuthGate({ children }: AuthGateProps) {
     } as const;
   }, [status, user, error]);
 
-  if (status === 'authenticated' && user) {
-    return <>{children}</>;
-  }
-
-  if (status === 'guest' || status === 'upgrading') {
-    return <>{children}</>;
+  if ((status === 'authenticated' && user) || status === 'guest' || status === 'upgrading') {
+    return (
+      <View style={styles.passThroughContainer}>
+        {children}
+        {status === 'authenticated' && error ? (
+          <ThemedView
+            style={[styles.banner, { top: insets.top + Spacing.md }]}
+            lightColor="rgba(20, 20, 20, 0.88)"
+            darkColor="rgba(20, 20, 20, 0.92)"
+            pointerEvents="none"
+          >
+            <ThemedText style={styles.bannerText}>{error}</ThemedText>
+          </ThemedView>
+        ) : null}
+      </View>
+    );
   }
 
   return (
@@ -111,6 +123,9 @@ export function AuthGate({ children }: AuthGateProps) {
 }
 
 const styles = StyleSheet.create({
+  passThroughContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -155,5 +170,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
     opacity: 0.6,
+  },
+  banner: {
+    position: 'absolute',
+    alignSelf: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.lg,
+    maxWidth: 420,
+    width: '92%',
+    ...Elevation.sm,
+  },
+  bannerText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 13,
+    lineHeight: 18,
+    opacity: 0.95,
   },
 });

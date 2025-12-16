@@ -805,6 +805,8 @@ type LiveMatchHistoryPayload = {
   totalScore: number;
   answered?: number;
   correct?: number;
+  xpGain?: number;
+  maxStreak?: number;
 };
 
 function formatHistoryTimestamp(value: number) {
@@ -939,14 +941,29 @@ function LiveMatchHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
     payload.rank !== undefined
       ? `순위 #${payload.rank}${payload.totalParticipants ? `/${payload.totalParticipants}` : ''}`
       : '순위 정보 없음';
-  const answeredLabel =
-    payload.answered !== undefined && payload.answered !== null
-      ? `${payload.answered}라운드 참여`
+  const answered = payload.answered ?? null;
+  const correct = payload.correct ?? null;
+  const hasAccuracy = typeof answered === 'number' && typeof correct === 'number' && answered > 0;
+  const accuracy = hasAccuracy ? computeAccuracy(correct, answered) : null;
+  const xpLabel =
+    typeof payload.xpGain === 'number'
+      ? `XP ${payload.xpGain >= 0 ? `+${payload.xpGain}` : payload.xpGain}`
+      : null;
+  const comboLabel =
+    typeof payload.maxStreak === 'number'
+      ? `🔥 최고 ${payload.maxStreak}연속`
       : null;
 
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
+
+  const summaryParts = [rankLabel, `총점 ${payload.totalScore}점`, xpLabel].filter(Boolean);
+  const detailParts = [
+    payload.roomCode ? `코드 ${payload.roomCode}` : null,
+    hasAccuracy ? `정답률 ${accuracy}% (${correct}/${answered})` : null,
+    comboLabel,
+  ].filter(Boolean);
 
   return (
     <View
@@ -962,12 +979,13 @@ function LiveMatchHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
         </ThemedText>
       </View>
       <ThemedText style={styles.historyRowSummary}>
-        {rankLabel} | 총점 {payload.totalScore}점
+        {summaryParts.join(' | ')}
       </ThemedText>
-      <ThemedText style={[styles.historyRowDetail, { color: mutedColor }]}>
-        {payload.roomCode ? `코드 ${payload.roomCode}` : '코드 정보 없음'}
-        {answeredLabel ? ` | ${answeredLabel}` : ''}
-      </ThemedText>
+      {detailParts.length ? (
+        <ThemedText style={[styles.historyRowDetail, { color: mutedColor }]}>
+          {detailParts.join(' | ')}
+        </ThemedText>
+      ) : null}
     </View>
   );
 }
