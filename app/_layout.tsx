@@ -1,6 +1,5 @@
 import { AuthGate } from '@/components/auth-gate';
 import { resultToastConfig } from '@/components/common/result-toast';
-import { AuthProvider } from '@/hooks/use-auth';
 import { ColorSchemeProvider, useColorScheme } from '@/hooks/use-color-scheme';
 import { SupabaseAuthProvider } from '@/hooks/use-supabase-auth';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
@@ -55,9 +54,7 @@ function RootLayoutContent() {
   if (convex) {
     return (
       <ConvexProvider client={convex}>
-        <AuthProvider client={convex}>
-          {content}
-        </AuthProvider>
+        {content}
       </ConvexProvider>
     );
   }

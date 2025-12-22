@@ -5,6 +5,7 @@ import {
   BottomSheetScrollView,
   type BottomSheetBackdropProps
 } from '@gorhom/bottom-sheet';
+import { useIsFocused } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
@@ -17,7 +18,6 @@ import {
   type StyleProp,
   type ViewStyle
 } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge, XpProgressBar } from '@/components/common/level-badge';
@@ -37,7 +37,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { deriveGuestAvatarId } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
-import { useUserStats } from '@/lib/supabase-api';
+import { useUserActivityStreak, useUserStats } from '@/lib/supabase-api';
 
 type AuthedUser = NonNullable<ReturnType<typeof useAuth>['user']>;
 type HistorySectionKey = 'daily' | 'swipe' | 'liveMatch';
@@ -58,7 +58,7 @@ export default function ProfileScreen() {
   const historySheetRef = useRef<BottomSheetModal>(null);
   const levelSheetRef = useRef<BottomSheetModal>(null);
   const [historySheetSection, setHistorySheetSection] = useState<HistorySectionKey | null>(null);
-  const historySheetSnapPoints = useMemo(() => ['100%'], []);
+  const historySheetSnapPoints = useMemo(() => ['50%', '100%'], []);
   const historySheetBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
       <BottomSheetBackdrop
@@ -86,6 +86,10 @@ export default function ProfileScreen() {
     limit: 60,
     enabled: status === 'authenticated' && isReady,
   });
+  const { streak: activityDayStreak } = useUserActivityStreak(
+    isAuthenticated ? user?.id : null,
+    { enabled: isAuthenticated && isReady }
+  );
 
   const handleSignOut = useCallback(async () => {
     if (isSigningOut) return;
@@ -167,7 +171,7 @@ export default function ProfileScreen() {
       dates.add(key);
     });
     let streak = 0;
-    for (;;) {
+    for (; ;) {
       const key = getKstDayKey(Date.now() - streak * 24 * 60 * 60 * 1000);
       if (dates.has(key)) {
         streak += 1;
@@ -177,7 +181,14 @@ export default function ProfileScreen() {
     }
     return streak;
   }, [history]);
-  const displayStreak = Math.max(baseStreak, activityStreak ?? 0);
+  const displayStreak = useMemo(() => {
+    if (isAuthenticated) {
+      if (activityDayStreak !== null) return activityDayStreak;
+      return baseStreak;
+    }
+    if (activityStreak === null) return 0;
+    return activityStreak;
+  }, [activityDayStreak, activityStreak, baseStreak, isAuthenticated]);
 
   const handleOpenHistorySheet = useCallback((section: HistorySectionKey) => {
     setHistorySheetSection(section);
@@ -794,6 +805,8 @@ type SwipeHistoryPayload = {
   maxStreak: number;
   durationMs?: number;
   totalScoreDelta: number;
+  bonusXpGain?: number;
+  xpGain?: number;
 };
 
 type LiveMatchHistoryPayload = {
@@ -900,7 +913,13 @@ function SwipeHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   const categoryLabel = categoryMeta ? categoryMeta.title : payload.category;
   const categoryIcon = categoryMeta?.icon ?? 'lightbulb';
   const totalDurationLabel = formatSecondsLabel(payload.durationMs);
-  const totalXpLabel = payload.totalScoreDelta !== undefined ? `총 XP ${payload.totalScoreDelta >= 0 ? `+${payload.totalScoreDelta}` : payload.totalScoreDelta}` : null;
+  const xpEarned =
+    typeof payload.bonusXpGain === 'number'
+      ? payload.bonusXpGain
+      : typeof payload.xpGain === 'number'
+        ? payload.xpGain
+        : null;
+  const totalXpLabel = xpEarned ? `XP +${xpEarned}` : null;
 
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];

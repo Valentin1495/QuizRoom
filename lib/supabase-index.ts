@@ -33,6 +33,7 @@ export {
   // History
   useQuizHistory,
   // User
+  useUserActivityStreak,
   useUserStats
 } from './supabase-api';
 

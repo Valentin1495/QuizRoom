@@ -110,13 +110,19 @@ export function extractJoinErrorMessage(error: unknown) {
 // Daily Quiz Hooks
 // ============================================
 
+export async function getFunctionAuthHeaders() {
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (sessionData.session?.access_token) return undefined;
+  const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+  if (!anonKey) return undefined;
+  return { Authorization: `Bearer ${anonKey}` };
+}
+
 export function useDailyQuiz(date?: string, options?: { enabled?: boolean }) {
   const enabled = options?.enabled ?? true;
   const [data, setData] = useState<DailyQuiz | null>(null);
   const [isLoading, setIsLoading] = useState(enabled);
   const [error, setError] = useState<Error | null>(null);
-  const supabaseAnonKey =
-    process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? process.env.EXPO_PUBLIC_SUPABASE_API_KEY ?? '';
 
   useEffect(() => {
     if (!enabled) {
@@ -127,10 +133,11 @@ export function useDailyQuiz(date?: string, options?: { enabled?: boolean }) {
     const fetchQuiz = async () => {
       setIsLoading(true);
       try {
+        const headers = await getFunctionAuthHeaders();
         const { data: result, error: fetchError } = await supabase.functions.invoke(
           'daily-quiz',
           {
-            headers: supabaseAnonKey ? { Authorization: `Bearer ${supabaseAnonKey}` } : undefined,
+            headers,
             body: { date },
           }
         );
@@ -175,9 +182,16 @@ export function useDeckFeed(options?: { tag?: string; limit?: number }) {
     const fetchDecks = async () => {
       setIsLoading(true);
       try {
-        const { data: result } = await supabase.functions.invoke('deck-feed', {
+        const headers = await getFunctionAuthHeaders();
+        const { data: result, error } = await supabase.functions.invoke('deck-feed', {
           body: args,
+          headers,
         });
+        if (error) {
+          console.error('[DeckFeed] Failed to fetch deck feed:', error);
+          setDecks([]);
+          return;
+        }
         setDecks(result?.data ?? []);
       } catch (err) {
         console.error('Failed to fetch deck feed:', err);
@@ -211,12 +225,24 @@ export function useLiveMatchDecks(options?: { enabled?: boolean }) {
     const fetchDecks = async () => {
       setIsLoading(true);
       try {
-        const { data: result } = await supabase.functions.invoke('live-match-decks', {
+        const headers = await getFunctionAuthHeaders();
+        const { data: result, error } = await supabase.functions.invoke('live-match-decks', {
           body: {},
+          headers,
         });
+        if (error) {
+          const context = (error as { context?: { status?: number; body?: string } }).context;
+          console.error('[LiveMatchDecks] Failed to fetch live match decks:', {
+            error,
+            status: context?.status,
+            body: context?.body,
+          });
+          setDecks([]);
+          return;
+        }
         setDecks(result?.data ?? []);
       } catch (err) {
-        console.error('Failed to fetch live match decks:', err);
+        console.error('[LiveMatchDecks] Failed to fetch live match decks:', err);
         setDecks([]);
       } finally {
         setIsLoading(false);
@@ -235,19 +261,26 @@ export function useCreateLiveMatchRoom() {
       if (__DEV__) {
         console.log('[RoomCreate] Creating room with:', args);
       }
+      const headers = await getFunctionAuthHeaders();
       const { data: result, error } = await supabase.functions.invoke('room-create', {
         body: {
           deckId: args.deckId,
           nickname: args.nickname,
           guestKey: args.guestKey,
         },
+        headers,
       });
 
       if (__DEV__) {
         console.log('[RoomCreate] Response:', JSON.stringify(result, null, 2));
       }
       if (error) {
-        console.error('[RoomCreate] Error:', error);
+        const context = (error as { context?: { status?: number; body?: string } }).context;
+        console.error('[RoomCreate] Error:', {
+          error,
+          status: context?.status,
+          body: context?.body,
+        });
         throw error;
       }
       if (result?.error) throw new Error(result.error);
@@ -266,12 +299,14 @@ export function useCreateLiveMatchRoom() {
 export function useJoinLiveMatchRoom() {
   return useCallback(
     async (args: { code: string; nickname?: string; guestKey?: string }) => {
+      const headers = await getFunctionAuthHeaders();
       const { data: result, error } = await supabase.functions.invoke('room-join', {
         body: {
           code: args.code,
           nickname: args.nickname,
           guestKey: args.guestKey,
         },
+        headers,
       });
 
       if (error) throw new Error(extractFunctionsErrorMessage(error));
@@ -306,8 +341,10 @@ type RoomActionParams = {
 export function useRoomAction() {
   return useCallback(
     async (action: string, params: RoomActionParams) => {
+      const headers = await getFunctionAuthHeaders();
       const { data: result, error } = await supabase.functions.invoke('room-action', {
         body: { action, ...params },
+        headers,
       });
       if (error) throw error;
       if (result?.error) throw new Error(result.error);
@@ -471,6 +508,65 @@ export function useUserStats() {
 
   return { stats, isLoading };
 }
+
+export function useUserActivityStreak(
+  userId?: string | null,
+  options?: { enabled?: boolean }
+) {
+  const enabled = options?.enabled ?? true;
+  const [streak, setStreak] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(enabled && !!userId);
+
+  useEffect(() => {
+    if (!enabled || !userId) {
+      setIsLoading(false);
+      setStreak(null);
+      return;
+    }
+
+    const fetchActivityDays = async () => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('user_activity_days')
+          .select('day_key')
+          .eq('user_id', userId)
+          .order('day_key', { ascending: false })
+          .limit(400);
+
+        if (error) {
+          console.error('Failed to fetch user activity days:', error);
+          setStreak(null);
+          return;
+        }
+
+        const keys = new Set((data ?? []).map((row) => row.day_key));
+        const kstStartMs = Date.now() + KST_OFFSET_MS;
+        let count = 0;
+
+        for (let i = 0; ; i += 1) {
+          const key = new Date(kstStartMs - i * DAY_MS).toISOString().slice(0, 10);
+          if (!keys.has(key)) break;
+          count += 1;
+        }
+
+        setStreak(count);
+      } catch (err) {
+        console.error('Failed to compute activity streak:', err);
+        setStreak(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchActivityDays();
+  }, [enabled, userId]);
+
+  return { streak, isLoading };
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
 // ============================================
 // Categories Hook

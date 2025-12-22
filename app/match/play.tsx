@@ -27,7 +27,7 @@ import { computeTimeLeft, getComboMultiplier, useGameActions, useLiveGame } from
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
-import { supabase } from '@/lib/supabase-api';
+import { getFunctionAuthHeaders, supabase } from '@/lib/supabase-api';
 
 // computeTimeLeft and getComboMultiplier are now imported from use-live-game
 
@@ -42,9 +42,9 @@ const REACTION_BATCH_WINDOW_MS = 250;
 const REACTION_TOKEN_BUCKET_CAPACITY = 30;
 const REACTION_TOKEN_BUCKET_REFILL_PER_SEC = 20;
 const REACTION_MAX_SPAWN_PER_BROADCAST = 30;
-// Bandwidth optimization: increased from 7000 to 10000 to accommodate 8-second heartbeat interval
+// Bandwidth optimization: allow extra jitter beyond the 8-second heartbeat interval
 // This value must be greater than HEARTBEAT_INTERVAL_MS (8000) to prevent false offline detection
-const HOST_HEARTBEAT_GRACE_MS = 10000;
+const HOST_HEARTBEAT_GRACE_MS = 16000;
 const HOST_SNAPSHOT_STALE_THRESHOLD_MS = HOST_HEARTBEAT_GRACE_MS * 2;
 
 export default function MatchPlayScreen() {
@@ -80,7 +80,7 @@ export default function MatchPlayScreen() {
     const reactionBroadcastReadyRef = useRef(false);
     const pendingReactionCountsRef = useRef<Record<ReactionEmoji, number>>({
         clap: 0,
-        fire: 0,
+        skull: 0,
         laugh: 0,
         hundred: 0,
         party: 0,
@@ -185,7 +185,7 @@ export default function MatchPlayScreen() {
             const count = Number.isFinite(countRaw) ? Math.max(1, Math.floor(countRaw)) : 1;
 
             if (!emojiKey) return;
-            if (emojiKey !== 'clap' && emojiKey !== 'fire' && emojiKey !== 'hundred' && emojiKey !== 'party' && emojiKey !== 'laugh') return;
+            if (emojiKey !== 'clap' && emojiKey !== 'skull' && emojiKey !== 'hundred' && emojiKey !== 'party' && emojiKey !== 'laugh') return;
 
             const icon = EMOJI_MAP[emojiKey as ReactionEmoji];
             const burst = Math.min(count, REACTION_MAX_SPAWN_PER_BROADCAST);
@@ -248,19 +248,19 @@ export default function MatchPlayScreen() {
         const counts = pendingReactionCountsRef.current;
         const snapshot: Record<ReactionEmoji, number> = {
             clap: counts.clap,
-            fire: counts.fire,
+            skull: counts.skull,
             hundred: counts.hundred,
             party: counts.party,
             laugh: counts.laugh,
         };
 
         counts.clap = 0;
-        counts.fire = 0;
+        counts.skull = 0;
         counts.hundred = 0;
         counts.party = 0;
         counts.laugh = 0;
 
-        const total = snapshot.clap + snapshot.fire + snapshot.hundred + snapshot.party + snapshot.laugh;
+        const total = snapshot.clap + snapshot.skull + snapshot.hundred + snapshot.party + snapshot.laugh;
         if (total <= 0) return;
 
         const now = Date.now();
@@ -574,10 +574,15 @@ export default function MatchPlayScreen() {
         return map;
     }, [participants]);
     const hostUserId = roomData?.room.hostId ?? null;
-    const hostParticipant = useMemo(
-        () => (hostUserId ? participants.find((p) => p.odUserId === hostUserId) : null),
-        [participants, hostUserId]
-    );
+    const hostParticipant = useMemo(() => {
+        if (participants.length === 0) return null;
+        if (hostUserId) {
+            const byUser = participants.find((p) => p.odUserId === hostUserId);
+            if (byUser) return byUser;
+        }
+        return participants.find((p) => p.isHost) ?? null;
+    }, [participants, hostUserId]);
+    const hostParticipantId = hostParticipant?.participantId ?? null;
     const hostNickname = hostParticipant?.nickname ?? '호스트';
     const hostIsConnected = hostParticipant?.isConnected ?? false;
     const totalRounds = roomData?.room.totalRounds ?? 0;
@@ -608,8 +613,10 @@ export default function MatchPlayScreen() {
         if (!participantArgs || isManualReconnectPending) return;
         setIsManualReconnectPending(true);
         try {
+            const headers = await getFunctionAuthHeaders();
             await supabase.functions.invoke('room-action', {
                 body: { action: 'heartbeat', ...participantArgs },
+                headers,
             });
             handleConnectionRestored();
         } catch {
@@ -789,15 +796,17 @@ export default function MatchPlayScreen() {
 
 
     // Bandwidth optimization: increased heartbeat interval from 5s to 8s
-    // Note: HOST_HEARTBEAT_GRACE_MS (10s) must be greater than this value to prevent false offline detection
+    // Note: HOST_HEARTBEAT_GRACE_MS (16s) must be greater than this value to prevent false offline detection
     // Note: useLiveGame already handles heartbeat internally, this is for additional connection state monitoring
     const HEARTBEAT_INTERVAL_MS = 8000;
     useEffect(() => {
         if (hasLeft || disconnectReason || !participantArgs) return;
         const tick = async () => {
             try {
+                const headers = await getFunctionAuthHeaders();
                 await supabase.functions.invoke('room-action', {
                     body: { action: 'heartbeat', ...participantArgs },
+                    headers,
                 });
                 handleConnectionRestored();
             } catch (err) {
@@ -833,8 +842,10 @@ export default function MatchPlayScreen() {
                 pendingHeartbeatRef.current = true;
                 void (async () => {
                     try {
+                        const headers = await getFunctionAuthHeaders();
                         await supabase.functions.invoke('room-action', {
                             body: { action: 'heartbeat', ...participantArgs },
+                            headers,
                         });
                         handleConnectionRestored();
                     } catch (error) {
@@ -968,8 +979,9 @@ export default function MatchPlayScreen() {
 
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
-        if (!hostUserId) {
-            previousHostIdRef.current = null;
+        const hostKey = hostUserId ?? hostParticipantId ?? null;
+        if (!hostKey || !hostParticipant) {
+            previousHostIdRef.current = hostKey;
             hostConnectivityRef.current = null;
             if (hostConnectionState !== 'expired') {
                 resetHostGraceState();
@@ -977,8 +989,8 @@ export default function MatchPlayScreen() {
             return;
         }
         const wasHostId = previousHostIdRef.current;
-        if (wasHostId !== hostUserId || wasHostId === null) {
-            previousHostIdRef.current = hostUserId;
+        if (wasHostId !== hostKey || wasHostId === null) {
+            previousHostIdRef.current = hostKey;
             hostConnectivityRef.current = null;
             if (hostConnectionState !== 'expired') {
                 resetHostGraceState();
@@ -1042,6 +1054,7 @@ export default function MatchPlayScreen() {
         hostSnapshotFresh,
         hostNickname,
         hostParticipant,
+        hostParticipantId,
         hostUserId,
         isHost,
         resetHostGraceState,
@@ -1081,7 +1094,7 @@ export default function MatchPlayScreen() {
         }
         participants.forEach((participant) => {
             currentIds.add(participant.participantId);
-            const isHostParticipant = participant.odUserId && hostUserId && participant.odUserId === hostUserId;
+            const isHostParticipant = hostParticipantId !== null && participant.participantId === hostParticipantId;
             const isMeParticipant = meParticipantId !== null && participant.participantId === meParticipantId;
             if (isHostParticipant || isMeParticipant) {
                 map.set(participant.participantId, participant.isConnected);
@@ -1118,7 +1131,7 @@ export default function MatchPlayScreen() {
         connectionState,
         disconnectReason,
         hasLeft,
-        hostUserId,
+        hostParticipantId,
         isHostOverlayActive,
         justReconnected,
         meParticipantId,
@@ -1573,7 +1586,12 @@ export default function MatchPlayScreen() {
                 <Stack.Screen options={{ headerShown: false }} />
                 <ThemedView style={styles.loadingContainer}>
                     <ThemedText type="title">게임 정보를 찾을 수 없어요</ThemedText>
-                    <Button variant="default" size="lg" onPress={() => router.navigate('/(tabs)/live-match')}>
+                    <Button
+                        variant="default"
+                        size="lg"
+                        style={styles.loadingAction}
+                        onPress={() => router.navigate('/(tabs)/live-match')}
+                    >
                         홈으로 이동
                     </Button>
                 </ThemedView>
@@ -1685,14 +1703,14 @@ export default function MatchPlayScreen() {
 
     const renderReveal = () => (
         <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
-            <ThemedText type="title" style={styles.cardTitle}>정답 공개</ThemedText>
+            {/* <ThemedText type="title" style={styles.cardTitle}>정답 공개</ThemedText>
             <View style={[styles.correctAnswerBadge, { backgroundColor: background, borderColor: textColor }]}>
                 <ThemedText style={[styles.correctAnswerLabel, { color: textColor }]}>
                     정답은 <ThemedText style={[styles.correctAnswerHighlight, { color: textColor }]}>
                         {revealCorrectChoiceIndex !== null ? String.fromCharCode(65 + revealCorrectChoiceIndex) : '?'}
                     </ThemedText> 입니다
                 </ThemedText>
-            </View>
+            </View> */}
             {currentRound?.question?.explanation ? (
                 <ThemedText style={[styles.explanationText, { backgroundColor: background, color: textMutedColor }]}>{currentRound.question.explanation}</ThemedText>
             ) : null}
@@ -2013,6 +2031,7 @@ export default function MatchPlayScreen() {
                 <View style={styles.distributionList}>
                     {participants.map((player, index) => {
                         const isMe = meParticipantId !== null && player.participantId === meParticipantId;
+                        const isHostPlayer = hostParticipantId !== null && player.participantId === hostParticipantId;
                         const rank = player.rank ?? index + 1;
                         const usePodiumEmoji = participants.length >= 3;
                         const podiumEmoji =
@@ -2058,7 +2077,7 @@ export default function MatchPlayScreen() {
                                                 {nameDisplay}
                                             </ThemedText>
                                         </View>
-                                        {player.odUserId && hostUserId && player.odUserId === hostUserId && !player.isConnected ? (
+                                        {isHostPlayer && !player.isConnected ? (
                                             <ThemedText style={styles.offlineTag}>오프라인</ThemedText>
                                         ) : null}
                                     </View>
@@ -2491,6 +2510,9 @@ const styles = StyleSheet.create({
     },
     loadingLabel: {
         marginVertical: Spacing.md,
+    },
+    loadingAction: {
+        marginTop: Spacing.md,
     },
     disconnectLabel: {
         textAlign: 'center',

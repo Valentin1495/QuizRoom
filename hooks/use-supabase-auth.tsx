@@ -1,9 +1,10 @@
 /**
  * Supabase Auth Hook
- * Replaces Firebase Auth + Convex session management
+ * Manages Supabase auth and session state.
  */
 
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
 import * as SecureStore from 'expo-secure-store';
 import {
   createContext,
@@ -16,15 +17,19 @@ import {
   type ReactNode,
 } from 'react';
 import { AppState, Platform } from 'react-native';
-import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
 
 import { supabase, type Database, type User } from '@/lib/supabase';
 
 type UserInsert = Database['public']['Tables']['users']['Insert'];
 
+const googleWebClientId =
+  process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID
+const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+
 // Configure Google Sign-In
 GoogleSignin.configure({
-  webClientId: '726867887633-8buje4l38mrpp0p98i8vh1k0jijqvuol.apps.googleusercontent.com',
+  webClientId: googleWebClientId,
+  iosClientId: googleIosClientId,
 });
 
 type AuthStatus =
@@ -252,7 +257,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
 
   // Fetch user profile from database
   // Supports account linking: if user exists with same email but different identity_id,
-  // update the identity_id to link the accounts (migration from Convex/Firebase)
+  // update the identity_id to link the accounts (migration from legacy auth)
   const fetchUserProfile = useCallback(async (authUserId: string) => {
     try {
       if (__DEV__) {

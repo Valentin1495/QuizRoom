@@ -41,7 +41,7 @@ function formatTimeLeft(target: Date) {
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { status: authStatus, user, guestKey, ensureGuestKey, isConvexReady } = useAuth();
+  const { status: authStatus, user, guestKey, ensureGuestKey, isReady } = useAuth();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
@@ -198,7 +198,7 @@ export default function HomeScreen() {
 
     setIsJoining(true);
     try {
-      const needsGuestKey = authStatus !== 'authenticated' || isConvexReady === false;
+      const needsGuestKey = authStatus !== 'authenticated' || isReady === false;
       const guestKeyValue = needsGuestKey ? guestKey ?? (await ensureGuestKey()) : undefined;
       await joinLiveMatchRoom({
         code: normalizedCode,
@@ -212,7 +212,7 @@ export default function HomeScreen() {
     } finally {
       setIsJoining(false);
     }
-  }, [authStatus, ensureGuestKey, guestKey, isConvexReady, joinNickname, joinLiveMatchRoom, liveMatchRoomCode, router]);
+  }, [authStatus, ensureGuestKey, guestKey, isReady, joinNickname, joinLiveMatchRoom, liveMatchRoomCode, router]);
 
   const handleJoinLiveMatchRoomSubmit = useCallback(() => {
     if (!isCodeValid || isJoining) return;
@@ -237,7 +237,7 @@ export default function HomeScreen() {
 
     setIsQuickCreating(true);
     try {
-      const needsGuestKey = authStatus !== 'authenticated' || isConvexReady === false;
+      const needsGuestKey = authStatus !== 'authenticated' || isReady === false;
       const guestKeyValue = needsGuestKey ? guestKey ?? (await ensureGuestKey()) : undefined;
       const nickname = user?.handle ?? derivedGuestNickname ?? undefined;
 
@@ -260,7 +260,7 @@ export default function HomeScreen() {
     derivedGuestNickname,
     ensureGuestKey,
     guestKey,
-    isConvexReady,
+    isReady,
     isQuickCreating,
     recentLiveMatchDeck?.id,
     router,

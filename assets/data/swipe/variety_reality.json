@@ -1631,33 +1631,107 @@
         "deckSlug": "deck_seed_variety_reality",
         "category": "variety_reality",
         "type": "mcq",
-        "prompt": "MBC '나 혼자 산다'에서 출연진들이 서로 친목을 다지기 위해 모이는 정기적인 모임의 명칭은?",
+        "prompt": "MBC '나 혼자 산다'의 상징이자, 무지개 회원들의 거실에 항상 자리 잡고 있는 대형 곰 인형의 이름은?",
         "tags": [
             "나혼자산다",
             "MBC",
-            "혼족",
-            "무지개회원"
+            "윌슨",
+            "마스코트"
         ],
         "choices": [
             {
                 "id": "a",
-                "text": "혼족 클럽"
+                "text": "윌리엄"
             },
             {
                 "id": "b",
-                "text": "싱글즈 모임"
+                "text": "윌슨"
             },
             {
                 "id": "c",
-                "text": "무지개 라이브"
+                "text": "해리"
             },
             {
                 "id": "d",
-                "text": "무지개 라이브 후 정기 모임(무지개 모임)"
+                "text": "잭슨"
             }
         ],
-        "answerIndex": 3,
-        "explanation": "나 혼자 산다'의 출연진들은 '무지개 회원'으로 불리며, 이들이 함께 모여 친목을 다지는 모임 역시 '무지개 모임'이라고 불립니다.",
+        "answerIndex": 1,
+        "explanation": "윌슨은 프로그램 초창기부터 함께해 온 마스코트로, 독신 남녀의 외로움을 달래주는 상징적인 존재입니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407040,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 557
+    },
+    {
+        "deckSlug": "deck_seed_variety_reality",
+        "category": "variety_reality",
+        "type": "mcq",
+        "prompt": "2023년 MBC 방송연예대상에서 '나 혼자 산다'를 통해 비연예인 출신 최초의 대상 수상자가 된 멤버는?",
+        "tags": [
+            "나혼자산다",
+            "MBC",
+            "기안84",
+            "연예대상"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "전현무"
+            },
+            {
+                "id": "b",
+                "text": "박나래"
+            },
+            {
+                "id": "c",
+                "text": "기안84"
+            },
+            {
+                "id": "d",
+                "text": "김대호"
+            }
+        ],
+        "answerIndex": 2,
+        "explanation": "기안84는 마라톤 완주와 인도 여행 등 진정성 있는 모습으로 큰 사랑을 받아 2023년 대상을 거머쥐었습니다.",
+        "difficulty": 0.5,
+        "createdAt": 1761407040,
+        "qualityScore": 0.5,
+        "elo": 1200,
+        "choiceShuffleSeed": 557
+    },
+    {
+        "deckSlug": "deck_seed_variety_reality",
+        "category": "variety_reality",
+        "type": "mcq",
+        "prompt": "MBC '나 혼자 산다' 무지개 모임의 '초대 회장'으로 활동하며 프로그램의 기틀을 잡았던 인물은?",
+        "tags": [
+            "나혼자산다",
+            "MBC",
+            "노홍철",
+            "무지개회장"
+        ],
+        "choices": [
+            {
+                "id": "a",
+                "text": "김용건"
+            },
+            {
+                "id": "b",
+                "text": "노홍철"
+            },
+            {
+                "id": "c",
+                "text": "이성재"
+            },
+            {
+                "id": "d",
+                "text": "데프콘"
+            }
+        ],
+        "answerIndex": 1,
+        "explanation": "노홍철은 프로그램 초기 무지개 모임을 이끌며 특유의 에너지와 개성으로 프로그램의 기틀을 잡았습니다.",
         "difficulty": 0.5,
         "createdAt": 1761407040,
         "qualityScore": 0.5,
@@ -2482,12 +2556,13 @@
         "deckSlug": "deck_seed_variety_reality",
         "category": "variety_reality",
         "type": "mcq",
-        "prompt": "MBC '나 혼자 산다'에서 출연진이 자신의 일상을 관찰하기 위해 스튜디오에 모여 대화하는 사람들의 그룹 명칭은?",
+        "prompt": "MBC '나 혼자 산다'에서 출연진이 자신의 일상을 관찰하기 위해 스튜디오에 모여 대화하는 코너 명칭은?",
         "tags": [
             "나혼자산다",
             "MBC",
-            "패널",
-            "무지개회원"
+            "코너",
+            "무지개",
+            "무지개라이브"
         ],
         "choices": [
             {

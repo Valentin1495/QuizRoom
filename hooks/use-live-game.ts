@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { supabase } from '@/lib/supabase-api';
+import { getFunctionAuthHeaders, supabase } from '@/lib/supabase-api';
 
 // ============================================
 // Types
@@ -179,9 +179,10 @@ export function useLiveGame(
 
     isFetchingRef.current = true;
     try {
+      const headers = await getFunctionAuthHeaders();
       const { data: result, error: fetchError } = await supabase.functions.invoke(
         'room-state',
-        { body: { roomId, participantId, guestKey } }
+        { body: { roomId, participantId, guestKey }, headers }
       );
 
       if (fetchError) throw fetchError;
@@ -514,8 +515,10 @@ export function useLiveGame(
 
     const sendHeartbeat = async () => {
       try {
+        const headers = await getFunctionAuthHeaders();
         await supabase.functions.invoke('room-action', {
           body: { action: 'heartbeat', roomId, participantId, guestKey },
+          headers,
         });
       } catch (err) {
         console.error('[Game] Heartbeat failed:', err);
@@ -542,8 +545,10 @@ export function useLiveGame(
 export function useGameActions() {
   const invokeAction = useCallback(
     async (action: string, args: Record<string, unknown>) => {
+      const headers = await getFunctionAuthHeaders();
       const { data, error } = await supabase.functions.invoke('room-action', {
         body: { action, ...args },
+        headers,
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

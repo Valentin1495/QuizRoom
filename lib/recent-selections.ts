@@ -1,13 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { CategoryMeta } from '@/constants/categories';
-import type { LiveMatchDeck } from '@/lib/database.types';
 
 export const RECENT_SWIPE_CATEGORY_KEY = 'recent:swipeCategory:v1';
 export const RECENT_LIVE_MATCH_DECK_KEY = 'recent:liveMatchDeck:v1';
 
 export type RecentSwipeCategory = Pick<CategoryMeta, 'slug' | 'title' | 'icon'>;
-export type RecentLiveMatchDeck = Pick<LiveMatchDeck, 'id' | 'slug' | 'title' | 'emoji'>;
+export type RecentLiveMatchDeck = {
+  id: string;
+  slug: string;
+  title: string;
+  emoji: string;
+};
 
 function safeParseJson<T>(raw: string | null): T | null {
   if (!raw) return null;
@@ -35,7 +39,7 @@ export async function loadRecentLiveMatchDeck(): Promise<RecentLiveMatchDeck | n
   return safeParseJson<RecentLiveMatchDeck>(await AsyncStorage.getItem(RECENT_LIVE_MATCH_DECK_KEY));
 }
 
-export async function saveRecentLiveMatchDeck(deck: LiveMatchDeck): Promise<void> {
+export async function saveRecentLiveMatchDeck(deck: RecentLiveMatchDeck): Promise<void> {
   const value: RecentLiveMatchDeck = {
     id: deck.id,
     slug: deck.slug,
@@ -44,4 +48,3 @@ export async function saveRecentLiveMatchDeck(deck: LiveMatchDeck): Promise<void
   };
   await AsyncStorage.setItem(RECENT_LIVE_MATCH_DECK_KEY, JSON.stringify(value));
 }
-

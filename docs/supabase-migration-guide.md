@@ -115,16 +115,12 @@ export default function RootLayout() {
 }
 ```
 
-#### 인증 훅 교체
+#### 인증 훅 사용
 
 ```tsx
-// Before (Convex + Firebase)
-import { useAuth } from '@/hooks/use-auth';
-const { user, signInWithGoogle, signOut } = useAuth();
+import { useAuth } from '@/hooks/use-unified-auth';
 
-// After (Supabase)
-import { useSupabaseAuth } from '@/hooks/use-supabase-auth';
-const { user, signInWithGoogle, signOut } = useSupabaseAuth();
+const { user, signInWithGoogle, signOut } = useAuth();
 ```
 
 #### API 훅 교체
@@ -170,14 +166,7 @@ await gameActions.submitAnswer({ roomId, participantId, guestKey, choiceIndex })
 
 ## 병행 운영 가이드
 
-마이그레이션 중 Convex와 Supabase를 병행 운영할 수 있습니다:
-
-1. **Feature Flag 사용**:
-```tsx
-const USE_SUPABASE = process.env.EXPO_PUBLIC_USE_SUPABASE === 'true';
-
-const auth = USE_SUPABASE ? useSupabaseAuth() : useAuth();
-```
+마이그레이션 중 Convex와 Supabase를 병행 운영할 수 있습니다.
 
 2. **점진적 전환**:
    - Phase 1: 읽기 전용 기능 (daily, decks, history)
@@ -195,10 +184,6 @@ const auth = USE_SUPABASE ? useSupabaseAuth() : useAuth();
 npm uninstall convex
 ```
 
-3. Firebase 패키지 제거 (선택적):
-```bash
-npm uninstall @react-native-firebase/app @react-native-firebase/auth
-```
 
 4. 환경 변수 정리
 

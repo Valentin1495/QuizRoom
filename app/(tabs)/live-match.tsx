@@ -20,7 +20,7 @@ import { saveRecentLiveMatchDeck } from '@/lib/recent-selections';
 export default function LiveMatchScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { user, status, guestKey, ensureGuestKey, isConvexReady } = useAuth();
+  const { user, status, guestKey, ensureGuestKey, isReady } = useAuth();
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
   const mutedColor = useThemeColor({}, 'textMuted');
@@ -35,11 +35,12 @@ export default function LiveMatchScreen() {
   const [isRandomizing, setIsRandomizing] = useState(false);
   const randomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const randomIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastAutoNicknameRef = useRef<string | null>(null);
 
   const createLiveMatchRoom = useCreateLiveMatchRoom();
   const joinLiveMatchRoom = useJoinLiveMatchRoom();
   const { decks: liveMatchDecks, isLoading: isDecksLoading } = useLiveMatchDecks();
-  const isGuest = status === 'guest';
+  const isGuest = status === 'guest' && !user;
 
   const normalizedCode = useMemo(() => liveMatchRoomCode.trim().toUpperCase(), [liveMatchRoomCode]);
   const normalizedJoinNickname = useMemo(() => joinNickname.trim(), [joinNickname]);
@@ -81,11 +82,33 @@ export default function LiveMatchScreen() {
     [guestKey, isGuest]
   );
 
+  const applyAutoNickname = useCallback((nickname: string) => {
+    setJoinNickname((prev) => (prev && prev !== lastAutoNicknameRef.current ? prev : nickname));
+    setHostNickname((prev) => (prev && prev !== lastAutoNicknameRef.current ? prev : nickname));
+    lastAutoNicknameRef.current = nickname;
+  }, []);
+
   useEffect(() => {
     if (!derivedGuestNickname) return;
-    setJoinNickname((prev) => (prev === derivedGuestNickname ? prev : derivedGuestNickname));
-    setHostNickname((prev) => (prev === derivedGuestNickname ? prev : derivedGuestNickname));
-  }, [derivedGuestNickname]);
+    applyAutoNickname(derivedGuestNickname);
+  }, [applyAutoNickname, derivedGuestNickname]);
+
+  useEffect(() => {
+    if (!user?.handle) return;
+    applyAutoNickname(user.handle);
+  }, [applyAutoNickname, user?.handle]);
+
+  const lastStatusRef = useRef<typeof status | null>(null);
+  useEffect(() => {
+    const prevStatus = lastStatusRef.current;
+    lastStatusRef.current = status;
+    if (status !== 'authenticated' || !user?.handle) return;
+    if (prevStatus && prevStatus !== 'authenticated') {
+      setJoinNickname(user.handle);
+      setHostNickname(user.handle);
+      lastAutoNicknameRef.current = user.handle;
+    }
+  }, [status, user?.handle]);
 
   useEffect(() => {
     return () => {
@@ -128,7 +151,7 @@ export default function LiveMatchScreen() {
     }
     setIsCreating(true);
     try {
-      const needsGuestKey = status !== 'authenticated' || isConvexReady === false;
+      const needsGuestKey = status !== 'authenticated' || isReady === false;
       const guestKeyValue = needsGuestKey ? guestKey ?? (await ensureGuestKey()) : undefined;
       const result = await createLiveMatchRoom({
         deckId: selectedDeckId ?? undefined,
@@ -141,7 +164,7 @@ export default function LiveMatchScreen() {
     } finally {
       setIsCreating(false);
     }
-  }, [createLiveMatchRoom, ensureGuestKey, guestKey, normalizedHostNickname, router, selectedDeckId, status, user]);
+  }, [createLiveMatchRoom, ensureGuestKey, guestKey, isReady, normalizedHostNickname, router, selectedDeckId, status, user]);
 
   const handleJoinLiveMatchRoom = useCallback(async () => {
     if (!isJoinEnabled) {
@@ -150,7 +173,7 @@ export default function LiveMatchScreen() {
     }
     setIsJoining(true);
     try {
-      const needsGuestKey = status !== 'authenticated' || isConvexReady === false;
+      const needsGuestKey = status !== 'authenticated' || isReady === false;
       const guestKeyValue = needsGuestKey ? guestKey ?? (await ensureGuestKey()) : undefined;
       await joinLiveMatchRoom({
         code: normalizedCode,
@@ -164,7 +187,7 @@ export default function LiveMatchScreen() {
     } finally {
       setIsJoining(false);
     }
-  }, [ensureGuestKey, guestKey, isJoinEnabled, joinLiveMatchRoom, normalizedCode, normalizedJoinNickname, router, status]);
+  }, [ensureGuestKey, guestKey, isJoinEnabled, isReady, joinLiveMatchRoom, normalizedCode, normalizedJoinNickname, router, status]);
 
   return (
     <>

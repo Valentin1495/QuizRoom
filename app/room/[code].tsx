@@ -202,25 +202,8 @@ export default function MatchLobbyScreen() {
       isMe: boolean,
       levelInfo?: ReturnType<typeof calculateLevel>
     ) => {
-      const avatarNode = isMe
-        ? status === 'authenticated' && user ? (
-          <Avatar
-            uri={user.avatarUrl}
-            name={user.handle}
-            size="md"
-            radius={Radius.pill}
-            backgroundColorOverride={fallbackAvatarBackground}
-            style={styles.participantAvatar}
-          />
-        ) : (
-          <GuestAvatar
-            guestId={selfGuestAvatarId}
-            size="md"
-            radius={Radius.pill}
-            style={styles.participantAvatar}
-          />
-        )
-        : participant.userId ? (
+      if (participant.userId) {
+        return (
           <Avatar
             uri={participant.avatarUrl}
             name={participant.nickname}
@@ -229,18 +212,22 @@ export default function MatchLobbyScreen() {
             backgroundColorOverride={fallbackAvatarBackground}
             style={styles.participantAvatar}
           />
-        ) : (
-          <GuestAvatar
-            guestId={participant.guestAvatarId}
-            size="md"
-            radius={Radius.pill}
-            style={styles.participantAvatar}
-          />
         );
+      }
 
-      return avatarNode;
+      const resolvedGuestId =
+        participant.guestAvatarId ?? (isMe ? selfGuestAvatarId : null);
+
+      return (
+        <GuestAvatar
+          guestId={resolvedGuestId ?? undefined}
+          size="md"
+          radius={Radius.pill}
+          style={styles.participantAvatar}
+        />
+      );
     },
-    [fallbackAvatarBackground, selfGuestAvatarId, status, user]
+    [fallbackAvatarBackground, selfGuestAvatarId]
   );
 
 

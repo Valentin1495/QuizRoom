@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { supabase } from '@/lib/supabase-api';
+import { getFunctionAuthHeaders, supabase } from '@/lib/supabase-api';
 
 // ============================================
 // Types
@@ -98,9 +98,10 @@ export function useLiveLobby(code: string, options?: { enabled?: boolean }) {
     }
 
     try {
+      const headers = await getFunctionAuthHeaders();
       const { data: result, error: fetchError } = await supabase.functions.invoke(
         'room-lobby',
-        { body: { code } }
+        { body: { code }, headers }
       );
 
       if (fetchError) throw fetchError;
@@ -256,8 +257,10 @@ type RoomActionArgs = {
 export function useRoomActions() {
   const invokeAction = useCallback(
     async (action: string, args: RoomActionArgs) => {
+      const headers = await getFunctionAuthHeaders();
       const { data, error } = await supabase.functions.invoke('room-action', {
         body: { action, ...args },
+        headers,
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
@@ -268,8 +271,10 @@ export function useRoomActions() {
 
   const join = useCallback(
     async (args: { code: string; nickname?: string; guestKey?: string }) => {
+      const headers = await getFunctionAuthHeaders();
       const { data, error } = await supabase.functions.invoke('room-join', {
         body: args,
+        headers,
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

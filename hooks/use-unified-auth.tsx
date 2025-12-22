@@ -1,13 +1,8 @@
 /**
  * Unified Auth Hook
- * Switches between Convex/Firebase Auth and Supabase Auth based on feature flag
- * 
- * This allows gradual migration while keeping both systems working.
+ * Uses Supabase Auth.
  */
 
-import { FEATURE_FLAGS } from '@/lib/feature-flags';
-
-import { useAuth as useConvexAuth } from './use-auth';
 import { useSupabaseAuth } from './use-supabase-auth';
 
 export type AuthStatus =
@@ -43,79 +38,40 @@ export type UnifiedAuthContextValue = {
   isReady: boolean;
   refreshUser: () => Promise<void>;
   resetUser: () => Promise<void>;
-  // Convex-specific (only available when using Convex auth)
-  isConvexReady?: boolean;
   applyUserDelta?: (delta: { xp?: number; streak?: number; totalCorrect?: number; totalPlayed?: number }) => void;
 };
 
-/**
- * Unified auth hook that works with both Convex and Supabase
- * 
- * When FEATURE_FLAGS.auth is false: Uses Convex/Firebase Auth
- * When FEATURE_FLAGS.auth is true: Uses Supabase Auth
- */
 export function useUnifiedAuth(): UnifiedAuthContextValue {
-  if (FEATURE_FLAGS.auth) {
-    const supabaseAuth = useSupabaseAuth();
-    // Use Supabase Auth
-    return {
-      status: supabaseAuth.status,
-      user: supabaseAuth.user ? {
-        id: supabaseAuth.user.id,
-        handle: supabaseAuth.user.handle,
-        avatarUrl: supabaseAuth.user.avatarUrl,
-        provider: supabaseAuth.user.provider,
-        streak: supabaseAuth.user.streak,
-        xp: supabaseAuth.user.xp,
-        totalCorrect: supabaseAuth.user.totalCorrect,
-        totalPlayed: supabaseAuth.user.totalPlayed,
-        interests: supabaseAuth.user.interests,
-      } : null,
-      guestKey: supabaseAuth.guestKey,
-      signInWithGoogle: supabaseAuth.signInWithGoogle,
-      signOut: supabaseAuth.signOut,
-      enterGuestMode: supabaseAuth.enterGuestMode,
-      ensureGuestKey: supabaseAuth.ensureGuestKey,
-      error: supabaseAuth.error,
-      isReady: supabaseAuth.isReady,
-      refreshUser: supabaseAuth.refreshUser,
-      resetUser: supabaseAuth.resetUser,
-      isConvexReady: false, // Convex won't be authenticated in Supabase mode
-      applyUserDelta: supabaseAuth.applyUserDelta,
-    };
-  }
-
-  // Use Convex/Firebase Auth (default)
-  const convexAuth = useConvexAuth();
+  const supabaseAuth = useSupabaseAuth();
   return {
-    status: convexAuth.status,
-    user: convexAuth.user ? {
-      id: convexAuth.user.id as string, // Convex Id is string at runtime
-      handle: convexAuth.user.handle,
-      avatarUrl: convexAuth.user.avatarUrl,
-      provider: convexAuth.user.provider,
-      streak: convexAuth.user.streak,
-      xp: convexAuth.user.xp,
-      totalCorrect: convexAuth.user.totalCorrect,
-      totalPlayed: convexAuth.user.totalPlayed,
-      interests: convexAuth.user.interests,
-    } : null,
-    guestKey: convexAuth.guestKey,
-    signInWithGoogle: convexAuth.signInWithGoogle,
-    signOut: convexAuth.signOut,
-    enterGuestMode: convexAuth.enterGuestMode,
-    ensureGuestKey: convexAuth.ensureGuestKey,
-    error: convexAuth.error,
-    isReady: convexAuth.isConvexReady,
-    refreshUser: convexAuth.refreshUser,
-    resetUser: convexAuth.resetUser,
-    isConvexReady: convexAuth.isConvexReady,
+    status: supabaseAuth.status,
+    user: supabaseAuth.user
+      ? {
+          id: supabaseAuth.user.id,
+          handle: supabaseAuth.user.handle,
+          avatarUrl: supabaseAuth.user.avatarUrl,
+          provider: supabaseAuth.user.provider,
+          streak: supabaseAuth.user.streak,
+          xp: supabaseAuth.user.xp,
+          totalCorrect: supabaseAuth.user.totalCorrect,
+          totalPlayed: supabaseAuth.user.totalPlayed,
+          interests: supabaseAuth.user.interests,
+        }
+      : null,
+    guestKey: supabaseAuth.guestKey,
+    signInWithGoogle: supabaseAuth.signInWithGoogle,
+    signOut: supabaseAuth.signOut,
+    enterGuestMode: supabaseAuth.enterGuestMode,
+    ensureGuestKey: supabaseAuth.ensureGuestKey,
+    error: supabaseAuth.error,
+    isReady: supabaseAuth.isReady,
+    refreshUser: supabaseAuth.refreshUser,
+    resetUser: supabaseAuth.resetUser,
+    applyUserDelta: supabaseAuth.applyUserDelta,
   };
 }
 
 /**
- * Re-export useUnifiedAuth as useAuth for easy migration
- * Components can import { useAuth } from '@/hooks/use-unified-auth'
- * and get the correct auth based on feature flag
+ * Re-export useUnifiedAuth as useAuth for easy migration.
  */
 export { useUnifiedAuth as useAuth };
