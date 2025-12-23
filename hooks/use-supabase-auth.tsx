@@ -3,7 +3,6 @@
  * Manages Supabase auth and session state.
  */
 
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
 import * as SecureStore from 'expo-secure-store';
 import {
@@ -22,15 +21,24 @@ import { supabase, type Database, type User } from '@/lib/supabase';
 
 type UserInsert = Database['public']['Tables']['users']['Insert'];
 
+type GoogleSigninModule = typeof import('@react-native-google-signin/google-signin');
+
 const googleWebClientId =
   process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID
 const googleIosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 
-// Configure Google Sign-In
-GoogleSignin.configure({
-  webClientId: googleWebClientId,
-  iosClientId: googleIosClientId,
-});
+let cachedGoogleSigninModule: GoogleSigninModule | null | undefined;
+function loadGoogleSigninModule() {
+  if (cachedGoogleSigninModule !== undefined) return cachedGoogleSigninModule;
+  try {
+    cachedGoogleSigninModule =
+      require('@react-native-google-signin/google-signin') as GoogleSigninModule;
+  } catch (err) {
+    console.warn('[SupabaseAuth] Google Sign-In native module not available', err);
+    cachedGoogleSigninModule = null;
+  }
+  return cachedGoogleSigninModule;
+}
 
 type AuthStatus =
   | 'loading'
@@ -228,6 +236,24 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
   const userRef = useRef<AuthedUser | null>(null);
   const authRequestIdRef = useRef(0);
   const identityIdRef = useRef<string | null>(null);
+  const googleSigninConfiguredRef = useRef(false);
+
+  const configureGoogleSignin = useCallback((module: GoogleSigninModule) => {
+    if (googleSigninConfiguredRef.current) return;
+    if (!googleWebClientId && !googleIosClientId) {
+      throw new Error('Google 로그인 환경변수가 설정되지 않았습니다.');
+    }
+    try {
+      module.GoogleSignin.configure({
+        webClientId: googleWebClientId,
+        iosClientId: googleIosClientId,
+      });
+      googleSigninConfiguredRef.current = true;
+    } catch (err) {
+      console.warn('[SupabaseAuth] Google Sign-In configure failed', err);
+      throw err;
+    }
+  }, [configureGoogleSignin]);
 
   useEffect(() => {
     statusRef.current = status;
@@ -599,6 +625,13 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
+      const googleModule = loadGoogleSigninModule();
+      const GoogleSignin = googleModule?.GoogleSignin;
+      if (!GoogleSignin || !googleModule) {
+        throw new Error('Google 로그인 모듈을 사용할 수 없습니다.');
+      }
+      configureGoogleSignin(googleModule);
+
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const signInResult = await GoogleSignin.signIn();
 
@@ -622,22 +655,26 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       // Auth state change listener will handle the rest
     } catch (err) {
       const code = (err as { code?: string } | null)?.code;
+      const statusCodes = loadGoogleSigninModule()?.statusCodes;
 
-      if (code === statusCodes.SIGN_IN_CANCELLED) {
+      if (statusCodes && code === statusCodes.SIGN_IN_CANCELLED) {
         setStatus(previousStatus);
         return;
       }
-      if (code === statusCodes.IN_PROGRESS) {
+      if (statusCodes && code === statusCodes.IN_PROGRESS) {
         setError('이미 로그인 중입니다.');
         return;
       }
-      if (code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+      if (statusCodes && code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         setStatus('error');
         setError('Google Play 서비스를 사용할 수 없습니다. 업데이트 후 다시 시도해주세요.');
         return;
       }
 
-      await GoogleSignin.signOut().catch(() => undefined);
+      const googleModule = loadGoogleSigninModule();
+      if (googleModule?.GoogleSignin) {
+        await googleModule.GoogleSignin.signOut().catch(() => undefined);
+      }
       console.error('Google sign-in failed', err);
       setStatus('error');
       setError(
@@ -652,7 +689,10 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     try {
       await supabase.auth.signOut({ scope: 'local' });
-      await GoogleSignin.signOut().catch(() => undefined);
+      const googleModule = loadGoogleSigninModule();
+      if (googleModule?.GoogleSignin) {
+        await googleModule.GoogleSignin.signOut().catch(() => undefined);
+      }
     } catch (err) {
       console.error('Sign out failed', err);
     }

@@ -121,6 +121,16 @@ async function main() {
     const elo =
       typeof item.elo === "number" ? item.elo : Math.round(1200 + (difficulty - 0.5) * 800);
 
+    const mediaMetaRaw = item.mediaMeta ?? item.media_meta;
+    const mediaMeta =
+      mediaMetaRaw && typeof mediaMetaRaw === "object" && !Array.isArray(mediaMetaRaw)
+        ? { ...mediaMetaRaw }
+        : {};
+    const hint = typeof item.hint === "string" ? item.hint.trim() : null;
+    if (hint) {
+      mediaMeta.hint = hint;
+    }
+
     const row = {
       deck_id: deckId,
       category: item.category,
@@ -137,6 +147,10 @@ async function main() {
       choice_shuffle_seed:
         typeof item.choiceShuffleSeed === "number" ? Math.round(item.choiceShuffleSeed) : null,
     };
+
+    if (Object.keys(mediaMeta).length > 0) {
+      row.media_meta = mediaMeta;
+    }
 
     const createdAt = toIso(item.createdAt);
     if (createdAt) row.created_at = createdAt;

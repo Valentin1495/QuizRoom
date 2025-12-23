@@ -18,6 +18,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { FIFTH_GRADER_CHALLENGE } from '@/constants/challenges';
 import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -445,6 +446,30 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.section}>
+          <SectionHeader title="챌린지" tagline="특별 모드" muted={muted} />
+          <View style={[styles.challengeCard, { backgroundColor: cardBackground, borderColor }]}>
+            <View style={styles.challengeHeader}>
+              <View style={[styles.challengeBadge, { backgroundColor: palette.cardElevated, borderColor }]}>
+                <IconSymbol name="lightbulb" size={16} color={palette.text} />
+                <ThemedText style={styles.challengeBadgeText}>5th Grader</ThemedText>
+              </View>
+              <ThemedText style={styles.challengeTitle}>{FIFTH_GRADER_CHALLENGE.title}</ThemedText>
+              <ThemedText style={[styles.challengeTagline, { color: muted }]}>
+                {FIFTH_GRADER_CHALLENGE.tagline}
+              </ThemedText>
+              <ThemedText style={[styles.challengeDescription, { color: muted }]}>
+                {FIFTH_GRADER_CHALLENGE.description}
+              </ThemedText>
+            </View>
+            <Link href={FIFTH_GRADER_CHALLENGE.route} asChild>
+              <Button variant="default" size="lg" rounded="full" style={styles.primaryButton}>
+                {FIFTH_GRADER_CHALLENGE.ctaLabel}
+              </Button>
+            </Link>
+          </View>
+        </View>
+
+        <View style={styles.section}>
           <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" muted={muted} />
           <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
           >
@@ -662,6 +687,41 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     width: '100%',
+  },
+  challengeCard: {
+    borderWidth: 1,
+    borderRadius: Radius.lg,
+    padding: Spacing.lg,
+    gap: Spacing.md,
+  },
+  challengeHeader: {
+    gap: Spacing.xs,
+  },
+  challengeBadge: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
+  },
+  challengeBadgeText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  challengeTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  challengeTagline: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  challengeDescription: {
+    fontSize: 13,
+    lineHeight: 18,
   },
   sectionHeader: {
     flexDirection: 'row',

@@ -35,6 +35,12 @@ INSERT INTO categories (slug, title, emoji, description, sample_tags, neighbors,
   '[{"slug": "news_issues", "weight": 0.3}, {"slug": "tech_it", "weight": 0.2}]'::jsonb,
   true);
 
+-- Fifth Grader Challenge Deck
+INSERT INTO decks (slug, title, description, tags, status)
+VALUES
+('deck_fifth_grader_v1', '5th Grader 전용 세트', '초등 교과/상식 난이도 곡선 기반 세트', ARRAY['mode:fifth_grader'], 'published')
+ON CONFLICT (slug) DO NOTHING;
+
 -- Sample Live Match Deck
 INSERT INTO live_match_decks (slug, title, emoji, description, source_categories, is_active) VALUES
 ('mixed_popular', '인기 종합', '🔥', '가장 인기 있는 퀴즈 모음', 

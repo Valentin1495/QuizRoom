@@ -1703,6 +1703,9 @@ export default function MatchPlayScreen() {
 
     const renderReveal = () => (
         <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
+            <ThemedText style={[styles.roundCaption, { color: textMutedColor }]}>
+                라운드 {currentRoundIndex} / {totalRoundsDisplay}
+            </ThemedText>
             {/* <ThemedText type="title" style={styles.cardTitle}>정답 공개</ThemedText>
             <View style={[styles.correctAnswerBadge, { backgroundColor: background, borderColor: textColor }]}>
                 <ThemedText style={[styles.correctAnswerLabel, { color: textColor }]}>

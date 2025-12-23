@@ -33,6 +33,7 @@ export type SwipeFeedQuestion = {
   correctChoiceId: string | null;
   correctChoiceIndex: number | null;
   explanation?: string | null;
+  hint?: string | null;
 };
 
 type ReportPayload = {
@@ -63,6 +64,8 @@ const emptyState: FeedState = {
 export type UseSwipeFeedOptions = {
   category: string;
   tags?: string[];
+  deckSlug?: string;
+  excludeTag?: string;
   limit?: number;
 };
 
@@ -104,7 +107,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     setCursor(null);
     setHasMore(true);
     setIsLoading(false);
-  }, [options.category, options.tags]);
+  }, [options.category, options.deckSlug, options.excludeTag, options.tags]);
 
   const pushPrefetch = useCallback((items: SwipeFeedQuestion[]): number => {
     if (!items.length) return 0;
@@ -156,6 +159,8 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
         body: {
           category: options.category,
           tags: options.tags,
+          deckSlug: options.deckSlug,
+          excludeTag: options.excludeTag,
           limit: requestLimit,
           cursor,
         },
@@ -203,6 +208,8 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     isLoading,
     options.category,
     options.tags,
+    options.excludeTag,
+    options.deckSlug,
     pushPrefetch,
     sessionLimit,
     getFunctionAuthHeaders,

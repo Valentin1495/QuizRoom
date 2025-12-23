@@ -89,6 +89,7 @@ export type AnswerSheetProps = {
   disabled?: boolean;
   selectedIndex: number | null;
   correctIndex?: number;
+  eliminatedChoiceIds?: string[];
   onSelect: (index: number) => void;
 };
 
@@ -251,6 +252,7 @@ function AnswerSheetComponent({
   disabled = false,
   selectedIndex,
   correctIndex,
+  eliminatedChoiceIds,
   onSelect,
 }: AnswerSheetProps) {
   const colorScheme = useColorScheme();
@@ -262,6 +264,11 @@ function AnswerSheetComponent({
   const defaults = useMemo(
     () => ({ baseColor, borderColor, textColor }),
     [baseColor, borderColor, textColor]
+  );
+
+  const eliminatedSet = useMemo(
+    () => new Set(eliminatedChoiceIds ?? []),
+    [eliminatedChoiceIds]
   );
 
   const variants = useMemo(() => {
@@ -278,21 +285,24 @@ function AnswerSheetComponent({
       if (selectedIndex === index) {
         return 'selected';
       }
+      if (eliminatedSet.has(choices[index]?.id)) {
+        return 'dim';
+      }
       return 'default';
     });
-  }, [choices, correctIndex, selectedIndex]);
+  }, [choices, correctIndex, eliminatedSet, selectedIndex]);
 
   const isRevealed = correctIndex != null;
   const isChoiceDisabled = disabled || isRevealed;
 
   const handleSelect = useCallback(
     (index: number) => {
-      if (isChoiceDisabled) {
+      if (isChoiceDisabled || eliminatedSet.has(choices[index]?.id)) {
         return;
       }
       onSelect(index);
     },
-    [isChoiceDisabled, onSelect]
+    [choices, eliminatedSet, isChoiceDisabled, onSelect]
   );
 
   const revealedRef = useRef<number | null>(null);
@@ -319,7 +329,7 @@ function AnswerSheetComponent({
           choice={choice}
           variant={variants[index]}
           onPress={() => handleSelect(index)}
-          disabled={isChoiceDisabled}
+          disabled={isChoiceDisabled || eliminatedSet.has(choice.id)}
           isRevealed={isRevealed}
           mode={normalizedScheme}
           defaults={defaults}

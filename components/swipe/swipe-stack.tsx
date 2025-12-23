@@ -36,10 +36,19 @@ import type { CategoryMeta } from '@/constants/categories';
 import type { SwipeFeedback } from './swipe-card';
 import { SwipeCard } from './swipe-card';
 
+export type SwipeChallengeConfig = {
+  totalQuestions: number;
+  allowedMisses: number;
+  scorePerCorrect: number;
+};
+
 export type SwipeStackProps = {
   category: string;
   tags?: string[];
-  setSelectedCategory: (category: CategoryMeta | null) => void;
+  deckSlug?: string;
+  setSelectedCategory?: (category: CategoryMeta | null) => void;
+  challenge?: SwipeChallengeConfig;
+  onExit?: () => void;
 };
 
 const REPORT_REASONS = [
@@ -145,7 +154,16 @@ function useSwipeLoggers() {
   return { logHistory, logStreakProgress };
 }
 
-export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackProps) {
+export function SwipeStack({
+  category,
+  tags,
+  deckSlug,
+  setSelectedCategory,
+  challenge,
+  onExit,
+}: SwipeStackProps) {
+  const isChallenge = Boolean(challenge);
+  const sessionLimit = challenge?.totalQuestions;
   const {
     current,
     queue,
@@ -160,7 +178,13 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     reset,
     isGuest,
     sessionKey,
-  } = useSwipeFeed({ category, tags, limit: 20 });
+  } = useSwipeFeed({
+    category,
+    tags,
+    deckSlug,
+    excludeTag: isChallenge ? undefined : 'mode:fifth_grader',
+    limit: sessionLimit,
+  });
   const { signInWithGoogle, status: authStatus, applyUserDelta, user } = useAuth();
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
@@ -181,6 +205,10 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const sheetStatBorder = palette.border;
   const { logHistory, logStreakProgress } = useSwipeLoggers();
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
+  const [missCount, setMissCount] = useState(0);
+  const [hintText, setHintText] = useState<string | null>(null);
+  const [eliminatedChoiceIds, setEliminatedChoiceIds] = useState<string[] | null>(null);
+  const [lifelinesUsed, setLifelinesUsed] = useState({ fifty: false, hint: false });
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<SwipeFeedback | null>(null);
@@ -222,8 +250,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const reportReasonResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const filterKey = useMemo(
-    () => [category, ...(tags ?? [])].join('|'),
-    [category, tags]
+    () => [category, deckSlug ?? 'default', ...(tags ?? [])].join('|'),
+    [category, deckSlug, tags]
   );
   const [sessionId, setSessionId] = useState<string>(() => createSwipeSessionId(filterKey));
   const sessionLoggedRef = useRef(false);
@@ -240,6 +268,9 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   const [cardOffset, setCardOffset] = useState(0);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingSlideIndex, setOnboardingSlideIndex] = useState(0);
+  const allowedMisses = challenge?.allowedMisses ?? 0;
+  const failAfterMisses = allowedMisses + 1;
+  const scorePerCorrect = challenge?.scorePerCorrect ?? 100;
   const onboardingFadeAnim = useRef(new Animated.Value(0)).current;
   const onboardingTranslateX = useRef(new Animated.Value(0)).current;
   const indicatorAnims = useRef(
@@ -342,6 +373,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     if (!current) {
       setSelectedIndex(null);
       setFeedback(null);
+      setHintText(null);
+      setEliminatedChoiceIds(null);
       hideResultToast();
       closeSheet();
       closeActionsSheet();
@@ -350,6 +383,8 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     }
     setSelectedIndex(null);
     setFeedback(null);
+    setHintText(null);
+    setEliminatedChoiceIds(null);
     hideResultToast();
     closeSheet();
     closeActionsSheet();
@@ -385,6 +420,9 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         correctChoiceId: current.correctChoiceId,
         correctChoiceIndex: optimisticCorrectIndexRaw >= 0 ? optimisticCorrectIndexRaw : null,
       };
+      const optimisticScoreDelta = isChallenge
+        ? (optimisticIsCorrect ? scorePerCorrect : 0)
+        : (optimisticIsCorrect ? 15 : -5);
       setFeedback(optimisticFeedback);
       // Optimistically update streak and sheet data so UI reflects immediately
       const optimisticStreak = optimisticIsCorrect ? prevStreakBeforeAnswer + 1 : 0;
@@ -397,7 +435,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
           correctChoiceId: current.correctChoiceId,
           correctChoiceIndex: optimisticCorrectIndexRaw >= 0 ? optimisticCorrectIndexRaw : null,
           explanation: current.explanation ?? null,
-          scoreDelta: optimisticIsCorrect ? 15 : -5,
+          scoreDelta: optimisticScoreDelta,
           streak: optimisticStreak,
         });
       }
@@ -427,7 +465,12 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         const nextStreak = response.isCorrect ? prevStreakBeforeAnswer + 1 : 0;
         const comboMultiplier = response.isCorrect ? getComboMultiplier(nextStreak) : 1;
         const baseScoreDelta = response.scoreDelta ?? (response.isCorrect ? 15 : -5);
-        const scoreDelta = response.isCorrect ? Math.round(baseScoreDelta * comboMultiplier) : baseScoreDelta;
+        const challengeScoreDelta = response.isCorrect ? scorePerCorrect : 0;
+        const scoreDelta = isChallenge
+          ? challengeScoreDelta
+          : response.isCorrect
+            ? Math.round(baseScoreDelta * comboMultiplier)
+            : baseScoreDelta;
         const confirmedFeedback: SwipeFeedback = {
           status: 'confirmed',
           isCorrect: response.isCorrect,
@@ -509,6 +552,9 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
             skipped: prev.skipped,
           };
         });
+        if (isChallenge) {
+          setMissCount((prev) => prev + (response.isCorrect ? 0 : 1));
+        }
         const stillCurrent = currentQuestionIdRef.current === questionId;
         if (stillCurrent) {
           setFeedback(confirmedFeedback);
@@ -545,11 +591,11 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
         });
       }
     },
-    [current, feedback, submitAnswer, sessionKey, getFunctionAuthHeaders, applyUserDelta, user]
+    [current, feedback, submitAnswer, sessionKey, getFunctionAuthHeaders, applyUserDelta, isChallenge, scorePerCorrect, user]
   );
 
   const handleSkip = useCallback(() => {
-    if (!current) return;
+    if (!current || isChallenge) return;
     closeActionsSheet();
     skip();
     setSelectedIndex(null);
@@ -563,7 +609,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       skipped: prev.skipped + 1,
     }));
     setCardOffset((prev) => prev + 1);
-  }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current, skip]);
+  }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current, isChallenge, skip]);
 
   const handleReset = useCallback(async () => {
     closeSheet();
@@ -579,6 +625,10 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
     setReportQuestionId(null);
     setReportSubject(null);
     setIsSubmittingReport(false);
+    setMissCount(0);
+    setHintText(null);
+    setEliminatedChoiceIds(null);
+    setLifelinesUsed({ fifty: false, hint: false });
     setCurrentStreak(0);
     currentQuestionIdRef.current = null;
     startTimeRef.current = Date.now();
@@ -591,6 +641,47 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
       console.warn('Reset failed:', error);
     }
   }, [closeActionsSheet, closeReportReasonSheet, closeSheet, filterKey, reset]);
+
+  const handleUseFifty = useCallback(() => {
+    if (!isChallenge || !current || feedback || lifelinesUsed.fifty) {
+      return;
+    }
+    if (!current.correctChoiceId) {
+      return;
+    }
+    const incorrectChoices = current.choices.filter(
+      (choice) => choice.id !== current.correctChoiceId
+    );
+    const removableCount = Math.min(2, Math.max(0, incorrectChoices.length - 1));
+    if (removableCount === 0) {
+      return;
+    }
+    const shuffled = [...incorrectChoices].sort(() => Math.random() - 0.5);
+    setEliminatedChoiceIds(shuffled.slice(0, removableCount).map((choice) => choice.id));
+    setLifelinesUsed((prev) => ({ ...prev, fifty: true }));
+    lightHaptic();
+  }, [current, feedback, isChallenge, lifelinesUsed.fifty]);
+
+  const handleUseHint = useCallback(() => {
+    if (!isChallenge || !current || feedback || lifelinesUsed.hint) {
+      return;
+    }
+    const trimmedHint = typeof current.hint === 'string' ? current.hint.trim() : '';
+    if (trimmedHint.length > 0) {
+      setHintText(`학생 힌트: ${trimmedHint}`);
+    } else {
+      const resolvedIndex =
+        current.correctChoiceIndex ??
+        current.choices.findIndex((choice) => choice.id === current.correctChoiceId);
+      if (resolvedIndex >= 0) {
+        setHintText(`학생 힌트: ${resolvedIndex + 1}번 보기가 맞을 확률이 높아 보여요.`);
+      } else {
+        setHintText('학생 힌트: 이 보기 쪽이 맞을 확률이 높아 보여요.');
+      }
+    }
+    setLifelinesUsed((prev) => ({ ...prev, hint: true }));
+    lightHaptic();
+  }, [current, feedback, isChallenge, lifelinesUsed.hint]);
 
   useEffect(() => {
     currentStreakRef.current = currentStreak;
@@ -658,11 +749,23 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
   }, [closeActionsSheet, current, openReportReasonSheet]);
 
   const handleActions = useCallback(() => {
-    if (!current) return;
+    if (!current || isChallenge) return;
     openActionsSheet();
-  }, [current, openActionsSheet]);
+  }, [current, isChallenge, openActionsSheet]);
 
-  const showCompletion = !hasMore && queue.length === 0;
+  const totalQuestions = challenge?.totalQuestions ?? 0;
+  const isChallengeFailed = isChallenge && missCount >= failAfterMisses;
+  const showCompletion = isChallenge
+    ? isChallengeFailed || (!hasMore && queue.length === 0)
+    : !hasMore && queue.length === 0;
+  const questionProgressLabel =
+    isChallenge && totalQuestions > 0
+      ? `${Math.min(sessionStats.answered + 1, totalQuestions)}/${totalQuestions}`
+      : null;
+  const missLabel = allowedMisses > 0 ? `${missCount}/${allowedMisses}` : `${missCount}`;
+  const missLabelColor =
+    allowedMisses > 0 && missCount >= allowedMisses ? palette.danger : palette.textMuted;
+  const missSummaryHint = allowedMisses > 0 ? `${failAfterMisses}번째 오답에서 종료` : null;
 
   const accuracyPercent = useMemo(() => {
     if (!sessionStats.answered) return null;
@@ -706,6 +809,19 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
 
   const completionTitle = useMemo(() => {
     const answered = sessionStats.answered;
+    if (isChallenge) {
+      const completed = totalQuestions > 0 && answered >= totalQuestions && !isChallengeFailed;
+      if (isChallengeFailed) {
+        return { icon: 'face.frown', label: '챌린지 종료' } as const;
+      }
+      if (completed) {
+        return { icon: 'party.popper', label: '챌린지 완주!' } as const;
+      }
+      return {
+        icon: 'rectangle.stack',
+        label: answered > 0 ? `${answered}문항 결과` : '챌린지 결과',
+      } as const;
+    }
     const completed = answered >= 20;
     return {
       icon: completed ? 'party.popper' : 'rectangle.grid.2x2',
@@ -715,7 +831,7 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
           ? `${answered}문항 풀이 요약`
           : '스와이프 요약',
     } as const;
-  }, [sessionStats.answered]);
+  }, [isChallenge, isChallengeFailed, sessionStats.answered, totalQuestions]);
 
   const totalScoreLabel = useMemo(() => {
     if (!sessionStats.answered) return '+0';
@@ -1188,30 +1304,59 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                     {sessionStats.correct}/{Math.max(sessionStats.answered, 1)} {'\n'}정답/응답
                   </ThemedText>
                 </View>
-                <View
-                  style={[
-                    styles.completionMetric,
-                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
-                  ]}
-                >
-                  <ThemedText
-                    style={styles.completionMetricLabel}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
+                {isChallenge ? (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
                   >
-                    완료율
-                  </ThemedText>
-                  <ThemedText style={styles.completionMetricValue}>
-                    {processedPercent !== null ? `${processedPercent}%` : '-'}
-                  </ThemedText>
-                  <ThemedText
-                    style={styles.completionMetricHint}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
+                    <ThemedText
+                      style={styles.completionMetricLabel}
+                      lightColor={palette.textMuted}
+                      darkColor={Palette.gray200}
+                    >
+                      미스
+                    </ThemedText>
+                    <ThemedText style={styles.completionMetricValue}>
+                      {missLabel}
+                    </ThemedText>
+                    {missSummaryHint ? (
+                      <ThemedText
+                        style={styles.completionMetricHint}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        {missSummaryHint}
+                      </ThemedText>
+                    ) : null}
+                  </View>
+                ) : (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
                   >
-                    {sessionStats.answered}/{Math.max(totalViewed, 1)} {'\n'}응답/(응답+스킵)
-                  </ThemedText>
-                </View>
+                    <ThemedText
+                      style={styles.completionMetricLabel}
+                      lightColor={palette.textMuted}
+                      darkColor={Palette.gray200}
+                    >
+                      완료율
+                    </ThemedText>
+                    <ThemedText style={styles.completionMetricValue}>
+                      {processedPercent !== null ? `${processedPercent}%` : '-'}
+                    </ThemedText>
+                    <ThemedText
+                      style={styles.completionMetricHint}
+                      lightColor={palette.textMuted}
+                      darkColor={Palette.gray200}
+                    >
+                      {sessionStats.answered}/{Math.max(totalViewed, 1)} {'\n'}응답/(응답+스킵)
+                    </ThemedText>
+                  </View>
+                )}
                 <View
                   style={[
                     styles.completionMetric,
@@ -1236,21 +1381,23 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                     평균 {averageSeconds !== null ? `${formattedAverageSeconds}초` : '-'}
                   </ThemedText>
                 </View>
-                <View
-                  style={[
-                    styles.completionMetric,
-                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
-                  ]}
-                >
-                  <ThemedText
-                    style={styles.completionMetricLabel}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
+                {isChallenge ? null : (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
                   >
-                    획득 XP
-                  </ThemedText>
-                  <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
-                </View>
+                    <ThemedText
+                      style={styles.completionMetricLabel}
+                      lightColor={palette.textMuted}
+                      darkColor={Palette.gray200}
+                    >
+                      획득 XP
+                    </ThemedText>
+                    <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
+                  </View>
+                )}
               </View>
               <View style={styles.completionActions}>
                 <Button
@@ -1261,14 +1408,103 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 >
                   다시 도전
                 </Button>
+                {isChallenge ? (
+                  onExit ? (
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      fullWidth
+                      onPress={onExit}
+                      style={styles.completionActionButton}
+                    >
+                      홈으로
+                    </Button>
+                  ) : null
+                ) : (
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    fullWidth
+                    onPress={() => setSelectedCategory?.(null)}
+                    style={styles.completionActionButton}
+                  >
+                    카테고리 변경
+                  </Button>
+                )}
+              </View>
+            </View>
+          ) : isChallenge ? (
+            <View style={styles.challengeStatusWrapper}>
+              <View style={styles.challengeStatusRow}>
+                <View style={styles.challengeStatusLeft}>
+                  <View
+                    style={[
+                      styles.challengeBadge,
+                      { borderColor: palette.borderStrong, backgroundColor: palette.cardElevated },
+                    ]}
+                  >
+                    <IconSymbol name="lightbulb" size={14} color={palette.text} />
+                    <ThemedText style={styles.challengeBadgeLabel}>5th Grader</ThemedText>
+                  </View>
+                  {questionProgressLabel ? (
+                    <View style={styles.challengeStatusInfo}>
+                      <IconSymbol name="numbers.rectangle" size={16} color={palette.textMuted} />
+                      <ThemedText
+                        style={styles.statusText}
+                        lightColor={palette.textMuted}
+                        darkColor={palette.textMuted}
+                      >
+                        Q {questionProgressLabel}
+                      </ThemedText>
+                    </View>
+                  ) : null}
+                </View>
+                <View style={styles.challengeStatusRight}>
+                  <IconSymbol name="xmark.circle.fill" size={16} color={missLabelColor} />
+                  <ThemedText style={[styles.statusText, { color: missLabelColor }]}>
+                    미스 {missLabel}
+                  </ThemedText>
+                </View>
+              </View>
+              <View style={styles.challengeActionsRow}>
+                <View style={styles.lifelineGroup}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    rounded="full"
+                    onPress={handleUseFifty}
+                    disabled={!current || !!feedback || lifelinesUsed.fifty}
+                  >
+                    50:50
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    rounded="full"
+                    onPress={handleUseHint}
+                    disabled={!current || !!feedback || lifelinesUsed.hint}
+                  >
+                    학생 힌트
+                  </Button>
+                </View>
                 <Button
-                  size="lg"
-                  variant="outline"
-                  fullWidth
-                  onPress={() => setSelectedCategory(null)}
-                  style={styles.completionActionButton}
+                  variant="ghost"
+                  size="sm"
+                  rounded="full"
+                  onPress={handleOpenSheet}
+                  disabled={selectedIndex === null || !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)}
+                  style={
+                    (selectedIndex === null ||
+                      !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)) &&
+                    styles.sheetButtonHidden
+                  }
+                  textStyle={
+                    (selectedIndex === null ||
+                      !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)) &&
+                    styles.sheetButtonTextHidden
+                  }
                 >
-                  카테고리 변경
+                  해설 보기
                 </Button>
               </View>
             </View>
@@ -1324,11 +1560,13 @@ export function SwipeStack({ category, tags, setSelectedCategory }: SwipeStackPr
                 index={index}
                 cardNumber={cardOffset + index + 1}
                 isActive={index === 0}
+                hintText={index === 0 ? hintText : null}
+                eliminatedChoiceIds={index === 0 ? eliminatedChoiceIds ?? undefined : undefined}
                 selectedIndex={index === 0 ? selectedIndex : null}
                 feedback={index === 0 ? feedback : null}
                 onSelectChoice={index === 0 ? handleSelect : () => undefined}
                 onSwipeNext={handleNext}
-                onOpenActions={handleActions}
+                onOpenActions={isChallenge ? undefined : handleActions}
                 onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
                 onCardLayout={index === 0 ? handleActiveCardLayout : undefined}
               />
@@ -1670,6 +1908,62 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
+  },
+  challengeStatusWrapper: {
+    gap: Spacing.sm,
+    marginBottom: Spacing.md,
+    marginTop: 0,
+    position: 'relative',
+    zIndex: 2,
+  },
+  challengeStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.sm,
+    flexWrap: 'wrap',
+  },
+  challengeStatusLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    flexShrink: 1,
+  },
+  challengeStatusRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  challengeStatusInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  challengeActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.sm,
+    flexWrap: 'wrap',
+  },
+  lifelineGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    flexWrap: 'wrap',
+  },
+  challengeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
+  },
+  challengeBadgeLabel: {
+    fontSize: 11,
+    fontWeight: '700',
   },
   sheetButtonHidden: {
     opacity: 0,

@@ -7,6 +7,8 @@
  * {
  *   category: string;          // required
  *   tags?: string[];           // optional (not used yet)
+ *   deckSlug?: string;         // optional
+ *   excludeTag?: string;       // optional
  *   limit?: number;            // default 20
  *   cursor?: string;           // ISO timestamp for pagination (created_at LT cursor)
  * }
@@ -36,9 +38,9 @@ serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { category, tags, limit, cursor } = body;
+    const { category, tags, limit, cursor, deckSlug, excludeTag } = body;
 
-    if (!isString(category)) {
+    if (!isString(category) && !isString(deckSlug)) {
       return new Response(
         JSON.stringify({ error: 'INVALID_CATEGORY' }),
         { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
@@ -67,7 +69,38 @@ serve(async (req) => {
     const requestedLimit = Math.min(Math.max(Number(limit) || DEFAULT_LIMIT, 1), MAX_LIMIT);
     const tagFilter = isStringArray(tags) && tags.length ? tags : null;
 
-    const normalizedCategory = category.trim().toLowerCase();
+    const normalizedCategory = isString(category) ? category.trim().toLowerCase() : null;
+    const normalizedDeckSlug = isString(deckSlug) ? deckSlug.trim() : null;
+    const normalizedExcludeTag = isString(excludeTag) ? excludeTag.trim() : null;
+    let deckId = null;
+
+    if (normalizedDeckSlug) {
+      const { data: deck, error: deckError } = await admin
+        .from('decks')
+        .select('id')
+        .eq('slug', normalizedDeckSlug)
+        .maybeSingle();
+
+      if (deckError) {
+        console.error('swipe-feed deck lookup error', {
+          code: deckError.code,
+          message: deckError.message,
+        });
+        return new Response(
+          JSON.stringify({ error: deckError.message, code: deckError.code }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
+
+      if (!deck?.id) {
+        return new Response(
+          JSON.stringify({ data: { items: [], nextCursor: null, hasMore: false } }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
+
+      deckId = deck.id;
+    }
 
     let query = admin
       .from('questions')
@@ -89,12 +122,24 @@ serve(async (req) => {
           deck:decks(slug)
         `
       )
-      .eq('category', normalizedCategory)
       .order('created_at', { ascending: false })
       .limit(requestedLimit + 1);
 
+    if (normalizedCategory) {
+      query = query.eq('category', normalizedCategory);
+    }
+
+    if (deckId) {
+      query = query.eq('deck_id', deckId);
+    }
+
     if (tagFilter && tagFilter.length) {
       query = query.contains('tags', tagFilter);
+    }
+
+    if (normalizedExcludeTag) {
+      const escapedTag = normalizedExcludeTag.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      query = query.not('tags', 'cs', `{"${escapedTag}"}`);
     }
 
     if (isString(cursor)) {
@@ -115,12 +160,15 @@ serve(async (req) => {
     const items = (data ?? []).slice(0, requestedLimit).map((item) => {
       const choices = Array.isArray(item.choices) ? item.choices : [];
       const correctChoice = choices[item.answer_index] ?? null;
+      const mediaMeta = item.media_meta && typeof item.media_meta === 'object' ? item.media_meta : null;
+      const hint = mediaMeta && typeof mediaMeta.hint === 'string' ? mediaMeta.hint : null;
       const answerToken = `v1:${item.id}:${Date.now()}`;
       return {
         id: item.id,
         deckSlug: item.deck?.slug ?? '',
         prompt: item.prompt,
         mediaUrl: item.media_url ?? null,
+        hint,
         choices,
         correctChoiceId: correctChoice?.id ?? null,
         correctChoiceIndex: correctChoice ? item.answer_index : null,

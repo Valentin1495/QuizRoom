@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react';
 import { Dimensions, Image, LayoutChangeEvent, Platform, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
 
 import { ThemedText } from '@/components/themed-text';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -40,6 +41,8 @@ export type SwipeCardProps = {
   index: number;
   isActive: boolean;
   cardNumber?: number;
+  hintText?: string | null;
+  eliminatedChoiceIds?: string[];
   selectedIndex: number | null;
   feedback: SwipeFeedback | null;
   onSelectChoice: (index: number) => void;
@@ -124,6 +127,8 @@ export function SwipeCard({
   index,
   isActive,
   cardNumber,
+  hintText,
+  eliminatedChoiceIds,
   selectedIndex,
   feedback,
   onSelectChoice,
@@ -195,7 +200,7 @@ export function SwipeCard({
         translateY.value = withTiming(currentY - 50, { duration: 280 });
         opacity.value = withTiming(0, { duration: 280 }, (finished) => {
           if (finished) {
-            scheduleOnRN(onSwipeNext);
+            runOnJS(onSwipeNext)();
           }
         });
         return;
@@ -204,7 +209,7 @@ export function SwipeCard({
       // 오른쪽 스와이프했지만 아직 문제를 풀지 않음
       if (!feedback && translationX >= SWIPE_NEXT_THRESHOLD) {
         if (onSwipeBlocked) {
-          scheduleOnRN(onSwipeBlocked);
+          runOnJS(onSwipeBlocked)();
         }
         opacity.value = withSpring(1);
         translateY.value = withSpring(0);
@@ -222,7 +227,7 @@ export function SwipeCard({
 
       // 왼쪽 스와이프 - 액션 메뉴
       if (translationX <= ACTION_THRESHOLD && onOpenActions) {
-        scheduleOnRN(onOpenActions);
+        runOnJS(onOpenActions)();
       }
 
       // 카드 복귀 - 탄성 애니메이션
@@ -380,11 +385,21 @@ export function SwipeCard({
           <Image source={{ uri: card.mediaUrl }} style={styles.media} resizeMode="cover" />
         ) : null}
 
+        {hintText ? (
+          <View style={[styles.hintCard, { backgroundColor: palette.cardElevated, borderColor: palette.border }]}>
+            <IconSymbol name="lightbulb" size={16} color={palette.textMuted} />
+            <ThemedText style={[styles.hintText, { color: palette.text }]}>
+              {hintText}
+            </ThemedText>
+          </View>
+        ) : null}
+
         <AnswerSheet
           choices={card.choices}
           onSelect={onSelectChoice}
           selectedIndex={selectedIndex}
           disabled={!isActive || Boolean(feedback)}
+          eliminatedChoiceIds={eliminatedChoiceIds}
           correctIndex={
             feedback && feedback.correctChoiceIndex != null
               ? feedback.correctChoiceIndex
@@ -466,5 +481,20 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: Radius.md,
     marginBottom: Spacing.lg,
+  },
+  hintCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    marginBottom: Spacing.md,
+  },
+  hintText: {
+    fontSize: 13,
+    lineHeight: 18,
+    flexShrink: 1,
   },
 });
