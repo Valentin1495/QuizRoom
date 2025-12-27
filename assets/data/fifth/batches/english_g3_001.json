@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '색깔'을 묻는 질문으로 가장 알맞은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "What is this?"
+            },
+            {
+                "id": "b",
+                "text": "What color is it?"
+            },
+            {
+                "id": "c",
+                "text": "How many?"
+            },
+            {
+                "id": "d",
+                "text": "Who is he?"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "물체의 빛깔이나 겉모양의 색을 물어볼 때는 'color'라는 단어를 사용합니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "무지개나 물감처럼 눈에 보이는 빛의 느낌이 무엇인지 궁금할 때 쓰는 표현입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "영어 숫자를 셀 때, 'eight' 다음으로 오는 숫자는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "seven"
+            },
+            {
+                "id": "b",
+                "text": "nine"
+            },
+            {
+                "id": "c",
+                "text": "ten"
+            },
+            {
+                "id": "d",
+                "text": "six"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "숫자 8(eight) 다음에는 9를 뜻하는 nine이 옵니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "손가락 열 개를 다 펴기 바로 직전에 멈추는 지점의 수입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상대방의 이름을 물어보는 표현으로 가장 알맞은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "What is your name?"
+            },
+            {
+                "id": "b",
+                "text": "How are you?"
+            },
+            {
+                "id": "c",
+                "text": "How old are you?"
+            },
+            {
+                "id": "d",
+                "text": "What's that?"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "누군가를 처음 만났을 때 그 사람이 불리는 호칭을 알고 싶다면 'name'을 물어봐야 합니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "상대방이 누구인지 확인하기 위해 가장 먼저 건네는 정중한 질문입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '사과'를 뜻하는 영어 단어는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "pear"
+            },
+            {
+                "id": "b",
+                "text": "banana"
+            },
+            {
+                "id": "c",
+                "text": "apple"
+            },
+            {
+                "id": "d",
+                "text": "melon"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "빨갛고 아삭한 과일인 사과는 영어로 apple이라고 합니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "알파벳 첫 글자로 시작하는 아주 대중적이고 상큼한 열매입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "선생님이 수업 중에 'Sit down, please'라고 말씀하셨다면 학생들은 어떻게 해야 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "일어난다"
+            },
+            {
+                "id": "b",
+                "text": "노래한다"
+            },
+            {
+                "id": "c",
+                "text": "앉는다"
+            },
+            {
+                "id": "d",
+                "text": "춤춘다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "Sit down은 자리에 앉으라는 공손한 지시 사항입니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "의자에 엉덩이를 붙이고 바른 자세로 머무는 동작을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '고양이'를 뜻하는 영어 단어는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "dog"
+            },
+            {
+                "id": "b",
+                "text": "cat"
+            },
+            {
+                "id": "c",
+                "text": "pig"
+            },
+            {
+                "id": "d",
+                "text": "cow"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "야옹 소리를 내는 고양이는 영어로 cat이라고 합니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "발소리가 조용하고 쥐를 잡는 것으로 잘 알려진 세 글자 낱말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상대방이 준 선물에 감사를 표현할 때 하는 말은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Thank you"
+            },
+            {
+                "id": "b",
+                "text": "Sorry"
+            },
+            {
+                "id": "c",
+                "text": "Hello"
+            },
+            {
+                "id": "d",
+                "text": "Bye"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "고마운 마음을 전할 때는 Thank you라는 인사를 사용합니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "기분 좋은 도움을 받았을 때 건네는 가장 예의 바른 인사입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '파란색'을 나타내는 단어는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "red"
+            },
+            {
+                "id": "b",
+                "text": "green"
+            },
+            {
+                "id": "c",
+                "text": "blue"
+            },
+            {
+                "id": "d",
+                "text": "yellow"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "하늘이나 바다의 색깔은 영어로 blue라고 합니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "맑은 날의 하늘을 올려다보았을 때 느껴지는 시원한 느낌입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "헤어질 때 하는 작별 인사로 가장 알맞은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I'm fine"
+            },
+            {
+                "id": "b",
+                "text": "Nice to meet you"
+            },
+            {
+                "id": "c",
+                "text": "See you later"
+            },
+            {
+                "id": "d",
+                "text": "Good morning"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "다음에 또 만나자고 기약하며 헤어질 때는 See you later라고 인사합니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "오늘의 만남을 마무리하고 집으로 돌아갈 때 나누는 대화입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상대방의 나이를 묻는 질문으로 알맞은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "How are you?"
+            },
+            {
+                "id": "b",
+                "text": "How many boxes?"
+            },
+            {
+                "id": "c",
+                "text": "How old are you?"
+            },
+            {
+                "id": "d",
+                "text": "What is it?"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:3"
+        ],
+        "explanation": "몇 살인지 궁금할 때는 'old'라는 단어를 넣어 질문합니다.",
+        "grade": 3,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "태어난 후 시간이 얼마나 흘렀는지 묻는 정중한 표현을 골라보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735307278
+    }
+]

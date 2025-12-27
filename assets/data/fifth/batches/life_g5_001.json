@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "운동을 하다가 발목을 삐었을 때, 붓기를 가라앉히기 위해 가장 먼저 해야 할 적절한 조치는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "뜨거운 수건으로 찜질한다."
+            },
+            {
+                "id": "b",
+                "text": "얼음이나 차가운 팩으로 찜질한다."
+            },
+            {
+                "id": "c",
+                "text": "피가 잘 통하도록 계속 걷는다."
+            },
+            {
+                "id": "d",
+                "text": "발목을 세게 주물러 근육을 푼다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "부상을 입은 직후에는 혈관을 수축시켜 내부 출혈과 부종을 막아야 하므로 차가운 온도로 진정시키는 것이 중요합니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "열을 식혀서 상처 부위가 팽팽하게 부풀어 오르는 것을 막아주는 방식이 필요합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735308240
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "학교 폭력을 목격하거나 당했을 때, 도움을 요청할 수 있는 국가 긴급 전화번호는 무엇인가요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "112"
+            },
+            {
+                "id": "b",
+                "text": "119"
+            },
+            {
+                "id": "c",
+                "text": "117"
+            },
+            {
+                "id": "d",
+                "text": "114"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "117은 학교 폭력 신고 및 상담을 위해 운영되는 전문 신고 센터의 번호입니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "경찰이나 소방 번호와는 다른, 학생들의 안전과 고민 해결을 위해 마련된 전용 숫자입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735308241
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식품의 영양성분 표시에서 '1일 영양성분 기준치에 대한 비율'이 의미하는 것으로 옳은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "그 식품의 유통기한까지 남은 비율"
+            },
+            {
+                "id": "b",
+                "text": "하루에 필요한 전체 영양소 중 해당 식품이 차지하는 비중"
+            },
+            {
+                "id": "c",
+                "text": "식품 속에 들어있는 설탕의 무게"
+            },
+            {
+                "id": "d",
+                "text": "식품을 만든 공장의 크기 비율"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "이 수치는 성인이 하루에 섭취해야 할 평균 권장량과 비교했을 때, 해당 제품을 먹으면 얼마나 채워지는지를 보여줍니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "내가 오늘 먹어야 할 전체 양을 100으로 보았을 때 이 간식이 어느 정도를 채워주는지 알려줍니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735308242
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "컴퓨터나 스마트폰을 사용할 때 'VDT 증후군'을 예방하기 위한 올바른 자세는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "화면을 최대한 얼굴 가까이 가져다 댄다."
+            },
+            {
+                "id": "b",
+                "text": "등을 굽히고 목을 앞으로 길게 뺀다."
+            },
+            {
+                "id": "c",
+                "text": "화면 상단과 눈높이를 맞추고 적절한 거리를 둔다."
+            },
+            {
+                "id": "d",
+                "text": "엎드린 자세로 장시간 게임을 한다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "VDT 증후군은 영상 기기 사용으로 인한 거북목, 안구 건조 등을 말합니다. 허리를 펴고 시선을 수평으로 유지하는 것이 예방에 가장 좋습니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "몸의 중심축을 바로 세우고 시각 장치와의 간격을 일정하게 유지하는 동작을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735308243
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "코피가 날 때 고개를 뒤로 젖히지 말아야 하는 가장 큰 이유는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "코뼈가 부러질 수 있기 때문에"
+            },
+            {
+                "id": "b",
+                "text": "얼굴이 부어오를 수 있기 때문에"
+            },
+            {
+                "id": "c",
+                "text": "나오는 액체가 기도로 넘어가 숨을 막을 수 있기 때문에"
+            },
+            {
+                "id": "d",
+                "text": "고개를 젖히면 어지러움이 생기기 때문에"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "고개를 뒤로 젖히면 코피가 목 뒤로 넘어가 폐로 들어가거나 호흡을 방해할 수 있어 매우 위험합니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "체액이 숨을 쉬는 통로로 잘못 흘러 들어가는 사고를 막기 위함입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735308244
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "자전거를 탈 때 수신호 중 '왼쪽 팔을 수평으로 펴는 것'은 무엇을 의미할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "오른쪽으로 가겠다는 신호"
+            },
+            {
+                "id": "b",
+                "text": "정지하겠다는 신호"
+            },
+            {
+                "id": "c",
+                "text": "왼쪽으로 가겠다는 신호"
+            },
+            {
+                "id": "d",
+                "text": "속도를 줄이겠다는 신호"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "자전거 수신호에서 팔을 옆으로 곧게 펴는 방향은 그쪽으로 회전하거나 이동하겠다는 의사 표시입니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "팔 끝이 가리키는 쪽이 내가 곧 나아갈 목적 방향임을 뒤차에 알리는 동작입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735308245
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "생활 속에서 에너지를 절약하는 습관으로 가장 바람직한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "방에 아무도 없어도 불을 항상 켜둔다."
+            },
+            {
+                "id": "b",
+                "text": "냉장고 문을 자주 열어 내용물을 확인한다."
+            },
+            {
+                "id": "c",
+                "text": "여름철 실내 온도를 지나치게 낮게 설정한다."
+            },
+            {
+                "id": "d",
+                "text": "사용하지 않는 가전제품의 플러그를 뽑아둔다."
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "기기가 꺼져 있어도 대기 전력이 소모될 수 있으므로, 연결을 완전히 차단하는 것이 자원 보호에 도움이 됩니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "벽에 꽂힌 연결 부분을 분리하여 보이지 않는 전력 낭비를 막는 행동을 선택하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735308246
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "심폐소생술(CPR)을 할 때 가슴 압박을 실시하는 올바른 위치는 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "왼쪽 가슴의 윗부분"
+            },
+            {
+                "id": "b",
+                "text": "가슴 뼈(흉골) 아래쪽 절반 부위"
+            },
+            {
+                "id": "c",
+                "text": "배꼽 바로 윗부분"
+            },
+            {
+                "id": "d",
+                "text": "오른쪽 어깨와 가까운 가슴"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "심폐소생술 시에는 가슴 정중앙의 뼈 아래쪽 절반 지점을 강하고 빠르게 압박해야 심장에 충격을 줄 수 있습니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "상체의 한가운데를 가로지르는 단단한 곳의 하단 지점을 눌러야 효과가 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735308247
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "인터넷 게시판에 댓글을 달 때 타인의 권리를 침해하지 않는 올바른 태도는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "상대방의 개인정보를 모두 공개한다."
+            },
+            {
+                "id": "b",
+                "text": "비속어나 욕설을 섞어서 의견을 강조한다."
+            },
+            {
+                "id": "c",
+                "text": "근거 없는 소문을 진짜인 것처럼 퍼뜨린다."
+            },
+            {
+                "id": "d",
+                "text": "자신의 생각임을 밝히고 예의 바르게 글을 쓴다."
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "익명성이 보장되는 온라인에서도 오프라인과 마찬가지로 상대방을 존중하는 언어 예절을 지켜야 합니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "누군가에게 상처를 주지 않고 공손한 태도로 나만의 견해를 표현하는 방식입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735308248
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "여름철 식중독을 예방하기 위한 3대 원칙으로 옳지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "손 씻기"
+            },
+            {
+                "id": "b",
+                "text": "익혀 먹기"
+            },
+            {
+                "id": "c",
+                "text": "끓여 먹기"
+            },
+            {
+                "id": "d",
+                "text": "빨리 먹기"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:5"
+        ],
+        "explanation": "식중독 예방을 위해서는 청결 유지와 열을 이용한 살균이 핵심입니다. 속도는 예방과 직접적인 관련이 없습니다.",
+        "grade": 5,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "질병을 일으키는 균을 제거하는 위생적인 방법이 아닌 단순한 습관을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735308249
+    }
+]

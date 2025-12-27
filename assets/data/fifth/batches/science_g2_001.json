@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 낮에 뜬 달을 보았을 때의 특징으로 옳은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "밤보다 훨씬 밝게 보인다"
+            },
+            {
+                "id": "b",
+                "text": "태양과 모양이 똑같아진다"
+            },
+            {
+                "id": "c",
+                "text": "하얗거나 희미하게 보인다"
+            },
+            {
+                "id": "d",
+                "text": "절대로 볼 수 없다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "낮에도 달이 떠 있지만, 태양 빛이 너무 강해서 밤처럼 밝게 빛나지 않고 하얗거나 희미하게 보입니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "파란 하늘 배경에 구름과 비슷한 색으로 보일 때가 많습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식물의 잎에서 만들어지며, 식물이 자라나는데 필요한 영양분은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "흙"
+            },
+            {
+                "id": "b",
+                "text": "녹말"
+            },
+            {
+                "id": "c",
+                "text": "돌가루"
+            },
+            {
+                "id": "d",
+                "text": "소금"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "식물은 햇빛을 받아 잎에서 스스로 영양분인 녹말을 만들어냅니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "감자나 고구마에 많이 들어있는 성분을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물체가 소리를 내는 공통적인 원리는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "떨림(진동)"
+            },
+            {
+                "id": "b",
+                "text": "회전"
+            },
+            {
+                "id": "c",
+                "text": "가열"
+            },
+            {
+                "id": "d",
+                "text": "냉각"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "소리는 물체가 빠르게 움직이거나 떨릴 때 발생하며, 이를 진동이라고 합니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "말을 할 때 목에 손을 대면 느껴지는 움직임을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "주변 환경에 따라 몸의 색깔을 바꾸어 자신을 보호하는 동물이 아닌 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "카멜레온"
+            },
+            {
+                "id": "b",
+                "text": "문어"
+            },
+            {
+                "id": "c",
+                "text": "무당벌레"
+            },
+            {
+                "id": "d",
+                "text": "청개구리"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "무당벌레는 화려한 색깔로 독이 있음을 알리는 경고색을 띠며, 주변색에 맞춰 색을 바꾸지는 않습니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "항상 붉은색 바탕에 검은 점을 유지하는 곤충을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "자석의 같은 극(N극과 N극)끼리 가까이 가져갔을 때 일어나는 현상은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "서로 강하게 달라붙는다"
+            },
+            {
+                "id": "b",
+                "text": "서로 밀어낸다"
+            },
+            {
+                "id": "c",
+                "text": "갑자기 뜨거워진다"
+            },
+            {
+                "id": "d",
+                "text": "아무런 변화가 없다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "자석의 같은 극끼리는 서로 밀어내고, 다른 극끼리는 서로 끌어당깁니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "친하지 않은 사람들끼리 멀어지려는 성질과 비슷합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "겨울에 나뭇잎이 떨어지는 가장 큰 이유는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "나무가 잠을 자기 위해서"
+            },
+            {
+                "id": "b",
+                "text": "수분이 빠져나가는 것을 막기 위해서"
+            },
+            {
+                "id": "c",
+                "text": "눈이 무거워서 잎이 부러지기 때문에"
+            },
+            {
+                "id": "d",
+                "text": "바람이 너무 세게 불어서"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "겨울에는 뿌리에서 물을 흡수하기 어렵기 때문에 잎을 떨어뜨려 몸속의 물을 아낍니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "추운 날씨에 몸 안의 소중한 액체를 보존하려는 생존 전략입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "안개나 구름이 만들어지는 원인이 되는 물의 상태 변화는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "수증기가 액체인 물방울로 변함"
+            },
+            {
+                "id": "b",
+                "text": "얼음이 수증기로 변함"
+            },
+            {
+                "id": "c",
+                "text": "물이 얼음으로 변함"
+            },
+            {
+                "id": "d",
+                "text": "햇빛이 물로 변함"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "공기 중의 보이지 않는 수증기가 차가워져 작은 물방울이 되는 응결 현상에 의해 안개나 구름이 생깁니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "차가운 컵 겉면에 물기가 맺히는 것과 같은 원리입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "동물 중 알을 낳지 않고 새끼를 낳아 젖을 먹여 기르는 동물을 무엇이라 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "조류"
+            },
+            {
+                "id": "b",
+                "text": "어류"
+            },
+            {
+                "id": "c",
+                "text": "파충류"
+            },
+            {
+                "id": "d",
+                "text": "포유류"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "개, 고양이, 사람처럼 어미의 몸속에서 자란 뒤 태어나 젖을 먹는 동물을 포유류라고 합니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "어미가 품에서 정성껏 키우며 우유와 비슷한 영양분을 주는 동물 무리입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "공기가 우리 생활에서 주는 도움으로 옳지 않은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "생물이 숨을 쉴 수 있게 한다"
+            },
+            {
+                "id": "b",
+                "text": "연이나 비행기를 뜨게 한다"
+            },
+            {
+                "id": "c",
+                "text": "소리를 전달해준다"
+            },
+            {
+                "id": "d",
+                "text": "물건의 무게를 완전히 없애준다"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "공기도 무게를 가지고 있으며, 물체의 무게를 없애주는 역할은 하지 않습니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "투명해서 느껴지진 않지만 공간을 차지하고 누르는 힘이 있다는 점을 기억하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "곤충의 몸 구조를 바르게 설명한 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "머리, 배 두 부분으로 나뉜다"
+            },
+            {
+                "id": "b",
+                "text": "머리, 가슴, 배 세 부분으로 나뉜다"
+            },
+            {
+                "id": "c",
+                "text": "다리가 8개이다"
+            },
+            {
+                "id": "d",
+                "text": "뼈가 몸 안에 있다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:2"
+        ],
+        "explanation": "곤충은 몸이 머리, 가슴, 배의 세 부분으로 구분되며 다리가 6개인 것이 특징입니다.",
+        "grade": 2,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "개미나 벌의 몸이 몇 마디로 연결되어 있는지 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306287
+    }
+]

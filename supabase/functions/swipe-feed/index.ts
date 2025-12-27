@@ -111,6 +111,11 @@ serve(async (req) => {
           prompt,
           media_url,
           media_meta,
+          subject,
+          edu_level,
+          grade,
+          hint,
+          lifeline_meta,
           tags,
           choices,
           answer_index,
@@ -161,7 +166,12 @@ serve(async (req) => {
       const choices = Array.isArray(item.choices) ? item.choices : [];
       const correctChoice = choices[item.answer_index] ?? null;
       const mediaMeta = item.media_meta && typeof item.media_meta === 'object' ? item.media_meta : null;
-      const hint = mediaMeta && typeof mediaMeta.hint === 'string' ? mediaMeta.hint : null;
+      const hint =
+        typeof item.hint === 'string'
+          ? item.hint
+          : mediaMeta && typeof mediaMeta.hint === 'string'
+            ? mediaMeta.hint
+            : null;
       const answerToken = `v1:${item.id}:${Date.now()}`;
       return {
         id: item.id,
@@ -169,6 +179,10 @@ serve(async (req) => {
         prompt: item.prompt,
         mediaUrl: item.media_url ?? null,
         hint,
+        subject: item.subject ?? null,
+        eduLevel: item.edu_level ?? null,
+        grade: item.grade ?? null,
+        lifelineMeta: item.lifeline_meta ?? null,
         choices,
         correctChoiceId: correctChoice?.id ?? null,
         correctChoiceIndex: correctChoice ? item.answer_index : null,

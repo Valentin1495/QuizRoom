@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 온도에 따른 기체의 부피 변화를 이용한 사례로 가장 적절한 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "찌그러진 탁구공을 뜨거운 물에 넣으면 펴진다."
+            },
+            {
+                "id": "b",
+                "text": "물에 설탕을 넣고 저으면 녹는다."
+            },
+            {
+                "id": "c",
+                "text": "자석을 쇠붙이에 가까이 대면 붙는다."
+            },
+            {
+                "id": "d",
+                "text": "거울에 빛을 비추면 반사된다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "기체는 온도가 높아지면 부피가 늘어나는 성질이 있습니다. 찌그러진 탁구공 속 공기가 뜨거운 물에 의해 데워지면서 부피가 커져 공을 펴게 됩니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "열을 가했을 때 물체 내부의 공간이 팽창하는 현상을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306500
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식물의 광합성에 필요한 요소 중 잎의 뒷면에 있는 '기공'을 통해 흡수되는 기체는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "산소"
+            },
+            {
+                "id": "b",
+                "text": "질소"
+            },
+            {
+                "id": "c",
+                "text": "이산화 탄소"
+            },
+            {
+                "id": "d",
+                "text": "수소"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "식물은 광합성을 할 때 공기 중의 이산화 탄소를 기공으로 흡수하고 산소를 내보냅니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "사람이 숨을 내뱉을 때 주로 나오는 성분이며, 지구 온난화와도 관련이 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306501
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "태양계 행성 중 태양에서 가장 멀리 떨어져 있으며, 푸른빛을 띠는 행성은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "목성"
+            },
+            {
+                "id": "b",
+                "text": "토성"
+            },
+            {
+                "id": "c",
+                "text": "천왕성"
+            },
+            {
+                "id": "d",
+                "text": "해왕성"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "해왕성은 태양계의 여덟 번째 행성으로 가장 바깥쪽에 위치하며 바다처럼 푸른색을 띱니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "바다의 신 이름에서 따온 명칭을 가진 마지막 행성을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306502
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리 몸에서 혈액을 온몸으로 순환시키는 '펌프' 역할을 하는 기관은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "간"
+            },
+            {
+                "id": "b",
+                "text": "심장"
+            },
+            {
+                "id": "c",
+                "text": "허파(폐)"
+            },
+            {
+                "id": "d",
+                "text": "위"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "심장은 끊임없이 수축하고 이완하며 피를 온몸으로 보내는 순환 기관의 중심입니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "가슴 왼쪽에 위치하며 규칙적인 박동이 느껴지는 곳입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306503
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "용액의 진하기를 비교하는 방법으로 적절하지 않은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "색깔이 있는 경우 색의 진한 정도를 본다."
+            },
+            {
+                "id": "b",
+                "text": "방울토마토를 넣었을 때 떠오르는 높이를 본다."
+            },
+            {
+                "id": "c",
+                "text": "용액의 무게를 저울로 측정해 본다."
+            },
+            {
+                "id": "d",
+                "text": "맛을 보기 위해 모든 용액을 마셔본다."
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "과학 실험에서 정체를 모르는 용액을 함부로 맛보는 것은 매우 위험한 행동입니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "실험실에서 안전을 위해 절대 하지 말아야 할 행동을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306504
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "금속 막대의 한쪽 끝을 가열하면 열이 막대를 따라 반대쪽으로 이동합니다. 이러한 열의 전달 방식은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전도"
+            },
+            {
+                "id": "b",
+                "text": "대류"
+            },
+            {
+                "id": "c",
+                "text": "복사"
+            },
+            {
+                "id": "d",
+                "text": "반사"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "고체 물질에서 이웃한 입자들을 통해 열이 차례대로 전달되는 방식을 전도라고 합니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "뜨거운 국에 담가둔 쇠숟가락 손잡이가 뜨거워지는 원리입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306505
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "곰팡이나 버섯처럼 스스로 양분을 만들지 못하고 유기물을 분해하여 살아가는 생물을 무엇이라 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "생산자"
+            },
+            {
+                "id": "b",
+                "text": "소비자"
+            },
+            {
+                "id": "c",
+                "text": "균류"
+            },
+            {
+                "id": "d",
+                "text": "조류"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "균류는 광합성을 하지 못하며 죽은 생물이나 유기물을 분해하여 영양분을 얻는 생물군입니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "씨앗이 아닌 포자로 번식하며 습한 곳을 좋아하는 생물들을 묶어 부르는 말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306506
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "산성 용액(식초 등)에 염기성 용액(수산화 나트륨 등)을 섞으면 산성이 약해지는 현상을 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "융해"
+            },
+            {
+                "id": "b",
+                "text": "중화"
+            },
+            {
+                "id": "c",
+                "text": "응결"
+            },
+            {
+                "id": "d",
+                "text": "기화"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "산성과 염기성이 만나 서로의 성질을 잃고 약해지는 반응을 중화 반응이라고 합니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "가운데 상태로 맞추어 성질을 약하게 만든다는 의미를 가진 단어를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306507
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "태양이 남쪽 하늘 정중앙에 위치하여 고도가 가장 높아지는 때를 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "일출"
+            },
+            {
+                "id": "b",
+                "text": "일몰"
+            },
+            {
+                "id": "c",
+                "text": "남중"
+            },
+            {
+                "id": "d",
+                "text": "월식"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "태양이 정남쪽에 왔을 때를 남중이라고 하며, 이때 그림자의 길이는 가장 짧아집니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "방위 중에서 아래쪽 방향의 가운데에 위치한다는 뜻을 담고 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306508
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물체에 힘을 가해 모양이 변했을 때, 원래 상태로 되돌아오는 성질인 '탄성'을 이용한 도구는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "저울(용수철 저울)"
+            },
+            {
+                "id": "b",
+                "text": "현미경"
+            },
+            {
+                "id": "c",
+                "text": "나침반"
+            },
+            {
+                "id": "d",
+                "text": "입사계"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:5"
+        ],
+        "explanation": "용수철 저울은 힘에 의해 늘어났다가 다시 돌아오려는 성질을 이용하여 물체의 무게를 측정합니다.",
+        "grade": 5,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "늘리거나 눌렀을 때 튕겨 나가는 힘을 가진 부품이 들어있는 측정 기구입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306509
+    }
+]

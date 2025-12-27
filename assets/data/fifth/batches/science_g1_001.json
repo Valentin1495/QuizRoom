@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 우리 몸에서 '소화'를 돕기 위해 음식물을 잘게 부수는 역할을 하는 곳은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "심장"
+            },
+            {
+                "id": "b",
+                "text": "허파"
+            },
+            {
+                "id": "c",
+                "text": "이(치아)"
+            },
+            {
+                "id": "d",
+                "text": "뇌"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "입 안에 있는 이는 음식물을 작게 씹어서 삼키기 좋게 만들어 소화의 첫 단계를 도와줍니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "입속에 단단하게 자리 잡고 있으며 음식을 씹을 때 사용합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식물이 싹을 틔우고 잘 자라기 위해 꼭 필요한 '세 가지' 요소가 아닌 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "물"
+            },
+            {
+                "id": "b",
+                "text": "햇빛"
+            },
+            {
+                "id": "c",
+                "text": "적당한 온도"
+            },
+            {
+                "id": "d",
+                "text": "그늘"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "식물은 물, 햇빛, 적당한 온도가 있어야 잘 자랄 수 있습니다. 그늘은 오히려 성장을 방해할 수 있습니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "생명이 성장하기 위해 필요한 따뜻함과 밝은 빛을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "겨울잠을 자는 동물이 아닌 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "곰"
+            },
+            {
+                "id": "b",
+                "text": "강아지"
+            },
+            {
+                "id": "c",
+                "text": "개구리"
+            },
+            {
+                "id": "d",
+                "text": "뱀"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "곰, 개구리, 뱀은 추운 겨울을 나기 위해 잠을 자지만, 강아지는 겨울에도 활동하는 반려동물입니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "우리 주변에서 흔히 볼 수 있으며 추운 날에도 산책을 나가는 동물을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "자석에 붙는 성질을 가진 물건은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "플라스틱 컵"
+            },
+            {
+                "id": "b",
+                "text": "철로 된 클립"
+            },
+            {
+                "id": "c",
+                "text": "고무지우개"
+            },
+            {
+                "id": "d",
+                "text": "나무 젓가락"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "자석은 쇠나 철로 만들어진 물체만 끌어당기는 성질이 있습니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "금속 재질로 만들어져 단단한 느낌을 주는 학용품을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "그림자가 생기는 이유로 가장 알맞은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "빛이 물체를 통과하기 때문"
+            },
+            {
+                "id": "b",
+                "text": "빛이 물체에 막히기 때문"
+            },
+            {
+                "id": "c",
+                "text": "바닥이 까맣기 때문"
+            },
+            {
+                "id": "d",
+                "text": "바람이 불기 때문"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "빛은 직진하는 성질이 있어 물체에 가로막히면 그 뒤쪽에 어두운 부분이 생기는데, 이것이 그림자입니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "밝은 곳에서 무언가가 가로막고 서 있을 때 바닥에 무엇이 생기는지 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 우리 몸의 오감(다섯 가지 감각)과 연결된 기관이 잘못 짝지어진 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "시각 - 눈"
+            },
+            {
+                "id": "b",
+                "text": "청각 - 귀"
+            },
+            {
+                "id": "c",
+                "text": "미각 - 코"
+            },
+            {
+                "id": "d",
+                "text": "촉각 - 피부"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "맛을 느끼는 미각은 혀와 관련이 있고, 코는 냄새를 맡는 후각과 관련이 있습니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "음식의 맛을 느낄 때 사용하는 부위가 어디인지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "나비의 한 살이 과정 중 가장 먼저 일어나는 단계는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "애벌레"
+            },
+            {
+                "id": "b",
+                "text": "번데기"
+            },
+            {
+                "id": "c",
+                "text": "알"
+            },
+            {
+                "id": "d",
+                "text": "나비"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "나비는 알에서 깨어나 애벌레가 되고, 번데기를 거쳐 성충인 나비가 됩니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "생명이 시작될 때 아주 작고 동그란 모양으로 잎 위에 놓여 있는 상태를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물체에 힘을 가했을 때 모양이 변했다가 원래대로 돌아오는 성질을 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "탄성"
+            },
+            {
+                "id": "b",
+                "text": "무게"
+            },
+            {
+                "id": "c",
+                "text": "온도"
+            },
+            {
+                "id": "d",
+                "text": "부피"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "고무줄이나 용수철처럼 힘을 빼면 원래 모습으로 되돌아오려는 성질을 탄성이라고 합니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "고무줄을 잡아당겼다가 놓았을 때의 현상을 설명하는 단어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 낮과 밤이 생기는 주된 이유는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지구가 스스로 돌기 때문"
+            },
+            {
+                "id": "b",
+                "text": "달이 지구 주변을 돌기 때문"
+            },
+            {
+                "id": "c",
+                "text": "태양이 불꽃놀이를 하기 때문"
+            },
+            {
+                "id": "d",
+                "text": "구름이 태양을 가리기 때문"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "지구가 스스로 한 바퀴씩 돌기(자전) 때문에 태양 빛을 받는 쪽은 낮이 되고 반대쪽은 밤이 됩니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "우리가 살고 있는 커다란 땅덩어리가 제자리에서 회전하는 운동을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물과 식용유를 한 컵에 담았을 때 나타나는 현상으로 옳은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "완전히 섞여서 투명해진다"
+            },
+            {
+                "id": "b",
+                "text": "기름이 물 위에 뜬다"
+            },
+            {
+                "id": "c",
+                "text": "기름이 물 아래로 가라앉는다"
+            },
+            {
+                "id": "d",
+                "text": "폭발하며 소리가 난다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:1"
+        ],
+        "explanation": "기름은 물보다 가볍고 서로 섞이지 않는 성질이 있어 물 위로 층을 이루며 뜹니다.",
+        "grade": 1,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "두 액체의 무게 차이로 인해 층이 나뉘는 모습을 상상해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306216
+    }
+]

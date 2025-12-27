@@ -34,6 +34,10 @@ export type SwipeFeedQuestion = {
   correctChoiceIndex: number | null;
   explanation?: string | null;
   hint?: string | null;
+  subject?: string | null;
+  eduLevel?: string | null;
+  grade?: number | null;
+  lifelineMeta?: Record<string, unknown> | null;
 };
 
 type ReportPayload = {

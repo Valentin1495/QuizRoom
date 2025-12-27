@@ -35,6 +35,46 @@ function toIso(ts) {
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
 
+function normalizeCategory(value) {
+  if (value === undefined || value === null) return null;
+  const normalized = String(value).trim().toLowerCase();
+  return normalized.length > 0 ? normalized : null;
+}
+
+function findTagValue(tags, prefix) {
+  if (!Array.isArray(tags)) return null;
+  for (const tag of tags) {
+    if (typeof tag === "string" && tag.startsWith(prefix)) {
+      return tag.slice(prefix.length);
+    }
+  }
+  return null;
+}
+
+function parseGrade(value) {
+  if (value === undefined || value === null) return null;
+  const match = String(value).match(/\d+/);
+  if (!match) return null;
+  const parsed = Number(match[0]);
+  return Number.isFinite(parsed) ? Math.round(parsed) : null;
+}
+
+function difficultyFromGrade(grade) {
+  if (!Number.isFinite(grade)) return null;
+  const map = {
+    1: 0.2,
+    2: 0.25,
+    3: 0.3,
+    4: 0.4,
+    5: 0.5,
+    6: 0.6,
+  };
+  if (map[grade] !== undefined) {
+    return map[grade];
+  }
+  return Math.max(0.2, Math.min(0.8, 0.2 + grade * 0.1));
+}
+
 async function loadItems(filePath) {
   const raw = await fs.readFile(filePath, "utf8");
   const parsed = JSON.parse(raw);
@@ -104,7 +144,7 @@ async function main() {
   const seen = new Set();
 
   for (const item of items) {
-    if (!item?.deckSlug || !item?.category || !item?.prompt || !Array.isArray(item?.choices)) {
+    if (!item?.deckSlug || !item?.prompt || !Array.isArray(item?.choices)) {
       continue;
     }
 
@@ -117,23 +157,50 @@ async function main() {
     const deckId = deckIds.get(item.deckSlug);
     if (!deckId) continue;
 
-    const difficulty = typeof item.difficulty === "number" ? item.difficulty : 0.5;
+    const hasFifthTag = Array.isArray(item.tags) && item.tags.includes("mode:fifth_grader");
+    const isFifthDeck = item.deckSlug === "deck_fifth_grader_v1";
+    const category =
+      isFifthDeck || hasFifthTag
+        ? "education"
+        : normalizeCategory(item.category) ??
+          normalizeCategory(findTagValue(item.tags, "category:")) ??
+          "general_knowledge";
+
+    const subject =
+      typeof item.subject === "string" && item.subject.trim().length > 0
+        ? item.subject.trim()
+        : findTagValue(item.tags, "subject:");
+    const eduLevelRaw =
+      (typeof item.eduLevel === "string" ? item.eduLevel : null) ??
+      (typeof item.edu_level === "string" ? item.edu_level : null) ??
+      findTagValue(item.tags, "eduLevel:") ??
+      findTagValue(item.tags, "edu_level:");
+    const eduLevel = eduLevelRaw ? String(eduLevelRaw).trim() : null;
+    const grade = parseGrade(item.grade);
+    const derivedDifficulty = difficultyFromGrade(grade);
+    const difficulty =
+      typeof item.difficulty === "number" ? item.difficulty : derivedDifficulty ?? 0.5;
     const elo =
       typeof item.elo === "number" ? item.elo : Math.round(1200 + (difficulty - 0.5) * 800);
+    const hint = typeof item.hint === "string" ? item.hint.trim() : null;
+    const lifelineMetaRaw = item.lifelineMeta ?? item.lifeline_meta;
+    const lifelineMeta =
+      lifelineMetaRaw && typeof lifelineMetaRaw === "object" && !Array.isArray(lifelineMetaRaw)
+        ? lifelineMetaRaw
+        : null;
 
     const mediaMetaRaw = item.mediaMeta ?? item.media_meta;
     const mediaMeta =
       mediaMetaRaw && typeof mediaMetaRaw === "object" && !Array.isArray(mediaMetaRaw)
         ? { ...mediaMetaRaw }
         : {};
-    const hint = typeof item.hint === "string" ? item.hint.trim() : null;
     if (hint) {
       mediaMeta.hint = hint;
     }
 
     const row = {
       deck_id: deckId,
-      category: item.category,
+      category,
       type: item.type ?? "mcq",
       prompt,
       prompt_hash: promptHash,
@@ -146,6 +213,11 @@ async function main() {
       elo,
       choice_shuffle_seed:
         typeof item.choiceShuffleSeed === "number" ? Math.round(item.choiceShuffleSeed) : null,
+      subject: subject || null,
+      edu_level: eduLevel || null,
+      grade,
+      hint: hint || null,
+      lifeline_meta: lifelineMeta || null,
     };
 
     if (Object.keys(mediaMeta).length > 0) {

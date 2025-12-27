@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "촛불이 타기 위해 꼭 필요한 기체이며, 금속을 녹슬게 하거나 생물이 숨을 쉴 때 사용하는 이 기체는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "질소"
+            },
+            {
+                "id": "b",
+                "text": "산소"
+            },
+            {
+                "id": "c",
+                "text": "이산화 탄소"
+            },
+            {
+                "id": "d",
+                "text": "헬륨"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "산소는 물질이 타는 것을 돕고, 생물의 호흡에 필수적이며 금속의 부식을 일으키는 성질이 있습니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "공기 중에 약 21%를 차지하며 불꽃이 계속 유지되도록 돕습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306560
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "볼록 렌즈를 사용하여 아주 멀리 있는 물체를 보았을 때 나타나는 현상으로 옳은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "실제보다 크고 똑바로 보인다"
+            },
+            {
+                "id": "b",
+                "text": "실제보다 작고 거꾸로 보인다"
+            },
+            {
+                "id": "c",
+                "text": "좌우만 바뀌어 보인다"
+            },
+            {
+                "id": "d",
+                "text": "아무것도 보이지 않는다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "볼록 렌즈는 가까운 물체는 크고 똑바로 보이지만, 멀리 있는 물체는 작고 거꾸로 보이게 합니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "빛이 굴절되어 한 점으로 모였다가 다시 퍼지면서 상의 위아래가 바뀝니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306561
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지구와 달의 운동에 대한 설명 중 옳은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "달은 스스로 빛을 낸다"
+            },
+            {
+                "id": "b",
+                "text": "지구는 가만히 있고 태양이 지구를 돈다"
+            },
+            {
+                "id": "c",
+                "text": "지구는 서쪽에서 동쪽으로 자전한다"
+            },
+            {
+                "id": "d",
+                "text": "달은 항상 같은 모양으로만 보인다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "지구는 자전축을 중심으로 하루에 한 바퀴씩 서쪽에서 동쪽으로 회전합니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "태양이 동쪽에서 뜨는 것처럼 보이는 이유가 되는 운동 방향을 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306562
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리 몸의 배설 기관 중 하나로, 혈액 속의 노폐물을 걸러 오줌을 만드는 곳은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "위"
+            },
+            {
+                "id": "b",
+                "text": "심장"
+            },
+            {
+                "id": "c",
+                "text": "콩팥(신장)"
+            },
+            {
+                "id": "d",
+                "text": "대장"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "콩팥은 강낭콩 모양으로 허리 뒤쪽에 있으며, 몸속 노폐물을 걸러내는 정수기 역할을 합니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "등 쪽 양옆에 두 개가 있으며 체내 액체 성분의 균형을 맞춥니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306563
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "산성 용액에 달걀 껍데기를 넣었을 때 발생하는 기체는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "산소"
+            },
+            {
+                "id": "b",
+                "text": "수소"
+            },
+            {
+                "id": "c",
+                "text": "이산화 탄소"
+            },
+            {
+                "id": "d",
+                "text": "암모니아"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "달걀 껍데기의 주성분인 탄산칼슘이 산성 용액과 반응하면 거품이 나며 이산화 탄소가 발생합니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "석회수를 뿌옇게 흐리게 만드는 성질을 가진 물질입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306564
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지구상의 물 중 가장 많은 양을 차지하고 있는 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "강물과 호수"
+            },
+            {
+                "id": "b",
+                "text": "바닷물"
+            },
+            {
+                "id": "c",
+                "text": "지하수"
+            },
+            {
+                "id": "d",
+                "text": "빙하"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "지구 전체 물의 약 97% 이상은 바닷물이며, 우리가 마실 수 있는 담수는 매우 적습니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "지구 표면의 대부분을 덮고 있는 짠맛이 나는 액체입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306565
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식물의 잎에서 만들어진 양분이 이동하는 통로를 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "물관"
+            },
+            {
+                "id": "b",
+                "text": "체관"
+            },
+            {
+                "id": "c",
+                "text": "뿌리털"
+            },
+            {
+                "id": "d",
+                "text": "기공"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "물관은 물이 이동하는 길이고, 체관은 잎에서 광합성으로 만든 양분이 이동하는 길입니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "광합성 산물이 온몸으로 퍼져나가는 고속도로 같은 역할을 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306566
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "전기 회로에서 전류의 흐름을 방해하는 정도를 나타내는 값을 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전압"
+            },
+            {
+                "id": "b",
+                "text": "저항"
+            },
+            {
+                "id": "c",
+                "text": "전력"
+            },
+            {
+                "id": "d",
+                "text": "도체"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "저항은 전기의 흐름을 막으려는 성질로, 이 값이 클수록 전류가 잘 흐르지 못합니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "물리적으로 무언가를 거부하거나 버티는 힘을 뜻하는 단어와 같습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306567
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "여름철 낮에 바닷가에서 부는 바람인 '해풍'은 어디에서 어디로 불까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "바다에서 육지 방향"
+            },
+            {
+                "id": "b",
+                "text": "육지에서 바다 방향"
+            },
+            {
+                "id": "c",
+                "text": "하늘에서 바다 방향"
+            },
+            {
+                "id": "d",
+                "text": "남쪽에서 북쪽 방향"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "낮에는 육지가 바다보다 빨리 데워져 육지의 공기가 위로 올라가고, 그 자리를 메우기 위해 바다의 공기가 육지로 이동합니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "바람의 이름은 불어오는 시작 지점을 기준으로 붙여집니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306568
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "여러 개의 생물들이 먹고 먹히는 관계가 사슬처럼 얽혀 있는 복잡한 관계를 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "먹이 사슬"
+            },
+            {
+                "id": "b",
+                "text": "먹이 그물"
+            },
+            {
+                "id": "c",
+                "text": "먹이 피라미드"
+            },
+            {
+                "id": "d",
+                "text": "생태계 평형"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:6"
+        ],
+        "explanation": "한 줄로 이어지면 사슬이지만, 여러 갈래로 복잡하게 얽히면 그물 모양이 됩니다.",
+        "grade": 6,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "단순한 일렬 형태가 아니라 거미줄처럼 아주 복잡하게 짜인 상태를 의미합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306569
+    }
+]

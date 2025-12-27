@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 ‘오랜 시간 만에’라는 뜻을 가진 올바른 맞춤법은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "오랜만에"
+            },
+            {
+                "id": "b",
+                "text": "오랫만에"
+            },
+            {
+                "id": "c",
+                "text": "오랜마네"
+            },
+            {
+                "id": "d",
+                "text": "오랫마네"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "‘오래간만’의 줄임말이므로 ‘오랜만’으로 적는 것이 옳습니다. ‘오랫동안’과 혼동하여 사이시옷을 넣지 않도록 주의해야 합니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "긴 시간이 흐른 뒤에 어떤 일을 다시 마주하게 된 상황을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735300000
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "손가락 등으로 어떤 방향이나 대상을 집어서 알리는 행동을 뜻하는 단어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "가르치다"
+            },
+            {
+                "id": "b",
+                "text": "가리키다"
+            },
+            {
+                "id": "c",
+                "text": "가르키다"
+            },
+            {
+                "id": "d",
+                "text": "가리치다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "지식이나 기술을 전달하는 것은 ‘가르치다’이고, 방향이나 대상을 지목하는 것은 ‘가리키다’가 올바른 표현입니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "말하는 이의 시선이 머무는 곳을 상대방에게 알려주는 동작입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735300010
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "“배를 먹( ) 사과를 먹( ) 마음대로 해라.” 빈칸에 들어갈 알맞은 말은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "던지"
+            },
+            {
+                "id": "b",
+                "text": "든지"
+            },
+            {
+                "id": "c",
+                "text": "든니"
+            },
+            {
+                "id": "d",
+                "text": "던니"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "과거의 일을 회상할 때는 ‘-던지’를 쓰고, 여러 대상 중 하나를 선택할 때는 ‘-든지’를 사용합니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "나열된 것들 중에서 무엇을 골라도 상관없음을 나타낼 때 사용합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735300020
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "병이 고쳐져서 몸이 건강해졌을 때 사용하는 올바른 표현은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "감기가 다 낫다"
+            },
+            {
+                "id": "b",
+                "text": "감기가 다 낳다"
+            },
+            {
+                "id": "c",
+                "text": "감기가 다 낮다"
+            },
+            {
+                "id": "d",
+                "text": "감기가 다 났다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "병이나 상처가 치유되는 것은 ‘낫다’입니다. ‘낳다’는 아기를 출산할 때 쓰는 말입니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "아픈 곳이 사라지고 원래의 활기찬 기운을 되찾는 과정을 말합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735300030
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "어떤 일이 이루어지기를 간절히 원하는 마음을 뜻하는 올바른 단어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "바램"
+            },
+            {
+                "id": "b",
+                "text": "바람"
+            },
+            {
+                "id": "c",
+                "text": "바람이"
+            },
+            {
+                "id": "d",
+                "text": "바래"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "동사 ‘바라다’에서 온 명사형은 ‘바람’이 표준어입니다. ‘바램’은 색이 변한다는 뜻의 ‘바래다’에서 온 말이므로 틀린 표현입니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "장래에 희망하는 바를 품고 있을 때 사용하는 명사 형태입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735300040
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "“집의 안과 밖”을 아울러 이르는 말의 올바른 표기는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "안밖"
+            },
+            {
+                "id": "b",
+                "text": "안팎"
+            },
+            {
+                "id": "c",
+                "text": "안팍"
+            },
+            {
+                "id": "d",
+                "text": "안박"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "‘안’과 ‘밖’이 합쳐질 때 거센소리가 현상이 일어나 ‘안팎’으로 적는 것이 올바른 맞춤법입니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "실내와 실외를 모두 아울러서 지칭하는 고유어 명칭입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735300050
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "자신도 모르는 사이에 시간이 훌쩍 지났을 때 쓰는 말은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "어느새"
+            },
+            {
+                "id": "b",
+                "text": "어느세"
+            },
+            {
+                "id": "c",
+                "text": "어는새"
+            },
+            {
+                "id": "d",
+                "text": "어는세"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "‘어느’와 ‘사이’가 줄어든 형태인 ‘어느새’가 올바른 표기입니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "정신을 차려보니 예상보다 훨씬 빨리 상황이 변해버렸음을 뜻하는 부사입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735300060
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "힘든 환경이나 위험을 참고 견디며 나아가는 행동을 뜻하는 단어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "무릎쓰다"
+            },
+            {
+                "id": "b",
+                "text": "무릅쓰다"
+            },
+            {
+                "id": "c",
+                "text": "무릅스다"
+            },
+            {
+                "id": "d",
+                "text": "무릎스다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "신체 부위인 ‘무릎’과는 관련이 없습니다. 힘들거나 어려운 일을 겪어낸다는 의미의 단어는 ‘무릅쓰다’가 맞습니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "곤란한 사정이나 거센 비바람 등을 뚫고 나아가는 의지를 표현할 때 씁니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735300070
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 밑줄 친 부분의 맞춤법이 올바른 문장은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "책상 위에 먼지를 깨끗히 닦아요."
+            },
+            {
+                "id": "b",
+                "text": "책상 위에 먼지를 깨끗이 닦아요."
+            },
+            {
+                "id": "c",
+                "text": "책상 위에 먼지를 깨끗쓰 닦아요."
+            },
+            {
+                "id": "d",
+                "text": "책상 위에 먼지를 깨끗이히 닦아요."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "‘-하다’가 붙는 말 중 받침이 ‘ㅅ’으로 끝나는 경우 부사형 어미는 ‘-이’로 적는 것이 원칙입니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "지저분한 것을 말끔하게 치워 정돈된 상태로 만드는 모양을 나타냅니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735300080
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "어떤 일이 틀림없이 꼭 이루어짐을 나타내는 부사는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반듯이"
+            },
+            {
+                "id": "b",
+                "text": "반드시"
+            },
+            {
+                "id": "c",
+                "text": "반듯히"
+            },
+            {
+                "id": "d",
+                "text": "반드이"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:3"
+        ],
+        "explanation": "‘꼭’, ‘틀림없이’의 뜻일 때는 ‘반드시’를 쓰고, 모양이 바르거나 비뚤어지지 않았을 때는 ‘반듯이’를 씁니다.",
+        "grade": 3,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "무슨 일이 있어도 예외 없이 실천하겠다는 강한 의지를 담아 말할 때 사용합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735300090
+    }
+]

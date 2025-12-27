@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "마을 사람들의 편리한 생활을 위해 나라에서 세운 기관 중, 불이 났을 때 가장 먼저 달려와 도움을 주는 곳은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "경찰서"
+            },
+            {
+                "id": "b",
+                "text": "소방서"
+            },
+            {
+                "id": "c",
+                "text": "우체국"
+            },
+            {
+                "id": "d",
+                "text": "보건소"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "소방서는 화재 진압뿐만 아니라 사고가 났을 때 사람을 구조하고 응급 환자를 병원으로 옮기는 일을 합니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "붉은색 차를 타고 현장으로 신속하게 이동하여 뜨거운 열기를 잠재우는 분들이 계신 곳입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리나라는 사계절이 뚜렷합니다. 다음 중 '가을'의 특징으로 가장 알맞은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "개나리와 진달래가 활짝 핀다."
+            },
+            {
+                "id": "b",
+                "text": "장마가 시작되어 비가 아주 많이 온다."
+            },
+            {
+                "id": "c",
+                "text": "단풍이 들고 곡식과 과일이 익는다."
+            },
+            {
+                "id": "d",
+                "text": "눈이 내리고 날씨가 매우 춥다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "가을은 날씨가 선선해지면서 나뭇잎 색깔이 변하고 농부들이 수확을 하는 계절입니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "여름이 지나고 선선한 바람이 불며 산이 알록달록하게 변하는 시기를 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "전통적인 집인 '한옥'에서 겨울을 따뜻하게 나기 위해 바닥을 데우는 장치는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "대청마루"
+            },
+            {
+                "id": "b",
+                "text": "창호지"
+            },
+            {
+                "id": "c",
+                "text": "온돌"
+            },
+            {
+                "id": "d",
+                "text": "기와"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "온돌은 아궁이에 불을 때서 구들장을 데워 방 전체를 따뜻하게 하는 우리나라 고유의 난방 방식입니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "방바닥 아래에 열기가 지나가는 길을 만들어 집안을 덥히는 지혜로운 구조입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "동네 사람들을 위해 편지나 소포를 배달해 주는 일을 맡은 공공 기관은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "도서관"
+            },
+            {
+                "id": "b",
+                "text": "은행"
+            },
+            {
+                "id": "c",
+                "text": "우체국"
+            },
+            {
+                "id": "d",
+                "text": "주민센터"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "우체국은 우편물을 접수하여 원하는 곳으로 보내주고, 예금이나 보험 업무도 함께 처리합니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "멀리 떨어진 곳에 소식을 전하거나 물건을 보낼 때 들러야 하는 장소입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리가 사는 마을의 문제를 해결하기 위해 주민들이 모여서 하는 활동으로 가장 적절한 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "각자 집에서 TV를 본다."
+            },
+            {
+                "id": "b",
+                "text": "마을 회의를 열어 의견을 나눈다."
+            },
+            {
+                "id": "c",
+                "text": "다른 마을로 이사를 간다."
+            },
+            {
+                "id": "d",
+                "text": "모르는 척하며 그냥 지낸다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "마을의 문제는 그곳에 사는 사람들이 함께 모여 대화하고 의논하여 해결하는 것이 가장 좋습니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "여러 사람이 한자리에 모여 서로의 생각을 말하고 조율하는 과정을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 옛날 사람들이 물건을 사고팔기 위해 일정한 날짜마다 모였던 장소는 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "편의점"
+            },
+            {
+                "id": "b",
+                "text": "대형 마트"
+            },
+            {
+                "id": "c",
+                "text": "전통 시장(장터)"
+            },
+            {
+                "id": "d",
+                "text": "백화점"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "옛날에는 5일마다 열리는 5일장처럼 특정 장터에 모여서 필요한 물건을 교환하거나 샀습니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "현대적인 건물보다는 야외나 천막 아래에서 왁자지껄하게 거래가 이루어지던 정겨운 공간입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "추석에 조상님께 감사의 마음을 담아 차리는 상을 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "생일상"
+            },
+            {
+                "id": "b",
+                "text": "차례상"
+            },
+            {
+                "id": "c",
+                "text": "돌상"
+            },
+            {
+                "id": "d",
+                "text": "책례상"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "명절에 조상님께 올리는 정성스러운 음식 상을 차례상이라고 합니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "큰 명절인 설이나 대보름, 한가위 오전에 정중히 예를 갖추어 올리는 음식을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "마을의 안전을 지키고 질서를 유지하며, 나쁜 일을 하는 사람을 잡는 곳은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "경찰서"
+            },
+            {
+                "id": "b",
+                "text": "시청"
+            },
+            {
+                "id": "c",
+                "text": "법원"
+            },
+            {
+                "id": "d",
+                "text": "박물관"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "경찰서는 시민의 생명과 재산을 보호하고 범죄를 예방하는 중요한 역할을 합니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "제복을 입은 분들이 순찰을 돌며 마을의 평화를 책임지는 본부입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "가족의 형태 중 부모님과 결혼하지 않은 자녀가 함께 사는 단출한 가족을 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "대가족"
+            },
+            {
+                "id": "b",
+                "text": "핵가족"
+            },
+            {
+                "id": "c",
+                "text": "다문화 가족"
+            },
+            {
+                "id": "d",
+                "text": "공동체 가족"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "할아버지, 할머니와 따로 살며 부모와 자식으로만 이루어진 작은 규모의 가족 형태를 핵가족이라고 합니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "중심이 되는 아주 작은 알맹이처럼 구성원이 적은 현대적인 집안 형태를 뜻합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리가 길에서 만나는 표지판 중 '어린이 보호 구역'을 나타내는 그림의 주요 색깔은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "검은색"
+            },
+            {
+                "id": "b",
+                "text": "보라색"
+            },
+            {
+                "id": "c",
+                "text": "노란색"
+            },
+            {
+                "id": "d",
+                "text": "회색"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:2"
+        ],
+        "explanation": "어린이 보호 구역 표지판은 눈에 잘 띄어 운전자가 주의할 수 있도록 노란색을 주로 사용합니다.",
+        "grade": 2,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "개나리나 바나나처럼 밝고 선명하여 위험을 미리 경고해주는 색상을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735313937
+    }
+]

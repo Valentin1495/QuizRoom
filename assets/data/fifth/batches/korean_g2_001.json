@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 밑줄 친 부분의 맞춤법이 올바른 문장은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "선생님, 저 먼저 집에 가도 되요?"
+            },
+            {
+                "id": "b",
+                "text": "선생님, 저 먼저 집에 가도 돼요?"
+            },
+            {
+                "id": "c",
+                "text": "선생님, 저 먼저 집에 가도 되여?"
+            },
+            {
+                "id": "d",
+                "text": "선생님, 저 먼저 집에 가도 돼여?"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "'돼요'는 '되어요'의 줄임말로, 문장을 끝맺을 때 사용합니다. '되' 뒤에는 반드시 어미가 붙어야 하므로 '되요'는 틀린 표기입니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "어떤 행동의 허락을 구하며 문장을 마무리할 때 쓰는 올바른 형태를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735293600
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 날짜를 물어볼 때 쓰는 표준어 표기로 올바른 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "몇일"
+            },
+            {
+                "id": "b",
+                "text": "며칠"
+            },
+            {
+                "id": "c",
+                "text": "며칟날"
+            },
+            {
+                "id": "d",
+                "text": "멧일"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "'며칠'은 어원이 분명하지 않아 소리 나는 대로 적는 것이 원칙입니다. '몇 일'로 띄어 쓰는 경우도 없습니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "소리 내어 읽었을 때와 적는 모양이 일치하는 단어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735293610
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "신발이나 양말 두 짝을 한 세트로 묶어 셀 때 사용하는 단위는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "벌"
+            },
+            {
+                "id": "b",
+                "text": "자루"
+            },
+            {
+                "id": "c",
+                "text": "켤레"
+            },
+            {
+                "id": "d",
+                "text": "송이"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "신발, 양말, 장갑처럼 두 개가 한 쌍을 이루는 물건을 세는 단위는 '켤레'입니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "좌우가 짝을 맞추어 하나의 묶음이 되는 물건들을 세는 방법입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735293620
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "빈칸에 들어갈 높임 표현으로 가장 알맞은 것은? '어머니가 지금 방에 [ ].'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "있어요"
+            },
+            {
+                "id": "b",
+                "text": "있으세요"
+            },
+            {
+                "id": "c",
+                "text": "계셔요"
+            },
+            {
+                "id": "d",
+                "text": "계심"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "주체인 어머니를 높여야 하므로 '있다'의 높임말인 '계시다'를 활용한 '계셔요'가 가장 적절합니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "사람이 어느 장소에 머물러 있는 상태를 정중하게 말하는 상황입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735293630
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 밑줄 친 부분의 맞춤법이 틀린 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "우리는 숙제를 다 안 했어요."
+            },
+            {
+                "id": "b",
+                "text": "나는 밥을 먹지 않았다."
+            },
+            {
+                "id": "c",
+                "text": "오늘 기분이 별로 않 좋아요."
+            },
+            {
+                "id": "d",
+                "text": "동생은 학교에 가지 않았어요."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "동사나 형용사 앞에서 부정을 나타낼 때는 '아니'의 줄임말인 '안'을 써야 합니다. '않'은 '아니 하다'의 줄임말로 단어 뒤에 쓰입니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "어떤 행동이나 상태를 반대로 설명할 때 서술어보다 앞에 나오는 글자의 모양을 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735293640
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "어머니의 남자 형제를 부르는 올바른 호칭은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "삼촌"
+            },
+            {
+                "id": "b",
+                "text": "외삼촌"
+            },
+            {
+                "id": "c",
+                "text": "고모부"
+            },
+            {
+                "id": "d",
+                "text": "이모부"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "어머니 쪽의 남자 형제는 '바깥 외' 자를 써서 '외삼촌'이라고 부릅니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "나를 낳아주신 부모님 중 여성 보호자의 가족 관계를 나타내는 이름입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735293650
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "빈칸에 들어갈 말이 바르게 짝지어진 것은? '이 일이 [ ] 된 것인지 [ ] 모르겠어.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "왠일, 웬지"
+            },
+            {
+                "id": "b",
+                "text": "웬일, 왠지"
+            },
+            {
+                "id": "c",
+                "text": "왠일, 왠지"
+            },
+            {
+                "id": "d",
+                "text": "웬일, 웬지"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "'어찌 된 일'이라는 뜻일 때는 '웬일'을 쓰고, '왜인지'의 줄임말일 때는 '왠지'를 씁니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "사건의 원인을 묻는 경우와 마음의 이유를 알 수 없는 경우에 쓰이는 글자가 각각 다릅니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735293660
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식사 후에 그릇을 깨끗이 닦는 일을 뜻하는 표준어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "설겆이"
+            },
+            {
+                "id": "b",
+                "text": "설거지"
+            },
+            {
+                "id": "c",
+                "text": "설걷이"
+            },
+            {
+                "id": "d",
+                "text": "셜거지"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "과거에는 '설겆다'라는 동사가 있었으나 지금은 쓰지 않으므로, 명사형인 '설거지'가 표준어입니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "밥을 다 먹고 난 뒤 주방에서 하는 뒷정리를 일컫는 고유한 이름입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735293670
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 성격이나 모양이 아주 신기할 때 쓰는 단어의 표기는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "희안하다"
+            },
+            {
+                "id": "b",
+                "text": "희한하다"
+            },
+            {
+                "id": "c",
+                "text": "히안하다"
+            },
+            {
+                "id": "d",
+                "text": "희한타"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "매우 드물거나 신기하다는 뜻의 단어는 '희한(稀罕)하다'가 올바른 표기입니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "놀랍거나 평범하지 않은 상황을 묘사하는 한자어 바탕의 단어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735293680
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물건의 모양이 비뚤어지지 않고 바른 상태를 뜻하는 말은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반드시"
+            },
+            {
+                "id": "b",
+                "text": "반드시히"
+            },
+            {
+                "id": "c",
+                "text": "반듯이"
+            },
+            {
+                "id": "d",
+                "text": "반듯히"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:2"
+        ],
+        "explanation": "'꼭'이라는 뜻일 때는 '반드시'를 쓰고, 모양이 바르다는 뜻일 때는 '반듯이'를 씁니다.",
+        "grade": 2,
+        "subject": "korean",
+        "eduLevel": "elem_low",
+        "hint": "기울어짐 없이 수평이나 수직이 곧은 모양새를 설명하는 표현입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735293690
+    }
+]

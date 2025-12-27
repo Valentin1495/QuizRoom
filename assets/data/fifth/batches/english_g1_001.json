@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 처음 만난 사람에게 건네는 인사말로 가장 알맞은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Good bye"
+            },
+            {
+                "id": "b",
+                "text": "Nice to meet you"
+            },
+            {
+                "id": "c",
+                "text": "Sorry"
+            },
+            {
+                "id": "d",
+                "text": "Thank you"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "상대방을 처음 만났을 때 반가움을 표현하는 영어식 인사 표현입니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "새로운 친구를 사귀게 되어 기쁘다는 마음을 전하는 상황입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319040
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "알파벳 'B' 다음으로 오는 글자는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A"
+            },
+            {
+                "id": "b",
+                "text": "C"
+            },
+            {
+                "id": "c",
+                "text": "D"
+            },
+            {
+                "id": "d",
+                "text": "E"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "영어 알파벳의 순서는 A, B, C, D... 순서로 이어집니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "노래로 부르는 알파벳 순서의 세 번째 글자를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319041
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "사과를 영어로 썼을 때, 가장 처음에 오는 알파벳은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A"
+            },
+            {
+                "id": "b",
+                "text": "B"
+            },
+            {
+                "id": "c",
+                "text": "S"
+            },
+            {
+                "id": "d",
+                "text": "P"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "사과는 영어로 Apple이므로 첫 글자는 A입니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "빨갛고 맛있는 이 과일은 낱자 나열의 가장 첫머리 글자로 시작합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319042
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "선생님이 수업을 마칠 때 'Good bye, class!'라고 하셨습니다. 학생들의 대답으로 가장 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Hello"
+            },
+            {
+                "id": "b",
+                "text": "I'm fine"
+            },
+            {
+                "id": "c",
+                "text": "Bye-bye"
+            },
+            {
+                "id": "d",
+                "text": "No, thanks"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "헤어질 때 하는 작별 인사에는 같은 작별 인사로 화답하는 것이 자연스럽습니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "만날 때가 아니라 나중에 다시 만날 것을 기약하며 나누는 말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319043
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "영어 숫자를 셀 때, 'One' 다음에 오는 숫자는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Two"
+            },
+            {
+                "id": "b",
+                "text": "Three"
+            },
+            {
+                "id": "c",
+                "text": "Four"
+            },
+            {
+                "id": "d",
+                "text": "Five"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "영어 숫자는 One, Two, Three... 순서로 셉니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "하나 다음으로 오는 둘을 영어로 어떻게 말하는지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319044
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 색깔을 나타내는 단어가 아닌 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Red"
+            },
+            {
+                "id": "b",
+                "text": "Blue"
+            },
+            {
+                "id": "c",
+                "text": "Yellow"
+            },
+            {
+                "id": "d",
+                "text": "Book"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "Red, Blue, Yellow는 색을 뜻하지만 Book은 읽는 도구인 '책'을 뜻합니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "나머지는 눈에 보이는 빛의 느낌이지만 하나는 종이가 묶인 물건입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735319045
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "친구에게 선물을 받았을 때 고마움을 표현하는 말은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I'm sorry"
+            },
+            {
+                "id": "b",
+                "text": "Thank you"
+            },
+            {
+                "id": "c",
+                "text": "Yes, I am"
+            },
+            {
+                "id": "d",
+                "text": "How are you?"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "상대방의 호의나 선물에 대해 감사를 전할 때 사용하는 가장 기본적인 표현입니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "도움을 받거나 기분 좋은 일이 생겼을 때 전하는 예절 바른 인사입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319046
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "알파벳 대문자 'D'의 소문자 형태는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "b"
+            },
+            {
+                "id": "b",
+                "text": "p"
+            },
+            {
+                "id": "c",
+                "text": "q"
+            },
+            {
+                "id": "d",
+                "text": "d"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "알파벳 D의 소문자는 d입니다. b와 혼동하기 쉬우니 주의해야 합니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "둥근 부분이 왼쪽 아래를 향해 있는 모양의 작은 글자를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735319047
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "아침에 일어나서 가족들에게 하는 영어 인사는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Good morning"
+            },
+            {
+                "id": "b",
+                "text": "Good night"
+            },
+            {
+                "id": "c",
+                "text": "Sit down"
+            },
+            {
+                "id": "d",
+                "text": "Stand up"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "해가 뜨는 이른 시간에 나누는 안부 인사는 Good morning입니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "잠에서 깨어 하루를 시작할 때 나누는 밝은 인사말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319048
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '개'를 뜻하는 영어 단어는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Cat"
+            },
+            {
+                "id": "b",
+                "text": "Dog"
+            },
+            {
+                "id": "c",
+                "text": "Pig"
+            },
+            {
+                "id": "d",
+                "text": "Cow"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:1"
+        ],
+        "explanation": "강아지나 개를 영어로는 Dog라고 부릅니다.",
+        "grade": 1,
+        "subject": "english",
+        "eduLevel": "elem_low",
+        "hint": "멍멍 짖는 소리를 내는 동물을 가리키는 세 글자 낱말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319049
+    }
+]

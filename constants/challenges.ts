@@ -23,7 +23,7 @@ export const FIFTH_GRADER_CHALLENGE: ChallengeConfig = {
   ctaLabel: '도전하기',
   route: '/5th-grader',
   deckSlug: 'deck_fifth_grader_v1',
-  category: 'general_knowledge',
+  category: 'education',
   tags: ['mode:fifth_grader'],
   totalQuestions: 10,
   allowedMisses: 2,

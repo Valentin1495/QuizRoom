@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "어떤 수에 0을 더했을 때의 결과로 올바른 설명은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "항상 0이 된다."
+            },
+            {
+                "id": "b",
+                "text": "원래의 수와 같다."
+            },
+            {
+                "id": "c",
+                "text": "원래의 수보다 1 커진다."
+            },
+            {
+                "id": "d",
+                "text": "수가 없어진다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "0은 '아무것도 없음'을 뜻하므로, 어떤 수에 0을 더해도 그 수는 변하지 않고 그대로 유지됩니다.",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "사과가 5개 있을 때 아무것도 추가하지 않은 상황을 가정해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301000
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '세모(삼각형)' 모양이 가지고 있는 특징은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "꼭짓점이 4개이다."
+            },
+            {
+                "id": "b",
+                "text": "변(선분)이 3개이다."
+            },
+            {
+                "id": "c",
+                "text": "모양이 동글동글하다."
+            },
+            {
+                "id": "d",
+                "text": "어디로든 잘 구른다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "세모는 세 개의 곧은 선(변)과 세 개의 뾰족한 점(꼭짓점)으로 이루어진 도형입니다.",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "도형을 구성하는 곧은 선의 개수를 세어 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735301010
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "시계의 긴바늘이 6을 가리키고, 짧은바늘이 4와 5의 한가운데를 가리키고 있다면 몇 시일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "4시"
+            },
+            {
+                "id": "b",
+                "text": "4시 30분"
+            },
+            {
+                "id": "c",
+                "text": "5시"
+            },
+            {
+                "id": "d",
+                "text": "6시 20분"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "긴바늘이 6을 가리키면 '30분'을 의미하며, 짧은바늘이 4를 지났으므로 4시 30분입니다.",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "긴바늘이 시계의 절반을 돌아 내려왔을 때의 약속된 읽기 방식을 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301020
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "1부터 9까지의 숫자 카드 중에서 7보다 크고 9보다 작은 숫자는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "6"
+            },
+            {
+                "id": "b",
+                "text": "7"
+            },
+            {
+                "id": "c",
+                "text": "8"
+            },
+            {
+                "id": "d",
+                "text": "10"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "숫자의 순서대로 세어보면 7 다음에는 8, 그다음에는 9가 오므로 정답은 8입니다.",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "일곱과 아홉 사이에 위치한 수의 이름을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301030
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "사과가 12개 있습니다. 그중에서 5개를 친구에게 주었다면 남은 사과는 몇 개일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "6개"
+            },
+            {
+                "id": "b",
+                "text": "7개"
+            },
+            {
+                "id": "c",
+                "text": "8개"
+            },
+            {
+                "id": "d",
+                "text": "17개"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "12에서 5를 빼는 뺄셈 문제입니다. 12 - 5 = 7이므로 남은 사과는 7개입니다.",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "전체 수량에서 일부분을 덜어내고 남은 양을 거꾸로 세어 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301040
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "순서를 나타내는 말 '첫째, 둘째, 셋째...' 다음에 올 알맞은 말은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "넷째"
+            },
+            {
+                "id": "b",
+                "text": "다섯째"
+            },
+            {
+                "id": "c",
+                "text": "네째"
+            },
+            {
+                "id": "d",
+                "text": "다섯"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "수를 순서대로 셀 때 1(첫째), 2(둘째), 3(셋째), 4(넷째) 순으로 말하는 것이 올바른 표현입니다.",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "숫자 3 다음 차례를 가리키는 우리말 표준 표기를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301050
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "10개씩 묶음이 3개이고 낱개가 7개인 수는 얼마일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "30"
+            },
+            {
+                "id": "b",
+                "text": "37"
+            },
+            {
+                "id": "c",
+                "text": "73"
+            },
+            {
+                "id": "d",
+                "text": "10"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "10개씩 3 묶음은 30을 나타내고, 여기에 낱개 7을 더하면 37이 됩니다.",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "십의 자리와 일의 자리에 각각 들어갈 숫자를 조합해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735301060
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '네모(사각형)' 모양의 물건으로 가장 적절한 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "축구공"
+            },
+            {
+                "id": "b",
+                "text": "옷걸이"
+            },
+            {
+                "id": "c",
+                "text": "색종이"
+            },
+            {
+                "id": "d",
+                "text": "동전"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "색종이는 네 개의 곧은 선과 네 개의 꼭짓점으로 이루어진 반듯한 사각형 모양입니다.",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "네 귀퉁이가 바르고 평평한 종이 형태의 물건을 골라 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301070
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "8과 어떤 수를 모으면 10이 될까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "1"
+            },
+            {
+                "id": "b",
+                "text": "2"
+            },
+            {
+                "id": "c",
+                "text": "3"
+            },
+            {
+                "id": "d",
+                "text": "4"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "10을 만들기 위해 8에 더 필요한 수는 2입니다. (8+2=10)",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "열 손가락 중 여덟 개를 접고 남은 손가락의 개수를 세어 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301080
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "9 + 5를 계산하면 얼마가 될까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "13"
+            },
+            {
+                "id": "b",
+                "text": "14"
+            },
+            {
+                "id": "c",
+                "text": "15"
+            },
+            {
+                "id": "d",
+                "text": "16"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:1"
+        ],
+        "explanation": "9에 1을 더해 10을 만든 후, 남은 4를 더하면 14가 됩니다.",
+        "grade": 1,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "더 큰 수인 9를 먼저 10으로 채우기 위해 필요한 만큼을 빌려와 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301090
+    }
+]

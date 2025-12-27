@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물체가 자석에 붙는 성질을 이용하여 철로 된 물체를 골라내는 도구는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "돋보기"
+            },
+            {
+                "id": "b",
+                "text": "머리빗"
+            },
+            {
+                "id": "c",
+                "text": "자석 집게"
+            },
+            {
+                "id": "d",
+                "text": "유리컵"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "자석은 철로 된 물체를 끌어당기는 성질이 있어, 여러 물체 섞인 곳에서 철을 쉽게 분리할 수 있습니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "쇠로 된 클립이나 못을 가까이 대면 찰칵하고 달라붙는 특징을 활용한 도구입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "배추흰나비의 한 살이 과정 중 '허물을 벗으며' 몸집을 키우는 단계는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "알"
+            },
+            {
+                "id": "b",
+                "text": "애벌레"
+            },
+            {
+                "id": "c",
+                "text": "번데기"
+            },
+            {
+                "id": "d",
+                "text": "성충"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "애벌레는 잎을 먹으며 자라는 동안 여러 번 허물을 벗으며 크기를 키웁니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "다리가 여러 개 있고 초록색 잎을 갉아먹으며 기어 다니는 시기입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "액체 상태인 물이 얼음으로 변할 때, 부피는 어떻게 변할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "줄어든다"
+            },
+            {
+                "id": "b",
+                "text": "늘어난다"
+            },
+            {
+                "id": "c",
+                "text": "변하지 않는다"
+            },
+            {
+                "id": "d",
+                "text": "없어진다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "물은 얼면서 입자 배열이 변해 부피가 약 10% 정도 커집니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "가득 채운 페트병을 냉동실에 넣으면 병이 빵빵하게 부풀어 오르는 이유를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 동물의 암수가 짝짓기를 하는 가장 큰 이유는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "친구를 사귀기 위해"
+            },
+            {
+                "id": "b",
+                "text": "잠을 자기 위해"
+            },
+            {
+                "id": "c",
+                "text": "대대를 이어갈 자손을 남기기 위해"
+            },
+            {
+                "id": "d",
+                "text": "먹이를 구하기 위해"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "동물은 종족을 보존하고 번식하기 위해 암수가 만나 알이나 새끼를 낳습니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "새로운 생명을 탄생시켜 계속해서 종을 유지하기 위한 과정입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물질을 관찰할 때 '단단하다, 거칠다, 매끄럽다' 등은 무엇을 확인하는 것일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "성질"
+            },
+            {
+                "id": "b",
+                "text": "무게"
+            },
+            {
+                "id": "c",
+                "text": "크기"
+            },
+            {
+                "id": "d",
+                "text": "가격"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "물질이 가지고 있는 고유한 특징을 성질이라고 합니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "물건을 이루는 재료가 가진 고유한 특징을 말합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지구의 모습 중 바다와 육지에 대한 설명으로 옳은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "육지가 바다보다 훨씬 넓다"
+            },
+            {
+                "id": "b",
+                "text": "바다가 육지보다 훨씬 넓다"
+            },
+            {
+                "id": "c",
+                "text": "육지와 바다의 넓이는 똑같다"
+            },
+            {
+                "id": "d",
+                "text": "지구에는 바다가 없다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "지구 표면의 약 70%는 바다이며, 육지는 약 30%에 불과합니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "인공위성에서 찍은 사진을 보면 푸른색 부분이 훨씬 많이 보입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "소리가 발생하는 물체를 만져보았을 때 공통적으로 느껴지는 현상은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "뜨거워진다"
+            },
+            {
+                "id": "b",
+                "text": "축축해진다"
+            },
+            {
+                "id": "c",
+                "text": "떨린다"
+            },
+            {
+                "id": "d",
+                "text": "딱딱해진다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "소리는 물체의 진동에 의해 만들어지므로, 소리가 날 때 물체는 미세하게 떨립니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "스피커나 악기를 연주할 때 손을 대면 느껴지는 움직임을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "흙 속에 살며 흙을 삼키고 배설하여 땅을 비옥하게(기름지게) 만드는 동물은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지렁이"
+            },
+            {
+                "id": "b",
+                "text": "메뚜기"
+            },
+            {
+                "id": "c",
+                "text": "잠자리"
+            },
+            {
+                "id": "d",
+                "text": "거미"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "지렁이는 흙 속의 유기물을 먹고 분해하여 식물이 잘 자랄 수 있는 좋은 땅을 만듭니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "다리가 없고 몸이 마디로 되어 있으며 땅속을 다니는 긴 모양의 생물입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "그늘진 곳보다 햇빛이 잘 드는 곳에서 식물이 더 잘 자라는 이유는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "물을 더 많이 마실 수 있어서"
+            },
+            {
+                "id": "b",
+                "text": "벌레가 생기지 않아서"
+            },
+            {
+                "id": "c",
+                "text": "스스로 양분을 만들 수 있어서"
+            },
+            {
+                "id": "d",
+                "text": "바람을 잘 막아줘서"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "식물은 햇빛을 이용해 광합성을 하여 성장에 필요한 에너지를 스스로 만듭니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "잎에서 빛을 이용해 먹이를 만드는 과정을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 기체(공기)의 특징으로 옳은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "일정한 모양을 유지한다"
+            },
+            {
+                "id": "b",
+                "text": "담는 용기에 따라 모양이 변한다"
+            },
+            {
+                "id": "c",
+                "text": "눈에 아주 잘 보인다"
+            },
+            {
+                "id": "d",
+                "text": "무게가 전혀 없다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:3"
+        ],
+        "explanation": "기체는 일정한 모양이 없어서 담는 그릇이나 공간의 모양에 따라 형태가 자유롭게 변합니다.",
+        "grade": 3,
+        "subject": "science",
+        "eduLevel": "elem_low",
+        "hint": "풍선 속에 넣었을 때 풍선의 생김새대로 채워지는 성질을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306400
+    }
+]

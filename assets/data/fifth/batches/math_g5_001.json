@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 12와 18의 '최대공약수'는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "3"
+            },
+            {
+                "id": "b",
+                "text": "6"
+            },
+            {
+                "id": "c",
+                "text": "36"
+            },
+            {
+                "id": "d",
+                "text": "72"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "12의 약수는 1, 2, 3, 4, 6, 12이고 18의 약수는 1, 2, 3, 6, 9, 18입니다. 공통된 약수 중 가장 큰 수는 6입니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "두 숫자를 나누어 떨어지게 만드는 가장 큰 수치를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735305000
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "분모가 다른 분수 $\frac{4}{12}$를 기약분수로 나타내면?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "$\frac{1}{3}$"
+            },
+            {
+                "id": "b",
+                "text": "$\frac{2}{3}$"
+            },
+            {
+                "id": "c",
+                "text": "$\frac{3}{4}$"
+            },
+            {
+                "id": "d",
+                "text": "$\frac{4}{12}$"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "분자와 분모를 최대공약수인 4로 나누면 $\frac{1}{3}$이 됩니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "분자와 분모의 공통된 인수를 모두 제거하여 가장 단순한 형태로 만들어보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735305060
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '6의 배수'이면서 동시에 '9의 배수'인 수(공배수)가 아닌 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "18"
+            },
+            {
+                "id": "b",
+                "text": "36"
+            },
+            {
+                "id": "c",
+                "text": "45"
+            },
+            {
+                "id": "d",
+                "text": "54"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "6과 9의 최소공배수는 18입니다. 공배수는 최소공배수의 배수인 18, 36, 54...입니다. 45는 9의 배수이지만 6의 배수가 아닙니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "제시된 숫자들 중 육단 곱셈표에 등장하지 않는 것을 골라보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735305070
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "소수 곱셈 0.4 × 0.2의 결과는 얼마일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "0.8"
+            },
+            {
+                "id": "b",
+                "text": "0.08"
+            },
+            {
+                "id": "c",
+                "text": "8"
+            },
+            {
+                "id": "d",
+                "text": "0.008"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "정수의 곱 을 한 뒤, 소수점 아래 자릿수만큼 소수점을 옮깁니다. 소수 한 자리 수끼리의 곱이므로 소수 두 자리 수가 되어 0.08입니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "전체 자릿수가 어떻게 변하는지 주의하며 위치를 찍어보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735305080
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "어떤 일을 하는 데 걸린 시간을 나타낼 때, '70분'을 시간 단위의 분수로 나타내면?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "$1\frac{1}{6}$시간"
+            },
+            {
+                "id": "b",
+                "text": "$1\frac{1}{7}$시간"
+            },
+            {
+                "id": "c",
+                "text": "$1\frac{10}{70}$시간"
+            },
+            {
+                "id": "d",
+                "text": "7시간"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "60분은 1시간이므로 70분은 시간 분입니다. 10분은 $\frac{10}{60}$시간이므로 약분하면 $\frac{1}{6}$시간이 되어 $1\frac{1}{6}$시간입니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "육십진법 체계에서 남은 자투리 분량을 약속된 단위로 바꾸어 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735305090
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "밑변이 8cm이고 높이가 5cm인 삼각형의 넓이는 몇 일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "13"
+            },
+            {
+                "id": "b",
+                "text": "20"
+            },
+            {
+                "id": "c",
+                "text": "40"
+            },
+            {
+                "id": "d",
+                "text": "80"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "삼각형의 넓이는 (밑변 × 높이 ÷ 2)입니다. 이므로 넓이는 20입니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "직사각형 넓이를 구하는 방식에서 절반으로 나누어야 한다는 점을 잊지 마세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735312000
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 수의 범위를 나타낼 때 '15를 포함하지 않고' 15보다 큰 수를 가리키는 용어는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "이상"
+            },
+            {
+                "id": "b",
+                "text": "이하"
+            },
+            {
+                "id": "c",
+                "text": "초과"
+            },
+            {
+                "id": "d",
+                "text": "미만"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "기준이 되는 수를 포함하지 않으면서 그보다 큰 수의 범위는 '초과'라고 합니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "경계값을 빼고 그 위쪽 영역만을 나타내는 낱말을 골라보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735312010
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "분수의 덧셈 $\\frac{1}{2} + \\frac{1}{4}$을 계산한 결과는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "$\\frac{2}{6}$"
+            },
+            {
+                "id": "b",
+                "text": "$\\frac{3}{4}$"
+            },
+            {
+                "id": "c",
+                "text": "$\\frac{2}{4}$"
+            },
+            {
+                "id": "d",
+                "text": "$\\frac{1}{6}$"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "분모를 4로 통분하면 $\\frac{1}{2}$은 $\\frac{2}{4}$가 됩니다. 따라서 $\\frac{2}{4} + \\frac{1}{4} = \\frac{3}{4}$이 됩니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "나누어진 칸의 개수를 똑같이 맞춘 뒤에 윗부분의 수치끼리 합쳐보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735312020
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 도형 중 선대칭도형이면서 점대칭도형인 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "일반 삼각형"
+            },
+            {
+                "id": "b",
+                "text": "정사각형"
+            },
+            {
+                "id": "c",
+                "text": "사다리꼴"
+            },
+            {
+                "id": "d",
+                "text": "직각삼각형"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "정사각형은 대칭축을 따라 접었을 때 완전히 겹치며(선대칭), 180도 돌렸을 때도 원래 모양과 일치(점대칭)합니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "반으로 접어도 똑같고, 거꾸로 뒤집어 돌려도 처음과 같은 모양을 유지하는 완벽한 균형의 도형을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735312030
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "평행사변형의 밑변이 7cm이고 높이가 6cm일 때, 이 도형의 넓이는 몇 일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "13"
+            },
+            {
+                "id": "b",
+                "text": "21"
+            },
+            {
+                "id": "c",
+                "text": "26"
+            },
+            {
+                "id": "d",
+                "text": "42"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:5"
+        ],
+        "explanation": "평행사변형의 넓이는 (밑변 × 높이)로 구합니다. 이므로 넓이는 42입니다.",
+        "grade": 5,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "모양을 살짝 잘라 옮겨 붙이면 직사각형과 같은 면적이 된다는 점을 이용하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735312040
+    }
+]

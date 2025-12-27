@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "여름철 캠핑이나 야외 활동 중 뱀에 물렸을 때의 응급처치법으로 가장 올바른 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "상처 부위를 입으로 빨아 독을 뺀다."
+            },
+            {
+                "id": "b",
+                "text": "독이 퍼지지 않게 물린 곳 위쪽을 묶고 즉시 병원에 간다."
+            },
+            {
+                "id": "c",
+                "text": "상처에 된장이나 가루약을 바른다."
+            },
+            {
+                "id": "d",
+                "text": "피가 많이 나도록 상처를 깊게 짼다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "뱀에 물리면 독이 심장으로 퍼지지 않도록 상처 윗부분을 적당한 압박으로 묶고, 최대한 움직이지 않으며 병원으로 이동해야 합니다. 입으로 빨거나 민간요법을 쓰는 것은 감염 위험이 있어 위험합니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "심장 쪽으로 나쁜 성분이 올라가지 못하게 길을 차단하고 전문가의 도움을 받는 것이 우선입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315387
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "인터넷 게시판이나 SNS에 댓글을 달 때 지켜야 할 '네티켓'으로 가장 올바른 태도는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "얼굴이 보이지 않으므로 거친 말을 사용한다."
+            },
+            {
+                "id": "b",
+                "text": "친구가 아닌 사람의 글에는 무조건 비판한다."
+            },
+            {
+                "id": "c",
+                "text": "상대방을 존중하며 고운 말을 사용한다."
+            },
+            {
+                "id": "d",
+                "text": "확인되지 않은 소문을 재미로 퍼뜨린다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "온라인상에서도 오프라인과 마찬가지로 예의를 지켜야 합니다. 익명성에 기대어 상처를 주는 말을 하지 않는 것이 성숙한 디지털 시민의 자세입니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "모니터 너머에 실제 사람이 있다고 생각하며 따뜻하게 대하는 마음가짐을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315388
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "미세먼지 농도가 매우 높은 날, 환기를 위해 창문을 열어야 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "하루 종일 창문을 닫아둔다."
+            },
+            {
+                "id": "b",
+                "text": "잠시라도 창문을 열어 공기를 순환시키고 물걸레질을 한다."
+            },
+            {
+                "id": "c",
+                "text": "공기청정기만 믿고 한 달 동안 열지 않는다."
+            },
+            {
+                "id": "d",
+                "text": "바람이 가장 강하게 불 때 한 시간 이상 열어둔다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "밖이 나쁘더라도 실내 오염 물질 농도가 높아질 수 있으므로, 하루 2~3번 짧게 환기를 하고 바닥에 가라앉은 먼지를 닦아내는 것이 권장됩니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "내부에 쌓인 나쁜 기운을 내보내기 위해 아주 짧은 시간 동안만 통로를 활용하는 방법입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315389
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "음식을 먹다가 목에 이물질이 걸려 숨을 쉬지 못할 때 시행하는 응급처치법은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "물을 많이 마시게 한다."
+            },
+            {
+                "id": "b",
+                "text": "등을 세게 때려 더 깊이 밀어 넣는다."
+            },
+            {
+                "id": "c",
+                "text": "환자의 뒤에서 안아 복부를 위로 세게 밀어 올린다."
+            },
+            {
+                "id": "d",
+                "text": "코를 막고 입으로 숨을 불어 넣는다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "이 방법은 '하임리히법'이라고 하며, 복부의 압력을 높여 기도에 걸린 음식물을 밖으로 튀어나오게 하는 기술입니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "배 부분에 강한 압력을 주어 막혀 있는 통로를 뚫어주는 긴급한 구조 동작입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315390
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "겨울철 정전기가 자주 발생할 때 이를 방지하는 방법으로 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "실내 습도를 높이고 손을 촉촉하게 유지한다."
+            },
+            {
+                "id": "b",
+                "text": "털옷을 여러 겹 껴입는다."
+            },
+            {
+                "id": "c",
+                "text": "방 안을 아주 건조하게 만든다."
+            },
+            {
+                "id": "d",
+                "text": "플라스틱 빗으로 머리를 세게 빗는다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "정전기는 건조할 때 잘 발생합니다. 가습기를 사용하거나 로션을 발라 피부의 수분을 유지하면 찌릿한 현상을 예방할 수 있습니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "공기 중이나 피부에 축축한 기운이 머물게 하면 전기가 갑자기 튀는 것을 막을 수 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315391
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "에스컬레이터를 탈 때 안전 사고를 예방하기 위한 올바른 방법은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "빨리 가기 위해 에스컬레이터 위에서 뛴다."
+            },
+            {
+                "id": "b",
+                "text": "노란 안전선 안쪽에 서서 손잡이를 잡고 이용한다."
+            },
+            {
+                "id": "c",
+                "text": "난간 바깥쪽으로 몸을 내밀어 아래를 구경한다."
+            },
+            {
+                "id": "d",
+                "text": "움직이는 계단에 앉아서 이동한다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "움직이는 기계이므로 균형을 잃지 않게 손잡이를 잡아야 하며, 옷이나 신발이 끼이지 않도록 노란 선 안쪽에 서야 안전합니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "발바닥이 닿는 바닥면의 경계 표시를 지키고 옆의 지지대를 활용하는 자세가 필요합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315392
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "분리배출 시 우유 팩을 처리하는 올바른 순서는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "그대로 구겨서 일반 쓰레기통에 넣는다."
+            },
+            {
+                "id": "b",
+                "text": "내용물을 비우고 씻은 뒤 펼쳐서 말려 배출한다."
+            },
+            {
+                "id": "c",
+                "text": "남은 우유가 있는 상태로 뚜껑만 닫아 버린다."
+            },
+            {
+                "id": "d",
+                "text": "가위로 잘게 썰어 음식물 쓰레기에 섞는다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "우유 팩은 고급 종이 자원이므로 이물질을 제거하고 물기를 말린 후 펼쳐서 종이팩 전용 함에 버려야 재활용이 가능합니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "안을 깨끗이 비워 냄새가 나지 않게 하고 평평한 모양으로 만드는 정성이 필요합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315393
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "자전거를 타고 횡단보도를 건너야 할 때 가장 안전한 방법은 무엇인가요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "사람들 사이로 빠르게 타고 지나간다."
+            },
+            {
+                "id": "b",
+                "text": "자전거에서 내려서 끌고 걸어서 건넌다."
+            },
+            {
+                "id": "c",
+                "text": "지그재그로 움직이며 건넌다."
+            },
+            {
+                "id": "d",
+                "text": "경적을 크게 울리며 타고 건넌다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "도로교통법상 자전거를 타고 건너면 차로 간주될 수 있으며 보행자와 충돌 위험이 큽니다. 내려서 끌고 가야 보행자로서 보호받을 수 있습니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "바퀴 위에 올라앉지 않고 땅을 직접 밟으며 장비를 손으로 잡고 이동해야 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315394
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "엘리베이터에 갇혔을 때 행동 요령으로 가장 올바른 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "문을 억지로 벌려 탈출을 시도한다."
+            },
+            {
+                "id": "b",
+                "text": "비상 버튼(종 모양)을 눌러 관리실에 알리고 기다린다."
+            },
+            {
+                "id": "c",
+                "text": "천장의 비상구를 찾아 기어 올라간다."
+            },
+            {
+                "id": "d",
+                "text": "바닥을 세게 구르며 소리를 지른다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "엘리베이터는 추락 위험이 거의 없으므로 억지로 문을 열면 안 됩니다. 비상 인터폰으로 상황을 알리고 구조를 기다리는 것이 가장 안전합니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "내부에 설치된 통신 장치를 이용해 외부에 소식을 전하고 얌전하게 머무르는 것이 최선입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315395
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "건강한 생활을 위해 하루에 권장되는 충분한 수분 섭취 방법은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "갈증이 심하게 날 때까지 참았다가 한꺼번에 마신다."
+            },
+            {
+                "id": "b",
+                "text": "식사 전후에만 엄청나게 많은 양을 마신다."
+            },
+            {
+                "id": "c",
+                "text": "조금씩 자주 나누어 천천히 마신다."
+            },
+            {
+                "id": "d",
+                "text": "물 대신 탄산음료나 주스를 많이 마신다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:4"
+        ],
+        "explanation": "한꺼번에 너무 많은 물을 마시는 것은 몸에 무리를 줄 수 있습니다. 갈증을 느끼기 전에 조금씩 자주 마시는 것이 신진대사에 가장 좋습니다.",
+        "grade": 4,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "목을 축이는 일을 여러 번에 걸쳐 나누어 실행하는 것이 몸에 부담을 주지 않습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315396
+    }
+]

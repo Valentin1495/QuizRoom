@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "나눗셈식 17 ÷ 5의 몫과 나머지를 바르게 구한 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "몫: 2, 나머지: 7"
+            },
+            {
+                "id": "b",
+                "text": "몫: 3, 나머지: 2"
+            },
+            {
+                "id": "c",
+                "text": "몫: 3, 나머지: 1"
+            },
+            {
+                "id": "d",
+                "text": "몫: 4, 나머지: 3"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "17 안에 5가 3번 들어가고(5×3=15), 남는 수는 2가 됩니다. 나머지는 나누는 수인 5보다 작아야 합니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "곱셈구구 5단을 외워 17에 가장 가까우면서도 넘지 않는 값을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735302000
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "한 직각삼각형 안에 들어있는 '직각'은 모두 몇 개일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "1개"
+            },
+            {
+                "id": "b",
+                "text": "2개"
+            },
+            {
+                "id": "c",
+                "text": "3개"
+            },
+            {
+                "id": "d",
+                "text": "없다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "직각삼각형은 한 각이 직각인 삼각형을 말합니다. 삼각형의 세 각의 합은 180도이므로 직각이 2개 이상일 수는 없습니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "도형의 이름 속에 들어있는 특정 각도의 개수를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735302010
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "분수 7/9에서 분모는 어떤 숫자일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "7"
+            },
+            {
+                "id": "b",
+                "text": "9"
+            },
+            {
+                "id": "c",
+                "text": "16"
+            },
+            {
+                "id": "d",
+                "text": "2"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "분수에서 가로선 아래에 있는 숫자를 분모, 위에 있는 숫자를 분자라고 부릅니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "어머니가 아이를 업고 있는 모습에서 아래쪽에 위치한 숫자의 명칭을 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735302020
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "길이가 40mm인 연필심이 있습니다. 이를 cm 단위로 바꾸면 몇 cm일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "0.4cm"
+            },
+            {
+                "id": "b",
+                "text": "4cm"
+            },
+            {
+                "id": "c",
+                "text": "40cm"
+            },
+            {
+                "id": "d",
+                "text": "400cm"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "10mm는 1cm와 같습니다. 따라서 40mm는 4cm가 됩니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "자에서 아주 작은 눈금 10개가 모여 숫자 1이 되는 관계를 활용해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735302030
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "반지름이 5cm인 원이 있습니다. 이 원의 지름은 몇 cm일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "5cm"
+            },
+            {
+                "id": "b",
+                "text": "10cm"
+            },
+            {
+                "id": "c",
+                "text": "15cm"
+            },
+            {
+                "id": "d",
+                "text": "25cm"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "원의 지름은 반지름의 2배입니다. 5 × 2 = 10이므로 지름은 10cm입니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "중심을 지나 양쪽 끝을 잇는 가장 긴 선분은 절반 길이의 두 배와 같습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735302040
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "3시간 20분은 모두 몇 분일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "180분"
+            },
+            {
+                "id": "b",
+                "text": "200분"
+            },
+            {
+                "id": "c",
+                "text": "230분"
+            },
+            {
+                "id": "d",
+                "text": "320분"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "1시간은 60분입니다. 3시간은 60 × 3 = 180분이고, 여기에 20분을 더하면 200분이 됩니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "육십진법을 사용하여 긴 시간을 작은 단위로 쪼갠 뒤 남은 수치를 합치세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735302050
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '1km'와 같은 길이를 나타내는 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "100m"
+            },
+            {
+                "id": "b",
+                "text": "1000m"
+            },
+            {
+                "id": "c",
+                "text": "10000m"
+            },
+            {
+                "id": "d",
+                "text": "1000cm"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "길이의 단위에서 k(킬로)는 1000배를 의미합니다. 따라서 1km는 1000m입니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "운동장의 트랙 여러 바퀴를 돌아야 도달할 수 있는 큰 단위의 기준을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735302060
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "가로가 8cm, 세로가 5cm인 직사각형의 둘레는 몇 cm일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "13cm"
+            },
+            {
+                "id": "b",
+                "text": "26cm"
+            },
+            {
+                "id": "c",
+                "text": "40cm"
+            },
+            {
+                "id": "d",
+                "text": "85cm"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "직사각형의 둘레는 (가로 + 세로) × 2입니다. (8 + 5) × 2 = 13 × 2 = 26cm입니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "도형의 모든 바깥쪽 선들을 하나하나 전부 더해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735302070
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "무게의 단위 중 '2kg 500g'은 몇 g일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "250g"
+            },
+            {
+                "id": "b",
+                "text": "700g"
+            },
+            {
+                "id": "c",
+                "text": "2500g"
+            },
+            {
+                "id": "d",
+                "text": "25000g"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "1kg은 1000g입니다. 2kg은 2000g이므로, 여기에 500g을 더하면 2500g이 됩니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "천 단위의 값을 가진 큰 무게를 작은 무게로 환산한 뒤 합계를 내보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735302080
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "초등학교 3학년 1학기 수학에서 배우는 '평면도형' 중 선분 두 개로 이루어진 각이 직각보다 큰 각을 무엇이라 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "예각"
+            },
+            {
+                "id": "b",
+                "text": "둔각"
+            },
+            {
+                "id": "c",
+                "text": "평각"
+            },
+            {
+                "id": "d",
+                "text": "직각"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:3"
+        ],
+        "explanation": "직각(90도)보다 크고 180도보다 작은 각을 둔각이라고 합니다. 반대로 직각보다 작은 각은 예각입니다.",
+        "grade": 3,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "벌어진 정도가 완만하고 뭉툭한 느낌을 주는 명칭을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735302090
+    }
+]

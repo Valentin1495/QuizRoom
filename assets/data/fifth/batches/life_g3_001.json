@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 미세먼지가 심한 날, 외출할 때 가장 올바른 행동은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "숨을 크게 들이마시며 달린다."
+            },
+            {
+                "id": "b",
+                "text": "식약처 인증 보건용 마스크를 쓴다."
+            },
+            {
+                "id": "c",
+                "text": "눈을 보호하기 위해 안대를 한다."
+            },
+            {
+                "id": "d",
+                "text": "공기가 나쁘므로 물을 마시지 않는다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "미세먼지 차단 기능이 있는 보건용 마스크(KF80, KF94 등)를 착용해야 호흡기를 보호할 수 있습니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "공기 중의 아주 작은 알갱이들이 코나 입으로 들어오지 못하게 막아주는 도구를 활용해야 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315200
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "여름철 물놀이를 하기 전, 사고를 예방하기 위해 반드시 해야 할 행동은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "준비 운동을 충분히 한다."
+            },
+            {
+                "id": "b",
+                "text": "차가운 얼음을 입에 문다."
+            },
+            {
+                "id": "c",
+                "text": "밥을 배불리 먹고 바로 들어간다."
+            },
+            {
+                "id": "d",
+                "text": "깊은 곳까지 얼마나 깊은지 달려가 본다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "갑자기 찬물에 들어가면 심장에 무리가 갈 수 있으므로 체온을 높이고 근육을 풀어주는 운동이 필요합니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "몸이 놀라지 않도록 팔다리를 가볍게 움직여 긴장을 풀어주는 단계가 중요합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315201
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '공공장소'에서 지켜야 할 예절로 가장 거리가 먼 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "영화관에서는 휴대폰을 무음으로 한다."
+            },
+            {
+                "id": "b",
+                "text": "버스 안에서는 작은 목소리로 말한다."
+            },
+            {
+                "id": "c",
+                "text": "공원 벤치에 쓰레기를 두고 온다."
+            },
+            {
+                "id": "d",
+                "text": "박물관 전시물을 눈으로만 감상한다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "여러 사람이 함께 사용하는 곳에서는 자신이 만든 폐기물을 스스로 치우는 것이 기본 도리입니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "함께 사용하는 환경을 깨끗하게 유지하려는 노력이 부족한 행동을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315202
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "화재가 발생했을 때 연기를 피해 안전하게 대피하는 방법으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "엘리베이터를 타고 빠르게 내려간다."
+            },
+            {
+                "id": "b",
+                "text": "서서 큰 소리로 울며 기다린다."
+            },
+            {
+                "id": "c",
+                "text": "젖은 수건으로 코와 입을 막고 낮은 자세로 이동한다."
+            },
+            {
+                "id": "d",
+                "text": "바람이 불어오는 방향으로 계속 달려간다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "뜨거운 공기와 유독 가스는 위로 올라가므로, 낮은 자세를 유지하고 젖은 천으로 숨길을 보호해야 합니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "몸을 최대한 바닥에 가깝게 붙이고 호흡기에 해로운 물질이 들어오지 않게 가려야 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315203
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "학교나 집에서 스마트폰을 바르게 사용하는 방법은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "수업 시간에도 몰래 메시지를 확인한다."
+            },
+            {
+                "id": "b",
+                "text": "가족과 대화할 때도 화면만 쳐다본다."
+            },
+            {
+                "id": "c",
+                "text": "사용 시간을 미리 정하고 약속을 지킨다."
+            },
+            {
+                "id": "d",
+                "text": "모르는 사람의 연락에 개인정보를 알려준다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "스마트폰 과의존을 방지하기 위해 스스로 규칙을 세워 계획적으로 사용하는 습관이 필요합니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "기계를 조절하는 주체가 나 자신임을 잊지 않고 적당한 범위를 정하는 태도입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315204
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식사 예절 중 다른 사람을 배려하는 올바른 행동은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "음식을 입에 넣고 큰 소리로 떠든다."
+            },
+            {
+                "id": "b",
+                "text": "젓가락으로 반찬을 이것저것 휘젓는다."
+            },
+            {
+                "id": "c",
+                "text": "입안에 음식을 다 삼킨 후 말을 한다."
+            },
+            {
+                "id": "d",
+                "text": "맛없는 반찬은 멀리 밀어 놓는다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "음식을 씹는 중에 말을 하면 음식물이 튈 수 있으므로 예의를 갖춰 대화해야 합니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "함께 밥을 먹는 상대방이 불쾌함을 느끼지 않도록 입속을 정리한 뒤 입을 떼어야 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315205
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지진이 발생했을 때 실내에서 가장 먼저 해야 할 안전 행동은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "책상이나 탁자 아래로 들어가 몸을 보호한다."
+            },
+            {
+                "id": "b",
+                "text": "무서우니까 창문 옆에 바짝 붙어 선다."
+            },
+            {
+                "id": "c",
+                "text": "불을 끄기 위해 가스레인지로 달려간다."
+            },
+            {
+                "id": "d",
+                "text": "짐을 챙기기 위해 방으로 들어간다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "진동이 있을 때는 낙하물로부터 머리와 몸을 지키기 위해 튼튼한 구조물 아래로 피신해야 합니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "위에서 떨어지는 물건에 다치지 않도록 가구 밑 공간을 활용하여 머리를 가리는 것이 우선입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315206
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "길에서 낯선 사람이 '길을 잘 모르니 같이 가달라'고 할 때 가장 좋은 대처 방법은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "친절하게 목적지까지 같이 가준다."
+            },
+            {
+                "id": "b",
+                "text": "부모님께 물어보고 오겠다며 자리를 피한다."
+            },
+            {
+                "id": "c",
+                "text": "모르는 사람이니 화를 내며 소리를 지른다."
+            },
+            {
+                "id": "d",
+                "text": "돈을 주면 가겠다고 협상한다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "모르는 사람을 따라가는 것은 위험할 수 있으므로, 어른의 도움을 받겠다고 하거나 정중히 거절하고 자리를 옮겨야 합니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "나를 지키기 위해 보호자의 허락을 구하는 핑계를 대거나 안전한 거리로 멀어지는 것이 현명합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315207
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 올바른 손 씻기 방법이 아닌 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "비누 거품을 내어 손가락 사이사이 닦기"
+            },
+            {
+                "id": "b",
+                "text": "손등과 손바닥을 골고루 문지르기"
+            },
+            {
+                "id": "c",
+                "text": "물로만 3초 동안 빠르게 헹구기"
+            },
+            {
+                "id": "d",
+                "text": "손톱 밑까지 깨끗하게 씻기"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "세균을 확실히 제거하려면 비누를 사용해 30초 이상 꼼꼼하게 닦아야 합니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "충분한 시간 동안 정성을 들이지 않고 대충 끝내는 습관은 건강에 도움이 되지 않습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315208
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리나라의 4대 국경일 중 하나로, 일본의 식민 지배에 저항해 독립 만세 운동을 벌인 날을 기념하는 날은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "제헌절"
+            },
+            {
+                "id": "b",
+                "text": "광복절"
+            },
+            {
+                "id": "c",
+                "text": "3·1절"
+            },
+            {
+                "id": "d",
+                "text": "개천절"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:3"
+        ],
+        "explanation": "3·1절은 1919년 3월 1일 우리 민족이 일제에 항거하여 독립 선언서를 발표하고 평화적 시위를 벌인 날입니다.",
+        "grade": 3,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "새 학기가 시작되는 달의 첫 번째 날이자, 유관순 열사의 외침이 떠오르는 날입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315209
+    }
+]

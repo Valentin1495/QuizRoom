@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상대방의 직업이 무엇인지 물어보는 표현으로 가장 알맞은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "What do you do?"
+            },
+            {
+                "id": "b",
+                "text": "What are you doing?"
+            },
+            {
+                "id": "c",
+                "text": "How are you?"
+            },
+            {
+                "id": "d",
+                "text": "Where are you from?"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "'What do you do?'는 평소에 어떤 일을 하는지 묻는 표현으로, 상대방의 신분이나 생업을 확인하는 말입니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "지금 하고 있는 동작이 아니라, 평소에 수행하는 사회적 역할을 묻는 문장입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319800
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '시간'을 물어보는 질문으로 가장 적절한 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "What time is it?"
+            },
+            {
+                "id": "b",
+                "text": "How much is it?"
+            },
+            {
+                "id": "c",
+                "text": "What is it?"
+            },
+            {
+                "id": "d",
+                "text": "Is it big?"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "시계를 보며 현재 몇 시 몇 분인지 궁금할 때는 'time'이라는 단어를 넣어 질문합니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "하루의 흐름 속에서 현재가 어느 지점인지 시계를 확인하며 묻는 표현입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319801
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "가족 구성원 중 '할머니'를 영어로 올바르게 나타낸 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Grandfather"
+            },
+            {
+                "id": "b",
+                "text": "Grandmother"
+            },
+            {
+                "id": "c",
+                "text": "Father"
+            },
+            {
+                "id": "d",
+                "text": "Mother"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "부모님보다 한 세대 위인 여성 어른을 일컬을 때는 'Grand'라는 접두사를 붙여 표현합니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "나를 낳아주신 여성분의 어머니를 부르는 명칭을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735319802
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "음식의 '맛'이 어떠냐고 묻는 질문인 'How does it taste?'에 대한 대답으로 어색한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "It's delicious."
+            },
+            {
+                "id": "b",
+                "text": "It's sweet."
+            },
+            {
+                "id": "c",
+                "text": "It's tall."
+            },
+            {
+                "id": "d",
+                "text": "It's salty."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "'tall'은 길이나 높이를 나타내는 형용사이므로, 입으로 느끼는 감각인 맛을 설명하기에는 적절하지 않습니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "혀로 느낄 수 있는 성질이 아니라 사물의 외형적인 크기를 말하는 단어를 골라보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735319803
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "교실에서 'Can I borrow a pencil?'이라고 물었을 때, 빌려주면서 할 수 있는 말은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "No, I can't."
+            },
+            {
+                "id": "b",
+                "text": "Sure. Here you are."
+            },
+            {
+                "id": "c",
+                "text": "I'm a student."
+            },
+            {
+                "id": "d",
+                "text": "Wash your hands."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "물건을 건네주며 상대방에게 사용하라고 말할 때는 'Sure. Here you are.'라고 대답하는 것이 자연스럽습니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "상대방의 부탁을 흔쾌히 수락하며 물건을 손에 쥐여주는 상황에서 나누는 대화입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319804
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '여가 시간에 무엇을 하니?'라는 질문인 'What do you do in your free time?'에 대한 대답으로 알맞은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I like pizza."
+            },
+            {
+                "id": "b",
+                "text": "I read books."
+            },
+            {
+                "id": "c",
+                "text": "I'm ten years old."
+            },
+            {
+                "id": "d",
+                "text": "He is my teacher."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "자유로운 시간에 주로 하는 활동이나 취미를 묻는 질문이므로, 구체적인 행동(독서)을 답하는 것이 옳습니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "공부나 일 이외에 즐겁게 수행하는 취미 활동을 설명하는 문장을 선택하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319805
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "사물의 '위치'를 나타낼 때, 상자 '안에' 있다는 뜻의 전치사는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "on"
+            },
+            {
+                "id": "b",
+                "text": "under"
+            },
+            {
+                "id": "c",
+                "text": "in"
+            },
+            {
+                "id": "d",
+                "text": "behind"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "어떠한 공간의 내부를 가리키는 전치사는 'in'입니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "주머니 속이나 방 내부처럼 경계선이 있는 공간의 중간을 의미하는 낱말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735319806
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상대방에게 물건의 '가격'을 물어볼 때 사용하는 질문은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "How many apples?"
+            },
+            {
+                "id": "b",
+                "text": "How much is it?"
+            },
+            {
+                "id": "c",
+                "text": "What is this?"
+            },
+            {
+                "id": "d",
+                "text": "Do you like it?"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "물건을 사기 위해 지불해야 할 돈이 얼마인지 궁금할 때는 'How much'로 질문을 시작합니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "상점에서 마음에 드는 상품을 고른 뒤 점원에게 가치를 물어보는 상황입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319807
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 대화의 빈칸에 들어갈 알맞은 단어는? (A: Happy birthday! B: Thank you. A: This is _____ you.)",
+        "choices": [
+            {
+                "id": "a",
+                "text": "to"
+            },
+            {
+                "id": "b",
+                "text": "for"
+            },
+            {
+                "id": "c",
+                "text": "with"
+            },
+            {
+                "id": "d",
+                "text": "by"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "누군가에게 선물을 주면서 그 대상이 상대방임을 나타낼 때는 전치사 'for'를 사용하여 '~를 위한'이라는 뜻을 전달합니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "어떤 목적이나 수혜를 받는 대상을 지칭할 때 쓰이는 낱말을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319808
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 운동 종목과 그 행동이 바르게 짝지어지지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "play soccer"
+            },
+            {
+                "id": "b",
+                "text": "play baseball"
+            },
+            {
+                "id": "c",
+                "text": "play piano"
+            },
+            {
+                "id": "d",
+                "text": "play swim"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:4"
+        ],
+        "explanation": "수영은 그 자체로 동사이기 때문에 'go swimming'이라고 하거나 그냥 'swim'이라고 표현하며, 공을 가지고 하는 운동처럼 'play'를 붙이지 않습니다.",
+        "grade": 4,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "단어 자체가 하나의 움직임을 뜻해서 다른 도우미 낱말과 함께 쓰지 않는 항목을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735319809
+    }
+]

@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지름이 10cm인 원의 넓이를 구하려고 합니다. 원주율을 3.1로 계산할 때, 이 원의 넓이는 몇 일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "31"
+            },
+            {
+                "id": "b",
+                "text": "77.5"
+            },
+            {
+                "id": "c",
+                "text": "155"
+            },
+            {
+                "id": "d",
+                "text": "310"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "원의 넓이 공식은 (반지름) × (반지름) × (원주율)입니다. 지름이 10cm이므로 반지름은 5cm이며, 가 됩니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "가장 먼저 중심에서 가장자리까지의 거리를 구한 뒤 규칙에 따라 곱해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735305081
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "비례식 에서 빈칸에 들어갈 알맞은 숫자는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "10"
+            },
+            {
+                "id": "b",
+                "text": "11"
+            },
+            {
+                "id": "c",
+                "text": "12"
+            },
+            {
+                "id": "d",
+                "text": "15"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "비례식에서 외항의 곱과 내항의 곱은 같습니다. , 즉 이므로 빈칸은 12입니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "앞에 위치한 수들끼리 몇 배가 늘어났는지 확인하여 뒤에도 똑같이 적용해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735305082
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 밑면이 1개인 입체도형은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "각기둥"
+            },
+            {
+                "id": "b",
+                "text": "원기둥"
+            },
+            {
+                "id": "c",
+                "text": "각뿔"
+            },
+            {
+                "id": "d",
+                "text": "정육면체"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "각기둥과 원기둥은 서로 평행한 2개의 밑면을 가지지만, 위가 뾰족한 형태의 도형은 바닥에 닿는 면이 1개뿐입니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "꼭대기가 한 점으로 모이는 모양을 가진 물체를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735305083
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "백분율 25%를 분수로 나타낼 때, 가장 간단한 '기약분수'로 표현하면 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "$\frac{1}{4}$"
+            },
+            {
+                "id": "b",
+                "text": "$\frac{1}{5}$"
+            },
+            {
+                "id": "c",
+                "text": "$\frac{25}{100}$"
+            },
+            {
+                "id": "d",
+                "text": "$\frac{2}{5}$"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "25%는 $\frac{25}{100}$입니다. 분자와 분모를 그들의 최대공약수인 25로 약분하면 $\frac{1}{4}$이 됩니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "전체를 100으로 잡았을 때의 값을 분수 형태로 바꾸고 더 이상 나눠지지 않게 줄여보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735305090
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "분수의 나눗셈 $\\frac{4}{5} \\div \\frac{2}{3}$를 계산한 결과로 옳은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "$\\frac{8}{15}$"
+            },
+            {
+                "id": "b",
+                "text": "$\\frac{5}{6}$"
+            },
+            {
+                "id": "c",
+                "text": "$1\\frac{1}{5}$"
+            },
+            {
+                "id": "d",
+                "text": "$1\\frac{1}{2}$"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "분수의 나눗셈은 나누는 분수의 분자와 분모를 바꾸어 곱합니다. $\\frac{4}{5} \\times \\frac{3}{2} = \\frac{12}{10} = \\frac{6}{5}$이며, 이를 대분수로 고치면 $1\\frac{1}{5}$이 됩니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "나누는 수의 위아래를 뒤집은 뒤 곱셈으로 바꾸어 계산해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735312000
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "어떤 수에 대한 5의 비가 일 때, 이 비의 '비율'을 소수로 나타내면 얼마일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "0.5"
+            },
+            {
+                "id": "b",
+                "text": "0.625"
+            },
+            {
+                "id": "c",
+                "text": "0.8"
+            },
+            {
+                "id": "d",
+                "text": "1.6"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "비 에서 비교하는 양은 5, 기준량은 8입니다. 비율은 입니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "기호 앞의 수치를 뒤의 수치로 나누어 그 값을 소수로 구해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735312010
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "한 변의 길이가 3cm인 정육면체의 '겉넓이'는 몇 일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "27"
+            },
+            {
+                "id": "b",
+                "text": "36"
+            },
+            {
+                "id": "c",
+                "text": "54"
+            },
+            {
+                "id": "d",
+                "text": "81"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "정육면체는 넓이가 같은 면이 6개 있습니다. 한 면의 넓이는 이므로, 전체는 입니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "바깥을 둘러싼 정사각형 한 칸의 면적을 구한 뒤 전체 면의 개수를 곱해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735312020
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "반지름이 10cm인 원의 '원주(둘레)'는 몇 cm일까요? (원주율: 3.14)",
+        "choices": [
+            {
+                "id": "a",
+                "text": "31.4"
+            },
+            {
+                "id": "b",
+                "text": "62.8"
+            },
+            {
+                "id": "c",
+                "text": "314"
+            },
+            {
+                "id": "d",
+                "text": "628"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "원주는 (지름) × (원주율)입니다. 반지름이 10cm이므로 지름은 20cm이며, 입니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "중심을 지나는 가장 긴 가로 선분의 길이에 고정된 비율을 곱해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735312030
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "밑면의 가로가 4cm, 세로가 5cm이고 높이가 6cm인 직육면체의 '부피'는 몇 일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "60"
+            },
+            {
+                "id": "b",
+                "text": "100"
+            },
+            {
+                "id": "c",
+                "text": "120"
+            },
+            {
+                "id": "d",
+                "text": "150"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "직육면체의 부피 공식은 (가로) × (세로) × (높이)입니다. 이 됩니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "바닥면의 넓이를 먼저 구한 다음 쌓아 올린 층수만큼 곱해주면 됩니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735312040
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "나눗셈 를 계산하면 몫은 얼마일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "2.1"
+            },
+            {
+                "id": "b",
+                "text": "21"
+            },
+            {
+                "id": "c",
+                "text": "210"
+            },
+            {
+                "id": "d",
+                "text": "0.21"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:6"
+        ],
+        "explanation": "는 소수점을 한 자리씩 옮겨 와 같이 계산할 수 있습니다. 따라서 결과는 21입니다.",
+        "grade": 6,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "나누는 수와 나누어지는 수의 점을 오른쪽으로 똑같이 한 칸씩 이동시켜 정수로 만들어 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735312050
+    }
+]

@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '십만'이 10개인 수는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "만"
+            },
+            {
+                "id": "b",
+                "text": "백만"
+            },
+            {
+                "id": "c",
+                "text": "천만"
+            },
+            {
+                "id": "d",
+                "text": "일억"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "자릿수 체계에서 각 자리는 바로 아래 자리의 10배입니다. 따라서 십만의 10배는 백만이 됩니다.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "숫자 1 뒤에 붙는 0의 개수가 하나 더 늘어나는 단위를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735304400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "삼각형의 세 각의 크기를 모두 더하면 항상 몇 도()가 될까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "90"
+            },
+            {
+                "id": "b",
+                "text": "180"
+            },
+            {
+                "id": "c",
+                "text": "270"
+            },
+            {
+                "id": "d",
+                "text": "360"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "모든 삼각형의 세 내각의 합은 180도입니다. 이는 사각형을 대각선으로 나누었을 때 생기는 두 삼각형의 합을 생각하면 이해하기 쉽습니다.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "반원을 이루는 중심각의 크기와 동일한 수치입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735304401
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "직각()보다 크고 보다 작은 각을 부르는 명칭은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "예각"
+            },
+            {
+                "id": "b",
+                "text": "평각"
+            },
+            {
+                "id": "c",
+                "text": "둔각"
+            },
+            {
+                "id": "d",
+                "text": "직각"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "0도보다 크고 90도보다 작은 각은 예각, 90도보다 크고 180도보다 작은 각은 둔각이라고 합니다.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "벌어진 모양이 뭉툭하고 완만한 느낌을 주는 용어를 골라보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735304402
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "사각형의 네 각의 크기의 합은 몇 도()일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "180"
+            },
+            {
+                "id": "b",
+                "text": "240"
+            },
+            {
+                "id": "c",
+                "text": "360"
+            },
+            {
+                "id": "d",
+                "text": "540"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "사각형은 두 개의 삼각형으로 나눌 수 있습니다. 삼각형 하나의 내각의 합이 180도이므로 사각형은 도입니다.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "원을 한 바퀴 완전히 돌았을 때의 각도와 같습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735304403
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "소수의 덧셈 문제입니다. 0.47 + 0.3을 계산하면 얼마일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "0.5"
+            },
+            {
+                "id": "b",
+                "text": "0.77"
+            },
+            {
+                "id": "c",
+                "text": "0.50"
+            },
+            {
+                "id": "d",
+                "text": "0.8"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "소수의 덧셈에서는 소수점 자리를 맞추는 것이 중요합니다. 0.3은 0.30과 같으므로 입니다.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "소수점 첫째 자리끼리, 둘째 자리끼리 자릿수를 맞추어 더해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735304404
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '이등변삼각형'의 성질로 옳은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "세 변의 길이가 모두 같다."
+            },
+            {
+                "id": "b",
+                "text": "두 변의 길이가 같다."
+            },
+            {
+                "id": "c",
+                "text": "세 각이 모두 직각이다."
+            },
+            {
+                "id": "d",
+                "text": "변이 4개이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "두 변의 길이가 같은 삼각형을 이등변삼각형이라고 합니다. 세 변의 길이가 모두 같으면 정삼각형입니다.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "도형의 명칭에 담긴 숫자의 의미를 파악해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735304405
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "나눗셈 의 몫은 얼마일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "22"
+            },
+            {
+                "id": "b",
+                "text": "27"
+            },
+            {
+                "id": "c",
+                "text": "32"
+            },
+            {
+                "id": "d",
+                "text": "37"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "을 로 나누면 , , 이 되어 몫은 27입니다.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "나누는 수에 20을 곱한 값과 30을 곱한 값 사이의 범위를 확인해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735304406
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "소수 두 자리 수 1.25에서 숫자 '5'가 나타내는 실제 값은 얼마일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "5"
+            },
+            {
+                "id": "b",
+                "text": "0.5"
+            },
+            {
+                "id": "c",
+                "text": "0.05"
+            },
+            {
+                "id": "d",
+                "text": "50"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "1.25에서 1은 일의 자리, 2는 소수 첫째 자리(0.1), 5는 소수 둘째 자리(0.01)를 나타냅니다. 따라서 5는 0.05를 의미합니다.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "소수점 아래로 몇 번째 칸에 숫자가 위치해 있는지 확인해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735304407
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "꺾은선그래프를 보기에 가장 적당한 자료는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "우리 반 친구들이 좋아하는 과일"
+            },
+            {
+                "id": "b",
+                "text": "시간에 따른 기온의 변화"
+            },
+            {
+                "id": "c",
+                "text": "마을별 인구 수"
+            },
+            {
+                "id": "d",
+                "text": "내 가방 속 물건의 종류"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "꺾은선그래프는 연속적으로 변하는 양을 나타낼 때 유용합니다. 기온이나 몸무게의 변화 등이 대표적입니다.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "값이 고정되어 있지 않고 흐름에 따라 오르내리는 성질을 가진 것을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735304408
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다각형 중에서 모든 변의 길이가 같고 모든 각의 크기가 같은 도형을 무엇이라 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "직다각형"
+            },
+            {
+                "id": "b",
+                "text": "정다각형"
+            },
+            {
+                "id": "c",
+                "text": "평면다각형"
+            },
+            {
+                "id": "d",
+                "text": "대칭다각형"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:4"
+        ],
+        "explanation": "변의 길이와 각의 크기가 모두 일정하여 균형 잡힌 다각형을 정다각형이라고 부릅니다. 예: 정삼각형, 정사각형.",
+        "grade": 4,
+        "subject": "math",
+        "eduLevel": "elem_high",
+        "hint": "바르고 균형 잡혔다는 의미의 수식어가 붙은 명칭을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735304409
+    }
+]

@@ -1,0 +1,442 @@
+[
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "다음 중 맞춤법이 올바른 단어는 무엇일까요?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "몇 일"
+      },
+      {
+        "id": "b",
+        "text": "몇일"
+      },
+      {
+        "id": "c",
+        "text": "며칠"
+      },
+      {
+        "id": "d",
+        "text": "며칟날"
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "'며칠'은 '몇'과 '일'이 결합된 형태가 아니라, 그 자체가 하나의 단어입니다. 항상 '며칠'로 적는 것이 올바릅니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "소리 나는 대로 적는 것이 원칙인 단어예요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    "createdAt": 1735300000
+  },
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "음식을 먹고 난 뒤, 그릇을 깨끗이 닦는 일은 무엇일까요?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "설겆이"
+      },
+      {
+        "id": "b",
+        "text": "설거지"
+      },
+      {
+        "id": "c",
+        "text": "설것이"
+      },
+      {
+        "id": "d",
+        "text": "설거지이"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "예전에는 '설겆이'라고 썼으나, 현재는 표준어 규정에 따라 '설거지'가 올바른 표현입니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "동사인 '○○○하다'에서 온 말이에요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "a",
+          "c"
+        ]
+      }
+    },
+    "createdAt": 1735300005
+  },
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "숫자 8을 한글로 바르게 쓴 것은 무엇일까요?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "여덜"
+      },
+      {
+        "id": "b",
+        "text": "여덥"
+      },
+      {
+        "id": "c",
+        "text": "여둘"
+      },
+      {
+        "id": "d",
+        "text": "여덟"
+      }
+    ],
+    "answerIndex": 3,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "숫자 8은 겹받침 'ㄼ'을 사용하여 '여덟'이라고 씁니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "받침에 'ㄹ'과 'ㅂ'이 함께 들어가요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    "createdAt": 1735300010
+  },
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "연필을 셀 때 사용하는 단위는 무엇일까요?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "마리"
+      },
+      {
+        "id": "b",
+        "text": "자루"
+      },
+      {
+        "id": "c",
+        "text": "송이"
+      },
+      {
+        "id": "d",
+        "text": "그루"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "가늘고 긴 물건(연필, 붓, 칼 등)을 셀 때는 '자루'라는 단위를 사용합니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "총이나 화살을 셀 때도 같은 단어를 써요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "c",
+          "d"
+        ]
+      }
+    },
+    "createdAt": 1735300015
+  },
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "할머니께 선물을 드릴 때 알맞은 말은 무엇일까요?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "할머니에게 드려요"
+      },
+      {
+        "id": "b",
+        "text": "할머니한테 줘요"
+      },
+      {
+        "id": "c",
+        "text": "할머니께 드려요"
+      },
+      {
+        "id": "d",
+        "text": "할머니가 줘요"
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "웃어른에게는 '-에게' 대신 '-께'를 사용하고, '주다' 대신 '드리다'라는 높임말을 써야 합니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "상대를 높여 부르는 조사를 찾아보세요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    "createdAt": 1735300020
+  },
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "땅속에서 자라는 채소인 [ ]를 바르게 쓴 것은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "무우"
+      },
+      {
+        "id": "b",
+        "text": "무"
+      },
+      {
+        "id": "c",
+        "text": "묵"
+      },
+      {
+        "id": "d",
+        "text": "무수"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "과거에는 '무우'라고 부르기도 했으나, 현재는 한 글자인 '무'가 표준어입니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "두 글자가 아니라 한 글자가 정답이에요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "a",
+          "d"
+        ]
+      }
+    },
+    "createdAt": 1735300025
+  },
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "연필을 뾰족하게 만드는 행동을 무엇이라고 할까요?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "깍다"
+      },
+      {
+        "id": "b",
+        "text": "갂다"
+      },
+      {
+        "id": "c",
+        "text": "깎다"
+      },
+      {
+        "id": "d",
+        "text": "각다"
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "칼로 겉면을 얇게 벗겨내는 것은 '쌍기역(ㄲ)' 받침을 써서 '깎다'라고 적습니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "사과를 먹기 위해 껍질을 벗길 때도 이 단어를 써요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "a",
+          "d"
+        ]
+      }
+    },
+    "createdAt": 1735300030
+  },
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "다음 중 동물의 이름이 바르게 적힌 것은 무엇일까요?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "코기리"
+      },
+      {
+        "id": "b",
+        "text": "콕기리"
+      },
+      {
+        "id": "c",
+        "text": "코끼리"
+      },
+      {
+        "id": "d",
+        "text": "코길이"
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "코가 긴 동물은 '코'와 '끼리'가 합쳐진 '코끼리'가 올바른 이름입니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "두 번째 글자에 된소리가 들어가요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "a",
+          "d"
+        ]
+      }
+    },
+    "createdAt": 1735300035
+  },
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "의자에 몸을 얹는 행동을 뜻하는 올바른 글자는?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "안다"
+      },
+      {
+        "id": "b",
+        "text": "앉다"
+      },
+      {
+        "id": "c",
+        "text": "않다"
+      },
+      {
+        "id": "d",
+        "text": "안따"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "의자 등에 몸을 기대어 자리를 잡는 것은 겹받침 'ㄵ'을 써서 '앉다'라고 씁니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "품에 '안다'와 헷갈리지 않게 조심하세요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "a",
+          "c"
+        ]
+      }
+    },
+    "createdAt": 1735300040
+  },
+  {
+    "deckSlug": "fifth-grader-kr-season1",
+    "prompt": "다음 중 '부정'의 의미(Not)로 쓰이는 말은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "안"
+      },
+      {
+        "id": "b",
+        "text": "않"
+      },
+      {
+        "id": "c",
+        "text": "앙"
+      },
+      {
+        "id": "d",
+        "text": "안ㅎ"
+      }
+    ],
+    "answerIndex": 0,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:fifth_grader",
+      "subject:korean",
+      "grade:1"
+    ],
+    "explanation": "'아니'의 줄임말로 동사나 형용사 앞에 붙어 부정을 나타낼 때는 '안'을 씁니다.",
+    "grade": 1,
+    "subject": "korean",
+    "eduLevel": "elem_low",
+    "hint": "'○ 먹어', '○ 가' 처럼 단어 앞에 쓰여요.",
+    "lifelineMeta": {
+      "fifty_fifty": {
+        "preferredEliminateIds": [
+          "b",
+          "c"
+        ]
+      }
+    },
+    "createdAt": 1735300045
+  }
+]

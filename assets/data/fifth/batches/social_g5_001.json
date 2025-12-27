@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리나라 영토의 끝을 나타내는 곳 중, 가장 남쪽에 위치한 섬은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "독도"
+            },
+            {
+                "id": "b",
+                "text": "마라도"
+            },
+            {
+                "id": "c",
+                "text": "이어도"
+            },
+            {
+                "id": "d",
+                "text": "백령도"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "우리나라 영토의 4극 중 최남단은 제주특별자치도 서귀포시에 속한 마라도입니다. 이어도는 수중 암초로 영토에는 포함되지 않습니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "제주도에서도 배를 타고 더 내려가야 만날 수 있는 국토의 끝점입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735317600
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "조선 시대에 지어진 궁궐 중 유네스코 세계 유산에 등재되어 있으며, 자연과 조화를 이룬 후원이 아름다운 곳은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "경복궁"
+            },
+            {
+                "id": "b",
+                "text": "덕수궁"
+            },
+            {
+                "id": "c",
+                "text": "창덕궁"
+            },
+            {
+                "id": "d",
+                "text": "창경궁"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "창덕궁은 조선의 궁궐 중 유일하게 세계 유산으로 지정되었으며, 건축물이 지형에 맞게 배치된 것이 특징입니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "왕들이 가장 오래 머물렀던 장소로 비원이라 불리는 정원이 유명합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735317601
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "법률이 헌법에 위반되는지 여부를 판단하고, 인권을 보호하기 위해 재판을 진행하는 독립된 기관은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "국회"
+            },
+            {
+                "id": "b",
+                "text": "대검찰청"
+            },
+            {
+                "id": "c",
+                "text": "헌법재판소"
+            },
+            {
+                "id": "d",
+                "text": "법무부"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "헌법재판소는 법률의 합헌 여부나 탄핵 심판 등을 통해 국가의 기본법인 헌법을 수호합니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "국가 운영의 가장 바탕이 되는 규칙이 잘 지켜지는지 최종적으로 확인하는 곳입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735317602
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "고구려의 전성기를 이끌었으며, 한강 유역까지 영토를 넓히고 '광개토대왕릉비'를 세운 왕의 아들은 누구일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "장수왕"
+            },
+            {
+                "id": "b",
+                "text": "근초고왕"
+            },
+            {
+                "id": "c",
+                "text": "진흥왕"
+            },
+            {
+                "id": "d",
+                "text": "동명성왕"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "장수왕은 평양으로 수도를 옮기고 남진 정책을 추진하여 고구려의 최대 영토를 확보했습니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "오랜 기간 동안 나라를 다스렸다는 의미가 이름에 담겨 있는 인물입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735317603
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "고려 시대에 몽골의 침입을 부처님의 힘으로 막아내기 위해 16년에 걸쳐 만든 목판 인쇄물은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "직지심체요절"
+            },
+            {
+                "id": "b",
+                "text": "팔만대장경"
+            },
+            {
+                "id": "c",
+                "text": "무구정광대다라니경"
+            },
+            {
+                "id": "d",
+                "text": "왕오천축국전"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "합천 해인사에 보관 중인 팔만대장경은 외세의 침략을 종교적 정성으로 극복하고자 만든 소중한 문화유산입니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "수많은 나무판에 글자를 새겨 만들었으며 그 숫자가 매우 많기로 유명합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735317604
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "조선 시대 실학자로 '거중기'를 설계하여 수원 화성을 쌓는 데 큰 도움을 준 인물은 누구일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "김정호"
+            },
+            {
+                "id": "b",
+                "text": "정약용"
+            },
+            {
+                "id": "c",
+                "text": "박지원"
+            },
+            {
+                "id": "d",
+                "text": "장영실"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "정약용은 화성 성역 의궤를 작성하고 거중기를 고안하여 성벽 공사의 기간과 비용을 크게 줄였습니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "목민심서 등 수백 권의 책을 썼으며 과학적 지식이 매우 풍부했던 학자입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735317605
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "인권 보장을 위해 헌법에 명시된 국민의 기본권 중, 나랏일에 참여할 수 있는 권리를 무엇이라고 하나요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "평등권"
+            },
+            {
+                "id": "b",
+                "text": "참정권"
+            },
+            {
+                "id": "c",
+                "text": "자유권"
+            },
+            {
+                "id": "d",
+                "text": "사회권"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "참정권은 투표를 하거나 공무원이 되어 직접 정치를 할 수 있는 권리를 포함합니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "정치적 의사 결정 과정에 주권자로서 가담할 수 있는 자격을 말합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735317606
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 국회에서 하는 일로 가장 적절한 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "범죄를 저지른 사람을 재판한다."
+            },
+            {
+                "id": "b",
+                "text": "우리나라를 대표하여 다른 나라와 조약을 맺는다."
+            },
+            {
+                "id": "c",
+                "text": "국민의 뜻을 반영하여 법을 만든다."
+            },
+            {
+                "id": "d",
+                "text": "지방 자치 단체의 행정을 지휘한다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "입법부인 국회는 법률을 제정하거나 개정하여 국가 운영의 기틀을 마련합니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "국민의 대표들이 모여 우리 사회의 약속과 규칙을 새롭게 세우는 곳입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735317607
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "1910년 일본에 국권을 빼앗긴 후, 독립운동가들이 중국 상하이에 세운 민주 공화제 정부는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "대한제국"
+            },
+            {
+                "id": "b",
+                "text": "대한민국 임시 정부"
+            },
+            {
+                "id": "c",
+                "text": "독립 협회"
+            },
+            {
+                "id": "d",
+                "text": "신간회"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "대한민국 임시 정부는 3·1 운동의 정신을 계승하여 세워졌으며, 현재 우리나라 정부의 뿌리가 됩니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "나라를 되찾기 위해 외국 땅에서 활동했던 공식적인 운영 기구입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735317608
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지구 온난화와 환경 오염 문제 해결을 위해 미래 세대의 필요를 해치지 않으면서 발전하는 것을 무엇이라 하나요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "경제 성장 우선 발전"
+            },
+            {
+                "id": "b",
+                "text": "지속 가능한 발전"
+            },
+            {
+                "id": "c",
+                "text": "무조건적 보존 발전"
+            },
+            {
+                "id": "d",
+                "text": "자원 고갈형 발전"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:5"
+        ],
+        "explanation": "지속 가능한 발전은 환경 보호와 경제 성장의 조화를 이루어 나중에 올 사람들도 자원을 누릴 수 있게 하는 것입니다.",
+        "grade": 5,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "끊이지 않고 오랫동안 이어질 수 있도록 자연과 공존하는 방식을 찾아가는 것입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735317609
+    }
+]

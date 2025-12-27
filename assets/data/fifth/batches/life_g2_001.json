@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "여름철 음식이 상하는 것을 막기 위해 가장 올바르게 보관하는 방법은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "햇볕이 잘 드는 창가에 둔다."
+            },
+            {
+                "id": "b",
+                "text": "시원한 냉장고에 넣어 보관한다."
+            },
+            {
+                "id": "c",
+                "text": "예쁜 상자에 담아 책상 위에 둔다."
+            },
+            {
+                "id": "d",
+                "text": "검은 비닐봉지에 넣어 현관에 둔다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "기온이 높으면 미생물이 빠르게 번식하므로, 온도가 낮은 곳에 보관하여 신선함을 유지해야 합니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "기온이 높은 날씨에는 기계의 힘을 빌려 아주 차가운 상태를 유지해주는 곳이 필요합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735304389
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "공공장소인 공원에서 지켜야 할 올바른 행동은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "예쁘게 핀 꽃을 꺾어서 집에 가져간다."
+            },
+            {
+                "id": "b",
+                "text": "강아지와 산책할 때 배변 봉투를 챙긴다."
+            },
+            {
+                "id": "c",
+                "text": "쓰레기가 많으면 덤불 속에 몰래 버린다."
+            },
+            {
+                "id": "d",
+                "text": "자전거를 타고 사람들 사이로 빠르게 달린다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "공동으로 사용하는 공간에서는 반려동물의 흔적을 스스로 치워 쾌적한 환경을 유지하는 것이 기본 예절입니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "함께 사용하는 장소를 더럽히지 않기 위해 미리 준비물을 챙겨 뒷마무리를 하는 모습입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315200
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "추운 겨울철 건강을 지키기 위한 생활 습관으로 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "춥더라도 얇은 옷 한 벌만 입는다."
+            },
+            {
+                "id": "b",
+                "text": "실내 환기를 전혀 하지 않는다."
+            },
+            {
+                "id": "c",
+                "text": "외출 시 목도리나 장갑으로 몸을 따뜻하게 보호한다."
+            },
+            {
+                "id": "d",
+                "text": "땀을 흘릴 정도로 뜨거운 물로만 계속 목욕한다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "겨울철에는 체온을 유지하는 것이 중요하므로 방한 용품을 활용해 찬바람을 막아야 합니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "기온이 낮을 때 신체의 온도가 밖으로 빠져나가지 않도록 덧입거나 가려주는 도구를 사용하는 것이 좋습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315201
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "교실에서 친구와 의견이 달라 다툼이 생겼을 때의 올바른 대처법은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "화가 풀릴 때까지 소리를 지른다."
+            },
+            {
+                "id": "b",
+                "text": "상대방의 말을 끝까지 듣고 내 생각을 차분히 말한다."
+            },
+            {
+                "id": "c",
+                "text": "무조건 내 말이 맞다고 우긴다."
+            },
+            {
+                "id": "d",
+                "text": "친구의 물건을 숨긴다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "갈등이 생겼을 때는 대화를 통해 서로의 입장을 이해하려는 노력이 필요합니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "감정을 앞세우기보다 상대의 입장과 나의 입장을 서로 주고받으며 맞추어가는 과정입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315202
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물자를 절약하고 환경을 보호하기 위한 '분리배출' 방법으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "음식물이 묻은 비닐을 그대로 버린다."
+            },
+            {
+                "id": "b",
+                "text": "페트병의 라벨을 떼지 않고 버린다."
+            },
+            {
+                "id": "c",
+                "text": "다 쓴 공책은 종이류로 따로 모아서 버린다."
+            },
+            {
+                "id": "d",
+                "text": "깨진 유리를 일반 종이 봉투에 담아 버린다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "자원을 다시 사용하기 위해서는 재질에 따라 나누어 버려야 합니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "같은 재료끼리 한곳에 모아 다시 쓸 수 있도록 돕는 실천적인 모습입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315203
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "자전거를 탈 때 안전을 위해 반드시 착용해야 하는 보호 장구는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "선글라스"
+            },
+            {
+                "id": "b",
+                "text": "안전모(헬멧)"
+            },
+            {
+                "id": "c",
+                "text": "금목걸이"
+            },
+            {
+                "id": "d",
+                "text": "가죽 장화"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "자전거 사고 시 가장 다치기 쉽고 위험한 부위인 머리를 보호하기 위해 안전모를 꼭 써야 합니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "넘어졌을 때 신체에서 가장 중요한 윗부분에 가해지는 충격을 막아주는 딱딱한 덮개입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315204
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "가정에서 전기를 안전하게 사용하는 방법으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "젖은 손으로 코드를 꽂거나 뽑는다."
+            },
+            {
+                "id": "b",
+                "text": "한 콘센트에 여러 개의 플러그를 꽂아 사용한다."
+            },
+            {
+                "id": "c",
+                "text": "전선을 잡아당겨서 플러그를 뺀다."
+            },
+            {
+                "id": "d",
+                "text": "사용하지 않는 전자제품의 플러그는 뽑아 둔다."
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "에너지를 절약하고 화재 위험을 줄이기 위해 쓰지 않는 가전제품은 전원을 차단하는 것이 좋습니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "필요 없는 전력 낭비를 막고 안전을 위해 벽에서 연결 부분을 떼어놓는 행동입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315205
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식사를 할 때 올바른 식사 예절이 아닌 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "어른이 먼저 수저를 드신 후에 먹는다."
+            },
+            {
+                "id": "b",
+                "text": "음식을 씹을 때는 입을 다물고 소리를 내지 않는다."
+            },
+            {
+                "id": "c",
+                "text": "반찬 투정을 하며 젓가락으로 반찬을 휘젓는다."
+            },
+            {
+                "id": "d",
+                "text": "돌아다니지 않고 제자리에 앉아서 먹는다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "음식을 골고루 감사하며 먹는 마음가짐이 필요하며, 반찬을 어지럽히는 행동은 예의에 어긋납니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "함께 밥을 먹는 사람들의 기분을 불쾌하게 만드는 나쁜 습관을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315206
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리나라의 명절인 '추석'에 하는 활동으로 알맞은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "떡국을 끓여 먹는다."
+            },
+            {
+                "id": "b",
+                "text": "송편을 빚어 이웃과 나누어 먹는다."
+            },
+            {
+                "id": "c",
+                "text": "크리스마스 트리를 장식한다."
+            },
+            {
+                "id": "d",
+                "text": "초콜릿을 선물하며 마음을 전한다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "추석은 가을 수확을 감사하는 명절로, 햇곡식으로 만든 반달 모양의 떡을 먹는 풍습이 있습니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "가을 밤에 뜨는 둥근 달을 보며 가족끼리 쌀가루 반죽에 소를 넣어 만드는 음식과 관련이 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315207
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "스마트폰을 건강하게 사용하는 방법으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "잠자기 직전까지 어두운 곳에서 본다."
+            },
+            {
+                "id": "b",
+                "text": "가까운 거리에서 화면을 오래 쳐다본다."
+            },
+            {
+                "id": "c",
+                "text": "사용 시간을 미리 정해두고 지킨다."
+            },
+            {
+                "id": "d",
+                "text": "길을 걸어가면서 게임을 한다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:2"
+        ],
+        "explanation": "스마트 기기에 너무 의존하지 않도록 스스로 규칙을 세워 적당히 사용하는 습관이 중요합니다.",
+        "grade": 2,
+        "subject": "life",
+        "eduLevel": "elem_low",
+        "hint": "기계를 조절하지 못하고 끌려다니는 것이 아니라, 내가 주인으로서 계획적으로 다루는 태도입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315208
+    }
+]

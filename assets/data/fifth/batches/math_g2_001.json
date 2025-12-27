@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "숫자 762에서 밑줄 친 '7'이 실제로 나타내는 값은 얼마일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "7"
+            },
+            {
+                "id": "b",
+                "text": "70"
+            },
+            {
+                "id": "c",
+                "text": "700"
+            },
+            {
+                "id": "d",
+                "text": "7000"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "세 자리 수에서 가장 왼쪽 자리는 백의 자리입니다. 숫자 7은 백이 7개라는 뜻이므로 700을 나타냅니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "숫자가 놓인 칸이 백의 자리라는 점을 생각하면 쉽게 풀 수 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301200
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "오전 11시에서 1시간 30분이 지나면 몇 시 몇 분이 될까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "오후 12시 30분"
+            },
+            {
+                "id": "b",
+                "text": "오전 12시 30분"
+            },
+            {
+                "id": "c",
+                "text": "오후 1시 30분"
+            },
+            {
+                "id": "d",
+                "text": "오전 1시 30분"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "낮 12시를 기점으로 '오전'에서 '오후'로 명칭이 바뀝니다. 11시에서 1시간이 지나면 낮 12시(오후)가 되고 30분이 더해져 오후 12시 30분이 됩니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "해가 가장 높이 뜨는 시각을 기점으로 이름이 바뀌는 규칙을 기억하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301210
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "길이의 단위 중 100cm와 같은 길이를 나타내는 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "10m"
+            },
+            {
+                "id": "b",
+                "text": "1m"
+            },
+            {
+                "id": "c",
+                "text": "0.1m"
+            },
+            {
+                "id": "d",
+                "text": "100m"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "100센티미터(cm)는 1미터(m)와 같습니다. 이는 길이의 기본 단위 변환 약속입니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "칠판의 길이나 성인의 큰 보폭 정도에 해당하는 기본 단위를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301220
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "곱셈식 '5 x 4 = 20'에 대한 설명으로 올바르지 않은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "5를 4번 더한 것과 같다."
+            },
+            {
+                "id": "b",
+                "text": "5의 4배이다."
+            },
+            {
+                "id": "c",
+                "text": "4를 5번 더한 것과 결과가 같다."
+            },
+            {
+                "id": "d",
+                "text": "5와 4를 모으기 한 결과이다."
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "모으기는 덧셈을 의미합니다. 5와 4를 모으면 9가 되므로 곱셈 결과인 20과는 다릅니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "기호가 같은 양을 여러 번 반복해서 합친다는 의미임을 상기하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735301230
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 수 나열의 규칙을 찾아 빈칸에 들어갈 알맞은 수를 고르세요. [ 2 - 5 - 8 - 11 - ( ) ]",
+        "choices": [
+            {
+                "id": "a",
+                "text": "12"
+            },
+            {
+                "id": "b",
+                "text": "13"
+            },
+            {
+                "id": "c",
+                "text": "14"
+            },
+            {
+                "id": "d",
+                "text": "15"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "앞의 수에 3씩 더해지는 규칙입니다. 11에 3을 더하면 14가 됩니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "이웃한 두 숫자 사이에 얼마만큼의 차이가 있는지 계산해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735301240
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "길이를 잴 때 자의 눈금 2에서 시작하여 끝이 9에 닿았다면, 이 물건의 길이는 몇 cm일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "9cm"
+            },
+            {
+                "id": "b",
+                "text": "7cm"
+            },
+            {
+                "id": "c",
+                "text": "2cm"
+            },
+            {
+                "id": "d",
+                "text": "11cm"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "시작점이 0이 아닐 때는 '끝 눈금 - 시작 눈금'을 해야 합니다. 9 - 2 = 7이므로 길이는 7cm입니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "두 지점 사이에 눈금 칸이 총 몇 번 들어가는지 세어 보는 것과 같습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301250
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "어떤 수에서 7을 뺐더니 8이 되었습니다. 이 '어떤 수'는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "1"
+            },
+            {
+                "id": "b",
+                "text": "14"
+            },
+            {
+                "id": "c",
+                "text": "15"
+            },
+            {
+                "id": "d",
+                "text": "16"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "어떤 수를 구하기 위해서는 8에 7을 더하면 됩니다. 8 + 7 = 15이므로 정답은 15입니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "덜어내기 전의 처음 수량을 알아내기 위해 두 값을 합쳐 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735301260
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 삼각형과 사각형의 공통적인 특징은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "꼭짓점이 4개이다."
+            },
+            {
+                "id": "b",
+                "text": "곧은 선으로 둘러싸여 있다."
+            },
+            {
+                "id": "c",
+                "text": "변이 3개이다."
+            },
+            {
+                "id": "d",
+                "text": "모양에 곡선이 포함된다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "삼각형과 사각형은 모두 곧은 선(변)으로만 둘러싸인 다각형입니다. 꼭짓점이나 변의 개수는 서로 다릅니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "두 도형을 그릴 때 사용하는 선의 형태가 어떠한지 관찰해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301270
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "덧셈 38 + 25를 계산하면 결과는 얼마일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "53"
+            },
+            {
+                "id": "b",
+                "text": "63"
+            },
+            {
+                "id": "c",
+                "text": "60"
+            },
+            {
+                "id": "d",
+                "text": "513"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "일의 자리 8+5=13에서 10을 올리고, 십의 자리 3+2+1=6이 되어 63이 됩니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "낱개들을 합쳐 열 개가 넘으면 묶음 자리로 넘겨주어야 함을 잊지 마세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735301280
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "1년 중에서 31일까지 있는 달이 아닌 것은 언제일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "1월"
+            },
+            {
+                "id": "b",
+                "text": "3월"
+            },
+            {
+                "id": "c",
+                "text": "6월"
+            },
+            {
+                "id": "d",
+                "text": "8월"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:math",
+            "grade:2"
+        ],
+        "explanation": "6월은 30일까지 있습니다. 1, 3, 5, 7, 8, 10, 12월은 31일까지 있고, 4, 6, 9, 11월은 30일까지 있습니다.",
+        "grade": 2,
+        "subject": "math",
+        "eduLevel": "elem_low",
+        "hint": "달력의 각 달이 끝나는 날짜가 서로 다르다는 점에 유의하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735301290
+    }
+]

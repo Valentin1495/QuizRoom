@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 밑줄 친 부분의 맞춤법이 올바른 문장은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "마음이 설레여서 잠이 안 와."
+            },
+            {
+                "id": "b",
+                "text": "마음이 설레서 잠이 안 와."
+            },
+            {
+                "id": "c",
+                "text": "마음이 설레여 잠이 안 와."
+            },
+            {
+                "id": "d",
+                "text": "마음이 설레이어 잠이 안 와."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "기본형은 '설레다'입니다. 여기에 '-어서'가 붙으면 '설레어서'가 되고, 줄여서 '설레서'라고 씁니다. '설레이다'는 틀린 표현입니다.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "기쁘고 들뜬 기분을 나타내는 기본 낱말의 모양을 잘 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1766836200
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "서류를 검토하고 승인하는 '결재'와 돈을 치르는 '결제'를 구분할 때, 다음 중 올바른 문장은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "부장님께 서류 결제를 받았어."
+            },
+            {
+                "id": "b",
+                "text": "카드 결재가 완료되었습니다."
+            },
+            {
+                "id": "c",
+                "text": "이 안건은 사장님 결재가 필요해."
+            },
+            {
+                "id": "d",
+                "text": "어제 쇼핑몰에서 결재를 했어."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "윗사람이 서류를 검토해 허락하는 것은 '결재(裁)', 대금을 주고받아 거래를 끝내는 것은 '결제(濟)'라고 합니다.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "직책이 높은 사람이 안건을 승인하는 절차를 가리키는 상황을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1766836205
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "“사흘 동안 비가 내렸다.”에서 ‘사흘’은 며칠을 의미할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "2일"
+            },
+            {
+                "id": "b",
+                "text": "3일"
+            },
+            {
+                "id": "c",
+                "text": "4일"
+            },
+            {
+                "id": "d",
+                "text": "5일"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "날짜를 셀 때 하루, 이틀, 사흘, 나흘 순으로 세기 때문에 '사흘'은 3일을 뜻합니다. 숫자 '4'와 발음이 비슷해 헷갈리기 쉽지만 주의해야 합니다.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "날짜를 가리키는 순서상 '이틀' 다음에 오는 지점입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1766836210
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "“식구가 적어 살림이 간결하다”라는 뜻의 형용사로 올바른 표기는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "단촐하다"
+            },
+            {
+                "id": "b",
+                "text": "단출하다"
+            },
+            {
+                "id": "c",
+                "text": "단촐타"
+            },
+            {
+                "id": "d",
+                "text": "단춘하다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "규모가 작거나 차림새가 홀가분하다는 뜻의 단어는 '단출하다'가 표준어입니다. '단촐하다'는 잘못된 표기입니다.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "복잡하지 않고 아주 소박한 구성을 설명할 때 쓰는 단어를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1766836215
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 띄어쓰기가 올바르게 된 문장은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "너 만큼 키가 컸으면 좋겠어."
+            },
+            {
+                "id": "b",
+                "text": "너만큼 키가 컸으면 좋겠어."
+            },
+            {
+                "id": "c",
+                "text": "너만 큼 키가 컸으면 좋겠어."
+            },
+            {
+                "id": "d",
+                "text": "너만 큼키가 컸으면 좋겠어."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "'만큼'이 체언(명사, 대명사 등) 뒤에 붙어 정도를 나타낼 때는 조사이므로 앞말에 붙여 씁니다.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "대상을 비교하거나 정도를 나타내는 요소가 사람을 지칭하는 말 뒤에 바로 올 때의 규칙입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1766836220
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "“하는 짓이나 모양이 아주 서투르거나 비웃음을 살 만하다”는 뜻의 올바른 표기는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "어줍잖다"
+            },
+            {
+                "id": "b",
+                "text": "어쭙잖다"
+            },
+            {
+                "id": "c",
+                "text": "어쭙잔다"
+            },
+            {
+                "id": "d",
+                "text": "어줍잔다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "비웃음을 살 정도로 서투르다는 뜻의 단어는 '어쭙잖다'가 표준어입니다. '어줍잖다'와 혼동하기 쉬우니 주의하세요.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "능력이 부족하면서도 주제넘게 구는 태도를 꼬집는 단어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1766836225
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "“공간이 아주 넓다”를 강조할 때 쓰는 ‘널따랗다’의 올바른 표기는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "넓다랗다"
+            },
+            {
+                "id": "b",
+                "text": "널따랗다"
+            },
+            {
+                "id": "c",
+                "text": "널다랗다"
+            },
+            {
+                "id": "d",
+                "text": "넓따랗다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "형용사의 어간 '넓-' 뒤에 '-다랗다'가 붙을 때, 앞의 받침 소리가 변하여 '널따랗다'로 적는 것이 맞춤법 원칙입니다.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "면적이 매우 시원하게 트인 상태를 나타내는 발음의 변화를 고려해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1766836230
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "너무 황당해서 기가 막힐 때 사용하는 올바른 표현은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "어의없다"
+            },
+            {
+                "id": "b",
+                "text": "어이없다"
+            },
+            {
+                "id": "c",
+                "text": "어희없다"
+            },
+            {
+                "id": "d",
+                "text": "어이업다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "상상하지 못한 일에 어처구니가 없을 때는 '어이없다'라고 씁니다. '어의(御醫)'는 임금을 진찰하는 의사를 뜻합니다.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "예상 밖의 상황에 직면하여 정신이 멍해지는 기분을 표현하는 관용적인 말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1766836235
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 국어사전에서 가장 나중에 나오는 단어는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "학교"
+            },
+            {
+                "id": "b",
+                "text": "하늘"
+            },
+            {
+                "id": "c",
+                "text": "하마"
+            },
+            {
+                "id": "d",
+                "text": "하얀"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "첫 자음과 모음이 같으면 받침의 유무와 순서를 봅니다. 'ㅎ' + 'ㅏ'가 모두 같을 때 받침이 없는 '하마', '하늘'이 먼저 나오고, 받침 'ㄴ'인 '하얀'이 가장 뒤에 옵니다.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "글자의 구성 순서를 따질 때 받침의 위치와 종류에 따라 배열되는 순서가 달라집니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1766836240
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "“갈수록 태산”이라는 속담과 의미가 가장 비슷한 관용구는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "티끌 모아 태산"
+            },
+            {
+                "id": "b",
+                "text": "산 너머 산"
+            },
+            {
+                "id": "c",
+                "text": "금강산도 식후경"
+            },
+            {
+                "id": "d",
+                "text": "싼 게 비지떡"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:korean",
+            "grade:6"
+        ],
+        "explanation": "어려운 고비를 넘겼는데 또 다른 더 큰 어려움이 닥치는 상황을 '산 너머 산' 또는 '갈수록 태산'이라고 합니다.",
+        "grade": 6,
+        "subject": "korean",
+        "eduLevel": "elem_high",
+        "hint": "어떤 문제가 해결되기도 전에 또 다른 난관에 부딪히는 모습을 비유합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1766836245
+    }
+]

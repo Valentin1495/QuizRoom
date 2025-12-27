@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '비교'를 나타내는 문장에서 빈칸에 들어갈 가장 알맞은 단어는? 'A lion is ______ than a cat.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "big"
+            },
+            {
+                "id": "b",
+                "text": "bigger"
+            },
+            {
+                "id": "c",
+                "text": "biggest"
+            },
+            {
+                "id": "d",
+                "text": "biger"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "두 대상을 비교할 때 형용사 뒤에 -er을 붙입니다. big처럼 단모음+단자음으로 끝나는 단어는 마지막 자음을 하나 더 쓰고 -er을 붙입니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "두 사물의 크기 차이를 말할 때 단어 끝부분의 철자가 어떻게 변하는지 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319800
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상대방에게 도움을 제안할 때 쓰는 표현인 'May I help you?'와 바꾸어 쓸 수 있는 말은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "What are you doing?"
+            },
+            {
+                "id": "b",
+                "text": "Can I give you a hand?"
+            },
+            {
+                "id": "c",
+                "text": "How do you do?"
+            },
+            {
+                "id": "d",
+                "text": "Who are you?"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "영미권에서는 신체 부위 중 하나를 빌려준다는 표현을 사용하여 '돕다'라는 의미를 나타내기도 합니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "누군가 짐을 들고 있을 때 나의 신체 일부를 보태어 주겠다는 비유적인 인사입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319805
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "과거에 했던 일을 묻는 질문 'What did you do yesterday?'에 대한 대답으로 가장 올바른 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I go to the park."
+            },
+            {
+                "id": "b",
+                "text": "I am going to the park."
+            },
+            {
+                "id": "c",
+                "text": "I went to the park."
+            },
+            {
+                "id": "d",
+                "text": "I will go to the park."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "어제(yesterday) 일어난 일을 말할 때는 동사의 과거형을 써야 합니다. go의 과거형은 불규칙 변화인 went입니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "지나간 시간을 나타내는 문장에서는 움직임을 나타내는 낱말의 모양이 완전히 바뀝니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319810
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상대방에게 금지하는 표현을 할 때 알맞은 문장은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Not run here."
+            },
+            {
+                "id": "b",
+                "text": "Don't running here."
+            },
+            {
+                "id": "c",
+                "text": "No run here."
+            },
+            {
+                "id": "d",
+                "text": "Don't run here."
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "부정 명령문은 'Don't + 동사원형'의 형태를 사용합니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "하지 말라는 뜻을 전할 때는 특정 보조 낱말 뒤에 아무런 변형이 없는 기본 형태를 붙입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735319815
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '가장 키가 큰'이라는 최상급 표현의 철자가 올바른 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "tallest"
+            },
+            {
+                "id": "b",
+                "text": "taller"
+            },
+            {
+                "id": "c",
+                "text": "most tall"
+            },
+            {
+                "id": "d",
+                "text": "tallerest"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "셋 이상의 대상을 비교하여 그 정도가 가장 심함을 나타낼 때는 형용사 뒤에 -est를 붙입니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "여럿 중에서 으뜸인 상태를 나타낼 때 단어 꼬리에 붙이는 공통적인 알파벳 조합입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735319820
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "미래의 계획을 묻는 질문 'What will you do tomorrow?'와 의미가 같은 문장은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "What do you do tomorrow?"
+            },
+            {
+                "id": "b",
+                "text": "What are you going to do tomorrow?"
+            },
+            {
+                "id": "c",
+                "text": "What are you doing now?"
+            },
+            {
+                "id": "d",
+                "text": "What did you do tomorrow?"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "미래를 나타내는 조동사 will은 'be going to' 표현으로 바꾸어 쓸 수 있습니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "이미 정해진 예정이나 앞으로 일어날 일을 길게 늘여서 표현하는 숙어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319825
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "사물의 '위치'를 나타내는 전치사 중 '옆에'라는 뜻을 가진 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "under"
+            },
+            {
+                "id": "b",
+                "text": "between"
+            },
+            {
+                "id": "c",
+                "text": "next to"
+            },
+            {
+                "id": "d",
+                "text": "behind"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "어떤 대상의 바로 측면에 있음을 나타낼 때는 next to를 사용합니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "순서상 바로 뒤로 이어지는 지점을 가리키는 표현을 생각하면 쉽습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735319830
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 대화의 빈칸에 알맞은 말은? 'A: Is this your bag? B: No, it isn't. It's ______.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "him"
+            },
+            {
+                "id": "b",
+                "text": "his"
+            },
+            {
+                "id": "c",
+                "text": "he"
+            },
+            {
+                "id": "d",
+                "text": "he's"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "'그의 것'이라는 소유대명사를 써야 합니다. he의 소유대명사는 his입니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "그 사람에게 속해 있는 물건임을 한 단어로 줄여서 말하는 방식입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319835
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '왜?'라는 질문에 대한 대답으로 가장 자연스럽게 시작하는 단어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "So"
+            },
+            {
+                "id": "b",
+                "text": "But"
+            },
+            {
+                "id": "c",
+                "text": "Because"
+            },
+            {
+                "id": "d",
+                "text": "Then"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "이유를 묻는 Why 질문에는 '~때문에'라는 뜻의 Because로 답하는 것이 기본입니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "어떤 결과가 생기게 된 구체적인 근거나 원인을 설명할 때 사용하는 접속사입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735319840
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 단어들을 조합하여 '너는 무엇을 하고 싶니?'라는 문장을 만들 때, 세 번째에 올 단어는? (do / what / you / want / to / ?)",
+        "choices": [
+            {
+                "id": "a",
+                "text": "want"
+            },
+            {
+                "id": "b",
+                "text": "you"
+            },
+            {
+                "id": "c",
+                "text": "to"
+            },
+            {
+                "id": "d",
+                "text": "do"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:6"
+        ],
+        "explanation": "문장은 'What do you want to do?'입니다. 세 번째 단어는 주어인 you입니다.",
+        "grade": 6,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "의문사 뒤에 오는 조동사 바로 다음에 위치하는 문장의 주체를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735319845
+    }
+]

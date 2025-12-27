@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식물의 구성 요소 중, 잎에서 만들어진 양분이 이동하고 식물을 곧게 지탱해 주는 역할을 하는 곳은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "뿌리"
+            },
+            {
+                "id": "b",
+                "text": "줄기"
+            },
+            {
+                "id": "c",
+                "text": "꽃"
+            },
+            {
+                "id": "d",
+                "text": "열매"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "줄기는 식물의 몸통 역할을 하며, 물과 양분이 지나는 통로가 있고 식물이 쓰러지지 않게 버텨줍니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "나무로 치면 굵은 기둥 부분에 해당하며 위아래를 연결합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "수평 잡기 원리를 이용할 때, 무게가 다른 두 물체의 수평을 맞추려면 어떻게 해야 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "무거운 물체를 받침점에 더 가깝게 놓는다"
+            },
+            {
+                "id": "b",
+                "text": "가벼운 물체를 받침점에 더 가깝게 놓는다"
+            },
+            {
+                "id": "c",
+                "text": "두 물체를 같은 거리에 놓는다"
+            },
+            {
+                "id": "d",
+                "text": "물체의 위치는 상관이 없다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "무게가 다른 경우, 무거운 물체를 중앙(받침점) 쪽으로 옮겨야 수평이 유지됩니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "시소에서 어른과 아이가 같이 탈 때 어른이 어디에 앉아야 하는지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "강물이 굽이쳐 흐르는 곳 중 물살이 느려져서 모래나 자갈이 많이 쌓이는 곳은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "강의 바깥쪽"
+            },
+            {
+                "id": "b",
+                "text": "강의 안쪽"
+            },
+            {
+                "id": "c",
+                "text": "폭포 바로 아래"
+            },
+            {
+                "id": "d",
+                "text": "강의 한가운데"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "강이 휘어지는 안쪽은 물의 속도가 느리기 때문에 운반되던 흙이나 모래가 가라앉아 쌓이게 됩니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "회전할 때 중심에 더 가까운 지점의 속도를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "열의 이동 방식 중 하나로, 주로 액체나 기체에서 물질이 직접 위아래로 움직이며 열이 전달되는 현상은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전도"
+            },
+            {
+                "id": "b",
+                "text": "대류"
+            },
+            {
+                "id": "c",
+                "text": "방사"
+            },
+            {
+                "id": "d",
+                "text": "흡수"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "액체나 기체는 가열되면 위로 올라가고 식으면 아래로 내려오면서 열을 전달하는데 이를 대류라고 합니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "주전자의 물이 끓을 때나 에어컨 바람이 퍼지는 방식을 의미합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "화산 활동으로 만들어진 암석 중, 마그마가 지표 근처에서 빠르게 식어 알갱이 크기가 작은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "현무암"
+            },
+            {
+                "id": "b",
+                "text": "화강암"
+            },
+            {
+                "id": "c",
+                "text": "석회암"
+            },
+            {
+                "id": "d",
+                "text": "이암"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "현무암은 분출된 용암이 빨리 식어 입자가 미세하며, 제주도에서 흔히 볼 수 있는 검은 돌입니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "구멍이 숭숭 뚫려 있고 색깔이 어두운 특징을 가진 돌입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "전기 회로에서 두 개 이상의 전구를 한 줄로 길게 연결하는 방식은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "병렬 연결"
+            },
+            {
+                "id": "b",
+                "text": "직렬 연결"
+            },
+            {
+                "id": "c",
+                "text": "교차 연결"
+            },
+            {
+                "id": "d",
+                "text": "회전 연결"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "전구 여러 개를 끊어지지 않게 한 줄로 이어서 연결하는 것을 직렬 연결이라고 합니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "기차 칸이 서로 뒤를 이어 연결된 모양을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "거울에 비친 물체의 모습은 실제 물체와 비교했을 때 어떻게 보일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "위아래가 바뀌어 보인다"
+            },
+            {
+                "id": "b",
+                "text": "좌우가 바뀌어 보인다"
+            },
+            {
+                "id": "c",
+                "text": "크기가 두 배로 보인다"
+            },
+            {
+                "id": "d",
+                "text": "색깔이 반전되어 보인다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "평면 거울은 빛의 반사 원리에 의해 실제 물체와 좌우가 대칭되어 보입니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "거울을 보고 오른손을 들면 비친 모습은 어느 쪽 손을 드는지 확인해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지층이 만들어지는 과정 중, 퇴적물이 쌓인 후 단단한 바위(퇴적암)가 되기 위해 가장 필요한 과정은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "바람에 날리기"
+            },
+            {
+                "id": "b",
+                "text": "햇빛에 말리기"
+            },
+            {
+                "id": "c",
+                "text": "위에서 누르는 힘"
+            },
+            {
+                "id": "d",
+                "text": "식물이 덮어주기"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "새로운 층이 계속 쌓이면서 아래에 있는 층을 강하게 눌러야 입자 사이가 가까워지고 단단해집니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "무거운 물건이 아래쪽을 꾹 압박하는 상황을 상상해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물체의 그림자 크기를 더 크게 만들고 싶을 때 가장 적절한 방법은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "손전등을 물체에 더 가까이 가져간다"
+            },
+            {
+                "id": "b",
+                "text": "손전등을 물체에서 더 멀리 떨어뜨린다"
+            },
+            {
+                "id": "c",
+                "text": "물체를 벽면(스크린)에 바짝 붙인다"
+            },
+            {
+                "id": "d",
+                "text": "더 어두운 곳으로 간다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "빛의 원천과 물체의 거리가 가까워질수록 빛이 가려지는 범위가 넓어져 그림자가 커집니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "광원과 가로막는 물체 사이의 간격을 좁혀보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "물의 상태 변화 중 '응결' 현상에 해당하는 사례는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "젖은 빨래가 마른다"
+            },
+            {
+                "id": "b",
+                "text": "냉동실의 물이 얼음이 된다"
+            },
+            {
+                "id": "c",
+                "text": "찬 음료수 컵 표면에 물방울이 맺힌다"
+            },
+            {
+                "id": "d",
+                "text": "끓는 찌개에서 김이 난다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:science",
+            "grade:4"
+        ],
+        "explanation": "공기 중의 수증기가 차가운 물체에 닿아 액체인 물로 변하는 것을 응결이라고 합니다.",
+        "grade": 4,
+        "subject": "science",
+        "eduLevel": "elem_high",
+        "hint": "보이지 않던 기체가 다시 차가워져서 눈에 보이는 액체로 바뀌는 현상을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735306439
+    }
+]

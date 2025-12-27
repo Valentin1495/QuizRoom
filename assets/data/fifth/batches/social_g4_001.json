@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지도의 구성 요소 중, 지도의 위쪽이 어느 방향인지를 알려주어 위치를 파악하게 돕는 기호는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "기호와 범례"
+            },
+            {
+                "id": "b",
+                "text": "방위표"
+            },
+            {
+                "id": "c",
+                "text": "축척"
+            },
+            {
+                "id": "d",
+                "text": "등고선"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "방위표는 지도에서 동, 서, 남, 북의 위치를 나타내며, 보통 숫자 '4' 모양의 기호로 표시됩니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "나침반처럼 기준이 되는 곳을 알려주어 길을 찾을 수 있게 해줍니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735316400
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지역의 문제를 해결하기 위해 주민들이 직접 투표로 지역의 대표자를 뽑고, 스스로 지역 일을 처리하는 제도는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지방 자치 제도"
+            },
+            {
+                "id": "b",
+                "text": "국민 투표 제도"
+            },
+            {
+                "id": "c",
+                "text": "대통령 중심제"
+            },
+            {
+                "id": "d",
+                "text": "신문고 제도"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "지방 자치 제도는 지역 주민이 스스로 선출한 대표자와 함께 그 지역의 문제를 민주적으로 해결하는 방식입니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "우리가 살고 있는 동네의 살림을 주민들의 의견에 따라 운영하는 방식입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735316401
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리 조상들이 농사를 지을 때 일손이 부족하면 마을 사람들이 힘을 합쳐 돌아가며 서로 도와주던 풍습은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "제사"
+            },
+            {
+                "id": "b",
+                "text": "성묘"
+            },
+            {
+                "id": "c",
+                "text": "품앗이"
+            },
+            {
+                "id": "d",
+                "text": "서당"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "품앗이는 힘든 일을 할 때 이웃끼리 노동력을 맞바꾸어 돕는 공동체 문화입니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "오늘 내가 친구의 일을 도와주면, 내일은 친구가 내 일을 도와주는 상부상조 정신입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735316402
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지자체(지방 자치 단체) 중 지역의 살림을 맡아 관리하며 시장이나 도지사가 일하는 곳은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지방 의회"
+            },
+            {
+                "id": "b",
+                "text": "지방 자치 단체(집행 기관)"
+            },
+            {
+                "id": "c",
+                "text": "지방 검찰청"
+            },
+            {
+                "id": "d",
+                "text": "지방 법원"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "시청이나 도청 같은 지방 자치 단체는 주민들의 생활 편의를 위해 계획을 세우고 실제 행정 업무를 집행합니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "마을의 도로를 닦거나 복지 서비스를 제공하는 실제적인 행정 처리를 담당합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735316403
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상품을 만드는 데 필요한 자원과 기술을 가지고 실제로 물건을 만들어 파는 경제 주체를 무엇이라고 하나요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "소비자"
+            },
+            {
+                "id": "b",
+                "text": "생산자"
+            },
+            {
+                "id": "c",
+                "text": "저축가"
+            },
+            {
+                "id": "d",
+                "text": "은행원"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "농부, 공장 운영자, 요리사처럼 생활에 필요한 물건이나 서비스를 만들어 내는 사람을 생산자라고 합니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "원재료를 가공하거나 노력하여 새로운 가치를 지닌 것을 탄생시키는 역할입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735316404
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "민주주의 국가에서 지역의 중요한 일을 결정할 때, 의견이 나뉘면 더 많은 사람이 찬성하는 쪽으로 결정하는 원칙은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "선착순 원칙"
+            },
+            {
+                "id": "b",
+                "text": "다수결의 원칙"
+            },
+            {
+                "id": "c",
+                "text": "만장일치 원칙"
+            },
+            {
+                "id": "d",
+                "text": "추첨의 원칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "다수결의 원칙은 효율적인 의사 결정을 위해 더 많은 사람의 뜻을 따르는 민주적 방법입니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "찬성하는 숫자가 더 큰 쪽의 손을 들어주는 가장 일반적인 선택 방식입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735316405
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 저축을 했을 때 얻을 수 있는 가장 큰 이득으로 적절한 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "돈을 쓰지 못해 슬퍼진다."
+            },
+            {
+                "id": "b",
+                "text": "나중에 큰 돈이 필요할 때 쓸 수 있다."
+            },
+            {
+                "id": "c",
+                "text": "물건의 가격이 내려간다."
+            },
+            {
+                "id": "d",
+                "text": "세금을 내지 않아도 된다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "저축은 현재의 소비를 참고 미래를 위해 돈을 모으는 활동으로, 목돈 마련이나 예기치 못한 상황에 대비할 수 있게 해줍니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "차곡차곡 모아둔 자산은 나중에 더 가치 있는 곳에 활용할 기반이 됩니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735316406
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "옛날에는 장터에서 물건을 직접 보고 샀습니다. 오늘날 컴퓨터나 스마트폰으로 물건을 사는 방식은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "물물교환"
+            },
+            {
+                "id": "b",
+                "text": "전자 상거래"
+            },
+            {
+                "id": "c",
+                "text": "방문 판매"
+            },
+            {
+                "id": "d",
+                "text": "직거래"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "통신 기술의 발달로 인터넷을 통해 물건을 주문하고 결제하는 방식을 전자 상거래라고 합니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "디지털 기기와 온라인망을 활용하여 장소에 상관없이 쇼핑하는 것을 의미합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735316407
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "현대 사회에서 서로 다른 문화나 종교를 가진 사람들이 함께 어울려 살아가는 사회를 무엇이라고 하나요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "단일 문화 사회"
+            },
+            {
+                "id": "b",
+                "text": "다문화 사회"
+            },
+            {
+                "id": "c",
+                "text": "계급 사회"
+            },
+            {
+                "id": "d",
+                "text": "농경 사회"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "다문화 사회는 여러 나라의 인종, 언어, 문화적 배경을 가진 사람들이 모여 서로 존중하며 사는 사회입니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "한 가지 종류가 아니라 다양한 배경을 가진 이웃들이 섞여 지내는 공동체를 말합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735316408
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지역의 대표들이 모여서 예산을 검토하고, 지역에 필요한 법(조례)을 만드는 기관은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지방 의회"
+            },
+            {
+                "id": "b",
+                "text": "경찰서"
+            },
+            {
+                "id": "c",
+                "text": "소방서"
+            },
+            {
+                "id": "d",
+                "text": "교육청"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:4"
+        ],
+        "explanation": "지방 의회는 주민들이 뽑은 의원들이 모여 지역의 중요한 결정을 내리고 행정 기관을 감시하는 역할을 합니다.",
+        "grade": 4,
+        "subject": "social",
+        "eduLevel": "elem_high",
+        "hint": "주민의 뜻을 대변하여 규칙을 만들고 나랏돈이 잘 쓰이는지 확인하는 곳입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735316409
+    }
+]

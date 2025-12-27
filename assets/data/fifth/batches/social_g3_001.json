@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지도의 약속 중 하나로, 실제 거리를 줄여서 지도에 표시한 비율을 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "방위"
+            },
+            {
+                "id": "b",
+                "text": "기호"
+            },
+            {
+                "id": "c",
+                "text": "축척"
+            },
+            {
+                "id": "d",
+                "text": "등고선"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "축척은 지표면의 실제 거리를 일정한 비율로 줄여서 지도 위에 나타낸 것을 말합니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "커다란 땅을 종이 한 장에 쏙 들어가게끔 크기를 조절하는 단계를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315200
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "옛날 사람들이 먼 곳에 긴급한 소식을 알리기 위해 산 정상에서 불을 피우거나 연기를 올렸던 통신 수단은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "파발"
+            },
+            {
+                "id": "b",
+                "text": "봉수"
+            },
+            {
+                "id": "c",
+                "text": "서신"
+            },
+            {
+                "id": "d",
+                "text": "북소리"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "봉수는 밤에는 불빛(횃불)을, 낮에는 연기를 이용하여 국경의 상황을 중앙에 알리던 제도입니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "멀리서도 잘 보이도록 높은 곳에서 뜨거운 기운을 뿜어 신호를 보냈습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315201
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "우리 고장의 전설이나 민담처럼 옛날부터 입에서 입으로 전해 내려오는 이야기를 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "수필"
+            },
+            {
+                "id": "b",
+                "text": "신문"
+            },
+            {
+                "id": "c",
+                "text": "일기"
+            },
+            {
+                "id": "d",
+                "text": "구비 설화"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "글로 기록되기 전부터 조상들이 자손들에게 말로 전달하며 이어져 온 고장의 이야기를 설화라고 합니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "할머니가 머리맡에서 들려주시던 오래된 마을의 탄생 배경이나 인물에 관한 내용입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315202
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "옛날 여성들이 바깥나들이를 할 때 얼굴을 가리기 위해 머리에 쓰고 다녔던 옷은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "도포"
+            },
+            {
+                "id": "b",
+                "text": "장옷"
+            },
+            {
+                "id": "c",
+                "text": "갓"
+            },
+            {
+                "id": "d",
+                "text": "버선"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "조선 시대 여성들은 외출할 때 얼굴을 노출하지 않기 위해 소매가 달린 겉옷 형태의 장옷을 머리부터 썼습니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "상의처럼 생겼지만 몸에 걸치지 않고 주로 시선을 차단하는 용도로 활용되었습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315203
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지형의 높낮이를 나타내기 위해 지도에서 높이가 같은 지점끼리 연결한 선을 무엇이라고 할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "경계선"
+            },
+            {
+                "id": "b",
+                "text": "수평선"
+            },
+            {
+                "id": "c",
+                "text": "등고선"
+            },
+            {
+                "id": "d",
+                "text": "지평선"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "등고선은 해수면을 기준으로 높이가 같은 곳들을 이은 선으로, 간격이 좁을수록 경사가 급함을 나타냅니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "산의 가파른 정도를 굽이굽이 휘어진 갈색 줄로 표현한 것입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315204
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "옛날 사람들이 먼 거리를 이동할 때 무거운 짐을 등에 얹어 나르기 위해 사용한 도구는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지게"
+            },
+            {
+                "id": "b",
+                "text": "호미"
+            },
+            {
+                "id": "c",
+                "text": "키"
+            },
+            {
+                "id": "d",
+                "text": "가마"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "지게는 우리나라의 독창적인 운반 도구로, 두 어깨에 메고 많은 양의 짐을 효율적으로 옮길 수 있게 해줍니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "나무 두 개를 엇갈려 세우고 뒤로 메어 땔감이나 농작물을 운반할 때 썼습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315205
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "마을 사람들의 생명과 재산을 보호하기 위해 범죄를 예방하고 순찰을 도는 공공 기관은 어디일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "교육청"
+            },
+            {
+                "id": "b",
+                "text": "보건소"
+            },
+            {
+                "id": "c",
+                "text": "경찰서"
+            },
+            {
+                "id": "d",
+                "text": "우체국"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "경찰서는 지역 사회의 법과 질서를 유지하며 주민들이 안심하고 살 수 있도록 돕는 역할을 합니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "주변에 나쁜 일이 생기거나 길을 잃었을 때 가장 먼저 떠올리는 장소입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315206
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "옛날 어린이들이 서당에서 가장 먼저 배웠던 기초 한자 학습 교재는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "명심보감"
+            },
+            {
+                "id": "b",
+                "text": "천자문"
+            },
+            {
+                "id": "c",
+                "text": "논어"
+            },
+            {
+                "id": "d",
+                "text": "목민심서"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "하늘 천, 따 지부터 시작하여 총 1,000개의 글자로 이루어진 이 책은 한문의 기초를 닦는 입문서였습니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "흰 바탕에 검은 글씨로 우주의 원리와 세상의 이치를 담은 일천 개의 한자를 모아놓았습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315207
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 교통 수단의 발달로 인해 우리 생활에 나타난 변화로 적절하지 않은 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "이동 시간이 짧아졌다."
+            },
+            {
+                "id": "b",
+                "text": "먼 곳의 물건을 쉽게 구할 수 있다."
+            },
+            {
+                "id": "c",
+                "text": "사람들 사이의 왕래가 활발해졌다."
+            },
+            {
+                "id": "d",
+                "text": "자연 환경이 원래 모습 그대로 보존된다."
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "도로나 기찻길, 공항 등을 만들면서 산을 깎거나 갯벌을 메우는 등 자연 환경이 훼손되기도 합니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "편리함을 얻는 대신 숲이나 바다와 같은 주변 풍경이 어떻게 변하는지 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315208
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "풍속화가 김홍도의 그림 '씨름'에서 볼 수 있는 우리나라 전통 놀이는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "그네뛰기"
+            },
+            {
+                "id": "b",
+                "text": "널뛰기"
+            },
+            {
+                "id": "c",
+                "text": "씨름"
+            },
+            {
+                "id": "d",
+                "text": "연날리기"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:social",
+            "grade:3"
+        ],
+        "explanation": "김홍도의 풍속화에는 샅바를 잡고 서로의 힘과 기술을 겨루는 두 남성의 모습이 생생하게 담겨 있습니다.",
+        "grade": 3,
+        "subject": "social",
+        "eduLevel": "elem_low",
+        "hint": "모래 위에서 상대방의 중심을 무너뜨려 바닥에 닿게 하는 대결입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315209
+    }
+]

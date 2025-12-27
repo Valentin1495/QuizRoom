@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '나는 요리를 잘해'라는 뜻의 영어 문장으로 가장 올바른 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I am good at cooking."
+            },
+            {
+                "id": "b",
+                "text": "I am good in cooking."
+            },
+            {
+                "id": "c",
+                "text": "I am well at cooking."
+            },
+            {
+                "id": "d",
+                "text": "I am well in cooking."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "'~를 잘하다'라는 표현은 'be good at' 숙어를 사용합니다. 뒤에는 명사나 동명사 형태가 옵니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "어떤 기술이 뛰어나다고 말할 때 특정 지점을 가리키는 전치사를 함께 사용합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상대방의 의견에 동의할 때 쓰는 표현인 'I agree _____ you.'의 빈칸에 알맞은 전치사는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "to"
+            },
+            {
+                "id": "b",
+                "text": "for"
+            },
+            {
+                "id": "c",
+                "text": "with"
+            },
+            {
+                "id": "d",
+                "text": "at"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "누군가와 같은 생각을 가지고 있음을 나타낼 때는 '~와 함께'라는 의미를 가진 전치사를 사용합니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "함께 있거나 도구를 사용할 때 흔히 쓰이는 낱말을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '박물관'을 뜻하는 영어 단어의 철자가 올바른 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Musium"
+            },
+            {
+                "id": "b",
+                "text": "Museum"
+            },
+            {
+                "id": "c",
+                "text": "Museom"
+            },
+            {
+                "id": "d",
+                "text": "Musiom"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "역사적인 유물이나 예술품을 전시하는 장소는 영어로 'Museum'이라고 씁니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "중간에 알파벳 'e'가 포함되어 소리가 나는 단어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "길을 물어볼 때 사용하는 문장 'How can I get _____ the station?'의 빈칸에 알맞은 말은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "to"
+            },
+            {
+                "id": "b",
+                "text": "on"
+            },
+            {
+                "id": "c",
+                "text": "in"
+            },
+            {
+                "id": "d",
+                "text": "at"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "특정한 목적지나 방향으로 이동하는 것을 나타낼 때는 전치사 'to'를 사용합니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "목표로 하는 지점을 향해 나아가는 화살표 같은 역할을 하는 낱말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 서수(순서)를 나타내는 단어가 틀리게 연결된 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "1 - first"
+            },
+            {
+                "id": "b",
+                "text": "2 - second"
+            },
+            {
+                "id": "c",
+                "text": "3 - third"
+            },
+            {
+                "id": "d",
+                "text": "5 - fiveth"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "숫자 5의 순서를 나타내는 말은 'fiveth'가 아니라 'fifth'입니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "철자가 변하면서 소리가 짧아지는 규칙을 가진 서수입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "상대방에게 제안을 할 때 쓰는 표현 'Why don't we _____ a movie?'의 빈칸에 알맞은 형태는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "watch"
+            },
+            {
+                "id": "b",
+                "text": "watching"
+            },
+            {
+                "id": "c",
+                "text": "watches"
+            },
+            {
+                "id": "d",
+                "text": "watched"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "Why don't we 뒤에는 동사의 원래 형태(동사원형)가 와서 권유의 의미를 나타냅니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "변형되지 않은 가장 깨끗한 상태의 움직임을 나타내는 낱말을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "미래의 계획을 물어보는 질문 'What are you going to do _____ weekend?'의 빈칸에 알맞은 말은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "this"
+            },
+            {
+                "id": "b",
+                "text": "that"
+            },
+            {
+                "id": "c",
+                "text": "those"
+            },
+            {
+                "id": "d",
+                "text": "these"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "돌아오는 가까운 때를 가리킬 때는 단수 지시 형용사 'this'를 사용합니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "바로 앞에 다가올 현재의 시점을 가리키는 손가락 같은 역할을 하는 말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '어디 출신인가요?'라고 물을 때 쓰는 올바른 질문은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Where are you from?"
+            },
+            {
+                "id": "b",
+                "text": "Where do you from?"
+            },
+            {
+                "id": "c",
+                "text": "Where is you from?"
+            },
+            {
+                "id": "d",
+                "text": "Where from are you?"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "출신을 묻는 질문은 'be 동사 + 주어 + from'의 어순으로 구성됩니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "상대방의 고향이나 나라가 어디인지 궁금할 때 가장 먼저 배우는 문장입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 날씨를 묻는 질문인 'How's the weather?'에 대한 대답으로 알맞지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "It's sunny."
+            },
+            {
+                "id": "b",
+                "text": "It's wind."
+            },
+            {
+                "id": "c",
+                "text": "It's rainy."
+            },
+            {
+                "id": "d",
+                "text": "It's cloudy."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "날씨를 설명할 때는 형용사를 써야 합니다. 'wind'는 명사(바람)이므로 'windy'라고 해야 맞습니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "상태를 묘사하는 낱말이 아니라 사물의 이름 그 자체를 가리키는 항목을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '기침'을 뜻하는 영어 단어의 올바른 철자는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Coff"
+            },
+            {
+                "id": "b",
+                "text": "Cough"
+            },
+            {
+                "id": "c",
+                "text": "Cogh"
+            },
+            {
+                "id": "d",
+                "text": "Couph"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:english",
+            "grade:5"
+        ],
+        "explanation": "목이 간질거려 소리를 내며 공기를 내뱉는 증상은 영어로 'Cough'라고 씁니다.",
+        "grade": 5,
+        "subject": "english",
+        "eduLevel": "elem_high",
+        "hint": "뒤쪽의 알파벳 두 개가 합쳐져서 특이한 소리를 내는 단어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735311012
+    }
+]

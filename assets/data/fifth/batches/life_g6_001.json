@@ -1,0 +1,442 @@
+[
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "심폐소생술(CPR)을 시행할 때, 가슴 압박의 속도로 가장 적절한 것은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "1분에 약 30회"
+            },
+            {
+                "id": "b",
+                "text": "1분에 약 60회"
+            },
+            {
+                "id": "c",
+                "text": "1분에 약 100~120회"
+            },
+            {
+                "id": "d",
+                "text": "1분에 약 200회 이상"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "가슴 압박은 1초에 약 2번 정도의 빠르고 일정한 속도로 시행해야 심장에 충분한 혈액 순환을 도울 수 있습니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "초시계의 바늘보다 두 배 정도 빠른 박자에 맞춰 누르는 동작을 상상해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315500
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "자전거를 타고 내리막길을 내려갈 때 안전을 위해 브레이크를 잡는 올바른 방법은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "앞 브레이크만 세게 잡는다."
+            },
+            {
+                "id": "b",
+                "text": "뒷 브레이크만 세게 잡는다."
+            },
+            {
+                "id": "c",
+                "text": "앞뒤 브레이크를 동시에 나누어 잡는다."
+            },
+            {
+                "id": "d",
+                "text": "브레이크를 잡지 않고 발을 땅에 댄다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "한쪽 제동 장치만 사용하면 자전거가 중심을 잃고 뒤집힐 위험이 있으므로, 양쪽을 적절히 조절하며 속도를 줄여야 합니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "양쪽 바퀴의 회전을 균형 있게 멈추어 몸이 한쪽으로 쏠리지 않게 조절해야 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315501
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "식품의 영양성분 표시 중 '트랜스지방'을 섭취할 때 주의해야 할 점으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "많이 먹을수록 키가 빨리 자란다."
+            },
+            {
+                "id": "b",
+                "text": "혈관 건강에 해로우므로 가급적 적게 먹어야 한다."
+            },
+            {
+                "id": "c",
+                "text": "몸속 독소를 배출해주는 좋은 성분이다."
+            },
+            {
+                "id": "d",
+                "text": "비타민을 대신할 수 있는 필수 영양소이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "트랜스지방은 나쁜 콜레스테롤 수치를 높여 심혈관 질환의 원인이 될 수 있으므로 섭취를 최소화해야 합니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "가공된 기름 성분이 몸 안의 통로를 막히게 할 수 있으니 멀리하는 것이 좋습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1735315502
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "인터넷이나 스마트폰 중독을 예방하기 위한 올바른 사용 습관은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "자기 직전까지 밝은 화면을 본다."
+            },
+            {
+                "id": "b",
+                "text": "식사 시간에는 가족과 대화 대신 영상을 본다."
+            },
+            {
+                "id": "c",
+                "text": "정해진 시간만 사용하고 사용 후에는 보관 장소에 둔다."
+            },
+            {
+                "id": "d",
+                "text": "우울하거나 힘들 때마다 기계에만 의존한다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "디지털 기기는 스스로 사용 규칙을 정하고 조절하며 사용하는 자기 통제력이 가장 중요합니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "기계를 다루는 주인으로서 스스로 약속한 분량만큼만 활용하는 태도를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315503
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "집 안에 화재가 발생하여 연기가 가득 찼을 때 대피하는 방법으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "옷장을 열고 그 안에 들어가 숨는다."
+            },
+            {
+                "id": "b",
+                "text": "코와 입을 가리고 자세를 최대한 낮추어 벽을 짚고 나간다."
+            },
+            {
+                "id": "c",
+                "text": "창문을 모두 열고 밖으로 소리를 지르며 기다린다."
+            },
+            {
+                "id": "d",
+                "text": "엘리베이터를 타고 1층으로 빠르게 내려간다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "뜨거운 연기는 위로 올라가므로 바닥 근처의 맑은 공기를 마시기 위해 몸을 낮추고 대피해야 합니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "해로운 연기를 피하기 위해 바닥에 가깝게 엎드린 상태로 통로를 찾는 동작입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315504
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "다음 중 '재활용'이 불가능하여 일반 쓰레기로 버려야 하는 물건은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "음식물이 묻어 씻기지 않는 컵라면 용기"
+            },
+            {
+                "id": "b",
+                "text": "깨끗하게 씻은 투명 페트병"
+            },
+            {
+                "id": "c",
+                "text": "글자가 적혀 있지 않은 흰색 종이"
+            },
+            {
+                "id": "d",
+                "text": "음료가 들어 있지 않은 빈 알루미늄 캔"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "이물질이 묻어 있거나 오염된 용기는 자원으로 다시 사용하기 어려우므로 일반 쓰레기로 분류해야 합니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "다시 사용하려 해도 지저분한 성분이 남아 있어 깨끗하게 처리가 안 되는 항목을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315505
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "황사나 고농도 미세먼지가 발생했을 때 건강을 지키는 방법으로 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "환기를 위해 창문을 온종일 열어둔다."
+            },
+            {
+                "id": "b",
+                "text": "야외에서 축구나 달리기 같은 격렬한 운동을 한다."
+            },
+            {
+                "id": "c",
+                "text": "물을 자주 마시고 보건용 마스크를 착용한다."
+            },
+            {
+                "id": "d",
+                "text": "먼지를 씻어내기 위해 삼겹살을 많이 먹는다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "미세먼지 차단 기능이 있는 마스크를 쓰고 수분을 충분히 섭취하여 노폐물 배출을 도와야 합니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "공기 중의 나쁜 알갱이를 걸러내고 몸속 순환을 돕는 투명한 액체를 섭취하는 행동입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315506
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "가전제품 사용 중 젖은 손으로 코드를 만지면 안 되는 주된 이유는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "손에 있는 물기 때문에 제품이 녹슬어서"
+            },
+            {
+                "id": "b",
+                "text": "전류가 물을 타고 몸으로 흘러 감전될 수 있어서"
+            },
+            {
+                "id": "c",
+                "text": "플러그가 미끄러져서 떨어뜨릴 수 있어서"
+            },
+            {
+                "id": "d",
+                "text": "전기 요금이 더 많이 나올 수 있어서"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "물은 전기를 매우 잘 전달하는 성질이 있어, 젖은 손으로 전기를 만지면 몸을 통해 전기가 흐르는 사고가 발생합니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "액체가 에너지를 전달하는 다리 역할을 하여 신체에 강한 충격을 줄 수 있는 위험한 상황입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315507
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "지진이 발생했을 때 건물 안에서 가장 먼저 안전하게 대피하는 장소는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "유리창 옆이나 발코니"
+            },
+            {
+                "id": "b",
+                "text": "튼튼한 탁자나 책상 아래"
+            },
+            {
+                "id": "c",
+                "text": "물건이 가득 찬 찬장 앞"
+            },
+            {
+                "id": "d",
+                "text": "가장 높은 층의 옥상"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "지진 발생 시에는 낙하물로부터 머리를 보호하는 것이 최우선이므로 견고한 구조물 밑으로 들어가야 합니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "위에서 떨어지는 물건에 다치지 않도록 신체를 가려줄 수 있는 단단한 가구 밑을 활용하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1735315508
+    },
+    {
+        "deckSlug": "fifth-grader-kr-season1",
+        "prompt": "올바른 약 복용 방법으로 가장 적절한 설명은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "빨리 낫기 위해 한 번에 많이 먹는다."
+            },
+            {
+                "id": "b",
+                "text": "맛있는 우유나 주스와 함께 마신다."
+            },
+            {
+                "id": "c",
+                "text": "정해진 시간에 충분한 양의 물과 함께 먹는다."
+            },
+            {
+                "id": "d",
+                "text": "증상이 비슷하면 친구의 약을 빌려 먹는다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:fifth_grader",
+            "subject:life",
+            "grade:6"
+        ],
+        "explanation": "약은 정해진 용법과 용량을 지켜야 하며, 다른 음료는 약의 흡수를 방해할 수 있으므로 물과 함께 먹는 것이 정석입니다.",
+        "grade": 6,
+        "subject": "life",
+        "eduLevel": "elem_high",
+        "hint": "의사나 약사가 알려준 규칙을 지키고, 섞이지 않은 맑은 액체로 삼키는 것이 안전합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1735315509
+    }
+]
