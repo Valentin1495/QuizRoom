@@ -42,13 +42,28 @@ export type SwipeChallengeConfig = {
   scorePerCorrect: number;
 };
 
+export type SwipeChallengeSummary = {
+  answered: number;
+  correct: number;
+  missCount: number;
+  totalTimeMs: number;
+  totalScoreDelta: number;
+  maxStreak: number;
+  failed: boolean;
+};
+
 export type SwipeStackProps = {
   category: string;
   tags?: string[];
   deckSlug?: string;
+  grade?: number;
+  subject?: string;
   setSelectedCategory?: (category: CategoryMeta | null) => void;
   challenge?: SwipeChallengeConfig;
   onExit?: () => void;
+  onChallengeAdvance?: () => void;
+  challengeAdvanceLabel?: string;
+  onChallengeComplete?: (summary: SwipeChallengeSummary) => void;
 };
 
 const REPORT_REASONS = [
@@ -158,9 +173,14 @@ export function SwipeStack({
   category,
   tags,
   deckSlug,
+  grade,
+  subject,
   setSelectedCategory,
   challenge,
   onExit,
+  onChallengeAdvance,
+  challengeAdvanceLabel,
+  onChallengeComplete,
 }: SwipeStackProps) {
   const isChallenge = Boolean(challenge);
   const sessionLimit = challenge?.totalQuestions;
@@ -182,6 +202,8 @@ export function SwipeStack({
     category,
     tags,
     deckSlug,
+    grade,
+    subject,
     excludeTag: isChallenge ? undefined : 'mode:fifth_grader',
     limit: sessionLimit,
   });
@@ -209,6 +231,7 @@ export function SwipeStack({
   const [hintText, setHintText] = useState<string | null>(null);
   const [eliminatedChoiceIds, setEliminatedChoiceIds] = useState<string[] | null>(null);
   const [lifelinesUsed, setLifelinesUsed] = useState({ fifty: false, hint: false });
+  const challengeCompletionNotifiedRef = useRef(false);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<SwipeFeedback | null>(null);
@@ -249,10 +272,16 @@ export function SwipeStack({
   }, []);
   const reportReasonResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const filterKey = useMemo(
-    () => [category, deckSlug ?? 'default', ...(tags ?? [])].join('|'),
-    [category, deckSlug, tags]
-  );
+  const filterKey = useMemo(() => {
+    const parts = [
+      category,
+      deckSlug ?? 'default',
+      grade != null ? `grade:${grade}` : 'grade:any',
+      subject ? `subject:${subject}` : 'subject:any',
+      ...(tags ?? []),
+    ];
+    return parts.join('|');
+  }, [category, deckSlug, grade, subject, tags]);
   const [sessionId, setSessionId] = useState<string>(() => createSwipeSessionId(filterKey));
   const sessionLoggedRef = useRef(false);
   const streakLoggedRef = useRef(false);
@@ -346,9 +375,16 @@ export function SwipeStack({
     if (previousFilterKey.current !== filterKey) {
       previousFilterKey.current = filterKey;
       setSessionStats(INITIAL_SESSION_STATS);
+      setMissCount(0);
+      setLifelinesUsed({ fifty: false, hint: false });
+      setHintText(null);
+      setEliminatedChoiceIds(null);
       setSelectedIndex(null);
       setFeedback(null);
       setSheetFeedback(null);
+      setCurrentStreak(0);
+      currentStreakRef.current = 0;
+      challengeCompletionNotifiedRef.current = false;
       setActiveCardHeight(null);
       setCardOffset(0);
       hideResultToast();
@@ -630,6 +666,7 @@ export function SwipeStack({
     setEliminatedChoiceIds(null);
     setLifelinesUsed({ fifty: false, hint: false });
     setCurrentStreak(0);
+    challengeCompletionNotifiedRef.current = false;
     currentQuestionIdRef.current = null;
     startTimeRef.current = Date.now();
     setSessionStats(INITIAL_SESSION_STATS);
@@ -832,6 +869,46 @@ export function SwipeStack({
           : '스와이프 요약',
     } as const;
   }, [isChallenge, isChallengeFailed, sessionStats.answered, totalQuestions]);
+
+  const challengeSummary = useMemo(
+    () => ({
+      answered: sessionStats.answered,
+      correct: sessionStats.correct,
+      missCount,
+      totalTimeMs: sessionStats.totalTimeMs,
+      totalScoreDelta: sessionStats.totalScoreDelta,
+      maxStreak: sessionStats.maxStreak,
+      failed: isChallengeFailed,
+    }),
+    [
+      isChallengeFailed,
+      missCount,
+      sessionStats.answered,
+      sessionStats.correct,
+      sessionStats.maxStreak,
+      sessionStats.totalScoreDelta,
+      sessionStats.totalTimeMs,
+    ]
+  );
+
+  useEffect(() => {
+    if (!isChallenge || !showCompletion) return;
+    if (challengeCompletionNotifiedRef.current) return;
+    challengeCompletionNotifiedRef.current = true;
+    onChallengeComplete?.(challengeSummary);
+  }, [challengeSummary, isChallenge, onChallengeComplete, showCompletion]);
+
+  const challengeSecondaryLabel = useMemo(() => {
+    if (!isChallengeFailed && onChallengeAdvance) {
+      return challengeAdvanceLabel ?? '다음 학년';
+    }
+    if (onExit) {
+      return '홈으로';
+    }
+    return null;
+  }, [challengeAdvanceLabel, onChallengeAdvance, onExit]);
+
+  const handleChallengeSecondary = (!isChallengeFailed && onChallengeAdvance) ? onChallengeAdvance : onExit;
 
   const totalScoreLabel = useMemo(() => {
     if (!sessionStats.answered) return '+0';
@@ -1409,15 +1486,15 @@ export function SwipeStack({
                   다시 도전
                 </Button>
                 {isChallenge ? (
-                  onExit ? (
+                  handleChallengeSecondary && challengeSecondaryLabel ? (
                     <Button
                       size="lg"
                       variant="outline"
                       fullWidth
-                      onPress={onExit}
+                      onPress={handleChallengeSecondary}
                       style={styles.completionActionButton}
                     >
-                      홈으로
+                      {challengeSecondaryLabel}
                     </Button>
                   ) : null
                 ) : (

@@ -9,6 +9,8 @@
  *   tags?: string[];           // optional (not used yet)
  *   deckSlug?: string;         // optional
  *   excludeTag?: string;       // optional
+ *   grade?: number;            // optional
+ *   subject?: string;          // optional
  *   limit?: number;            // default 20
  *   cursor?: string;           // ISO timestamp for pagination (created_at LT cursor)
  * }
@@ -38,7 +40,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { category, tags, limit, cursor, deckSlug, excludeTag } = body;
+    const { category, tags, limit, cursor, deckSlug, excludeTag, grade, subject } = body;
 
     if (!isString(category) && !isString(deckSlug)) {
       return new Response(
@@ -68,6 +70,8 @@ serve(async (req) => {
 
     const requestedLimit = Math.min(Math.max(Number(limit) || DEFAULT_LIMIT, 1), MAX_LIMIT);
     const tagFilter = isStringArray(tags) && tags.length ? tags : null;
+    const normalizedGrade = Number.isFinite(Number(grade)) ? Number(grade) : null;
+    const normalizedSubject = isString(subject) ? subject.trim().toLowerCase() : null;
 
     const normalizedCategory = isString(category) ? category.trim().toLowerCase() : null;
     const normalizedDeckSlug = isString(deckSlug) ? deckSlug.trim() : null;
@@ -145,6 +149,14 @@ serve(async (req) => {
     if (normalizedExcludeTag) {
       const escapedTag = normalizedExcludeTag.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       query = query.not('tags', 'cs', `{"${escapedTag}"}`);
+    }
+
+    if (normalizedGrade !== null) {
+      query = query.eq('grade', normalizedGrade);
+    }
+
+    if (normalizedSubject) {
+      query = query.eq('subject', normalizedSubject);
     }
 
     if (isString(cursor)) {
