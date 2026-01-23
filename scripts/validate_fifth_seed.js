@@ -12,7 +12,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const ALLOWED_SUBJECTS = new Set([
+const ALLOWED_SUBJECTS_FIFTH = new Set([
     "korean",
     "math",
     "science",
@@ -20,8 +20,23 @@ const ALLOWED_SUBJECTS = new Set([
     "english",
     "life",
 ]);
+const ALLOWED_SUBJECTS_SKILL = new Set([
+    "korean",
+    "science",
+    "social",
+    "english",
+    "logic",
+]);
 
-const ALLOWED_EDU_LEVELS = new Set(["elem_low", "elem_high"]);
+const ALLOWED_EDU_LEVELS = new Set([
+    "elem_low",
+    "elem_high",
+    "middle",
+    "high",
+    "college_basic",
+    "college_plus",
+]);
+const ALLOWED_MODES = new Set(["mode:fifth_grader", "mode:skill_assessment"]);
 
 const REQUIRED_FIELDS = [
     "deckSlug",
@@ -32,11 +47,9 @@ const REQUIRED_FIELDS = [
     "type",
     "tags",
     "explanation",
-    "grade",
     "subject",
     "eduLevel",
     "hint",
-    "lifelineMeta",
     "createdAt",
 ];
 
@@ -126,14 +139,13 @@ function validateOne(q, idx, errors) {
         fail(errors, idx, `hint must be a non-empty string`);
 
     // Grade / Subject / EduLevel
-    if (!Number.isInteger(q.grade) || q.grade < 1 || q.grade > 6)
+    const hasGrade = q.grade !== undefined && q.grade !== null;
+    if (hasGrade && (!Number.isInteger(q.grade) || q.grade < 1 || q.grade > 6)) {
         fail(errors, idx, `grade must be an integer 1..6`);
-
-    if (typeof q.subject !== "string" || !ALLOWED_SUBJECTS.has(q.subject))
-        fail(errors, idx, `subject must be one of ${Array.from(ALLOWED_SUBJECTS).join(", ")}`);
+    }
 
     if (typeof q.eduLevel !== "string" || !ALLOWED_EDU_LEVELS.has(q.eduLevel))
-        fail(errors, idx, `eduLevel must be "elem_low" or "elem_high"`);
+        fail(errors, idx, `eduLevel must be one of ${Array.from(ALLOWED_EDU_LEVELS).join(", ")}`);
 
     if (Number.isInteger(q.grade)) {
         const expected = expectedEduLevelFromGrade(q.grade);
@@ -145,6 +157,8 @@ function validateOne(q, idx, errors) {
             );
         }
     }
+
+    const isCollegeLevel = q.eduLevel === "college_basic" || q.eduLevel === "college_plus";
 
     // createdAt: unix seconds (rough range check)
     if (!Number.isInteger(q.createdAt))
@@ -160,14 +174,38 @@ function validateOne(q, idx, errors) {
 
     // Tags rules
     if (Array.isArray(q.tags)) {
-        if (!q.tags.includes("mode:fifth_grader"))
-            fail(errors, idx, `tags must include "mode:fifth_grader"`);
+        const modeTag = q.tags.find((t) => t.startsWith("mode:"));
+        if (!modeTag || !ALLOWED_MODES.has(modeTag)) {
+            fail(
+                errors,
+                idx,
+                `tags must include one of ${Array.from(ALLOWED_MODES).join(", ")}`
+            );
+        }
+        if (typeof q.subject === "string") {
+            const allowedSubjects =
+                modeTag === "mode:skill_assessment"
+                    ? ALLOWED_SUBJECTS_SKILL
+                    : ALLOWED_SUBJECTS_FIFTH;
+            if (!allowedSubjects.has(q.subject)) {
+                fail(
+                    errors,
+                    idx,
+                    `subject must be one of ${Array.from(allowedSubjects).join(", ")}`
+                );
+            }
+        } else {
+            fail(errors, idx, `subject must be a string`);
+        }
 
         if (!hasTag(q.tags, "subject:"))
             fail(errors, idx, `tags must include "subject:<subject>"`);
 
-        if (!hasTag(q.tags, "grade:"))
+        if (hasGrade && !hasTag(q.tags, "grade:"))
             fail(errors, idx, `tags must include "grade:<n>"`);
+
+        if (!hasTag(q.tags, "edu:"))
+            fail(errors, idx, `tags must include "edu:<level>"`);
 
         // Optional: Ensure subject tag matches q.subject if present
         const subjTag = q.tags.find((t) => t.startsWith("subject:"));
@@ -176,8 +214,13 @@ function validateOne(q, idx, errors) {
         }
 
         const gradeTag = q.tags.find((t) => t.startsWith("grade:"));
-        if (gradeTag && gradeTag !== `grade:${q.grade}`) {
+        if (Number.isInteger(q.grade) && gradeTag && gradeTag !== `grade:${q.grade}`) {
             fail(errors, idx, `grade tag mismatch: ${gradeTag} vs grade:${q.grade}`);
+        }
+
+        const eduTag = q.tags.find((t) => t.startsWith("edu:"));
+        if (eduTag && eduTag !== `edu:${q.eduLevel}`) {
+            fail(errors, idx, `edu tag mismatch: ${eduTag} vs edu:${q.eduLevel}`);
         }
     }
 
@@ -236,8 +279,12 @@ function validateOne(q, idx, errors) {
         }
     }
 
-    // lifelineMeta validation
-    if (!isPlainObject(q.lifelineMeta)) {
+    // lifelineMeta validation (optional for college levels)
+    if (q.lifelineMeta == null) {
+        if (!isCollegeLevel) {
+            fail(errors, idx, `lifelineMeta must be an object`);
+        }
+    } else if (!isPlainObject(q.lifelineMeta)) {
         fail(errors, idx, `lifelineMeta must be an object`);
     } else {
         const ff = q.lifelineMeta.fifty_fifty;

@@ -1,0 +1,1762 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 명제가 참일 때, 반드시 참인 것은?\n명제: 비가 오면 땅이 젖는다.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "비가 오지 않으면 땅이 젖지 않는다."
+            },
+            {
+                "id": "b",
+                "text": "땅이 젖어 있으면 비가 온 것이다."
+            },
+            {
+                "id": "c",
+                "text": "땅이 젖지 않으면 비가 오지 않은 것이다."
+            },
+            {
+                "id": "d",
+                "text": "땅이 젖지 않아도 비가 올 수 있다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "원래 명제가 참이면 그 대우 명제인 '땅이 젖지 않으면 비가 오지 않은 것이다'도 반드시 참입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "명제 'p이면 q이다'가 참일 때 반드시 참인 것은 대우 명제입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 세 문장이 모두 참일 때, 결론으로\n항상 참인 것은?\n1. A가 가면 B도 간다.\n2. B가 가면 C는 가지 않는다.\n3. C가 갔다.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A는 갔다."
+            },
+            {
+                "id": "b",
+                "text": "A는 가지 않았다."
+            },
+            {
+                "id": "c",
+                "text": "B는 갔다."
+            },
+            {
+                "id": "d",
+                "text": "B와 C가 모두 갔다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "C가 갔으므로 2번 문장에 의해 B는 가지 않았습니다. B가 가지 않았으므로 1번 문장의 대우에 의해 A도 가지 않았습니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "C가 갔다는 사실로부터 B의 행동을 유추하고, 다시 A의 행동을 유추해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014801
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '어떤 학생은 안경을 썼다'의\n부정으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "모든 학생은 안경을 썼다."
+            },
+            {
+                "id": "b",
+                "text": "어떤 학생은 안경을 쓰지 않았다."
+            },
+            {
+                "id": "c",
+                "text": "모든 학생은 안경을 쓰지 않았다."
+            },
+            {
+                "id": "d",
+                "text": "안경을 쓴 학생은 아무도 없다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "'어떤'의 부정은 '모든'이고, 'p이다'의 부정은 'p가 아니다'이므로 결론은 '모든 학생은 안경을 쓰지 않았다'가 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "'어떤'의 부정은 '모든'으로 바뀝니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014802
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "삼단논법에 따라 빈칸에 들어갈 결론은?\n전제1: 모든 인간은 죽는다.\n전제2: 소크라테스는 인간이다.\n결론: ( )",
+        "choices": [
+            {
+                "id": "a",
+                "text": "소크라테스는 죽는다."
+            },
+            {
+                "id": "b",
+                "text": "죽는 것은 모두 인간이다."
+            },
+            {
+                "id": "c",
+                "text": "소크라테스는 인간이 아니다."
+            },
+            {
+                "id": "d",
+                "text": "모든 인간은 소크라테스다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "전제1(p→q)과 전제2(r→p)가 주어지면 q가 r의 속성이 되는 삼단논법에 의해 결론이 도출됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "인간이라는 공통 매개체를 통해 소크라테스의 운명을 연결해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014803
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 두 문장이 참일 때 항상 참인 결론은?\n- 수학을 잘하면 논리적이다.\n- 논리적이지 않은 사람은 철학을 싫어한다.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "철학을 좋아하면 수학을 잘한다."
+            },
+            {
+                "id": "b",
+                "text": "수학을 잘하면 철학을 좋아한다."
+            },
+            {
+                "id": "c",
+                "text": "철학을 싫어하면 수학을 못한다."
+            },
+            {
+                "id": "d",
+                "text": "수학을 못하면 철학을 싫어한다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "두 번째 문장의 대우는 '철학을 좋아하는 사람은 논리적이다'가 아니라 '철학을 좋아하면 논리적이다'의 역인 '논리적이면 철학을 좋아한다'입니다. 따라서 수학→논리→철학 선호가 성립합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "두 번째 문장의 대우를 구하여 첫 번째 문장과 연결해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014804
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "명제 'x=1이면 x^2=1이다'의 역은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "x^2=1이면 x=1이다."
+            },
+            {
+                "id": "b",
+                "text": "x가 1이 아니면 x^2은 1이 아니다."
+            },
+            {
+                "id": "c",
+                "text": "x^2이 1이 아니면 x는 1이 아니다."
+            },
+            {
+                "id": "d",
+                "text": "x=1이면 x^2은 1이 아니다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "명제 'p이면 q이다'의 역은 조건과 결론의 위치를 바꾼 'q이면 p이다'입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "조건과 결론의 순서를 바꾸면 됩니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014805
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "A, B, C 세 사람 중 한 명만 범인이다.\n다음 진술 중 하나만 참일 때 범인은?\nA: B가 범인이다.\nB: C가 범인이다.\nC: 나는 범인이 아니다.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A"
+            },
+            {
+                "id": "b",
+                "text": "B"
+            },
+            {
+                "id": "c",
+                "text": "C"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "A가 범인이면 A와 B의 진술은 거짓이고 C의 진술만 참이 되어 조건에 부합합니다. B나 C가 범인일 경우 참인 진술이 0개 또는 2개가 되어 모순이 발생합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "각 인물을 한 명씩 범인이라고 가정하고 참인 진술의 개수를 확인해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014806
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 'p는 q이기 위한 필요조건이지만\n충분조건은 아니다'의 의미는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p이면 q이다는 참이고 q이면 p이다는 거짓"
+            },
+            {
+                "id": "b",
+                "text": "p이면 q이다는 거짓이고 q이면 p이다는 참"
+            },
+            {
+                "id": "c",
+                "text": "둘 다 참이다"
+            },
+            {
+                "id": "d",
+                "text": "둘 다 거짓이다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "p가 필요조건이려면 q→p가 참이어야 하고, 충분조건이 아니려면 p→q는 거짓이어야 합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "화살표를 받는 쪽이 필요조건입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014807
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "명제 '모든 실수 x에 대하여 x^2 ≥ 0이다'\n의 부정은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "모든 실수 x에 대하여 x^2 < 0이다."
+            },
+            {
+                "id": "b",
+                "text": "어떤 실수 x에 대하여 x^2 < 0이다."
+            },
+            {
+                "id": "c",
+                "text": "어떤 실수 x에 대하여 x^2 ≤ 0이다."
+            },
+            {
+                "id": "d",
+                "text": "실수가 아닌 x에 대하여 x^2 < 0이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "'모든'의 부정은 '어떤'이고, '≥'의 부정은 '<'입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "수량 형용사와 부등호 방향을 모두 바꾸어야 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014808
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '귀류법'의 논리적 구조로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "결론을 부정하여 모순을 이끌어냄"
+            },
+            {
+                "id": "b",
+                "text": "대우 명제가 참임을 증명함"
+            },
+            {
+                "id": "c",
+                "text": "모든 사례를 하나씩 확인하여 증명함"
+            },
+            {
+                "id": "d",
+                "text": "전제가 참임을 직접적으로 보여줌"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "귀류법은 결론이 거짓이라고 가정했을 때 발생하는 모순을 통해 결론이 참임을 증명하는 간접 증명법입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "거꾸로 가정해서 말이 안 되는 상황을 만드는 방법입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014809
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 진술이 참일 때 반드시 참인 것은?\n'안경을 쓴 사람은 모두 공부를 좋아한다.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "공부를 좋아하면 안경을 쓴 것이다."
+            },
+            {
+                "id": "b",
+                "text": "공부를 싫어하면 안경을 쓰지 않은 것이다."
+            },
+            {
+                "id": "c",
+                "text": "안경을 쓰지 않으면 공부를 싫어한다."
+            },
+            {
+                "id": "d",
+                "text": "안경을 쓴 사람 중 공부를 싫어하는 자도 있다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "원래 명제의 대우인 '공부를 좋아하지 않으면 안경을 쓰지 않은 것이다'가 반드시 참입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "명제의 대우를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014810
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "A, B, C 중 한 명만 진실을 말하고 있다.\n누가 진실을 말하는가?\nA: 나는 진실을 말한다.\nB: A는 거짓말을 한다.\nC: B는 거짓말을 한다.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A"
+            },
+            {
+                "id": "b",
+                "text": "B"
+            },
+            {
+                "id": "c",
+                "text": "C"
+            },
+            {
+                "id": "d",
+                "text": "없음"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "B가 진실이면 A는 거짓이고 C도 거짓(B가 진실이므로)이 되어 조건에 부합합니다. A나 C가 진실이면 모순이 발생합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "B와 C의 진술이 서로 모순관계임을 이용하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014811
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 'p는 q이기 위한 충분조건'인 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p: x=1, q: x^2=1"
+            },
+            {
+                "id": "b",
+                "text": "p: x^2=1, q: x=1"
+            },
+            {
+                "id": "c",
+                "text": "p: x>0, q: x=1"
+            },
+            {
+                "id": "d",
+                "text": "p: x=2, q: x는 홀수"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "x=1이면 x^2=1이 성립하므로 p는 q이기 위한 충분조건입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "p의 집합이 q의 집합에 포함되는 경우를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014812
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "모순되는 두 진술이 동시에 참일 수 없다는\n논리학의 원리는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "동일률"
+            },
+            {
+                "id": "b",
+                "text": "모순율"
+            },
+            {
+                "id": "c",
+                "text": "배중률"
+            },
+            {
+                "id": "d",
+                "text": "충족 이유율"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "모순율은 어떤 명제가 동시에 참이면서 거짓일 수 없다는 원리입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "두 상반된 것이 함께 존재할 수 없다는 이름의 법칙입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014813
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "전제: 모든 사과는 과일이다.\n이 전제로부터 알 수 없는 사실은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "과일이 아니면 사과가 아니다."
+            },
+            {
+                "id": "b",
+                "text": "사과이면 과일이다."
+            },
+            {
+                "id": "c",
+                "text": "과일이면 사과이다."
+            },
+            {
+                "id": "d",
+                "text": "어떤 사과는 과일이다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "명제의 역인 '과일이면 사과이다'는 반드시 참이라고 할 수 없습니다(예: 포도는 과일이지만 사과가 아님).",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "원래 명제의 '역'은 논리적으로 항상 참이 되지는 않습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014814
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 'p ↔ q' (필요충분조건) 관계인\n것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p: x=0, q: x^2=0"
+            },
+            {
+                "id": "b",
+                "text": "p: x>0, q: x^2>0"
+            },
+            {
+                "id": "c",
+                "text": "p: x는 짝수, q: x는 4의 배수"
+            },
+            {
+                "id": "d",
+                "text": "p: 삼각형, q: 정삼각형"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "x=0이면 x^2=0이고, x^2=0이면 x=0이므로 두 조건은 동일한 집합을 나타냅니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "서로가 서로를 완전히 포함하는 관계를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014815
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "명제 'p → q'가 참일 때 반드시 거짓인 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "~q → ~p"
+            },
+            {
+                "id": "b",
+                "text": "p ∧ ~q"
+            },
+            {
+                "id": "c",
+                "text": "q → p"
+            },
+            {
+                "id": "d",
+                "text": "~p ∨ q"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "p가 참인데 q가 거짓인 상황(p ∧ ~q)은 명제 p→q가 거짓이 되는 유일한 경우입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "명제의 부정을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014816
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "논리 기호 '∨' (OR)에 대한 설명으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "두 명제가 모두 참일 때만 참이다."
+            },
+            {
+                "id": "b",
+                "text": "두 명제 중 하나만 참이어도 참이다."
+            },
+            {
+                "id": "c",
+                "text": "두 명제가 모두 거짓일 때 참이다."
+            },
+            {
+                "id": "d",
+                "text": "앞의 명제가 참이면 뒤는 무조건 거짓이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "논리합(OR)은 결합된 명제들 중 적어도 하나가 참이면 전체 명제가 참이 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "선택적인 상황을 나타내는 논리 기호입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014817
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 연역 논증의 특징인 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "결론이 전제의 범위를 넘어선다."
+            },
+            {
+                "id": "b",
+                "text": "전제가 참이면 결론은 반드시 참이다."
+            },
+            {
+                "id": "c",
+                "text": "개별 사례들을 통해 일반 법칙을 도출한다."
+            },
+            {
+                "id": "d",
+                "text": "결론이 확률적으로만 참이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "연역 논증은 전제가 참일 경우 결론이 논리적으로 필연적으로 도출되는 구조를 가집니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "일반적인 원리에서 구체적인 사실을 끌어내는 방식의 특징입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014818
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "명제 'p이면 q이다'가 거짓임을 보이는 예(반례)\n가 속하는 영역은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p이고 q인 영역"
+            },
+            {
+                "id": "b",
+                "text": "p가 아니고 q인 영역"
+            },
+            {
+                "id": "c",
+                "text": "p이고 q가 아닌 영역"
+            },
+            {
+                "id": "d",
+                "text": "p가 아니고 q가 아닌 영역"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "반례는 가정(p)은 만족하지만 결론(q)은 만족하지 않는 사례를 의미합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "조건은 맞지만 결과가 틀린 부분을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014819
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "A, B 두 사람 중 적어도 한 명은 범인이다.\nA가 범인이 아님이 밝혀졌을 때,\n논리적으로 타당한 결론은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "B가 범인이다."
+            },
+            {
+                "id": "b",
+                "text": "B도 범인이 아니다."
+            },
+            {
+                "id": "c",
+                "text": "범인이 없다."
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "'A 또는 B'가 참일 때, A가 거짓이면 반드시 B가 참이어야 전체 명제가 유지됩니다(선언지 제거법).",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "두 선택지 중 하나는 무조건 맞아야 하는 상황입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "명제 '공부를 하면 성적이 오른다'를\n참이라고 할 때, 성적이 오르지 않은 사람은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "공부를 한 사람이다."
+            },
+            {
+                "id": "b",
+                "text": "공부를 하지 않은 사람이다."
+            },
+            {
+                "id": "c",
+                "text": "공부를 했거나 안 했을 수 있다."
+            },
+            {
+                "id": "d",
+                "text": "모두 공부를 싫어하는 사람이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "원래 명제의 대우에 의해 '성적이 오르지 않으면 공부를 하지 않은 것'이 성립합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "결과가 발생하지 않았다면 조건도 충족되지 않았을 것입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014821
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '배중률'에 대한 설명으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "모든 명제는 참이거나 거짓 중 하나다."
+            },
+            {
+                "id": "b",
+                "text": "두 명제는 동시에 참일 수 있다."
+            },
+            {
+                "id": "c",
+                "text": "명제는 시간이 지나면 변한다."
+            },
+            {
+                "id": "d",
+                "text": "중간적인 상태가 반드시 존재한다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "배중률은 어떤 명제와 그 부정 사이에는 제3의 중간 상태가 없다는 원리입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "중간을 배제한다는 뜻의 법칙입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014822
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "논리적 추론 과정 중 'A=B이고 B=C이면\nA=C이다'는 어떤 성질인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반사성"
+            },
+            {
+                "id": "b",
+                "text": "대칭성"
+            },
+            {
+                "id": "c",
+                "text": "추이성"
+            },
+            {
+                "id": "d",
+                "text": "결합성"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "추이성(Transitivity)은 관계가 중간 매개체를 통해 전달되는 성질을 말합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "관계가 옮겨간다는 의미의 용어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014823
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 명제가 참일 때 반드시 참인 것은?\n'운동을 하면 건강해진다.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "건강하면 운동을 한 것이다."
+            },
+            {
+                "id": "b",
+                "text": "운동을 안 하면 건강하지 않다."
+            },
+            {
+                "id": "c",
+                "text": "건강하지 않으면 운동을 안 한 것이다."
+            },
+            {
+                "id": "d",
+                "text": "운동을 하면 병에 걸리지 않는다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "원래 명제의 대우(~q → ~p)만이 논리적으로 동치이며 항상 참입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "대우 명제를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014824
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "'모든 정수는 유리수이다'라는 명제의\n부정으로 알맞은 문장은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "어떤 정수는 유리수가 아니다."
+            },
+            {
+                "id": "b",
+                "text": "모든 정수는 유리수가 아니다."
+            },
+            {
+                "id": "c",
+                "text": "어떤 유리수는 정수가 아니다."
+            },
+            {
+                "id": "d",
+                "text": "유리수가 아닌 정수는 없다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "'모든 P는 Q이다'의 부정은 '어떤 P는 Q가 아니다'입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "모든의 반대는 어떤, 이다의 반대는 아니다 입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014825
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "명제 p와 q가 모두 참일 때,\n항상 참인 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "~p ∨ ~q"
+            },
+            {
+                "id": "b",
+                "text": "p ∧ q"
+            },
+            {
+                "id": "c",
+                "text": "~(p ∨ q)"
+            },
+            {
+                "id": "d",
+                "text": "p → ~q"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "두 명제가 모두 참일 때 그들의 논리곱(AND)인 p ∧ q도 참입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "두 조건이 동시에 만족되는 기호를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014826
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 집합 관계에서 p ⊂ q 일 때\n성립하는 논리적 진술은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p는 q이기 위한 충분조건이다."
+            },
+            {
+                "id": "b",
+                "text": "p는 q이기 위한 필요조건이다."
+            },
+            {
+                "id": "c",
+                "text": "q는 p이기 위한 충분조건이다."
+            },
+            {
+                "id": "d",
+                "text": "아무런 조건도 아니다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "p가 q의 부분집합이면 p가 성립할 때 q도 반드시 성립하므로 p는 충분조건이 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "작은 집합에서 큰 집합으로 가는 방향을 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014827
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '전건 긍정의 법칙'의 형태로\n옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p→q이고 q이면 p이다."
+            },
+            {
+                "id": "b",
+                "text": "p→q이고 p이면 q이다."
+            },
+            {
+                "id": "c",
+                "text": "p→q이고 ~p이면 ~q이다."
+            },
+            {
+                "id": "d",
+                "text": "p→q이고 ~q이면 ~p이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "전건 긍정은 조건문(p→q)에서 앞부분(p)을 인정함으로써 뒷부분(q)을 도출하는 방식입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "앞에 있는 조건을 그대로 인정하는 방식입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014828
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "명제 '모든 실수 x에 대하여 x+1 > x'\n는 참인가 거짓인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "참"
+            },
+            {
+                "id": "b",
+                "text": "거짓"
+            },
+            {
+                "id": "c",
+                "text": "x가 양수일 때만 참"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없음"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "모든 실수 x에 대해 양변에서 x를 빼면 1 > 0이 되므로 항상 참입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "어떤 숫자를 넣어도 성립하는지 확인해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014829
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '동일률'의 원칙을 가장 잘\n설명한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A는 A이다."
+            },
+            {
+                "id": "b",
+                "text": "A는 B이다."
+            },
+            {
+                "id": "c",
+                "text": "A는 ~A가 아니다."
+            },
+            {
+                "id": "d",
+                "text": "A는 참이거나 거짓이다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "동일률은 어떤 대상이나 개념은 그 자체와 동일하다는 사고의 기본 원리입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "자기 자신과의 관계를 정의하는 법칙입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014830
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "두 조건 p, q에 대하여 p ∩ q = ∅ 일 때,\np와 q의 관계는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p이면 q이다."
+            },
+            {
+                "id": "b",
+                "text": "p이면 ~q이다."
+            },
+            {
+                "id": "c",
+                "text": "~p이면 q이다."
+            },
+            {
+                "id": "d",
+                "text": "q이면 p이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "교집합이 공집합이면 p에 속하는 원소는 q에 속하지 않으므로 p이면 ~q이다가 성립합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "두 집합이 서로 떨어져 있는 상태를 문장으로 나타내보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014831
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "A: 고래는 포유류다.\nB: 모든 포유류는 새끼를 낳는다.\nC: ( )\n빈칸에 들어갈 타당한 결론은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "모든 고래는 새끼를 낳는다."
+            },
+            {
+                "id": "b",
+                "text": "새끼를 낳으면 고래다."
+            },
+            {
+                "id": "c",
+                "text": "새끼를 낳지 않는 포유류도 있다."
+            },
+            {
+                "id": "d",
+                "text": "고래는 알을 낳는다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "연역적 삼단논법에 의해 고래가 포유류에 포함되고, 포유류의 속성이 새끼를 낳는 것이므로 결론이 도출됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "고래를 포유류의 특성에 연결해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014832
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "명제 'p → q'와 'q → p'가 모두 참일 때,\np와 q는 무슨 조건인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "필요조건"
+            },
+            {
+                "id": "b",
+                "text": "충분조건"
+            },
+            {
+                "id": "c",
+                "text": "필요충분조건"
+            },
+            {
+                "id": "d",
+                "text": "모순 조건"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "서로가 서로를 전제로 할 수 있는 양방향 참인 관계는 필요충분조건입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "두 조건이 논리적으로 완전히 똑같을 때 부르는 이름입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014833
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '후건 부정의 법칙'의 형태로\n옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p→q이고 p이면 q이다."
+            },
+            {
+                "id": "b",
+                "text": "p→q이고 ~q이면 ~p이다."
+            },
+            {
+                "id": "c",
+                "text": "p→q이고 ~p이면 ~q이다."
+            },
+            {
+                "id": "d",
+                "text": "p→q이고 q이면 p이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "후건 부정은 조건문에서 결과(후건)가 거짓임을 통해 원인(전건)도 거짓임을 밝히는 방식입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "대우 명제의 증명 방식과 같습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014834
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "어떤 논증이 '타당하다'는 것의 의미는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전제가 실제로 참이다."
+            },
+            {
+                "id": "b",
+                "text": "전제가 참이라고 가정할 때 결론이 필연적이다."
+            },
+            {
+                "id": "c",
+                "text": "결론이 감동적이다."
+            },
+            {
+                "id": "d",
+                "text": "전제와 결론이 모두 거짓이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "타당성은 논증의 형식적 구조에 관한 것으로, 전제에서 결론을 이끌어내는 과정의 논리적 연결성을 뜻합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "전제의 사실 여부와는 별개로 '추론 과정'이 완벽한 상태를 말합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014835
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 'p ∧ q'의 부정으로 옳은 것은?\n(드 모르간의 법칙)",
+        "choices": [
+            {
+                "id": "a",
+                "text": "~p ∧ ~q"
+            },
+            {
+                "id": "b",
+                "text": "~p ∨ ~q"
+            },
+            {
+                "id": "c",
+                "text": "~(p ∧ q)"
+            },
+            {
+                "id": "d",
+                "text": "p ∨ q"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "드 모르간의 법칙에 의해 논리곱의 부정은 각 명제의 부정과 논리합의 결합으로 바뀝니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "부정이 괄호 안으로 들어가면 기호의 방향이 바뀝니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014836
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "명제 'p → q'가 참일 때 반드시 참인 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "q → p"
+            },
+            {
+                "id": "b",
+                "text": "~p → ~q"
+            },
+            {
+                "id": "c",
+                "text": "~q → ~p"
+            },
+            {
+                "id": "d",
+                "text": "~p → q"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "명제와 그 대우는 항상 논리적 동치 관계에 있어 참거짓을 같이합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "조건과 결론을 부정하고 순서를 바꾼 명제를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014837
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "조건 p: x > 2, q: x > 1 에 대하여\n옳은 진술은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p는 q이기 위한 충분조건이다."
+            },
+            {
+                "id": "b",
+                "text": "p는 q이기 위한 필요조건이다."
+            },
+            {
+                "id": "c",
+                "text": "p는 q이기 위한 필요충분조건이다."
+            },
+            {
+                "id": "d",
+                "text": "p와 q는 아무 관계가 없다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "x > 2이면 항상 x > 1이 성립하지만, 반대는 성립하지 않으므로 p는 충분조건입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "어느 조건의 범위가 더 좁고 구체적인지 확인해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014838
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "논리 기호 '~p' (NOT p)가 참이려면?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "p가 참이어야 한다."
+            },
+            {
+                "id": "b",
+                "text": "p가 거짓이어야 한다."
+            },
+            {
+                "id": "c",
+                "text": "p가 참인지 거짓인지 몰라야 한다."
+            },
+            {
+                "id": "d",
+                "text": "p와 상관없이 항상 참이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:high"
+        ],
+        "explanation": "부정 명제(~p)는 원래 명제(p)가 거짓일 때 참이 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "high",
+        "hint": "원래 내용의 정반대가 참이 되어야 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014839
+    }
+]

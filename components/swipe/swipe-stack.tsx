@@ -64,6 +64,12 @@ export type SwipeStackProps = {
   onChallengeAdvance?: () => void;
   challengeAdvanceLabel?: string;
   onChallengeComplete?: (summary: SwipeChallengeSummary) => void;
+  challengeCompletionLabel?: string;
+  challengeCompletionSubtitle?: string;
+  challengeProgressLabel?: string;
+  persistLifelines?: boolean;
+  lifelinesDisabled?: boolean;
+  onChallengeReset?: () => void;
 };
 
 const REPORT_REASONS = [
@@ -138,6 +144,33 @@ const ONBOARDING_SLIDES = [
   },
 ] as const;
 
+const CHALLENGE_ONBOARDING_SLIDES = [
+  {
+    id: 'assessment_difficulty',
+    icon: 'sparkles' as const,
+    title: '난이도 자동 조정',
+    body: '정답과 오답에 따라 문제 난이도가 자동으로 바뀝니다.',
+  },
+  {
+    id: 'assessment_swipe_right',
+    icon: 'hand.point.right' as const,
+    title: '오른쪽 스와이프',
+    body: '정답 확인 후 다음 문제로 이동해요.',
+  },
+  {
+    id: 'assessment_swipe_left',
+    icon: 'hand.point.left' as const,
+    title: '왼쪽 스와이프',
+    body: '치트 아이템을 사용할 수 있어요.',
+  },
+  {
+    id: 'assessment_result',
+    icon: 'checkmark.seal' as const,
+    title: '측정 결과 확인',
+    body: '정답률과 실력 요약을 한눈에 확인하세요.',
+  },
+] as const;
+
 type SwipeHistoryParams = {
   mode: 'swipe';
   sessionId: string;
@@ -181,8 +214,16 @@ export function SwipeStack({
   onChallengeAdvance,
   challengeAdvanceLabel,
   onChallengeComplete,
+  challengeCompletionLabel,
+  challengeCompletionSubtitle,
+  challengeProgressLabel,
+  persistLifelines,
+  lifelinesDisabled,
+  onChallengeReset,
 }: SwipeStackProps) {
   const isChallenge = Boolean(challenge);
+  const onboardingSlides = isChallenge ? CHALLENGE_ONBOARDING_SLIDES : ONBOARDING_SLIDES;
+  const onboardingKey = isChallenge ? '@swipe_onboarding_skill_assessment' : ONBOARDING_KEY;
   const sessionLimit = challenge?.totalQuestions;
   const {
     current,
@@ -218,6 +259,7 @@ export function SwipeStack({
   const onboardingCardBackground = useThemeColor({}, 'cardElevated');
   const onboardingIconBackground = colorScheme === 'dark' ? Palette.gray700 : Palette.gray50;
   const onboardingIconColor = palette.text;
+  const onboardingButtonIconColor = palette.icon;
   const onboardingTitleColor = palette.text;
   const onboardingBodyColor = palette.textMuted;
   const onboardingIndicatorActive = palette.text;
@@ -303,7 +345,7 @@ export function SwipeStack({
   const onboardingFadeAnim = useRef(new Animated.Value(0)).current;
   const onboardingTranslateX = useRef(new Animated.Value(0)).current;
   const indicatorAnims = useRef(
-    ONBOARDING_SLIDES.map(() => new Animated.Value(8))
+    onboardingSlides.map(() => new Animated.Value(8))
   ).current;
 
   const getFunctionAuthHeaders = useCallback(async () => {
@@ -338,7 +380,7 @@ export function SwipeStack({
   useEffect(() => {
     const checkOnboarding = async () => {
       try {
-        const completed = await AsyncStorage.getItem(ONBOARDING_KEY);
+        const completed = await AsyncStorage.getItem(onboardingKey);
         if (!completed) {
           setShowOnboarding(true);
           // Initialize first indicator as active
@@ -354,7 +396,7 @@ export function SwipeStack({
       }
     };
     void checkOnboarding();
-  }, [indicatorAnims, onboardingFadeAnim]);
+  }, [indicatorAnims, onboardingFadeAnim, onboardingKey]);
 
   useEffect(() => {
     return () => {
@@ -376,7 +418,9 @@ export function SwipeStack({
       previousFilterKey.current = filterKey;
       setSessionStats(INITIAL_SESSION_STATS);
       setMissCount(0);
-      setLifelinesUsed({ fifty: false, hint: false });
+      if (!persistLifelines) {
+        setLifelinesUsed({ fifty: false, hint: false });
+      }
       setHintText(null);
       setEliminatedChoiceIds(null);
       setSelectedIndex(null);
@@ -401,6 +445,7 @@ export function SwipeStack({
     closeReportReasonSheet,
     closeSheet,
     filterKey,
+    persistLifelines,
     reset,
   ]);
 
@@ -672,15 +717,27 @@ export function SwipeStack({
     setSessionStats(INITIAL_SESSION_STATS);
     setSessionId(createSwipeSessionId(filterKey));
     sessionLoggedRef.current = false;
+    if (isChallenge) {
+      onChallengeReset?.();
+    }
     try {
       await reset();
     } catch (error) {
       console.warn('Reset failed:', error);
     }
-  }, [closeActionsSheet, closeReportReasonSheet, closeSheet, filterKey, reset]);
+  }, [
+    closeActionsSheet,
+    closeReportReasonSheet,
+    closeSheet,
+    filterKey,
+    isChallenge,
+    onChallengeReset,
+    persistLifelines,
+    reset,
+  ]);
 
   const handleUseFifty = useCallback(() => {
-    if (!isChallenge || !current || feedback || lifelinesUsed.fifty) {
+    if (!isChallenge || lifelinesDisabled || !current || feedback || lifelinesUsed.fifty) {
       return;
     }
     if (!current.correctChoiceId) {
@@ -697,10 +754,10 @@ export function SwipeStack({
     setEliminatedChoiceIds(shuffled.slice(0, removableCount).map((choice) => choice.id));
     setLifelinesUsed((prev) => ({ ...prev, fifty: true }));
     lightHaptic();
-  }, [current, feedback, isChallenge, lifelinesUsed.fifty]);
+  }, [current, feedback, isChallenge, lifelinesDisabled, lifelinesUsed.fifty]);
 
   const handleUseHint = useCallback(() => {
-    if (!isChallenge || !current || feedback || lifelinesUsed.hint) {
+    if (!isChallenge || lifelinesDisabled || !current || feedback || lifelinesUsed.hint) {
       return;
     }
     const trimmedHint = typeof current.hint === 'string' ? current.hint.trim() : '';
@@ -718,7 +775,7 @@ export function SwipeStack({
     }
     setLifelinesUsed((prev) => ({ ...prev, hint: true }));
     lightHaptic();
-  }, [current, feedback, isChallenge, lifelinesUsed.hint]);
+  }, [current, feedback, isChallenge, lifelinesDisabled, lifelinesUsed.hint]);
 
   useEffect(() => {
     currentStreakRef.current = currentStreak;
@@ -786,23 +843,28 @@ export function SwipeStack({
   }, [closeActionsSheet, current, openReportReasonSheet]);
 
   const handleActions = useCallback(() => {
-    if (!current || isChallenge) return;
+    if (!current) return;
     openActionsSheet();
-  }, [current, isChallenge, openActionsSheet]);
+  }, [current, openActionsSheet]);
 
   const totalQuestions = challenge?.totalQuestions ?? 0;
   const isChallengeFailed = isChallenge && missCount >= failAfterMisses;
   const showCompletion = isChallenge
     ? isChallengeFailed || (!hasMore && queue.length === 0)
     : !hasMore && queue.length === 0;
-  const questionProgressLabel =
-    isChallenge && totalQuestions > 0
-      ? `${Math.min(sessionStats.answered + 1, totalQuestions)}/${totalQuestions}`
-      : null;
   const missLabel = allowedMisses > 0 ? `${missCount}/${allowedMisses}` : `${missCount}`;
   const missLabelColor =
     allowedMisses > 0 && missCount >= allowedMisses ? palette.danger : palette.textMuted;
-  const missSummaryHint = allowedMisses > 0 ? `${failAfterMisses}번째 오답에서 종료` : null;
+  const missSummaryHint = useMemo(() => {
+    if (!isChallenge) return null;
+    if (totalQuestions > 0 && allowedMisses >= totalQuestions) {
+      return '오답은 기록만 해요.';
+    }
+    if (allowedMisses > 0) {
+      return `미스 ${allowedMisses}번까지는 통과해요. ${failAfterMisses}번째 오답에서 종료.`;
+    }
+    return '미스 없음 · 오답 1번이면 종료';
+  }, [allowedMisses, failAfterMisses, isChallenge, totalQuestions]);
 
   const accuracyPercent = useMemo(() => {
     if (!sessionStats.answered) return null;
@@ -815,28 +877,6 @@ export function SwipeStack({
     if (!totalViewed) return null;
     return Math.round((sessionStats.answered / totalViewed) * 100);
   }, [sessionStats.answered, totalViewed]);
-
-  const averageSeconds = useMemo(() => {
-    if (!sessionStats.answered) return null;
-    return sessionStats.totalTimeMs / sessionStats.answered / 1000;
-  }, [sessionStats.answered, sessionStats.totalTimeMs]);
-
-  const formattedAverageSeconds = useMemo(() => {
-    if (averageSeconds === null) return '-';
-    const fixed = averageSeconds >= 10 ? averageSeconds.toFixed(1) : averageSeconds.toFixed(2);
-    return fixed.replace(/\.0+$/, '');
-  }, [averageSeconds]);
-
-  const totalResponseLabel = useMemo(() => {
-    if (!sessionStats.answered) return null;
-    const totalSeconds = Math.round(sessionStats.totalTimeMs / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    if (minutes > 0) {
-      return `${minutes}분 ${seconds}초`;
-    }
-    return `${seconds}초`;
-  }, [sessionStats.answered, sessionStats.totalTimeMs]);
 
   const totalXpEarned = useMemo(() => {
     if (!sessionStats.answered) return 0;
@@ -852,7 +892,10 @@ export function SwipeStack({
         return { icon: 'face.frown', label: '챌린지 종료' } as const;
       }
       if (completed) {
-        return { icon: 'party.popper', label: '챌린지 완주!' } as const;
+        return {
+          icon: 'party.popper',
+          label: challengeCompletionLabel ?? '챌린지 완주!',
+        } as const;
       }
       return {
         icon: 'rectangle.stack',
@@ -868,7 +911,7 @@ export function SwipeStack({
           ? `${answered}문항 풀이 요약`
           : '스와이프 요약',
     } as const;
-  }, [isChallenge, isChallengeFailed, sessionStats.answered, totalQuestions]);
+  }, [challengeCompletionLabel, isChallenge, isChallengeFailed, sessionStats.answered, totalQuestions]);
 
   const challengeSummary = useMemo(
     () => ({
@@ -1128,6 +1171,21 @@ export function SwipeStack({
     });
   }, []);
 
+  const handleOpenOnboarding = useCallback(() => {
+    if (showOnboarding) return;
+    setShowOnboarding(true);
+    setOnboardingSlideIndex(0);
+    onboardingTranslateX.setValue(0);
+    indicatorAnims.forEach((anim, index) => {
+      anim.setValue(index === 0 ? 24 : 8);
+    });
+    Animated.timing(onboardingFadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [indicatorAnims, onboardingFadeAnim, onboardingTranslateX, showOnboarding]);
+
   const handleCloseOnboarding = useCallback(() => {
     Animated.timing(onboardingFadeAnim, {
       toValue: 0,
@@ -1142,11 +1200,11 @@ export function SwipeStack({
         anim.setValue(index === 0 ? 24 : 8);
       });
     });
-  }, [indicatorAnims, onboardingFadeAnim, onboardingTranslateX]);
+  }, [indicatorAnims, onboardingFadeAnim, onboardingKey, onboardingTranslateX]);
 
   const handleCompleteOnboarding = useCallback(async () => {
     try {
-      await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
+      await AsyncStorage.setItem(onboardingKey, 'true');
       Animated.timing(onboardingFadeAnim, {
         toValue: 0,
         duration: 200,
@@ -1167,7 +1225,7 @@ export function SwipeStack({
   }, [indicatorAnims, onboardingFadeAnim, onboardingTranslateX]);
 
   const handleNextOnboardingSlide = useCallback(() => {
-    if (onboardingSlideIndex < ONBOARDING_SLIDES.length - 1) {
+    if (onboardingSlideIndex < onboardingSlides.length - 1) {
       const nextIndex = onboardingSlideIndex + 1;
 
       // Slide animation
@@ -1193,7 +1251,7 @@ export function SwipeStack({
 
       setOnboardingSlideIndex(nextIndex);
     }
-  }, [indicatorAnims, onboardingSlideIndex, onboardingTranslateX]);
+  }, [indicatorAnims, onboardingSlideIndex, onboardingSlides.length, onboardingTranslateX]);
 
   const handlePrevOnboardingSlide = useCallback(() => {
     if (onboardingSlideIndex > 0) {
@@ -1238,7 +1296,7 @@ export function SwipeStack({
         onPanResponderMove: (_, gesture) => {
           const maxTranslate = onboardingSlideIndex * ONBOARDING_SLIDE_WIDTH;
           const minTranslate =
-            -(ONBOARDING_SLIDES.length - 1 - onboardingSlideIndex) * ONBOARDING_SLIDE_WIDTH;
+            -(onboardingSlides.length - 1 - onboardingSlideIndex) * ONBOARDING_SLIDE_WIDTH;
           const clampedValue = Math.max(minTranslate, Math.min(maxTranslate, gesture.dx));
           onboardingTranslateX.setValue(clampedValue);
         },
@@ -1252,7 +1310,7 @@ export function SwipeStack({
             handlePrevOnboardingSlide();
           }
           // 왼쪽 스와이프 (다음 슬라이드)
-          else if (gesture.dx < -SWIPE_THRESHOLD && onboardingSlideIndex < ONBOARDING_SLIDES.length - 1) {
+          else if (gesture.dx < -SWIPE_THRESHOLD && onboardingSlideIndex < onboardingSlides.length - 1) {
             handleNextOnboardingSlide();
           }
           // 스냅백
@@ -1267,7 +1325,7 @@ export function SwipeStack({
           }
         },
       }),
-    [onboardingSlideIndex, onboardingTranslateX, handleNextOnboardingSlide, handlePrevOnboardingSlide]
+    [onboardingSlideIndex, onboardingSlides.length, onboardingTranslateX, handleNextOnboardingSlide, handlePrevOnboardingSlide]
   );
 
   const handleActiveCardLayout = useCallback((height: number) => {
@@ -1324,24 +1382,25 @@ export function SwipeStack({
                 <IconSymbol name={completionTitle.icon} size={28} color={palette.text} />
                 <ThemedText style={styles.completionTitle}>{completionTitle.label}</ThemedText>
               </View>
-              <View style={styles.completionMetrics}>
-                <View
-                  style={[
-                    styles.completionMetric,
-                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
-                  ]}
+              {isChallenge && challengeCompletionSubtitle ? (
+                <ThemedText
+                  style={styles.completionSubtitle}
+                  lightColor={palette.textMuted}
+                  darkColor={Palette.gray200}
                 >
-                  <ThemedText
-                    style={styles.completionMetricLabel}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
-                  >
-                    최고 연속 정답
-                  </ThemedText>
-                  <ThemedText style={styles.completionMetricValue}>
-                    {sessionStats.maxStreak}문항
-                  </ThemedText>
-                </View>
+                  {challengeCompletionSubtitle}
+                </ThemedText>
+              ) : null}
+              {isChallenge && challengeProgressLabel ? (
+                <ThemedText
+                  style={styles.completionMeta}
+                  lightColor={palette.textMuted}
+                  darkColor={Palette.gray200}
+                >
+                  {challengeProgressLabel}
+                </ThemedText>
+              ) : null}
+              <View style={styles.completionMetrics}>
                 <View
                   style={[
                     styles.completionMetric,
@@ -1373,13 +1432,15 @@ export function SwipeStack({
                   <ThemedText style={styles.completionMetricValue}>
                     {accuracyPercent !== null ? `${accuracyPercent}%` : '-'}
                   </ThemedText>
-                  <ThemedText
-                    style={styles.completionMetricHint}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
-                  >
-                    {sessionStats.correct}/{Math.max(sessionStats.answered, 1)} {'\n'}정답/응답
-                  </ThemedText>
+                  {isChallenge ? null : (
+                    <ThemedText
+                      style={styles.completionMetricHint}
+                      lightColor={palette.textMuted}
+                      darkColor={Palette.gray200}
+                    >
+                      {sessionStats.correct}/{Math.max(sessionStats.answered, 1)} {'\n'}정답/응답
+                    </ThemedText>
+                  )}
                 </View>
                 {isChallenge ? (
                   <View
@@ -1445,36 +1506,10 @@ export function SwipeStack({
                     lightColor={palette.textMuted}
                     darkColor={Palette.gray200}
                   >
-                    총 소요시간
+                    획득 XP
                   </ThemedText>
-                  <ThemedText style={styles.completionMetricValue}>
-                    {totalResponseLabel ?? '-'}
-                  </ThemedText>
-                  <ThemedText
-                    style={styles.completionMetricHint}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
-                  >
-                    평균 {averageSeconds !== null ? `${formattedAverageSeconds}초` : '-'}
-                  </ThemedText>
+                  <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
                 </View>
-                {isChallenge ? null : (
-                  <View
-                    style={[
-                      styles.completionMetric,
-                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
-                    ]}
-                  >
-                    <ThemedText
-                      style={styles.completionMetricLabel}
-                      lightColor={palette.textMuted}
-                      darkColor={Palette.gray200}
-                    >
-                      획득 XP
-                    </ThemedText>
-                    <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
-                  </View>
-                )}
               </View>
               <View style={styles.completionActions}>
                 <Button
@@ -1513,29 +1548,16 @@ export function SwipeStack({
           ) : isChallenge ? (
             <View style={styles.challengeStatusWrapper}>
               <View style={styles.challengeStatusRow}>
-                <View style={styles.challengeStatusLeft}>
-                  <View
-                    style={[
-                      styles.challengeBadge,
-                      { borderColor: palette.borderStrong, backgroundColor: palette.cardElevated },
-                    ]}
-                  >
-                    <IconSymbol name="lightbulb" size={14} color={palette.text} />
-                    <ThemedText style={styles.challengeBadgeLabel}>5th Grader</ThemedText>
-                  </View>
-                  {questionProgressLabel ? (
-                    <View style={styles.challengeStatusInfo}>
-                      <IconSymbol name="numbers.rectangle" size={16} color={palette.textMuted} />
-                      <ThemedText
-                        style={styles.statusText}
-                        lightColor={palette.textMuted}
-                        darkColor={palette.textMuted}
-                      >
-                        Q {questionProgressLabel}
-                      </ThemedText>
-                    </View>
-                  ) : null}
-                </View>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  rounded="full"
+                  onPress={handleOpenOnboarding}
+                  disabled={showOnboarding}
+                  accessibilityLabel="룰 다시보기"
+                  leftIcon={<IconSymbol name="questionmark.circle" size={22} color={onboardingButtonIconColor} />}
+                  style={styles.onboardingButton}
+                />
                 <View style={styles.challengeStatusRight}>
                   <IconSymbol name="xmark.circle.fill" size={16} color={missLabelColor} />
                   <ThemedText style={[styles.statusText, { color: missLabelColor }]}>
@@ -1544,26 +1566,6 @@ export function SwipeStack({
                 </View>
               </View>
               <View style={styles.challengeActionsRow}>
-                <View style={styles.lifelineGroup}>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    rounded="full"
-                    onPress={handleUseFifty}
-                    disabled={!current || !!feedback || lifelinesUsed.fifty}
-                  >
-                    50:50
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    rounded="full"
-                    onPress={handleUseHint}
-                    disabled={!current || !!feedback || lifelinesUsed.hint}
-                  >
-                    학생 힌트
-                  </Button>
-                </View>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -1605,6 +1607,16 @@ export function SwipeStack({
               <View style={styles.statusRight}>
                 <Button
                   variant="ghost"
+                  size="icon"
+                  rounded="full"
+                  onPress={handleOpenOnboarding}
+                  disabled={showOnboarding}
+                  accessibilityLabel="룰 다시보기"
+                  leftIcon={<IconSymbol name="questionmark.circle" size={22} color={onboardingButtonIconColor} />}
+                  style={styles.onboardingButton}
+                />
+                <Button
+                  variant="ghost"
                   size="sm"
                   rounded="full"
                   onPress={handleOpenSheet}
@@ -1643,7 +1655,7 @@ export function SwipeStack({
                 feedback={index === 0 ? feedback : null}
                 onSelectChoice={index === 0 ? handleSelect : () => undefined}
                 onSwipeNext={handleNext}
-                onOpenActions={isChallenge ? undefined : handleActions}
+                onOpenActions={handleActions}
                 onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
                 onCardLayout={index === 0 ? handleActiveCardLayout : undefined}
               />
@@ -1667,32 +1679,71 @@ export function SwipeStack({
           android_keyboardInputMode="adjustResize"
         >
           <BottomSheetView style={styles.actionsSheetContent}>
-            <View style={styles.actionsList}>
-              <Button
-                variant="outline"
-                size="lg"
-                onPress={handleSkip}
-                disabled={!!feedback}
-                leftIcon={<IconSymbol name="forward.end" size={18} color={palette.text} />}
-              >
-                건너뛰기
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                onPress={handleReportAction}
-                leftIcon={<IconSymbol name="flag" size={18} color={dangerColor} />}
-                textStyle={{ color: dangerColor }}
-              >
-                신고하기
-              </Button>
-            </View>
-            <Button
-              size="lg"
-              onPress={closeActionsSheet}
-            >
-              취소
-            </Button>
+            {isChallenge ? (
+              <>
+                <View style={styles.actionsHeader}>
+                  <ThemedText style={styles.sheetTitle}>치트 아이템</ThemedText>
+                  <ThemedText style={[styles.lifelineSubtitle, { color: sheetMutedColor }]}>
+                    {lifelinesDisabled
+                      ? '6학년 보스 룰: 치트를 사용할 수 없어요.'
+                      : '1~5학년 통틀어 50:50, 힌트 각 1회만 사용 가능해요.'}
+                  </ThemedText>
+                </View>
+                <View style={styles.actionsList}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onPress={handleUseFifty}
+                    disabled={!current || !!feedback || lifelinesDisabled || lifelinesUsed.fifty}
+                  >
+                    {lifelinesUsed.fifty ? '50:50 (사용 완료)' : '50:50'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onPress={handleUseHint}
+                    disabled={!current || !!feedback || lifelinesDisabled || lifelinesUsed.hint}
+                  >
+                    {lifelinesUsed.hint ? '힌트 (사용 완료)' : '힌트'}
+                  </Button>
+                </View>
+                <Button
+                  size="lg"
+                  onPress={closeActionsSheet}
+                >
+                  닫기
+                </Button>
+              </>
+            ) : (
+              <>
+                <View style={styles.actionsList}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onPress={handleSkip}
+                    disabled={!!feedback}
+                    leftIcon={<IconSymbol name="forward.end" size={18} color={palette.text} />}
+                  >
+                    건너뛰기
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onPress={handleReportAction}
+                    leftIcon={<IconSymbol name="flag" size={18} color={dangerColor} />}
+                    textStyle={{ color: dangerColor }}
+                  >
+                    신고하기
+                  </Button>
+                </View>
+                <Button
+                  size="lg"
+                  onPress={closeActionsSheet}
+                >
+                  취소
+                </Button>
+              </>
+            )}
           </BottomSheetView>
         </BottomSheetModal>
 
@@ -1858,12 +1909,12 @@ export function SwipeStack({
                 style={[
                   styles.onboardingSlidesContainer,
                   {
-                    width: ONBOARDING_SLIDE_WIDTH * ONBOARDING_SLIDES.length,
+                    width: ONBOARDING_SLIDE_WIDTH * onboardingSlides.length,
                     transform: [{ translateX: onboardingTranslateX }],
                   },
                 ]}
               >
-                {ONBOARDING_SLIDES.map((slide) => (
+                {onboardingSlides.map((slide) => (
                   <View
                     key={slide.id}
                     style={[
@@ -1898,7 +1949,7 @@ export function SwipeStack({
 
             <View style={styles.onboardingFooter}>
               <View style={styles.onboardingIndicators}>
-                {ONBOARDING_SLIDES.map((_, index) => (
+                {onboardingSlides.map((_, index) => (
                   <Animated.View
                     key={`indicator-${index}`}
                     style={[
@@ -1986,9 +2037,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
   },
+  onboardingButton: {
+    paddingHorizontal: 0,
+  },
   challengeStatusWrapper: {
-    gap: Spacing.sm,
-    marginBottom: Spacing.md,
+    gap: Spacing.xs,
+    marginBottom: Spacing.sm,
     marginTop: 0,
     position: 'relative',
     zIndex: 2,
@@ -2000,18 +2054,7 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     flexWrap: 'wrap',
   },
-  challengeStatusLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-    flexShrink: 1,
-  },
   challengeStatusRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  challengeStatusInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
@@ -2029,19 +2072,6 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     flexWrap: 'wrap',
   },
-  challengeBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
-    borderRadius: Radius.pill,
-    borderWidth: 1,
-  },
-  challengeBadgeLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-  },
   sheetButtonHidden: {
     opacity: 0,
   },
@@ -2057,6 +2087,12 @@ const styles = StyleSheet.create({
   completionTitle: {
     fontSize: 18,
     fontWeight: '700',
+  },
+  completionSubtitle: {
+    fontSize: 13,
+  },
+  completionMeta: {
+    fontSize: 12,
   },
   completionHeader: {
     flexDirection: 'row',
@@ -2135,12 +2171,18 @@ const styles = StyleSheet.create({
   },
   actionsSheetContent: {
     paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing.lg,
+    paddingBottom: Spacing.xl,
     paddingTop: Spacing.md,
-    gap: Spacing.lg,
+    gap: Spacing.md,
+  },
+  actionsHeader: {
+    gap: Spacing.xs,
   },
   actionsList: {
     gap: Spacing.sm,
+  },
+  lifelineSubtitle: {
+    fontSize: 13,
   },
   reportSheetContent: {
     paddingHorizontal: Spacing.lg,

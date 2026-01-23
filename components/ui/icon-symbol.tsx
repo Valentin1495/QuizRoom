@@ -20,6 +20,7 @@ import {
   FilmSlateIcon,
   FlagIcon,
   FlameIcon,
+  GraduationCapIcon,
   HandSwipeLeftIcon,
   HandSwipeRightIcon,
   HourglassMediumIcon,
@@ -36,6 +37,7 @@ import {
   PlayCircleIcon,
   RankingIcon,
   SealCheckIcon,
+  SealQuestionIcon,
   ShieldCheckIcon,
   ShootingStarIcon,
   ShoppingBagOpenIcon,
@@ -80,6 +82,7 @@ const ICON_MAP = {
   'person': { component: UserIcon },
   'medal': { component: RankingIcon },
   'dot.radiowaves.left.and.right': { component: BroadcastIcon },
+  'questionmark.circle': { component: SealQuestionIcon },
   // Navigation Icons
   'arrow.left': { component: ArrowLeftIcon },
   'arrow.up.forward': { component: ArrowUpRightIcon },
@@ -131,6 +134,8 @@ const ICON_MAP = {
   'hand.point.left': { component: HandSwipeLeftIcon },
   'checkmark.seal': { component: SealCheckIcon },
   'star.circle': { component: ShootingStarIcon },
+  'graduationcap': { component: GraduationCapIcon },
+  'crown': { component: CrownIcon },
 } as const satisfies Record<string, IconMapping>;
 
 export type IconSymbolName = keyof typeof ICON_MAP;

@@ -1,0 +1,1442 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 베버(Max Weber)가 제시한\n관료제의 특징으로 가장 적절하지\n않은 것은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "규칙과 절차에 의한 지배"
+            },
+            {
+                "id": "b",
+                "text": "직무의 전문화와 분업"
+            },
+            {
+                "id": "c",
+                "text": "연공서열보다는 성과 위주의 보상"
+            },
+            {
+                "id": "d",
+                "text": "계층제적 구조"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "베버의 고전적 관료제는 성과보다는 규정된 자격과 연공서열에 기반한 보상 체계를 핵심 특징으로 합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "관료제는 효율성을 위해 엄격한 위계와 정해진 경력을 중시합니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "토마스 쿤(Thomas Kuhn)의 '과학 혁명'\n이론에서 특정 시대를 지배하는\n사고의 틀을 의미하는 용어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "이데올로기"
+            },
+            {
+                "id": "b",
+                "text": "패러다임"
+            },
+            {
+                "id": "c",
+                "text": "담론"
+            },
+            {
+                "id": "d",
+                "text": "헤게모니"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "패러다임은 한 시대의 과학자들이 공유하는 이론, 방법, 가치관의 총체적인 틀을 의미합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "인식의 틀이 바뀌는 것을 흔히 '이것의 전환'이라고 부릅니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "경제학에서 '외부 효과'에 대한 설명으로\n옳은 것을 고르시오.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "시장 내부 거래로 가격이 결정됨"
+            },
+            {
+                "id": "b",
+                "text": "대가 없이 제3자에게 이익/손해를 줌"
+            },
+            {
+                "id": "c",
+                "text": "정부의 개입으로만 발생함"
+            },
+            {
+                "id": "d",
+                "text": "항상 사회적 후생을 증진함"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "외부 효과는 경제 주체의 행위가 시장 기구를 통하지 않고 타인에게 영향을 미치지만 보상이 없는 상태입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "시장의 가격 기구를 통하지 않는 외부적인 영향에 주목하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "미셸 푸코(Michel Foucault)가 현대의\n감시 체제를 설명하기 위해 인용한\n원형 감옥의 명칭은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "리바이어던"
+            },
+            {
+                "id": "b",
+                "text": "파놉티콘"
+            },
+            {
+                "id": "c",
+                "text": "유토피아"
+            },
+            {
+                "id": "d",
+                "text": "아이언 게이트"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "제레미 벤담이 고안한 파놉티콘은 소수의 감시자가 자신을 드러내지 않고 다수를 감시하는 구조를 뜻합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "그리스어로 '모두(pan)'와 '본다(opticon)'의 합성어입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 사회 계약설의 대표적인\n사상가 세 명으로만 묶인 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "홉스, 로크, 루소"
+            },
+            {
+                "id": "b",
+                "text": "플라톤, 아리스토텔레스, 칸트"
+            },
+            {
+                "id": "c",
+                "text": "마르크스, 베버, 뒤르켐"
+            },
+            {
+                "id": "d",
+                "text": "밀, 스피노자, 헤겔"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "홉스, 로크, 루소는 국가의 성립 근거를 개인 간의 자발적인 계약에서 찾는 사회계약론의 핵심 학자들입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "자연 상태와 국가 성립을 설명한 근대 정치 사상가들입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "부르디외(Pierre Bourdieu)가 제시한\n개인의 내면화된 성향이나 취향을\n뜻하는 개념은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "아노미"
+            },
+            {
+                "id": "b",
+                "text": "하비투스"
+            },
+            {
+                "id": "c",
+                "text": "문화 자본"
+            },
+            {
+                "id": "d",
+                "text": "상징 폭력"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "하비투스는 특정 사회적 환경에 의해 형성된 개인의 지속적인 성향이나 인지 구조를 의미합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "습속이나 습성으로 번역되기도 하는 용어입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "인플레이션과 실업률이 동시에 상승하는\n현상을 가리키는 경제학 용어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "디플레이션"
+            },
+            {
+                "id": "b",
+                "text": "스테그플레이션"
+            },
+            {
+                "id": "c",
+                "text": "하이퍼인플레이션"
+            },
+            {
+                "id": "d",
+                "text": "리플레이션"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "경기 침체(stagnation)와 물가 상승(inflation)의 합성어로, 총공급 감소 시 발생하기 쉽습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "경기 불황과 물가 폭등이 결합된 단어입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 기펜재(Giffen goods)의\n특징에 대한 설명으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "가격이 오르면 수요량이 감소함"
+            },
+            {
+                "id": "b",
+                "text": "소득이 오르면 수요량이 증가함"
+            },
+            {
+                "id": "c",
+                "text": "가격이 오를 때 수요량도 증가함"
+            },
+            {
+                "id": "d",
+                "text": "대체재가 아주 많은 상품임"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "기펜재는 가격 상승 시 소득 효과가 대체 효과를 압도하여 수요량이 오히려 늘어나는 특수한 열등재입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "수요 법칙의 예외에 해당하며, 가격과 수요가 같은 방향으로 움직입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "존 롤스(John Rawls)의 정의론에서\n자신의 사회적 위치를 모르는 상태를\n가정하는 용어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "자연 상태"
+            },
+            {
+                "id": "b",
+                "text": "무지의 베일"
+            },
+            {
+                "id": "c",
+                "text": "원초적 본능"
+            },
+            {
+                "id": "d",
+                "text": "최소 수혜자의 원칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "무지의 베일은 공정한 합의를 위해 자신의 조건(능력, 지위 등)을 알 수 없는 원초적 입장을 의미합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "아무것도 보이지 않는 막 뒤에 서 있는 것과 같은 상태입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회학에서 '아노미(Anomie)' 상태에\n대해 가장 먼저 정의한 학자는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "칼 마르크스"
+            },
+            {
+                "id": "b",
+                "text": "에밀 뒤르켐"
+            },
+            {
+                "id": "c",
+                "text": "허버트 스펜서"
+            },
+            {
+                "id": "d",
+                "text": "게오르그 짐멜"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "뒤르켐은 급격한 사회 변동으로 인해 기존 규범이 붕괴하고 새로운 규범이 정립되지 않은 무규범 상태를 아노미로 정의했습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "사회분업론과 자살론을 쓴 프랑스의 사회학자입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "에드워드 사이드(Edward Said)가 서구가\n동양을 왜곡하여 인식하는 방식을\n비판하며 사용한 용어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "제국주의"
+            },
+            {
+                "id": "b",
+                "text": "오리엔탈리즘"
+            },
+            {
+                "id": "c",
+                "text": "옥시덴탈리즘"
+            },
+            {
+                "id": "d",
+                "text": "문화 상대주의"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "오리엔탈리즘은 동양에 대한 서구의 편견 섞인 태도와 지식 체계를 비판적으로 일컫는 말입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "'Orient'라는 단어를 바탕으로 한 사상적 경향입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "민주주의 원리 중 다수결의 원칙을\n채택할 때 반드시 전제되어야 하는\n사항은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "엘리트의 지도력"
+            },
+            {
+                "id": "b",
+                "text": "소수 의견의 존중"
+            },
+            {
+                "id": "c",
+                "text": "절대적 평등의 실현"
+            },
+            {
+                "id": "d",
+                "text": "만장일치의 합의"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "다수결이 정당성을 확보하려면 소수파의 권리 보장과 자유로운 토론 과정이 전제되어야 합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "다수의 횡포를 막기 위한 민주주의의 보완 장치를 생각하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "마키아벨리(Machiavelli)의 '군주론'에서\n군주가 갖추어야 할 두 가지 동물적\n상징은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "독수리와 뱀"
+            },
+            {
+                "id": "b",
+                "text": "사자와 여우"
+            },
+            {
+                "id": "c",
+                "text": "늑대와 양"
+            },
+            {
+                "id": "d",
+                "text": "곰과 호랑이"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "군주는 함정을 알아채는 여우의 지혜와 늑대를 물리치는 사자의 힘을 동시에 가져야 한다고 주장했습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "강력한 힘과 영리한 지혜를 상징하는 동물들입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국제 정치학에서 국가의 이익을 최우선\n으로 하며 힘의 논리를 중시하는\n이론적 관점은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "자유주의"
+            },
+            {
+                "id": "b",
+                "text": "현실주의"
+            },
+            {
+                "id": "c",
+                "text": "구성주의"
+            },
+            {
+                "id": "d",
+                "text": "기능주의"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "현실주의는 국제 사회를 무정부 상태로 보고, 국가 생존을 위한 권력 추구와 힘의 균형을 강조합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "도덕적 이상보다는 실제 세력 관계에 기반한 시각입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 법치주의의 원칙에 대한\n설명으로 옳지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "법률에 의한 행정"
+            },
+            {
+                "id": "b",
+                "text": "기본권의 제한은 법률로만 가능"
+            },
+            {
+                "id": "c",
+                "text": "법의 내용이 정의로워야 함"
+            },
+            {
+                "id": "d",
+                "text": "통치자의 명령은 법보다 우선함"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "법치주의는 통치자의 자의적인 권력 행사를 막고 법에 의한 통치를 지향하므로 명령이 법을 앞설 수 없습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "군주나 지도자의 의지보다 법이 상위에 있어야 합니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "소스타인 베블런(Veblen)이 제시한,\n자신의 부를 과시하기 위해 행하는\n소비 형태를 무엇이라 합니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "합리적 소비"
+            },
+            {
+                "id": "b",
+                "text": "모방 소비"
+            },
+            {
+                "id": "c",
+                "text": "과시적 소비"
+            },
+            {
+                "id": "d",
+                "text": "지속 가능 소비"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "과시적 소비(Conspicuous Consumption)는 효용보다는 자신의 사회적 지위를 드러내기 위해 값비싼 재화를 구입하는 행위입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "남에게 보여주기 위한 소비라는 뜻입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 직접 민주주의 제도의 요소에\n해당하는 것을 고르시오.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "의회 제도"
+            },
+            {
+                "id": "b",
+                "text": "정당 정치"
+            },
+            {
+                "id": "c",
+                "text": "국민 투표"
+            },
+            {
+                "id": "d",
+                "text": "비례 대표제"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "국민 투표, 국민 발안, 국민 소환은 대의제를 보완하여 주권자가 직접 정책 결정에 참여하는 방식입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "국민이 직접 의사를 결정하는 구체적인 수단입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "인간의 사회화 과정에서 타인의 시선을\n통해 비춰진 자신의 모습을 통해 자아를\n형성한다는 쿨리(Cooley)의 개념은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "중요한 타자"
+            },
+            {
+                "id": "b",
+                "text": "거울에 비친 자아"
+            },
+            {
+                "id": "c",
+                "text": "일반화된 타자"
+            },
+            {
+                "id": "d",
+                "text": "초자아"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "거울 자아(Looking-glass self) 이론은 타인이라는 거울에 비춰진 자신의 모습을 상상하며 자아 정체성을 발달시킨다고 봅니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "주변 사람들의 반응을 '거울'에 비유했습니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회 계층 현상을 바라보는 '기능론'\n관점의 주장으로 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "계층은 지배 집단의 이익을 대변함"
+            },
+            {
+                "id": "b",
+                "text": "사회적 희소 가치의 차등 분배는 정당함"
+            },
+            {
+                "id": "c",
+                "text": "개인의 능력보다는 배경이 중요함"
+            },
+            {
+                "id": "d",
+                "text": "계층 구조는 갈등을 유발하여 변화함"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "기능론은 개인의 능력과 노력에 따른 차등 보상이 인재 적재적소 배치와 사회 발전에 필수적이라고 봅니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "불평등을 사회의 효율적인 작동을 위한 장치로 봅니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 정부 부채가 증가할 때 시중\n금리가 상승하여 민간 투자가 감소하는\n현상을 무엇이라 합니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "외부 효과"
+            },
+            {
+                "id": "b",
+                "text": "구축 효과"
+            },
+            {
+                "id": "c",
+                "text": "승수 효과"
+            },
+            {
+                "id": "d",
+                "text": "낙수 효과"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "구축 효과(Crowding-out effect)는 정부의 확장적 재정 정책이 이자율을 높여 민간 투자를 몰아내는 현상입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "정부 지출이 민간 지출을 '밀어내는' 효과입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사무엘 헌팅턴(Samuel Huntington)이\n탈냉전기 갈등의 주된 원인으로 지목한\n단위는 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "이데올로기"
+            },
+            {
+                "id": "b",
+                "text": "민족 국가"
+            },
+            {
+                "id": "c",
+                "text": "문명"
+            },
+            {
+                "id": "d",
+                "text": "경제 블록"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "헌팅턴은 저서 '문명의 충돌'을 통해 미래의 갈등은 이념이 아닌 문화와 종교적 정체성에 의한 문명 간 충돌이 될 것이라 주장했습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "기독교, 이슬람, 유교 등과 같은 거대 문화권을 의미합니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 국제 사법 재판소(ICJ)에 대한\n설명으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "개인에 대한 형사 처벌을 담당함"
+            },
+            {
+                "id": "b",
+                "text": "국가 간의 법적 분쟁을 다룸"
+            },
+            {
+                "id": "c",
+                "text": "모든 국가가 강제 관할권을 가짐"
+            },
+            {
+                "id": "d",
+                "text": "입법부의 역할을 병행함"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "ICJ는 UN의 주요 사법 기관으로 국가 간 영토 분쟁이나 조약 해석 등의 문제를 다루며, 형사 처벌(ICC)과는 구분됩니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "주체는 개인이 아니라 국가라는 점에 유의하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회학의 상징적 상호작용론 관점에서\n중시하는 핵심 요소는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "사회 구조의 강제성"
+            },
+            {
+                "id": "b",
+                "text": "인간의 주관적 의미 부여"
+            },
+            {
+                "id": "c",
+                "text": "거대 담론의 형성"
+            },
+            {
+                "id": "d",
+                "text": "물질적 생산 관계"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "상징적 상호작용론은 미시적 관점으로, 개인 간의 언어나 몸짓 등 상징을 통한 상호작용과 그에 대한 해석에 집중합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "개개인의 행동과 해석에 중점을 둡니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '공유지의 비극'을 해결하기\n위한 방안으로 하딘(Hardin)이 제시한\n것이 아닌 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "사유 재산권의 설정"
+            },
+            {
+                "id": "b",
+                "text": "강제적 규제의 도입"
+            },
+            {
+                "id": "c",
+                "text": "완전한 자유 이용 보장"
+            },
+            {
+                "id": "d",
+                "text": "국가에 의한 관리"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "공유지의 비극은 자유 이용으로 자원이 고갈되는 것이므로, 이를 막기 위해 사유화나 공적 규제가 필요하다고 주장했습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "자유로운 이용이 비극의 원인이라는 점을 생각하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국가의 3요소에 해당하는 것을\n모두 고르시오.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "주권, 국민, 법률"
+            },
+            {
+                "id": "b",
+                "text": "영토, 주권, 국민"
+            },
+            {
+                "id": "c",
+                "text": "영토, 정부, 국제 승인"
+            },
+            {
+                "id": "d",
+                "text": "국민, 평화, 자유"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "국가는 지리적 범위인 영토, 구성원인 국민, 그리고 독립적인 지배권인 주권이 있어야 성립됩니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "공간, 사람, 힘의 세 가지 요소입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "민법의 대원칙 중 자신의 행위가 아니면\n책임을 지지 않는다는 원칙은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "소유권 절대의 원칙"
+            },
+            {
+                "id": "b",
+                "text": "사적 자치의 원칙"
+            },
+            {
+                "id": "c",
+                "text": "과실 책임의 원칙"
+            },
+            {
+                "id": "d",
+                "text": "신의 성실의 원칙"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "과실 책임의 원칙은 개인에게 고의나 과실이 있는 경우에만 손해 배상 책임을 진다는 근대 민법의 원칙입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "실수가 있을 때만 책임을 진다는 의미입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '죄수의 딜레마' 게임이 보여주는\n핵심적인 시사점은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "합리적 선택은 항상 사회적 최적임"
+            },
+            {
+                "id": "b",
+                "text": "개인의 이기적 선택이 비효율을 초래함"
+            },
+            {
+                "id": "c",
+                "text": "협력은 어떤 조건에서도 불가능함"
+            },
+            {
+                "id": "d",
+                "text": "정보가 완벽하면 항상 협력함"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "개인이 각자 자신의 이익을 위해 최선을 다해 선택(배신)하더라도, 결과적으로는 모두에게 좋지 않은 상태에 빠짐을 보여줍니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "개별적 합리성과 사회적 합리성이 충돌하는 상황입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "문화 상대주의 관점에서 바람직하지\n못한 태도로 볼 수 있는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "해당 사회의 배경을 이해함"
+            },
+            {
+                "id": "b",
+                "text": "자신의 문화를 절대적 기준으로 삼음"
+            },
+            {
+                "id": "c",
+                "text": "문화 간 우열을 가리지 않음"
+            },
+            {
+                "id": "d",
+                "text": "다양한 문화를 공존의 대상으로 봄"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "자신의 문화를 기준으로 타 문화를 평가하는 것은 '자문화 중심주의'에 해당하며 상대주의와는 거리가 멉니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "자신의 문화를 기준으로 타 문화를 낮게 보는 경향을 경계하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "정치 참여 형태 중 시민이 정당한 사유\n없이 불공정한 법률에 대해 평화적으로\n복종을 거부하는 행위는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "로비 활동"
+            },
+            {
+                "id": "b",
+                "text": "시민 불복종"
+            },
+            {
+                "id": "c",
+                "text": "정치적 무관심"
+            },
+            {
+                "id": "d",
+                "text": "혁명"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "시민 불복종은 비폭력적이며 공익적 목적을 가져야 하며, 결과에 대한 처벌을 감수한다는 특징이 있습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "소로(Thoreau)나 간디의 사상과 연결되는 개념입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 엥겔 지수(Engel's coefficient)\n가 의미하는 바는 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전체 지출 대비 교육비의 비율"
+            },
+            {
+                "id": "b",
+                "text": "전체 소비 지출 대비 식료품비 비율"
+            },
+            {
+                "id": "c",
+                "text": "소득 대비 저축액의 비율"
+            },
+            {
+                "id": "d",
+                "text": "가계의 소득 불평등 정도"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "엥겔 지수는 가계의 총지출액 중 식료품비가 차지하는 비중으로, 낮을수록 생활 수준이 높다고 평가됩니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "먹는 비용이 차지하는 비중을 나타냅니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사법권의 독립을 보장하기 위해 헌법이\n정하고 있는 제도는 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "대통령의 법관 임면권 강화"
+            },
+            {
+                "id": "b",
+                "text": "법관의 임기제와 신분 보장"
+            },
+            {
+                "id": "c",
+                "text": "재판 과정의 완전 비공개"
+            },
+            {
+                "id": "d",
+                "text": "법원 예산의 국회 통제 제외"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "법관이 외부의 압력에 굴하지 않고 법과 양심에 따라 재판할 수 있도록 법관의 신분을 엄격히 보장합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "법관이 파면되거나 해임되기 어렵게 만든 이유를 생각하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회 보장 제도 중 국가가 전액 부담하며\n생활 유지 능력이 없는 사람을 지원하는\n제도는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "사회 보험"
+            },
+            {
+                "id": "b",
+                "text": "공공 부조"
+            },
+            {
+                "id": "c",
+                "text": "사회 서비스"
+            },
+            {
+                "id": "d",
+                "text": "퇴직 연금"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "공공 부조는 수혜자의 기여금 없이 전적으로 조세를 재원으로 운영되는 선별적 복지 제도입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "국민기초생활보장제도가 대표적인 예입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '보이지 않는 손'이라는 개념을\n통해 시장의 자동 조절 기능을 강조한\n경제학자는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "존 메이너드 케인스"
+            },
+            {
+                "id": "b",
+                "text": "아담 스미스"
+            },
+            {
+                "id": "c",
+                "text": "밀턴 프리드먼"
+            },
+            {
+                "id": "d",
+                "text": "토마스 피케티"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "아담 스미스는 '국부론'에서 개인이 자신의 이익을 쫓는 행위가 시장 기구에 의해 사회 전체의 이익으로 연결된다고 보았습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "고전 경제학의 아버지로 불리는 인물입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회 변동 이론 중 사회가 일정한 방향\n없이 주기적으로 변화와 퇴보를 반복\n한다고 보는 이론은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "진화론"
+            },
+            {
+                "id": "b",
+                "text": "순환론"
+            },
+            {
+                "id": "c",
+                "text": "근대화론"
+            },
+            {
+                "id": "d",
+                "text": "종속 이론"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "순환론은 흥망성쇠의 과정을 반복한다고 보며, 문명의 몰락을 설명하는 데 용이하지만 미래 예측력이 약합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "역사는 돌고 돈다는 관점입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 다원주의 사회에서 갈등을\n해결하는 가장 바람직한 원리는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "강력한 리더의 결단"
+            },
+            {
+                "id": "b",
+                "text": "다수결의 즉각적 시행"
+            },
+            {
+                "id": "c",
+                "text": "대화와 타협을 통한 합의"
+            },
+            {
+                "id": "d",
+                "text": "갈등 당사자의 배제"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "다양한 가치가 공존하는 사회에서는 강제력보다는 소통과 조정을 통해 공동체적 합의를 이끄는 것이 필수적입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "서로의 다름을 인정하고 중간 지점을 찾아가는 과정입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회학에서 개인이 속해 있지는 않지만\n자신의 행동과 판단의 기준으로 삼는\n집단을 무엇이라 합니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "내집단"
+            },
+            {
+                "id": "b",
+                "text": "외집단"
+            },
+            {
+                "id": "c",
+                "text": "준거 집단"
+            },
+            {
+                "id": "d",
+                "text": "이익 사회"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "준거 집단은 개인의 신념, 태도, 가치관 형성에 결정적인 영향을 미치는 집단입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "비교나 평가의 '기준'이 되는 집단입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 직접세와 간접세의 차이에 대한\n설명으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "직접세는 조세 전가가 일어남"
+            },
+            {
+                "id": "b",
+                "text": "간접세는 소득 재분배 효과가 큼"
+            },
+            {
+                "id": "c",
+                "text": "직접세는 납세자와 담세자가 일치함"
+            },
+            {
+                "id": "d",
+                "text": "간접세는 누진세율 적용이 기본임"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "직접세는 세금을 내는 사람(납세자)과 실제로 부담하는 사람(담세자)이 동일한 세금입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "세금 부담이 타인에게 넘어가는지(전가) 여부를 생각하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "헌법 재판소의 권한 중 국회가 만든\n법률이 헌법에 위반되는지 여부를\n심판하는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "탄핵 심판"
+            },
+            {
+                "id": "b",
+                "text": "위헌 법률 심판"
+            },
+            {
+                "id": "c",
+                "text": "정당 해산 심판"
+            },
+            {
+                "id": "d",
+                "text": "권한 쟁의 심판"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "위헌 법률 심판은 재판의 전제가 된 법률의 위헌 여부를 판단하여 법의 정당성을 확보하는 절차입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "법률이 헌법에 '위배'되는지 따지는 것입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지그문트 바우만(Zygmunt Bauman)이\n현대 사회의 불안정성과 유동성을\n표현하며 사용한 용어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "고체 현대"
+            },
+            {
+                "id": "b",
+                "text": "액체 현대"
+            },
+            {
+                "id": "c",
+                "text": "위험 사회"
+            },
+            {
+                "id": "d",
+                "text": "피로 사회"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "액체 현대(Liquid Modernity)는 고정된 틀이 사라지고 모든 것이 빠르게 변하며 흐르는 현대의 특성을 비유한 말입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "딱딱하게 굳어 있지 않고 흐르는 상태를 뜻합니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지방 자치 제도의 본질적인 의의로\n가장 거리가 먼 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "풀뿌리 민주주의의 실현"
+            },
+            {
+                "id": "b",
+                "text": "지역 특색에 맞는 행정"
+            },
+            {
+                "id": "c",
+                "text": "중앙 정부의 행정 효율 극대화"
+            },
+            {
+                "id": "d",
+                "text": "주민의 직접 참여 기회 확대"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_plus"
+        ],
+        "explanation": "지방 자치는 권력 분립과 주민 자치를 목적으로 하므로, 중앙 정부의 행정적 편의나 효율만이 목적은 아닙니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_plus",
+        "hint": "중앙 집권적인 효율성보다는 지역의 자율성이 중요합니다.",
+        "createdAt": 1706040240
+    }
+]

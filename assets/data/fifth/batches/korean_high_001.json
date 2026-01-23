@@ -1,0 +1,1762 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 밑줄 친 부분의 표기가\n맞춤법에 맞는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "어제는 친구와 [무난히] 만났다"
+            },
+            {
+                "id": "b",
+                "text": "그는 나에게 [어의가] 없다고 했다"
+            },
+            {
+                "id": "c",
+                "text": "빨리 [낳으렴]이라고 빌어주었다"
+            },
+            {
+                "id": "d",
+                "text": "시간이 벌써 [금새] 지나갔다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'무난히'가 올바른 표기이며, 어의(x)→어처구니/어이, 낳으렴(x)→나으렴, 금새(x)→금세가 맞습니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "'금세'는 '금시에'의 줄임말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 시어 중 화자의 슬픈 정서를\n간접적으로 드러내는 소재는?\n[비가 내린다. 창밖의 꽃잎이\n하나둘 떨어진다. 나의 마음도\n함께 지고 있다.]",
+        "choices": [
+            {
+                "id": "a",
+                "text": "비"
+            },
+            {
+                "id": "b",
+                "text": "창밖"
+            },
+            {
+                "id": "c",
+                "text": "꽃잎"
+            },
+            {
+                "id": "d",
+                "text": "마음"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "떨어지는 '꽃잎'은 화자의 상실감이나 슬픔을 시각적으로 형상화한 객관적 상관물입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "화자의 감정이 투영된 자연물을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 표준 발음법에 따라\n[박따]로 발음되는 단어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "맑다"
+            },
+            {
+                "id": "b",
+                "text": "밝다"
+            },
+            {
+                "id": "c",
+                "text": "읽다"
+            },
+            {
+                "id": "d",
+                "text": "굵다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "용언의 어간 말음 'ㄺ'은 'ㄱ' 앞에서 'ㄹ'로 발음되지만, 그 외에는 원칙적으로 'ㄱ'으로 발음합니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "겹받침 ㄺ의 대표음 발음을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "문장에서 주체인 '아버지'를 높이기 위해\n가장 적절한 서술어는?\n[아버지가 방에서 ( )]",
+        "choices": [
+            {
+                "id": "a",
+                "text": "잔다"
+            },
+            {
+                "id": "b",
+                "text": "자신다"
+            },
+            {
+                "id": "c",
+                "text": "주무신다"
+            },
+            {
+                "id": "d",
+                "text": "자고 있다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "주체 높임의 특수 어휘인 '주무시다'를 사용하는 것이 가장 자연스럽고 올바른 높임법입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "직접적인 높임 선어말 어미 '-시-'가 포함된 특수 어휘를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '의성어'에 해당하는\n단어는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "번쩍번쩍"
+            },
+            {
+                "id": "b",
+                "text": "졸졸졸"
+            },
+            {
+                "id": "c",
+                "text": "아장아장"
+            },
+            {
+                "id": "d",
+                "text": "허허벌판"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'졸졸졸'은 물이 흐르는 소리를 흉내 낸 의성어입니다. '번쩍번쩍'과 '아장아장'은 의태어입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "소리를 흉내 낸 말인지 모양을 흉내 낸 말인지 구분하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사동문의 의미로 올바른 것은?\n[엄마가 아이에게 옷을 입혔다.]",
+        "choices": [
+            {
+                "id": "a",
+                "text": "아이가 스스로 옷을 입었다"
+            },
+            {
+                "id": "b",
+                "text": "엄마가 옷을 직접 입었다"
+            },
+            {
+                "id": "c",
+                "text": "엄마가 아이로 하여금 입게 했다"
+            },
+            {
+                "id": "d",
+                "text": "아이가 엄마에게 옷을 입어달라 했다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "사동은 주체가 남에게 동작을 하도록 시키는 것을 의미합니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "동작의 주체와 행위의 대상을 구분해 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '설의법'이 사용된\n문장은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "그 얼마나 아름다운 강산인가!"
+            },
+            {
+                "id": "b",
+                "text": "꽃은 피고 새는 노래한다."
+            },
+            {
+                "id": "c",
+                "text": "내 마음은 호수요."
+            },
+            {
+                "id": "d",
+                "text": "공부를 열심히 해야 성공한다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "설의법은 누구나 다 아는 사실을 의문 형식으로 표현하여 강조하는 수사법입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "묻고 있지만 대답을 요구하지 않는 표현을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "고전 소설의 특징으로\n적절하지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "권선징악적 주제가 뚜렷하다"
+            },
+            {
+                "id": "b",
+                "text": "우연적인 사건 전개가 잦다"
+            },
+            {
+                "id": "c",
+                "text": "주인공이 비현실적 능력을 갖기도 한다"
+            },
+            {
+                "id": "d",
+                "text": "인물의 심리가 매우 입체적이다"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "고전 소설의 인물은 주로 전형적이고 평면적인 성격(착한 사람은 끝까지 착함)을 보입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "고전 소설 속 주인공들의 성격 변화 여부를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "문장의 성분 중 '서술어'를 도와\n뜻을 보충하는 '보어'가 쓰인 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "하늘이 매우 푸르다."
+            },
+            {
+                "id": "b",
+                "text": "그는 의사가 되었다."
+            },
+            {
+                "id": "c",
+                "text": "사과를 맛있게 먹었다."
+            },
+            {
+                "id": "d",
+                "text": "동생이 학교에 간다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "국어에서 보어는 '되다', '아니다' 앞에 오는 성분을 말합니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "서술어가 '되다' 또는 '아니다'인 문장을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 고유어에 해당하는\n단어는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "학교"
+            },
+            {
+                "id": "b",
+                "text": "사랑"
+            },
+            {
+                "id": "c",
+                "text": "컴퓨터"
+            },
+            {
+                "id": "d",
+                "text": "식사"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'사랑'은 우리말 고유어이며, 학교/식사는 한자어, 컴퓨터는 외래어입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "한자어로 변환이 불가능한 단어를 골라보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 피동문의 표현이\n가장 자연스러운 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "이 문제는 나에 의해 풀려졌다."
+            },
+            {
+                "id": "b",
+                "text": "도둑이 경찰에게 잡혔다."
+            },
+            {
+                "id": "c",
+                "text": "그 사실이 믿겨지지 않는다."
+            },
+            {
+                "id": "d",
+                "text": "문이 저절로 닫겨졌다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'풀려졌다', '믿겨지지', '닫겨졌다'는 이중 피동 표현으로 어법에 어긋납니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "이중 피동(-어지다와 피동 접미사의 중복)을 피해야 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "시에서 '역설법'이 쓰인\n표현으로 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "찬란한 슬픔의 봄"
+            },
+            {
+                "id": "b",
+                "text": "산 넘어 남촌에는 누가 살길래"
+            },
+            {
+                "id": "c",
+                "text": "나 보기가 역겨워 가실 때에는"
+            },
+            {
+                "id": "d",
+                "text": "해야 솟아라, 해야 솟아라"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "역설법은 겉으로는 모순되지만 그 속에 진리를 담고 있는 표현입니다. '찬란한'과 '슬픔'은 모순됩니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "서로 어울리지 않는 두 단어가 결합된 것을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "토론과 토의의 차이점으로\n옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "토론은 해결책 합의가 목적이다"
+            },
+            {
+                "id": "b",
+                "text": "토의는 찬반이 극명하게 나뉜다"
+            },
+            {
+                "id": "c",
+                "text": "토론은 설득을 통한 승패가 있다"
+            },
+            {
+                "id": "d",
+                "text": "토의는 경쟁적 대화의 형식이다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "토론은 대립하는 주장을 가진 이들이 상대를 설득하는 경쟁적 담화이며, 토의는 협력적으로 문제를 해결하는 과정입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "어느 쪽이 더 대립적인지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "한글 맞춤법 제1항, '표준어를\n소리대로 적되 ( )에 맞도록 함을\n원칙으로 한다'에 들어갈 말은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "발음"
+            },
+            {
+                "id": "b",
+                "text": "문법"
+            },
+            {
+                "id": "c",
+                "text": "어법"
+            },
+            {
+                "id": "d",
+                "text": "관습"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "한글 맞춤법의 기본 원칙은 '표음주의'를 바탕으로 하되 뜻을 파악하기 쉽게 '표의주의(어법)'를 가미하는 것입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "단어의 본뜻을 살려 적는 원칙을 무엇이라 할까요?",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '공감적 듣기'의\n방법으로 가장 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "상대방의 논리적 허점을 지적한다"
+            },
+            {
+                "id": "b",
+                "text": "말의 의미를 비판하며 듣는다"
+            },
+            {
+                "id": "c",
+                "text": "고개를 끄덕이며 맞장구를 친다"
+            },
+            {
+                "id": "d",
+                "text": "말을 끊고 내 경험을 먼저 말한다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "공감적 듣기는 상대방의 감정을 이해하고 수용하며 반응하는 소통 방식입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "상대방을 존중하는 태도를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "품사의 분류 중 '관계언'에\n속하는 것은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "명사"
+            },
+            {
+                "id": "b",
+                "text": "조사"
+            },
+            {
+                "id": "c",
+                "text": "동사"
+            },
+            {
+                "id": "d",
+                "text": "부사"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "조사는 체언 뒤에 붙어 다른 말과의 문법적 관계를 나타내므로 관계언으로 분류됩니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "문장에서 단어 사이의 관계를 맺어주는 품사를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '은유법'이 사용된\n문구는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "내 마음은 호수와 같다."
+            },
+            {
+                "id": "b",
+                "text": "내 마음은 호수요."
+            },
+            {
+                "id": "c",
+                "text": "호수처럼 맑은 내 마음."
+            },
+            {
+                "id": "d",
+                "text": "마음이 호수만큼 넓다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "은유법은 'A는 B이다'의 형식으로 대상을 직접적으로 비유하는 수사법입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "연결어(~처럼, ~같이) 없이 바로 비유하는 문장을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '동음이의어' 관계인\n단어 쌍은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "손(신체) - 손(일손)"
+            },
+            {
+                "id": "b",
+                "text": "배(신체) - 배(과일)"
+            },
+            {
+                "id": "c",
+                "text": "다리(신체) - 다리(책상 다리)"
+            },
+            {
+                "id": "d",
+                "text": "머리(신체) - 머리(우두머리)"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'배'는 신체, 과일, 탈것 등 소리는 같으나 의미의 연관성이 전혀 없는 동음이의어입니다. 나머지는 다의어입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "두 단어의 뜻 사이에 조금의 연결고리라도 있는지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "글의 서술 방식 중 '인과'에\n해당하는 설명은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "대상을 구성 요소별로 나눔"
+            },
+            {
+                "id": "b",
+                "text": "공통점과 차이점을 밝힘"
+            },
+            {
+                "id": "c",
+                "text": "원인과 결과의 관계로 설명함"
+            },
+            {
+                "id": "d",
+                "text": "구체적인 사례를 들어 설명함"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "인과는 '원인과 결과'를 중심으로 내용을 전개하는 방식입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "한자어 '인(因)'과 '과(果)'의 의미를 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '관용 표현'이\n아닌 것은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "발이 넓다"
+            },
+            {
+                "id": "b",
+                "text": "손을 씻다"
+            },
+            {
+                "id": "c",
+                "text": "배가 아프다"
+            },
+            {
+                "id": "d",
+                "text": "잠을 자다"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'잠을 자다'는 단어 그대로의 의미만 가지며, 비유적인 관용적 의미가 없습니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "두 단어가 합쳐져 새로운 제3의 의미를 만드는지 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '문장 성분'이\n나머지 셋과 다른 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "철수가 (사과를) 먹는다."
+            },
+            {
+                "id": "b",
+                "text": "영희가 (꽃을) 보았다."
+            },
+            {
+                "id": "c",
+                "text": "하늘이 (매우) 높다."
+            },
+            {
+                "id": "d",
+                "text": "아이가 (우유를) 마신다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "괄호 안의 성분 중 '사과를', '꽃을', '우유를'은 목적어이지만 '매우'는 부사어입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "조사 '를'이 붙어 있는 것과 그렇지 않은 것을 구분하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "소설의 3요소에\n해당하지 않는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "인물"
+            },
+            {
+                "id": "b",
+                "text": "사건"
+            },
+            {
+                "id": "c",
+                "text": "배경"
+            },
+            {
+                "id": "d",
+                "text": "운율"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "운율은 시의 3요소(음악적 요소)에 해당하며 소설과는 무관합니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "소설의 구성 요소인 '인, 사, 배'를 기억하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '중의적 문장'으로\n볼 수 있는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "철수는 영희를 사랑한다."
+            },
+            {
+                "id": "b",
+                "text": "나는 어제 학교에 갔다."
+            },
+            {
+                "id": "c",
+                "text": "남편은 나보다 커피를 더 좋아한다."
+            },
+            {
+                "id": "d",
+                "text": "사과 한 개가 식탁 위에 있다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'나보다 커피를 더 좋아하는지', 아니면 '내가 커피를 좋아하는 정도보다 더 좋아하는지' 해석이 갈립니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "비교 대상이 무엇인지에 따라 뜻이 달라지는 문장을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 문장의 시제는 무엇인가?\n[내일은 비가 오겠다.]",
+        "choices": [
+            {
+                "id": "a",
+                "text": "과거 시제"
+            },
+            {
+                "id": "b",
+                "text": "현재 시제"
+            },
+            {
+                "id": "c",
+                "text": "미래 시제"
+            },
+            {
+                "id": "d",
+                "text": "진행 시제"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'내일'이라는 시간 부사와 '-겠-'이라는 선어말 어미를 통해 미래 시제를 나타내고 있습니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "'내일'이라는 단어에 주목하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '의존 명사'에\n해당하는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "하늘"
+            },
+            {
+                "id": "b",
+                "text": "친구"
+            },
+            {
+                "id": "c",
+                "text": "것"
+            },
+            {
+                "id": "d",
+                "text": "공부"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'것'은 혼자 쓰이지 못하고 반드시 앞에 수식하는 말이 있어야 하는 의존 명사입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "혼자서는 주어 역할을 할 수 없는 단어를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "글의 종류 중 '설명문'의\n특징으로 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "독자를 설득하는 것이 주 목적이다"
+            },
+            {
+                "id": "b",
+                "text": "정보를 객관적으로 전달한다"
+            },
+            {
+                "id": "c",
+                "text": "인물의 갈등을 중심으로 전개된다"
+            },
+            {
+                "id": "d",
+                "text": "작가의 상상력을 바탕으로 한다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "설명문은 지식이나 정보를 알기 쉽게 풀어서 객관적으로 전달하는 글입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "백과사전의 글들을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '비유법'의 종류가\n아닌 것은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "직유법"
+            },
+            {
+                "id": "b",
+                "text": "은유법"
+            },
+            {
+                "id": "c",
+                "text": "도치법"
+            },
+            {
+                "id": "d",
+                "text": "의인법"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "도치법은 문장 성분의 순서를 바꾸어 강조하는 강조법에 속하며 비유법이 아닙니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "무언가에 빗대어 표현하는 것과 문장 순서를 바꾸는 것의 차이를 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '어휘의 체계'에서\n한자어의 비중이 가장 높은 영역은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "일상 대화"
+            },
+            {
+                "id": "b",
+                "text": "신체 부위 명칭"
+            },
+            {
+                "id": "c",
+                "text": "학술적 전문 용어"
+            },
+            {
+                "id": "d",
+                "text": "기초 수사(하나, 둘 등)"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "국어 어휘 체계에서 고유어는 일상적이고 감각적인 말이 많고, 한자어는 추상적이고 전문적인 학술 용어에 많이 쓰입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "교과서나 논문에서 자주 쓰이는 단어들을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '문학의 기능'으로\n적절하지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "인식적 기능(세계 이해)"
+            },
+            {
+                "id": "b",
+                "text": "윤리적 기능(가치관 형성)"
+            },
+            {
+                "id": "c",
+                "text": "미적 기능(아름다움 향유)"
+            },
+            {
+                "id": "d",
+                "text": "정보적 기능(객관적 사실 전달)"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "정보적 기능은 비문학이나 실용문의 주된 기능이며, 문학은 정서적 고양과 가치 탐구가 주 목적입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "문학이 실용적인 정보 전달을 위해 존재하는지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 발음할 때 입술을 둥글게\n모아 발음하는 '원순 모음'은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "ㅏ"
+            },
+            {
+                "id": "b",
+                "text": "ㅓ"
+            },
+            {
+                "id": "c",
+                "text": "ㅗ"
+            },
+            {
+                "id": "d",
+                "text": "ㅡ"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "국어의 원순 모음에는 'ㅗ, ㅜ, ㅚ, ㅟ'가 있습니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "직접 발음해보며 입술의 모양을 확인하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '반어법'과 '역설법'의\n공통점으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "말의 의미를 직접적으로 전달함"
+            },
+            {
+                "id": "b",
+                "text": "겉과 속이 다른 구조를 가짐"
+            },
+            {
+                "id": "c",
+                "text": "표현의 참신함과 강조 효과를 줌"
+            },
+            {
+                "id": "d",
+                "text": "항상 웃음을 유발하는 해학적 기법임"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "두 기법 모두 일상적인 표현을 비틀어 독자에게 강한 인상을 주고 정서를 강조하는 공통 효과가 있습니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "수사법을 사용하는 궁극적인 이유를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '고쳐쓰기'의 원칙으로\n가장 적절하지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "문맥에 맞지 않는 단어를 수정한다"
+            },
+            {
+                "id": "b",
+                "text": "불필요하게 겹치는 표현을 삭제한다"
+            },
+            {
+                "id": "c",
+                "text": "글의 주제와 상관없는 문장을 뺀다"
+            },
+            {
+                "id": "d",
+                "text": "글의 분량을 무조건 늘린다"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "고쳐쓰기는 글의 명확성과 경제성을 높이는 과정이지 무조건 분량을 늘리는 작업이 아닙니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "좋은 글이 되기 위해 다듬는 과정을 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국어의 특징 중 '첨가어(교착어)'\n성질과 관련이 깊은 품사는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "명사"
+            },
+            {
+                "id": "b",
+                "text": "조사"
+            },
+            {
+                "id": "c",
+                "text": "관형사"
+            },
+            {
+                "id": "d",
+                "text": "감탄사"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "한국어는 실질 형태소에 문법적 기능을 담당하는 조사나 어미가 붙는 교착어적 특징을 가집니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "체언 뒤에 붙어 문법적 의미를 더해주는 것이 무엇인가요?",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '객체 높임법'이\n사용된 문장은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "할아버지께서 산책을 하신다."
+            },
+            {
+                "id": "b",
+                "text": "나는 선생님께 선물을 드렸다."
+            },
+            {
+                "id": "c",
+                "text": "어머니, 진지 드세요."
+            },
+            {
+                "id": "d",
+                "text": "철수야, 빨리 오너라."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "객체 높임법은 목적어나 부사어가 나타내는 대상을 높이는 것으로, '드리다'는 '선생님'을 높이는 특수 어휘입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "문장의 주어가 아닌 대상을 높이는 표현을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '비언어적 표현'에\n해당하는 것은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "말의 빠르기"
+            },
+            {
+                "id": "b",
+                "text": "단어의 선택"
+            },
+            {
+                "id": "c",
+                "text": "표정과 몸짓"
+            },
+            {
+                "id": "d",
+                "text": "목소리의 크기"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "비언어적 표현은 언어(말소리)와 직접 관련되지 않은 몸짓, 표정, 시선 등을 의미합니다. 빠르기나 크기는 반언어적 표현입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "소리조차 내지 않고 전달하는 수단을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '유의어' 관계가\n아닌 것은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "생각 - 사고"
+            },
+            {
+                "id": "b",
+                "text": "기쁨 - 환희"
+            },
+            {
+                "id": "c",
+                "text": "길 - 도로"
+            },
+            {
+                "id": "d",
+                "text": "위 - 아래"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'위'와 '아래'는 뜻이 서로 반대되는 반의어 관계입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "비슷한 뜻인지 반대되는 뜻인지 구분하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 문장의 끝맺음이\n가장 공손한 어법은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "나 오늘 밥 먹어."
+            },
+            {
+                "id": "b",
+                "text": "나 오늘 밥 먹었어."
+            },
+            {
+                "id": "c",
+                "text": "저는 오늘 식사를 하였습니다."
+            },
+            {
+                "id": "d",
+                "text": "난 오늘 밥 먹는다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "하십시오체에 가까운 종결 어미와 자신을 낮추는 '저'를 사용하여 격식 있고 공손한 태도를 보입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "상대 높임법이 가장 높은 수준인 문장을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '외래어 표기법'에\n맞는 것은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "케잌"
+            },
+            {
+                "id": "b",
+                "text": "쥬스"
+            },
+            {
+                "id": "c",
+                "text": "초콜릿"
+            },
+            {
+                "id": "d",
+                "text": "레포트"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "케이크, 주스, 리포트가 올바른 표기이며 '초콜릿'이 규정에 맞는 표기입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "받침에는 ㄱ, ㄴ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ만 쓴다는 원칙을 기억하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 단어의 형성이\n'합성어'에 해당하는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "맨손"
+            },
+            {
+                "id": "b",
+                "text": "덮개"
+            },
+            {
+                "id": "c",
+                "text": "밤낮"
+            },
+            {
+                "id": "d",
+                "text": "선생님"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "'밤'과 '낮'이라는 두 실질 형태소가 결합된 합성어입니다. 나머지는 접사가 붙은 파생어입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "단어의 구성 요소가 둘 다 독립적인 의미를 갖는지 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "문학 작품을 감상할 때,\n작가의 생애와 의도를 중시하는 관점은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반영론적 관점"
+            },
+            {
+                "id": "b",
+                "text": "표현론적 관점"
+            },
+            {
+                "id": "c",
+                "text": "효용론적 관점"
+            },
+            {
+                "id": "d",
+                "text": "절대주의적 관점"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:korean",
+            "edu:high"
+        ],
+        "explanation": "표현론적 관점은 작품을 작가의 창조적 산물로 보고 작가의 측면에서 감상하는 외재적 관점입니다.",
+        "grade": null,
+        "subject": "korean",
+        "eduLevel": "high",
+        "hint": "생산자인 '작가'에 집중하는 관점입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706048160
+    }
+]

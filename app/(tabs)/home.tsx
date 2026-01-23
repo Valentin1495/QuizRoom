@@ -18,7 +18,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { FIFTH_GRADER_CHALLENGE } from '@/constants/challenges';
+import { SKILL_ASSESSMENT_CHALLENGE } from '@/constants/challenges';
 import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -449,21 +449,32 @@ export default function HomeScreen() {
           <SectionHeader title="챌린지" tagline="특별 모드" muted={muted} />
           <View style={[styles.challengeCard, { backgroundColor: cardBackground, borderColor }]}>
             <View style={styles.challengeHeader}>
-              <View style={[styles.challengeBadge, { backgroundColor: palette.cardElevated, borderColor }]}>
-                <IconSymbol name="lightbulb" size={16} color={palette.text} />
-                <ThemedText style={styles.challengeBadgeText}>5th Grader</ThemedText>
+              <View style={styles.challengeTitleRow}>
+                <IconSymbol name="lightbulb" size={18} color={palette.text} />
+                <ThemedText style={styles.challengeTitle}>{SKILL_ASSESSMENT_CHALLENGE.title}</ThemedText>
               </View>
-              <ThemedText style={styles.challengeTitle}>{FIFTH_GRADER_CHALLENGE.title}</ThemedText>
               <ThemedText style={[styles.challengeTagline, { color: muted }]}>
-                {FIFTH_GRADER_CHALLENGE.tagline}
-              </ThemedText>
-              <ThemedText style={[styles.challengeDescription, { color: muted }]}>
-                {FIFTH_GRADER_CHALLENGE.description}
+                {SKILL_ASSESSMENT_CHALLENGE.tagline}
               </ThemedText>
             </View>
-            <Link href={FIFTH_GRADER_CHALLENGE.route} asChild>
+            <View style={styles.challengePills}>
+              {['16문항', '난이도 자동 조정'].map((label) => (
+                <View
+                  key={label}
+                  style={[
+                    styles.challengePill,
+                    { backgroundColor: palette.cardElevated, borderColor },
+                  ]}
+                >
+                  <ThemedText style={[styles.challengePillText, { color: palette.text }]}>
+                    {label}
+                  </ThemedText>
+                </View>
+              ))}
+            </View>
+            <Link href={SKILL_ASSESSMENT_CHALLENGE.route} asChild>
               <Button variant="default" size="lg" rounded="full" style={styles.primaryButton}>
-                {FIFTH_GRADER_CHALLENGE.ctaLabel}
+                {SKILL_ASSESSMENT_CHALLENGE.ctaLabel}
               </Button>
             </Link>
           </View>
@@ -697,19 +708,10 @@ const styles = StyleSheet.create({
   challengeHeader: {
     gap: Spacing.xs,
   },
-  challengeBadge: {
-    alignSelf: 'flex-start',
+  challengeTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
-    borderRadius: Radius.pill,
-    borderWidth: 1,
-  },
-  challengeBadgeText: {
-    fontSize: 12,
-    fontWeight: '700',
   },
   challengeTitle: {
     fontSize: 18,
@@ -719,9 +721,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  challengeDescription: {
-    fontSize: 13,
-    lineHeight: 18,
+  challengePills: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.xs,
+  },
+  challengePill: {
+    borderWidth: 1,
+    borderRadius: Radius.pill,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+  },
+  challengePillText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   sectionHeader: {
     flexDirection: 'row',

@@ -1,0 +1,1442 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the word that best completes the\nsentence:\nThe CEO's ______ decision-making led\nthe company to a record-breaking profit\ndespite the economic downturn.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "faltering"
+            },
+            {
+                "id": "b",
+                "text": "astute"
+            },
+            {
+                "id": "c",
+                "text": "redundant"
+            },
+            {
+                "id": "d",
+                "text": "negligent"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "The word 'astute' means having an ability to accurately assess situations and turn this to one's advantage, which fits the context of leading a company to profit.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think of a positive quality related to sharp intelligence and judgment.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the error in the following\nsentence:\nNeither the committee members nor the\nchairperson are available to discuss the\nproposed budget changes today.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Neither the committee"
+            },
+            {
+                "id": "b",
+                "text": "nor the chairperson"
+            },
+            {
+                "id": "c",
+                "text": "are available"
+            },
+            {
+                "id": "d",
+                "text": "proposed budget"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "When using 'neither/nor', the verb should agree with the subject closest to it; since 'chairperson' is singular, 'are' should be 'is'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Focus on the subject-verb agreement rule for compound subjects joined by 'nor'.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Read the following passage:\nTechnological advancement often follows\na non-linear path. While incremental\nimprovements are common, paradigm shifts\noccur when disparate fields converge.\n\nWhat is the main idea?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Technology only moves in one direction"
+            },
+            {
+                "id": "b",
+                "text": "Paradigm shifts are usually predictable"
+            },
+            {
+                "id": "c",
+                "text": "Convergence of fields leads to major shifts"
+            },
+            {
+                "id": "d",
+                "text": "Incremental changes are more important"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "The passage explicitly states that paradigm shifts occur when disparate fields converge, highlighting this as a key driver of non-linear advancement.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for the cause mentioned for the most significant changes.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Select the synonym for 'Episodic':\nThe witness provided an episodic account\nof the events, focusing on specific\nmoments rather than a continuous flow.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Chronological"
+            },
+            {
+                "id": "b",
+                "text": "Occasional"
+            },
+            {
+                "id": "c",
+                "text": "Sporadic"
+            },
+            {
+                "id": "d",
+                "text": "Exhaustive"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Episodic' and 'sporadic' both describe things occurring at irregular intervals or in separate segments.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think about something that happens in separate, disconnected parts.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct preposition:\nThe researcher's findings were\nconsistent ______ the results of previous\nlongitudinal studies in the field.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "to"
+            },
+            {
+                "id": "b",
+                "text": "for"
+            },
+            {
+                "id": "c",
+                "text": "with"
+            },
+            {
+                "id": "d",
+                "text": "by"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "The adjective 'consistent' is idiomatically followed by the preposition 'with'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "This preposition is often used to indicate accompaniment or agreement.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the most appropriate tone for\na graduate-level academic abstract:",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Conversational and friendly"
+            },
+            {
+                "id": "b",
+                "text": "Subjective and emotional"
+            },
+            {
+                "id": "c",
+                "text": "Objective and formal"
+            },
+            {
+                "id": "d",
+                "text": "Sarcastic and critical"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "Academic writing requires an objective and formal tone to maintain professional credibility and clarity.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Consider which style best suits a serious research environment.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which sentence uses 'mitigate' correctly?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "He tried to mitigate his success."
+            },
+            {
+                "id": "b",
+                "text": "The law will mitigate new problems."
+            },
+            {
+                "id": "c",
+                "text": "We must mitigate the negative impact."
+            },
+            {
+                "id": "d",
+                "text": "She mitigated the proposal to the board."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Mitigate' means to make something less severe, serious, or painful, which applies to reducing a negative impact.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "The word is usually used with things that are harmful or unpleasant.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which of the following is a subordinating\nconjunction?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "And"
+            },
+            {
+                "id": "b",
+                "text": "But"
+            },
+            {
+                "id": "c",
+                "text": "Although"
+            },
+            {
+                "id": "d",
+                "text": "Or"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Although' introduces a dependent clause, making it a subordinating conjunction, unlike coordinating conjunctions like 'and', 'but', or 'or'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for the word that creates a relationship of dependency between clauses.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct word:\nThe ______ of the new policy will be\nfelt across all departments starting\nnext quarter.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "affect"
+            },
+            {
+                "id": "b",
+                "text": "effect"
+            },
+            {
+                "id": "c",
+                "text": "affects"
+            },
+            {
+                "id": "d",
+                "text": "effected"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "In this context, a noun is required to follow the article 'the', and 'effect' is the noun meaning result or consequence.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Distinguish between the verb (action) and the noun (result).",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the meaning of the prefix 'Omni-'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Few"
+            },
+            {
+                "id": "b",
+                "text": "One"
+            },
+            {
+                "id": "c",
+                "text": "All"
+            },
+            {
+                "id": "d",
+                "text": "None"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "The prefix 'omni-' comes from Latin, meaning 'all' or 'every', as seen in words like 'omniscient' or 'omnipresent'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think of words that describe something being everywhere or knowing everything.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the word that is spelled\ncorrectly:",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Accommodate"
+            },
+            {
+                "id": "b",
+                "text": "Acommodate"
+            },
+            {
+                "id": "c",
+                "text": "Accomodate"
+            },
+            {
+                "id": "d",
+                "text": "Acomodate"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Accommodate' is correctly spelled with two 'c's and two 'm's.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "This word has double consonants in two different places.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Select the correct phrasal verb:\nThe committee decided to ______ the\nmeeting until next week due to the\nabsence of the key speaker.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "put off"
+            },
+            {
+                "id": "b",
+                "text": "call off"
+            },
+            {
+                "id": "c",
+                "text": "carry out"
+            },
+            {
+                "id": "d",
+                "text": "set up"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Put off' means to postpone or delay, which is appropriate for moving a meeting to next week.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for an expression that means to delay an event.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which word is an antonym for 'Ambiguous'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Vague"
+            },
+            {
+                "id": "b",
+                "text": "Unclear"
+            },
+            {
+                "id": "c",
+                "text": "Explicit"
+            },
+            {
+                "id": "d",
+                "text": "Dubious"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Ambiguous' means open to more than one interpretation, while 'explicit' means stated clearly and in detail.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for a word that means perfectly clear and leaving no doubt.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the most appropriate word:\nThe professor's ______ lecture was\nso dense that many students struggled\nto follow the core arguments.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "concise"
+            },
+            {
+                "id": "b",
+                "text": "lucid"
+            },
+            {
+                "id": "c",
+                "text": "arcane"
+            },
+            {
+                "id": "d",
+                "text": "frivolous"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Arcane' means understood by few; mysterious or secret, which fits the context of a dense and difficult lecture.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think of a word that describes something complex and obscure.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the rhetorical device used here?\n'Success is a journey, not a\ndestination.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Simile"
+            },
+            {
+                "id": "b",
+                "text": "Metaphor"
+            },
+            {
+                "id": "c",
+                "text": "Personification"
+            },
+            {
+                "id": "d",
+                "text": "Hyperbole"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "This sentence directly identifies success as a journey without using 'like' or 'as', which is a metaphor.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "It compares two unlike things by stating one is the other.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Select the correct form of the verb:\nBy the time the project ends, the team\n______ for over six months.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "will work"
+            },
+            {
+                "id": "b",
+                "text": "will have been working"
+            },
+            {
+                "id": "c",
+                "text": "is working"
+            },
+            {
+                "id": "d",
+                "text": "has worked"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "The future perfect continuous tense is used to show that something will continue up until a particular event or time in the future.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Consider a tense that describes a duration leading up to a future point.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the passive voice sentence:",
+        "choices": [
+            {
+                "id": "a",
+                "text": "The chef prepared a five-course meal."
+            },
+            {
+                "id": "b",
+                "text": "The researchers analyzed the data."
+            },
+            {
+                "id": "c",
+                "text": "The report was reviewed by the board."
+            },
+            {
+                "id": "d",
+                "text": "The storm caused extensive damage."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "In 'The report was reviewed by the board', the subject (the report) is receiving the action, which characterizes the passive voice.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for a sentence where the subject is the recipient of the action.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What does the idiom 'to jump on the\nbandwagon' mean?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "To start a new musical group"
+            },
+            {
+                "id": "b",
+                "text": "To follow a popular trend"
+            },
+            {
+                "id": "c",
+                "text": "To criticize a public figure"
+            },
+            {
+                "id": "d",
+                "text": "To travel by carriage"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "The phrase means to join others in doing something that is becoming fashionable or popular.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think about joining a group because something is successful or trendy.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct word:\nThe ______ of the evidence suggests\nthat the hypothesis is likely correct.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "preponderance"
+            },
+            {
+                "id": "b",
+                "text": "deficiency"
+            },
+            {
+                "id": "c",
+                "text": "scarcity"
+            },
+            {
+                "id": "d",
+                "text": "insignificance"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Preponderance' means the quality or fact of being greater in number, quantity, or importance, which fits the context of supporting evidence.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for a word that indicates a majority or a large amount.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which sentence uses the subjunctive mood?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "If I was you, I would go."
+            },
+            {
+                "id": "b",
+                "text": "He requested that she be present."
+            },
+            {
+                "id": "c",
+                "text": "She is going to the store."
+            },
+            {
+                "id": "d",
+                "text": "They have finished their homework."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "The phrase 'that she be present' uses the subjunctive mood, which is used for requests, requirements, or hypothetical situations.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for a verb form that expresses a demand or a wish.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Select the word that is most opposite\nto 'Pragmatic':",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Practical"
+            },
+            {
+                "id": "b",
+                "text": "Efficient"
+            },
+            {
+                "id": "c",
+                "text": "Idealistic"
+            },
+            {
+                "id": "d",
+                "text": "Utilitarian"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Pragmatic' means dealing with things sensibly and realistically, while 'idealistic' involves pursuing high or noble principles, often unrealistically.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Consider a word that describes someone who focuses on visions rather than reality.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the conjunction in this sentence:\nI would love to help, but I am\ncurrently overcommitted with other projects.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "would"
+            },
+            {
+                "id": "b",
+                "text": "but"
+            },
+            {
+                "id": "c",
+                "text": "currently"
+            },
+            {
+                "id": "d",
+                "text": "other"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'But' is a coordinating conjunction used to connect two independent clauses and show contrast.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Find the word used to connect the two parts of the sentence.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which of these is a 'run-on' sentence?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "The sun set, and the stars appeared."
+            },
+            {
+                "id": "b",
+                "text": "I like coffee she prefers tea."
+            },
+            {
+                "id": "c",
+                "text": "Because it was raining, we stayed in."
+            },
+            {
+                "id": "d",
+                "text": "To be or not to be, that is the question."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "A run-on sentence occurs when two independent clauses are joined without proper punctuation or a conjunction.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for two complete thoughts that are pushed together without a comma or 'and'.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct spelling:",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Maintnance"
+            },
+            {
+                "id": "b",
+                "text": "Maintenence"
+            },
+            {
+                "id": "c",
+                "text": "Maintenance"
+            },
+            {
+                "id": "d",
+                "text": "Maintenants"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Maintenance' is the correct spelling, derived from the verb 'maintain'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "This word often trips people up because it changes the vowel from its verb form.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "In academic writing, 'sic' is used to:",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Indicate a missing word"
+            },
+            {
+                "id": "b",
+                "text": "Show a grammatical error in a quote"
+            },
+            {
+                "id": "c",
+                "text": "Cite a secondary source"
+            },
+            {
+                "id": "d",
+                "text": "Provide a translation"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "The term 'sic' is used after a quoted word or passage to indicate that it appears exactly as it was in the original, even with an error.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "It's used when you want to show that a mistake belongs to the original author.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Select the synonym for 'Inherent':\nFreedom of speech is considered an\ninherent right in many democratic\nsocieties.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Acquired"
+            },
+            {
+                "id": "b",
+                "text": "Intrinsic"
+            },
+            {
+                "id": "c",
+                "text": "External"
+            },
+            {
+                "id": "d",
+                "text": "Incidental"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Inherent' and 'intrinsic' both describe something that is an essential and natural part of something.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think of a word that means built-in or fundamental.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the purpose of an Oxford comma?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "To separate two independent clauses"
+            },
+            {
+                "id": "b",
+                "text": "To introduce a list"
+            },
+            {
+                "id": "c",
+                "text": "To separate the last two items in a list"
+            },
+            {
+                "id": "d",
+                "text": "To end a sentence"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "The Oxford comma is the final comma in a list of three or more items, occurring before 'and' or 'or'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "It's the optional comma used at the very end of a series of items.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct sentence:",
+        "choices": [
+            {
+                "id": "a",
+                "text": "The data is very convincing."
+            },
+            {
+                "id": "b",
+                "text": "The data are very convincing."
+            },
+            {
+                "id": "c",
+                "text": "The datas are very convincing."
+            },
+            {
+                "id": "d",
+                "text": "Convincing are the data."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "In formal academic English, 'data' is the plural form of 'datum', thus requiring the plural verb 'are'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think about the formal plural nature of this scientific term.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What does the word 'Redundant' imply?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Essential and unique"
+            },
+            {
+                "id": "b",
+                "text": "No longer needed or useful"
+            },
+            {
+                "id": "c",
+                "text": "Complex and multi-layered"
+            },
+            {
+                "id": "d",
+                "text": "Highly efficient"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Redundant' refers to something that is superfluous or can be omitted without loss of meaning or function.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think of something that is extra and unnecessary.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the primary function of a\nsemicolon:",
+        "choices": [
+            {
+                "id": "a",
+                "text": "To introduce a quotation"
+            },
+            {
+                "id": "b",
+                "text": "To connect two related independent clauses"
+            },
+            {
+                "id": "c",
+                "text": "To indicate a strong emotional pause"
+            },
+            {
+                "id": "d",
+                "text": "To separate an adjective from a noun"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "A semicolon is most commonly used to join two independent clauses that are closely related in thought.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "It acts like a bridge between two complete sentences that belong together.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Select the correct word:\nThe ______ of the building was delayed\ndue to unforeseen structural issues.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "erection"
+            },
+            {
+                "id": "b",
+                "text": "construction"
+            },
+            {
+                "id": "c",
+                "text": "fabrication"
+            },
+            {
+                "id": "d",
+                "text": "composition"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Construction' is the standard term used for the process of building a structure like a building.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for the most common term for making a building.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the meaning of 'Plausible'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Clearly false"
+            },
+            {
+                "id": "b",
+                "text": "Seemingly reasonable or probable"
+            },
+            {
+                "id": "c",
+                "text": "Extremely unlikely"
+            },
+            {
+                "id": "d",
+                "text": "Proven beyond doubt"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Plausible' describes an argument or statement that seems like it could be true or believable.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think of something that sounds like it makes sense.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the word that acts as an\nadverb in this sentence:\nShe quickly finished the complex\nassignment before the deadline.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "finished"
+            },
+            {
+                "id": "b",
+                "text": "complex"
+            },
+            {
+                "id": "c",
+                "text": "quickly"
+            },
+            {
+                "id": "d",
+                "text": "deadline"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Quickly' is an adverb because it modifies the verb 'finished', describing how the action was performed.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for the word that tells you 'how' she did the action.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which word is a synonym for 'Elucidate'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Confuse"
+            },
+            {
+                "id": "b",
+                "text": "Clarify"
+            },
+            {
+                "id": "c",
+                "text": "Obscure"
+            },
+            {
+                "id": "d",
+                "text": "Simplify"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Elucidate' means to make something clear or to explain it thoroughly.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think of making something easier to understand by shining a light on it.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct collective noun:\nA ______ of experts was gathered to\nevaluate the potential risks of the\nnew project.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "flock"
+            },
+            {
+                "id": "b",
+                "text": "panel"
+            },
+            {
+                "id": "c",
+                "text": "herd"
+            },
+            {
+                "id": "d",
+                "text": "pack"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Panel' is the appropriate collective noun for a small group of people brought together to discuss or decide on a matter.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "This word is often used for groups in discussions or competitions.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is a 'cliché'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A newly coined word"
+            },
+            {
+                "id": "b",
+                "text": "An overused expression"
+            },
+            {
+                "id": "c",
+                "text": "A type of rhythmic poem"
+            },
+            {
+                "id": "d",
+                "text": "A specialized technical term"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "A cliché is a phrase or opinion that is overused and betrays a lack of original thought.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think of a saying that has lost its impact because people say it too much.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the correct use of 'whom':",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Whom is calling?"
+            },
+            {
+                "id": "b",
+                "text": "To whom should I address this?"
+            },
+            {
+                "id": "c",
+                "text": "Whom wants some cake?"
+            },
+            {
+                "id": "d",
+                "text": "Whom did that?"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Whom' is the objective case of 'who' and is used as the object of a preposition like 'to'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Try replacing it with 'him' to see if it makes sense.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What does 'Euphemism' refer to?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A harsh, direct statement"
+            },
+            {
+                "id": "b",
+                "text": "A mild or indirect expression"
+            },
+            {
+                "id": "c",
+                "text": "A word with multiple meanings"
+            },
+            {
+                "id": "d",
+                "text": "An exaggeration for effect"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "A euphemism is a polite way of saying something that might otherwise be considered unpleasant or embarrassing.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "It's used to make something sound better than it really is.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct word:\nThe project's success was ______ on\nsecuring additional funding from the\ngovernment.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "contingent"
+            },
+            {
+                "id": "b",
+                "text": "isolated"
+            },
+            {
+                "id": "c",
+                "text": "unrelated"
+            },
+            {
+                "id": "d",
+                "text": "independent"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "'Contingent' means dependent on or conditioned by something else, which fits the relationship between success and funding.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Think of a word that means 'depending on something else'.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which of these is a complex sentence?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I ate lunch."
+            },
+            {
+                "id": "b",
+                "text": "I ate lunch, and I took a nap."
+            },
+            {
+                "id": "c",
+                "text": "After I ate lunch, I took a nap."
+            },
+            {
+                "id": "d",
+                "text": "I ate lunch and took a nap."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_plus"
+        ],
+        "explanation": "A complex sentence contains one independent clause and at least one dependent clause (in this case, starting with 'After').",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_plus",
+        "hint": "Look for a sentence that has a part that can't stand alone.",
+        "createdAt": 1706040240
+    }
+]

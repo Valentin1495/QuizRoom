@@ -1,0 +1,1762 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "세포의 생명 활동에 필요한 에너지를\n생성하는 세포 소기관은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "리보솜"
+            },
+            {
+                "id": "b",
+                "text": "미토콘드리아"
+            },
+            {
+                "id": "c",
+                "text": "골지체"
+            },
+            {
+                "id": "d",
+                "text": "중심체"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "미토콘드리아는 세포 호흡이 일어나는 장소로, 생명 활동에 필요한 ATP를 합성합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "세포 내 발전소라고 불리는 소기관을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체가 일정한 속력으로 원운동을 할 때,\n물체에 작용하는 알짜힘의 방향은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "운동 방향과 나란한 방향"
+            },
+            {
+                "id": "b",
+                "text": "운동 방향의 반대 방향"
+            },
+            {
+                "id": "c",
+                "text": "원궤도의 중심 방향"
+            },
+            {
+                "id": "d",
+                "text": "원궤도의 바깥쪽 방향"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "등속 원운동을 하는 물체에는 원의 중심을 향하는 구심력이 작용하여 방향을 변화시킵니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "원을 그리며 돌게 만드는 힘의 방향을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014801
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "주기율표에서 1족 원소인 알칼리 금속의\n공통된 성질로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "상온에서 기체 상태로 존재한다."
+            },
+            {
+                "id": "b",
+                "text": "반응성이 매우 작아 안전하다."
+            },
+            {
+                "id": "c",
+                "text": "물과 격렬하게 반응하여 수소를 발생한다."
+            },
+            {
+                "id": "d",
+                "text": "밀도가 매우 커서 물에 가라앉는다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "알칼리 금속은 반응성이 매우 커서 물과 반응하면 수소 기체와 수산화 이온을 생성합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "리튬, 나트륨 등을 물에 넣었을 때의 반응을 떠올려보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014802
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "판 구조론에서 두 판이 서로 멀어지는\n경계에서 발달하는 지형은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "해구"
+            },
+            {
+                "id": "b",
+                "text": "습곡 산맥"
+            },
+            {
+                "id": "c",
+                "text": "해령"
+            },
+            {
+                "id": "d",
+                "text": "변환 단층"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "발산형 경계인 해령에서는 새로운 지각이 생성되며 판이 양옆으로 멀어집니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "해저 산맥 모양으로 판이 생성되는 곳입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014803
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생태계 내에서 유기물을 무기물로 분해하여\n에너지원을 얻는 생물군은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "생산자"
+            },
+            {
+                "id": "b",
+                "text": "1차 소비자"
+            },
+            {
+                "id": "c",
+                "text": "2차 소비자"
+            },
+            {
+                "id": "d",
+                "text": "분해자"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "세균이나 버섯과 같은 분해자는 생물의 사체나 배설물을 분해하여 물질 순환을 돕습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "죽은 생명체를 썩게 만드는 생물들을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014804
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "화합물을 구성하는 성분 원소들의\n질량비가 일정하다는 법칙은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "질량 보존 법칙"
+            },
+            {
+                "id": "b",
+                "text": "일정 성분비 법칙"
+            },
+            {
+                "id": "c",
+                "text": "기체 반응 법칙"
+            },
+            {
+                "id": "d",
+                "text": "아보가드로 법칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "프루스트가 발표한 일정 성분비 법칙은 화합물을 생성할 때 원소 간 질량비가 일정함을 설명합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "'일정한 성분 비율'이라는 단어에 주목하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014805
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "별의 표면 온도에 따라 색이 달라질 때,\n다음 중 가장 온도가 높은 별의 색은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "붉은색"
+            },
+            {
+                "id": "b",
+                "text": "노란색"
+            },
+            {
+                "id": "c",
+                "text": "흰색"
+            },
+            {
+                "id": "d",
+                "text": "청색"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "별의 표면 온도가 높을수록 파장이 짧은 빛을 많이 방출하여 청색을 띱니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "붉은색과 푸른색 중 어떤 불꽃이 더 뜨거운지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014806
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "산성 수용액과 염기성 수용액이 반응하여\n물과 염이 생성되는 반응은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "산화 반응"
+            },
+            {
+                "id": "b",
+                "text": "환원 반응"
+            },
+            {
+                "id": "c",
+                "text": "중화 반응"
+            },
+            {
+                "id": "d",
+                "text": "연소 반응"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "중화 반응은 수소 이온과 수산화 이온이 만나 물을 생성하며 성질이 중화되는 반응입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "산과 염기가 만나 성질이 사라지는 것을 의미하는 용어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014807
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지질 시대 중 공룡이 번성하고 암모나이트가\n표준 화석으로 나타나는 시대는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "선캄브리아 시대"
+            },
+            {
+                "id": "b",
+                "text": "고생대"
+            },
+            {
+                "id": "c",
+                "text": "중생대"
+            },
+            {
+                "id": "d",
+                "text": "신생대"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "중생대는 공룡과 같은 파충류와 암모나이트가 번성했던 시대입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "파충류의 시대로 알려진 시기입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014808
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "전자기 유도 현상을 이용하여 운동 에너지를\n전기 에너지로 변환하는 장치는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전동기"
+            },
+            {
+                "id": "b",
+                "text": "발전기"
+            },
+            {
+                "id": "c",
+                "text": "축전기"
+            },
+            {
+                "id": "d",
+                "text": "저항기"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "발전기는 코일과 자석의 상대적 운동을 통해 유도 전류를 발생시켜 전기를 만듭니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "전기를 '발생'시키는 장치의 이름을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014809
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빛이 한 매질에서 다른 매질로 진행할 때\n경계면에서 꺾이는 현상을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반사"
+            },
+            {
+                "id": "b",
+                "text": "굴절"
+            },
+            {
+                "id": "c",
+                "text": "회절"
+            },
+            {
+                "id": "d",
+                "text": "간섭"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "굴절은 빛의 속력 차이에 의해 경로가 꺾이는 현상으로 렌즈 등에서 관찰됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "물속의 빨대가 꺾여 보이는 현상과 같습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014810
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "화학 반응 전후에 원자의 종류와 개수는\n변하지 않는다는 법칙은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "아보가드로 법칙"
+            },
+            {
+                "id": "b",
+                "text": "질량 보존 법칙"
+            },
+            {
+                "id": "c",
+                "text": "기체 반응 법칙"
+            },
+            {
+                "id": "d",
+                "text": "배수 비례 법칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "원자가 새로 생성되거나 사라지지 않으므로 반응물과 생성물의 총 질량은 같습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "반응 전과 후의 전체 무게가 일정하다는 원리입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014811
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "DNA의 이중 나선 구조에서 '아데닌(A)'과\n항상 상보적으로 결합하는 염기는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "구아닌(G)"
+            },
+            {
+                "id": "b",
+                "text": "사이토신(C)"
+            },
+            {
+                "id": "c",
+                "text": "타이민(T)"
+            },
+            {
+                "id": "d",
+                "text": "우라실(U)"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "DNA에서 아데닌은 타이민과, 구아닌은 사이토신과 수소 결합을 형성합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "알파벳 A와 짝을 이루는 DNA 염기를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014812
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지구 시스템의 에너지원 중 가장 많은\n양을 차지하는 근원 에너지는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지구 내부 에너지"
+            },
+            {
+                "id": "b",
+                "text": "조력 에너지"
+            },
+            {
+                "id": "c",
+                "text": "태양 에너지"
+            },
+            {
+                "id": "d",
+                "text": "핵에너지"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "태양 에너지는 기상 현상과 광합성 등 지구 시스템 변화의 가장 핵심적인 동력원입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "외부에서 유입되는 가장 거대한 에너지를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014813
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "중력이 작용하는 공간에서 물체를 가만히\n놓았을 때 나타나는 운동 상태는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "등속 직선 운동"
+            },
+            {
+                "id": "b",
+                "text": "등가속도 직선 운동"
+            },
+            {
+                "id": "c",
+                "text": "등속 원운동"
+            },
+            {
+                "id": "d",
+                "text": "포물선 운동"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "자유 낙하 하는 물체는 일정한 중력을 받아 속력이 일정하게 증가하는 등가속도 운동을 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "낙하할수록 속도가 어떻게 변하는지 떠올려보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014814
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "원자의 구성 입자 중 전하를 띠지 않으며\n원자핵 속에 존재하는 입자는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "양성자"
+            },
+            {
+                "id": "b",
+                "text": "전자"
+            },
+            {
+                "id": "c",
+                "text": "중성자"
+            },
+            {
+                "id": "d",
+                "text": "이온"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "중성자는 양성자와 함께 원자핵을 구성하며, 이름 그대로 전기적으로 중성입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "'중성'이라는 단어와 관련이 깊습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014815
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "식물이 빛 에너지를 이용하여 이산화 탄소와\n물로 유기물을 만드는 과정은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "세포 호흡"
+            },
+            {
+                "id": "b",
+                "text": "증산 작용"
+            },
+            {
+                "id": "c",
+                "text": "광합성"
+            },
+            {
+                "id": "d",
+                "text": "소화"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "광합성은 엽록체에서 일어나며 빛 에너지를 화학 에너지(포도당)로 전환합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "'빛'을 사용하여 물질을 '합성'한다는 의미입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014816
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "대기권의 구조 중 기상 현상이 나타나고\n공기의 대부분이 모여 있는 층은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "대류권"
+            },
+            {
+                "id": "b",
+                "text": "성층권"
+            },
+            {
+                "id": "c",
+                "text": "중간권"
+            },
+            {
+                "id": "d",
+                "text": "열권"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "대류권은 지표면과 가장 가까운 층으로 대류가 활발하며 수증기가 있어 기상 현상이 발생합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "우리가 살고 있는 가장 아래쪽 대기층입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014817
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "금속 원소와 비금속 원소가 결합하여\n생성되는 화학 결합의 종류는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "공유 결합"
+            },
+            {
+                "id": "b",
+                "text": "이온 결합"
+            },
+            {
+                "id": "c",
+                "text": "금속 결합"
+            },
+            {
+                "id": "d",
+                "text": "수소 결합"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "이온 결합은 양이온(금속)과 음이온(비금속) 사이의 정전기적 인력으로 형성됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "전자를 주고받아 형성된 입자들 사이의 결합입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014818
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체의 운동량을 변화시키기 위해 가해준\n힘과 시간의 곱을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "일"
+            },
+            {
+                "id": "b",
+                "text": "일률"
+            },
+            {
+                "id": "c",
+                "text": "충격량"
+            },
+            {
+                "id": "d",
+                "text": "가속도"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "충격량(I = F·Δt)은 물체에 가해진 충격의 정도로 운동량의 변화량과 같습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "힘을 받은 '충격'의 크기를 나타내는 물리량입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014819
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "수평 방향으로 던진 물체의 운동에서\n연직(아래) 방향의 가속도는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "0"
+            },
+            {
+                "id": "b",
+                "text": "중력 가속도(g)"
+            },
+            {
+                "id": "c",
+                "text": "점점 감소한다"
+            },
+            {
+                "id": "d",
+                "text": "던진 속도에 비례한다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "수평으로 던진 물체는 수평 방향으론 등속 운동을, 연직 방향으론 중력 가속도가 작용하는 자유 낙하 운동을 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "아래쪽으로는 오직 중력만이 작용한다는 점을 기억하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 염기성 수용액의 공통적인\n성질로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "신맛이 난다."
+            },
+            {
+                "id": "b",
+                "text": "마그네슘과 반응해 수소를 만든다."
+            },
+            {
+                "id": "c",
+                "text": "단백질을 녹이는 성질이 있다."
+            },
+            {
+                "id": "d",
+                "text": "푸른색 리트머스 종이를 붉게 만든다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "염기성 물질은 단백질을 녹이는 성질이 있어 손으로 만지면 미끈거립니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "비누나 세정제가 미끈거리는 이유를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014821
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생물의 유전 정보가 DNA에서 RNA를 거쳐\n단백질로 전달되는 과정을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "생명 중심 원리"
+            },
+            {
+                "id": "b",
+                "text": "자연 선택설"
+            },
+            {
+                "id": "c",
+                "text": "세포 호흡"
+            },
+            {
+                "id": "d",
+                "text": "에너지 대사"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "생명 중심 원리(Central Dogma)는 유전 정보의 흐름(복제-전사-번역)을 설명하는 핵심 이론입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "현대 생물학의 '중심'이 되는 흐름을 뜻합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014822
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "엘니뇨 현상이 발생했을 때 동태평양\n해역에서 나타나는 특징은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "용승이 강화된다."
+            },
+            {
+                "id": "b",
+                "text": "표층 수온이 평년보다 높아진다."
+            },
+            {
+                "id": "c",
+                "text": "가뭄이 심해진다."
+            },
+            {
+                "id": "d",
+                "text": "무역풍이 강해진다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "엘니뇨는 무역풍이 약화되어 따뜻한 해수가 동쪽으로 이동하며 동태평양 수온이 상승하는 현상입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "무역풍이 약해졌을 때 바닷물의 온도가 어떻게 변할지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014823
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "산화 환원 반응에서 전자를 잃는\n현상을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "산화"
+            },
+            {
+                "id": "b",
+                "text": "환원"
+            },
+            {
+                "id": "c",
+                "text": "중화"
+            },
+            {
+                "id": "d",
+                "text": "가수 분해"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "산화는 산소를 얻거나 전자를 잃는 반응이며, 환원은 그 반대입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "산소와 결합하거나 전자를 빼앗길 때 부르는 이름입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014824
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "우주가 팽창함에 따라 우주의 온도와\n밀도는 각각 어떻게 변하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "온도 상승, 밀도 증가"
+            },
+            {
+                "id": "b",
+                "text": "온도 하강, 밀도 감소"
+            },
+            {
+                "id": "c",
+                "text": "온도 일정, 밀도 감소"
+            },
+            {
+                "id": "d",
+                "text": "온도 하강, 밀도 일정"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "빅뱅 우주론에 따르면 우주는 팽창하면서 에너지가 분산되어 온도와 밀도가 모두 낮아집니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "풍선이 커질 때 내부의 입자 농도와 열을 상상해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014825
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "태양 전지에서 태양 광선을 받아 직접\n전기 에너지를 만드는 효과는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "도플러 효과"
+            },
+            {
+                "id": "b",
+                "text": "광전 효과"
+            },
+            {
+                "id": "c",
+                "text": "온실 효과"
+            },
+            {
+                "id": "d",
+                "text": "열전 효과"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "광전 효과는 금속 표면에 빛을 비췄을 때 전자가 튀어나오는 현상으로 태양 전지의 원리입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "'빛(광)'에 의해 '전기'가 발생하는 효과를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014826
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지질 시대의 암석 속에 남아 있는\n생물의 유해나 흔적을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "화석"
+            },
+            {
+                "id": "b",
+                "text": "광석"
+            },
+            {
+                "id": "c",
+                "text": "부식"
+            },
+            {
+                "id": "d",
+                "text": "지층"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "화석은 과거 생물의 몸체뿐만 아니라 발자국, 기어간 흔적 등을 모두 포함합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "공룡 뼈나 암모나이트 무늬가 있는 돌을 부르는 이름입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014827
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "주기율표의 가로줄과 세로줄을 각각\n무엇이라 부르는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "족, 주기"
+            },
+            {
+                "id": "b",
+                "text": "층, 계"
+            },
+            {
+                "id": "c",
+                "text": "주기, 족"
+            },
+            {
+                "id": "d",
+                "text": "줄, 칸"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "주기율표에서 가로줄은 주기(1~7주기), 세로줄은 족(1~18족)이라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "가로가 '주기', 세로가 '족'임을 기억하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014828
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 에너지가 순환하지 않고\n흐르기만 하는 형태인 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "질소 에너지"
+            },
+            {
+                "id": "b",
+                "text": "열에너지"
+            },
+            {
+                "id": "c",
+                "text": "물 에너지"
+            },
+            {
+                "id": "d",
+                "text": "탄소 에너지"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "에너지는 생태계의 영양 단계를 거칠 때마다 열에너지로 방출되어 재사용되지 못하고 우주로 방출됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "사용된 후 다시 모으기 힘든 분산된 에너지를 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014829
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "아미노산들이 펩타이드 결합을 통해\n길게 연결되어 형성되는 고분자는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지방"
+            },
+            {
+                "id": "b",
+                "text": "핵산"
+            },
+            {
+                "id": "c",
+                "text": "단백질"
+            },
+            {
+                "id": "d",
+                "text": "녹말"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "아미노산은 단백질을 구성하는 기본 단위이며 펩타이드 결합을 통해 폴리펩타이드를 만듭니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "근육을 구성하는 주요 성분입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014830
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "두 물체가 충돌할 때 외부에서 힘이\n작용하지 않으면 보존되는 물리량은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "운동 에너지"
+            },
+            {
+                "id": "b",
+                "text": "운동량"
+            },
+            {
+                "id": "c",
+                "text": "속도"
+            },
+            {
+                "id": "d",
+                "text": "가속도"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "충돌 시 작용-반작용에 의해 충격량이 서로 같으므로 전체 운동량의 합은 보존됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "질량과 속도의 곱으로 정의되는 양입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014831
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "주기율표에서 18족 원소인 비활성 기체의\n가장 큰 특징은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "금속성이 매우 강하다."
+            },
+            {
+                "id": "b",
+                "text": "다른 원소와 거의 반응하지 않는다."
+            },
+            {
+                "id": "c",
+                "text": "상온에서 고체 상태이다."
+            },
+            {
+                "id": "d",
+                "text": "최외각 전자 수가 1개이다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "비활성 기체는 전자 껍질이 가득 차 있어 화학적으로 매우 안정하며 반응성이 없습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "'활성이 없다'는 이름의 의미를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014832
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "원자핵에서 방출되는 빛인 감마(γ)선의\n특징으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "투과력이 가장 강하다."
+            },
+            {
+                "id": "b",
+                "text": "질량이 매우 크다."
+            },
+            {
+                "id": "c",
+                "text": "(+) 전하를 띤다."
+            },
+            {
+                "id": "d",
+                "text": "종이 한 장으로 막을 수 있다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "감마선은 에너지가 매우 높은 전자기파로 알파선이나 베타선보다 투과력이 월등히 높습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "납이나 두꺼운 콘크리트로만 막을 수 있는 방사선입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014833
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 지구 온난화의 주요 원인이 되는\n기체(온실 기체)는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "산소"
+            },
+            {
+                "id": "b",
+                "text": "질소"
+            },
+            {
+                "id": "c",
+                "text": "이산화 탄소"
+            },
+            {
+                "id": "d",
+                "text": "아르곤"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "이산화 탄소는 적외선 지표 복사 에너지를 흡수하여 지구의 기온을 높이는 역할을 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "화석 연료를 연소할 때 많이 발생하는 기체입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014834
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "효소가 생체 내에서 반응 속도를\n빠르게 하는 근본적인 이유는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반응열을 높이기 때문에"
+            },
+            {
+                "id": "b",
+                "text": "활성화 에너지를 낮추기 때문에"
+            },
+            {
+                "id": "c",
+                "text": "반응물의 농도를 높이기 때문에"
+            },
+            {
+                "id": "d",
+                "text": "생성물의 에너지를 낮추기 때문에"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "효소는 반응에 필요한 최소 에너지인 활성화 에너지를 낮추어 반응이 쉽게 일어나게 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "반응이 일어나기 위한 '문턱'을 낮추는 역할을 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014835
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "대륙 이동설의 증거로 옳지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "해안선 모양의 일치"
+            },
+            {
+                "id": "b",
+                "text": "화석 분포의 연속성"
+            },
+            {
+                "id": "c",
+                "text": "빙하 흔적의 분포"
+            },
+            {
+                "id": "d",
+                "text": "조석 간만의 차이"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "조석 간만의 차이는 달의 인력에 의한 현상으로 대륙 이동의 증거와는 관련이 없습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "베게너가 제시한 네 가지 증거를 떠올려보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014836
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "별의 내부에서 수소 원자핵들이 결합하여\n헬륨 원자핵이 되는 반응은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "수소 핵분열"
+            },
+            {
+                "id": "b",
+                "text": "수소 핵융합"
+            },
+            {
+                "id": "c",
+                "text": "화학적 연소"
+            },
+            {
+                "id": "d",
+                "text": "알파 붕괴"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "별의 주계열 단계에서 일어나는 수소 핵융합 반응은 별이 방출하는 에너지의 근원입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "가벼운 핵들이 '합쳐지는' 과정입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1706014837
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "전류의 흐름을 방해하는 정도를 뜻하는\n물리량의 단위는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "암페어(A)"
+            },
+            {
+                "id": "b",
+                "text": "볼트(V)"
+            },
+            {
+                "id": "c",
+                "text": "옴(Ω)"
+            },
+            {
+                "id": "d",
+                "text": "와트(W)"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "옴(Ω)은 저항의 단위이며, 전압(V) = 전류(I) × 저항(R)의 관계가 성립합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "오옴의 법칙과 관련된 단위를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1706014838
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생물의 분류 단계 중 가장 포괄적인\n범위(가장 높은 단계)는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "종"
+            },
+            {
+                "id": "b",
+                "text": "목"
+            },
+            {
+                "id": "c",
+                "text": "강"
+            },
+            {
+                "id": "d",
+                "text": "계"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:high"
+        ],
+        "explanation": "생물의 분류 단계는 종-속-과-목-강-문-계 순서로 계가 가장 큰 범주입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "high",
+        "hint": "식물계, 동물계 할 때의 그 단위입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1706014839
+    }
+]

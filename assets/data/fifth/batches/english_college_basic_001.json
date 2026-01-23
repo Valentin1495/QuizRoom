@@ -1,0 +1,1442 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the grammatically correct sentence\namong the following options regarding\nsubject-verb agreement.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "The list of items are on the desk."
+            },
+            {
+                "id": "b",
+                "text": "The group of students is studying hard."
+            },
+            {
+                "id": "c",
+                "text": "Neither of the candidates are qualified."
+            },
+            {
+                "id": "d",
+                "text": "Every one of the boxes were empty."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The subject 'group' is a collective noun acting as a single unit, which requires the singular verb 'is'. Options a, c, and d incorrectly use plural verbs for singular subjects.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Focus on the head noun of the subject phrase rather than the noun closest to the verb.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the most appropriate word to fill\nin the blank:\n'The CEO's speech was **,\nlasting only five minutes.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "prolific"
+            },
+            {
+                "id": "b",
+                "text": "verbose"
+            },
+            {
+                "id": "c",
+                "text": "concise"
+            },
+            {
+                "id": "d",
+                "text": "redundant"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The word 'concise' means giving a lot of information clearly and in a few words, which fits the context of a five-minute speech. The other options suggest lengthiness or productivity.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "The blank should describe something that is short and to the point.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which of the following sentences uses\nthe subjunctive mood correctly?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "If I was you, I would take the job."
+            },
+            {
+                "id": "b",
+                "text": "It is essential that he arrives on time."
+            },
+            {
+                "id": "c",
+                "text": "I suggest that she stay for dinner."
+            },
+            {
+                "id": "d",
+                "text": "I wish it was Friday already."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "In the subjunctive mood used for suggestions, the base form of the verb ('stay') is required regardless of the subject. 'Was' should be 'were' in hypothetical statements.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Look for verbs expressing suggestions or requirements that take the base form.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Read the text and choose the main idea:\n'While remote work offers flexibility,\nit often leads to a blurring of lines\nbetween professional and personal life,\ncausing increased stress for some.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Remote work is always better than office work."
+            },
+            {
+                "id": "b",
+                "text": "Flexibility is the only benefit of remote work."
+            },
+            {
+                "id": "c",
+                "text": "Remote work has potential drawbacks for well-being."
+            },
+            {
+                "id": "d",
+                "text": "Office work eliminates all forms of stress."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The passage discusses a specific negative aspect (blurring lines and stress) of remote work, supporting the idea that it has drawbacks. The other choices are either too broad or not mentioned.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Identify the contrast introduced by the word 'While'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Select the sentence with the correct\npunctuation.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I have a big test tomorrow, therefore I must study."
+            },
+            {
+                "id": "b",
+                "text": "I have a big test tomorrow; therefore, I must study."
+            },
+            {
+                "id": "c",
+                "text": "I have a big test tomorrow; therefore I must study."
+            },
+            {
+                "id": "d",
+                "text": "I have a big test tomorrow therefore, I must study."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "A semicolon should separate two independent clauses joined by a conjunctive adverb like 'therefore', followed by a comma. Option b correctly applies this rule.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Look for the correct use of a semicolon and comma with a transition word.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the antonym of 'ambiguous'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Vague"
+            },
+            {
+                "id": "b",
+                "text": "Clear"
+            },
+            {
+                "id": "c",
+                "text": "Uncertain"
+            },
+            {
+                "id": "d",
+                "text": "Obscure"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Ambiguous' means having a double meaning or being unclear. Therefore, 'clear' is its direct opposite. The other options are synonyms.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Think of a word that describes something easy to understand.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the passive voice sentence.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "The chef prepared a delicious meal."
+            },
+            {
+                "id": "b",
+                "text": "The flowers were watered by the gardener."
+            },
+            {
+                "id": "c",
+                "text": "She is writing a new novel."
+            },
+            {
+                "id": "d",
+                "text": "They have finished the project."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "In a passive voice sentence, the subject receives the action. Here, 'flowers' are being acted upon by the gardener.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Find the sentence where the subject is not the doer of the action.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which sentence contains a misplaced\nmodifier?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Running to the bus, her shoe fell off."
+            },
+            {
+                "id": "b",
+                "text": "While she was running, her shoe fell off."
+            },
+            {
+                "id": "c",
+                "text": "As she ran to the bus, she lost her shoe."
+            },
+            {
+                "id": "d",
+                "text": "She lost her shoe while running to the bus."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "In option a, the introductory phrase 'Running to the bus' modifies 'her shoe', implying the shoe was running. This is a dangling/misplaced modifier.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Check if the opening phrase logically describes the subject that follows it.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct preposition:\n'The committee is ______ agreement\nregarding the new policy.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "in"
+            },
+            {
+                "id": "b",
+                "text": "on"
+            },
+            {
+                "id": "c",
+                "text": "at"
+            },
+            {
+                "id": "d",
+                "text": "with"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The idiomatic expression is 'in agreement'. While 'agree with' is a verb phrase, 'is in agreement' is the correct adjectival phrase usage.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Think of the standard idiom used to show people have the same opinion.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the function of the underlined\nword in: 'To win is everything'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Adverb"
+            },
+            {
+                "id": "b",
+                "text": "Gerund"
+            },
+            {
+                "id": "c",
+                "text": "Infinitive as subject"
+            },
+            {
+                "id": "d",
+                "text": "Participle"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'To win' is an infinitive (to + verb) and it functions as the subject of the sentence. It occupies the position usually held by a noun.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Identify the 'to + verb' structure and its role in the sentence structure.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which of these is a compound sentence?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Since it was raining, we stayed inside."
+            },
+            {
+                "id": "b",
+                "text": "We stayed inside because of the rain."
+            },
+            {
+                "id": "c",
+                "text": "It was raining, so we stayed inside."
+            },
+            {
+                "id": "d",
+                "text": "Raining heavily, the weather kept us inside."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "A compound sentence consists of at least two independent clauses joined by a coordinating conjunction (FANBOYS). 'So' is a coordinating conjunction.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Look for a sentence with two complete thoughts joined by a comma and a conjunction like 'and', 'but', or 'so'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct form:\n'Neither the teacher nor the students\n** aware of the schedule change.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "was"
+            },
+            {
+                "id": "b",
+                "text": "were"
+            },
+            {
+                "id": "c",
+                "text": "is"
+            },
+            {
+                "id": "d",
+                "text": "has been"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "With 'neither/nor', the verb must agree with the subject closer to it. Since 'students' is plural, the plural verb 'were' is required.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Apply the rule of proximity for subjects joined by 'neither/nor'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the word that is NOT a synonym\nof 'frugal'.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Thrifty"
+            },
+            {
+                "id": "b",
+                "text": "Economical"
+            },
+            {
+                "id": "c",
+                "text": "Prudent"
+            },
+            {
+                "id": "d",
+                "text": "Extravagant"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Frugal' means being careful with money. 'Extravagant' means spending excessively, making it an antonym, not a synonym.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "One word means spending too much, while the others mean saving.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which sentence uses 'its' correctly?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Its going to be a long day."
+            },
+            {
+                "id": "b",
+                "text": "The dog wagged it's tail."
+            },
+            {
+                "id": "c",
+                "text": "The company announced its new policy."
+            },
+            {
+                "id": "d",
+                "text": "I think its a great idea."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Its' is a possessive pronoun, whereas 'it's' is a contraction for 'it is'. Only option c correctly uses the possessive form.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Check if you can replace the word with 'it is'; if you can't, it should be the possessive 'its'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Find the error in the sentence:\n'Each of the players have received\na trophy for their participation.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Each"
+            },
+            {
+                "id": "b",
+                "text": "players"
+            },
+            {
+                "id": "c",
+                "text": "have"
+            },
+            {
+                "id": "d",
+                "text": "trophy"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The subject 'Each' is singular and requires a singular verb. Therefore, 'have' should be 'has'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "The word 'Each' always takes a singular verb.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What does the prefix 'bene-' mean?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Against"
+            },
+            {
+                "id": "b",
+                "text": "Good or well"
+            },
+            {
+                "id": "c",
+                "text": "Before"
+            },
+            {
+                "id": "d",
+                "text": "Many"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The prefix 'bene-' comes from Latin, meaning good or well, as seen in words like 'benefit' or 'benevolent'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Think of the word 'beneficial'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which of the following is a run-on\nsentence?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "He ran fast, yet he missed the train."
+            },
+            {
+                "id": "b",
+                "text": "He ran fast he missed the train."
+            },
+            {
+                "id": "c",
+                "text": "He ran fast; he missed the train."
+            },
+            {
+                "id": "d",
+                "text": "Because he ran fast, he missed the train."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "Option b fuses two independent clauses without any punctuation or conjunction, which is a classic run-on sentence.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Identify which sentence lacks a separator between two complete thoughts.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct word for the context:\n'The evidence was ______ to prove\nhis innocence.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "insufficient"
+            },
+            {
+                "id": "b",
+                "text": "efficient"
+            },
+            {
+                "id": "c",
+                "text": "proficient"
+            },
+            {
+                "id": "d",
+                "text": "magnificent"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Insufficient' means not enough, which fits the context of failing to prove something. The other words describe skills or quality.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "The blank requires a word that means 'not enough'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the tone of this sentence?\n'I am absolutely thrilled that we\nfinally reached our goal!'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Sarcastic"
+            },
+            {
+                "id": "b",
+                "text": "Neutral"
+            },
+            {
+                "id": "c",
+                "text": "Enthusiastic"
+            },
+            {
+                "id": "d",
+                "text": "Skeptical"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "Words like 'absolutely thrilled' and 'finally reached' convey high energy and positive emotion, indicating an enthusiastic tone.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Look for words that express strong positive excitement.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which transition word best shows contrast?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Furthermore"
+            },
+            {
+                "id": "b",
+                "text": "Consequently"
+            },
+            {
+                "id": "c",
+                "text": "Nevertheless"
+            },
+            {
+                "id": "d",
+                "text": "Similarly"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Nevertheless' is used to introduce a statement that contrasts with what was just said. 'Furthermore' adds info, 'Consequently' shows result, and 'Similarly' shows comparison.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Find the word used to say 'despite that'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which sentence is written in the\nfuture perfect tense?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I will go to the store."
+            },
+            {
+                "id": "b",
+                "text": "I will be going to the store."
+            },
+            {
+                "id": "c",
+                "text": "I will have gone to the store."
+            },
+            {
+                "id": "d",
+                "text": "I will have been going to the store."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The future perfect tense is formed with 'will have' plus the past participle ('gone'). It indicates an action that will be completed in the future.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Look for the structure 'will have + past participle'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the conjunction in this sentence:\n'He wanted to go, but he was too tired.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "wanted"
+            },
+            {
+                "id": "b",
+                "text": "but"
+            },
+            {
+                "id": "c",
+                "text": "too"
+            },
+            {
+                "id": "d",
+                "text": "tired"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'But' is a coordinating conjunction used to connect two independent clauses.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Look for the word that joins two separate thoughts.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the meaning of the idiom\n'under the weather'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "To be very happy"
+            },
+            {
+                "id": "b",
+                "text": "To feel sick"
+            },
+            {
+                "id": "c",
+                "text": "To be caught in rain"
+            },
+            {
+                "id": "d",
+                "text": "To be under pressure"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Under the weather' is a common idiom meaning to feel ill or unwell, often used for minor ailments like a cold.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Think of how you feel when you have a slight fever or cold.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which of the following is a metaphor?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Life is like a box of chocolates."
+            },
+            {
+                "id": "b",
+                "text": "The snow was a white blanket."
+            },
+            {
+                "id": "c",
+                "text": "As brave as a lion."
+            },
+            {
+                "id": "d",
+                "text": "The wind whistled through the trees."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "A metaphor directly states that one thing is another. Option b does this without using 'like' or 'as' (which would make it a simile).",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Find the direct comparison that does not use 'like' or 'as'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Select the correct plural form of 'crisis'.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "crisises"
+            },
+            {
+                "id": "b",
+                "text": "crisi"
+            },
+            {
+                "id": "c",
+                "text": "crises"
+            },
+            {
+                "id": "d",
+                "text": "crisis"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "Words ending in '-is' derived from Greek usually change to '-es' in the plural form. Hence, 'crisis' becomes 'crises'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Change the 'i' to an 'e'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct pronoun:\n'She and ______ went to the library.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "me"
+            },
+            {
+                "id": "b",
+                "text": "myself"
+            },
+            {
+                "id": "c",
+                "text": "I"
+            },
+            {
+                "id": "d",
+                "text": "mine"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The pronoun is part of a compound subject, so the subject case ('I') must be used. You can test this by removing 'She and'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Use the pronoun you would use if the other person wasn't there.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which sentence uses the apostrophe\ncorrectly for possession?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "The childrens' toys were everywhere."
+            },
+            {
+                "id": "b",
+                "text": "The children's toys were everywhere."
+            },
+            {
+                "id": "c",
+                "text": "The childrens toys were everywhere."
+            },
+            {
+                "id": "d",
+                "text": "The childrens's toys were everywhere."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Children' is already plural. To show possession for irregular plurals that don't end in 's', add an apostrophe and then an 's'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Plural nouns not ending in 's' take ' 's ' to show ownership.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the synonym of 'meticulous'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Careless"
+            },
+            {
+                "id": "b",
+                "text": "Thorough"
+            },
+            {
+                "id": "c",
+                "text": "Fast"
+            },
+            {
+                "id": "d",
+                "text": "Messy"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Meticulous' means showing great attention to detail. 'Thorough' is the closest in meaning. The others are either irrelevant or opposites.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Think of someone who pays extremely close attention to every detail.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the type of clause:\n'...because he wanted to win'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Independent clause"
+            },
+            {
+                "id": "b",
+                "text": "Dependent clause"
+            },
+            {
+                "id": "c",
+                "text": "Noun clause"
+            },
+            {
+                "id": "d",
+                "text": "Relative clause"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The clause begins with the subordinating conjunction 'because', meaning it cannot stand alone as a complete sentence.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Can this group of words stand alone as a complete sentence?",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct spelling:",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Accomodation"
+            },
+            {
+                "id": "b",
+                "text": "Acommodation"
+            },
+            {
+                "id": "c",
+                "text": "Accommodation"
+            },
+            {
+                "id": "d",
+                "text": "Acomodation"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The correct spelling is 'accommodation', with two 'c's and two 'm's.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "This word features double 'c' and double 'm'.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which sentence uses 'whom' correctly?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "To whom should I address this letter?"
+            },
+            {
+                "id": "b",
+                "text": "Whom is at the door?"
+            },
+            {
+                "id": "c",
+                "text": "Whom did that?"
+            },
+            {
+                "id": "d",
+                "text": "I don't know whom is coming."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Whom' is the objective case of 'who'. In option a, it is the object of the preposition 'to'. In the other options, a subject ('who') is needed.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Use 'whom' when the pronoun is the object of a verb or preposition.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What does the root '-spect-' mean?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "To hear"
+            },
+            {
+                "id": "b",
+                "text": "To see or look"
+            },
+            {
+                "id": "c",
+                "text": "To write"
+            },
+            {
+                "id": "d",
+                "text": "To carry"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The root '-spect-' comes from Latin 'spectare', meaning to look. It is found in words like 'spectator', 'inspect', and 'spectacle'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Think of what a 'spectator' does at a sports game.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the intensive pronoun in:\n'The president himself signed the bill.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "The"
+            },
+            {
+                "id": "b",
+                "text": "president"
+            },
+            {
+                "id": "c",
+                "text": "himself"
+            },
+            {
+                "id": "d",
+                "text": "bill"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Himself' is an intensive pronoun used here to add emphasis to the noun 'president'.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "It is a self-referencing pronoun used only for emphasis.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the best concluding sentence:\n'The study showed that exercise improves\nmental health. Additionally, it helps\nwith physical fitness...'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I like to go running."
+            },
+            {
+                "id": "b",
+                "text": "Therefore, exercise is vital for overall health."
+            },
+            {
+                "id": "c",
+                "text": "Physical fitness is hard to maintain."
+            },
+            {
+                "id": "d",
+                "text": "The study was conducted in 2022."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "Option b summarizes both the mental and physical benefits mentioned, providing a logical conclusion for the paragraph.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "A good conclusion should wrap up the points made into a broader statement.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the primary purpose of an\nargumentative essay?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "To tell a story"
+            },
+            {
+                "id": "b",
+                "text": "To describe a place"
+            },
+            {
+                "id": "c",
+                "text": "To persuade the reader"
+            },
+            {
+                "id": "d",
+                "text": "To list facts only"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "An argumentative essay aims to convince the audience to accept a certain point of view through evidence and logic.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Think about what someone is trying to do when they present an argument.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which sentence contains a tautology?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "He entered the room quietly."
+            },
+            {
+                "id": "b",
+                "text": "They arrived at 4 p.m. in the afternoon."
+            },
+            {
+                "id": "c",
+                "text": "She wrote a long letter."
+            },
+            {
+                "id": "d",
+                "text": "The weather is nice today."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "A tautology is saying the same thing twice in different words. '4 p.m.' already implies 'afternoon', making 'in the afternoon' redundant.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Look for unnecessary repetition of information.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Choose the correct comparative form:\n'This task is ______ than the last one.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "more easy"
+            },
+            {
+                "id": "b",
+                "text": "easier"
+            },
+            {
+                "id": "c",
+                "text": "easiest"
+            },
+            {
+                "id": "d",
+                "text": "more easier"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "For two-syllable adjectives ending in 'y', we change the 'y' to 'i' and add '-er' to form the comparative. 'More easy' is generally considered incorrect.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "The standard comparative for 'easy' is formed by adding a suffix.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Identify the direct object:\n'The baker sold us three loaves of bread.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "us"
+            },
+            {
+                "id": "b",
+                "text": "baker"
+            },
+            {
+                "id": "c",
+                "text": "bread"
+            },
+            {
+                "id": "d",
+                "text": "loaves"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "The direct object is the noun that receives the action directly. The baker sold 'loaves'. 'Us' is the indirect object.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Ask 'what' the baker sold.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "Which of these is a complex sentence?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I like coffee and she likes tea."
+            },
+            {
+                "id": "b",
+                "text": "Although it was cold, he wore a t-shirt."
+            },
+            {
+                "id": "c",
+                "text": "She went home early."
+            },
+            {
+                "id": "d",
+                "text": "He studied hard, yet he failed."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "A complex sentence has one independent clause and at least one dependent clause (beginning with words like 'although', 'because', etc.).",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Look for a sentence with a subordinating conjunction.",
+        "createdAt": 1737637820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "What is the meaning of 'ubiquitous'?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Rare"
+            },
+            {
+                "id": "b",
+                "text": "Found everywhere"
+            },
+            {
+                "id": "c",
+                "text": "Hidden"
+            },
+            {
+                "id": "d",
+                "text": "Ancient"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:college_basic"
+        ],
+        "explanation": "'Ubiquitous' describes something that is present, appearing, or found everywhere at the same time.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "college_basic",
+        "hint": "Think of a word to describe smartphones in modern society.",
+        "createdAt": 1737637820
+    }
+]

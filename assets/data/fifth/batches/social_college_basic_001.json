@@ -1,0 +1,1442 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "수요의 법칙에 대한 설명으로\n가장 옳은 것은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "가격이 오르면 수요량이 증가한다"
+            },
+            {
+                "id": "b",
+                "text": "가격이 내리면 수요량이 감소한다"
+            },
+            {
+                "id": "c",
+                "text": "가격이 오르면 수요량이 감소한다"
+            },
+            {
+                "id": "d",
+                "text": "소득이 오르면 수요량이 감소한다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "수요의 법칙은 다른 조건이 일정할 때 가격과 수요량이 반비례 관계에 있음을 의미한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "가격과 소비량의 일반적인 관계를 생각해보세요.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "민주주의의 기본 원리 중 국가의\n권력을 입법, 행정, 사법으로 나누는\n원리는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "국민 주권의 원리"
+            },
+            {
+                "id": "b",
+                "text": "입헌주의의 원리"
+            },
+            {
+                "id": "c",
+                "text": "권력 분립의 원리"
+            },
+            {
+                "id": "d",
+                "text": "지방 자치의 원리"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "권력 분립은 국가 권력의 남용을 막고 국민의 자유를 보장하기 위해 권력을 나누어 상호 견제하게 하는 원리이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "권력을 나누어(分) 세운다(立)는 의미입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "베버(Max Weber)가 제시한 근대적\n조직 형태로서, 규칙과 절차를 중시하는\n합리적 관리 체계는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "카리스마적 지배"
+            },
+            {
+                "id": "b",
+                "text": "전통적 조직"
+            },
+            {
+                "id": "c",
+                "text": "관료제"
+            },
+            {
+                "id": "d",
+                "text": "네트워크 조직"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "관료제는 위계 서열, 규칙에 의한 관리, 전문성 등을 특징으로 하는 대규모 조직 운영 방식이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "공무원 조직이나 대기업의 전형적인 구조를 떠올려 보세요.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 실질 GDP와 명목 GDP의\n차이를 발생시키는 주요 요인은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "생산량의 변화"
+            },
+            {
+                "id": "b",
+                "text": "물가 수준의 변화"
+            },
+            {
+                "id": "c",
+                "text": "인구의 변화"
+            },
+            {
+                "id": "d",
+                "text": "환율의 변화"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "명목 GDP는 현재 가격을 기준으로 하지만, 실질 GDP는 기준 연도 가격을 사용하여 물가 변동 효과를 제거한 수치이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "돈의 가치가 변하는 현상을 고려해 보세요.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회 계층 구조 중 상층과 하층의\n비율은 낮고 중층의 비율이 높은\n가장 안정적인 구조는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "피라미드형 구조"
+            },
+            {
+                "id": "b",
+                "text": "다이아몬드형 구조"
+            },
+            {
+                "id": "c",
+                "text": "모래시계형 구조"
+            },
+            {
+                "id": "d",
+                "text": "타원형 구조"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "다이아몬드형 구조는 중산층이 두터워 사회 갈등이 적고 상대적으로 안정적인 계층 구조로 평가받는다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "보석의 모양과 비슷한 이름을 가진 구조입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "죄수의 딜레마(Prisoner's Dilemma)에서\n두 참여자가 자신의 이익만을 고려할 때\n도달하게 되는 균형 상태는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "파레토 최적"
+            },
+            {
+                "id": "b",
+                "text": "내쉬 균형"
+            },
+            {
+                "id": "c",
+                "text": "사회적 후생 극대화"
+            },
+            {
+                "id": "d",
+                "text": "협력적 균형"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "내쉬 균형은 상대방의 전략이 주어진 상태에서 자신이 전략을 바꿀 유인이 없는 상태를 말하며, 죄수의 딜레마에서는 둘 다 자백하는 상태가 이에 해당한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "게임 이론에서 개인의 최적 전략이 만나는 지점을 의미합니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "문화 인류학에서 자신의 문화를 기준으로\n타문화를 낮게 평가하거나 배척하는\n태도는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "문화 사대주의"
+            },
+            {
+                "id": "b",
+                "text": "문화 상대주의"
+            },
+            {
+                "id": "c",
+                "text": "자문화 중심주의"
+            },
+            {
+                "id": "d",
+                "text": "문화 융합"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "자문화 중심주의는 자기 집단의 문화만이 우월하다고 믿고 다른 문화를 부정적으로 보는 편협한 태도이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "자기(自) 문화가 중심(中心)이라고 생각하는 태도입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "헌법 재판소가 담당하는 권한 중\n법률이 헌법에 위반되는지 여부를\n심판하는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "탄핵 심판"
+            },
+            {
+                "id": "b",
+                "text": "정당 해산 심판"
+            },
+            {
+                "id": "c",
+                "text": "위헌 법률 심판"
+            },
+            {
+                "id": "d",
+                "text": "권한 쟁의 심판"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "위헌 법률 심판은 재판의 전제가 된 법률이 헌법에 위배되는지 판단하여 그 효력을 상실시키는 절차이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "법률이 헌법에 '위반'되었는지 확인하는 심판입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "인간의 행동이 사회적 보상과 비용의\n계산에 의해 이루어진다고 보는\n사회학 이론은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "상징적 상호작용론"
+            },
+            {
+                "id": "b",
+                "text": "구조기능주의"
+            },
+            {
+                "id": "c",
+                "text": "교환 이론"
+            },
+            {
+                "id": "d",
+                "text": "갈등론"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "교환 이론은 사회적 관계를 개인 간의 보상을 주고받는 행위로 파악하며, 호혜성의 원리를 중시한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "주고받는 행위(Exchange)를 중심으로 사회를 설명합니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "중앙은행이 시중의 통화량을 조절하기 위해\n국채 등을 사고파는 정책은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지급 준비율 정책"
+            },
+            {
+                "id": "b",
+                "text": "재할인율 정책"
+            },
+            {
+                "id": "c",
+                "text": "공개 시장 운영"
+            },
+            {
+                "id": "d",
+                "text": "긴축 재정 정책"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "공개 시장 운영은 중앙은행이 시장에서 유가증권을 매매하여 통화량과 이자율에 영향을 미치는 수단이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "시장에서 공개적으로 증권을 매매하는 방식입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지니 계수(Gini Coefficient)가 1에\n가까워질수록 나타나는 경제적 현상은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "소득 분배가 완전히 평등해진다"
+            },
+            {
+                "id": "b",
+                "text": "실업률이 낮아진다"
+            },
+            {
+                "id": "c",
+                "text": "소득 분배가 불평등해진다"
+            },
+            {
+                "id": "d",
+                "text": "물가 상승률이 0이 된다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "지니 계수는 0과 1 사이의 값을 가지며, 1에 가까울수록 소득 불평등도가 높음을 나타낸다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "계수가 높을수록 빈부격차가 심해진다는 의미입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국제 정치 이론 중 국가를 유일한\n행위자로 보며 권력과 자국 이익을\n최우선으로 강조하는 관점은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "자유주의"
+            },
+            {
+                "id": "b",
+                "text": "구성주의"
+            },
+            {
+                "id": "c",
+                "text": "현실주의"
+            },
+            {
+                "id": "d",
+                "text": "마르크스주의"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "현실주의는 국제 사회를 무정부 상태로 가정하며, 국가의 생존과 권력을 핵심 동인으로 본다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "힘의 논리와 국가 이익을 강조하는 실무적 관점입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회 보장 제도 중 국가가 전액 부담하며\n저소득층의 최저 생활을 보장하는\n공공부조 제도는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "국민 연금"
+            },
+            {
+                "id": "b",
+                "text": "국민 건강 보험"
+            },
+            {
+                "id": "c",
+                "text": "국민 기초 생활 보장 제도"
+            },
+            {
+                "id": "d",
+                "text": "고용 보험"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "공공부조는 자력으로 생활이 어려운 사람들에게 국가가 조세를 재원으로 생계비 등을 지원하는 제도이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "보험료를 내지 않고 국가의 도움(부조)을 받는 제도입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "뒤르켐(Durkheim)이 제시한 개념으로,\n급격한 사회 변동 과정에서 나타나는\n무규범 상태를 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "소외"
+            },
+            {
+                "id": "b",
+                "text": "아노미"
+            },
+            {
+                "id": "c",
+                "text": "문화 지체"
+            },
+            {
+                "id": "d",
+                "text": "낙인"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "아노미는 전통적인 가치관이나 규범이 무너지고 새로운 규범이 정립되지 않아 발생하는 혼란 상태를 말한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "그리스어에서 유래한 '법이나 규범이 없음'을 뜻하는 단어입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "행정 소송의 대상이 되는 처분 등이\n취소되거나 변경되기를 청구하는\n소송의 종류는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "민사 소송"
+            },
+            {
+                "id": "b",
+                "text": "가사 소송"
+            },
+            {
+                "id": "c",
+                "text": "항고 소송"
+            },
+            {
+                "id": "d",
+                "text": "기관 소송"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "항고 소송은 행정청의 위법한 처분에 불복하여 제기하는 소송으로, 대표적으로 취소 소송이 있다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "행정청의 처분에 대항하여 '항고'하는 성격의 소송입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "경제학에서 어떤 선택으로 인해 포기한\n다른 대안들 중 가장 가치가 큰 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "매몰 비용"
+            },
+            {
+                "id": "b",
+                "text": "회계적 비용"
+            },
+            {
+                "id": "c",
+                "text": "기회 비용"
+            },
+            {
+                "id": "d",
+                "text": "가변 비용"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "기회 비용은 하나를 선택함으로써 포기하게 된 대안의 가치를 의미하며 합리적 선택의 기준이 된다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "다른 '기회'를 놓친 데 대한 비용을 말합니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "개인이 속해 있지는 않지만 그의 가치관이나\n태도 결정의 기준이 되는 집단은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "내집단"
+            },
+            {
+                "id": "b",
+                "text": "준거 집단"
+            },
+            {
+                "id": "c",
+                "text": "소속 집단"
+            },
+            {
+                "id": "d",
+                "text": "2차 집단"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "준거 집단은 개인이 자신의 신념이나 행동의 옳고 그름을 판단할 때 기준으로 삼는 집단이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "판단의 '준거'가 되는 집단이라는 의미입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "한 국가 내에서 물가가 지속적으로 상승하여\n화폐 가치가 하락하는 경제 현상은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "스태그플레이션"
+            },
+            {
+                "id": "b",
+                "text": "디플레이션"
+            },
+            {
+                "id": "c",
+                "text": "인플레이션"
+            },
+            {
+                "id": "d",
+                "text": "하이퍼인플레이션"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "인플레이션은 총수요 증가나 생산비 상승 등으로 인해 물가가 전반적으로 오르는 현상을 말한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "공기가 팽창하듯 물가가 오르는 상태를 가리킵니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "민주 선거의 4대 원칙 중 성별, 재산,\n학력 등과 관계없이 투표권을 주는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "직접 선거"
+            },
+            {
+                "id": "b",
+                "text": "비밀 선거"
+            },
+            {
+                "id": "c",
+                "text": "보통 선거"
+            },
+            {
+                "id": "d",
+                "text": "평등 선거"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "보통 선거는 일정한 연령 이상의 모든 국민에게 제한 없이 참정권을 부여하는 원칙이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "누구에게나 '보통'으로 주어지는 권리입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물질 문화의 발전 속도를 비물질 문화가\n따라가지 못해 발생하는 사회 현상은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "문화 충격"
+            },
+            {
+                "id": "b",
+                "text": "문화 지체"
+            },
+            {
+                "id": "c",
+                "text": "문화 동화"
+            },
+            {
+                "id": "d",
+                "text": "문화 전파"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "오그번이 제시한 문화 지체는 기술이나 도구의 변화 속도가 의식이나 가치관의 변화보다 빨라 부조화가 생기는 현상이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "정신적인 부분이 '지체'되는 현상을 의미합니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "정부 지출을 늘리거나 세율을 낮춰\n침체된 경기를 부양하려는 정책은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "긴축 재정 정책"
+            },
+            {
+                "id": "b",
+                "text": "공개 시장 매도"
+            },
+            {
+                "id": "c",
+                "text": "확대 재정 정책"
+            },
+            {
+                "id": "d",
+                "text": "지급 준비율 인상"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "확대 재정 정책은 가계 소비와 기업 투자를 유도하여 총수요를 늘리고 경기를 회복시키기 위해 사용된다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "재정 규모를 '확대'하여 돈을 푸는 정책입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "가족, 또래 집단과 같이 친밀한\n대면 접촉을 바탕으로 형성되는 집단은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "2차 집단"
+            },
+            {
+                "id": "b",
+                "text": "익익 집단"
+            },
+            {
+                "id": "c",
+                "text": "1차 집단"
+            },
+            {
+                "id": "d",
+                "text": "공식 조직"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "쿨리가 정의한 1차 집단은 감정적 유대가 강하고 전인격적인 인간관계가 이루어지는 소규모 집단이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "인생에서 가장 먼저(First) 경험하는 집단 성격입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "타인의 시선을 의식하여 상품의\n가격이 오를수록 과시욕으로 인해\n수요가 증가하는 현상은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "밴드왜건 효과"
+            },
+            {
+                "id": "b",
+                "text": "스놉 효과"
+            },
+            {
+                "id": "c",
+                "text": "베블런 효과"
+            },
+            {
+                "id": "d",
+                "text": "네트워크 효과"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "베블런 효과는 명품 소비 등과 같이 비쌀수록 가시적인 과시 목적으로 수요가 발생하는 비합리적 소비 현상이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "과시 소비를 주장한 경제학자 소스타인 베블런의 이름에서 유래했습니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "범죄 성립 요건 중 행위가 법률상 금지된\n행위에 부합하는 성질을 의미하는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "책임성"
+            },
+            {
+                "id": "b",
+                "text": "위법성"
+            },
+            {
+                "id": "c",
+                "text": "구성 요건 해당성"
+            },
+            {
+                "id": "d",
+                "text": "가벌성"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "구성 요건 해당성은 구체적인 행위가 형법에 규정된 범죄의 틀에 딱 들어맞는지를 판단하는 첫 번째 단계이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "법에 명시된 요건에 '해당'하는지 따지는 것입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "개인이 사회적 지위에 따라 수행해야 할\n두 가지 이상의 역할이 충돌하여\n겪는 심리적 갈등은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "역할 수행"
+            },
+            {
+                "id": "b",
+                "text": "역할 긴장"
+            },
+            {
+                "id": "c",
+                "text": "역할 갈등"
+            },
+            {
+                "id": "d",
+                "text": "역할 행동"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "역할 갈등은 개인이 가진 서로 다른 지위에서 요구되는 역할들이 상충하여 선택의 어려움을 겪는 현상이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "두 역할 사이에서 고민하고 '갈등'하는 상황입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "시장 실패의 원인 중 하나로, 한 사람의\n행위가 타인에게 대가 없이 피해나\n이익을 주는 현상은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "독과점"
+            },
+            {
+                "id": "b",
+                "text": "외부 효과"
+            },
+            {
+                "id": "c",
+                "text": "공공재의 부족"
+            },
+            {
+                "id": "d",
+                "text": "정보의 비대칭성"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "외부 효과는 시장 기구를 통하지 않고 제3자에게 영향을 끼치지만 그에 대한 보상이 이루어지지 않는 경우를 말한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "시장 '외부'에서 발생하는 영향력을 뜻합니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국제 수지 항목 중 상품 및 서비스의\n수출입과 배당, 이자 등의 흐름을\n나타내는 계정은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "자본 수지"
+            },
+            {
+                "id": "b",
+                "text": "금융 계정"
+            },
+            {
+                "id": "c",
+                "text": "경상 수지"
+            },
+            {
+                "id": "d",
+                "text": "오차 및 누락"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "경상 수지는 국가 간의 상품, 서비스 거래와 소득 이동을 종합한 지표로 대외 경제 관계를 잘 보여준다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "일상적이고 '경상'적인 거래를 기록하는 항목입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "근대 시민 혁명의 사상적 배경이 된\n이론으로, 국가가 개인들의 합의에\n의해 탄생했다고 보는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "왕권 신수설"
+            },
+            {
+                "id": "b",
+                "text": "사회 계약설"
+            },
+            {
+                "id": "c",
+                "text": "천부 인권 사상"
+            },
+            {
+                "id": "d",
+                "text": "법치주의"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "사회 계약설은 홉스, 로크, 루소 등에 의해 전개되었으며 국가 권력의 정당성을 국민의 동의에서 찾는다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "사회 구성원들이 '계약'을 맺어 국가를 만들었다는 이론입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회적 소수자에 대한 차별을 시정하기 위해\n대학 입학이나 고용 시 혜택을 주는\n적극적 조치는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "유리 천장"
+            },
+            {
+                "id": "b",
+                "text": "어퍼머티브 액션"
+            },
+            {
+                "id": "c",
+                "text": "할당제 폐지"
+            },
+            {
+                "id": "d",
+                "text": "역차별 주의"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "어퍼머티브 액션(Affirmative Action)은 실질적 평등을 위해 소수 집단에게 우선적 기회를 부여하는 정책이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "적극적 차별 시정 조치라고도 불립니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생산의 3요소에 해당하지 않는 것은\n무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "노동"
+            },
+            {
+                "id": "b",
+                "text": "토지"
+            },
+            {
+                "id": "c",
+                "text": "자본"
+            },
+            {
+                "id": "d",
+                "text": "소비"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "생산의 3요소는 노동, 토지, 자본이며 소비는 생산된 가치를 사용하는 경제 활동의 한 단계이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "물건을 만드는 데 들어가는 재료가 아닌 것을 찾으세요.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "정치적 무관심이 심화되어 투표율이 낮아지고\n대중이 정치에 냉소적인 태도를 보이는\n현상을 일컫는 용어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "정치적 효능감"
+            },
+            {
+                "id": "b",
+                "text": "정치적 무관심(Apathy)"
+            },
+            {
+                "id": "c",
+                "text": "정치적 참여"
+            },
+            {
+                "id": "d",
+                "text": "정치적 이념화"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "정치적 무관심(Political Apathy)은 민주주의의 위기를 초래하며 대중의 의사가 정책에 반영되지 못하게 한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "관심이 없는 상태를 뜻하는 외래어로도 쓰입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회 과학 연구 방법 중 객관적 수치와\n통계를 중시하며 법칙 발견을\n목적으로 하는 방법은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "해석적 연구"
+            },
+            {
+                "id": "b",
+                "text": "양적 연구"
+            },
+            {
+                "id": "c",
+                "text": "질적 연구"
+            },
+            {
+                "id": "d",
+                "text": "문헌 연구"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "양적 연구는 실증적 자료를 수집하여 가설을 검증하고 일반화된 법칙을 도출하는 데 강점이 있다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "수량(Quantity)을 측정하는 연구 방식입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "타인에게 낙인이 찍힘으로써 스스로를\n일탈자로 규정하고 실제 범죄로\n이어지는 과정을 설명하는 이론은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "차별 교제 이론"
+            },
+            {
+                "id": "b",
+                "text": "긴장 이론"
+            },
+            {
+                "id": "c",
+                "text": "낙인 이론"
+            },
+            {
+                "id": "d",
+                "text": "사회 통제 이론"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "낙인 이론은 사회적 반응이 개인의 정체성에 영향을 주어 일탈이 고착화되는 과정을 강조한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "부정적인 꼬리표(Labeling)가 원인이 된다는 이론입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "환율이 상승(원화 가치 하락)할 때\n일반적으로 나타나는 경제적 영향은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "수입 물가가 하락한다"
+            },
+            {
+                "id": "b",
+                "text": "수출 기업의 가격 경쟁력이 좋아진다"
+            },
+            {
+                "id": "c",
+                "text": "외국 여행 비용이 저렴해진다"
+            },
+            {
+                "id": "d",
+                "text": "외채 상환 부담이 줄어든다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "환율이 오르면 수출품의 달러 표시 가격이 낮아져 해외 시장에서의 경쟁력이 강화되고 수출이 늘어날 수 있다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "우리나라 물건을 외국 사람이 살 때 더 싸게 느껴지는 상황입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국제 연합(UN)의 주요 기구 중 국제 분쟁의\n평화적 해결을 위해 군사적 제재를\n결정할 수 있는 곳은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "국제 사법 재판소"
+            },
+            {
+                "id": "b",
+                "text": "안전 보장 이사회"
+            },
+            {
+                "id": "c",
+                "text": "경제 사회 이사회"
+            },
+            {
+                "id": "d",
+                "text": "신탁 통치 이사회"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "안전 보장 이사회는 세계 평화 유지의 핵심 기구로, 강제력을 동반한 조치를 취할 수 있는 유일한 기구이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "거부권을 가진 5개 상임이사국이 속한 곳입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회적 지위 중 개인의 노력이나 의지에\n의해 획득되는 지위는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "귀속 지위"
+            },
+            {
+                "id": "b",
+                "text": "성취 지위"
+            },
+            {
+                "id": "c",
+                "text": "상징 지위"
+            },
+            {
+                "id": "d",
+                "text": "전통 지위"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "성취 지위는 의사, 교사 등과 같이 후천적인 노력과 선택을 통해 얻어지는 지위를 말한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "무언가를 '성취'해서 얻은 자리를 뜻합니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "시장에서 생산자가 단 하나뿐이어서\n가격 결정력을 독점적으로 행사하는\n형태는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "완전 경쟁 시장"
+            },
+            {
+                "id": "b",
+                "text": "과점 시장"
+            },
+            {
+                "id": "c",
+                "text": "독점 시장"
+            },
+            {
+                "id": "d",
+                "text": "독점적 경쟁 시장"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "독점 시장은 경쟁자가 없어 자원 배분의 효율성이 낮고 소비자 잉여가 생산자에게 전가되기 쉽다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "혼자서(獨) 차지한다(占)는 의미입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "헌법의 최고 원리 중 하나로, 국가의\n의사 결정을 국민이 직접 하거나\n대표를 통해 행사하는 원리는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "법치주의"
+            },
+            {
+                "id": "b",
+                "text": "복지 국가의 원리"
+            },
+            {
+                "id": "c",
+                "text": "국민 주권의 원리"
+            },
+            {
+                "id": "d",
+                "text": "자유 민주주의"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "국민 주권의 원리는 국가 권력의 근거가 국민에게 있으며 모든 권력은 국민으로부터 나온다는 민주주의의 핵심이다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "주인(主)된 권리(權)가 국민에게 있다는 뜻입니다.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회적 상호작용의 유형 중 공동의\n목표를 달성하기 위해 힘을 합치는\n행위는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "경쟁"
+            },
+            {
+                "id": "b",
+                "text": "협력"
+            },
+            {
+                "id": "c",
+                "text": "갈등"
+            },
+            {
+                "id": "d",
+                "text": "동화"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "협력은 동일한 목표를 향해 서로 돕는 관계이며, 사회적 연대감을 형성하는 기초가 된다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "함께(協) 힘쓴다(力)는 한자어를 떠올려 보세요.",
+        "createdAt": 1737640800
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국가의 경제 규모를 측정할 때 주로\n사용하며, 한 나라 영토 안에서 생산된\n최종 생산물의 가치는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "GNP"
+            },
+            {
+                "id": "b",
+                "text": "GNI"
+            },
+            {
+                "id": "c",
+                "text": "GDP"
+            },
+            {
+                "id": "d",
+                "text": "NDP"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:college_basic"
+        ],
+        "explanation": "GDP(국내 총생산)는 국적에 상관없이 특정 국가의 영토 내에서 발생한 부가가치의 합을 의미한다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "college_basic",
+        "hint": "국내(Domestic)에서 생산된 총합을 말합니다.",
+        "createdAt": 1737640800
+    }
+]

@@ -1,0 +1,1762 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 가장 알맞은 단어는?\nShe _____ a book every night.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "read"
+            },
+            {
+                "id": "b",
+                "text": "reads"
+            },
+            {
+                "id": "c",
+                "text": "reading"
+            },
+            {
+                "id": "d",
+                "text": "readed"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "주어가 3인칭 단수(She)이고 현재의 습관을 나타내므로 동사에 -s를 붙인 reads가 정답입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "주어가 3인칭 단수일 때 현재형 동사의 변화를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 대화의 빈칸에 알맞은 말은?\nA: How _____ is this cap?\nB: It's ten dollars.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "many"
+            },
+            {
+                "id": "b",
+                "text": "old"
+            },
+            {
+                "id": "c",
+                "text": "much"
+            },
+            {
+                "id": "d",
+                "text": "long"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "가격을 물어볼 때는 'How much'라는 표현을 사용합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "B의 대답이 금액(ten dollars)인 점에 주의하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "밑줄 친 단어의 의미와 가장 가까운 것은?\nThis math problem is very **easy**.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "simple"
+            },
+            {
+                "id": "b",
+                "text": "hard"
+            },
+            {
+                "id": "c",
+                "text": "heavy"
+            },
+            {
+                "id": "d",
+                "text": "dark"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "easy는 '쉬운'이라는 뜻으로, simple(단순한, 쉬운)과 의미가 비슷합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "문제의 난이도가 낮을 때 사용하는 단어를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 전치사는?\nI usually get up _____ 7 o'clock.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "on"
+            },
+            {
+                "id": "b",
+                "text": "in"
+            },
+            {
+                "id": "c",
+                "text": "at"
+            },
+            {
+                "id": "d",
+                "text": "to"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "구체적인 시각 앞에는 전치사 at을 사용합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "시간의 시점을 나타내는 전치사를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 어법상 어색한 문장은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I can swim fast."
+            },
+            {
+                "id": "b",
+                "text": "He can speaks English."
+            },
+            {
+                "id": "c",
+                "text": "They cannot play soccer."
+            },
+            {
+                "id": "d",
+                "text": "Can you help me?"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "조동사 can 뒤에는 항상 동사원형이 와야 하므로 speaks는 speak로 고쳐야 합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "조동사 뒤에 오는 동사의 형태를 확인해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 관계대명사는?\nI have a friend _____ lives in Seoul.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "which"
+            },
+            {
+                "id": "b",
+                "text": "who"
+            },
+            {
+                "id": "c",
+                "text": "whom"
+            },
+            {
+                "id": "d",
+                "text": "whose"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "선행사가 사람(a friend)이고 뒤에 동사(lives)가 이어지므로 주격 관계대명사 who가 필요합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "선행사가 사람일 때 사용하는 주격 관계대명사를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 단어의 반대말을 고르세요.\n**Always**",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Often"
+            },
+            {
+                "id": "b",
+                "text": "Never"
+            },
+            {
+                "id": "c",
+                "text": "Sometimes"
+            },
+            {
+                "id": "d",
+                "text": "Usually"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "Always는 '항상'이라는 뜻이며, Never는 '결코 ~않다'로 빈도상 정반대 의미를 가집니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "발생 확률이 0%인 단어를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 접속사로 알맞은 것은?\nIt was raining, _____ we stayed home.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "but"
+            },
+            {
+                "id": "b",
+                "text": "so"
+            },
+            {
+                "id": "c",
+                "text": "or"
+            },
+            {
+                "id": "d",
+                "text": "because"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "앞 문장이 원인이고 뒤 문장이 결과이므로 인과관계를 나타내는 so가 적절합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "비가 와서 집에 머물게 된 결과를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 문장의 과거형으로 알맞은 것은?\nTom **buys** an apple.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Tom buyed an apple."
+            },
+            {
+                "id": "b",
+                "text": "Tom buysed an apple."
+            },
+            {
+                "id": "c",
+                "text": "Tom bought an apple."
+            },
+            {
+                "id": "d",
+                "text": "Tom buying an apple."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "buy의 과거형은 불규칙 변화인 bought입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "buy는 불규칙적으로 변하는 동사입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 비교급은?\nMy sister is _____ than me.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "tall"
+            },
+            {
+                "id": "b",
+                "text": "taller"
+            },
+            {
+                "id": "c",
+                "text": "tallest"
+            },
+            {
+                "id": "d",
+                "text": "more tall"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "than(보다)이 있으므로 비교급 형태인 taller가 정답입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "형용사에 -er를 붙여서 비교하는 형태를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 대화의 빈칸에 들어갈 말은?\nA: What do you do in your free time?\nB: I enjoy _____ soccer.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "play"
+            },
+            {
+                "id": "b",
+                "text": "to play"
+            },
+            {
+                "id": "c",
+                "text": "playing"
+            },
+            {
+                "id": "d",
+                "text": "played"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "동사 enjoy는 목적어로 동명사(-ing)를 취하는 성질이 있습니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "enjoy 뒤에 오는 동사의 형태를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 대명사는?\nThis is my laptop. It belongs to _____.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I"
+            },
+            {
+                "id": "b",
+                "text": "my"
+            },
+            {
+                "id": "c",
+                "text": "me"
+            },
+            {
+                "id": "d",
+                "text": "mine"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "전치사 to의 목적어 자리이므로 목적격 대명사인 me가 와야 합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "전치사 뒤에 오는 인칭대명사의 격을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 문장의 빈칸에 들어갈 말은?\nThere _____ many students in the park.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "is"
+            },
+            {
+                "id": "b",
+                "text": "am"
+            },
+            {
+                "id": "c",
+                "text": "are"
+            },
+            {
+                "id": "d",
+                "text": "be"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "There is/are 구문에서는 뒤에 오는 명사가 주어입니다. many students가 복수이므로 are가 적절합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "뒤에 오는 주어 'many students'가 단수인지 복수인지 확인하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 단어의 복수형이 올바른 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "childs"
+            },
+            {
+                "id": "b",
+                "text": "childes"
+            },
+            {
+                "id": "c",
+                "text": "children"
+            },
+            {
+                "id": "d",
+                "text": "childrens"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "child의 복수형은 불규칙하게 변하여 children이 됩니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "child는 -s를 붙이지 않고 모양이 완전히 바뀌는 복수형을 가집니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지문을 읽고 빈칸에 알맞은 단어를 고르세요.\nI am thirsty. I want to drink some _____.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "bread"
+            },
+            {
+                "id": "b",
+                "text": "pizza"
+            },
+            {
+                "id": "c",
+                "text": "water"
+            },
+            {
+                "id": "d",
+                "text": "cookie"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "thirsty(목마른) 상황에서 마실 수 있는(drink) 대상은 water(물)입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "목이 마를 때 마실 수 있는 액체를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 문장의 빈칸에 들어갈 조동사는?\nYou _____ wash your hands before eating.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "will"
+            },
+            {
+                "id": "b",
+                "text": "can"
+            },
+            {
+                "id": "c",
+                "text": "should"
+            },
+            {
+                "id": "d",
+                "text": "may"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "식사 전 손을 씻는 것은 권장되는 의무나 도리이므로 '~해야 한다'는 뜻의 should가 가장 자연스럽습니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "충고나 의무를 나타내는 조동사를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 말은?\nHe decided _____ his homework first.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "do"
+            },
+            {
+                "id": "b",
+                "text": "doing"
+            },
+            {
+                "id": "c",
+                "text": "to do"
+            },
+            {
+                "id": "d",
+                "text": "did"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "동사 decide는 목적어로 to부정사를 취하는 성질이 있습니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "decide 뒤에 오는 형태를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 대화 중 자연스럽지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A: Thank you. B: You're welcome."
+            },
+            {
+                "id": "b",
+                "text": "A: How are you? B: I'm fine, thanks."
+            },
+            {
+                "id": "c",
+                "text": "A: What's up? B: Nice to meet you."
+            },
+            {
+                "id": "d",
+                "text": "A: May I help you? B: Yes, please."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "What's up?은 안부를 묻는 인사이며, Nice to meet you는 처음 만났을 때 하는 인사로 서로 어울리지 않습니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "질문과 답변이 상황에 맞는지 확인해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 '최상급' 표현이 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "the most happiest"
+            },
+            {
+                "id": "b",
+                "text": "the happier"
+            },
+            {
+                "id": "c",
+                "text": "the happiest"
+            },
+            {
+                "id": "d",
+                "text": "happiest"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "happy의 최상급은 자음+y를 i로 고치고 -est를 붙인 happiest이며 앞에 정관사 the가 붙습니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "y로 끝나는 형용사의 최상급 변화 규칙을 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 말은?\nI don't have _____ money in my pocket.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "some"
+            },
+            {
+                "id": "b",
+                "text": "any"
+            },
+            {
+                "id": "c",
+                "text": "many"
+            },
+            {
+                "id": "d",
+                "text": "few"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "부정문에서는 '약간의, 조금의'라는 의미로 any를 사용하는 것이 원칙입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "부정문이나 의문문에서 쓰이는 단어를 골라보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 문장의 수동태 표현으로 옳은 것은?\nEveryone loves the singer.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "The singer loved by everyone."
+            },
+            {
+                "id": "b",
+                "text": "The singer is love by everyone."
+            },
+            {
+                "id": "c",
+                "text": "The singer is loved by everyone."
+            },
+            {
+                "id": "d",
+                "text": "The singer loves by everyone."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "수동태는 'be동사 + 과거분사(p.p.) + by 행위자'의 형태를 취합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "be동사와 과거분사가 올바르게 쓰였는지 확인하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 말은?\nShe is interested _____ K-pop.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "at"
+            },
+            {
+                "id": "b",
+                "text": "in"
+            },
+            {
+                "id": "c",
+                "text": "on"
+            },
+            {
+                "id": "d",
+                "text": "with"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "'~에 관심이 있다'는 숙어 표현은 'be interested in'입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "관용적으로 함께 쓰는 전치사를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 성격이 다른 단어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Apple"
+            },
+            {
+                "id": "b",
+                "text": "Banana"
+            },
+            {
+                "id": "c",
+                "text": "Carrot"
+            },
+            {
+                "id": "d",
+                "text": "Orange"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "Apple, Banana, Orange는 과일이지만 Carrot은 채소입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "과일과 채소를 구분해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 공통으로 들어갈 단어는?\n- Open the _____, please.\n- Look through the _____.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "door"
+            },
+            {
+                "id": "b",
+                "text": "book"
+            },
+            {
+                "id": "c",
+                "text": "window"
+            },
+            {
+                "id": "d",
+                "text": "wall"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "열 수(Open)도 있고, 그것을 통해 볼 수(Look through)도 있는 것은 window(창문)입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "밖을 내다볼 수 있는 대상을 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 빈칸에 알맞은 부가 의문문은?\nHe is a good student, ***?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "is he"
+            },
+            {
+                "id": "b",
+                "text": "doesn't he"
+            },
+            {
+                "id": "c",
+                "text": "isn't he"
+            },
+            {
+                "id": "d",
+                "text": "wasn't he"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "앞 문장이 긍정(is)이면 부가 의문문은 부정(isn't)으로 써야 합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "앞 문장의 동사와 긍정/부정 여부를 확인하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 단어의 뜻풀이가 잘못된 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Brave - 용감한"
+            },
+            {
+                "id": "b",
+                "text": "Famous - 유명한"
+            },
+            {
+                "id": "c",
+                "text": "Difficult - 어려운"
+            },
+            {
+                "id": "d",
+                "text": "Expensive - 싼"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "Expensive는 '비싼'이라는 뜻입니다. '싼'은 cheap입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "가격이 높을 때 쓰는 단어의 의미를 확인하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 말은?\n*** do you live?\nI live in Busan.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "What"
+            },
+            {
+                "id": "b",
+                "text": "When"
+            },
+            {
+                "id": "c",
+                "text": "Where"
+            },
+            {
+                "id": "d",
+                "text": "Who"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "장소(Busan)를 묻는 질문이므로 의문사 Where가 적절합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "대답이 장소를 나타낼 때 사용하는 의문사를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "밑줄 친 부분의 쓰임이 나머지와 다른 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I like **reading** books."
+            },
+            {
+                "id": "b",
+                "text": "My hobby is **cooking**."
+            },
+            {
+                "id": "c",
+                "text": "He is **studying** now."
+            },
+            {
+                "id": "d",
+                "text": "Thank you for **coming**."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "a, b, d는 동명사로 쓰였으나, c는 현재진행형의 현재분사로 쓰였습니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "문장에서 진행의 의미를 나타내는지, 명사처럼 쓰였는지 확인하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 빈칸에 들어갈 알맞은 단어는?\nAn elephant is _____ than a cat.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "smaller"
+            },
+            {
+                "id": "b",
+                "text": "bigger"
+            },
+            {
+                "id": "c",
+                "text": "small"
+            },
+            {
+                "id": "d",
+                "text": "big"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "코끼리는 고양이보다 크기 때문에 비교급 bigger가 정답입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "두 동물의 크기를 비교해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 말은?\nLook at that dog. _____ tail is short.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "It"
+            },
+            {
+                "id": "b",
+                "text": "Its"
+            },
+            {
+                "id": "c",
+                "text": "It's"
+            },
+            {
+                "id": "d",
+                "text": "They"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "그 개'의' 꼬리이므로 소유격인 Its가 와야 합니다. It's는 It is의 줄임말입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "사물이나 동물의 소유격을 나타내는 단어를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 과거 시제 문장으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "I go to the park yesterday."
+            },
+            {
+                "id": "b",
+                "text": "I will go to the park yesterday."
+            },
+            {
+                "id": "c",
+                "text": "I went to the park yesterday."
+            },
+            {
+                "id": "d",
+                "text": "I going to the park yesterday."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "yesterday(어제)가 있으므로 동사 go의 과거형인 went를 써야 합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "go의 과거형이 무엇인지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 공통으로 들어갈 말은?\n- He _____ to school by bus.\n- She _____ to bed at 10.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "go"
+            },
+            {
+                "id": "b",
+                "text": "goes"
+            },
+            {
+                "id": "c",
+                "text": "went"
+            },
+            {
+                "id": "d",
+                "text": "going"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "두 문장 모두 주어가 3인칭 단수이므로 현재형 동사 goes가 공통으로 들어갑니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "He와 She는 3인칭 단수 주어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 대화의 빈칸에 알맞은 응답은?\nA: What's the matter with you?\nB: I have a ***. My head hurts.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "fever"
+            },
+            {
+                "id": "b",
+                "text": "headache"
+            },
+            {
+                "id": "c",
+                "text": "stomachache"
+            },
+            {
+                "id": "d",
+                "text": "cold"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "머리가 아프다(head hurts)고 했으므로 headache(두통)가 정답입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "머리가 아픈 증상을 나타내는 영어 단어를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 문장의 빈칸에 알맞은 단어는?\nYou look _____ in that dress.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "beautiful"
+            },
+            {
+                "id": "b",
+                "text": "beautifully"
+            },
+            {
+                "id": "c",
+                "text": "beauty"
+            },
+            {
+                "id": "d",
+                "text": "beauties"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "감각동사 look 뒤에는 보어로 형용사가 와야 합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "look 뒤에는 부사가 아닌 형용사가 옵니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 시간의 순서가 올바른 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Morning - Afternoon - Evening"
+            },
+            {
+                "id": "b",
+                "text": "Afternoon - Morning - Night"
+            },
+            {
+                "id": "c",
+                "text": "Night - Evening - Afternoon"
+            },
+            {
+                "id": "d",
+                "text": "Evening - Night - Morning"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "하루의 시간 순서는 아침(Morning), 오후(Afternoon), 저녁(Evening) 순입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "해가 뜨고 지는 순서를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 말은?\n*** you like some more cake?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Will"
+            },
+            {
+                "id": "b",
+                "text": "Would"
+            },
+            {
+                "id": "c",
+                "text": "Do"
+            },
+            {
+                "id": "d",
+                "text": "Can"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "상대방에게 정중하게 권유할 때 사용하는 표현은 'Would you like ~?'입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "권유할 때 쓰는 정중한 조동사를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 단어의 짝이 '반대'가 아닌 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Hard - Soft"
+            },
+            {
+                "id": "b",
+                "text": "Strong - Weak"
+            },
+            {
+                "id": "c",
+                "text": "Smart - Clever"
+            },
+            {
+                "id": "d",
+                "text": "Fast - Slow"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "Smart와 Clever는 둘 다 '똑똑한'이라는 뜻으로 비슷한 말입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "의미가 서로 반대되지 않고 비슷한 쌍을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 알맞은 말은?\nI have lived here _____ three years.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "since"
+            },
+            {
+                "id": "b",
+                "text": "during"
+            },
+            {
+                "id": "c",
+                "text": "for"
+            },
+            {
+                "id": "d",
+                "text": "at"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "현재완료 시제에서 구체적인 기간 앞에는 전치사 for를 사용합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "숫자로 된 기간이 나올 때 쓰는 전치사를 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 글의 목적으로 알맞은 것은?\nDear Sam, thank you for the gift.\nI really love the blue cap.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "사과하려고"
+            },
+            {
+                "id": "b",
+                "text": "거절하려고"
+            },
+            {
+                "id": "c",
+                "text": "감사하려고"
+            },
+            {
+                "id": "d",
+                "text": "초대하려고"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "'thank you for the gift'라고 했으므로 선물에 대해 감사하는 글입니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "글에 나오는 'thank you'라는 표현에 주목하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빈칸에 들어갈 말로 가장 적절한 것은?\nHe is very tired, _____ he is working hard.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "and"
+            },
+            {
+                "id": "b",
+                "text": "so"
+            },
+            {
+                "id": "c",
+                "text": "but"
+            },
+            {
+                "id": "d",
+                "text": "or"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:english",
+            "edu:middle"
+        ],
+        "explanation": "피곤하지만 열심히 일하고 있다는 역접의 관계이므로 but이 적절합니다.",
+        "grade": null,
+        "subject": "english",
+        "eduLevel": "middle",
+        "hint": "두 문장의 내용이 서로 대조되는지 확인하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    }
+]

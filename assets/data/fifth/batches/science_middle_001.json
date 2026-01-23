@@ -1,0 +1,1762 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "식물 세포에만 존재하며 세포를 보호하고\n모양을 일정하게 유지해 주는 구조는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "세포막"
+            },
+            {
+                "id": "b",
+                "text": "세포벽"
+            },
+            {
+                "id": "c",
+                "text": "핵"
+            },
+            {
+                "id": "d",
+                "text": "미토콘드리아"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "세포벽은 식물 세포의 세포막 바깥쪽에 있는 단단한 벽으로, 세포를 보호하고 모양을 유지합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "동물 세포에는 없고 식물 세포에만 있는 딱딱한 구조물입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "고체가 액체를 거치지 않고 직접 기체로\n변하는 상태 변화의 명칭은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "기화"
+            },
+            {
+                "id": "b",
+                "text": "액화"
+            },
+            {
+                "id": "c",
+                "text": "융해"
+            },
+            {
+                "id": "d",
+                "text": "승화"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "고체가 직접 기체가 되거나 기체가 직접 고체가 되는 현상을 모두 승화라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "드라이아이스가 작아지며 안개가 생기는 현상을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "기권의 구조 중 기상 현상이 나타나고\n공기의 대부분이 모여 있는 층은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "대류권"
+            },
+            {
+                "id": "b",
+                "text": "성층권"
+            },
+            {
+                "id": "c",
+                "text": "중간권"
+            },
+            {
+                "id": "d",
+                "text": "열권"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "대류권은 지표면에서 가장 가까운 층으로, 대류가 활발하여 기상 현상이 일어납니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "우리가 살고 있는 가장 아래쪽 대기층입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "전류의 흐름을 방해하는 정도를 나타내며,\n단위로 옴(Ω)을 사용하는 물리량은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전압"
+            },
+            {
+                "id": "b",
+                "text": "전류"
+            },
+            {
+                "id": "c",
+                "text": "전기 저항"
+            },
+            {
+                "id": "d",
+                "text": "전력"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "전기 저항은 전류가 흐르는 것을 방해하는 성질을 말합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "어떤 통로가 좁아져서 지나가기 힘든 느낌의 단어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "식물이 빛에너지를 이용하여 유기물을\n합성하고 산소를 방출하는 과정은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "호흡"
+            },
+            {
+                "id": "b",
+                "text": "광합성"
+            },
+            {
+                "id": "c",
+                "text": "증산 작용"
+            },
+            {
+                "id": "d",
+                "text": "소화"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "광합성은 식물이 빛을 이용해 이산화 탄소와 물로 양분을 만드는 과정입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "빛 '광(光)' 자가 들어가는 단어를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "원자핵 주위를 돌고 있으며 마이너스(-)\n전하를 띠는 입자의 명칭은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "양성자"
+            },
+            {
+                "id": "b",
+                "text": "중성자"
+            },
+            {
+                "id": "c",
+                "text": "전자"
+            },
+            {
+                "id": "d",
+                "text": "분자"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "전자는 원자를 구성하는 입자 중 하나로 음전하를 띠고 원자핵 주위에 분포합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "전기 현상의 원인이 되는 아주 작은 입자입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "암석이 풍화와 침식을 받아 쌓인 물질이\n굳어져 만들어진 암석은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "화성암"
+            },
+            {
+                "id": "b",
+                "text": "퇴적암"
+            },
+            {
+                "id": "c",
+                "text": "변성암"
+            },
+            {
+                "id": "d",
+                "text": "심성암"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "퇴적물들이 쌓이고 다져져서 만들어진 암석을 퇴적암이라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "차곡차곡 쌓인다는 의미의 단어가 포함되어 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체에 힘을 가했을 때 모양이 변했다가\n원래대로 되돌아오려는 힘은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "중력"
+            },
+            {
+                "id": "b",
+                "text": "탄성력"
+            },
+            {
+                "id": "c",
+                "text": "마찰력"
+            },
+            {
+                "id": "d",
+                "text": "자기력"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "탄성력은 변형된 물체가 원래 상태로 복원되려는 성질에 의해 발생하는 힘입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "고무줄이나 용스철을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "우리 몸에서 혈액 속에 포함되어 산소를\n운반하는 역할을 하는 성분은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "백혈구"
+            },
+            {
+                "id": "b",
+                "text": "혈소판"
+            },
+            {
+                "id": "c",
+                "text": "적혈구"
+            },
+            {
+                "id": "d",
+                "text": "혈장"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "적혈구 내부의 헤모글로빈이 산소와 결합하여 온몸으로 산소를 운반합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "피가 붉게 보이게 만드는 성분입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물질이 연소할 때 반드시 필요한 기체이며\n지구 대기의 약 21%를 차지하는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "질소"
+            },
+            {
+                "id": "b",
+                "text": "이산화 탄소"
+            },
+            {
+                "id": "c",
+                "text": "산소"
+            },
+            {
+                "id": "d",
+                "text": "수소"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "산소는 생물의 호흡과 물질의 연소에 필수적인 기체입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "우리가 숨을 쉴 때 들이마시는 기체입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "소리의 크기를 결정하는 요소로,\n진동하는 폭이 클수록 커지는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "진동수"
+            },
+            {
+                "id": "b",
+                "text": "파장"
+            },
+            {
+                "id": "c",
+                "text": "진폭"
+            },
+            {
+                "id": "d",
+                "text": "맵시"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "진폭은 소리 파동의 최대 높이이며, 진폭이 클수록 소리의 크기가 커집니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "진동하는 '폭'을 줄인 말입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "태양계 행성 중 고리가 가장 뚜렷하고\n밀도가 물보다 작아 물에 뜰 수 있는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "목성"
+            },
+            {
+                "id": "b",
+                "text": "토성"
+            },
+            {
+                "id": "c",
+                "text": "천왕성"
+            },
+            {
+                "id": "d",
+                "text": "해왕성"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "토성은 거대한 고리를 가지고 있으며, 밀도가 태양계 행성 중 가장 낮습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "크고 아름다운 고리로 유명한 행성입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "거울이나 렌즈를 통해 보이는 물체의\n모습을 무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "상"
+            },
+            {
+                "id": "b",
+                "text": "그림자"
+            },
+            {
+                "id": "c",
+                "text": "굴절"
+            },
+            {
+                "id": "d",
+                "text": "회절"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "빛의 반사나 굴절에 의해 거울이나 렌즈에 맺히는 물체의 모습을 '상'이라고 부릅니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "한 글자로 된 과학 용어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "우리 몸에서 소화된 영양소가 가장 많이\n흡수되는 소화 기관은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "위"
+            },
+            {
+                "id": "b",
+                "text": "소장"
+            },
+            {
+                "id": "c",
+                "text": "대장"
+            },
+            {
+                "id": "d",
+                "text": "간"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "소장은 융털이라는 구조를 통해 표면적을 넓혀 영양소를 효율적으로 흡수합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "영양소 흡수의 주요 장소인 긴 관 모양의 기관입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "용액에 녹아 있는 용질의 양이 용해도를\n초과하여 더 이상 녹을 수 없는 상태는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "불포화 상태"
+            },
+            {
+                "id": "b",
+                "text": "포화 상태"
+            },
+            {
+                "id": "c",
+                "text": "과포화 상태"
+            },
+            {
+                "id": "d",
+                "text": "혼합 상태"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "최대로 녹을 수 있는 양만큼 녹아 있는 상태를 포화 상태라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "꽉 찼다는 의미의 단어가 들어갑니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "액체가 기체로 변할 때 주위에서 열을\n어떻게 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "흡수한다"
+            },
+            {
+                "id": "b",
+                "text": "방출한다"
+            },
+            {
+                "id": "c",
+                "text": "그대로 유지한다"
+            },
+            {
+                "id": "d",
+                "text": "생성한다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "액체가 기체가 되는 기화 현상이 일어날 때는 주위의 열에너지를 흡수합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "더운 여름 마당에 물을 뿌리면 시원해지는 이유를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "달이 지구 주위를 공전하면서 태양-달-지구\n순으로 일직선이 되어 달이 안 보이는 때는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "삭"
+            },
+            {
+                "id": "b",
+                "text": "망(보름달)"
+            },
+            {
+                "id": "c",
+                "text": "상현달"
+            },
+            {
+                "id": "d",
+                "text": "하현달"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "달이 태양과 같은 방향에 있어 보이지 않는 때를 '삭'이라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "음력 1일경의 달의 위상입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체가 아래로 떨어질 때 중력이 한 일은\n어떤 에너지로 전환되는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "탄성 에너지"
+            },
+            {
+                "id": "b",
+                "text": "운동 에너지"
+            },
+            {
+                "id": "c",
+                "text": "열 에너지"
+            },
+            {
+                "id": "d",
+                "text": "화학 에너지"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "낙하하는 물체는 높이가 낮아지며 위치 에너지가 줄어들고 속도가 빨라지며 운동 에너지가 증가합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "물체의 속력이 증가하는 것과 관련된 에너지입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "산성 용액에 푸른색 리트머스 종이를 넣으면\n색깔이 어떻게 변하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "노란색"
+            },
+            {
+                "id": "b",
+                "text": "보라색"
+            },
+            {
+                "id": "c",
+                "text": "붉은색"
+            },
+            {
+                "id": "d",
+                "text": "무색"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "산성 용액은 푸른색 리트머스 종이를 붉게 변화시키는 특징이 있습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "산(Acid)은 푸른색을 이 색으로 바꿉니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "대륙 이동설의 증거로 적절하지 않은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "해안선 모양의 일치"
+            },
+            {
+                "id": "b",
+                "text": "화석 분포의 일치"
+            },
+            {
+                "id": "c",
+                "text": "빙하 흔적의 일치"
+            },
+            {
+                "id": "d",
+                "text": "해수 온도의 일치"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "해수 온도의 일치는 대륙 이동의 증거와는 관련이 없는 기상적 요소입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "베게너가 제시한 네 가지 주요 증거를 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생물의 유전 형질이 자손에게 전달될 때\n표현형으로 나타나는 형질을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "우성"
+            },
+            {
+                "id": "b",
+                "text": "열성"
+            },
+            {
+                "id": "c",
+                "text": "변이"
+            },
+            {
+                "id": "d",
+                "text": "돌연변이"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "우열의 원리에 따라 잡종 1대에서 겉으로 드러나는 형질을 우성이라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "나타나지 않는 형질인 '열성'과 반대되는 개념입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "전류가 흐르는 도선 주위에 생기는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "중력장"
+            },
+            {
+                "id": "b",
+                "text": "자기장"
+            },
+            {
+                "id": "c",
+                "text": "마찰력"
+            },
+            {
+                "id": "d",
+                "text": "수평장"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "전류가 흐르면 그 주변에는 자기력이 작용하는 공간인 자기장이 형성됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "자석 주위에 생기는 것과 같은 성질의 공간입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "중성 상태의 원자가 전자를 잃으면\n어떤 전하를 띠게 되는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "양(+)전하"
+            },
+            {
+                "id": "b",
+                "text": "음(-)전하"
+            },
+            {
+                "id": "c",
+                "text": "중성"
+            },
+            {
+                "id": "d",
+                "text": "무전하"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "전자는 음전하를 띠므로, 이를 잃으면 상대적으로 양성자의 수가 많아져 양이온이 됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "음(-)의 성질을 가진 입자가 빠져나갔을 때의 변화를 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지진의 발생 지점인 진원에서 수직으로\n올라온 지표상의 지점을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "진폭"
+            },
+            {
+                "id": "b",
+                "text": "진앙"
+            },
+            {
+                "id": "c",
+                "text": "단층"
+            },
+            {
+                "id": "d",
+                "text": "해구"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "진앙은 진원의 바로 위에 위치한 지표면 지점을 말합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "진원과 짝을 이루는 용어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "온도가 일정할 때 기체의 부피는 압력에\n반비례한다는 법칙의 이름은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "샤를 법칙"
+            },
+            {
+                "id": "b",
+                "text": "보일 법칙"
+            },
+            {
+                "id": "c",
+                "text": "아보가드로 법칙"
+            },
+            {
+                "id": "d",
+                "text": "뉴턴 법칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "보일 법칙은 일정한 온도에서 기체의 압력과 부피 사이의 관계를 설명합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "압력을 가하면 부피가 줄어드는 현상과 관련이 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체에 힘을 주었지만 물체가 이동하지\n않았다면, 한 일의 양(J)은 얼마인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "1"
+            },
+            {
+                "id": "b",
+                "text": "0"
+            },
+            {
+                "id": "c",
+                "text": "힘의 크기만큼"
+            },
+            {
+                "id": "d",
+                "text": "무한대"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "일(W) = 힘(F) × 이동 거리(s)이므로, 이동 거리가 0이면 한 일도 0입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "이동 거리가 없을 때 물리적인 일의 정의를 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생태계에서 스스로 유기물을 합성하여\n에너지를 얻는 생물군은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "생산자"
+            },
+            {
+                "id": "b",
+                "text": "소비자"
+            },
+            {
+                "id": "c",
+                "text": "분해자"
+            },
+            {
+                "id": "d",
+                "text": "기생자"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "생산자는 광합성 등을 통해 무기물로부터 유기물을 직접 만드는 식물과 같은 생물을 말합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "에너지를 직접 만들어내는 자라는 뜻의 단어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 화학 변화의 예에 해당하는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "얼음이 녹는다"
+            },
+            {
+                "id": "b",
+                "text": "설탕이 물에 녹는다"
+            },
+            {
+                "id": "c",
+                "text": "철이 녹슨다"
+            },
+            {
+                "id": "d",
+                "text": "유리가 깨진다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "철이 녹스는 현상은 산소와 반응하여 새로운 물질인 산화 철이 생기는 화학 변화입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "물질의 성질 자체가 바뀌는 현상을 고르세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "소화 과정 중 침에 들어 있는 소화 효소로\n녹말을 엿당으로 분해하는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "펩신"
+            },
+            {
+                "id": "b",
+                "text": "아밀레이스"
+            },
+            {
+                "id": "c",
+                "text": "라이페이스"
+            },
+            {
+                "id": "d",
+                "text": "트립신"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "아밀레이스는 입속의 침에 포함되어 녹말을 분해하는 역할을 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "침 속에 들어있는 가장 대표적인 효소 이름입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지구 자기장이 형성되어 우주로부터 오는\n해로운 입자를 막아주는 역할을 하는 층은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "오존층"
+            },
+            {
+                "id": "b",
+                "text": "전리층"
+            },
+            {
+                "id": "c",
+                "text": "자기권"
+            },
+            {
+                "id": "d",
+                "text": "외권"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "자기권은 지구의 자기력이 미치는 공간으로 태양풍 등을 차단해 지구를 보호합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "지구가 하나의 커다란 자석임을 보여주는 영역입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체가 거울이나 렌즈에 의해 굴절될 때\n빛이 한 점에 모이는 지점을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "곡률"
+            },
+            {
+                "id": "b",
+                "text": "초점"
+            },
+            {
+                "id": "c",
+                "text": "주축"
+            },
+            {
+                "id": "d",
+                "text": "광원"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "평행하게 입사한 빛이 거울이나 렌즈를 통과한 후 모이는 점을 초점이라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "카메라의 핀트를 맞출 때 사용하는 단어이기도 합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "기압의 차이에 의해 공기가 이동하는\n현상을 무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "안개"
+            },
+            {
+                "id": "b",
+                "text": "구름"
+            },
+            {
+                "id": "c",
+                "text": "바람"
+            },
+            {
+                "id": "d",
+                "text": "태풍"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "바람은 고기압에서 저기압으로 공기가 수평적으로 이동하는 현상입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "공기의 흐름을 나타내는 일상적인 단어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빛이 서로 다른 매질의 경계면에서\n꺾이는 현상을 무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반사"
+            },
+            {
+                "id": "b",
+                "text": "굴절"
+            },
+            {
+                "id": "c",
+                "text": "직진"
+            },
+            {
+                "id": "d",
+                "text": "분산"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "빛이 진행하다가 매질이 바뀌면 속도 차이로 인해 진행 방향이 꺾이는데 이를 굴절이라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "물속에 담긴 빨대가 꺾여 보이는 이유입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물질을 구성하는 기본 성분으로,\n더 이상 분해되지 않는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "원소"
+            },
+            {
+                "id": "b",
+                "text": "분자"
+            },
+            {
+                "id": "c",
+                "text": "화합물"
+            },
+            {
+                "id": "d",
+                "text": "혼합물"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "원소는 화학적인 방법으로 더 이상 나눌 수 없는 물질의 근본 성분입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "수소, 산소, 철 등이 이에 해당합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지구 내부 구조 중 가장 두꺼운 층이며\n고체 상태이지만 유동성이 있는 곳은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지각"
+            },
+            {
+                "id": "b",
+                "text": "맨틀"
+            },
+            {
+                "id": "c",
+                "text": "외핵"
+            },
+            {
+                "id": "d",
+                "text": "내핵"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "맨틀은 지구 부피의 약 80%를 차지하며 대류 현상이 일어납니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "지각 아래에 위치한 가장 넓은 영역입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "뉴런에서 핵이 들어 있으며 여러 가지\n생명 활동이 일어나는 부분은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "신경 세포체"
+            },
+            {
+                "id": "b",
+                "text": "가지 돌기"
+            },
+            {
+                "id": "c",
+                "text": "축삭 돌기"
+            },
+            {
+                "id": "d",
+                "text": "시냅스"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "신경 세포체는 뉴런의 본체로, 세포의 생명 활동을 조절합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "뉴런의 중심부로 핵을 포함하고 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "화학 반응 전후에 물질의 총 질량은\n변하지 않는다는 법칙은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "일정 성분비 법칙"
+            },
+            {
+                "id": "b",
+                "text": "질량 보존 법칙"
+            },
+            {
+                "id": "c",
+                "text": "기체 반응 법칙"
+            },
+            {
+                "id": "d",
+                "text": "에너지 보존 법칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "라부아지에가 발견한 질량 보존 법칙은 반응물과 생성물의 총 질량이 같음을 의미합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "질량이 없어지거나 새로 생기지 않고 유지된다는 의미입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "태양계 행성 중 지구와 크기가 가장 비슷하고\n두꺼운 이산화 탄소 대기를 가진 행성은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "수성"
+            },
+            {
+                "id": "b",
+                "text": "금성"
+            },
+            {
+                "id": "c",
+                "text": "화성"
+            },
+            {
+                "id": "d",
+                "text": "목성"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "금성은 온실 효과로 인해 표면 온도가 매우 높으며 '샛별'이라고도 불립니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "지구의 자매 행성으로 불리며 매우 밝게 빛납니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체가 가진 열이 매질 없이 직접 전자기파의\n형태로 전달되는 현상은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전도"
+            },
+            {
+                "id": "b",
+                "text": "대류"
+            },
+            {
+                "id": "c",
+                "text": "복사"
+            },
+            {
+                "id": "d",
+                "text": "승화"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "복사는 매질을 거치지 않고 열이 직접 이동하는 방법으로, 태양열이 지구에 도달하는 방식입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "난로 앞에 있을 때 직접적으로 따뜻함이 느껴지는 방식입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "수평면 위에 놓인 물체를 밀 때, 물체의 운동을\n방해하며 바닥면과 사이에서 발생하는 힘은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "중력"
+            },
+            {
+                "id": "b",
+                "text": "마찰력"
+            },
+            {
+                "id": "c",
+                "text": "부력"
+            },
+            {
+                "id": "d",
+                "text": "자기력"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:middle"
+        ],
+        "explanation": "마찰력은 접촉면에서 물체의 운동을 방해하는 방향으로 작용하는 힘입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "middle",
+        "hint": "거친 바닥에서 물체를 밀기 힘든 이유입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736413200
+    }
+]

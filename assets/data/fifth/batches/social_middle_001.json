@@ -1,0 +1,1762 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국가 권력의 남용을 방지하기 위해 권력을\n여러 기관이 나누어 맡는 민주주의 원리는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "국민 주권"
+            },
+            {
+                "id": "b",
+                "text": "권력 분립"
+            },
+            {
+                "id": "c",
+                "text": "법치주의"
+            },
+            {
+                "id": "d",
+                "text": "지방 자치"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "권력 분립은 입법, 행정, 사법부로 권력을 나누어 상호 견제와 균형을 이루는 원리입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "견제와 균형을 위해 권력을 쪼개는 것을 말합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "인간의 욕구는 무한하지만 이를 충족할\n자원은 한정되어 있는 상태를 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "기회비용"
+            },
+            {
+                "id": "b",
+                "text": "자원의 희소성"
+            },
+            {
+                "id": "c",
+                "text": "생산성"
+            },
+            {
+                "id": "d",
+                "text": "경제적 자유"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "자원의 희소성은 자원이 사람들의 욕구에 비해 상대적으로 부족한 상태를 의미합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "부족하다는 의미를 담고 있는 경제 용어입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "일 년 내내 고온 다습하며, 거의 매일\n오후에 소나기(스콜)가 내리는 기후 지역은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "건조 기후"
+            },
+            {
+                "id": "b",
+                "text": "열대 우림 기후"
+            },
+            {
+                "id": "c",
+                "text": "지중해성 기후"
+            },
+            {
+                "id": "d",
+                "text": "냉대 기후"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "열대 우림 기후는 적도 근처에서 나타나며 기온이 높고 강수량이 매우 많습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "적도 인근의 밀림 지역을 떠올려 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국가의 주인은 국민이며 모든 권력은\n국민으로부터 나온다는 민주주의 원리는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "국민 주권의 원리"
+            },
+            {
+                "id": "b",
+                "text": "권력 분립의 원리"
+            },
+            {
+                "id": "c",
+                "text": "다수결의 원리"
+            },
+            {
+                "id": "d",
+                "text": "입헌주의의 원리"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "국민 주권의 원리는 국가의 최고 의사를 결정하는 권력이 국민에게 있다는 원칙입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "국가의 최고 권력이 누구에게 있는지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "선택으로 인해 포기한 여러 대안 중\n가장 가치가 큰 것을 무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "매몰 비용"
+            },
+            {
+                "id": "b",
+                "text": "기회비용"
+            },
+            {
+                "id": "c",
+                "text": "편익"
+            },
+            {
+                "id": "d",
+                "text": "희소 가치"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "기회비용은 어떤 것을 선택함으로써 포기하게 된 것들 중 가치가 가장 큰 것을 뜻합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "선택의 대가로 지불한 무형의 가치입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "정치적 견해를 같이하는 사람들이 모여\n정권을 잡기 위해 결성한 자발적 조직은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "이익 집단"
+            },
+            {
+                "id": "b",
+                "text": "시민 단체"
+            },
+            {
+                "id": "c",
+                "text": "정당"
+            },
+            {
+                "id": "d",
+                "text": "지방 의회"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "정당은 정치 권력 획득을 목적으로 하며 국민의 이익을 대표하려 노력합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "선거에 후보를 내고 정권을 획득하려는 조직입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "개인 간의 다툼(돈 문제, 혼인 등)을\n해결하기 위해 적용하는 법의 영역은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "형법"
+            },
+            {
+                "id": "b",
+                "text": "민법"
+            },
+            {
+                "id": "c",
+                "text": "행정법"
+            },
+            {
+                "id": "d",
+                "text": "헌법"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "민법은 개인 간의 사적인 권리 관계와 다툼을 다루는 대표적인 사법입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "시민(민간) 사이의 관계를 규정하는 법입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "여름이 덥고 건조하며, 수목 농업(올리브,\n포도 등)이 발달한 지중해성 기후의 기호는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "Af"
+            },
+            {
+                "id": "b",
+                "text": "Cs"
+            },
+            {
+                "id": "c",
+                "text": "Cw"
+            },
+            {
+                "id": "d",
+                "text": "Df"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "지중해성 기후는 쾨펜의 분류에 따라 Cs로 표기하며, 여름철 강수량이 매우 적습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "여름(Summer)이 건조한 특성을 가집니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사회화의 기관 중 하나로, 기초적인\n언어와 생활 습관을 처음 배우는 곳은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "학교"
+            },
+            {
+                "id": "b",
+                "text": "가족"
+            },
+            {
+                "id": "c",
+                "text": "직장"
+            },
+            {
+                "id": "d",
+                "text": "대중 매체"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "가족은 가장 기초적이고 1차적인 사회화 기관으로 초기 인격 형성에 큰 역할을 합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "태어나서 처음으로 만나는 집단입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "자신의 문화만이 우월하다고 믿고 다른\n문화에 대해 배타적인 태도를 보이는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "문화 상대주의"
+            },
+            {
+                "id": "b",
+                "text": "자문화 중심주의"
+            },
+            {
+                "id": "c",
+                "text": "문화 사대주의"
+            },
+            {
+                "id": "d",
+                "text": "문화적 다원주의"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "자문화 중심주의는 자기 문화를 기준으로 타 문화를 낮게 평가하는 편협한 태도입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "자신의 문화가 '중심'이라고 생각하는 태도입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물가가 지속적으로 상승하여 화폐의\n가치가 떨어지는 현상을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "디플레이션"
+            },
+            {
+                "id": "b",
+                "text": "인플레이션"
+            },
+            {
+                "id": "c",
+                "text": "스테그플레이션"
+            },
+            {
+                "id": "d",
+                "text": "환율 하락"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "인플레이션은 물가 수준이 전반적으로 지속해서 오르는 경제 현상을 말합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "물가가 오르면 돈의 가치는 어떻게 되나요?",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "법률이 헌법에 위반되는지를 심판하여\n국민의 기본권을 보호하는 기관은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "대검찰청"
+            },
+            {
+                "id": "b",
+                "text": "헌법재판소"
+            },
+            {
+                "id": "c",
+                "text": "국가인권위원회"
+            },
+            {
+                "id": "d",
+                "text": "감사원"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "헌법재판소는 위헌 법률 심판 등을 통해 헌법의 가치를 수호하고 국민의 권리를 보장합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "헌법을 수호하는 특별한 재판소입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "도시로 인구가 집중되어 도시적 삶의\n방식이 확대되는 현상을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "산업화"
+            },
+            {
+                "id": "b",
+                "text": "도시화"
+            },
+            {
+                "id": "c",
+                "text": "정보화"
+            },
+            {
+                "id": "d",
+                "text": "지방 분권화"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "도시화는 도시 인구 비율이 높아지고 도시의 수와 면적이 커지는 과정입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "농촌 사람이 도시로 이동하는 현상과 관련이 깊습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "노동자가 인간다운 생활을 보장받기 위해\n헌법에서 정한 '노동 3권'에 해당하지 않는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "단결권"
+            },
+            {
+                "id": "b",
+                "text": "단체 교섭권"
+            },
+            {
+                "id": "c",
+                "text": "단체 행동권"
+            },
+            {
+                "id": "d",
+                "text": "사유 재산권"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "노동 3권은 단결권, 단체 교섭권, 단체 행동권을 의미하며 사유 재산권은 경제적 기본권입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "노동자의 단체 활동과 관련된 권리가 아닌 것을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다른 나라의 화폐와 우리나라 화폐 사이의\n교환 비율을 무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "금리"
+            },
+            {
+                "id": "b",
+                "text": "환율"
+            },
+            {
+                "id": "c",
+                "text": "주가"
+            },
+            {
+                "id": "d",
+                "text": "물가"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "환율은 자국 화폐와 외국 화폐의 교환 비율로, 외환 시장에서 결정됩니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "여행을 갈 때 달러를 얼마에 살지 결정하는 값입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "북극해 연안에서 나타나며 이끼류가 주로\n자라는 추운 기후 지역은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "냉대 기후"
+            },
+            {
+                "id": "b",
+                "text": "툰드라 기후"
+            },
+            {
+                "id": "c",
+                "text": "빙설 기후"
+            },
+            {
+                "id": "d",
+                "text": "고산 기후"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "툰드라 기후는 짧은 여름 동안 얼음이 녹아 이끼가 자랄 수 있는 한대 기후의 일종입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "여름에만 살짝 얼음이 녹아 이끼가 자라는 곳입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "민주 선거의 4대 원칙 중 성별, 학력,\n재산에 관계없이 표를 주는 원칙은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "비밀 선거"
+            },
+            {
+                "id": "b",
+                "text": "보통 선거"
+            },
+            {
+                "id": "c",
+                "text": "직접 선거"
+            },
+            {
+                "id": "d",
+                "text": "평등 선거"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "보통 선거는 일정 연령 이상의 모든 국민에게 선거권을 부여하는 원칙입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "조건 없이 '누구나' 참여할 수 있다는 의미입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "모든 국민은 법 앞에 평등하며, 누구든\n성별, 종교 등을 이유로 차별받지 않는 권리는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "자유권"
+            },
+            {
+                "id": "b",
+                "text": "평등권"
+            },
+            {
+                "id": "c",
+                "text": "참정권"
+            },
+            {
+                "id": "d",
+                "text": "사회권"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "평등권은 국가로부터 부당한 차별을 받지 않고 동등하게 대우받을 권리입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "차별받지 않을 권리를 무엇이라 할까요?",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "시장에서 수요량과 공급량이 일치하여\n가격이 변하지 않는 상태를 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "초과 수요"
+            },
+            {
+                "id": "b",
+                "text": "시장 균형"
+            },
+            {
+                "id": "c",
+                "text": "공급 과잉"
+            },
+            {
+                "id": "d",
+                "text": "독점 현상"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "시장 균형은 수요와 공급이 만나는 지점에서 가격과 거래량이 결정되는 상태입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "수요와 공급이 딱 맞는 상태입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지구 온난화를 막기 위해 체결된 국제\n협약으로 탄소 배출을 줄이려는 노력은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "람사르 협약"
+            },
+            {
+                "id": "b",
+                "text": "파리 기후 변화 협약"
+            },
+            {
+                "id": "c",
+                "text": "제네바 협약"
+            },
+            {
+                "id": "d",
+                "text": "몬트리올 의정서"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "파리 기후 변화 협약은 전 세계 국가들이 온실가스 감축 목표를 설정한 협약입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "프랑스의 수도 이름이 들어간 협약입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사람들이 태어나서 죽을 때까지 사회적\n지식, 가치, 규범을 배워 나가는 과정은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "도시화"
+            },
+            {
+                "id": "b",
+                "text": "사회화"
+            },
+            {
+                "id": "c",
+                "text": "정보화"
+            },
+            {
+                "id": "d",
+                "text": "산업화"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "사회화는 개인이 자신이 속한 사회의 문화를 학습하여 사회 구성원이 되는 과정입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "사회의 한 구성원이 되기 위해 배우는 과정입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국가의 법 중에서 가장 상위의 법이며,\n모든 법의 기준이 되는 법은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "형법"
+            },
+            {
+                "id": "b",
+                "text": "민법"
+            },
+            {
+                "id": "c",
+                "text": "헌법"
+            },
+            {
+                "id": "d",
+                "text": "조례"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "헌법은 국가 운영의 기본 원리와 국민의 기본권을 규정한 국가의 최고법입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "법 중의 법이라고 불리는 최상위 법입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "수출이 수입보다 많은 경우를 무엇이라\n부르며, 이때 외환 보유액은 어떻게 되는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "무역 적자 - 감소"
+            },
+            {
+                "id": "b",
+                "text": "무역 흑자 - 증가"
+            },
+            {
+                "id": "c",
+                "text": "무역 적자 - 증가"
+            },
+            {
+                "id": "d",
+                "text": "무역 흑자 - 감소"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "수출이 수입보다 많으면 무역 흑자가 발생하며, 외화가 유입되어 외환 보유액이 늘어납니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "이익이 나는 상황과 그에 따른 돈의 흐름을 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "대륙의 내부나 고위도 지역에서 나타나며\n연교차가 매우 큰 기후 지역은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "열대 기후"
+            },
+            {
+                "id": "b",
+                "text": "냉대 기후"
+            },
+            {
+                "id": "c",
+                "text": "해양성 기후"
+            },
+            {
+                "id": "d",
+                "text": "사바나 기후"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "냉대 기후는 겨울이 길고 추우며, 기온의 연교차가 대단히 크게 나타나는 특징이 있습니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "러시아나 캐나다 같은 추운 대륙 지역의 기후입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "정치 과정에 참여하여 특정 집단의 이익을\n정부나 국회에 반영하려는 자발적 조직은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "정당"
+            },
+            {
+                "id": "b",
+                "text": "이익 집단"
+            },
+            {
+                "id": "c",
+                "text": "시민 단체"
+            },
+            {
+                "id": "d",
+                "text": "지방 정부"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "이익 집단은 구성원들의 공통된 특수 이익을 실현하기 위해 정치 과정에 압력을 행사합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "자신들의 '이익'을 위해 활동하는 집단입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "문화 간에 우열이 없음을 인정하고 해당\n사회의 맥락에서 문화를 이해하는 태도는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "문화 제국주의"
+            },
+            {
+                "id": "b",
+                "text": "문화 상대주의"
+            },
+            {
+                "id": "c",
+                "text": "문화 절대주의"
+            },
+            {
+                "id": "d",
+                "text": "문화적 배타주의"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "문화 상대주의는 서로 다른 문화의 가치를 존중하고 이해하려는 바람직한 태도입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "문화를 그 나라의 입장에서 '상대적'으로 바라보는 것입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생산 요소 시장의 공급자에 해당하며,\n가계로부터 노동을 제공받는 경제 주체는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "정부"
+            },
+            {
+                "id": "b",
+                "text": "기업"
+            },
+            {
+                "id": "c",
+                "text": "노동 조합"
+            },
+            {
+                "id": "d",
+                "text": "은행"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "기업은 가계로부터 노동, 자본 등을 제공받아 물건을 생산하고 이윤을 창출하는 주체입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "물건을 만들고 사람을 고용하는 곳입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국제 사회의 분쟁을 법적으로 해결하기\n위해 설립된 네덜란드 헤이그 소재 기관은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "유엔 안전보장 이사회"
+            },
+            {
+                "id": "b",
+                "text": "국제 사법 재판소"
+            },
+            {
+                "id": "c",
+                "text": "국제 형사 재판소"
+            },
+            {
+                "id": "d",
+                "text": "세계 보건 기구"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "국제 사법 재판소(ICJ)는 국가 간의 법적 분쟁을 다루는 UN의 주요 사법 기관입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "국제적인 분쟁을 '사법적'으로 해결하는 곳입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "한 사회에서 남성과 여성에게 기대하는\n행동 양식이나 태도를 무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "성적 지향"
+            },
+            {
+                "id": "b",
+                "text": "성 역할"
+            },
+            {
+                "id": "c",
+                "text": "성 인지 감수성"
+            },
+            {
+                "id": "d",
+                "text": "성별 정체성"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "성 역할은 사회적, 문화적으로 형성된 성별에 따른 역할 기대치를 의미합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "남자 혹은 여자로서 기대되는 '역할'입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지구본의 가로선인 위도 중 0도에 해당하며\n태양 에너지를 가장 많이 받는 곳은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "본초 자오선"
+            },
+            {
+                "id": "b",
+                "text": "적도"
+            },
+            {
+                "id": "c",
+                "text": "북회귀선"
+            },
+            {
+                "id": "d",
+                "text": "남회귀선"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "적도는 지구를 남북으로 나누는 기준선으로 위도 0도인 지점입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "지구의 정중앙을 가로지르는 선입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "정부가 공공의 이익을 위해 시장에 개입,\n세금을 걷고 공공재를 생산하는 경제는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "계획 경제 체제"
+            },
+            {
+                "id": "b",
+                "text": "혼합 경제 체제"
+            },
+            {
+                "id": "c",
+                "text": "시장 경제 체제"
+            },
+            {
+                "id": "d",
+                "text": "전통 경제 체제"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "현대 대부분의 국가는 시장의 원리에 정부의 개입이 더해진 혼합 경제 체제를 유지합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "시장 원리와 정부 개입이 '섞여' 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "민주 선거의 원칙 중 투표자가 누구에게\n투표했는지 남이 알지 못하게 하는 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "보통 선거"
+            },
+            {
+                "id": "b",
+                "text": "비밀 선거"
+            },
+            {
+                "id": "c",
+                "text": "직접 선거"
+            },
+            {
+                "id": "d",
+                "text": "평등 선거"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "비밀 선거는 투표의 내용을 타인이 알 수 없게 보장하여 자유로운 의사를 존중하는 원칙입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "남이 모르게 투표해야 한다는 원칙입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "국민이 직접 정치에 참여하지 않고\n대표를 뽑아 정치를 맡기는 방식은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "직접 민주주의"
+            },
+            {
+                "id": "b",
+                "text": "간접 민주주의"
+            },
+            {
+                "id": "c",
+                "text": "권위주의"
+            },
+            {
+                "id": "d",
+                "text": "전체주의"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "간접 민주주의는 대의제라고도 하며, 현대 국가의 주된 정치 형태입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "대표를 '대신' 내세워 참여하는 방식입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "일정한 구역의 주민들이 지방 정부를 구성해\n그 지역의 사무를 스스로 처리하는 제도는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "중앙 집권제"
+            },
+            {
+                "id": "b",
+                "text": "지방 자치 제도"
+            },
+            {
+                "id": "c",
+                "text": "대통령제"
+            },
+            {
+                "id": "d",
+                "text": "의원 내각제"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "지방 자치 제도는 민주주의의 풀뿌리라고 불리며 주민 참여를 강조합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "그 지역의 일은 그 지역 주민들이 결정합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "기온의 연교차가 작고 일 년 내내 비가\n고르게 내려 서안 해양성 기후가 나타나는 곳은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "서부 유럽"
+            },
+            {
+                "id": "b",
+                "text": "동부 아시아"
+            },
+            {
+                "id": "c",
+                "text": "북부 아프리카"
+            },
+            {
+                "id": "d",
+                "text": "남부 아메리카"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "서부 유럽은 편서풍과 난류의 영향으로 온화하고 비가 고른 해양성 기후가 나타납니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "영국이나 프랑스 같은 지역을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "노동자가 자신의 노동력을 제공하고 그\n대가로 받는 돈을 무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "이자"
+            },
+            {
+                "id": "b",
+                "text": "임금"
+            },
+            {
+                "id": "c",
+                "text": "지대"
+            },
+            {
+                "id": "d",
+                "text": "이윤"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "임금은 노동의 대가로 지불되는 비용으로 가계의 주요 수입원입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "일한 대가로 받는 월급을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "개인이 속한 사회적 위치에 따라 기대되는\n일정한 행동 방식을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "사회적 지위"
+            },
+            {
+                "id": "b",
+                "text": "사회적 역할"
+            },
+            {
+                "id": "c",
+                "text": "사회적 규범"
+            },
+            {
+                "id": "d",
+                "text": "사회적 갈등"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "역할은 특정 지위에 있는 사람에게 사회가 기대하는 구체적인 행동 양식입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "학생이라면 공부를 해야 한다는 식의 기대를 말합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 인간다운 생활을 보장하기 위해\n국가에 요구할 수 있는 현대적 기본권은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "자유권"
+            },
+            {
+                "id": "b",
+                "text": "사회권"
+            },
+            {
+                "id": "c",
+                "text": "평등권"
+            },
+            {
+                "id": "d",
+                "text": "참정권"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "사회권은 복지 국가에서 강조되며, 교육, 근로, 환경권 등을 포함합니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "복지 혜택과 관련된 기본권입니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "정보 통신 기술의 발달로 정보가 사회의\n중심 자원이 되는 변화 현상은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "산업화"
+            },
+            {
+                "id": "b",
+                "text": "정보화"
+            },
+            {
+                "id": "c",
+                "text": "민주화"
+            },
+            {
+                "id": "d",
+                "text": "고령화"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "정보화는 컴퓨터와 인터넷 등의 발달로 지식과 정보의 가치가 높아지는 현상입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "데이터와 인터넷이 중요해진 세상을 뜻합니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "전 세계가 하나의 공동체처럼 연결되어\n교류가 활발해지는 현상을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "지역화"
+            },
+            {
+                "id": "b",
+                "text": "세계화"
+            },
+            {
+                "id": "c",
+                "text": "국가주의"
+            },
+            {
+                "id": "d",
+                "text": "보호주의"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:social",
+            "edu:middle"
+        ],
+        "explanation": "세계화는 국경의 의미가 약해지고 정치, 경제, 문화가 전 지구적으로 통합되는 현상입니다.",
+        "grade": null,
+        "subject": "social",
+        "eduLevel": "middle",
+        "hint": "지구가 하나의 마을이 된다는 표현과 관련이 있습니다.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1736410000
+    }
+]

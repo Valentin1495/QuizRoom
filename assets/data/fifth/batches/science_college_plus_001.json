@@ -1,0 +1,1442 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 미토콘드리아 내막에서 일어나는\n전자전달계의 최종 전자 수용체는\n무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "NAD+"
+            },
+            {
+                "id": "b",
+                "text": "FAD"
+            },
+            {
+                "id": "c",
+                "text": "산소(O2)"
+            },
+            {
+                "id": "d",
+                "text": "물(H2O)"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "전자전달계의 마지막 단계에서 전자는 산소로 전달되어 수소 이온과 결합하여 물을 형성합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "우리가 호흡을 통해 들이마시는 기체입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "양자역학에서 파울리 배타 원리에 대한\n설명으로 옳은 것은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "입자의 위치와 운동량은 동시에 측정 불가"
+            },
+            {
+                "id": "b",
+                "text": "두 페르미온은 같은 양자 상태를 가질 수 없음"
+            },
+            {
+                "id": "c",
+                "text": "에너지는 불연속적인 값만 가짐"
+            },
+            {
+                "id": "d",
+                "text": "모든 입자는 파동성을 동시에 가짐"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "파울리 배타 원리는 하나의 양자 상태에 스핀이 반대인 두 개의 전자(페르미온)만 존재할 수 있음을 의미합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "전자들이 같은 칸에 들어가는 규칙을 생각해보세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "열역학 제2법칙에 따라 고립계에서\n항상 증가하거나 일정하게 유지되는\n물리량은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "엔탈피"
+            },
+            {
+                "id": "b",
+                "text": "자유 에너지"
+            },
+            {
+                "id": "c",
+                "text": "엔트로피"
+            },
+            {
+                "id": "d",
+                "text": "내부 에너지"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "열역학 제2법칙은 시간이 흐름에 따라 고립계의 무질서도인 엔트로피가 증가하는 방향으로 반응이 일어남을 설명합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "무질서도를 나타내는 척도입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "유기화학에서 친핵체(Nucleophile)의\n특징으로 가장 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전자가 부족하여 양전하를 띰"
+            },
+            {
+                "id": "b",
+                "text": "비공유 전자쌍을 기증할 수 있음"
+            },
+            {
+                "id": "c",
+                "text": "루이스 산으로 작용함"
+            },
+            {
+                "id": "d",
+                "text": "전자를 받아들이는 성질이 강함"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "친핵체는 전자가 풍부하여 핵(양전하)을 좋아하며, 반응 시 비공유 전자쌍을 제공하는 루이스 염기로 작용합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "전자쌍을 주는 쪽인지 받는 쪽인지 생각해보세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지구과학에서 판 구조론 중 두 판이\n서로 어긋나게 미끄러지는 경계를\n무엇이라 합니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "수렴형 경계"
+            },
+            {
+                "id": "b",
+                "text": "발산형 경계"
+            },
+            {
+                "id": "c",
+                "text": "보존형 경계"
+            },
+            {
+                "id": "d",
+                "text": "습곡형 경계"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "보존형 경계는 판의 생성이나 소멸 없이 수평적으로 어긋나는 경계로, 변환 단층이 발달합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "판이 보존된다는 의미를 담고 있습니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "DNA 복제 과정에서 지연 가닥(Lagging\nstrand)에서 합성되는 짧은 DNA 조각의\n이름은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "프라이머"
+            },
+            {
+                "id": "b",
+                "text": "오카자키 절편"
+            },
+            {
+                "id": "c",
+                "text": "인트론"
+            },
+            {
+                "id": "d",
+                "text": "엑손"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "지연 가닥은 5'에서 3' 방향으로 불연속적으로 합성되며, 이때 생기는 조각을 오카자키 절편이라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "발견한 일본인 과학자의 이름이 붙어 있습니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "일반 상대성 이론에서 중력이 시공간에\n미치는 영향은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "시공간을 평평하게 만듦"
+            },
+            {
+                "id": "b",
+                "text": "시공간을 휘어지게 만듦"
+            },
+            {
+                "id": "c",
+                "text": "시공간의 차원을 늘림"
+            },
+            {
+                "id": "d",
+                "text": "시간을 빠르게 흐르게 함"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "질량이 있는 물체는 주변의 시공간을 곡곡시키며, 이 곡률이 중력으로 나타난다는 것이 일반 상대성 이론의 핵심입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "트램펄린 위에 무거운 공을 놓았을 때의 모습을 상상해 보세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 수용액의 pH를 구하는 공식으로\n올바른 것은? (단, [H+]는 수소 이온 농도)",
+        "choices": [
+            {
+                "id": "a",
+                "text": "pH = log[H+]"
+            },
+            {
+                "id": "b",
+                "text": "pH = -log[H+]"
+            },
+            {
+                "id": "c",
+                "text": "pH = ln[H+]"
+            },
+            {
+                "id": "d",
+                "text": "pH = 1/[H+]"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "pH는 수소 이온 농도의 상용로그 값에 마이너스 부호를 붙인 정의를 사용합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "지수값이 양수가 되도록 정의되었습니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빛의 이중성에 따르면 광전 효과는\n빛의 어떤 성질을 증명합니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "파동성"
+            },
+            {
+                "id": "b",
+                "text": "입자성"
+            },
+            {
+                "id": "c",
+                "text": "간섭성"
+            },
+            {
+                "id": "d",
+                "text": "회절성"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "아인슈타인은 광양자설을 통해 빛이 광자라는 입자의 흐름임을 밝혀 광전 효과를 설명했습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "불연속적인 에너지 덩어리로 보는 관점입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "식물의 광합성 명반응 과정에서 생성되어\n암반응(칼빈 회로)으로 전달되는\n물질은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "포도당과 산소"
+            },
+            {
+                "id": "b",
+                "text": "ATP와 NADPH"
+            },
+            {
+                "id": "c",
+                "text": "이산화탄소와 물"
+            },
+            {
+                "id": "d",
+                "text": "RuBP와 G3P"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "명반응에서 빛 에너지를 이용해 만든 ATP와 NADPH는 암반응에서 이산화탄소를 고정하는 데 에너지원으로 사용됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "에너지 화폐와 환원력을 제공하는 물질입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 하이젠베르크의 불확정성 원리에\n대한 올바른 해석은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "관찰자가 없으면 입자는 존재하지 않음"
+            },
+            {
+                "id": "b",
+                "text": "위치와 운동량을 동시에 정확히 알 수 없음"
+            },
+            {
+                "id": "c",
+                "text": "에너지 보존 법칙은 양자 수준에서 무시됨"
+            },
+            {
+                "id": "d",
+                "text": "모든 물리량은 결정론적으로 계산 가능함"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "불확정성 원리는 입자의 위치 측정 오차와 운동량 측정 오차의 곱이 일정 값 이상이어야 함을 나타냅니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "측정의 한계와 자연의 본질적 특성에 관한 내용입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "화학 반응 속도론에서 촉매가 반응 속도를\n빠르게 하는 주된 이유는 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반응물의 농도를 높이기 때문에"
+            },
+            {
+                "id": "b",
+                "text": "활성화 에너지를 낮추기 때문에"
+            },
+            {
+                "id": "c",
+                "text": "전체 반응 엔탈피를 높이기 때문에"
+            },
+            {
+                "id": "d",
+                "text": "분자 간 충돌 횟수를 줄이기 때문에"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "촉매는 반응 경로를 변경하여 넘어야 할 에너지 장벽인 활성화 에너지를 낮춤으로써 반응 속도를 증가시킵니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "반응이 일어나기 위해 필요한 최소 에너지를 생각해보세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "세포 주기 중 DNA 복제가 일어나는\n시기는 언제입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "G1기"
+            },
+            {
+                "id": "b",
+                "text": "S기"
+            },
+            {
+                "id": "c",
+                "text": "G2기"
+            },
+            {
+                "id": "d",
+                "text": "M기"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "간기(Interphase) 중 S기(Synthesis phase)에서 DNA 합성과 복제가 수행됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "합성(Synthesis)의 약자입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "항성의 진화 과정에서 태양보다 훨씬\n무거운 별이 생의 마지막에 폭발하며\n남기는 천체는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "백색 왜성"
+            },
+            {
+                "id": "b",
+                "text": "적색 거성"
+            },
+            {
+                "id": "c",
+                "text": "블랙홀 또는 중성자별"
+            },
+            {
+                "id": "d",
+                "text": "행성상 성운"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "질량이 매우 큰 별은 초신성 폭발을 거쳐 밀도가 극도로 높은 중성자별이나 블랙홀이 됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "중력이 매우 강해 빛조차 빠져나오지 못하는 상태를 포함합니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "단백질의 2차 구조인 알파-나선과\n베타-병풍 구조를 유지하는 주요\n화학 결합은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "이온 결합"
+            },
+            {
+                "id": "b",
+                "text": "수소 결합"
+            },
+            {
+                "id": "c",
+                "text": "공유 결합"
+            },
+            {
+                "id": "d",
+                "text": "소수성 상호작용"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "아미노산 잔기들의 펩타이드 결합 사이에 형성되는 규칙적인 수소 결합이 2차 구조를 결정합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "물 분자 사이에서도 볼 수 있는 인력입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 전자기파의 파장이 짧은 순서대로\n나열한 것으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "가시광선 > 자외선 > 감마선"
+            },
+            {
+                "id": "b",
+                "text": "감마선 > 자외선 > 가시광선"
+            },
+            {
+                "id": "c",
+                "text": "라디오파 > 적외선 > 자외선"
+            },
+            {
+                "id": "d",
+                "text": "가시광선 > 라디오파 > 감마선"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "에너지가 클수록 파장이 짧으며, 감마선이 가장 짧고 라디오파가 가장 깁니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "가장 에너지가 강한 파동을 먼저 생각해보세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "유전학에서 독립의 법칙이 적용되지\n않는 경우는 어떤 경우입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "형질이 서로 다른 염색체에 있을 때"
+            },
+            {
+                "id": "b",
+                "text": "두 유전자가 같은 염색체에 연관될 때"
+            },
+            {
+                "id": "c",
+                "text": "우열 관계가 분명할 때"
+            },
+            {
+                "id": "d",
+                "text": "자가 수분을 반복할 때"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "연관된 유전자들은 감수 분열 시 함께 이동하므로 멘델의 독립의 법칙을 따르지 않습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "유전자들이 묶여서 같이 유전되는 현상을 의미합니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물리학에서 '일-에너지 정리'에 따르면\n물체에 해준 알짜일은 무엇의 변화량과\n같습니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "퍼텐셜 에너지"
+            },
+            {
+                "id": "b",
+                "text": "운동 에너지"
+            },
+            {
+                "id": "c",
+                "text": "열 에너지"
+            },
+            {
+                "id": "d",
+                "text": "정지 에너지"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "물체에 힘을 가해 일을 하면 그 일만큼 물체의 속도가 변하며 운동 에너지가 변하게 됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "속도와 관련된 에너지의 변화입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "화합물에서 중심 원자가 비공유 전자쌍을\n한 쌍 가지고 있고 3개의 원자와 결합할 때\n분자의 기하학적 구조는? (VSEPR 이론)",
+        "choices": [
+            {
+                "id": "a",
+                "text": "정사면체형"
+            },
+            {
+                "id": "b",
+                "text": "평면 삼각형"
+            },
+            {
+                "id": "c",
+                "text": "삼각뿔형"
+            },
+            {
+                "id": "d",
+                "text": "선형"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "암모니아(NH3)와 같이 전자쌍 반발에 의해 입체수가 4이지만 비공유 전자쌍 하나 때문에 삼각뿔 모양을 이룹니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "피라미드 모양을 상상해 보세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 효소의 경쟁적 저해제(Competitive\ninhibitor)에 대한 설명으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "효소의 활성 부위가 아닌 곳에 결합함"
+            },
+            {
+                "id": "b",
+                "text": "기질과 구조가 유사하여 활성 부위 경쟁"
+            },
+            {
+                "id": "c",
+                "text": "반응의 최대 속도(Vmax)를 감소시킴"
+            },
+            {
+                "id": "d",
+                "text": "기질 농도를 높여도 저해 효과 유지됨"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "경쟁적 저해제는 기질과 닮은 구조로 효소의 활성 부위를 선점하려 하지만 기질 농도를 높이면 저해 효과가 줄어듭니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "누가 먼저 활성 부위에 들어가는지의 싸움입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "전자기 유도 현상에서 유도 기전력의\n방향은 자기 선속의 변화를 방해하는\n쪽이라는 법칙은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "페러데이 법칙"
+            },
+            {
+                "id": "b",
+                "text": "렌츠의 법칙"
+            },
+            {
+                "id": "c",
+                "text": "앙페르의 법칙"
+            },
+            {
+                "id": "d",
+                "text": "옴의 법칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "페러데이 법칙이 유도 기전력의 크기를 결정한다면, 렌츠의 법칙은 그 방향(반대 방향)을 규정합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "'방해' 또는 '청개구리 성질'을 떠올려 보세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 원소의 주기적 성질에서\n원자 번호가 증가할 때 같은 주기의\n이온화 에너지는 대체로 어떻게 됩니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "일정하게 유지된다"
+            },
+            {
+                "id": "b",
+                "text": "감소한다"
+            },
+            {
+                "id": "c",
+                "text": "증가한다"
+            },
+            {
+                "id": "d",
+                "text": "규칙이 없다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "같은 주기에서 원자 번호가 증가하면 유효 핵전하가 커져 전자를 떼어내기 위한 에너지인 이온화 에너지가 증가합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "핵이 전자를 당기는 힘이 강해지는 방향을 생각하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "베게너가 주장한 대륙 이동설의 주요\n증거가 아닌 것은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "해안선 모양의 일치"
+            },
+            {
+                "id": "b",
+                "text": "화석 분포의 연속성"
+            },
+            {
+                "id": "c",
+                "text": "해저 확장과 자기적 역전"
+            },
+            {
+                "id": "d",
+                "text": "빙하 흔적과 지질 구조의 연속성"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "해저 확장과 자기적 역전은 이후 판 구조론을 뒷받침하는 결정적 증거였으나 베게너가 처음 제시한 증거는 아닙니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "베게너는 대륙을 이동시키는 원동력을 설명하지 못했습니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "에너지가 가장 낮은 상태인 바닥 상태의\n전자 배치를 따르지 않는 배치를\n무엇이라 부릅니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "안정 상태"
+            },
+            {
+                "id": "b",
+                "text": "들뜬 상태"
+            },
+            {
+                "id": "c",
+                "text": "평형 상태"
+            },
+            {
+                "id": "d",
+                "text": "중성 상태"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "전자들이 에너지를 흡수하여 높은 에너지 준위의 오비탈로 이동한 상태를 들뜬 상태라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "에너지가 위로 솟구쳐 있는 느낌의 단어입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "뉴턴의 제3법칙인 '작용 반작용 법칙'에\n대한 설명으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "두 힘의 크기는 같고 방향은 같다"
+            },
+            {
+                "id": "b",
+                "text": "힘은 반드시 한 물체에만 작용한다"
+            },
+            {
+                "id": "c",
+                "text": "두 힘의 크기는 같고 방향은 반대다"
+            },
+            {
+                "id": "d",
+                "text": "질량이 큰 물체가 더 큰 힘을 가한다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "작용 반작용은 두 물체 사이에서 상호작용하는 힘으로 크기가 같고 방향이 정반대인 관계를 가집니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "벽을 밀 때 내 손이 느끼는 힘을 생각해보세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 염기성 아미노산에 해당하는\n것은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "라이신 (Lysine)"
+            },
+            {
+                "id": "b",
+                "text": "글루탐산 (Glutamic acid)"
+            },
+            {
+                "id": "c",
+                "text": "알라닌 (Alanine)"
+            },
+            {
+                "id": "d",
+                "text": "글라이신 (Glycine)"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "라이신, 아르기닌, 히스티딘은 곁사슬에 양전하를 띨 수 있는 아민기를 포함하는 염기성 아미노산입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "pH가 높은 환경에서 특징을 나타내는 아미노산입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "수소 원자의 스펙트럼에서 전자가\nn=2 준위로 떨어질 때 방출되는\n계열을 무엇이라 합니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "라이먼 계열"
+            },
+            {
+                "id": "b",
+                "text": "발머 계열"
+            },
+            {
+                "id": "c",
+                "text": "파셴 계열"
+            },
+            {
+                "id": "d",
+                "text": "브래킷 계열"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "n=2로 전이될 때는 가시광선 영역인 발머 계열이, n=1일 때는 자외선인 라이먼 계열이 나타납니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "가시광선을 방출하는 계열입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "화학 평형 상태에서 외부 조건 변화 시\n그 변화를 완화하려는 방향으로 평형이\n이동한다는 원리는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "아보가드로의 법칙"
+            },
+            {
+                "id": "b",
+                "text": "르 샤틀리에의 원리"
+            },
+            {
+                "id": "c",
+                "text": "달튼의 부분압 법칙"
+            },
+            {
+                "id": "d",
+                "text": "헤스의 법칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "르 샤틀리에의 원리는 농도, 압력, 온도 등의 변화에 반응하여 평형이 다시 조절되는 과정을 설명합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "화학 반응의 '항상성' 같은 개념입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지질 시대 중 공룡이 번성하고 판게아가\n분리되기 시작한 시대는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "고생대"
+            },
+            {
+                "id": "b",
+                "text": "중생대"
+            },
+            {
+                "id": "c",
+                "text": "신생대"
+            },
+            {
+                "id": "d",
+                "text": "선캄브리아 시대"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "중생대는 파충류의 시대이며 암모나이트와 공룡이 번성했고 대륙의 이동이 활발했습니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "고생대와 신생대 사이의 시기입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "회로에서 저항 R이 일정할 때 전압 V와\n전류 I 사이의 관계를 나타내는\n식으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "V = I / R"
+            },
+            {
+                "id": "b",
+                "text": "V = I * R"
+            },
+            {
+                "id": "c",
+                "text": "V = I + R"
+            },
+            {
+                "id": "d",
+                "text": "V = R / I"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "옴의 법칙에 따라 전압은 전류와 저항의 곱에 비례합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "가장 기초적인 전기 회로 공식입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 원시 핵산에서 단백질로 정보가\n흐르는 과정을 설명하는 원리는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "센트럴 도그마 (중심 원리)"
+            },
+            {
+                "id": "b",
+                "text": "샤가프의 법칙"
+            },
+            {
+                "id": "c",
+                "text": "자연 선택설"
+            },
+            {
+                "id": "d",
+                "text": "공생설"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "유전 정보가 DNA에서 RNA를 거쳐 단백질로 전달되는 일방향적인 흐름을 중심 원리라고 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "분자생물학의 가장 핵심적인 흐름도입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "이상 기체 상태 방정식 PV = nRT에서\n상수 R을 무엇이라 부릅니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "볼츠만 상수"
+            },
+            {
+                "id": "b",
+                "text": "기체 상수"
+            },
+            {
+                "id": "c",
+                "text": "플랑크 상수"
+            },
+            {
+                "id": "d",
+                "text": "아보가드로 수"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "R은 기체의 종류에 상관없이 일정한 값을 갖는 보편 기체 상수를 의미합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "기체의 상태를 설명하는 방정식의 이름에 힌트가 있습니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체의 속도가 빨라질 때 시간이 느리게\n흐르는 현상을 설명하는 이론은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "특수 상대성 이론"
+            },
+            {
+                "id": "b",
+                "text": "고전 역학"
+            },
+            {
+                "id": "c",
+                "text": "열역학"
+            },
+            {
+                "id": "d",
+                "text": "유체 역학"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "특수 상대성 이론은 빛의 속도에 가까운 관성계에서 시간 지연과 길이 수축이 일어남을 예견합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "등속 운동을 하는 관찰자에 관한 상대성 이론입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "세포에서 단백질 합성이 최종적으로\n완성되는 장소인 소기관은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "핵"
+            },
+            {
+                "id": "b",
+                "text": "리보솜"
+            },
+            {
+                "id": "c",
+                "text": "리소좀"
+            },
+            {
+                "id": "d",
+                "text": "골지체"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "리보솜은 RNA의 정보를 해독하여 아미노산을 연결함으로써 단백질을 합성하는 공장 역할을 합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "단백질 제조 공장이라고 불립니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "액체 표면에서 분자들이 인력을 이기고\n기체가 되려고 하는 힘에 의해 발생하는\n압력은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "삼투압"
+            },
+            {
+                "id": "b",
+                "text": "증기압"
+            },
+            {
+                "id": "c",
+                "text": "부분압"
+            },
+            {
+                "id": "d",
+                "text": "대기압"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "증기압은 평형 상태에서 액체와 공존하는 증기가 나타내는 압력을 말하며 온도에 따라 변합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "끓는점과 밀접한 관련이 있는 압력입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 지구 자전의 증거로 가장\n적절한 것은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "계절별 별자리 변화"
+            },
+            {
+                "id": "b",
+                "text": "푸코 진자의 진동면 회전"
+            },
+            {
+                "id": "c",
+                "text": "연주 시차 관측"
+            },
+            {
+                "id": "d",
+                "text": "광행차 현상"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "푸코 진자의 회전은 관성계에서 지구 스스로 돌고 있음을 보여주는 직접적인 증거입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "진자가 일정하게 흔들리는데 바닥이 도는 효과를 생각하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "전자를 잃는 반응을 산화라고 할 때,\n반대로 전자를 얻는 반응은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "중화"
+            },
+            {
+                "id": "b",
+                "text": "환원"
+            },
+            {
+                "id": "c",
+                "text": "가수분해"
+            },
+            {
+                "id": "d",
+                "text": "축합"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "산화와 환원은 항상 동시에 일어나며, 전자를 얻는 쪽을 환원된다고 표현합니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "산화의 반대 개념입니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생태계에서 에너지는 하위 영양 단계에서\n상위 단계로 갈수록 어떻게 됩니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "증가한다"
+            },
+            {
+                "id": "b",
+                "text": "감소한다"
+            },
+            {
+                "id": "c",
+                "text": "일정하게 유지된다"
+            },
+            {
+                "id": "d",
+                "text": "무한히 순환한다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "에너지 효율과 열 발산으로 인해 상위 단계로 갈수록 이용 가능한 에너지 총량은 줄어듭니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "피라미드 구조를 생각해보면 꼭대기가 좁아집니다.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 알칼리 금속의 특징이 아닌\n것은 무엇입니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "밀도가 낮고 무르다"
+            },
+            {
+                "id": "b",
+                "text": "물과 반응하여 수소 발생"
+            },
+            {
+                "id": "c",
+                "text": "원자가 전자가 2개이다"
+            },
+            {
+                "id": "d",
+                "text": "반응성이 매우 크다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "알칼리 금속은 1족 원소로 원자가 전자가 1개이며, 원자가 전자가 2개인 것은 알칼리 토금속입니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "주기율표의 첫 번째 세로줄을 생각하세요.",
+        "createdAt": 1706040240
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물리학에서 파동의 속도는 파장(λ)과\n무엇의 곱으로 표현됩니까?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "진폭"
+            },
+            {
+                "id": "b",
+                "text": "진동수"
+            },
+            {
+                "id": "c",
+                "text": "주기"
+            },
+            {
+                "id": "d",
+                "text": "에너지"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_plus"
+        ],
+        "explanation": "파동의 속도 v = fλ 공식에 의해 진동수와 파장의 곱으로 결정됩니다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_plus",
+        "hint": "1초 동안 진동하는 횟수를 의미합니다.",
+        "createdAt": 1706040240
+    }
+]

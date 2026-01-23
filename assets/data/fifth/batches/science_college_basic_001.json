@@ -1,0 +1,1442 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "세포 내에서 산화적 인산화를 통해\n에너지원인 ATP를 주로 생성하는\n세포 소기관은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "리소좀"
+            },
+            {
+                "id": "b",
+                "text": "미토콘드리아"
+            },
+            {
+                "id": "c",
+                "text": "골지체"
+            },
+            {
+                "id": "d",
+                "text": "중중심체"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "미토콘드리아는 세포 호흡 과정 중 산화적 인산화를 통해 세포 활동에 필요한 에너지인 ATP를 합성하는 역할을 한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "세포의 발전소라고 불리는 소기관을 찾아보세요.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "뉴턴의 제2법칙(F=ma)에 따를 때,\n물체의 질량이 일정하고 알짜힘이\n2배가 되면 가속도는 어떻게 변하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "변하지 않는다"
+            },
+            {
+                "id": "b",
+                "text": "1/2배가 된다"
+            },
+            {
+                "id": "c",
+                "text": "2배가 된다"
+            },
+            {
+                "id": "d",
+                "text": "4배가 된다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "가속도는 알짜힘에 비례하고 질량에 반비례하므로, 질량이 고정된 상태에서 힘이 2배가 되면 가속도도 2배가 된다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "가속도와 힘은 비례 관계에 있습니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "금속 원자와 비금속 원자 사이에서\n전자가 한쪽으로 완전히 이동하여\n형성되는 화학 결합은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "공유 결합"
+            },
+            {
+                "id": "b",
+                "text": "이온 결합"
+            },
+            {
+                "id": "c",
+                "text": "금속 결합"
+            },
+            {
+                "id": "d",
+                "text": "수소 결합"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "이온 결합은 전자를 잃기 쉬운 금속과 얻기 쉬운 비금속 사이의 정전기적 인력으로 형성되는 결합이다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "양이온과 음이온 사이의 인력을 생각해보세요.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "DNA 복제 시 이중 나선의 수소 결합을\n끊어 두 가닥으로 분리해주는\n효소의 명칭은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "DNA 중합 효소"
+            },
+            {
+                "id": "b",
+                "text": "DNA 연결 효소"
+            },
+            {
+                "id": "c",
+                "text": "헬리케이스"
+            },
+            {
+                "id": "d",
+                "text": "RNA 중합 효소"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "헬리케이스는 ATP 에너지를 사용하여 DNA의 수소 결합을 끊고 나선을 풀어주는 역할을 담당한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "나선(Helix)을 풀어주는 이름의 효소를 찾아보세요.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "25℃의 수용액에서 중성 상태를\n나타내는 pH 지수는 얼마인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "0"
+            },
+            {
+                "id": "b",
+                "text": "1"
+            },
+            {
+                "id": "c",
+                "text": "7"
+            },
+            {
+                "id": "d",
+                "text": "14"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "pH 지수는 0에서 14까지의 범위를 가지며, 정중앙인 7이 산성이나 염기성을 띠지 않는 중성이다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "산성과 염기성의 한가운데 수치입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "열역학 제2법칙에 따르면, 고립계의\n무질서도를 나타내는 이 물리량은\n항상 증가하거나 일정하다. 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "엔탈피"
+            },
+            {
+                "id": "b",
+                "text": "엔트로피"
+            },
+            {
+                "id": "c",
+                "text": "자유 에너지"
+            },
+            {
+                "id": "d",
+                "text": "내부 에너지"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "엔트로피는 계의 무질서한 정도를 나타내며 자연계의 현상은 항상 엔트로피가 증가하는 방향으로 일어난다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "무질서도와 연관된 과학 용어입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "태양계 행성 중 태양과 가장 가깝지는\n않지만, 강력한 온실효과로 인해\n표면 온도가 가장 높은 행성은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "수성"
+            },
+            {
+                "id": "b",
+                "text": "금성"
+            },
+            {
+                "id": "c",
+                "text": "화성"
+            },
+            {
+                "id": "d",
+                "text": "목성"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "금성은 두꺼운 이산화탄소 대기층으로 인해 열이 빠져나가지 못하는 극심한 온실효과가 발생하여 표면 온도가 약 470도에 달한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "샛별이라고도 불리는 행성입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "유전 정보의 흐름(중심 원리)에서\nDNA의 정보를 RNA로 옮기는\n과정을 무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "복제"
+            },
+            {
+                "id": "b",
+                "text": "번역"
+            },
+            {
+                "id": "c",
+                "text": "전사"
+            },
+            {
+                "id": "d",
+                "text": "변형"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "DNA 가닥의 염기 서열을 바탕으로 상보적인 RNA가 합성되는 과정을 전사(Transcription)라고 한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "글자를 옮겨 적는다는 의미의 용어입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 빛의 굴절 현상에 의해\n나타나는 사례로 가장 적절한 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "거울에 비친 내 모습"
+            },
+            {
+                "id": "b",
+                "text": "물에 잠긴 빨대가 꺾여 보임"
+            },
+            {
+                "id": "c",
+                "text": "금속 표면의 반짝임"
+            },
+            {
+                "id": "d",
+                "text": "산호초 사이의 그림자"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "빛이 서로 다른 매질(공기와 물)의 경계면에서 속도 차이로 인해 경로가 꺾이는 현상을 굴절이라고 한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "빛의 경로가 매질의 변화로 인해 휘어지는 현상을 생각해보세요.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "식물이 광합성을 수행할 때 빛 에너지를\n흡수하는 데 주로 사용하는\n녹색 색소의 이름은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "카로틴"
+            },
+            {
+                "id": "b",
+                "text": "잔토필"
+            },
+            {
+                "id": "c",
+                "text": "엽록소"
+            },
+            {
+                "id": "d",
+                "text": "안토시아닌"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "엽록소(클로로필)는 엽록체 내에 존재하며 태양의 빛 에너지를 포획하여 화학 에너지로 전환하는 핵심 역할을 한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "식물의 잎이 초록색으로 보이게 하는 주된 색소입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지각을 구성하는 암석 중 마그마가\n식어서 굳어져 만들어진 암석을\n통칭하여 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "퇴적암"
+            },
+            {
+                "id": "b",
+                "text": "변성암"
+            },
+            {
+                "id": "c",
+                "text": "화성암"
+            },
+            {
+                "id": "d",
+                "text": "석회암"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "화성암은 마그마나 용암이 냉각 및 고결되어 생성되며 냉각 위치에 따라 화산암과 심성암으로 나뉜다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "불(마그마)에 의해 생성된 바위라는 뜻입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "원자의 구성 입자 중 전기적으로\n중성을 띠며 양성자와 함께 원자핵을\n구성하는 입자는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전자"
+            },
+            {
+                "id": "b",
+                "text": "중성자"
+            },
+            {
+                "id": "c",
+                "text": "양전자"
+            },
+            {
+                "id": "d",
+                "text": "광자"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "중성자는 전하를 띠지 않는 입자로, 양성자와 함께 원자의 질량 대부분을 차지하는 원자핵을 이룬다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "이름 자체에 '중성'이라는 의미가 포함되어 있습니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "일정한 온도에서 기체의 압력과\n부피는 서로 반비례한다는 법칙은\n무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "샤를의 법칙"
+            },
+            {
+                "id": "b",
+                "text": "보일의 법칙"
+            },
+            {
+                "id": "c",
+                "text": "아보가드로의 법칙"
+            },
+            {
+                "id": "d",
+                "text": "헨리의 법칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "보일의 법칙은 온도와 기체의 양이 일정할 때, 외부 압력이 커지면 기체의 부피가 줄어든다는 원리를 설명한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "압력을 가하면 부피가 줄어드는 현상을 정의한 사람의 이름입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생태계에서 유기물을 분해하여 무기물로\n되돌림으로써 물질 순환을 돕는\n역할을 하는 생물군은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "생산자"
+            },
+            {
+                "id": "b",
+                "text": "소비자"
+            },
+            {
+                "id": "c",
+                "text": "분해자"
+            },
+            {
+                "id": "d",
+                "text": "포식자"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "곰팡이, 세균 등과 같은 분해자는 사체나 배설물을 분해하여 에너지를 얻고 영양분을 토양이나 대기로 환원시킨다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "사체나 오염물을 '해체'하는 존재들입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "인체의 혈액 순환 중 폐에서 산소를\n공급받아 심장으로 돌아온 혈액이\n처음 거치는 심장의 방은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "우심방"
+            },
+            {
+                "id": "b",
+                "text": "우심실"
+            },
+            {
+                "id": "c",
+                "text": "좌심방"
+            },
+            {
+                "id": "d",
+                "text": "좌심실"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "폐정맥을 통해 폐에서 들어온 동맥혈은 먼저 좌심방으로 유입된 후 좌심실을 거쳐 온몸으로 나간다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "심장의 '왼쪽' 위 칸으로 들어옵니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 화학적 변화가 아닌 물리적\n변화에 해당하는 현상은 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "종이가 타는 것"
+            },
+            {
+                "id": "b",
+                "text": "못에 녹이 스는 것"
+            },
+            {
+                "id": "c",
+                "text": "물이 얼어 얼음이 됨"
+            },
+            {
+                "id": "d",
+                "text": "김치가 익어 신맛이 남"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "물이 얼음으로 변하는 것은 성분 변화 없이 상태만 변하는 상태 변화로, 물리적 변화에 해당한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "물질의 본질은 변하지 않고 겉모습이나 상태만 바뀌는 경우를 고르세요.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지구 대기 성분 중 약 78%를 차지하여\n가장 높은 비율로 존재하는\n기체는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "산소"
+            },
+            {
+                "id": "b",
+                "text": "질소"
+            },
+            {
+                "id": "c",
+                "text": "이산화탄소"
+            },
+            {
+                "id": "d",
+                "text": "아르곤"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "지구 대기는 부피 기준으로 질소가 약 78%, 산소가 약 21%를 차지하고 있다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "공기의 대부분을 차지하며 화학적으로 안정한 기체입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "진핵세포 내에서 단백질 합성의 주된\n장소가 되는 세포 소기관은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "리보솜"
+            },
+            {
+                "id": "b",
+                "text": "중심체"
+            },
+            {
+                "id": "c",
+                "text": "액포"
+            },
+            {
+                "id": "d",
+                "text": "미세소관"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "리보솜은 RNA와 단백질로 구성되어 있으며, mRNA의 정보를 읽어 아미노산을 연결하는 단백질 합성을 수행한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "RNA 정보를 바탕으로 단백질을 조립하는 공장 역할을 합니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "두 파동이 만날 때 마루와 골이\n겹쳐져 진폭이 줄어들거나 사라지는\n현상을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "보강 간섭"
+            },
+            {
+                "id": "b",
+                "text": "상쇄 간섭"
+            },
+            {
+                "id": "c",
+                "text": "회절"
+            },
+            {
+                "id": "d",
+                "text": "편광"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "서로 반대 위상을 가진 두 파동이 중첩되어 전체 진폭이 감소하는 현상을 상쇄 간섭이라고 한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "파동이 서로를 깎아먹는 상황입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지구 표면의 대륙 판이 이동한다는\n판 구조론의 선구적 이론으로,\n베게너가 주장한 이론의 명칭은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "해저 확장설"
+            },
+            {
+                "id": "b",
+                "text": "맨틀 대류설"
+            },
+            {
+                "id": "c",
+                "text": "대륙 이동설"
+            },
+            {
+                "id": "d",
+                "text": "지구 수축설"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "알프레트 베게너는 과거에 거대한 대륙(판게아)이 갈라져 현재의 분포를 이루었다는 대륙 이동설을 제안하였다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "거대한 땅덩어리가 움직였다는 명칭입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체가 원 궤도를 따라 운동할 때\n원의 중심 방향으로 작용하여\n운동 방향을 바꾸는 힘은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "원심력"
+            },
+            {
+                "id": "b",
+                "text": "구심력"
+            },
+            {
+                "id": "c",
+                "text": "마찰력"
+            },
+            {
+                "id": "d",
+                "text": "장력"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "구심력은 원운동을 유지하게 하는 힘으로, 항상 원의 중심을 향하며 속도의 방향을 변화시킨다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "원을 구하는 중심 방향의 힘이라는 뜻입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생물의 분류 단계 중 가장 포괄적인\n범위를 나타내는 단계는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "계"
+            },
+            {
+                "id": "b",
+                "text": "문"
+            },
+            {
+                "id": "c",
+                "text": "과"
+            },
+            {
+                "id": "d",
+                "text": "종"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "생물의 분류는 종-속-과-목-강-문-계 순으로 올라가며, '계'가 가장 큰 범주를 포함한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "식물계, 동물계 할 때의 단위를 생각해보세요.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "주기율표에서 같은 세로줄에 위치하여\n화학적 성질이 비슷한 원소들의\n그룹을 무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "주기"
+            },
+            {
+                "id": "b",
+                "text": "족"
+            },
+            {
+                "id": "c",
+                "text": "궤도"
+            },
+            {
+                "id": "d",
+                "text": "동위 원소"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "주기율표의 세로줄인 '족'은 원자가 전자 수가 같아 화학적으로 유사한 거동을 보인다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "가족처럼 성격이 비슷하다는 뜻의 한자어를 포함합니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빛이 진공에서 다른 매질로 들어갈 때\n속도가 느려지는 정도를 나타내는\n물리적 상수는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반사율"
+            },
+            {
+                "id": "b",
+                "text": "굴절률"
+            },
+            {
+                "id": "c",
+                "text": "투과율"
+            },
+            {
+                "id": "d",
+                "text": "흡수율"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "굴절률은 진공에서의 빛의 속력을 매질에서의 속력으로 나눈 값으로, 이 값이 클수록 빛이 더 많이 꺾인다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "빛이 꺾이는 정도를 수치화한 것입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "세포 내에서 합성된 단백질을\n변형하거나 소낭에 담아 분비하는\n역할을 하는 기관은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "중심체"
+            },
+            {
+                "id": "b",
+                "text": "골지체"
+            },
+            {
+                "id": "c",
+                "text": "미토콘드리아"
+            },
+            {
+                "id": "d",
+                "text": "리소좀"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "골지체는 납작한 주머니가 겹쳐진 구조로, 물질을 가공하고 포장하여 세포 밖으로 내보내는 우체국 같은 역할을 한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "물질을 포장하여 분비하는 역할을 담당합니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "화학 반응 전후에 반응물과 생성물의\n전체 질량은 변하지 않는다는 법칙은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "일정 성분비 법칙"
+            },
+            {
+                "id": "b",
+                "text": "질량 보존 법칙"
+            },
+            {
+                "id": "c",
+                "text": "배수 비례 법칙"
+            },
+            {
+                "id": "d",
+                "text": "아보가드로 법칙"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "질량 보존 법칙은 라부아지에가 발견하였으며, 화학 반응 시 원자의 종류와 수는 변하지 않으므로 전체 질량이 일정하다는 원리이다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "질량이 사라지거나 새로 생기지 않고 지켜진다는 의미입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "산성 수용액과 염기성 수용액이\n반응하여 물과 염을 생성하며\n열을 발생하는 반응은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "산화 반응"
+            },
+            {
+                "id": "b",
+                "text": "중화 반응"
+            },
+            {
+                "id": "c",
+                "text": "가수 분해"
+            },
+            {
+                "id": "d",
+                "text": "연소 반응"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "중화 반응은 산의 수소 이온과 염기의 수산화 이온이 만나 물이 형성되며 중성으로 변하는 과정이다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "산성과 염기성이 서로를 상쇄하여 중성으로 가는 과정입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지구 자기장이 형성되는 원인을\n설명하는 것으로, 외핵의 유동을\n통한 전자기 유도 현상을 다루는 이론은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "빙하설"
+            },
+            {
+                "id": "b",
+                "text": "다이나모 이론"
+            },
+            {
+                "id": "c",
+                "text": "지각 평형설"
+            },
+            {
+                "id": "d",
+                "text": "성운설"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "다이나모 이론은 액체 상태인 금속성 외핵이 회전 및 대류하면서 거대한 발전기처럼 자기장을 만든다고 설명한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "발전기라는 뜻을 가진 과학적 용어입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "특수 상대성 이론에서 관찰자와\n상대적으로 빠르게 움직이는 물체의\n길이가 줄어드는 현상을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "시간 지연"
+            },
+            {
+                "id": "b",
+                "text": "길이 수축"
+            },
+            {
+                "id": "c",
+                "text": "질량 에너지 동등성"
+            },
+            {
+                "id": "d",
+                "text": "중력 렌즈 효과"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "특수 상대성 이론에 따르면 운동 방향으로의 길이가 정지한 관찰자가 볼 때 짧게 측정되는 길이 수축 현상이 일어난다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "길이가 작아진다는 의미의 명칭입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "금속이 물이나 산소와 반응하여\n산화되는 대표적인 사례로, 철 표면에\n붉게 생성되는 물질은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "합금"
+            },
+            {
+                "id": "b",
+                "text": "산화철(녹)"
+            },
+            {
+                "id": "c",
+                "text": "플라스틱"
+            },
+            {
+                "id": "d",
+                "text": "수산화나트륨"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "철이 습한 공기 중의 산소와 반응하여 부식되면 산화철이 형성되는데 이를 흔히 '녹'이라 부른다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "철이 공기 중에서 부식될 때 생기는 현상입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "체세포 분열 과정 중 염색체가\n세포의 중앙(적도면)에 일렬로 배열되는\n시기는 언제인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "전기"
+            },
+            {
+                "id": "b",
+                "text": "중기"
+            },
+            {
+                "id": "c",
+                "text": "후기"
+            },
+            {
+                "id": "d",
+                "text": "말기"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "중기에는 방추사가 동원체에 결합하여 염색체를 세포 중앙에 가장 뚜렷하게 배열시키므로 관찰에 용이하다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "가운데(적도면)에 모이는 시기입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 전자기파 스펙트럼에서\n가장 파장이 짧고 에너지가 가장\n강한 영역은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "가시광선"
+            },
+            {
+                "id": "b",
+                "text": "적외선"
+            },
+            {
+                "id": "c",
+                "text": "자외선"
+            },
+            {
+                "id": "d",
+                "text": "감마선"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "감마선은 핵반응 등에서 방출되는 투과력이 매우 강한 전자기파로, 파장이 가장 짧고 진동수와 에너지가 가장 높다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "방사능과 관련된 강력한 에너지를 가진 파동입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "생태계 내에서 먹고 먹히는 관계가\n사슬처럼 얽혀 복잡하게 나타나는\n구조를 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "먹이 사슬"
+            },
+            {
+                "id": "b",
+                "text": "먹이 그물"
+            },
+            {
+                "id": "c",
+                "text": "영양 단계"
+            },
+            {
+                "id": "d",
+                "text": "개체군"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "여러 먹이 사슬이 서로 복잡하게 연결된 형태를 먹이 그물이라고 하며, 그물이 복잡할수록 생태계가 안정적이다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "사슬들이 얽혀 더 복잡한 '그물' 모양을 이룹니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "액체 내부의 분자들이 서로를 끌어당겨\n표면적을 최소화하려는 힘을\n무엇이라고 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "점성"
+            },
+            {
+                "id": "b",
+                "text": "표면 장력"
+            },
+            {
+                "id": "c",
+                "text": "모세관 현상"
+            },
+            {
+                "id": "d",
+                "text": "부력"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "표면 장력은 액체 분자 간의 응집력 때문에 생기며, 소금쟁이가 물 위에 떠 있을 수 있게 하는 원인이다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "액체 표면이 팽팽하게 당겨지는 힘입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "지질 시대 중 공룡이 번성하고 암모나이트가\n표준 화석으로 주로 발견되는\n시대는 언제인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "선캄브리아 시대"
+            },
+            {
+                "id": "b",
+                "text": "고생대"
+            },
+            {
+                "id": "c",
+                "text": "중생대"
+            },
+            {
+                "id": "d",
+                "text": "신생대"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "중생대는 트라이아스기, 쥐라기, 백악기로 나뉘며 파충류(공룡)와 겉씨식물이 크게 번성한 시기이다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "공룡의 시대라고 알려진 중간 시기입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "물체에 가해진 힘의 크기와 그 힘의\n방향으로 이동한 거리를 곱한\n물리량을 무엇이라 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "에너지"
+            },
+            {
+                "id": "b",
+                "text": "일"
+            },
+            {
+                "id": "c",
+                "text": "충격량"
+            },
+            {
+                "id": "d",
+                "text": "운동량"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "물리학에서 '일(Work)'은 힘과 변위의 스칼라 곱으로 정의되며, 단위는 줄(J)을 사용한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "힘을 들여 물체를 움직였을 때 성립하는 개념입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "효소가 생체 내에서 반응 속도를\n빠르게 할 수 있는 주된 이유는\n무엇을 낮추기 때문인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "반응열"
+            },
+            {
+                "id": "b",
+                "text": "활성화 에너지"
+            },
+            {
+                "id": "c",
+                "text": "내부 에너지"
+            },
+            {
+                "id": "d",
+                "text": "기질 농도"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "효소는 화학 반응이 일어나기 위해 필요한 최소한의 에너지인 활성화 에너지를 낮추어 반응이 더 쉽게 일어나도록 돕는다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "반응이 일어나기 위한 '문턱' 에너지를 낮춰줍니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "별의 중심부에서 가벼운 원자핵들이\n결합하여 무거운 원자핵이 되며\n거대한 에너지를 내는 반응은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "핵분열"
+            },
+            {
+                "id": "b",
+                "text": "핵융합"
+            },
+            {
+                "id": "c",
+                "text": "화학 반응"
+            },
+            {
+                "id": "d",
+                "text": "베타 붕괴"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "태양과 같은 별은 수소 원자핵이 결합하여 헬륨이 되는 핵융합 반응을 통해 빛과 열 에너지를 방출한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "두 개 이상의 핵이 합쳐진다는 의미입니다.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 수용액 상태에서 전기가\n잘 통하는 물질(전해질)인 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "포도당"
+            },
+            {
+                "id": "b",
+                "text": "염화나트륨(소금)"
+            },
+            {
+                "id": "c",
+                "text": "에탄올"
+            },
+            {
+                "id": "d",
+                "text": "설탕"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "염화나트륨은 이온 결합 물질로, 물에 녹으면 이온으로 해리되어 전류를 흐르게 한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "물에 녹았을 때 이온으로 나뉘는 물질을 고르세요.",
+        "createdAt": 1737640470
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "인간의 염색체 구성 중 성을 결정하는\n성염색체 외의 나머지 염색체를\n무엇이라고 부르는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "상동 염색체"
+            },
+            {
+                "id": "b",
+                "text": "상염색체"
+            },
+            {
+                "id": "c",
+                "text": "2가 염색체"
+            },
+            {
+                "id": "d",
+                "text": "염색 분체"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:science",
+            "edu:college_basic"
+        ],
+        "explanation": "사람은 22쌍의 상염색체와 1쌍의 성염색체를 가지고 있으며, 상염색체는 남녀 공통으로 존재한다.",
+        "grade": null,
+        "subject": "science",
+        "eduLevel": "college_basic",
+        "hint": "성별과 관계없이 공통으로 '항상' 존재하는 염색체라는 의미입니다.",
+        "createdAt": 1737640470
+    }
+]
