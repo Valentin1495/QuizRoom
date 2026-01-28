@@ -21,7 +21,7 @@ import { ComboIndicator } from '@/components/common/combo-indicator';
 import { hideResultToast, showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { Colors, Elevation, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -57,6 +57,7 @@ export type SwipeStackProps = {
   tags?: string[];
   deckSlug?: string;
   grade?: number;
+  eduLevel?: string;
   subject?: string;
   setSelectedCategory?: (category: CategoryMeta | null) => void;
   challenge?: SwipeChallengeConfig;
@@ -148,14 +149,14 @@ const CHALLENGE_ONBOARDING_SLIDES = [
   {
     id: 'assessment_difficulty',
     icon: 'sparkles' as const,
-    title: '난이도 자동 조정',
-    body: '정답과 오답에 따라 문제 난이도가 자동으로 바뀝니다.',
+    title: '단계별 실력 측정',
+    body: '초등 저학년부터 대학+까지 단계별로 문제를 풀며 수준을 확인해요.',
   },
   {
     id: 'assessment_swipe_right',
     icon: 'hand.point.right' as const,
     title: '오른쪽 스와이프',
-    body: '정답 확인 후 다음 문제로 이동해요.',
+    body: '다음 문제로 이동해요.',
   },
   {
     id: 'assessment_swipe_left',
@@ -167,7 +168,7 @@ const CHALLENGE_ONBOARDING_SLIDES = [
     id: 'assessment_result',
     icon: 'checkmark.seal' as const,
     title: '측정 결과 확인',
-    body: '정답률과 실력 요약을 한눈에 확인하세요.',
+    body: '획득한 점수와 XP를 한눈에 확인하세요.',
   },
 ] as const;
 
@@ -207,6 +208,7 @@ export function SwipeStack({
   tags,
   deckSlug,
   grade,
+  eduLevel,
   subject,
   setSelectedCategory,
   challenge,
@@ -244,6 +246,7 @@ export function SwipeStack({
     tags,
     deckSlug,
     grade,
+    eduLevel,
     subject,
     excludeTag: isChallenge ? undefined : 'mode:fifth_grader',
     limit: sessionLimit,
@@ -319,11 +322,12 @@ export function SwipeStack({
       category,
       deckSlug ?? 'default',
       grade != null ? `grade:${grade}` : 'grade:any',
+      eduLevel ? `edu:${eduLevel}` : 'edu:any',
       subject ? `subject:${subject}` : 'subject:any',
       ...(tags ?? []),
     ];
     return parts.join('|');
-  }, [category, deckSlug, grade, subject, tags]);
+  }, [category, deckSlug, eduLevel, grade, subject, tags]);
   const [sessionId, setSessionId] = useState<string>(() => createSwipeSessionId(filterKey));
   const sessionLoggedRef = useRef(false);
   const streakLoggedRef = useRef(false);
@@ -889,7 +893,7 @@ export function SwipeStack({
     if (isChallenge) {
       const completed = totalQuestions > 0 && answered >= totalQuestions && !isChallengeFailed;
       if (isChallengeFailed) {
-        return { icon: 'face.frown', label: '챌린지 종료' } as const;
+        return { icon: 'xmark.seal', label: '챌린지 실패' } as const;
       }
       if (completed) {
         return {
@@ -912,6 +916,28 @@ export function SwipeStack({
           : '스와이프 요약',
     } as const;
   }, [challengeCompletionLabel, isChallenge, isChallengeFailed, sessionStats.answered, totalQuestions]);
+
+  const completionIconName = useMemo<IconSymbolName>(() => {
+    switch (completionTitle.icon) {
+      case 'xmark.seal':
+      case 'party.popper':
+      case 'rectangle.stack':
+      case 'rectangle.grid.2x2':
+        return completionTitle.icon;
+      default:
+        return 'sparkles';
+    }
+  }, [completionTitle.icon]);
+
+  const completionProgressLabel = useMemo(() => {
+    if (!isChallenge) return null;
+    const progress =
+      totalQuestions > 0 ? `${sessionStats.answered}/${totalQuestions}문항` : null;
+    if (challengeProgressLabel && progress) {
+      return `${challengeProgressLabel}단계 · ${progress}`;
+    }
+    return challengeProgressLabel ?? progress;
+  }, [challengeProgressLabel, isChallenge, sessionStats.answered, totalQuestions]);
 
   const challengeSummary = useMemo(
     () => ({
@@ -942,14 +968,14 @@ export function SwipeStack({
   }, [challengeSummary, isChallenge, onChallengeComplete, showCompletion]);
 
   const challengeSecondaryLabel = useMemo(() => {
-    if (!isChallengeFailed && onChallengeAdvance) {
+    if (isChallengeFailed) {
+      return onExit ? '과목 선택으로' : null;
+    }
+    if (onChallengeAdvance) {
       return challengeAdvanceLabel ?? '다음 학년';
     }
-    if (onExit) {
-      return '홈으로';
-    }
-    return null;
-  }, [challengeAdvanceLabel, onChallengeAdvance, onExit]);
+    return onExit ? '과목 선택으로' : null;
+  }, [challengeAdvanceLabel, isChallengeFailed, onChallengeAdvance, onExit]);
 
   const handleChallengeSecondary = (!isChallengeFailed && onChallengeAdvance) ? onChallengeAdvance : onExit;
 
@@ -1379,7 +1405,7 @@ export function SwipeStack({
               ]}
             >
               <View style={styles.completionHeader}>
-                <IconSymbol name={completionTitle.icon} size={28} color={palette.text} />
+                <IconSymbol name={completionIconName} size={28} color={palette.text} />
                 <ThemedText style={styles.completionTitle}>{completionTitle.label}</ThemedText>
               </View>
               {isChallenge && challengeCompletionSubtitle ? (
@@ -1391,58 +1417,17 @@ export function SwipeStack({
                   {challengeCompletionSubtitle}
                 </ThemedText>
               ) : null}
-              {isChallenge && challengeProgressLabel ? (
+              {isChallenge && completionProgressLabel ? (
                 <ThemedText
                   style={styles.completionMeta}
                   lightColor={palette.textMuted}
                   darkColor={Palette.gray200}
                 >
-                  {challengeProgressLabel}
+                  {completionProgressLabel}
                 </ThemedText>
               ) : null}
               <View style={styles.completionMetrics}>
-                <View
-                  style={[
-                    styles.completionMetric,
-                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
-                  ]}
-                >
-                  <ThemedText
-                    style={styles.completionMetricLabel}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
-                  >
-                    획득 점수
-                  </ThemedText>
-                  <ThemedText style={styles.completionMetricValue}>{totalScoreLabel}</ThemedText>
-                </View>
-                <View
-                  style={[
-                    styles.completionMetric,
-                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
-                  ]}
-                >
-                  <ThemedText
-                    style={styles.completionMetricLabel}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
-                  >
-                    정답률
-                  </ThemedText>
-                  <ThemedText style={styles.completionMetricValue}>
-                    {accuracyPercent !== null ? `${accuracyPercent}%` : '-'}
-                  </ThemedText>
-                  {isChallenge ? null : (
-                    <ThemedText
-                      style={styles.completionMetricHint}
-                      lightColor={palette.textMuted}
-                      darkColor={Palette.gray200}
-                    >
-                      {sessionStats.correct}/{Math.max(sessionStats.answered, 1)} {'\n'}정답/응답
-                    </ThemedText>
-                  )}
-                </View>
-                {isChallenge ? (
+                {isGuest ? (
                   <View
                     style={[
                       styles.completionMetric,
@@ -1454,22 +1439,28 @@ export function SwipeStack({
                       lightColor={palette.textMuted}
                       darkColor={Palette.gray200}
                     >
-                      미스
+                      로그인 안내
                     </ThemedText>
-                    <ThemedText style={styles.completionMetricValue}>
-                      {missLabel}
-                    </ThemedText>
-                    {missSummaryHint ? (
-                      <ThemedText
-                        style={styles.completionMetricHint}
-                        lightColor={palette.textMuted}
-                        darkColor={Palette.gray200}
-                      >
-                        {missSummaryHint}
-                      </ThemedText>
-                    ) : null}
+                    <ThemedText style={styles.completionMetricValue}>점수/XP는 로그인 후 제공</ThemedText>
                   </View>
                 ) : (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
+                  >
+                    <ThemedText
+                      style={styles.completionMetricLabel}
+                      lightColor={palette.textMuted}
+                      darkColor={Palette.gray200}
+                    >
+                      획득 점수
+                    </ThemedText>
+                    <ThemedText style={styles.completionMetricValue}>{totalScoreLabel}</ThemedText>
+                  </View>
+                )}
+                {!isChallenge ? (
                   <View
                     style={[
                       styles.completionMetric,
@@ -1494,22 +1485,24 @@ export function SwipeStack({
                       {sessionStats.answered}/{Math.max(totalViewed, 1)} {'\n'}응답/(응답+스킵)
                     </ThemedText>
                   </View>
-                )}
-                <View
-                  style={[
-                    styles.completionMetric,
-                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
-                  ]}
-                >
-                  <ThemedText
-                    style={styles.completionMetricLabel}
-                    lightColor={palette.textMuted}
-                    darkColor={Palette.gray200}
+                ) : null}
+                {isGuest ? null : (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
                   >
-                    획득 XP
-                  </ThemedText>
-                  <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
-                </View>
+                    <ThemedText
+                      style={styles.completionMetricLabel}
+                      lightColor={palette.textMuted}
+                      darkColor={Palette.gray200}
+                    >
+                      획득 XP
+                    </ThemedText>
+                    <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
+                  </View>
+                )}
               </View>
               <View style={styles.completionActions}>
                 <Button
@@ -1548,43 +1541,43 @@ export function SwipeStack({
           ) : isChallenge ? (
             <View style={styles.challengeStatusWrapper}>
               <View style={styles.challengeStatusRow}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  rounded="full"
-                  onPress={handleOpenOnboarding}
-                  disabled={showOnboarding}
-                  accessibilityLabel="룰 다시보기"
-                  leftIcon={<IconSymbol name="questionmark.circle" size={22} color={onboardingButtonIconColor} />}
-                  style={styles.onboardingButton}
-                />
+                <View style={styles.challengeStatusLeft}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    rounded="full"
+                    onPress={handleOpenOnboarding}
+                    disabled={showOnboarding}
+                    accessibilityLabel="룰 다시보기"
+                    leftIcon={<IconSymbol name="questionmark.circle" size={22} color={onboardingButtonIconColor} />}
+                    style={styles.onboardingButton}
+                  />
+                </View>
                 <View style={styles.challengeStatusRight}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    rounded="full"
+                    onPress={handleOpenSheet}
+                    disabled={selectedIndex === null || !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)}
+                    style={
+                      (selectedIndex === null ||
+                        !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)) &&
+                      styles.sheetButtonHidden
+                    }
+                    textStyle={
+                      (selectedIndex === null ||
+                        !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)) &&
+                      styles.sheetButtonTextHidden
+                    }
+                  >
+                    해설 보기
+                  </Button>
                   <IconSymbol name="xmark.circle.fill" size={16} color={missLabelColor} />
                   <ThemedText style={[styles.statusText, { color: missLabelColor }]}>
                     미스 {missLabel}
                   </ThemedText>
                 </View>
-              </View>
-              <View style={styles.challengeActionsRow}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  rounded="full"
-                  onPress={handleOpenSheet}
-                  disabled={selectedIndex === null || !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)}
-                  style={
-                    (selectedIndex === null ||
-                      !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)) &&
-                    styles.sheetButtonHidden
-                  }
-                  textStyle={
-                    (selectedIndex === null ||
-                      !((feedback && 'explanation' in feedback && feedback.explanation) || current?.explanation)) &&
-                    styles.sheetButtonTextHidden
-                  }
-                >
-                  해설 보기
-                </Button>
               </View>
             </View>
           ) : (
@@ -1649,6 +1642,7 @@ export function SwipeStack({
                 index={index}
                 cardNumber={cardOffset + index + 1}
                 isActive={index === 0}
+                showDifficultyBadge={!isChallenge}
                 hintText={index === 0 ? hintText : null}
                 eliminatedChoiceIds={index === 0 ? eliminatedChoiceIds ?? undefined : undefined}
                 selectedIndex={index === 0 ? selectedIndex : null}
@@ -1857,20 +1851,22 @@ export function SwipeStack({
               <ThemedText style={styles.sheetBody}>
                 {sheetFeedback.explanation ?? '해설이 없습니다.'}
               </ThemedText>
-              <View style={styles.sheetStatsRow}>
-                <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
-                  <ThemedText style={[styles.sheetStatLabel, { color: sheetMutedColor }]}>점수 변화</ThemedText>
-                  <ThemedText style={styles.sheetStatValue}>
-                    {sheetFeedback.scoreDelta >= 0
-                      ? `+${sheetFeedback.scoreDelta}`
-                      : sheetFeedback.scoreDelta}
-                  </ThemedText>
+              {!isChallenge ? (
+                <View style={styles.sheetStatsRow}>
+                  <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
+                    <ThemedText style={[styles.sheetStatLabel, { color: sheetMutedColor }]}>점수 변화</ThemedText>
+                    <ThemedText style={styles.sheetStatValue}>
+                      {sheetFeedback.scoreDelta >= 0
+                        ? `+${sheetFeedback.scoreDelta}`
+                        : sheetFeedback.scoreDelta}
+                    </ThemedText>
+                  </View>
+                  <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
+                    <ThemedText style={[styles.sheetStatLabel, { color: sheetMutedColor }]}>현재 연속 정답</ThemedText>
+                    <ThemedText style={styles.sheetStatValue}>{sheetFeedback.streak}</ThemedText>
+                  </View>
                 </View>
-                <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
-                  <ThemedText style={[styles.sheetStatLabel, { color: sheetMutedColor }]}>현재 연속 정답</ThemedText>
-                  <ThemedText style={styles.sheetStatValue}>{sheetFeedback.streak}</ThemedText>
-                </View>
-              </View>
+              ) : null}
               <Button
                 variant="default"
                 fullWidth
@@ -2038,7 +2034,10 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   onboardingButton: {
+    width: 36,
+    height: 36,
     paddingHorizontal: 0,
+    paddingVertical: 0,
   },
   challengeStatusWrapper: {
     gap: Spacing.xs,
@@ -2054,17 +2053,16 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     flexWrap: 'wrap',
   },
+  challengeStatusLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    flexWrap: 'wrap',
+  },
   challengeStatusRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
-  },
-  challengeActionsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
-    flexWrap: 'wrap',
   },
   lifelineGroup: {
     flexDirection: 'row',
@@ -2166,7 +2164,7 @@ const styles = StyleSheet.create({
   },
   bottomSheetContent: {
     paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing.lg,
+    paddingBottom: Spacing.xl,
     gap: Spacing.md,
   },
   actionsSheetContent: {

@@ -10,6 +10,7 @@
  *   deckSlug?: string;         // optional
  *   excludeTag?: string;       // optional
  *   grade?: number;            // optional
+ *   eduLevel?: string;         // optional
  *   subject?: string;          // optional
  *   limit?: number;            // default 20
  *   cursor?: string;           // ISO timestamp for pagination (created_at LT cursor)
@@ -40,7 +41,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { category, tags, limit, cursor, deckSlug, excludeTag, grade, subject } = body;
+    const { category, tags, limit, cursor, deckSlug, excludeTag, grade, eduLevel, subject } = body;
 
     if (!isString(category) && !isString(deckSlug)) {
       return new Response(
@@ -71,6 +72,7 @@ serve(async (req) => {
     const requestedLimit = Math.min(Math.max(Number(limit) || DEFAULT_LIMIT, 1), MAX_LIMIT);
     const tagFilter = isStringArray(tags) && tags.length ? tags : null;
     const normalizedGrade = Number.isFinite(Number(grade)) ? Number(grade) : null;
+    const normalizedEduLevel = isString(eduLevel) ? eduLevel.trim().toLowerCase() : null;
     const normalizedSubject = isString(subject) ? subject.trim().toLowerCase() : null;
 
     const normalizedCategory = isString(category) ? category.trim().toLowerCase() : null;
@@ -153,6 +155,10 @@ serve(async (req) => {
 
     if (normalizedGrade !== null) {
       query = query.eq('grade', normalizedGrade);
+    }
+
+    if (normalizedEduLevel) {
+      query = query.eq('edu_level', normalizedEduLevel);
     }
 
     if (normalizedSubject) {

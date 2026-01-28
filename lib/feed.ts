@@ -71,6 +71,7 @@ export type UseSwipeFeedOptions = {
   deckSlug?: string;
   excludeTag?: string;
   grade?: number;
+  eduLevel?: string;
   subject?: string;
   limit?: number;
 };
@@ -113,7 +114,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     setCursor(null);
     setHasMore(true);
     setIsLoading(false);
-  }, [options.category, options.deckSlug, options.excludeTag, options.grade, options.subject, options.tags]);
+  }, [options.category, options.deckSlug, options.excludeTag, options.grade, options.eduLevel, options.subject, options.tags]);
 
   const pushPrefetch = useCallback((items: SwipeFeedQuestion[]): number => {
     if (!items.length) return 0;
@@ -170,6 +171,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
           limit: requestLimit,
           cursor,
           grade: options.grade,
+          eduLevel: options.eduLevel,
           subject: options.subject,
         },
       });
@@ -219,6 +221,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     options.excludeTag,
     options.deckSlug,
     options.grade,
+    options.eduLevel,
     options.subject,
     pushPrefetch,
     sessionLimit,

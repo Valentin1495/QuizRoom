@@ -457,21 +457,6 @@ export default function HomeScreen() {
                 {SKILL_ASSESSMENT_CHALLENGE.tagline}
               </ThemedText>
             </View>
-            <View style={styles.challengePills}>
-              {['16문항', '난이도 자동 조정'].map((label) => (
-                <View
-                  key={label}
-                  style={[
-                    styles.challengePill,
-                    { backgroundColor: palette.cardElevated, borderColor },
-                  ]}
-                >
-                  <ThemedText style={[styles.challengePillText, { color: palette.text }]}>
-                    {label}
-                  </ThemedText>
-                </View>
-              ))}
-            </View>
             <Link href={SKILL_ASSESSMENT_CHALLENGE.route} asChild>
               <Button variant="default" size="lg" rounded="full" style={styles.primaryButton}>
                 {SKILL_ASSESSMENT_CHALLENGE.ctaLabel}
@@ -719,21 +704,6 @@ const styles = StyleSheet.create({
   },
   challengeTagline: {
     fontSize: 14,
-    fontWeight: '600',
-  },
-  challengePills: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.xs,
-  },
-  challengePill: {
-    borderWidth: 1,
-    borderRadius: Radius.pill,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
-  },
-  challengePillText: {
-    fontSize: 12,
     fontWeight: '600',
   },
   sectionHeader: {

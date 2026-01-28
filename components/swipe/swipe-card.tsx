@@ -41,6 +41,7 @@ export type SwipeCardProps = {
   index: number;
   isActive: boolean;
   cardNumber?: number;
+  showDifficultyBadge?: boolean;
   hintText?: string | null;
   eliminatedChoiceIds?: string[];
   selectedIndex: number | null;
@@ -127,6 +128,7 @@ export function SwipeCard({
   index,
   isActive,
   cardNumber,
+  showDifficultyBadge = true,
   hintText,
   eliminatedChoiceIds,
   selectedIndex,
@@ -340,41 +342,43 @@ export function SwipeCard({
               Q{displayCardNumber}
             </ThemedText>
           </View>
-          <View
-            style={[
-              styles.difficultyBadge,
-              {
-                backgroundColor: difficultyToken.background,
-                borderColor: difficultyToken.border,
-              },
-            ]}
-          >
-            <ThemedText
-              style={styles.difficultyLabel}
-              lightColor={difficultyToken.foreground}
-              darkColor={difficultyToken.foreground}
+          {showDifficultyBadge ? (
+            <View
+              style={[
+                styles.difficultyBadge,
+                {
+                  backgroundColor: difficultyToken.background,
+                  borderColor: difficultyToken.border,
+                },
+              ]}
             >
-              {DIFFICULTY_TOKENS[difficultyLevel].label}
-            </ThemedText>
-            <View style={styles.difficultyDotGroup}>
               <ThemedText
-                style={styles.difficultyDots}
+                style={styles.difficultyLabel}
                 lightColor={difficultyToken.foreground}
                 darkColor={difficultyToken.foreground}
               >
-                {'●'.repeat(difficultyDots)}
+                {DIFFICULTY_TOKENS[difficultyLevel].label}
               </ThemedText>
-              {inactiveDotsCount > 0 ? (
+              <View style={styles.difficultyDotGroup}>
                 <ThemedText
                   style={styles.difficultyDots}
-                  lightColor={difficultyToken.muted}
-                  darkColor={difficultyToken.muted}
+                  lightColor={difficultyToken.foreground}
+                  darkColor={difficultyToken.foreground}
                 >
-                  {'●'.repeat(inactiveDotsCount)}
+                  {'●'.repeat(difficultyDots)}
                 </ThemedText>
-              ) : null}
+                {inactiveDotsCount > 0 ? (
+                  <ThemedText
+                    style={styles.difficultyDots}
+                    lightColor={difficultyToken.muted}
+                    darkColor={difficultyToken.muted}
+                  >
+                    {'●'.repeat(inactiveDotsCount)}
+                  </ThemedText>
+                ) : null}
+              </View>
             </View>
-          </View>
+          ) : null}
         </View>
 
         <ThemedText style={styles.prompt} type="subtitle">

@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -70,10 +70,8 @@ export default function FifthGraderChallengeScreen() {
     ? `${selectedSubjectLabel} · ${currentLevel.label}`
     : '과목을 고르면 단계별로 난이도가 올라갑니다';
 
-  const levelTags = useMemo(
-    () => [...SKILL_ASSESSMENT_CHALLENGE.tags, `edu:${currentLevel.key}`],
-    [currentLevel.key]
-  );
+  const isElemLevel = currentLevel.key === 'elem_low' || currentLevel.key === 'elem_high';
+  const levelTags = isElemLevel ? ['mode:fifth_grader'] : SKILL_ASSESSMENT_CHALLENGE.tags;
 
   const handleStart = useCallback(() => {
     if (!selectedSubject) return;
@@ -82,12 +80,21 @@ export default function FifthGraderChallengeScreen() {
 
   const handleAdvance = useCallback(() => {
     if (isFinalLevel) {
-      router.back();
+      setIsRunning(false);
       return;
     }
     setLevelIndex((prev) => Math.min(prev + 1, EDU_LEVEL_STEPS.length - 1));
     setIsRunning(true);
   }, [isFinalLevel, router]);
+
+  const handleChallengeReset = useCallback(() => {
+    setLevelIndex(0);
+    setIsRunning(true);
+  }, []);
+
+  const handleExitToSelection = useCallback(() => {
+    setIsRunning(false);
+  }, []);
 
   return (
     <ThemedView style={styles.container}>
@@ -163,16 +170,18 @@ export default function FifthGraderChallengeScreen() {
           <SwipeStack
             category={SKILL_ASSESSMENT_CHALLENGE.category}
             tags={levelTags}
-            deckSlug={SKILL_ASSESSMENT_CHALLENGE.deckSlug}
+            deckSlug={isElemLevel ? undefined : SKILL_ASSESSMENT_CHALLENGE.deckSlug}
             subject={selectedSubject ?? undefined}
+            eduLevel={currentLevel.key}
             challenge={{
               totalQuestions,
               allowedMisses,
               scorePerCorrect: SKILL_ASSESSMENT_CHALLENGE.scorePerCorrect,
             }}
-            onExit={() => router.back()}
+            onExit={handleExitToSelection}
             onChallengeAdvance={handleAdvance}
-            challengeAdvanceLabel={isFinalLevel ? '홈으로' : '다음 단계로'}
+            onChallengeReset={handleChallengeReset}
+            challengeAdvanceLabel={isFinalLevel ? '과목 선택으로' : '다음 단계로'}
             challengeCompletionLabel={isFinalLevel ? '측정 완료!' : '단계 통과!'}
             challengeCompletionSubtitle={isFinalLevel ? '결과 요약을 확인해보세요' : undefined}
             challengeProgressLabel={`${currentLevel.label} · ${levelIndex + 1}/${EDU_LEVEL_STEPS.length}`}

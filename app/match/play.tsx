@@ -2318,7 +2318,7 @@ export default function MatchPlayScreen() {
                 <View style={[styles.graceBackdrop, { backgroundColor: graceBackdropColor }]} />
                 <View style={[styles.graceCard, { backgroundColor: cardColor, borderColor, borderWidth: 1 }]}>
                     <View style={styles.graceTitleRow}>
-                        <IconSymbol name="face.frown" size={24} color={dangerColor} />
+                        <IconSymbol name="xmark.seal" size={24} color={dangerColor} />
                         <ThemedText style={[styles.graceTitle, { color: textColor }]}>호스트 연결이 오래 끊겼습니다.</ThemedText>
                     </View>
                     <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>{nextHostMessage}</ThemedText>
