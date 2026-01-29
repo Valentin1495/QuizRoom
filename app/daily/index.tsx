@@ -1035,7 +1035,7 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
               ) : null}
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
                 <ThemedText style={styles.summaryStatLabel}>소요 시간</ThemedText>
-                <ThemedText type="subtitle">총 {totalDurationDisplay}</ThemedText>
+                <ThemedText type="subtitle">{totalDurationDisplay}</ThemedText>
               </View>
             </View>
           </View>
@@ -1548,6 +1548,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: Spacing.md,
     paddingTop: Spacing.sm,
+    marginBottom: Spacing.xl,
   },
   flexButton: {
     flex: 1,

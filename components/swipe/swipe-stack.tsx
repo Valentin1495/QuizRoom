@@ -1,10 +1,11 @@
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetTextInput,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ElementRef } from 'react';
 import {
   ActivityIndicator,
   Animated,
@@ -13,7 +14,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  TextInput,
   View,
 } from 'react-native';
 
@@ -31,6 +31,8 @@ import { useSwipeFeed, type SwipeFeedQuestion } from '@/lib/feed';
 import { errorHaptic, lightHaptic, mediumHaptic, successHaptic } from '@/lib/haptics';
 import { useLogQuizHistory } from '@/lib/supabase-api';
 import { supabase } from '@/lib/supabase-index';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Circle } from 'react-native-svg';
 
 import type { CategoryMeta } from '@/constants/categories';
 import type { SwipeFeedback } from './swipe-card';
@@ -141,7 +143,7 @@ const ONBOARDING_SLIDES = [
     id: 'slide_score_combo',
     icon: 'star.circle' as const,
     title: '콤보를 이으면 점수 폭발!',
-    body: '정답을 연속으로 맞히면 콤보 배수가 발동해 점수와 XP가 크게 올라요',
+    body: '정답을 연속으로 맞히면 콤보 배수가 발동해\n점수와 XP가 크게 올라요',
   },
 ] as const;
 
@@ -253,6 +255,7 @@ export function SwipeStack({
   });
   const { signInWithGoogle, status: authStatus, applyUserDelta, user } = useAuth();
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
   const palette = Colors[colorScheme ?? 'light'];
   const sheetSurface = useThemeColor({}, 'card');
   const sheetSurfaceElevated = useThemeColor({}, 'cardElevated');
@@ -288,7 +291,7 @@ export function SwipeStack({
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const actionsSheetRef = useRef<BottomSheetModal>(null);
   const reportReasonSheetRef = useRef<BottomSheetModal>(null);
-  const reportNotesInputRef = useRef<TextInput>(null);
+  const reportNotesInputRef = useRef<ElementRef<typeof BottomSheetTextInput>>(null);
   const handleSheetChanges = useCallback((index: number) => {
     if (__DEV__) {
       console.log('handleSheetChanges', index);
@@ -874,6 +877,16 @@ export function SwipeStack({
     if (!sessionStats.answered) return null;
     return Math.round((sessionStats.correct / sessionStats.answered) * 100);
   }, [sessionStats.answered, sessionStats.correct]);
+  const normalizedAccuracy = useMemo(
+    () => Math.max(0, Math.min(100, accuracyPercent ?? 0)),
+    [accuracyPercent]
+  );
+  const donutSize = 56;
+  const donutStroke = 8;
+  const donutRadius = (donutSize - donutStroke) / 2;
+  const donutCircumference = 2 * Math.PI * donutRadius;
+  const correctArcLength = donutCircumference * (normalizedAccuracy / 100);
+  const correctRingColor = colorScheme === 'dark' ? '#56CCF2' : '#2D9CDB';
 
   const totalViewed = sessionStats.answered + sessionStats.skipped;
 
@@ -930,14 +943,9 @@ export function SwipeStack({
   }, [completionTitle.icon]);
 
   const completionProgressLabel = useMemo(() => {
-    if (!isChallenge) return null;
-    const progress =
-      totalQuestions > 0 ? `${sessionStats.answered}/${totalQuestions}문항` : null;
-    if (challengeProgressLabel && progress) {
-      return `${challengeProgressLabel}단계 · ${progress}`;
-    }
-    return challengeProgressLabel ?? progress;
-  }, [challengeProgressLabel, isChallenge, sessionStats.answered, totalQuestions]);
+    if (!isChallenge || !totalQuestions) return null;
+    return `${sessionStats.correct} / ${totalQuestions}문항`;
+  }, [isChallenge, sessionStats.correct, totalQuestions]);
 
   const challengeSummary = useMemo(
     () => ({
@@ -1393,7 +1401,11 @@ export function SwipeStack({
     <BottomSheetModalProvider>
       <View style={styles.container}>
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={
+            showCompletion
+              ? [styles.scrollContent, styles.scrollContentCompletion]
+              : styles.scrollContent
+          }
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
@@ -1417,20 +1429,70 @@ export function SwipeStack({
                   {challengeCompletionSubtitle}
                 </ThemedText>
               ) : null}
-              {isChallenge && completionProgressLabel ? (
-                <ThemedText
-                  style={styles.completionMeta}
-                  lightColor={palette.textMuted}
-                  darkColor={Palette.gray200}
-                >
-                  {completionProgressLabel}
-                </ThemedText>
-              ) : null}
               <View style={styles.completionMetrics}>
+                {isChallenge ? (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      styles.completionMetricFull,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
+                  >
+                    <View style={styles.completionGraphRow}>
+                      <View style={styles.completionGraphText}>
+                        <ThemedText
+                          style={styles.completionGraphLabel}
+                          lightColor={palette.textMuted}
+                          darkColor={Palette.gray200}
+                        >
+                          정답률
+                        </ThemedText>
+                        {completionProgressLabel ? (
+                          <ThemedText
+                            style={styles.completionGraphValue}
+                          >
+                            {completionProgressLabel}
+                          </ThemedText>
+                        ) : null}
+                      </View>
+                      <View style={styles.completionDonut}>
+                        <Svg width={donutSize} height={donutSize}>
+                          <Circle
+                            cx={donutSize / 2}
+                            cy={donutSize / 2}
+                            r={donutRadius}
+                            stroke={palette.danger}
+                            strokeWidth={donutStroke}
+                            fill="none"
+                            strokeLinecap="butt"
+                            transform={`rotate(-90 ${donutSize / 2} ${donutSize / 2})`}
+                          />
+                          <Circle
+                            cx={donutSize / 2}
+                            cy={donutSize / 2}
+                            r={donutRadius}
+                            stroke={correctRingColor}
+                            strokeWidth={donutStroke}
+                            fill="none"
+                            strokeDasharray={`${correctArcLength} ${Math.max(0, donutCircumference - correctArcLength)}`}
+                            strokeLinecap="butt"
+                            transform={`rotate(-90 ${donutSize / 2} ${donutSize / 2})`}
+                          />
+                        </Svg>
+                        <View style={styles.completionDonutCenter}>
+                          <ThemedText style={styles.completionDonutText}>
+                            {accuracyPercent !== null ? `${accuracyPercent}%` : '-'}
+                          </ThemedText>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                ) : null}
                 {isGuest ? (
                   <View
                     style={[
                       styles.completionMetric,
+                      styles.completionMetricFull,
                       { backgroundColor: palette.cardElevated, borderColor: palette.border },
                     ]}
                   >
@@ -1525,17 +1587,17 @@ export function SwipeStack({
                       {challengeSecondaryLabel}
                     </Button>
                   ) : null
-                ) : (
+                ) : isGuest ? (
                   <Button
                     size="lg"
                     variant="outline"
                     fullWidth
-                    onPress={() => setSelectedCategory?.(null)}
+                    onPress={() => void signInWithGoogle()}
                     style={styles.completionActionButton}
                   >
-                    카테고리 변경
+                    로그인
                   </Button>
-                )}
+                ) : null}
               </View>
             </View>
           ) : isChallenge ? (
@@ -1600,16 +1662,6 @@ export function SwipeStack({
               <View style={styles.statusRight}>
                 <Button
                   variant="ghost"
-                  size="icon"
-                  rounded="full"
-                  onPress={handleOpenOnboarding}
-                  disabled={showOnboarding}
-                  accessibilityLabel="룰 다시보기"
-                  leftIcon={<IconSymbol name="questionmark.circle" size={22} color={onboardingButtonIconColor} />}
-                  style={styles.onboardingButton}
-                />
-                <Button
-                  variant="ghost"
                   size="sm"
                   rounded="full"
                   onPress={handleOpenSheet}
@@ -1627,34 +1679,46 @@ export function SwipeStack({
                 >
                   해설 보기
                 </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  rounded="full"
+                  onPress={handleOpenOnboarding}
+                  disabled={showOnboarding}
+                  accessibilityLabel="룰 다시보기"
+                  leftIcon={<IconSymbol name="questionmark.circle" size={22} color={onboardingButtonIconColor} />}
+                  style={styles.onboardingButton}
+                />
               </View>
             </View>
           )}
-          <View style={styles.stackWrapper}>
-            <View
-              pointerEvents="none"
-              style={[styles.cardSizer, { height: stackHeight }]}
-            />
-            {queue.map((card, index) => (
-              <SwipeCard
-                key={card.id}
-                card={card}
-                index={index}
-                cardNumber={cardOffset + index + 1}
-                isActive={index === 0}
-                showDifficultyBadge={!isChallenge}
-                hintText={index === 0 ? hintText : null}
-                eliminatedChoiceIds={index === 0 ? eliminatedChoiceIds ?? undefined : undefined}
-                selectedIndex={index === 0 ? selectedIndex : null}
-                feedback={index === 0 ? feedback : null}
-                onSelectChoice={index === 0 ? handleSelect : () => undefined}
-                onSwipeNext={handleNext}
-                onOpenActions={handleActions}
-                onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
-                onCardLayout={index === 0 ? handleActiveCardLayout : undefined}
+          {showCompletion ? null : (
+            <View style={styles.stackWrapper}>
+              <View
+                pointerEvents="none"
+                style={[styles.cardSizer, { height: stackHeight }]}
               />
-            ))}
-          </View>
+              {queue.map((card, index) => (
+                <SwipeCard
+                  key={card.id}
+                  card={card}
+                  index={index}
+                  cardNumber={cardOffset + index + 1}
+                  isActive={index === 0}
+                  showDifficultyBadge={!isChallenge}
+                  hintText={index === 0 ? hintText : null}
+                  eliminatedChoiceIds={index === 0 ? eliminatedChoiceIds ?? undefined : undefined}
+                  selectedIndex={index === 0 ? selectedIndex : null}
+                  feedback={index === 0 ? feedback : null}
+                  onSelectChoice={index === 0 ? handleSelect : () => undefined}
+                  onSwipeNext={handleNext}
+                  onOpenActions={handleActions}
+                  onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
+                  onCardLayout={index === 0 ? handleActiveCardLayout : undefined}
+                />
+              ))}
+            </View>
+          )}
         </ScrollView>
 
         <BottomSheetModal
@@ -1799,7 +1863,7 @@ export function SwipeStack({
               })}
             </View>
             {reportReason === 'other' ? (
-              <TextInput
+              <BottomSheetTextInput
                 ref={reportNotesInputRef}
                 style={[
                   styles.reportInput,
@@ -1841,6 +1905,7 @@ export function SwipeStack({
               borderColor: palette.border,
             },
           ]}
+          bottomInset={insets.bottom + Spacing.lg}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
@@ -1994,6 +2059,10 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xl,
     gap: Spacing.md,
   },
+  scrollContentCompletion: {
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.xxl,
+  },
   stackWrapper: {
     minHeight: MIN_STACK_HEIGHT,
     flexGrow: 1,
@@ -2031,7 +2100,7 @@ const styles = StyleSheet.create({
   statusRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
+    gap: 0,
   },
   onboardingButton: {
     width: 36,
@@ -2097,6 +2166,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
   },
+  completionGraphRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.lg,
+  },
+  completionDonut: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  completionDonutCenter: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  completionDonutText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  completionGraphText: {
+    gap: Spacing.xs,
+  },
+  completionGraphLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  completionGraphValue: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
   completionContext: {
     fontSize: 13,
     color: Palette.gray500,
@@ -2116,6 +2215,10 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     borderWidth: 1,
     gap: Spacing.xs / 2,
+  },
+  completionMetricFull: {
+    flexBasis: '100%',
+    maxWidth: '100%',
   },
   completionMetricLabel: {
     fontSize: 12,
@@ -2164,6 +2267,7 @@ const styles = StyleSheet.create({
   },
   bottomSheetContent: {
     paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.md,
     paddingBottom: Spacing.xl,
     gap: Spacing.md,
   },

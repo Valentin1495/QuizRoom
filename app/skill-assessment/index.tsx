@@ -47,7 +47,7 @@ const ALLOWED_MISSES_PER_LEVEL: Record<(typeof EDU_LEVEL_STEPS)[number]['key'], 
   college_plus: 0,
 };
 
-export default function FifthGraderChallengeScreen() {
+export default function SkillAssessmentScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
@@ -121,49 +121,51 @@ export default function FifthGraderChallengeScreen() {
             상위 단계는 치트 불가 · 오답 1회면 종료
           </ThemedText>
         ) : null}
-        <View style={styles.levelProgress}>
-          <View style={[styles.levelProgressLine, { backgroundColor: palette.borderStrong }]} />
-          <View
-            style={[
-              styles.levelProgressLineActive,
-              {
-                width: `${Math.max(0, Math.min(1, levelProgressRatio)) * 100}%`,
-                backgroundColor: palette.text,
-              },
-            ]}
-          />
-          <View style={styles.levelProgressRow}>
-            {EDU_LEVEL_STEPS.map((level, index) => {
-              const isCurrent = index === levelIndex;
-              const isCompleted = index < levelIndex;
-              const size = isCurrent ? 28 : 24;
-              return (
-                <View
-                  key={`level-node-${level.key}`}
-                  style={[
-                    styles.levelNode,
-                    {
-                      width: size,
-                      height: size,
-                      borderRadius: size / 2,
-                      backgroundColor: isCurrent ? palette.text : palette.cardElevated,
-                      borderColor: isCurrent ? palette.text : palette.borderStrong,
-                    },
-                  ]}
-                >
-                  <ThemedText
+        {isRunning ? (
+          <View style={styles.levelProgress}>
+            <View style={[styles.levelProgressLine, { backgroundColor: palette.borderStrong }]} />
+            <View
+              style={[
+                styles.levelProgressLineActive,
+                {
+                  width: `${Math.max(0, Math.min(1, levelProgressRatio)) * 100}%`,
+                  backgroundColor: palette.text,
+                },
+              ]}
+            />
+            <View style={styles.levelProgressRow}>
+              {EDU_LEVEL_STEPS.map((level, index) => {
+                const isCurrent = index === levelIndex;
+                const isCompleted = index < levelIndex;
+                const size = isCurrent ? 28 : 24;
+                return (
+                  <View
+                    key={`level-node-${level.key}`}
                     style={[
-                      styles.levelNodeText,
-                      { color: isCurrent ? palette.background : (isCompleted ? palette.text : palette.textMuted) },
+                      styles.levelNode,
+                      {
+                        width: size,
+                        height: size,
+                        borderRadius: size / 2,
+                        backgroundColor: isCurrent ? palette.text : palette.cardElevated,
+                        borderColor: isCurrent ? palette.text : palette.borderStrong,
+                      },
                     ]}
                   >
-                    {level.shortLabel}
-                  </ThemedText>
-                </View>
-              );
-            })}
+                    <ThemedText
+                      style={[
+                        styles.levelNodeText,
+                        { color: isCurrent ? palette.background : (isCompleted ? palette.text : palette.textMuted) },
+                      ]}
+                    >
+                      {level.shortLabel}
+                    </ThemedText>
+                  </View>
+                );
+              })}
+            </View>
           </View>
-        </View>
+        ) : null}
       </View>
       <View style={styles.stackContainer}>
         {isRunning ? (
@@ -182,8 +184,8 @@ export default function FifthGraderChallengeScreen() {
             onChallengeAdvance={handleAdvance}
             onChallengeReset={handleChallengeReset}
             challengeAdvanceLabel={isFinalLevel ? '과목 선택으로' : '다음 단계로'}
-            challengeCompletionLabel={isFinalLevel ? '측정 완료!' : '단계 통과!'}
-            challengeCompletionSubtitle={isFinalLevel ? '결과 요약을 확인해보세요' : undefined}
+            challengeCompletionLabel={isFinalLevel ? '실력 측정 완료' : '단계 통과!'}
+            challengeCompletionSubtitle={isFinalLevel ? '전체 단계 결과를 확인하세요' : undefined}
             challengeProgressLabel={`${currentLevel.label} · ${levelIndex + 1}/${EDU_LEVEL_STEPS.length}`}
             lifelinesDisabled={lifelinesDisabled}
           />
@@ -198,8 +200,8 @@ export default function FifthGraderChallengeScreen() {
                 <ThemedText type="title">측정 과목 선택</ThemedText>
               </View>
               <ThemedText style={[styles.stageSubtitle, { color: palette.textMuted }]}>
-              {stageSubtitle}
-            </ThemedText>
+                {stageSubtitle}
+              </ThemedText>
               <View style={styles.subjectGrid}>
                 {SUBJECT_OPTIONS.map((subject) => {
                   const isSelected = subject.key === selectedSubject;
@@ -316,7 +318,7 @@ const styles = StyleSheet.create({
   selectionContent: {
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.xl,
-    paddingTop: Spacing.sm,
+    paddingTop: Spacing.lg,
     gap: Spacing.lg,
   },
   selectionHero: {

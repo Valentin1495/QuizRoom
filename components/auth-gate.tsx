@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -17,6 +17,17 @@ export function AuthGate({ children }: AuthGateProps) {
   const { status, user, error, signInWithGoogle, enterGuestMode } = useAuth();
   const primaryColor = useThemeColor({}, 'primary');
   const insets = useSafeAreaInsets();
+  const [showBanner, setShowBanner] = useState(false);
+
+  useEffect(() => {
+    if (!error) {
+      setShowBanner(false);
+      return;
+    }
+    setShowBanner(true);
+    const timeout = setTimeout(() => setShowBanner(false), 3000);
+    return () => clearTimeout(timeout);
+  }, [error]);
 
   const { isLoading, headline, helper } = useMemo(() => {
     if (status === 'authenticated' && user) {
@@ -46,11 +57,16 @@ export function AuthGate({ children }: AuthGateProps) {
     } as const;
   }, [status, user, error]);
 
-  if ((status === 'authenticated' && user) || status === 'guest' || status === 'upgrading') {
+  if (
+    (status === 'authenticated' && user) ||
+    status === 'guest' ||
+    status === 'upgrading' ||
+    status === 'error'
+  ) {
     return (
       <View style={styles.passThroughContainer}>
         {children}
-        {status === 'authenticated' && error ? (
+        {error && showBanner ? (
           <ThemedView
             style={[styles.banner, { top: insets.top + Spacing.md }]}
             lightColor="rgba(20, 20, 20, 0.88)"
