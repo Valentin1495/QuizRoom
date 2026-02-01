@@ -10,17 +10,20 @@
       "env": {
         "RCT_USE_RN_DEP": "0",
         "RCT_USE_PREBUILT_RNCORE": "0"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
       "env": {
         "RCT_USE_RN_DEP": "0",
         "RCT_USE_PREBUILT_RNCORE": "0"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "channel": "production"
     }
   },
   "submit": {

@@ -73,7 +73,6 @@ export default function SkillAssessmentScreen() {
     : '과목을 고르면 단계별로 난이도가 올라갑니다';
 
   const isElemLevel = currentLevel.key === 'elem_low' || currentLevel.key === 'elem_high';
-  const levelTags = isElemLevel ? ['mode:fifth_grader'] : SKILL_ASSESSMENT_CHALLENGE.tags;
 
   const handleStart = useCallback(() => {
     if (!selectedSubject) return;
@@ -182,7 +181,6 @@ export default function SkillAssessmentScreen() {
         {isRunning ? (
           <SwipeStack
             category={SKILL_ASSESSMENT_CHALLENGE.category}
-            tags={levelTags}
             deckSlug={isElemLevel ? undefined : SKILL_ASSESSMENT_CHALLENGE.deckSlug}
             subject={selectedSubject ?? undefined}
             eduLevel={currentLevel.key}

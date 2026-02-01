@@ -1,0 +1,1762 @@
+[
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 참인 문장은 무엇일까요?\n모든 사과는 과일이다.\n어떤 과일은 빨간색이다.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "모든 과일은 사과이다."
+            },
+            {
+                "id": "b",
+                "text": "사과는 모두 빨간색이다."
+            },
+            {
+                "id": "c",
+                "text": "사과는 과일이다."
+            },
+            {
+                "id": "d",
+                "text": "빨간색은 모두 사과이다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "첫 번째 전제에서 모든 사과는 과일이라고 했으므로 사과는 과일이라는 문장은 항상 참입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "제시된 전제 조건을 다시 읽어보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453801
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "A, B, C 세 학생 중 한 명만 안경을\n썼습니다.\nA: 나는 안경을 안 썼어.\nB: C가 안경을 썼어.\nC: B는 거짓말을 하고 있어.\n한 명만 참을 말할 때 안경을 쓴 사람은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A"
+            },
+            {
+                "id": "b",
+                "text": "B"
+            },
+            {
+                "id": "c",
+                "text": "C"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "B와 C는 서로 반대되는 말을 하므로 한 명은 반드시 참입니다. 유일한 참이 이들 중 있다면 A는 거짓이 되어야 하므로 A가 안경을 쓴 것입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "모순되는 말을 하는 사람들을 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453802
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 수열의 규칙을 찾아 ( )에\n들어갈 숫자를 구하세요.\n2, 6, 12, 20, ( ), 42",
+        "choices": [
+            {
+                "id": "a",
+                "text": "28"
+            },
+            {
+                "id": "b",
+                "text": "30"
+            },
+            {
+                "id": "c",
+                "text": "32"
+            },
+            {
+                "id": "d",
+                "text": "34"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "각 항의 차이가 4, 6, 8... 로 2씩 커지며 늘어나는 규칙입니다. 따라서 20 다음은 10을 더한 30입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "숫자 사이의 간격이 어떻게 변하는지 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453803
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "민수, 영희, 철수는 각각 축구, 농구,\n야구 중 서로 다른 한 가지 운동을\n합니다.\n1. 철수는 야구를 안 한다.\n2. 민수는 축구를 한다.\n농구를 하는 사람은 누구일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "민수"
+            },
+            {
+                "id": "b",
+                "text": "영희"
+            },
+            {
+                "id": "c",
+                "text": "철수"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "민수가 축구이므로 철수는 농구 아니면 야구인데, 야구를 안 하므로 농구를 합니다. 따라서 남은 야구는 영희가 합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "확정된 조건인 민수부터 시작해서 소거해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1738453804
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 문장이 참일 때 항상 참인 것은?\n'비가 오면 길에 물이 고인다.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "비가 안 오면 물이 고이지 않는다."
+            },
+            {
+                "id": "b",
+                "text": "물이 고여 있으면 비가 온 것이다."
+            },
+            {
+                "id": "c",
+                "text": "물이 고이지 않으면 비가 안 온 것이다."
+            },
+            {
+                "id": "d",
+                "text": "길이 젖어 있으면 비가 온 것이다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "원래 문장이 참이면 그 대우인 '결과가 아니면 원인도 아니다'라는 문장도 항상 참입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "명제의 '대우' 관계를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1738453805
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "빨간색 공은 파란색 공보다 큽니다.\n노란색 공은 초록색 공보다 작습니다.\n파란색 공은 초록색 공보다 큽니다.\n가장 큰 공은 무슨 색일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "빨간색"
+            },
+            {
+                "id": "b",
+                "text": "파란색"
+            },
+            {
+                "id": "c",
+                "text": "노란색"
+            },
+            {
+                "id": "d",
+                "text": "초록색"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "크기 순서는 빨강 > 파랑 > 초록 > 노랑입니다. 따라서 가장 큰 공은 빨간색입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "공들의 크기를 한 줄로 세워보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453806
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "어떤 마을 사람들은 거짓말쟁이 아니면\n참말쟁이입니다. 한 사람에게\n'당신은 참말쟁입니까?'라고 물었을 때\n그가 할 수 있는 대답은 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "네"
+            },
+            {
+                "id": "b",
+                "text": "아니요"
+            },
+            {
+                "id": "c",
+                "text": "모르겠습니다"
+            },
+            {
+                "id": "d",
+                "text": "가끔은 그렇습니다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "참말쟁이는 진실을 말하므로 '네'라고 답하고, 거짓말쟁이는 자신이 거짓말쟁이임에도 거짓을 말해야 하므로 '네'라고 답합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "거짓말쟁이가 자신에 대해 어떻게 말할지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453807
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "주머니에 빨간 공 3개, 파란 공 2개가\n들어있습니다. 공을 확인하지 않고\n꺼낼 때, 반드시 같은 색 공 2개를\n얻기 위해 꺼내야 하는 최소 개수는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "2개"
+            },
+            {
+                "id": "b",
+                "text": "3개"
+            },
+            {
+                "id": "c",
+                "text": "4개"
+            },
+            {
+                "id": "d",
+                "text": "5개"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "가장 운이 없는 경우로 빨간 공 1개, 파란 공 1개를 뽑았다면 3번째 공은 무조건 둘 중 하나와 같은 색이 됩니다. (비둘기집의 원리)",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "최악의 상황(다른 색만 뽑는 경우)을 가정해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453808
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 전제로부터 이끌어낼 수 있는\n결론은?\n- 성실한 사람은 모두 성공한다.\n- 민수는 성실하다.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "성공한 사람은 모두 성실하다."
+            },
+            {
+                "id": "b",
+                "text": "민수는 성공한다."
+            },
+            {
+                "id": "c",
+                "text": "성공하지 못한 사람은 민수이다."
+            },
+            {
+                "id": "d",
+                "text": "민수만 성공한다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "삼단논법에 의해 민수는 성실한 그룹에 포함되고, 그 그룹은 모두 성공하므로 민수는 성공합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "A는 B이고 B는 C이면 A는 무엇일까요?",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453809
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "4명의 달리기 선수(A, B, C, D)가\n들어온 순서입니다.\n1. A는 B보다 빨리 들어왔다.\n2. C는 가장 늦게 들어왔다.\n3. D는 A보다 빨리 들어왔다.\n1등은 누구일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A"
+            },
+            {
+                "id": "b",
+                "text": "B"
+            },
+            {
+                "id": "c",
+                "text": "C"
+            },
+            {
+                "id": "d",
+                "text": "D"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "순서는 D > A > B 이고 C는 꼴찌이므로 D > A > B > C 가 됩니다. 따라서 1등은 D입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "A보다 빠른 선수가 있는지 확인해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453810
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "모든 고양이는 털이 있다.\n우리 집 강아지도 털이 있다.\n이 전제로부터 알 수 있는 사실은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "우리 집 강아지는 고양이이다."
+            },
+            {
+                "id": "b",
+                "text": "털이 있으면 모두 고양이이다."
+            },
+            {
+                "id": "c",
+                "text": "고양이는 강아지이다."
+            },
+            {
+                "id": "d",
+                "text": "제시된 정보만으론 알 수 없다."
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "두 대상이 같은 특징을 공유한다고 해서 두 대상이 같은 것은 아닙니다. 논리적 연결 고리가 부족합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "두 전제가 서로를 직접 설명하고 있는지 보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1738453811
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "참/거짓을 판별하세요.\n'10은 짝수이거나 소수(Prime)이다.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "참"
+            },
+            {
+                "id": "b",
+                "text": "거짓"
+            },
+            {
+                "id": "c",
+                "text": "둘 다 아니다"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "'~이거나'는 한 쪽만 참이어도 참입니다. 10은 짝수이므로 전체 문장은 참이 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "선택지가 'OR(또는)' 조건임을 유의하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453812
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "주사위의 마주 보는 면의 합은\n항상 7입니다. 바닥에 놓인 면의 수가\n2라면, 맨 윗면의 수는 무엇일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "3"
+            },
+            {
+                "id": "b",
+                "text": "4"
+            },
+            {
+                "id": "c",
+                "text": "5"
+            },
+            {
+                "id": "d",
+                "text": "6"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "마주 보는 면의 합이 7이므로, 7에서 바닥면인 2를 빼면 윗면인 5가 나옵니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "더해서 7이 되는 숫자를 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453813
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 성격이 다른 하나는?\n호랑이, 사자, 늑대, 토끼",
+        "choices": [
+            {
+                "id": "a",
+                "text": "호랑이"
+            },
+            {
+                "id": "b",
+                "text": "사자"
+            },
+            {
+                "id": "c",
+                "text": "늑대"
+            },
+            {
+                "id": "d",
+                "text": "토끼"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "호랑이, 사자, 늑대는 육식 동물이지만 토끼는 초식 동물입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "동물들이 무엇을 먹고 사는지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1738453814
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "철수, 영희, 민수 중 한 명이\n유리창을 깼습니다.\n철수: 영희가 깼어.\n영희: 나는 안 깼어.\n민수: 나는 안 깼어.\n한 명만 거짓말을 한다면 범인은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "철수"
+            },
+            {
+                "id": "b",
+                "text": "영희"
+            },
+            {
+                "id": "c",
+                "text": "민수"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "철수와 영희의 말은 상충됩니다. 한 명이 거짓이면 나머지 한 명은 참입니다. 만약 영희가 깼다면 영희만 거짓말쟁이가 되어 조건에 맞습니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "거짓말을 하는 사람이 단 한 명이라는 점에 주목하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453815
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "오늘이 월요일일 때,\n50일 후는 무슨 요일일까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "월요일"
+            },
+            {
+                "id": "b",
+                "text": "화요일"
+            },
+            {
+                "id": "c",
+                "text": "수요일"
+            },
+            {
+                "id": "d",
+                "text": "목요일"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "50을 7로 나누면 나머지가 1입니다. 따라서 월요일에서 하루가 더 지난 화요일이 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "일주일이 7일임을 이용하여 나머지를 계산하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453816
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "모든 새는 날 수 있다.\n펭귄은 새이다.\n그렇다면 펭귄은 날 수 있는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "아니요, 실제로는 못 납니다."
+            },
+            {
+                "id": "b",
+                "text": "네, 논리적으로 날 수 있습니다."
+            },
+            {
+                "id": "c",
+                "text": "새가 아닐 수도 있습니다."
+            },
+            {
+                "id": "d",
+                "text": "조건이 부족합니다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "현실과 관계없이 제시된 논리 체계 안에서는 전제가 '모든 새'를 포함하므로 펭귄도 날 수 있다는 결론이 나옵니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "현실적인 사실보다 '제시된 문장'의 논리만 따져보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453817
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "동그라미, 세모, 네모 모양의 카드가\n있습니다. 순서대로 놓여 있을 때\n규칙을 찾으세요.\n○ △ □ ○ △ ( )",
+        "choices": [
+            {
+                "id": "a",
+                "text": "○"
+            },
+            {
+                "id": "b",
+                "text": "△"
+            },
+            {
+                "id": "c",
+                "text": "□"
+            },
+            {
+                "id": "d",
+                "text": "◇"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "○, △, □ 세 모양이 반복되는 규칙이므로 △ 다음에는 □가 옵니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "모양들의 반복 단위를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453818
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 가장 먼저 일어나는 일은?\nA: 점심을 먹는다.\nB: 잠을 잔다.\nC: 세수를 한다.\nD: 저녁을 먹는다.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A"
+            },
+            {
+                "id": "b",
+                "text": "B"
+            },
+            {
+                "id": "c",
+                "text": "C"
+            },
+            {
+                "id": "d",
+                "text": "D"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "일반적인 하루 일과에서 아침에 일어나 가장 먼저 하는 일은 세수입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "보통 아침에 제일 먼저 무엇을 하는지 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1738453819
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "나무: 숲 = 별: ( )\n빈칸에 알맞은 단어는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "태양"
+            },
+            {
+                "id": "b",
+                "text": "달"
+            },
+            {
+                "id": "c",
+                "text": "은하"
+            },
+            {
+                "id": "d",
+                "text": "구름"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "나무들이 모여 숲을 이루는 것처럼, 별들이 무수히 모여 은하를 이룹니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "부분과 전체의 관계를 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453820
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "참/거짓을 판별하세요.\n'모든 숫자는 0보다 크다.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "참"
+            },
+            {
+                "id": "b",
+                "text": "거짓"
+            },
+            {
+                "id": "c",
+                "text": "경우에 따라 다르다"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "0보다 작거나 같은 숫자(음수나 0)가 존재하므로 '모든'이라는 조건은 거짓이 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "반대되는 예시(반례)가 있는지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "c",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453821
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 모순되는 문장은?\n1. 나는 지금 말을 하고 있다.\n2. 나는 지금 거짓말을 하고 있다.",
+        "choices": [
+            {
+                "id": "a",
+                "text": "1번 문장"
+            },
+            {
+                "id": "b",
+                "text": "2번 문장"
+            },
+            {
+                "id": "c",
+                "text": "둘 다 모순이다"
+            },
+            {
+                "id": "d",
+                "text": "둘 다 아니다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "2번 문장이 참이면 자신이 거짓말쟁이가 되므로 거짓이 되고, 거짓이면 거짓말을 안 한 것이 되어 참이 됩니다. (자기 언급의 파라독스)",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "문장의 내용이 참일 때와 거짓일 때를 각각 가정해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453822
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "사탕 10개를 3명에게 똑같이 나누어\n주려고 합니다. 남는 사탕 없이\n모두 나누려면 최소 몇 개의 사탕이\n더 필요할까요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "1개"
+            },
+            {
+                "id": "b",
+                "text": "2개"
+            },
+            {
+                "id": "c",
+                "text": "3개"
+            },
+            {
+                "id": "d",
+                "text": "0개"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "10을 3으로 나누면 나머지가 1입니다. 3으로 나누어떨어지려면 2개가 더 있어야 12가 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "10보다 큰 수 중 3의 배수를 찾아보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453823
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "모든 강아지는 짖는다.\n초코는 강아지이다.\n위 문장이 참일 때, 초코는 짖는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "네, 항상 그렇습니다."
+            },
+            {
+                "id": "b",
+                "text": "아니요, 조용할 수도 있습니다."
+            },
+            {
+                "id": "c",
+                "text": "가끔은 짖습니다."
+            },
+            {
+                "id": "d",
+                "text": "강아지가 아닐 수 있습니다."
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "'모든'이라는 조건은 예외를 허용하지 않으므로 초코는 반드시 짖는다는 결론이 도출됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "전제 조건에 '모든'이라는 단어가 들어있음을 기억하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453824
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 수열의 규칙을 찾아라.\n1, 3, 9, 27, ( )",
+        "choices": [
+            {
+                "id": "a",
+                "text": "36"
+            },
+            {
+                "id": "b",
+                "text": "54"
+            },
+            {
+                "id": "c",
+                "text": "81"
+            },
+            {
+                "id": "d",
+                "text": "45"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "앞의 숫자에 계속해서 3을 곱하는 등비수열 규칙입니다. 27에 3을 곱하면 81이 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "숫자들이 몇 배씩 늘어나고 있는지 계산해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453825
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 분류 기준이 다른 하나는?\n참외, 수박, 배추, 딸기",
+        "choices": [
+            {
+                "id": "a",
+                "text": "참외"
+            },
+            {
+                "id": "b",
+                "text": "수박"
+            },
+            {
+                "id": "c",
+                "text": "배추"
+            },
+            {
+                "id": "d",
+                "text": "딸기"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "참외, 수박, 딸기는 열매를 먹는 채소(과채류)지만 배추는 잎을 먹는 채소(엽채류)입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "식물의 어느 부위를 먹는지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453826
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "시계의 긴바늘이 12를 가리키고,\n짧은바늘이 3을 가리키고 있습니다.\n이때 두 바늘이 이루는 작은 각도는?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "45도"
+            },
+            {
+                "id": "b",
+                "text": "60도"
+            },
+            {
+                "id": "c",
+                "text": "90도"
+            },
+            {
+                "id": "d",
+                "text": "120도"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "3시는 원을 4등분한 지점이므로 360도를 4로 나눈 90도(직각)가 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "원 전체는 360도입니다. 이를 시계 눈금으로 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453827
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "어떤 수가 2의 배수이면서 3의\n배수입니다. 그렇다면 이 수는 반드시\n어떤 수의 배수여야 하나요?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "4"
+            },
+            {
+                "id": "b",
+                "text": "5"
+            },
+            {
+                "id": "c",
+                "text": "6"
+            },
+            {
+                "id": "d",
+                "text": "9"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "2와 3의 공배수는 최소공배수인 6의 배수입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "두 숫자를 곱한 값을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1738453828
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "모든 물고기는 물에서 산다.\n고래는 물에서 산다.\n이때 결론으로 옳은 것은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "고래는 물고기이다."
+            },
+            {
+                "id": "b",
+                "text": "물고기는 고래이다."
+            },
+            {
+                "id": "c",
+                "text": "고래는 물고기가 아닐 수 있다."
+            },
+            {
+                "id": "d",
+                "text": "물에서 사는 것은 모두 물고기다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "물에서 산다는 특징을 가졌다고 해서 모두 물고기인 것은 아닙니다. 논리적으로 단정할 수 없습니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "특정 특징이 같다고 해서 종류가 같은지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "d"
+                ]
+            }
+        },
+        "createdAt": 1738453829
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "A, B, C 세 사람 중 누가 범인인가?\n- A: B가 범인이다.\n- B: 나는 범인이 아니다.\n한 명만 거짓말을 한다면 범인은?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "A"
+            },
+            {
+                "id": "b",
+                "text": "B"
+            },
+            {
+                "id": "c",
+                "text": "C"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "A와 B는 정반대의 주장을 하므로 둘 중 하나는 무조건 거짓입니다. 한 명만 거짓이라고 했으므로 B가 거짓이면 B가 범인입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "두 사람의 말이 서로 부딪히는 지점을 찾으세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453830
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 문장의 참/거짓을 판별하세요.\n'정사각형은 직사각형이다.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "참"
+            },
+            {
+                "id": "b",
+                "text": "거짓"
+            },
+            {
+                "id": "c",
+                "text": "반대만 참이다"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "직사각형의 정의(네 각이 모두 직각)를 정사각형이 모두 충족하므로 항상 참입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "직사각형이 되기 위한 조건이 무엇인지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453831
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 중 가장 큰 수는?\n10-3, 2x3, 15/3, 1+2+3",
+        "choices": [
+            {
+                "id": "a",
+                "text": "10-3"
+            },
+            {
+                "id": "b",
+                "text": "2x3"
+            },
+            {
+                "id": "c",
+                "text": "15/3"
+            },
+            {
+                "id": "d",
+                "text": "1+2+3"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "계산 결과는 7, 6, 5, 6 입니다. 따라서 7이 가장 큰 수입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "각 수식을 차례대로 풀어보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453832
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "민수는 사과를 좋아하지 않는다.\n과일은 모두 민수가 좋아한다.\n이 두 문장이 동시에 참일 수 있는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "네, 가능합니다."
+            },
+            {
+                "id": "b",
+                "text": "아니요, 모순됩니다."
+            },
+            {
+                "id": "c",
+                "text": "사과가 과일이 아니면 가능합니다."
+            },
+            {
+                "id": "d",
+                "text": "알 수 없습니다."
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "사과는 과일인데, 모든 과일을 좋아하면서 특정 과일인 사과를 좋아하지 않는다는 것은 논리적 모순입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "사과가 과일에 포함되는지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453833
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 단어의 관계를 보세요.\n손 : 손가락 = 발 : ( )",
+        "choices": [
+            {
+                "id": "a",
+                "text": "신발"
+            },
+            {
+                "id": "b",
+                "text": "양말"
+            },
+            {
+                "id": "c",
+                "text": "발가락"
+            },
+            {
+                "id": "d",
+                "text": "다리"
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "손의 일부분인 손가락과의 관계이므로, 발의 일부분인 발가락이 적절합니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "전체와 부분의 관계를 유의하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1738453834
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "주머니에 검은 돌 5개, 하얀 돌 5개가\n있습니다. 눈을 감고 돌을 꺼낼 때\n반드시 서로 다른 색 돌 1쌍을\n얻으려면 최소 몇 개를 꺼내야 하는가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "2개"
+            },
+            {
+                "id": "b",
+                "text": "3개"
+            },
+            {
+                "id": "c",
+                "text": "5개"
+            },
+            {
+                "id": "d",
+                "text": "6개"
+            }
+        ],
+        "answerIndex": 3,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "운이 아주 나쁘면 한 가지 색깔(검은색) 5개를 연달아 뽑을 수 있습니다. 6번째는 무조건 다른 색이 나오므로 한 쌍이 완성됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "한 가지 색깔만 계속 나오는 최악의 경우를 생각하세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1738453835
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "10보다 크고 20보다 작은\n홀수는 모두 몇 개인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "4개"
+            },
+            {
+                "id": "b",
+                "text": "5개"
+            },
+            {
+                "id": "c",
+                "text": "6개"
+            },
+            {
+                "id": "d",
+                "text": "10개"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "해당하는 숫자는 11, 13, 15, 17, 19로 총 5개입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "11부터 19까지 숫자들을 하나씩 세보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453836
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "어떤 수가 홀수라면, 그 수에 1을\n더한 수는 무엇인가?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "홀수"
+            },
+            {
+                "id": "b",
+                "text": "짝수"
+            },
+            {
+                "id": "c",
+                "text": "소수"
+            },
+            {
+                "id": "d",
+                "text": "알 수 없다"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "홀수와 짝수는 번갈아 가며 나타나므로, 홀수에 1을 더하면 반드시 짝수가 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "아무 홀수나 골라 1을 더해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453837
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 문장이 참일 때 항상 참인 것은?\n'공부를 하면 성적이 오른다.'",
+        "choices": [
+            {
+                "id": "a",
+                "text": "성적이 오르면 공부를 한 것이다."
+            },
+            {
+                "id": "b",
+                "text": "공부를 안 하면 성적이 안 오른다."
+            },
+            {
+                "id": "c",
+                "text": "성적이 안 오르면 공부를 안 한 것이다."
+            },
+            {
+                "id": "d",
+                "text": "성적과 공부는 관계가 없다."
+            }
+        ],
+        "answerIndex": 2,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "명제가 참일 때 그 대우 명제(~q -> ~p)는 항상 참입니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "결과를 부정했을 때 어떤 원인이 나올지 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "b"
+                ]
+            }
+        },
+        "createdAt": 1738453838
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "다음 수열의 괄호에 들어갈 숫자는?\n10, 8, 11, 9, 12, ( )",
+        "choices": [
+            {
+                "id": "a",
+                "text": "10"
+            },
+            {
+                "id": "b",
+                "text": "11"
+            },
+            {
+                "id": "c",
+                "text": "13"
+            },
+            {
+                "id": "d",
+                "text": "14"
+            }
+        ],
+        "answerIndex": 0,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "2를 빼고 3을 더하는 과정이 반복됩니다. 12에서 2를 빼면 10이 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "인접한 숫자들끼리 더하거나 빼보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "b",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453839
+    },
+    {
+        "deckSlug": "deck_skill_assessment_v1",
+        "prompt": "네 마리의 다리가 있는 동물만 모인\n그룹이 있습니다. 이 그룹에서\n다리 총합이 12개라면 동물은 몇 마리?",
+        "choices": [
+            {
+                "id": "a",
+                "text": "2마리"
+            },
+            {
+                "id": "b",
+                "text": "3마리"
+            },
+            {
+                "id": "c",
+                "text": "4마리"
+            },
+            {
+                "id": "d",
+                "text": "6마리"
+            }
+        ],
+        "answerIndex": 1,
+        "category": "education",
+        "type": "mcq",
+        "tags": [
+            "mode:skill_assessment",
+            "subject:logic",
+            "edu:elem_high"
+        ],
+        "explanation": "한 마리당 다리가 4개이므로, 12를 4로 나누면 3마리가 됩니다.",
+        "grade": null,
+        "subject": "logic",
+        "eduLevel": "elem_high",
+        "hint": "4단 곱셈을 생각해보세요.",
+        "lifelineMeta": {
+            "fifty_fifty": {
+                "preferredEliminateIds": [
+                    "a",
+                    "c"
+                ]
+            }
+        },
+        "createdAt": 1738453840
+    }
+]
