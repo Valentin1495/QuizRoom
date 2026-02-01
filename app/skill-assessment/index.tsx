@@ -99,6 +99,7 @@ export default function SkillAssessmentScreen() {
 
   const handleExitToSelection = useCallback(() => {
     setIsRunning(false);
+    setLevelIndex(0);
   }, []);
 
   const handleChallengeComplete = useCallback((summary: SwipeChallengeSummary) => {

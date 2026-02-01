@@ -864,8 +864,8 @@ export function SwipeStack({
   const isChallengeFailed = isChallenge && missCount >= failAfterMisses;
   const showCompletion = isChallenge
     ? isChallengeFailed ||
-      (totalQuestions > 0 && sessionStats.answered >= totalQuestions) ||
-      (!hasMore && queue.length === 0)
+    (totalQuestions > 0 && sessionStats.answered >= totalQuestions) ||
+    (!hasMore && queue.length === 0)
     : !hasMore && queue.length === 0;
   const missLabel = allowedMisses > 0 ? `${missCount}/${allowedMisses}` : `${missCount}`;
   const missLabelColor =
@@ -1754,6 +1754,7 @@ export function SwipeStack({
               borderColor: palette.border,
             },
           ]}
+          bottomInset={insets.bottom + Spacing.lg}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
@@ -1767,8 +1768,8 @@ export function SwipeStack({
                   <ThemedText style={styles.sheetTitle}>치트 아이템</ThemedText>
                   <ThemedText style={[styles.lifelineSubtitle, { color: sheetMutedColor }]}>
                     {lifelinesDisabled
-                      ? '6학년 보스 룰: 치트를 사용할 수 없어요.'
-                      : '1~5학년 통틀어 50:50, 힌트 각 1회만 사용 가능해요.'}
+                      ? '대학 단계는 치트를 사용할 수 없어요.'
+                      : '초등~고등 단계에서 50:50, 힌트 각 1회만 사용 가능해요.'}
                   </ThemedText>
                 </View>
                 <View style={styles.actionsList}>
