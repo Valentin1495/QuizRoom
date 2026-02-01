@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { SwipeStack } from '@/components/swipe/swipe-stack';
+import { SwipeStack, type SwipeChallengeSummary } from '@/components/swipe/swipe-stack';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
@@ -55,6 +55,8 @@ export default function SkillAssessmentScreen() {
   const [levelIndex, setLevelIndex] = useState(0);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [cumulativeAnswered, setCumulativeAnswered] = useState(0);
+  const [cumulativeCorrect, setCumulativeCorrect] = useState(0);
 
   const currentLevel = EDU_LEVEL_STEPS[Math.min(levelIndex, EDU_LEVEL_STEPS.length - 1)];
   const isFinalLevel = levelIndex >= EDU_LEVEL_STEPS.length - 1;
@@ -75,6 +77,8 @@ export default function SkillAssessmentScreen() {
 
   const handleStart = useCallback(() => {
     if (!selectedSubject) return;
+    setCumulativeAnswered(0);
+    setCumulativeCorrect(0);
     setIsRunning(true);
   }, [selectedSubject]);
 
@@ -89,11 +93,18 @@ export default function SkillAssessmentScreen() {
 
   const handleChallengeReset = useCallback(() => {
     setLevelIndex(0);
+    setCumulativeAnswered(0);
+    setCumulativeCorrect(0);
     setIsRunning(true);
   }, []);
 
   const handleExitToSelection = useCallback(() => {
     setIsRunning(false);
+  }, []);
+
+  const handleChallengeComplete = useCallback((summary: SwipeChallengeSummary) => {
+    setCumulativeAnswered((prev) => prev + summary.answered);
+    setCumulativeCorrect((prev) => prev + summary.correct);
   }, []);
 
   return (
@@ -118,7 +129,7 @@ export default function SkillAssessmentScreen() {
         </ThemedText>
         {lifelinesDisabled ? (
           <ThemedText style={[styles.headerNotice, { color: palette.danger }]}>
-            상위 단계는 치트 불가 · 오답 1회면 종료
+            대학 이상 단계는 치트 불가 · 오답 즉시 종료
           </ThemedText>
         ) : null}
         {isRunning ? (
@@ -175,6 +186,9 @@ export default function SkillAssessmentScreen() {
             deckSlug={isElemLevel ? undefined : SKILL_ASSESSMENT_CHALLENGE.deckSlug}
             subject={selectedSubject ?? undefined}
             eduLevel={currentLevel.key}
+            cumulativeAnswered={cumulativeAnswered}
+            cumulativeCorrect={cumulativeCorrect}
+            isFinalStage={isFinalLevel}
             challenge={{
               totalQuestions,
               allowedMisses,
@@ -183,6 +197,7 @@ export default function SkillAssessmentScreen() {
             onExit={handleExitToSelection}
             onChallengeAdvance={handleAdvance}
             onChallengeReset={handleChallengeReset}
+            onChallengeComplete={handleChallengeComplete}
             challengeAdvanceLabel={isFinalLevel ? '과목 선택으로' : '다음 단계로'}
             challengeCompletionLabel={isFinalLevel ? '실력 측정 완료' : '단계 통과!'}
             challengeCompletionSubtitle={isFinalLevel ? '전체 단계 결과를 확인하세요' : undefined}

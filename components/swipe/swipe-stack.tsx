@@ -61,6 +61,9 @@ export type SwipeStackProps = {
   grade?: number;
   eduLevel?: string;
   subject?: string;
+  cumulativeAnswered?: number;
+  cumulativeCorrect?: number;
+  isFinalStage?: boolean;
   setSelectedCategory?: (category: CategoryMeta | null) => void;
   challenge?: SwipeChallengeConfig;
   onExit?: () => void;
@@ -212,6 +215,9 @@ export function SwipeStack({
   grade,
   eduLevel,
   subject,
+  cumulativeAnswered,
+  cumulativeCorrect,
+  isFinalStage,
   setSelectedCategory,
   challenge,
   onExit,
@@ -857,7 +863,9 @@ export function SwipeStack({
   const totalQuestions = challenge?.totalQuestions ?? 0;
   const isChallengeFailed = isChallenge && missCount >= failAfterMisses;
   const showCompletion = isChallenge
-    ? isChallengeFailed || (!hasMore && queue.length === 0)
+    ? isChallengeFailed ||
+      (totalQuestions > 0 && sessionStats.answered >= totalQuestions) ||
+      (!hasMore && queue.length === 0)
     : !hasMore && queue.length === 0;
   const missLabel = allowedMisses > 0 ? `${missCount}/${allowedMisses}` : `${missCount}`;
   const missLabelColor =
@@ -873,10 +881,25 @@ export function SwipeStack({
     return '미스 없음 · 오답 1번이면 종료';
   }, [allowedMisses, failAfterMisses, isChallenge, totalQuestions]);
 
+  const showAccuracyCard = isChallenge && (isChallengeFailed || Boolean(isFinalStage));
+  const useCumulativeAccuracy =
+    showAccuracyCard &&
+    typeof cumulativeAnswered === 'number' &&
+    typeof cumulativeCorrect === 'number';
+  const shouldIncludeCurrentStage =
+    isChallenge && showCompletion && !challengeCompletionNotifiedRef.current;
+  const cumulativeAnsweredTotal = useCumulativeAccuracy
+    ? cumulativeAnswered + (shouldIncludeCurrentStage ? sessionStats.answered : 0)
+    : 0;
+  const cumulativeCorrectTotal = useCumulativeAccuracy
+    ? cumulativeCorrect + (shouldIncludeCurrentStage ? sessionStats.correct : 0)
+    : 0;
+  const effectiveAnswered = useCumulativeAccuracy ? cumulativeAnsweredTotal : sessionStats.answered;
+  const effectiveCorrect = useCumulativeAccuracy ? cumulativeCorrectTotal : sessionStats.correct;
   const accuracyPercent = useMemo(() => {
-    if (!sessionStats.answered) return null;
-    return Math.round((sessionStats.correct / sessionStats.answered) * 100);
-  }, [sessionStats.answered, sessionStats.correct]);
+    if (!effectiveAnswered) return null;
+    return Math.round((effectiveCorrect / effectiveAnswered) * 100);
+  }, [effectiveAnswered, effectiveCorrect]);
   const normalizedAccuracy = useMemo(
     () => Math.max(0, Math.min(100, accuracyPercent ?? 0)),
     [accuracyPercent]
@@ -943,9 +966,10 @@ export function SwipeStack({
   }, [completionTitle.icon]);
 
   const completionProgressLabel = useMemo(() => {
-    if (!isChallenge || !totalQuestions) return null;
-    return `${sessionStats.correct} / ${totalQuestions}문항`;
-  }, [isChallenge, sessionStats.correct, totalQuestions]);
+    if (!isChallenge || !showAccuracyCard) return null;
+    if (!effectiveAnswered) return null;
+    return `${effectiveCorrect} / ${effectiveAnswered} 문항`;
+  }, [effectiveAnswered, effectiveCorrect, isChallenge, showAccuracyCard]);
 
   const challengeSummary = useMemo(
     () => ({
@@ -1430,7 +1454,7 @@ export function SwipeStack({
                 </ThemedText>
               ) : null}
               <View style={styles.completionMetrics}>
-                {isChallenge ? (
+                {showAccuracyCard ? (
                   <View
                     style={[
                       styles.completionMetric,
@@ -2215,6 +2239,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     borderWidth: 1,
     gap: Spacing.xs / 2,
+    alignItems: 'center',
   },
   completionMetricFull: {
     flexBasis: '100%',
@@ -2222,17 +2247,17 @@ const styles = StyleSheet.create({
   },
   completionMetricLabel: {
     fontSize: 12,
-    textAlign: 'left',
+    textAlign: 'center',
   },
   completionMetricValue: {
     fontSize: 16,
     fontWeight: '700',
-    textAlign: 'left',
+    textAlign: 'center',
     lineHeight: 20,
   },
   completionMetricHint: {
     fontSize: 12,
-    textAlign: 'left',
+    textAlign: 'center',
   },
   completionActions: {
     flexDirection: 'row',

@@ -85,6 +85,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const isFetchingRef = useRef(false);
   const loadedCountRef = useRef(0);
   const questionMapRef = useRef<Map<string, SwipeFeedQuestion>>(new Map());
   const sessionKeyRef = useRef<string>('');
@@ -153,9 +154,10 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
   }, [sessionLimit]);
 
   const fetchMore = useCallback(async () => {
-    if (isLoading || !hasMore || loadedCountRef.current >= sessionLimit) {
+    if (isFetchingRef.current || isLoading || !hasMore || loadedCountRef.current >= sessionLimit) {
       return;
     }
+    isFetchingRef.current = true;
     setIsLoading(true);
     try {
       const remaining = Math.max(0, sessionLimit - loadedCountRef.current);
@@ -200,8 +202,9 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
       const payload = (data as { data?: { items?: SwipeFeedQuestion[]; nextCursor?: string | null; hasMore?: boolean } })?.data;
       const items = payload?.items ?? [];
       const added = items.length > 0 ? pushPrefetch(items) : 0;
+      const reachedLimit = loadedCountRef.current >= sessionLimit;
       setCursor(payload?.nextCursor ?? null);
-      if (!payload?.hasMore || added === 0) {
+      if (reachedLimit || !payload?.hasMore || added === 0) {
         setHasMore(false);
       } else {
         setHasMore(true);
@@ -210,6 +213,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
       console.warn('Failed to fetch swipe feed', err);
       setHasMore(false);
     } finally {
+      isFetchingRef.current = false;
       setIsLoading(false);
     }
   }, [
@@ -282,6 +286,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     setCursor(null);
     setIsLoading(false);
     setHasMore(true);
+    isFetchingRef.current = false;
   }, []);
 
   const submitAnswer = useCallback(
