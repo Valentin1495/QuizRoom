@@ -155,7 +155,7 @@ const CHALLENGE_ONBOARDING_SLIDES = [
     id: 'assessment_difficulty',
     icon: 'sparkles' as const,
     title: '단계별 실력 측정',
-    body: '초등 저학년부터 대학+까지 단계별로 문제를 풀며 수준을 확인해요.',
+    body: '초등학교부터 대학교+까지 단계별로 문제를 풀며 수준을 확인해요.',
   },
   {
     id: 'assessment_swipe_right',

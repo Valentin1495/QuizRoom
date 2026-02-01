@@ -18,7 +18,7 @@ export type ChallengeConfig = {
 export const SKILL_ASSESSMENT_CHALLENGE: ChallengeConfig = {
   slug: 'skill-assessment',
   title: '실력 측정',
-  tagline: '초등 저학년부터 대학+까지 단계별 진단',
+  tagline: '초등학교부터 대학교+까지 단계별 진단',
   description: '과목 선택 후 단계별로 풀며 현재 수준을 빠르게 확인해요',
   ctaLabel: '측정 시작',
   route: '/skill-assessment',
