@@ -130,6 +130,7 @@ export default function HomeScreen() {
 
   const isAuthenticated = authStatus === 'authenticated' && !!user;
   const isGuest = authStatus === 'guest';
+  const skillChallengeTitle = '6단계 난이도로 나의 수준 파악하기';
 
   useEffect(() => {
     const loadCompletion = async () => {
@@ -450,12 +451,14 @@ export default function HomeScreen() {
           <View style={[styles.challengeCard, { backgroundColor: cardBackground, borderColor }]}>
             <View style={styles.challengeHeader}>
               <View style={styles.challengeTitleRow}>
-                <IconSymbol name="lightbulb" size={18} color={palette.text} />
-                <ThemedText style={styles.challengeTitle}>{SKILL_ASSESSMENT_CHALLENGE.title}</ThemedText>
+                <IconSymbol
+                  name="brain"
+                  size={24}
+                  color={palette.text}
+                  style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
+                />
+                <ThemedText style={styles.dailyHeadline}>{skillChallengeTitle}</ThemedText>
               </View>
-              <ThemedText style={[styles.challengeTagline, { color: muted }]}>
-                {SKILL_ASSESSMENT_CHALLENGE.tagline}
-              </ThemedText>
             </View>
             <Link href={SKILL_ASSESSMENT_CHALLENGE.route} asChild>
               <Button variant="default" size="lg" rounded="full" style={styles.primaryButton}>
@@ -697,14 +700,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
-  },
-  challengeTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  challengeTagline: {
-    fontSize: 14,
-    fontWeight: '600',
   },
   sectionHeader: {
     flexDirection: 'row',

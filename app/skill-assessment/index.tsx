@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SwipeStack, type SwipeChallengeSummary } from '@/components/swipe/swipe-stack';
@@ -258,7 +258,7 @@ export default function SkillAssessmentScreen() {
               {EDU_LEVEL_STEPS.map((level, index) => {
                 const isCurrent = index === levelIndex;
                 const isCompleted = index < levelIndex;
-                const size = isCurrent ? 28 : 24;
+                const size = isCurrent ? 32 : 28;
                 return (
                   <View
                     key={`level-node-${level.key}`}
@@ -297,7 +297,6 @@ export default function SkillAssessmentScreen() {
             eduLevel={currentLevel.key}
             challengeLevelLabel={currentLevel.label}
             challengeLevelFailedLabel={failedLevelLabel}
-            challengeLevelHint={isFinalLevel ? '전체 단계 결과를 종합했어요.' : undefined}
             excludeIds={excludedQuestionIds}
             completionTotals={completionTotals}
             cumulativeAnswered={stageBaseAnswered}
@@ -313,9 +312,9 @@ export default function SkillAssessmentScreen() {
             onChallengeReset={handleChallengeReset}
             onChallengeComplete={handleChallengeComplete}
             challengeAdvanceLabel={isFinalLevel ? '과목 선택으로' : '다음 단계로'}
-            challengeCompletionLabel={isFinalLevel ? '실력 측정 완료' : '단계 통과!'}
-            challengeCompletionSubtitle={isFinalLevel ? '전체 단계 결과를 확인하세요' : undefined}
+            challengeCompletionLabel={isFinalLevel ? '챌린지 성공!' : '단계 통과'}
             challengeProgressLabel={`${currentLevel.label} · ${levelIndex + 1}/${EDU_LEVEL_STEPS.length}`}
+            challengeSubjectLabel={selectedSubjectLabel}
             lifelinesDisabled={lifelinesDisabled}
           />
         ) : (
@@ -325,7 +324,12 @@ export default function SkillAssessmentScreen() {
           >
             <View style={[styles.selectionHero, { borderColor: palette.border, backgroundColor: palette.card }]}>
               <View style={styles.heroTitleRow}>
-                <IconSymbol name="sparkles" size={32} color={palette.text} />
+                <IconSymbol
+                  name="brain"
+                  size={32}
+                  color={palette.text}
+                  style={Platform.OS === 'android' ? { transform: [{ translateY: 3 }] } : undefined}
+                />
                 <ThemedText type="title">측정 과목 선택</ThemedText>
               </View>
               <ThemedText style={[styles.stageSubtitle, { color: palette.textMuted }]}>
@@ -459,7 +463,7 @@ const styles = StyleSheet.create({
   heroTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.xs,
+    gap: Spacing.sm,
   },
   stageSubtitle: {
     fontSize: 14,

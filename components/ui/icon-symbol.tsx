@@ -12,6 +12,7 @@ import {
   CardsThreeIcon,
   CaretRightIcon,
   CheckCircleIcon,
+  CheckFatIcon,
   ConfettiIcon,
   CopyIcon,
   CrownIcon,
@@ -96,6 +97,8 @@ const ICON_MAP = {
   'moon': { component: MoonIcon },
   // Feedback Icons
   'checkmark.circle.fill': { component: CheckCircleIcon, defaultWeight: 'fill' },
+  'checkmark.shield': { component: ShieldCheckIcon },
+  'checkmark.rectangle.stack': { component: CheckFatIcon },
   'xmark.circle.fill': { component: XCircleIcon, defaultWeight: 'fill' },
   'exclamationmark.triangle.fill': { component: WarningIcon, defaultWeight: 'fill' },
   'xmark.seal': { component: SmileyMeltingIcon },
@@ -103,7 +106,6 @@ const ICON_MAP = {
   'arrow.triangle.2.circlepath': { component: ArrowClockwiseIcon },
   'pause.circle.fill': { component: PauseCircleIcon, defaultWeight: 'fill' },
   'play.circle.fill': { component: PlayCircleIcon, defaultWeight: 'fill' },
-  'checkmark.shield': { component: ShieldCheckIcon },
   'brain': { component: SpeedometerIcon },
   'target': { component: TargetIcon },
   // Tab Bar Icons

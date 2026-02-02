@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ComponentRef } 
 import {
   Animated,
   Dimensions,
+  Easing,
   PanResponder,
   Pressable,
   ScrollView,
@@ -67,7 +68,6 @@ export type SwipeStackProps = {
   subject?: string;
   challengeLevelLabel?: string;
   challengeLevelFailedLabel?: string;
-  challengeLevelHint?: string;
   excludeIds?: string[];
   completionTotals?: { answered: number; correct: number } | null;
   cumulativeAnswered?: number;
@@ -80,8 +80,8 @@ export type SwipeStackProps = {
   challengeAdvanceLabel?: string;
   onChallengeComplete?: (summary: SwipeChallengeSummary) => void;
   challengeCompletionLabel?: string;
-  challengeCompletionSubtitle?: string;
   challengeProgressLabel?: string;
+  challengeSubjectLabel?: string;
   persistLifelines?: boolean;
   lifelinesDisabled?: boolean;
   onChallengeReset?: () => void;
@@ -234,15 +234,14 @@ export function SwipeStack({
   challengeAdvanceLabel,
   onChallengeComplete,
   challengeCompletionLabel,
-  challengeCompletionSubtitle,
   challengeProgressLabel,
+  challengeSubjectLabel,
   persistLifelines,
   lifelinesDisabled,
   onChallengeReset,
   excludeIds,
   challengeLevelLabel,
   challengeLevelFailedLabel,
-  challengeLevelHint,
   completionTotals: completionTotalsOverride,
 }: SwipeStackProps) {
   const isChallenge = Boolean(challenge);
@@ -304,6 +303,9 @@ export function SwipeStack({
   const [completionTotals, setCompletionTotals] = useState<{ answered: number; correct: number } | null>(null);
   const [isStageTransitioning, setIsStageTransitioning] = useState(false);
   const stageTransitionFromKeyRef = useRef<string | null>(null);
+  const stageTransitionStartIdRef = useRef<string | null>(null);
+  const stageTransitionStartedAtRef = useRef<number | null>(null);
+  const stageTransitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const completedSessionIdRef = useRef<string | null>(null);
   const [hintText, setHintText] = useState<string | null>(null);
   const [eliminatedChoiceIds, setEliminatedChoiceIds] = useState<string[] | null>(null);
@@ -391,7 +393,8 @@ export function SwipeStack({
   const indicatorAnims = useRef(
     onboardingSlides.map(() => new Animated.Value(8))
   ).current;
-  const skeletonShimmerAnim = useRef(new Animated.Value(0)).current;
+  const [skeletonShimmerAnim, setSkeletonShimmerAnim] = useState(() => new Animated.Value(0));
+  const skeletonVisibleRef = useRef(false);
 
   const getFunctionAuthHeaders = useCallback(async () => {
     try {
@@ -418,21 +421,41 @@ export function SwipeStack({
 
   useEffect(() => {
     return () => {
+      if (stageTransitionTimeoutRef.current) {
+        clearTimeout(stageTransitionTimeoutRef.current);
+        stageTransitionTimeoutRef.current = null;
+      }
       hideResultToast();
     };
   }, []);
 
   useEffect(() => {
-    const shimmer = Animated.loop(
-      Animated.timing(skeletonShimmerAnim, {
+    let isActive = true;
+    let animation: Animated.CompositeAnimation | null = null;
+
+    const run = () => {
+      if (!isActive) return;
+      skeletonShimmerAnim.setValue(0);
+      animation = Animated.timing(skeletonShimmerAnim, {
         toValue: 1,
         duration: 1200,
+        easing: Easing.linear,
         useNativeDriver: true,
-      })
-    );
-    shimmer.start();
+      });
+      animation.start(({ finished }) => {
+        if (finished && isActive) {
+          run();
+        }
+      });
+    };
+
+    run();
+
     return () => {
-      shimmer.stop();
+      isActive = false;
+      if (animation) {
+        animation.stop();
+      }
     };
   }, [skeletonShimmerAnim]);
 
@@ -517,8 +540,36 @@ export function SwipeStack({
     if (!stageTransitionFromKeyRef.current) return;
     if (stageTransitionFromKeyRef.current === filterKey) return;
     if (!current) return;
-    setIsStageTransitioning(false);
-    stageTransitionFromKeyRef.current = null;
+    if (stageTransitionStartIdRef.current && current.id === stageTransitionStartIdRef.current) {
+      return;
+    }
+    const finishTransition = () => {
+      if (__DEV__) {
+        console.log('[SwipeStack] stage transition end', {
+          fromKey: stageTransitionFromKeyRef.current,
+          toKey: filterKey,
+          startId: stageTransitionStartIdRef.current,
+          currentId: current.id,
+        });
+      }
+      setIsStageTransitioning(false);
+      stageTransitionFromKeyRef.current = null;
+      stageTransitionStartIdRef.current = null;
+      stageTransitionStartedAtRef.current = null;
+      stageTransitionTimeoutRef.current = null;
+    };
+    const MIN_TRANSITION_MS = 500;
+    const startedAt = stageTransitionStartedAtRef.current ?? Date.now();
+    const elapsed = Date.now() - startedAt;
+    const remaining = Math.max(0, MIN_TRANSITION_MS - elapsed);
+    if (remaining === 0) {
+      finishTransition();
+    } else {
+      if (stageTransitionTimeoutRef.current) {
+        clearTimeout(stageTransitionTimeoutRef.current);
+      }
+      stageTransitionTimeoutRef.current = setTimeout(finishTransition, remaining);
+    }
   }, [current, filterKey, isStageTransitioning]);
 
   useEffect(() => {
@@ -1020,21 +1071,24 @@ export function SwipeStack({
   }, [sessionStats.answered, sessionStats.correct]);
 
   const completionTitle = useMemo(() => {
-    const answered = sessionStats.answered;
+    const answered = effectiveAnswered ?? sessionStats.answered;
     if (isChallenge) {
       const completed = totalQuestions > 0 && answered >= totalQuestions && !isChallengeFailed;
       if (isChallengeFailed) {
         return { icon: 'xmark.seal', label: '챌린지 실패' } as const;
       }
       if (completed) {
+        const completionLabel = challengeCompletionLabel ?? '';
+        const completionIcon =
+          completionLabel === '단계 통과' ? 'checkmark.rectangle.stack' : 'party.popper';
         return {
-          icon: 'party.popper',
-          label: challengeCompletionLabel ?? '챌린지 완주!',
+          icon: completionIcon,
+          label: completionLabel,
         } as const;
       }
       return {
         icon: 'rectangle.stack',
-        label: answered > 0 ? `${answered}문항 결과` : '챌린지 결과',
+        label: '챌린지 결과',
       } as const;
     }
     const completed = answered >= 20;
@@ -1046,12 +1100,20 @@ export function SwipeStack({
           ? `${answered}문항 풀이 요약`
           : '스와이프 요약',
     } as const;
-  }, [challengeCompletionLabel, isChallenge, isChallengeFailed, sessionStats.answered, totalQuestions]);
+  }, [
+    challengeCompletionLabel,
+    effectiveAnswered,
+    isChallenge,
+    isChallengeFailed,
+    sessionStats.answered,
+    totalQuestions,
+  ]);
 
   const completionIconName = useMemo<IconSymbolName>(() => {
     switch (completionTitle.icon) {
       case 'xmark.seal':
       case 'party.popper':
+      case 'checkmark.rectangle.stack':
       case 'rectangle.stack':
       case 'rectangle.grid.2x2':
         return completionTitle.icon;
@@ -1209,12 +1271,25 @@ export function SwipeStack({
   const handleChallengeSecondary = useCallback(() => {
     if (!isChallengeFailed && onChallengeAdvance) {
       stageTransitionFromKeyRef.current = filterKey;
+      stageTransitionStartIdRef.current = current?.id ?? null;
+      stageTransitionStartedAtRef.current = Date.now();
+      if (stageTransitionTimeoutRef.current) {
+        clearTimeout(stageTransitionTimeoutRef.current);
+        stageTransitionTimeoutRef.current = null;
+      }
+      if (__DEV__) {
+        console.log('[SwipeStack] stage transition start', {
+          filterKey,
+          currentId: current?.id ?? null,
+          isStageTransitioning,
+        });
+      }
       setIsStageTransitioning(true);
       onChallengeAdvance();
       return;
     }
     onExit?.();
-  }, [filterKey, isChallengeFailed, onChallengeAdvance, onExit]);
+  }, [current?.id, filterKey, isChallengeFailed, isStageTransitioning, onChallengeAdvance, onExit]);
 
   const totalScoreLabel = useMemo(() => {
     if (!sessionStats.answered) return '+0';
@@ -1644,20 +1719,6 @@ export function SwipeStack({
             },
           ]}
         >
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              styles.skeletonShimmer,
-              { width: shimmerWidth, transform: [{ translateX: shimmerTranslateX }] },
-            ]}
-          >
-            <LinearGradient
-              colors={['transparent', shimmerEdgeColor, shimmerCoreColor, shimmerEdgeColor, 'transparent']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.skeletonShimmerGradient}
-            />
-          </Animated.View>
           <View style={styles.skeletonHeader}>
             <View style={[styles.skeletonBadge, { backgroundColor: skeletonBlockColor }]} />
             <View
@@ -1689,6 +1750,20 @@ export function SwipeStack({
             <View style={[styles.skeletonChoice, { backgroundColor: skeletonBlockColor }]} />
             <View style={[styles.skeletonChoice, { backgroundColor: skeletonBlockColor }]} />
           </View>
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              styles.skeletonShimmer,
+              { width: shimmerWidth, transform: [{ translateX: shimmerTranslateX }] },
+            ]}
+          >
+            <LinearGradient
+              colors={['transparent', shimmerEdgeColor, shimmerCoreColor, shimmerEdgeColor, 'transparent']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.skeletonShimmerGradient}
+            />
+          </Animated.View>
         </View>
       </View>
     );
@@ -1703,6 +1778,18 @@ export function SwipeStack({
 
   const isTransitioning = isStageTransitioning || isFilterChanging;
   const forceSkeleton = __DEV__ && false;
+  const shouldShowLoading = !current && !shouldShowCompletion && (isLoading || hasMore);
+  const isShowingSkeleton = isTransitioning || forceSkeleton || shouldShowLoading;
+
+  useEffect(() => {
+    if (!isShowingSkeleton) {
+      skeletonVisibleRef.current = false;
+      return;
+    }
+    if (skeletonVisibleRef.current) return;
+    skeletonVisibleRef.current = true;
+    setSkeletonShimmerAnim(new Animated.Value(0));
+  }, [isShowingSkeleton]);
 
   if (isTransitioning || forceSkeleton) {
     return (
@@ -1712,12 +1799,13 @@ export function SwipeStack({
     );
   }
 
-  const shouldShowLoading = forceSkeleton || (!current && !shouldShowCompletion && (isLoading || hasMore));
+  const shouldShowLoadingWithForce =
+    forceSkeleton || (!current && !shouldShowCompletion && (isLoading || hasMore));
 
   if (!current && !shouldShowCompletion) {
     return (
       <View style={styles.emptyState}>
-        {shouldShowLoading ? (
+        {shouldShowLoadingWithForce ? (
           renderSkeletonCard()
         ) : null}
       </View>
@@ -1744,18 +1832,27 @@ export function SwipeStack({
               ]}
             >
               <View style={styles.completionHeader}>
-                <IconSymbol name={completionIconName} size={28} color={palette.text} />
-                <ThemedText style={styles.completionTitle}>{completionTitle.label}</ThemedText>
+                <View style={styles.completionHeaderLeft}>
+                  <IconSymbol name={completionIconName} size={28} color={palette.text} />
+                  <ThemedText style={styles.completionTitle}>{completionTitle.label}</ThemedText>
+                </View>
+                {challengeSubjectLabel ? (
+                  <View
+                    style={[
+                      styles.completionSubjectChip,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
+                  >
+                    <ThemedText
+                      style={styles.completionSubjectText}
+                      lightColor={palette.textMuted}
+                      darkColor={Palette.gray200}
+                    >
+                      {challengeSubjectLabel}
+                    </ThemedText>
+                  </View>
+                ) : null}
               </View>
-              {isChallenge && challengeCompletionSubtitle ? (
-                <ThemedText
-                  style={styles.completionSubtitle}
-                  lightColor={palette.textMuted}
-                  darkColor={Palette.gray200}
-                >
-                  {challengeCompletionSubtitle}
-                </ThemedText>
-              ) : null}
               <View style={styles.completionMetrics}>
                 {isChallenge && completionLevelLabel && (isChallengeFailed || isFinalStage) ? (
                   <View
@@ -1784,15 +1881,6 @@ export function SwipeStack({
                       </ThemedText>
                     </View>
                     <ThemedText style={styles.completionMetricValue}>{completionLevelLabel}</ThemedText>
-                    {challengeLevelHint ? (
-                      <ThemedText
-                        style={styles.completionMetricHint}
-                        lightColor={palette.textMuted}
-                        darkColor={Palette.gray200}
-                      >
-                        {challengeLevelHint}
-                      </ThemedText>
-                    ) : null}
                   </View>
                 ) : null}
                 {showAccuracyCard ? (
@@ -1803,19 +1891,27 @@ export function SwipeStack({
                       { backgroundColor: palette.cardElevated, borderColor: palette.border },
                     ]}
                   >
-                    <View style={styles.completionGraphRow}>
-                      <View style={styles.completionGraphText}>
-                        <ThemedText
-                          style={styles.completionGraphLabel}
-                          lightColor={palette.textMuted}
-                          darkColor={Palette.gray200}
-                        >
-                          정답률
-                        </ThemedText>
+                    <View style={styles.completionAccuracyHeader}>
+                      <View
+                        style={[
+                          styles.completionAccuracyIcon,
+                          { backgroundColor: palette.card, borderColor: palette.border },
+                        ]}
+                      >
+                        <IconSymbol name="target" size={18} color={palette.text} />
+                      </View>
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        정답률
+                      </ThemedText>
+                    </View>
+                    <View style={styles.completionAccuracyRow}>
+                      <View style={styles.completionAccuracyText}>
                         {completionProgressLabel ? (
-                          <ThemedText
-                            style={styles.completionGraphValue}
-                          >
+                          <ThemedText style={styles.completionAccuracyValue}>
                             {completionProgressLabel}
                           </ThemedText>
                         ) : null}
@@ -1861,14 +1957,28 @@ export function SwipeStack({
                       { backgroundColor: palette.cardElevated, borderColor: palette.border },
                     ]}
                   >
-                    <ThemedText
-                      style={styles.completionMetricLabel}
-                      lightColor={palette.textMuted}
-                      darkColor={Palette.gray200}
-                    >
-                      로그인 안내
-                    </ThemedText>
-                    <ThemedText style={styles.completionMetricValue}>점수/XP는 로그인 후 제공</ThemedText>
+                    <View style={styles.completionAccuracyHeader}>
+                      <View
+                        style={[
+                          styles.completionAccuracyIcon,
+                          { backgroundColor: palette.card, borderColor: palette.border },
+                        ]}
+                      >
+                        <IconSymbol name="lock" size={18} color={palette.text} />
+                      </View>
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        로그인 필요
+                      </ThemedText>
+                    </View>
+                    <View style={styles.completionInfoRow}>
+                      <ThemedText style={styles.completionMetricValue}>
+                        점수/XP는 로그인 후 제공
+                      </ThemedText>
+                    </View>
                   </View>
                 ) : (
                   <View
@@ -2553,10 +2663,60 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
   },
-  completionGraphRow: {
+  completionHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: Spacing.sm,
+    flex: 1,
+  },
+  completionSubjectChip: {
+    borderWidth: 1,
+    borderRadius: Radius.pill,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+  },
+  completionSubjectText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  completionAccuracyHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  completionAccuracyIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  completionAccuracyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: Spacing.lg,
+    width: '100%',
+    maxWidth: 320,
+    alignSelf: 'center',
+  },
+  completionAccuracyText: {
+    flexShrink: 0,
+    gap: Spacing.xs,
+    alignItems: 'flex-start',
+  },
+  completionAccuracyValue: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  completionInfoRow: {
+    width: '100%',
+    maxWidth: 320,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   completionDonut: {
     alignItems: 'center',
@@ -2569,18 +2729,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   completionDonutText: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  completionGraphText: {
-    gap: Spacing.xs,
-  },
-  completionGraphLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  completionGraphValue: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
   },
   completionContext: {
@@ -2700,6 +2849,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     left: 0,
+    zIndex: 2,
   },
   skeletonShimmerGradient: {
     flex: 1,
