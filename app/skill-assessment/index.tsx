@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -57,9 +57,23 @@ export default function SkillAssessmentScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [cumulativeAnswered, setCumulativeAnswered] = useState(0);
   const [cumulativeCorrect, setCumulativeCorrect] = useState(0);
+  const [completionTotals, setCompletionTotals] = useState<{ answered: number; correct: number } | null>(null);
+  const [stageBaseAnswered, setStageBaseAnswered] = useState(0);
+  const [stageBaseCorrect, setStageBaseCorrect] = useState(0);
+  const lastLevelIndexRef = useRef<number | null>(null);
+  const lastCompletionSigRef = useRef<string | null>(null);
+  const lastCompletionSessionIdRef = useRef<string | null>(null);
+  const cumulativeAnsweredRef = useRef(0);
+  const cumulativeCorrectRef = useRef(0);
+  const stageBaseAnsweredRef = useRef(0);
+  const stageBaseCorrectRef = useRef(0);
+  const completionTotalsRef = useRef<{ answered: number; correct: number } | null>(null);
+  const [excludedQuestionIds, setExcludedQuestionIds] = useState<string[]>([]);
 
   const currentLevel = EDU_LEVEL_STEPS[Math.min(levelIndex, EDU_LEVEL_STEPS.length - 1)];
   const isFinalLevel = levelIndex >= EDU_LEVEL_STEPS.length - 1;
+  const previousLevel =
+    EDU_LEVEL_STEPS[Math.max(0, Math.min(levelIndex - 1, EDU_LEVEL_STEPS.length - 1))];
   const totalQuestions = QUESTIONS_PER_LEVEL[currentLevel.key] ?? SKILL_ASSESSMENT_CHALLENGE.totalQuestions;
   const allowedMisses = ALLOWED_MISSES_PER_LEVEL[currentLevel.key] ?? 1;
   const levelProgressRatio = levelIndex / Math.max(1, EDU_LEVEL_STEPS.length - 1);
@@ -78,6 +92,16 @@ export default function SkillAssessmentScreen() {
     if (!selectedSubject) return;
     setCumulativeAnswered(0);
     setCumulativeCorrect(0);
+    setCompletionTotals(null);
+    completionTotalsRef.current = null;
+    cumulativeAnsweredRef.current = 0;
+    cumulativeCorrectRef.current = 0;
+    setStageBaseAnswered(0);
+    setStageBaseCorrect(0);
+    lastLevelIndexRef.current = null;
+    lastCompletionSigRef.current = null;
+    lastCompletionSessionIdRef.current = null;
+    setExcludedQuestionIds([]);
     setIsRunning(true);
   }, [selectedSubject]);
 
@@ -94,18 +118,104 @@ export default function SkillAssessmentScreen() {
     setLevelIndex(0);
     setCumulativeAnswered(0);
     setCumulativeCorrect(0);
+    setCompletionTotals(null);
+    completionTotalsRef.current = null;
+    cumulativeAnsweredRef.current = 0;
+    cumulativeCorrectRef.current = 0;
+    setStageBaseAnswered(0);
+    setStageBaseCorrect(0);
+    lastLevelIndexRef.current = null;
+    lastCompletionSigRef.current = null;
+    lastCompletionSessionIdRef.current = null;
+    setExcludedQuestionIds([]);
     setIsRunning(true);
   }, []);
 
   const handleExitToSelection = useCallback(() => {
     setIsRunning(false);
     setLevelIndex(0);
+    setCompletionTotals(null);
+    completionTotalsRef.current = null;
+    cumulativeAnsweredRef.current = 0;
+    cumulativeCorrectRef.current = 0;
+    setStageBaseAnswered(0);
+    setStageBaseCorrect(0);
+    lastLevelIndexRef.current = null;
+    lastCompletionSigRef.current = null;
+    lastCompletionSessionIdRef.current = null;
+    setExcludedQuestionIds([]);
   }, []);
 
+  useEffect(() => {
+    cumulativeAnsweredRef.current = cumulativeAnswered;
+  }, [cumulativeAnswered]);
+
+  useEffect(() => {
+    cumulativeCorrectRef.current = cumulativeCorrect;
+  }, [cumulativeCorrect]);
+
   const handleChallengeComplete = useCallback((summary: SwipeChallengeSummary) => {
-    setCumulativeAnswered((prev) => prev + summary.answered);
-    setCumulativeCorrect((prev) => prev + summary.correct);
-  }, []);
+    if (summary.sessionId && lastCompletionSessionIdRef.current === summary.sessionId) {
+      return;
+    }
+    if (summary.sessionId) {
+      lastCompletionSessionIdRef.current = summary.sessionId;
+    }
+    const completionSig = `${levelIndex}:${summary.answered}:${summary.correct}:${summary.failed}`;
+    if (lastCompletionSigRef.current === completionSig) {
+      return;
+    }
+    lastCompletionSigRef.current = completionSig;
+    const nextAnswered = stageBaseAnsweredRef.current + summary.answered;
+    const nextCorrect = stageBaseCorrectRef.current + summary.correct;
+    if (__DEV__) {
+      console.log('[SkillAssessment] challenge complete', {
+        levelIndex,
+        summaryAnswered: summary.answered,
+        summaryCorrect: summary.correct,
+        baseAnswered: stageBaseAnsweredRef.current,
+        baseCorrect: stageBaseCorrectRef.current,
+        nextAnswered,
+        nextCorrect,
+      });
+    }
+    completionTotalsRef.current = { answered: nextAnswered, correct: nextCorrect };
+    setCumulativeAnswered(nextAnswered);
+    setCumulativeCorrect(nextCorrect);
+    setCompletionTotals({ answered: nextAnswered, correct: nextCorrect });
+    if (!summary.failed && summary.questionIds?.length) {
+      setExcludedQuestionIds((prev) => {
+        const merged = new Set(prev);
+        summary.questionIds.forEach((id) => merged.add(id));
+        return Array.from(merged);
+      });
+    }
+  }, [levelIndex]);
+
+  const failedLevelLabel =
+    levelIndex === 0 ? '기초 다지기 필요' : previousLevel.label;
+
+  useEffect(() => {
+    if (!isRunning) return;
+    if (lastLevelIndexRef.current === levelIndex) return;
+    lastLevelIndexRef.current = levelIndex;
+    const baseTotals = completionTotalsRef.current ?? {
+      answered: cumulativeAnsweredRef.current,
+      correct: cumulativeCorrectRef.current,
+    };
+    stageBaseAnsweredRef.current = baseTotals.answered;
+    stageBaseCorrectRef.current = baseTotals.correct;
+    if (__DEV__) {
+      console.log('[SkillAssessment] stage base set', {
+        levelIndex,
+        baseAnswered: stageBaseAnsweredRef.current,
+        baseCorrect: stageBaseCorrectRef.current,
+      });
+    }
+    setStageBaseAnswered(stageBaseAnsweredRef.current);
+    setStageBaseCorrect(stageBaseCorrectRef.current);
+    setCompletionTotals(null);
+  }, [cumulativeAnswered, cumulativeCorrect, isRunning, levelIndex]);
 
   return (
     <ThemedView style={styles.container}>
@@ -129,7 +239,7 @@ export default function SkillAssessmentScreen() {
         </ThemedText>
         {lifelinesDisabled ? (
           <ThemedText style={[styles.headerNotice, { color: palette.danger }]}>
-            대학 이상 단계는 치트 불가 · 오답 즉시 종료
+            대학 단계는 치트 불가 · 오답 즉시 종료
           </ThemedText>
         ) : null}
         {isRunning ? (
@@ -185,8 +295,13 @@ export default function SkillAssessmentScreen() {
             deckSlug={isElemLevel ? undefined : SKILL_ASSESSMENT_CHALLENGE.deckSlug}
             subject={selectedSubject ?? undefined}
             eduLevel={currentLevel.key}
-            cumulativeAnswered={cumulativeAnswered}
-            cumulativeCorrect={cumulativeCorrect}
+            challengeLevelLabel={currentLevel.label}
+            challengeLevelFailedLabel={failedLevelLabel}
+            challengeLevelHint={isFinalLevel ? '전체 단계 결과를 종합했어요.' : undefined}
+            excludeIds={excludedQuestionIds}
+            completionTotals={completionTotals}
+            cumulativeAnswered={stageBaseAnswered}
+            cumulativeCorrect={stageBaseCorrect}
             isFinalStage={isFinalLevel}
             challenge={{
               totalQuestions,

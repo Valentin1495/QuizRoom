@@ -5,9 +5,9 @@ import {
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useCallback, useEffect, useMemo, useRef, useState, type ElementRef } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentRef } from 'react';
 import {
-  ActivityIndicator,
   Animated,
   Dimensions,
   PanResponder,
@@ -47,11 +47,15 @@ export type SwipeChallengeConfig = {
 export type SwipeChallengeSummary = {
   answered: number;
   correct: number;
+  totalAnswered: number;
+  totalCorrect: number;
   missCount: number;
   totalTimeMs: number;
   totalScoreDelta: number;
   maxStreak: number;
   failed: boolean;
+  questionIds: string[];
+  sessionId: string;
 };
 
 export type SwipeStackProps = {
@@ -61,6 +65,11 @@ export type SwipeStackProps = {
   grade?: number;
   eduLevel?: string;
   subject?: string;
+  challengeLevelLabel?: string;
+  challengeLevelFailedLabel?: string;
+  challengeLevelHint?: string;
+  excludeIds?: string[];
+  completionTotals?: { answered: number; correct: number } | null;
   cumulativeAnswered?: number;
   cumulativeCorrect?: number;
   isFinalStage?: boolean;
@@ -230,11 +239,18 @@ export function SwipeStack({
   persistLifelines,
   lifelinesDisabled,
   onChallengeReset,
+  excludeIds,
+  challengeLevelLabel,
+  challengeLevelFailedLabel,
+  challengeLevelHint,
+  completionTotals: completionTotalsOverride,
 }: SwipeStackProps) {
   const isChallenge = Boolean(challenge);
   const onboardingSlides = isChallenge ? CHALLENGE_ONBOARDING_SLIDES : ONBOARDING_SLIDES;
   const onboardingKey = isChallenge ? '@swipe_onboarding_skill_assessment' : ONBOARDING_KEY;
   const sessionLimit = challenge?.totalQuestions;
+  const seenQuestionIdsRef = useRef<Set<string>>(new Set());
+  const [activeExcludeIds, setActiveExcludeIds] = useState<string[]>(excludeIds ?? []);
   const {
     current,
     queue,
@@ -256,6 +272,7 @@ export function SwipeStack({
     grade,
     eduLevel,
     subject,
+    excludeIds: activeExcludeIds,
     excludeTag: isChallenge ? undefined : 'mode:fifth_grader',
     limit: sessionLimit,
   });
@@ -282,6 +299,12 @@ export function SwipeStack({
   const { logHistory, logStreakProgress } = useSwipeLoggers();
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
   const [missCount, setMissCount] = useState(0);
+  const [pendingAnswerCorrect, setPendingAnswerCorrect] = useState<boolean | null>(null);
+  const [completionPending, setCompletionPending] = useState(false);
+  const [completionTotals, setCompletionTotals] = useState<{ answered: number; correct: number } | null>(null);
+  const [isStageTransitioning, setIsStageTransitioning] = useState(false);
+  const stageTransitionFromKeyRef = useRef<string | null>(null);
+  const completedSessionIdRef = useRef<string | null>(null);
   const [hintText, setHintText] = useState<string | null>(null);
   const [eliminatedChoiceIds, setEliminatedChoiceIds] = useState<string[] | null>(null);
   const [lifelinesUsed, setLifelinesUsed] = useState({ fifty: false, hint: false });
@@ -297,7 +320,7 @@ export function SwipeStack({
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const actionsSheetRef = useRef<BottomSheetModal>(null);
   const reportReasonSheetRef = useRef<BottomSheetModal>(null);
-  const reportNotesInputRef = useRef<ElementRef<typeof BottomSheetTextInput>>(null);
+  const reportNotesInputRef = useRef<ComponentRef<typeof BottomSheetTextInput>>(null);
   const handleSheetChanges = useCallback((index: number) => {
     if (__DEV__) {
       console.log('handleSheetChanges', index);
@@ -326,6 +349,11 @@ export function SwipeStack({
   }, []);
   const reportReasonResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => {
+    seenQuestionIdsRef.current.clear();
+    setActiveExcludeIds(excludeIds ?? []);
+  }, [eduLevel]);
+
   const filterKey = useMemo(() => {
     const parts = [
       category,
@@ -333,14 +361,17 @@ export function SwipeStack({
       grade != null ? `grade:${grade}` : 'grade:any',
       eduLevel ? `edu:${eduLevel}` : 'edu:any',
       subject ? `subject:${subject}` : 'subject:any',
+      activeExcludeIds.length ? `exclude:${activeExcludeIds.length}` : 'exclude:none',
       ...(tags ?? []),
     ];
     return parts.join('|');
-  }, [category, deckSlug, eduLevel, grade, subject, tags]);
+  }, [activeExcludeIds.length, category, deckSlug, eduLevel, grade, subject, tags]);
   const [sessionId, setSessionId] = useState<string>(() => createSwipeSessionId(filterKey));
   const sessionLoggedRef = useRef(false);
   const streakLoggedRef = useRef(false);
   const previousFilterKey = useRef<string | null>(null);
+  const isFilterChanging =
+    previousFilterKey.current !== null && previousFilterKey.current !== filterKey;
   const currentQuestionIdRef = useRef<string | null>(null);
   type ReportPayload = Parameters<typeof reportQuestion>[0];
   const [reportReason, setReportReason] = useState<ReportReasonKey | null>(null);
@@ -360,6 +391,7 @@ export function SwipeStack({
   const indicatorAnims = useRef(
     onboardingSlides.map(() => new Animated.Value(8))
   ).current;
+  const skeletonShimmerAnim = useRef(new Animated.Value(0)).current;
 
   const getFunctionAuthHeaders = useCallback(async () => {
     try {
@@ -389,6 +421,20 @@ export function SwipeStack({
       hideResultToast();
     };
   }, []);
+
+  useEffect(() => {
+    const shimmer = Animated.loop(
+      Animated.timing(skeletonShimmerAnim, {
+        toValue: 1,
+        duration: 1200,
+        useNativeDriver: true,
+      })
+    );
+    shimmer.start();
+    return () => {
+      shimmer.stop();
+    };
+  }, [skeletonShimmerAnim]);
 
   useEffect(() => {
     const checkOnboarding = async () => {
@@ -436,6 +482,10 @@ export function SwipeStack({
       }
       setHintText(null);
       setEliminatedChoiceIds(null);
+      setPendingAnswerCorrect(null);
+      setCompletionPending(false);
+      setCompletionTotals(null);
+      completedSessionIdRef.current = null;
       setSelectedIndex(null);
       setFeedback(null);
       setSheetFeedback(null);
@@ -461,6 +511,15 @@ export function SwipeStack({
     persistLifelines,
     reset,
   ]);
+
+  useEffect(() => {
+    if (!isStageTransitioning) return;
+    if (!stageTransitionFromKeyRef.current) return;
+    if (stageTransitionFromKeyRef.current === filterKey) return;
+    if (!current) return;
+    setIsStageTransitioning(false);
+    stageTransitionFromKeyRef.current = null;
+  }, [current, filterKey, isStageTransitioning]);
 
   useEffect(() => {
     currentQuestionIdRef.current = current?.id ?? null;
@@ -501,6 +560,9 @@ export function SwipeStack({
       if (!selectedChoice) {
         return;
       }
+      if (current.id) {
+        seenQuestionIdsRef.current.add(current.id);
+      }
       setSelectedIndex(choiceIndex);
       const prevStreakBeforeAnswer = currentStreakRef.current;
       const questionId = current.id;
@@ -514,10 +576,12 @@ export function SwipeStack({
         correctChoiceId: current.correctChoiceId,
         correctChoiceIndex: optimisticCorrectIndexRaw >= 0 ? optimisticCorrectIndexRaw : null,
       };
+      const optimisticMissDelta = isChallenge && !optimisticIsCorrect ? 1 : 0;
       const optimisticScoreDelta = isChallenge
         ? (optimisticIsCorrect ? scorePerCorrect : 0)
         : (optimisticIsCorrect ? 15 : -5);
       setFeedback(optimisticFeedback);
+      setPendingAnswerCorrect(optimisticIsCorrect);
       // Optimistically update streak and sheet data so UI reflects immediately
       const optimisticStreak = optimisticIsCorrect ? prevStreakBeforeAnswer + 1 : 0;
       currentStreakRef.current = optimisticStreak;
@@ -538,6 +602,9 @@ export function SwipeStack({
         lightHaptic(); // 정답 시 가벼운 햅틱
       } else {
         mediumHaptic(); // 오답 시 중간 햅틱
+      }
+      if (optimisticMissDelta) {
+        setMissCount((prev) => prev + optimisticMissDelta);
       }
       // showResultToast({
       //   message: optimisticIsCorrect ? '정답' : '오답',
@@ -646,8 +713,11 @@ export function SwipeStack({
             skipped: prev.skipped,
           };
         });
+        setPendingAnswerCorrect(null);
         if (isChallenge) {
-          setMissCount((prev) => prev + (response.isCorrect ? 0 : 1));
+          if (response.isCorrect !== optimisticIsCorrect) {
+            setMissCount((prev) => prev + (response.isCorrect ? -1 : 1));
+          }
         }
         const stillCurrent = currentQuestionIdRef.current === questionId;
         if (stillCurrent) {
@@ -678,6 +748,10 @@ export function SwipeStack({
         if (currentQuestionIdRef.current === questionId) {
           setSelectedIndex(null);
           setFeedback(null);
+        }
+        setPendingAnswerCorrect(null);
+        if (optimisticMissDelta) {
+          setMissCount((prev) => Math.max(0, prev - optimisticMissDelta));
         }
         hideResultToast();
         showResultToast({
@@ -724,10 +798,15 @@ export function SwipeStack({
     setEliminatedChoiceIds(null);
     setLifelinesUsed({ fifty: false, hint: false });
     setCurrentStreak(0);
+    setCompletionPending(false);
+    setCompletionTotals(null);
+    completedSessionIdRef.current = null;
     challengeCompletionNotifiedRef.current = false;
     currentQuestionIdRef.current = null;
     startTimeRef.current = Date.now();
     setSessionStats(INITIAL_SESSION_STATS);
+    seenQuestionIdsRef.current.clear();
+    setActiveExcludeIds(excludeIds ?? []);
     setSessionId(createSwipeSessionId(filterKey));
     sessionLoggedRef.current = false;
     if (isChallenge) {
@@ -862,14 +941,28 @@ export function SwipeStack({
 
   const totalQuestions = challenge?.totalQuestions ?? 0;
   const isChallengeFailed = isChallenge && missCount >= failAfterMisses;
-  const showCompletion = isChallenge
+  const answeredForCompletion = sessionStats.answered + (feedback ? 1 : 0);
+  const answeredForMetrics = sessionStats.answered + (pendingAnswerCorrect !== null ? 1 : 0);
+  const correctForMetrics =
+    sessionStats.correct + (pendingAnswerCorrect ? 1 : 0);
+  const feedExhausted = !hasMore && queue.length === 0;
+  const completionReady = isChallenge
     ? isChallengeFailed ||
-    (totalQuestions > 0 && sessionStats.answered >= totalQuestions) ||
-    (!hasMore && queue.length === 0)
-    : !hasMore && queue.length === 0;
+    (totalQuestions > 0 && answeredForMetrics >= totalQuestions) ||
+    (totalQuestions === 0 && feedExhausted && answeredForMetrics > 0)
+    : feedExhausted;
+  const hasSwipedLastAnswered = answeredForCompletion > 0 && cardOffset >= answeredForCompletion;
+  const hasSwipedToLimit = totalQuestions > 0 && cardOffset >= totalQuestions;
+  const showCompletion = isChallenge
+    ? (isChallengeFailed ? hasSwipedLastAnswered : hasSwipedToLimit) ||
+    (totalQuestions === 0 && feedExhausted && cardOffset > 0)
+    : feedExhausted;
+  const shouldShowCompletion = showCompletion || completionPending;
   const missLabel = allowedMisses > 0 ? `${missCount}/${allowedMisses}` : `${missCount}`;
   const missLabelColor =
-    allowedMisses > 0 && missCount >= allowedMisses ? palette.danger : palette.textMuted;
+    (allowedMisses === 0 ? missCount > 0 : missCount >= allowedMisses)
+      ? palette.danger
+      : palette.textMuted;
   const missSummaryHint = useMemo(() => {
     if (!isChallenge) return null;
     if (totalQuestions > 0 && allowedMisses >= totalQuestions) {
@@ -886,16 +979,18 @@ export function SwipeStack({
     showAccuracyCard &&
     typeof cumulativeAnswered === 'number' &&
     typeof cumulativeCorrect === 'number';
-  const shouldIncludeCurrentStage =
-    isChallenge && showCompletion && !challengeCompletionNotifiedRef.current;
+  const shouldIncludeCurrentStage = isChallenge && shouldShowCompletion;
   const cumulativeAnsweredTotal = useCumulativeAccuracy
-    ? cumulativeAnswered + (shouldIncludeCurrentStage ? sessionStats.answered : 0)
+    ? cumulativeAnswered + (shouldIncludeCurrentStage ? answeredForMetrics : 0)
     : 0;
   const cumulativeCorrectTotal = useCumulativeAccuracy
-    ? cumulativeCorrect + (shouldIncludeCurrentStage ? sessionStats.correct : 0)
+    ? cumulativeCorrect + (shouldIncludeCurrentStage ? correctForMetrics : 0)
     : 0;
-  const effectiveAnswered = useCumulativeAccuracy ? cumulativeAnsweredTotal : sessionStats.answered;
-  const effectiveCorrect = useCumulativeAccuracy ? cumulativeCorrectTotal : sessionStats.correct;
+  const computedAnswered = useCumulativeAccuracy ? cumulativeAnsweredTotal : answeredForMetrics;
+  const computedCorrect = useCumulativeAccuracy ? cumulativeCorrectTotal : correctForMetrics;
+  const resolvedCompletionTotals = completionTotalsOverride ?? completionTotals;
+  const effectiveAnswered = resolvedCompletionTotals?.answered ?? computedAnswered;
+  const effectiveCorrect = resolvedCompletionTotals?.correct ?? computedCorrect;
   const accuracyPercent = useMemo(() => {
     if (!effectiveAnswered) return null;
     return Math.round((effectiveCorrect / effectiveAnswered) * 100);
@@ -970,34 +1065,136 @@ export function SwipeStack({
     if (!effectiveAnswered) return null;
     return `${effectiveCorrect} / ${effectiveAnswered} 문항`;
   }, [effectiveAnswered, effectiveCorrect, isChallenge, showAccuracyCard]);
+  const completionLevelLabel = useMemo(() => {
+    if (!isChallenge) return null;
+    return isChallengeFailed
+      ? (challengeLevelFailedLabel ?? challengeLevelLabel)
+      : challengeLevelLabel;
+  }, [challengeLevelFailedLabel, challengeLevelLabel, isChallenge, isChallengeFailed]);
+
+  useEffect(() => {
+    if (completionTotalsOverride) {
+      if (completionTotals) {
+        setCompletionTotals(null);
+      }
+      return;
+    }
+    if (!shouldShowCompletion) {
+      if (completionTotals) {
+        setCompletionTotals(null);
+      }
+      return;
+    }
+    if (completionTotals) return;
+    if (__DEV__) {
+      console.log('[SwipeStack] completionTotals snapshot', {
+        computedAnswered,
+        computedCorrect,
+        cumulativeAnswered,
+        cumulativeCorrect,
+        answeredForMetrics,
+        correctForMetrics,
+        shouldShowCompletion,
+      });
+    }
+    setCompletionTotals({ answered: computedAnswered, correct: computedCorrect });
+  }, [
+    completionTotals,
+    completionTotalsOverride,
+    computedAnswered,
+    computedCorrect,
+    pendingAnswerCorrect,
+    shouldShowCompletion,
+  ]);
 
   const challengeSummary = useMemo(
     () => ({
-      answered: sessionStats.answered,
-      correct: sessionStats.correct,
+      answered: answeredForMetrics,
+      correct: correctForMetrics,
+      totalAnswered: computedAnswered,
+      totalCorrect: computedCorrect,
       missCount,
       totalTimeMs: sessionStats.totalTimeMs,
       totalScoreDelta: sessionStats.totalScoreDelta,
       maxStreak: sessionStats.maxStreak,
       failed: isChallengeFailed,
+      sessionId,
     }),
     [
+      answeredForMetrics,
+      correctForMetrics,
+      computedAnswered,
+      computedCorrect,
       isChallengeFailed,
       missCount,
-      sessionStats.answered,
-      sessionStats.correct,
       sessionStats.maxStreak,
       sessionStats.totalScoreDelta,
       sessionStats.totalTimeMs,
+      sessionId,
     ]
   );
 
   useEffect(() => {
-    if (!isChallenge || !showCompletion) return;
+    if (!isChallenge || !shouldShowCompletion) return;
     if (challengeCompletionNotifiedRef.current) return;
+    if (completedSessionIdRef.current === sessionId) return;
     challengeCompletionNotifiedRef.current = true;
-    onChallengeComplete?.(challengeSummary);
-  }, [challengeSummary, isChallenge, onChallengeComplete, showCompletion]);
+    completedSessionIdRef.current = sessionId;
+    const questionIds = Array.from(seenQuestionIdsRef.current);
+    seenQuestionIdsRef.current.clear();
+    if (__DEV__) {
+      console.log('[SwipeStack] onChallengeComplete', {
+        answered: challengeSummary.answered,
+        correct: challengeSummary.correct,
+        totalAnswered: challengeSummary.totalAnswered,
+        totalCorrect: challengeSummary.totalCorrect,
+        missCount: challengeSummary.missCount,
+        failed: challengeSummary.failed,
+        sessionId,
+      });
+      console.log('[SwipeStack] completion debug', {
+        eduLevel,
+        challengeLevelLabel,
+        isFinalStage,
+        isChallengeFailed,
+        answeredForMetrics,
+        correctForMetrics,
+        computedAnswered,
+        computedCorrect,
+        cumulativeAnswered,
+        cumulativeCorrect,
+        completionTotalsOverride,
+        completionTotals,
+        effectiveAnswered,
+        effectiveCorrect,
+        showCompletion,
+        completionPending,
+        shouldShowCompletion,
+        totalQuestions,
+        cardOffset,
+        sessionAnswered: sessionStats.answered,
+        sessionCorrect: sessionStats.correct,
+        pendingAnswerCorrect,
+      });
+    }
+    onChallengeComplete?.({
+      ...challengeSummary,
+      questionIds,
+    });
+  }, [
+    challengeSummary,
+    eduLevel,
+    isChallenge,
+    onChallengeComplete,
+    shouldShowCompletion,
+    sessionId,
+  ]);
+
+  useEffect(() => {
+    if (!showCompletion && !completionReady && completionPending) {
+      setCompletionPending(false);
+    }
+  }, [completionPending, completionReady, showCompletion]);
 
   const challengeSecondaryLabel = useMemo(() => {
     if (isChallengeFailed) {
@@ -1009,7 +1206,15 @@ export function SwipeStack({
     return onExit ? '과목 선택으로' : null;
   }, [challengeAdvanceLabel, isChallengeFailed, onChallengeAdvance, onExit]);
 
-  const handleChallengeSecondary = (!isChallengeFailed && onChallengeAdvance) ? onChallengeAdvance : onExit;
+  const handleChallengeSecondary = useCallback(() => {
+    if (!isChallengeFailed && onChallengeAdvance) {
+      stageTransitionFromKeyRef.current = filterKey;
+      setIsStageTransitioning(true);
+      onChallengeAdvance();
+      return;
+    }
+    onExit?.();
+  }, [filterKey, isChallengeFailed, onChallengeAdvance, onExit]);
 
   const totalScoreLabel = useMemo(() => {
     if (!sessionStats.answered) return '+0';
@@ -1018,7 +1223,7 @@ export function SwipeStack({
   }, [sessionStats.answered, sessionStats.totalScoreDelta]);
 
   useEffect(() => {
-    if (!showCompletion) {
+    if (!shouldShowCompletion) {
       return;
     }
     if (sessionStats.answered === 0) {
@@ -1078,7 +1283,7 @@ export function SwipeStack({
     sessionStats.maxStreak,
     sessionStats.totalScoreDelta,
     sessionStats.totalTimeMs,
-    showCompletion,
+    shouldShowCompletion,
     tags,
     getFunctionAuthHeaders,
     applyUserDelta,
@@ -1086,7 +1291,7 @@ export function SwipeStack({
   ]);
 
   useEffect(() => {
-    if (!showCompletion) return;
+    if (!shouldShowCompletion) return;
     if (sessionStats.answered < 20) return; // 스와이프 완주 조건
     if (authStatus !== 'authenticated') return;
     if (streakLoggedRef.current) return;
@@ -1103,7 +1308,7 @@ export function SwipeStack({
     authStatus,
     logStreakProgress,
     sessionStats.answered,
-    showCompletion,
+    shouldShowCompletion,
   ]);
 
   const handleOpenSheet = useCallback(() => {
@@ -1224,10 +1429,19 @@ export function SwipeStack({
   ]);
 
   const handleSwipeBlocked = useCallback(() => {
+    if (completionReady && feedback) {
+      setCompletionPending(true);
+      return;
+    }
     showResultToast({
       message: '문제를 풀어야 다음 카드로 이동할 수 있어요.',
     });
-  }, []);
+  }, [completionReady, feedback]);
+
+  const handleOpenCompletion = useCallback(() => {
+    if (!completionReady) return;
+    setCompletionPending(true);
+  }, [completionReady]);
 
   const handleOpenOnboarding = useCallback(() => {
     if (showOnboarding) return;
@@ -1406,16 +1620,105 @@ export function SwipeStack({
     [activeCardHeight]
   );
 
-  if (!current && !showCompletion) {
+  const skeletonBlockColor = colorScheme === 'dark' ? Palette.gray600 : Palette.gray150;
+  const renderSkeletonCard = useCallback(() => {
+    const skeletonWidth = Math.max(0, WINDOW_WIDTH - Spacing.xl * 2);
+    const shimmerWidth = Math.max(80, Math.floor(skeletonWidth * 0.35));
+    const shimmerTranslateX = skeletonShimmerAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-shimmerWidth, skeletonWidth + shimmerWidth],
+    });
+    const shimmerCoreColor =
+      colorScheme === 'dark' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.85)';
+    const shimmerEdgeColor =
+      colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.35)';
+    return (
+      <View style={styles.skeletonWrapper}>
+        <View
+          style={[
+            styles.skeletonCard,
+            {
+              height: stackHeight,
+              backgroundColor: palette.cardElevated,
+              borderColor: palette.border,
+            },
+          ]}
+        >
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              styles.skeletonShimmer,
+              { width: shimmerWidth, transform: [{ translateX: shimmerTranslateX }] },
+            ]}
+          >
+            <LinearGradient
+              colors={['transparent', shimmerEdgeColor, shimmerCoreColor, shimmerEdgeColor, 'transparent']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.skeletonShimmerGradient}
+            />
+          </Animated.View>
+          <View style={styles.skeletonHeader}>
+            <View style={[styles.skeletonBadge, { backgroundColor: skeletonBlockColor }]} />
+            <View
+              style={[
+                styles.skeletonBadge,
+                styles.skeletonBadgeSmall,
+                { backgroundColor: skeletonBlockColor },
+              ]}
+            />
+          </View>
+          <View style={styles.skeletonPrompt}>
+            <View style={[styles.skeletonLine, { backgroundColor: skeletonBlockColor }]} />
+            <View
+              style={[
+                styles.skeletonLine,
+                { width: '92%', backgroundColor: skeletonBlockColor },
+              ]}
+            />
+            <View
+              style={[
+                styles.skeletonLine,
+                { width: '74%', backgroundColor: skeletonBlockColor },
+              ]}
+            />
+          </View>
+          <View style={styles.skeletonChoices}>
+            <View style={[styles.skeletonChoice, { backgroundColor: skeletonBlockColor }]} />
+            <View style={[styles.skeletonChoice, { backgroundColor: skeletonBlockColor }]} />
+            <View style={[styles.skeletonChoice, { backgroundColor: skeletonBlockColor }]} />
+            <View style={[styles.skeletonChoice, { backgroundColor: skeletonBlockColor }]} />
+          </View>
+        </View>
+      </View>
+    );
+  }, [
+    colorScheme,
+    palette.cardElevated,
+    palette.border,
+    skeletonBlockColor,
+    skeletonShimmerAnim,
+    stackHeight,
+  ]);
+
+  const isTransitioning = isStageTransitioning || isFilterChanging;
+  const forceSkeleton = __DEV__ && false;
+
+  if (isTransitioning || forceSkeleton) {
     return (
       <View style={styles.emptyState}>
-        {isLoading ? (
-          <View style={styles.loadingState}>
-            <ActivityIndicator color={palette.primary} />
-            <ThemedText style={styles.loadingStateLabel}>
-              새로운 문제를 불러오는 중이에요...
-            </ThemedText>
-          </View>
+        {renderSkeletonCard()}
+      </View>
+    );
+  }
+
+  const shouldShowLoading = forceSkeleton || (!current && !shouldShowCompletion && (isLoading || hasMore));
+
+  if (!current && !shouldShowCompletion) {
+    return (
+      <View style={styles.emptyState}>
+        {shouldShowLoading ? (
+          renderSkeletonCard()
         ) : null}
       </View>
     );
@@ -1426,14 +1729,14 @@ export function SwipeStack({
       <View style={styles.container}>
         <ScrollView
           contentContainerStyle={
-            showCompletion
+            shouldShowCompletion
               ? [styles.scrollContent, styles.scrollContentCompletion]
               : styles.scrollContent
           }
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
-          {showCompletion ? (
+          {shouldShowCompletion ? (
             <View
               style={[
                 styles.completionCard,
@@ -1454,6 +1757,44 @@ export function SwipeStack({
                 </ThemedText>
               ) : null}
               <View style={styles.completionMetrics}>
+                {isChallenge && completionLevelLabel && (isChallengeFailed || isFinalStage) ? (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      styles.completionMetricFull,
+                      styles.completionLevelCard,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
+                  >
+                    <View style={styles.completionLevelHeader}>
+                      <View
+                        style={[
+                          styles.completionLevelIcon,
+                          { backgroundColor: palette.card, borderColor: palette.border },
+                        ]}
+                      >
+                        <IconSymbol name="brain" size={18} color={palette.text} />
+                      </View>
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        내 수준
+                      </ThemedText>
+                    </View>
+                    <ThemedText style={styles.completionMetricValue}>{completionLevelLabel}</ThemedText>
+                    {challengeLevelHint ? (
+                      <ThemedText
+                        style={styles.completionMetricHint}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        {challengeLevelHint}
+                      </ThemedText>
+                    ) : null}
+                  </View>
+                ) : null}
                 {showAccuracyCard ? (
                   <View
                     style={[
@@ -1591,16 +1932,18 @@ export function SwipeStack({
                 )}
               </View>
               <View style={styles.completionActions}>
-                <Button
-                  size="lg"
-                  fullWidth
-                  onPress={handleReset}
-                  style={styles.completionActionButton}
-                >
-                  다시 도전
-                </Button>
+                {!isChallenge || isChallengeFailed ? (
+                  <Button
+                    size="lg"
+                    fullWidth
+                    onPress={handleReset}
+                    style={styles.completionActionButton}
+                  >
+                    다시 도전
+                  </Button>
+                ) : null}
                 {isChallenge ? (
-                  handleChallengeSecondary && challengeSecondaryLabel ? (
+                  challengeSecondaryLabel ? (
                     <Button
                       size="lg"
                       variant="outline"
@@ -1665,6 +2008,23 @@ export function SwipeStack({
                   </ThemedText>
                 </View>
               </View>
+              {completionReady && !shouldShowCompletion ? (
+                <Pressable
+                  onPress={handleOpenCompletion}
+                  style={[
+                    styles.completionCta,
+                    { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                  ]}
+                >
+                  <View style={styles.completionCtaContent}>
+                    <ThemedText style={styles.completionCtaLabel}>단계 종료</ThemedText>
+                    <View style={styles.completionCtaAction}>
+                      <ThemedText style={styles.completionCtaActionText}>결과 보기</ThemedText>
+                      <IconSymbol name="chevron.right" size={16} color={palette.text} />
+                    </View>
+                  </View>
+                </Pressable>
+              ) : null}
             </View>
           ) : (
             <View style={styles.statusRow}>
@@ -1716,7 +2076,7 @@ export function SwipeStack({
               </View>
             </View>
           )}
-          {showCompletion ? null : (
+          {shouldShowCompletion ? null : (
             <View style={styles.stackWrapper}>
               <View
                 pointerEvents="none"
@@ -1738,6 +2098,8 @@ export function SwipeStack({
                   onSwipeNext={handleNext}
                   onOpenActions={handleActions}
                   onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
+                  swipeEnabled={index === 0 ? !completionReady : false}
+                  blockSwipeNext={index === 0 ? completionReady : false}
                   onCardLayout={index === 0 ? handleActiveCardLayout : undefined}
                 />
               ))}
@@ -2242,6 +2604,22 @@ const styles = StyleSheet.create({
     gap: Spacing.xs / 2,
     alignItems: 'center',
   },
+  completionLevelCard: {
+    gap: Spacing.sm,
+  },
+  completionLevelHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  completionLevelIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   completionMetricFull: {
     flexBasis: '100%',
     maxWidth: '100%',
@@ -2260,6 +2638,30 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
+  completionCta: {
+    borderWidth: 1,
+    borderRadius: Radius.md,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+  },
+  completionCtaContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  completionCtaLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  completionCtaAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  completionCtaActionText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
   completionActions: {
     flexDirection: 'row',
     gap: Spacing.sm,
@@ -2274,18 +2676,68 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
     padding: Spacing.xl,
   },
-  loadingState: {
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  loadingStateLabel: {
-    fontSize: 13,
-    opacity: 0.85,
-    textAlign: 'center',
-  },
   emptyText: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  skeletonWrapper: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  skeletonCard: {
+    width: '100%',
+    padding: Spacing.lg,
+    borderRadius: Radius.lg,
+    borderWidth: 1.5,
+    shadowColor: '#2F288040',
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 10 },
+    overflow: 'hidden',
+  },
+  skeletonShimmer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+  },
+  skeletonShimmerGradient: {
+    flex: 1,
+    width: '100%',
+  },
+  skeletonHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.lg,
+  },
+  skeletonBadge: {
+    height: 22,
+    borderRadius: Radius.pill,
+    width: 88,
+    opacity: 0.9,
+  },
+  skeletonBadgeSmall: {
+    width: 56,
+  },
+  skeletonPrompt: {
+    gap: Spacing.sm,
+    marginBottom: Spacing.lg,
+  },
+  skeletonLine: {
+    height: 14,
+    borderRadius: Radius.pill,
+    width: '100%',
+    opacity: 0.85,
+  },
+  skeletonChoices: {
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
+  },
+  skeletonChoice: {
+    height: 44,
+    borderRadius: Radius.md,
+    opacity: 0.8,
   },
   bottomSheetBackground: {
     borderTopLeftRadius: Radius.lg,

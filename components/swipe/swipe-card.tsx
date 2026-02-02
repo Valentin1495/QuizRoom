@@ -50,6 +50,8 @@ export type SwipeCardProps = {
   onSwipeNext: () => void;
   onOpenActions?: () => void;
   onSwipeBlocked?: () => void;
+  swipeEnabled?: boolean;
+  blockSwipeNext?: boolean;
   onCardLayout?: (height: number) => void;
 };
 
@@ -137,6 +139,8 @@ export function SwipeCard({
   onSwipeNext,
   onOpenActions,
   onSwipeBlocked,
+  swipeEnabled = true,
+  blockSwipeNext = false,
   onCardLayout,
 }: SwipeCardProps) {
   const translateX = useSharedValue(0);
@@ -171,7 +175,7 @@ export function SwipeCard({
   const [displayCardNumber] = useState(cardNumber ?? index + 1);
 
   const gesture = Gesture.Pan()
-    .enabled(isActive)
+    .enabled(isActive && swipeEnabled)
     .activeOffsetX([-20, 20])
     .failOffsetY([-20, 20])
     .onChange((event) => {
@@ -194,6 +198,23 @@ export function SwipeCard({
 
       // 오른쪽 스와이프 - 다음으로 넘어가기
       if (feedback && translationX >= SWIPE_NEXT_THRESHOLD) {
+        if (blockSwipeNext) {
+          if (onSwipeBlocked) {
+            runOnJS(onSwipeBlocked)();
+          }
+          opacity.value = withSpring(1);
+          translateY.value = withSpring(0);
+          translateX.value = withSpring(0, undefined, (finished) => {
+            if (!finished) return;
+            shakeX.value = withSequence(
+              withTiming(-14, { duration: 70 }),
+              withTiming(14, { duration: 70 }),
+              withTiming(-8, { duration: 60 }),
+              withTiming(0, { duration: 60 })
+            );
+          });
+          return;
+        }
         // 틴더 스타일: 카드가 날아가며 사라지는 애니메이션
         isDismissing.value = true;
         const currentY = translateY.value;

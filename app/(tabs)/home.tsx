@@ -446,7 +446,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.section}>
-          <SectionHeader title="챌린지" tagline="특별 모드" muted={muted} />
+          <SectionHeader title="실력 측정" tagline="챌린지" muted={muted} />
           <View style={[styles.challengeCard, { backgroundColor: cardBackground, borderColor }]}>
             <View style={styles.challengeHeader}>
               <View style={styles.challengeTitleRow}>

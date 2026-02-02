@@ -41,7 +41,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { category, tags, limit, cursor, deckSlug, excludeTag, grade, eduLevel, subject } = body;
+    const { category, tags, limit, cursor, deckSlug, excludeTag, excludeIds, grade, eduLevel, subject } = body;
 
     if (!isString(category) && !isString(deckSlug)) {
       return new Response(
@@ -74,6 +74,7 @@ serve(async (req) => {
     const normalizedGrade = Number.isFinite(Number(grade)) ? Number(grade) : null;
     const normalizedEduLevel = isString(eduLevel) ? eduLevel.trim().toLowerCase() : null;
     const normalizedSubject = isString(subject) ? subject.trim().toLowerCase() : null;
+    const normalizedExcludeIds = isStringArray(excludeIds) ? excludeIds.filter(isString).slice(0, 200) : null;
 
     const normalizedCategory = isString(category) ? category.trim().toLowerCase() : null;
     const normalizedDeckSlug = isString(deckSlug) ? deckSlug.trim() : null;
@@ -151,6 +152,14 @@ serve(async (req) => {
     if (normalizedExcludeTag) {
       const escapedTag = normalizedExcludeTag.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       query = query.not('tags', 'cs', `{"${escapedTag}"}`);
+    }
+
+    if (normalizedExcludeIds && normalizedExcludeIds.length) {
+      const escapedIds = normalizedExcludeIds
+        .map((id) => id.replace(/\\/g, '\\\\').replace(/"/g, '\\"'))
+        .map((id) => `"${id}"`)
+        .join(',');
+      query = query.not('id', 'in', `(${escapedIds})`);
     }
 
     if (normalizedGrade !== null) {
