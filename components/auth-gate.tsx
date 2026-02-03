@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -13,9 +13,18 @@ type AuthGateProps = {
   children: ReactNode;
 };
 
+const appIcon = require('../assets/images/app-icon.png');
+
 export function AuthGate({ children }: AuthGateProps) {
   const { status, user, error, signInWithGoogle, enterGuestMode } = useAuth();
   const primaryColor = useThemeColor({}, 'primary');
+  const iconBackground = useThemeColor(
+    {
+      light: 'rgba(0, 0, 0, 0.65)',
+      dark: 'rgba(255, 255, 255, 0.18)',
+    },
+    'cardElevated',
+  );
   const insets = useSafeAreaInsets();
   const [showBanner, setShowBanner] = useState(false);
 
@@ -53,7 +62,7 @@ export function AuthGate({ children }: AuthGateProps) {
     return {
       isLoading: false,
       headline: 'QuizRoom',
-      helper: 'Google 계정으로 간편하게 로그인하고 \n 실시간 지식 배틀에 합류하세요!',
+      helper: '지금 바로 실시간 지식 배틀에 합류하세요!',
     } as const;
   }, [status, user, error]);
 
@@ -89,6 +98,9 @@ export function AuthGate({ children }: AuthGateProps) {
       >
         {/* Hero Section */}
         <View style={styles.hero}>
+          <View style={[styles.appIconWrapper, { backgroundColor: iconBackground }]}>
+            <Image source={appIcon} style={styles.appIcon} resizeMode="contain" />
+          </View>
           <ThemedText type="title" style={styles.title}>
             {headline}
           </ThemedText>
@@ -160,6 +172,17 @@ const styles = StyleSheet.create({
   hero: {
     gap: Spacing.md,
     alignItems: 'center',
+  },
+  appIconWrapper: {
+    padding: Spacing.xs,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  appIcon: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
   },
   title: {
     textAlign: 'center',

@@ -375,6 +375,8 @@ export function SwipeStack({
   const isFilterChanging =
     previousFilterKey.current !== null && previousFilterKey.current !== filterKey;
   const currentQuestionIdRef = useRef<string | null>(null);
+  const lastAdvancedQuestionIdRef = useRef<string | null>(null);
+  const sessionEpochRef = useRef(0);
   type ReportPayload = Parameters<typeof reportQuestion>[0];
   const [reportReason, setReportReason] = useState<ReportReasonKey | null>(null);
   const [reportNotes, setReportNotes] = useState('');
@@ -498,6 +500,7 @@ export function SwipeStack({
     }
     if (previousFilterKey.current !== filterKey) {
       previousFilterKey.current = filterKey;
+      sessionEpochRef.current += 1;
       setSessionStats(INITIAL_SESSION_STATS);
       setMissCount(0);
       if (!persistLifelines) {
@@ -579,6 +582,7 @@ export function SwipeStack({
       setFeedback(null);
       setHintText(null);
       setEliminatedChoiceIds(null);
+      lastAdvancedQuestionIdRef.current = null;
       hideResultToast();
       closeSheet();
       closeActionsSheet();
@@ -589,6 +593,7 @@ export function SwipeStack({
     setFeedback(null);
     setHintText(null);
     setEliminatedChoiceIds(null);
+    lastAdvancedQuestionIdRef.current = null;
     hideResultToast();
     closeSheet();
     closeActionsSheet();
@@ -831,6 +836,15 @@ export function SwipeStack({
   }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current, isChallenge, skip]);
 
   const handleReset = useCallback(async () => {
+    if (__DEV__) {
+      console.log('[SwipeStack] handleReset', {
+        sessionId,
+        missCount,
+        cardOffset,
+        totalQuestions: challenge?.totalQuestions ?? null,
+      });
+    }
+    sessionEpochRef.current += 1;
     closeSheet();
     closeActionsSheet();
     closeReportReasonSheet();
@@ -852,6 +866,7 @@ export function SwipeStack({
     setCompletionPending(false);
     setCompletionTotals(null);
     completedSessionIdRef.current = null;
+    lastAdvancedQuestionIdRef.current = null;
     challengeCompletionNotifiedRef.current = false;
     currentQuestionIdRef.current = null;
     startTimeRef.current = Date.now();
@@ -905,15 +920,15 @@ export function SwipeStack({
     }
     const trimmedHint = typeof current.hint === 'string' ? current.hint.trim() : '';
     if (trimmedHint.length > 0) {
-      setHintText(`학생 힌트: ${trimmedHint}`);
+      setHintText(`힌트: ${trimmedHint}`);
     } else {
       const resolvedIndex =
         current.correctChoiceIndex ??
         current.choices.findIndex((choice) => choice.id === current.correctChoiceId);
       if (resolvedIndex >= 0) {
-        setHintText(`학생 힌트: ${resolvedIndex + 1}번 보기가 맞을 확률이 높아 보여요.`);
+        setHintText(`힌트: ${resolvedIndex + 1}번 보기가 맞을 확률이 높아 보여요.`);
       } else {
-        setHintText('학생 힌트: 이 보기 쪽이 맞을 확률이 높아 보여요.');
+        setHintText('힌트: 이 보기 쪽이 맞을 확률이 높아 보여요.');
       }
     }
     setLifelinesUsed((prev) => ({ ...prev, hint: true }));
@@ -924,10 +939,20 @@ export function SwipeStack({
     currentStreakRef.current = currentStreak;
   }, [currentStreak]);
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback((questionId?: string, epoch?: number) => {
     if (!current || !feedback) {
       return;
     }
+    if (epoch !== undefined && epoch !== sessionEpochRef.current) {
+      return;
+    }
+    if (questionId && current.id && questionId !== current.id) {
+      return;
+    }
+    if (current.id && lastAdvancedQuestionIdRef.current === current.id) {
+      return;
+    }
+    lastAdvancedQuestionIdRef.current = current.id ?? null;
     closeSheet();
     setSelectedIndex(null);
     setFeedback(null);
@@ -1002,28 +1027,21 @@ export function SwipeStack({
     (totalQuestions > 0 && answeredForMetrics >= totalQuestions) ||
     (totalQuestions === 0 && feedExhausted && answeredForMetrics > 0)
     : feedExhausted;
-  const hasSwipedLastAnswered = answeredForCompletion > 0 && cardOffset >= answeredForCompletion;
-  const hasSwipedToLimit = totalQuestions > 0 && cardOffset >= totalQuestions;
+  const effectiveCardOffset = Math.min(cardOffset, answeredForCompletion);
+  const hasSwipedLastAnswered =
+    answeredForCompletion > 0 && effectiveCardOffset >= answeredForCompletion;
+  const hasSwipedToLimit = totalQuestions > 0 && effectiveCardOffset >= totalQuestions;
   const showCompletion = isChallenge
-    ? (isChallengeFailed ? hasSwipedLastAnswered : hasSwipedToLimit) ||
-    (totalQuestions === 0 && feedExhausted && cardOffset > 0)
+    ? completionPending
     : feedExhausted;
   const shouldShowCompletion = showCompletion || completionPending;
-  const missLabel = allowedMisses > 0 ? `${missCount}/${allowedMisses}` : `${missCount}`;
-  const missLabelColor =
-    (allowedMisses === 0 ? missCount > 0 : missCount >= allowedMisses)
-      ? palette.danger
-      : palette.textMuted;
+  const livesRemaining = Math.max(0, 2 - missCount);
+  const missLabel = `${livesRemaining}`;
+  const missLabelColor = livesRemaining === 0 ? palette.textMuted : palette.danger;
   const missSummaryHint = useMemo(() => {
     if (!isChallenge) return null;
-    if (totalQuestions > 0 && allowedMisses >= totalQuestions) {
-      return '오답은 기록만 해요.';
-    }
-    if (allowedMisses > 0) {
-      return `미스 ${allowedMisses}번까지는 통과해요. ${failAfterMisses}번째 오답에서 종료.`;
-    }
-    return '미스 없음 · 오답 1번이면 종료';
-  }, [allowedMisses, failAfterMisses, isChallenge, totalQuestions]);
+    return '목숨 2개 · 오답 2번이면 종료';
+  }, [isChallenge]);
 
   const showAccuracyCard = isChallenge && (isChallengeFailed || Boolean(isFinalStage));
   const useCumulativeAccuracy =
@@ -1042,6 +1060,47 @@ export function SwipeStack({
   const resolvedCompletionTotals = completionTotalsOverride ?? completionTotals;
   const effectiveAnswered = resolvedCompletionTotals?.answered ?? computedAnswered;
   const effectiveCorrect = resolvedCompletionTotals?.correct ?? computedCorrect;
+  useEffect(() => {
+    if (!__DEV__ || !shouldShowCompletion) return;
+    console.log('[SwipeStack] completion visible', {
+      sessionId,
+      isChallenge,
+      isChallengeFailed,
+      totalQuestions,
+      cardOffset,
+      answeredForMetrics,
+      effectiveAnswered,
+      effectiveCorrect,
+      completionReady,
+      showCompletion,
+      completionPending,
+      hasSwipedToLimit,
+      hasSwipedLastAnswered,
+      feedExhausted,
+      hasMore,
+      queueLength: queue.length,
+      currentId: current?.id ?? null,
+    });
+  }, [
+    answeredForMetrics,
+    cardOffset,
+    completionPending,
+    completionReady,
+    current?.id,
+    effectiveAnswered,
+    effectiveCorrect,
+    feedExhausted,
+    hasMore,
+    hasSwipedLastAnswered,
+    hasSwipedToLimit,
+    isChallenge,
+    isChallengeFailed,
+    queue.length,
+    sessionId,
+    shouldShowCompletion,
+    showCompletion,
+    totalQuestions,
+  ]);
   const accuracyPercent = useMemo(() => {
     if (!effectiveAnswered) return null;
     return Math.round((effectiveCorrect / effectiveAnswered) * 100);
@@ -1780,6 +1839,8 @@ export function SwipeStack({
   const forceSkeleton = __DEV__ && false;
   const shouldShowLoading = !current && !shouldShowCompletion && (isLoading || hasMore);
   const isShowingSkeleton = isTransitioning || forceSkeleton || shouldShowLoading;
+  const skeletonTopOffset =
+    Spacing.sm + (isChallenge ? Spacing.lg : Spacing.md) + 4;
 
   useEffect(() => {
     if (!isShowingSkeleton) {
@@ -1794,6 +1855,7 @@ export function SwipeStack({
   if (isTransitioning || forceSkeleton) {
     return (
       <View style={styles.emptyState}>
+        <View style={{ height: skeletonTopOffset }} />
         {renderSkeletonCard()}
       </View>
     );
@@ -1806,11 +1868,16 @@ export function SwipeStack({
     return (
       <View style={styles.emptyState}>
         {shouldShowLoadingWithForce ? (
-          renderSkeletonCard()
+          <>
+            <View style={{ height: skeletonTopOffset }} />
+            {renderSkeletonCard()}
+          </>
         ) : null}
       </View>
     );
   }
+
+  const swipeEpoch = sessionEpochRef.current;
 
   return (
     <BottomSheetModalProvider>
@@ -2112,9 +2179,9 @@ export function SwipeStack({
                   >
                     해설 보기
                   </Button>
-                  <IconSymbol name="xmark.circle.fill" size={16} color={missLabelColor} />
+                  <IconSymbol name="heart.fill" size={16} color={missLabelColor} />
                   <ThemedText style={[styles.statusText, { color: missLabelColor }]}>
-                    미스 {missLabel}
+                    {missLabel}
                   </ThemedText>
                 </View>
               </View>
@@ -2205,7 +2272,7 @@ export function SwipeStack({
                   selectedIndex={index === 0 ? selectedIndex : null}
                   feedback={index === 0 ? feedback : null}
                   onSelectChoice={index === 0 ? handleSelect : () => undefined}
-                  onSwipeNext={handleNext}
+                  onSwipeNext={index === 0 ? () => handleNext(card.id, swipeEpoch) : () => undefined}
                   onOpenActions={handleActions}
                   onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
                   swipeEnabled={index === 0 ? !completionReady : false}
@@ -2821,9 +2888,10 @@ const styles = StyleSheet.create({
   emptyState: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     gap: Spacing.md,
     padding: Spacing.xl,
+    paddingTop: Spacing.lg,
   },
   emptyText: {
     fontSize: 16,

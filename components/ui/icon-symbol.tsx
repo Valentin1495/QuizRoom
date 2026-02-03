@@ -24,6 +24,7 @@ import {
   GraduationCapIcon,
   HandSwipeLeftIcon,
   HandSwipeRightIcon,
+  HeartIcon,
   HourglassMediumIcon,
   HouseLineIcon,
   LightbulbIcon,
@@ -108,6 +109,7 @@ const ICON_MAP = {
   'play.circle.fill': { component: PlayCircleIcon, defaultWeight: 'fill' },
   'brain': { component: SpeedometerIcon },
   'target': { component: TargetIcon },
+  'heart.fill': { component: HeartIcon, defaultWeight: 'fill' },
   // Tab Bar Icons
   'house': { component: HouseLineIcon },
   'house.fill': { component: HouseLineIcon, defaultWeight: 'fill' },

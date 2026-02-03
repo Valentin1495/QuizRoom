@@ -90,6 +90,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
   const loadedCountRef = useRef(0);
   const questionMapRef = useRef<Map<string, SwipeFeedQuestion>>(new Map());
   const sessionKeyRef = useRef<string>('');
+  const recentIdsRef = useRef<string[]>([]);
 
   // Pick an auth header: user token when signed in, otherwise anon key.
   const getFunctionAuthHeaders = useCallback(async () => {
@@ -112,6 +113,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     sessionKeyRef.current = `swipe-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     loadedCountRef.current = 0;
     questionMapRef.current.clear();
+    recentIdsRef.current = [];
     setState(emptyState);
     setCursor(null);
     setHasMore(true);
@@ -181,6 +183,8 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
           deckSlug: options.deckSlug,
           excludeTag: options.excludeTag,
           excludeIds: options.excludeIds,
+          sessionSeed: sessionKeyRef.current,
+          recentIds: recentIdsRef.current.slice(0, 80),
           limit: requestLimit,
           cursor,
           grade: options.grade,
@@ -280,6 +284,10 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
       const [removed, ...restQueue] = current.queue;
       if (removed) {
         questionMapRef.current.delete(removed.id.toString());
+        const next = [removed.id, ...recentIdsRef.current].filter(
+          (id, index, self) => self.indexOf(id) === index
+        );
+        recentIdsRef.current = next.slice(0, 100);
       }
       const queue = [...restQueue];
       const prefetch = [...current.prefetch];
@@ -294,6 +302,7 @@ export function useSwipeFeed(options: UseSwipeFeedOptions) {
     loadedCountRef.current = 0;
     questionMapRef.current.clear();
     sessionKeyRef.current = `swipe-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    recentIdsRef.current = [];
     setState(emptyState);
     setCursor(null);
     setIsLoading(false);

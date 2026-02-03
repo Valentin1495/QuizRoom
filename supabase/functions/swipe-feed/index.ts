@@ -9,6 +9,9 @@
  *   tags?: string[];           // optional (not used yet)
  *   deckSlug?: string;         // optional
  *   excludeTag?: string;       // optional
+ *   excludeIds?: string[];     // optional (soft exclude)
+ *   sessionSeed?: string;      // optional (seed for shuffle)
+ *   recentIds?: string[];      // optional (soft exclude)
  *   grade?: number;            // optional
  *   eduLevel?: string;         // optional
  *   subject?: string;          // optional
@@ -41,7 +44,20 @@ serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { category, tags, limit, cursor, deckSlug, excludeTag, excludeIds, grade, eduLevel, subject } = body;
+    const {
+      category,
+      tags,
+      limit,
+      cursor,
+      deckSlug,
+      excludeTag,
+      excludeIds,
+      grade,
+      eduLevel,
+      subject,
+      sessionSeed,
+      recentIds,
+    } = body;
 
     if (!isString(category) && !isString(deckSlug)) {
       return new Response(
@@ -75,6 +91,8 @@ serve(async (req) => {
     const normalizedEduLevel = isString(eduLevel) ? eduLevel.trim().toLowerCase() : null;
     const normalizedSubject = isString(subject) ? subject.trim().toLowerCase() : null;
     const normalizedExcludeIds = isStringArray(excludeIds) ? excludeIds.filter(isString).slice(0, 200) : null;
+    const normalizedRecentIds = isStringArray(recentIds) ? recentIds.filter(isString).slice(0, 200) : null;
+    const normalizedSessionSeed = isString(sessionSeed) ? sessionSeed.trim() : null;
 
     const normalizedCategory = isString(category) ? category.trim().toLowerCase() : null;
     const normalizedDeckSlug = isString(deckSlug) ? deckSlug.trim() : null;
@@ -154,13 +172,7 @@ serve(async (req) => {
       query = query.not('tags', 'cs', `{"${escapedTag}"}`);
     }
 
-    if (normalizedExcludeIds && normalizedExcludeIds.length) {
-      const escapedIds = normalizedExcludeIds
-        .map((id) => id.replace(/\\/g, '\\\\').replace(/"/g, '\\"'))
-        .map((id) => `"${id}"`)
-        .join(',');
-      query = query.not('id', 'in', `(${escapedIds})`);
-    }
+    // NOTE: excludeIds is now treated as soft-exclude (ordering only), no hard filter here.
 
     if (normalizedGrade !== null) {
       query = query.eq('grade', normalizedGrade);
@@ -189,7 +201,40 @@ serve(async (req) => {
     }
 
     const hasMore = (data?.length ?? 0) > requestedLimit;
-    const items = (data ?? []).slice(0, requestedLimit).map((item) => {
+    let items = (data ?? []).slice(0, requestedLimit);
+
+    const hashSeeded = (seed: string, value: string) => {
+      let hash = 5381;
+      const input = `${seed}:${value}`;
+      for (let i = 0; i < input.length; i += 1) {
+        hash = ((hash << 5) + hash) + input.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash) / 2147483647;
+    };
+
+    const combinedRecentIds = [
+      ...(normalizedExcludeIds ?? []),
+      ...(normalizedRecentIds ?? []),
+    ];
+    const combinedRecentSet = new Set(combinedRecentIds);
+
+    if (normalizedSessionSeed) {
+      items = items.sort((a, b) => {
+        const aRecent = combinedRecentSet.has(a.id) ? 1 : 0;
+        const bRecent = combinedRecentSet.has(b.id) ? 1 : 0;
+        if (aRecent !== bRecent) return aRecent - bRecent;
+        return hashSeeded(normalizedSessionSeed, a.id) - hashSeeded(normalizedSessionSeed, b.id);
+      });
+    } else if (normalizedRecentIds?.length) {
+      items = items.sort((a, b) => {
+        const aRecent = combinedRecentSet.has(a.id) ? 1 : 0;
+        const bRecent = combinedRecentSet.has(b.id) ? 1 : 0;
+        return aRecent - bRecent;
+      });
+    }
+
+    items = items.map((item) => {
       const choices = Array.isArray(item.choices) ? item.choices : [];
       const correctChoice = choices[item.answer_index] ?? null;
       const mediaMeta = item.media_meta && typeof item.media_meta === 'object' ? item.media_meta : null;

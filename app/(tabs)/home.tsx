@@ -130,7 +130,7 @@ export default function HomeScreen() {
 
   const isAuthenticated = authStatus === 'authenticated' && !!user;
   const isGuest = authStatus === 'guest';
-  const skillChallengeTitle = '6단계 난이도로 나의 수준 파악하기';
+  const skillChallengeTitle = '6단계로 내 수준 확인하기';
 
   useEffect(() => {
     const loadCompletion = async () => {
