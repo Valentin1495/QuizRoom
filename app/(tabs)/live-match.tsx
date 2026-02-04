@@ -65,13 +65,6 @@ export default function LiveMatchScreen() {
   }, [isDecksLoading, liveMatchDecks, selectedDeckId]);
 
   useEffect(() => {
-    if (!selectedDeckId) return;
-    const selectedDeck = liveMatchDecks.find((deck) => deck.id === selectedDeckId);
-    if (!selectedDeck) return;
-    void saveRecentLiveMatchDeck(selectedDeck);
-  }, [liveMatchDecks, selectedDeckId]);
-
-  useEffect(() => {
     if (isGuest && !guestKey) {
       void ensureGuestKey();
     }

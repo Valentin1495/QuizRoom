@@ -1035,13 +1035,15 @@ export function SwipeStack({
     ? completionPending
     : feedExhausted;
   const shouldShowCompletion = showCompletion || completionPending;
-  const livesRemaining = Math.max(0, 2 - missCount);
+  const initialLives =
+    eduLevel === 'college_basic' || eduLevel === 'college_plus' ? 1 : 2;
+  const livesRemaining = Math.max(0, initialLives - missCount);
   const missLabel = `${livesRemaining}`;
-  const missLabelColor = livesRemaining === 0 ? palette.textMuted : palette.danger;
+  const missLabelColor = livesRemaining === 0 ? palette.textMuted : palette.error;
   const missSummaryHint = useMemo(() => {
     if (!isChallenge) return null;
-    return '목숨 2개 · 오답 2번이면 종료';
-  }, [isChallenge]);
+    return initialLives === 1 ? '목숨 1개 · 오답 1번이면 종료' : '목숨 2개 · 오답 2번이면 종료';
+  }, [initialLives, isChallenge]);
 
   const showAccuracyCard = isChallenge && (isChallengeFailed || Boolean(isFinalStage));
   const useCumulativeAccuracy =
@@ -1763,9 +1765,9 @@ export function SwipeStack({
       outputRange: [-shimmerWidth, skeletonWidth + shimmerWidth],
     });
     const shimmerCoreColor =
-      colorScheme === 'dark' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.85)';
+      colorScheme === 'dark' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.45)';
     const shimmerEdgeColor =
-      colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.35)';
+      colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.18)';
     return (
       <View style={styles.skeletonWrapper}>
         <View
@@ -2308,7 +2310,7 @@ export function SwipeStack({
                   <ThemedText style={[styles.lifelineSubtitle, { color: sheetMutedColor }]}>
                     {lifelinesDisabled
                       ? '대학 단계는 치트를 사용할 수 없어요.'
-                      : '초등~고등 단계에서 50:50, 힌트 각 1회만 사용 가능해요.'}
+                      : '초등~고등 각 단계에서 50:50, 힌트 각 1회씩 사용 가능해요.'}
                   </ThemedText>
                 </View>
                 <View style={styles.actionsList}>

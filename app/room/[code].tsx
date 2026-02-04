@@ -24,6 +24,7 @@ import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestAvatarId } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
+import { saveRecentLiveMatchDeck } from '@/lib/recent-selections';
 import { ROOM_IN_PROGRESS_MESSAGE } from '@/lib/supabase-api';
 
 export default function MatchLobbyScreen() {
@@ -41,6 +42,7 @@ export default function MatchLobbyScreen() {
   const [pendingMs, setPendingMs] = useState(0);
   const [serverOffsetMs, setServerOffsetMs] = useState(0);
   const pendingExecutedRef = useRef(false);
+  const lastSavedDeckIdRef = useRef<string | null>(null);
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
   const [pendingBannerHeight, setPendingBannerHeight] = useState(0);
   const [isStarting, setIsStarting] = useState(false);
@@ -72,6 +74,19 @@ export default function MatchLobbyScreen() {
       setLocalPendingAction(null);
     }
   }, [pendingActionServer]);
+
+  useEffect(() => {
+    if (!lobby?.deck) return;
+    if (!participantId) return;
+    if (lastSavedDeckIdRef.current === lobby.deck.id) return;
+    lastSavedDeckIdRef.current = lobby.deck.id;
+    void saveRecentLiveMatchDeck({
+      id: lobby.deck.id,
+      slug: lobby.deck.slug,
+      title: lobby.deck.title,
+      emoji: lobby.deck.emoji,
+    });
+  }, [lobby?.deck, participantId]);
 
   useEffect(() => {
     Animated.timing(pendingBannerAnim, {
