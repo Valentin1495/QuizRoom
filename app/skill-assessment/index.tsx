@@ -308,7 +308,7 @@ export default function SkillAssessmentScreen() {
               scorePerCorrect: SKILL_ASSESSMENT_CHALLENGE.scorePerCorrect,
             }}
             onExit={handleExitToSelection}
-            onChallengeAdvance={handleAdvance}
+            onChallengeAdvance={isFinalLevel ? undefined : handleAdvance}
             onChallengeReset={handleChallengeReset}
             onChallengeComplete={handleChallengeComplete}
             challengeAdvanceLabel={isFinalLevel ? '과목 선택으로' : '다음 단계로'}

@@ -27,6 +27,8 @@ import { calculateLevel } from '@/lib/level';
 import { saveRecentLiveMatchDeck } from '@/lib/recent-selections';
 import { ROOM_IN_PROGRESS_MESSAGE } from '@/lib/supabase-api';
 
+const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
+
 export default function MatchLobbyScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -826,7 +828,7 @@ export default function MatchLobbyScreen() {
           { paddingTop: insets.top + Spacing.lg },
         ]}
       >
-        <Stack.Screen options={{ headerShown: false }} />
+        <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
         <View style={styles.contentWrapper}>
           <Animated.View
             pointerEvents={shouldShowHostPendingBanner ? 'auto' : 'none'}

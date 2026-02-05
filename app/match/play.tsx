@@ -46,6 +46,7 @@ const REACTION_MAX_SPAWN_PER_BROADCAST = 30;
 // This value must be greater than HEARTBEAT_INTERVAL_MS (8000) to prevent false offline detection
 const HOST_HEARTBEAT_GRACE_MS = 16000;
 const HOST_SNAPSHOT_STALE_THRESHOLD_MS = HOST_HEARTBEAT_GRACE_MS * 2;
+const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
 
 export default function MatchPlayScreen() {
     const router = useRouter();
@@ -507,6 +508,17 @@ export default function MatchPlayScreen() {
 
     const rawRoomStatus = (roomData?.room.status ?? null) as string | null;
     const rawPauseState = roomData?.room.pauseState ?? null;
+    const isSamePauseState = useCallback(
+        (
+            a: { remainingMs?: number; previousStatus: string; pausedAt: number } | null,
+            b: { remainingMs?: number; previousStatus: string; pausedAt: number } | null
+        ) => {
+            if (a === b) return true;
+            if (!a || !b) return false;
+            return a.previousStatus === b.previousStatus && a.remainingMs === b.remainingMs && a.pausedAt === b.pausedAt;
+        },
+        []
+    );
 
     useEffect(() => {
         // roomData가 없으면 이전 상태 유지
@@ -515,8 +527,12 @@ export default function MatchPlayScreen() {
         // 첫 번째 상태는 항상 즉시 반영 (초기 로딩)
         if (!hasReceivedInitialStatus.current) {
             hasReceivedInitialStatus.current = true;
-            setStableRoomStatus(rawRoomStatus);
-            setStablePauseState(rawPauseState);
+            if (stableRoomStatus !== rawRoomStatus) {
+                setStableRoomStatus(rawRoomStatus);
+            }
+            if (!isSamePauseState(stablePauseState, rawPauseState)) {
+                setStablePauseState(rawPauseState);
+            }
             return;
         }
 
@@ -526,8 +542,12 @@ export default function MatchPlayScreen() {
                 clearTimeout(statusDebounceRef.current);
                 statusDebounceRef.current = null;
             }
-            setStableRoomStatus('paused');
-            setStablePauseState(rawPauseState);
+            if (stableRoomStatus !== 'paused') {
+                setStableRoomStatus('paused');
+            }
+            if (!isSamePauseState(stablePauseState, rawPauseState)) {
+                setStablePauseState(rawPauseState);
+            }
             return;
         }
 
@@ -536,8 +556,12 @@ export default function MatchPlayScreen() {
             // 300ms 동안 paused가 아닌 상태가 유지되면 전환
             if (!statusDebounceRef.current) {
                 statusDebounceRef.current = setTimeout(() => {
-                    setStableRoomStatus(rawRoomStatus);
-                    setStablePauseState(rawPauseState);
+                    if (stableRoomStatus !== rawRoomStatus) {
+                        setStableRoomStatus(rawRoomStatus);
+                    }
+                    if (!isSamePauseState(stablePauseState, rawPauseState)) {
+                        setStablePauseState(rawPauseState);
+                    }
                     statusDebounceRef.current = null;
                 }, 300);
             }
@@ -549,9 +573,13 @@ export default function MatchPlayScreen() {
             clearTimeout(statusDebounceRef.current);
             statusDebounceRef.current = null;
         }
-        setStableRoomStatus(rawRoomStatus);
-        setStablePauseState(rawPauseState);
-    }, [rawRoomStatus, rawPauseState, stableRoomStatus]);
+        if (stableRoomStatus !== rawRoomStatus) {
+            setStableRoomStatus(rawRoomStatus);
+        }
+        if (!isSamePauseState(stablePauseState, rawPauseState)) {
+            setStablePauseState(rawPauseState);
+        }
+    }, [isSamePauseState, rawRoomStatus, rawPauseState, stableRoomStatus, stablePauseState]);
 
     // 컴포넌트 언마운트 시 타이머 정리
     useEffect(() => {
@@ -1536,7 +1564,7 @@ export default function MatchPlayScreen() {
         if (disconnectReason === EXPIRED_MESSAGE) {
             return (
                 <>
-                    <Stack.Screen options={{ headerShown: false }} />
+                    <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
                     <ThemedView style={styles.loadingContainer}>
                         <ThemedText type="title">연결이 종료됐어요</ThemedText>
                         <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>{disconnectReason}</ThemedText>
@@ -1550,7 +1578,7 @@ export default function MatchPlayScreen() {
         }
         return (
             <>
-                <Stack.Screen options={{ headerShown: false }} />
+                <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
                 <ThemedView style={styles.loadingContainer}>
                     <ThemedText type="title">연결이 종료됐어요</ThemedText>
                     <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>{disconnectReason}</ThemedText>
@@ -1570,7 +1598,7 @@ export default function MatchPlayScreen() {
     if (gameState.status === 'loading') {
         return (
             <>
-                <Stack.Screen options={{ headerShown: false }} />
+                <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
                 <ThemedView style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={textColor} />
                     <ThemedText style={[styles.loadingLabel, { color: textMutedColor }]}>퀴즈를 불러오는 중...</ThemedText>
@@ -1583,7 +1611,7 @@ export default function MatchPlayScreen() {
     if (!roomData) {
         return (
             <>
-                <Stack.Screen options={{ headerShown: false }} />
+                <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
                 <ThemedView style={styles.loadingContainer}>
                     <ThemedText type="title">게임 정보를 찾을 수 없어요</ThemedText>
                     <Button
@@ -2434,7 +2462,7 @@ export default function MatchPlayScreen() {
 
     return (
         <View style={styles.rootContainer}>
-            <Stack.Screen options={{ headerShown: false }} />
+            <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
             <ThemedView style={[styles.container, { backgroundColor: background, paddingTop: insets.top + Spacing.md, paddingBottom: insets.bottom + Spacing.lg }]}>
                 {/* {isHost ? renderDelaySelector() : null} */}
                 {renderConnectionBanner()}

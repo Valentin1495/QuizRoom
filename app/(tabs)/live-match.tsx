@@ -17,6 +17,8 @@ import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestNickname } from '@/lib/guest';
 import { saveRecentLiveMatchDeck } from '@/lib/recent-selections';
 
+const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
+
 export default function LiveMatchScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -184,7 +186,7 @@ export default function LiveMatchScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }} />
+      <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
       <ThemedView style={styles.screen}>
         <ScrollView
           contentContainerStyle={[

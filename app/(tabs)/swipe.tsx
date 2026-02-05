@@ -14,6 +14,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { CategoryMeta } from '@/constants/categories';
 import { categories } from '@/constants/categories';
 import { Spacing } from '@/constants/theme';
+import { useAuth } from '@/hooks/use-unified-auth';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { saveRecentSwipeCategory } from '@/lib/recent-selections';
 
@@ -23,6 +24,8 @@ export default function SwipeScreen() {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const insets = useSafeAreaInsets();
   const iconColor = useThemeColor({}, 'text');
+  const { status, user } = useAuth();
+  const isGuest = status === 'guest' && !user;
 
   useEffect(() => {
     if (selectedCategory) return;
@@ -43,8 +46,12 @@ export default function SwipeScreen() {
     if (!selectedCategory) {
       return;
     }
+    if (isGuest) {
+      setSelectedCategory(null);
+      return;
+    }
     setShowResetDialog(true);
-  }, [selectedCategory]);
+  }, [isGuest, selectedCategory]);
 
   const handleConfirmReset = useCallback(() => {
     setShowResetDialog(false);

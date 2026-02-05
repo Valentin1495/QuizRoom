@@ -3,7 +3,7 @@
  * Provides lobby data with Realtime subscription
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { getFunctionAuthHeaders, supabase } from '@/lib/supabase-api';
 
@@ -381,21 +381,40 @@ export function useRoomActions() {
     [invokeAction]
   );
 
-  return {
-    join,
-    leave,
-    heartbeat,
-    setReady,
-    start,
-    cancelPendingAction,
-    progress,
-    submitAnswer,
-    pause,
-    resume,
-    finish,
-    rematch,
-    resetToLobby,
-    requestLobby,
-    sendReaction,
-  };
+  return useMemo(
+    () => ({
+      join,
+      leave,
+      heartbeat,
+      setReady,
+      start,
+      cancelPendingAction,
+      progress,
+      submitAnswer,
+      pause,
+      resume,
+      finish,
+      rematch,
+      resetToLobby,
+      requestLobby,
+      sendReaction,
+    }),
+    [
+      join,
+      leave,
+      heartbeat,
+      setReady,
+      start,
+      cancelPendingAction,
+      progress,
+      submitAnswer,
+      pause,
+      resume,
+      finish,
+      rematch,
+      resetToLobby,
+      requestLobby,
+      sendReaction,
+    ]
+  );
 }

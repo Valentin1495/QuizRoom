@@ -827,7 +827,7 @@ export function SwipeStack({
     closeSheet();
     closeReportReasonSheet();
     hideResultToast();
-    setCurrentStreak(0);
+    // Keep streak when skipping in swipe mode.
     setSessionStats((prev) => ({
       ...prev,
       skipped: prev.skipped + 1,
@@ -1031,10 +1031,12 @@ export function SwipeStack({
   const hasSwipedLastAnswered =
     answeredForCompletion > 0 && effectiveCardOffset >= answeredForCompletion;
   const hasSwipedToLimit = totalQuestions > 0 && effectiveCardOffset >= totalQuestions;
+  // Debug-only: flip to true to force completion card in swipe mode.
+  const forceCompletion = __DEV__ && false && !isChallenge;
   const showCompletion = isChallenge
     ? completionPending
     : feedExhausted;
-  const shouldShowCompletion = showCompletion || completionPending;
+  const shouldShowCompletion = showCompletion || completionPending || forceCompletion;
   const initialLives =
     eduLevel === 'college_basic' || eduLevel === 'college_plus' ? 1 : 2;
   const livesRemaining = Math.max(0, initialLives - missCount);
@@ -1120,10 +1122,10 @@ export function SwipeStack({
 
   const totalViewed = sessionStats.answered + sessionStats.skipped;
 
-  const processedPercent = useMemo(() => {
+  const skipPercent = useMemo(() => {
     if (!totalViewed) return null;
-    return Math.round((sessionStats.answered / totalViewed) * 100);
-  }, [sessionStats.answered, totalViewed]);
+    return Math.round((sessionStats.skipped / totalViewed) * 100);
+  }, [sessionStats.skipped, totalViewed]);
 
   const totalXpEarned = useMemo(() => {
     if (!sessionStats.answered) return 0;
@@ -1842,7 +1844,7 @@ export function SwipeStack({
   const shouldShowLoading = !current && !shouldShowCompletion && (isLoading || hasMore);
   const isShowingSkeleton = isTransitioning || forceSkeleton || shouldShowLoading;
   const skeletonTopOffset =
-    Spacing.sm + (isChallenge ? Spacing.lg : Spacing.md) + 4;
+    Spacing.sm + (isChallenge ? Spacing.lg : Spacing.md + Spacing.md) + 4;
 
   useEffect(() => {
     if (!isShowingSkeleton) {
@@ -2067,30 +2069,77 @@ export function SwipeStack({
                   </View>
                 )}
                 {!isChallenge ? (
-                  <View
-                    style={[
-                      styles.completionMetric,
-                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
-                    ]}
-                  >
-                    <ThemedText
-                      style={styles.completionMetricLabel}
-                      lightColor={palette.textMuted}
-                      darkColor={Palette.gray200}
+                  <>
+                    <View
+                      style={[
+                        styles.completionMetric,
+                        { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                      ]}
                     >
-                      완료율
-                    </ThemedText>
-                    <ThemedText style={styles.completionMetricValue}>
-                      {processedPercent !== null ? `${processedPercent}%` : '-'}
-                    </ThemedText>
-                    <ThemedText
-                      style={styles.completionMetricHint}
-                      lightColor={palette.textMuted}
-                      darkColor={Palette.gray200}
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        정답률
+                      </ThemedText>
+                      <View style={styles.completionMetricInline}>
+                        <ThemedText style={styles.completionMetricValue}>
+                          {accuracyPercent !== null ? `${accuracyPercent}%` : '-'}
+                        </ThemedText>
+                        <ThemedText
+                          style={styles.completionMetricInlineHint}
+                          lightColor={palette.textMuted}
+                          darkColor={Palette.gray200}
+                        >
+                          {sessionStats.correct}/{Math.max(sessionStats.answered, 1)}
+                        </ThemedText>
+                      </View>
+                    </View>
+                    <View
+                      style={[
+                        styles.completionMetric,
+                        { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                      ]}
                     >
-                      {sessionStats.answered}/{Math.max(totalViewed, 1)} {'\n'}응답/(응답+스킵)
-                    </ThemedText>
-                  </View>
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        스킵율
+                      </ThemedText>
+                      <View style={styles.completionMetricInline}>
+                        <ThemedText style={styles.completionMetricValue}>
+                          {skipPercent !== null ? `${skipPercent}%` : '-'}
+                        </ThemedText>
+                        <ThemedText
+                          style={styles.completionMetricInlineHint}
+                          lightColor={palette.textMuted}
+                          darkColor={Palette.gray200}
+                        >
+                          {sessionStats.skipped}/{Math.max(totalViewed, 1)}
+                        </ThemedText>
+                      </View>
+                    </View>
+                    <View
+                      style={[
+                        styles.completionMetric,
+                        { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                      ]}
+                    >
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        최고 스트릭
+                      </ThemedText>
+                      <ThemedText style={styles.completionMetricValue}>
+                        {sessionStats.maxStreak}
+                      </ThemedText>
+                    </View>
+                  </>
                 ) : null}
                 {isGuest ? null : (
                   <View
@@ -2122,17 +2171,30 @@ export function SwipeStack({
                   </Button>
                 ) : null}
                 {isChallenge ? (
-                  challengeSecondaryLabel ? (
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      fullWidth
-                      onPress={handleChallengeSecondary}
-                      style={styles.completionActionButton}
-                    >
-                      {challengeSecondaryLabel}
-                    </Button>
-                  ) : null
+                  <>
+                    {challengeSecondaryLabel ? (
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        fullWidth
+                        onPress={handleChallengeSecondary}
+                        style={styles.completionActionButton}
+                      >
+                        {challengeSecondaryLabel}
+                      </Button>
+                    ) : null}
+                    {!isChallengeFailed && isGuest ? (
+                      <Button
+                        size="lg"
+                        variant="default"
+                        fullWidth
+                        onPress={() => void signInWithGoogle()}
+                        style={styles.completionActionButton}
+                      >
+                        로그인
+                      </Button>
+                    ) : null}
+                  </>
                 ) : isGuest ? (
                   <Button
                     size="lg"
@@ -2295,7 +2357,7 @@ export function SwipeStack({
               borderColor: palette.border,
             },
           ]}
-          bottomInset={insets.bottom + Spacing.lg}
+          bottomInset={isChallenge ? insets.bottom + Spacing.lg : 0}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
@@ -2806,15 +2868,11 @@ const styles = StyleSheet.create({
     color: Palette.gray500,
   },
   completionMetrics: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
     gap: Spacing.sm,
   },
   completionMetric: {
-    flexBasis: '47%',
-    flexGrow: 1,
-    flexShrink: 1,
-    maxWidth: '50%',
+    width: '100%',
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
     borderRadius: Radius.md,
@@ -2855,6 +2913,17 @@ const styles = StyleSheet.create({
   completionMetricHint: {
     fontSize: 12,
     textAlign: 'center',
+  },
+  completionMetricInline: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.xs,
+  },
+  completionMetricInlineHint: {
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'left',
   },
   completionCta: {
     borderWidth: 1,
