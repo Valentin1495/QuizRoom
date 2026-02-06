@@ -2,8 +2,9 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
 import * as Haptics from 'expo-haptics';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Animated, BackHandler, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Circle } from 'react-native-svg';
 
 import { showResultToast } from '@/components/common/result-toast';
 import {
@@ -65,6 +66,7 @@ export default function MatchPlayScreen() {
     const borderColor = useThemeColor({}, 'border');
     const background = useThemeColor({}, 'background');
     const avatarFallbackColor = useThemeColor({}, 'primary');
+    const skeletonBaseColor = colorScheme === 'dark' ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.06)';
 
     const [hasLeft, setHasLeft] = useState(false);
     const [isLeaveDialogVisible, setLeaveDialogVisible] = useState(false);
@@ -92,6 +94,28 @@ export default function MatchPlayScreen() {
         lastRefillMs: Date.now(),
     });
     const reactionBroadcastSeqRef = useRef(0);
+
+    // Simple skeleton pulse for question loading UI.
+    const skeletonPulse = useRef(new Animated.Value(0)).current;
+    const skeletonOpacity = useMemo(
+        () =>
+            skeletonPulse.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0.35, 0.9],
+            }),
+        [skeletonPulse]
+    );
+
+    useEffect(() => {
+        const loop = Animated.loop(
+            Animated.sequence([
+                Animated.timing(skeletonPulse, { toValue: 1, duration: 520, useNativeDriver: true }),
+                Animated.timing(skeletonPulse, { toValue: 0, duration: 520, useNativeDriver: true }),
+            ])
+        );
+        loop.start();
+        return () => loop.stop();
+    }, [skeletonPulse]);
 
     useEffect(() => {
         if (authStatus === 'guest' && !guestKey) {
@@ -621,6 +645,71 @@ export default function MatchPlayScreen() {
 
     const [pendingMs, setPendingMs] = useState(0);
     const pendingHeartbeatRef = useRef(false);
+
+    // When a rematch is scheduled, the server may optimistically reset scores while still showing the results screen.
+    // Keep a snapshot so the UI doesn't flash "0점" until we actually transition away from results.
+    const [resultsSnapshot, setResultsSnapshot] = useState<(typeof participants) | null>(null);
+    const resultsSnapshotKeyRef = useRef<string | null>(null);
+    const resultsSnapshotStatusRef = useRef<string | null>(null);
+
+    useEffect(() => {
+        if (roomStatus !== 'results') {
+            if (resultsSnapshot !== null) {
+                setResultsSnapshot(null);
+            }
+            resultsSnapshotKeyRef.current = null;
+            resultsSnapshotStatusRef.current = roomStatus ?? null;
+            return;
+        }
+
+        if (participants.length === 0) return;
+
+        // If we already have a snapshot, keep scores as-is but allow correctness to update.
+        if (resultsSnapshot) {
+            let updated = false;
+            const merged = resultsSnapshot.map((snapshot) => {
+                const latest = participants.find((p) => p.participantId === snapshot.participantId);
+                if (!latest || latest.correctCount == null) return snapshot;
+                if (snapshot.correctCount === latest.correctCount) return snapshot;
+                // Prevent overwriting with lower/zero counts during rematch reset.
+                if ((latest.correctCount ?? 0) < (snapshot.correctCount ?? 0)) return snapshot;
+                updated = true;
+                return { ...snapshot, correctCount: latest.correctCount };
+            });
+            if (updated) {
+                setResultsSnapshot(merged);
+            }
+            return;
+        }
+
+        const prevStatus = resultsSnapshotStatusRef.current;
+        resultsSnapshotStatusRef.current = roomStatus;
+
+        // Capture snapshot on entering results to avoid flashing resets on rematch.
+        if (prevStatus !== 'results') {
+            const key = participants
+                .map((p) => `${p.participantId}:${p.totalScore}:${p.rank ?? 'x'}`)
+                .join('|');
+            resultsSnapshotKeyRef.current = key;
+            setResultsSnapshot(participants.map((p) => ({ ...p })));
+            return;
+        }
+
+        // Don't overwrite the snapshot during a pending rematch or with all-zero scores.
+        if (pendingAction?.type === 'rematch') {
+            return;
+        }
+
+        const hasNonZeroScore = participants.some((p) => (p.totalScore ?? 0) > 0);
+        if (!hasNonZeroScore) return;
+
+        const key = participants
+            .map((p) => `${p.participantId}:${p.totalScore}:${p.rank ?? 'x'}`)
+            .join('|');
+        if (resultsSnapshotKeyRef.current === key) return;
+        resultsSnapshotKeyRef.current = key;
+        setResultsSnapshot(participants.map((p) => ({ ...p })));
+    }, [participants, pendingAction?.type, resultsSnapshot, roomStatus]);
     const previousHostIdRef = useRef<string | null>(null);
     const hostConnectivityRef = useRef<boolean | null>(null);
     const waitingToastRef = useRef<{ shownForSession: boolean; lastShownAt: number | null }>({
@@ -1654,62 +1743,125 @@ export default function MatchPlayScreen() {
     const currentRoundIndex = (roomData?.room.currentRound ?? 0) + 1;
     const totalRoundsDisplay = roomData?.room.totalRounds ?? 10;
 
-    const renderQuestion = () => (
-        <View style={[styles.questionCard, { backgroundColor: cardColor }]}>
-            <View style={styles.questionHeader}>
-                <ThemedText style={[styles.roundCaption, { color: textMutedColor }]}>
-                    라운드 {currentRoundIndex} / {totalRoundsDisplay}
-                </ThemedText>
-                <View style={[styles.timerBadge, { backgroundColor: textColor }]}>
-                    <ThemedText style={[styles.timerBadgeText, { color: cardColor }]}>
-                        {(isPaused && pausedRemainingSeconds !== null ? pausedRemainingSeconds : timeLeft) ?? '-'}초
+    const renderQuestion = () => {
+        const activeRound =
+            currentRound && roomData?.room.currentRound === currentRound.index ? currentRound : null;
+        const question = activeRound?.question ?? null;
+        const choices = question?.choices ?? [];
+        const isQuestionLoading = !question || !question.prompt || choices.length === 0;
+        const myAnswer = activeRound?.myAnswer;
+
+        return (
+            <View style={[styles.questionCard, { backgroundColor: cardColor }]}>
+                <View style={styles.questionHeader}>
+                    <ThemedText style={[styles.roundCaption, { color: textMutedColor }]}>
+                        라운드 {currentRoundIndex} / {totalRoundsDisplay}
                     </ThemedText>
+                    <View style={[styles.timerBadge, { backgroundColor: textColor }]}>
+                        <ThemedText style={[styles.timerBadgeText, { color: cardColor }]}>
+                            {(isPaused && pausedRemainingSeconds !== null ? pausedRemainingSeconds : timeLeft) ?? '-'}초
+                        </ThemedText>
+                    </View>
                 </View>
-            </View>
-            <ThemedText type="subtitle" style={styles.questionPrompt}>
-                {currentRound?.question?.prompt ?? '문제를 불러오는 중...'}
-            </ThemedText>
-            <View style={styles.choiceList}>
-                {currentRound?.question?.choices.map((choice, index) => {
-                    const isSelected = selectedChoice === index || currentRound?.myAnswer?.choiceIndex === index;
-                    const isDisabled = currentRound?.myAnswer !== undefined || isPaused || selectedChoice !== null;
+                {isQuestionLoading ? (
+                    <View style={styles.questionSkeletonBlock} accessibilityLabel="문제를 불러오는 중">
+                        <Animated.View
+                            style={[
+                                styles.skeletonLine,
+                                styles.skeletonPromptLine,
+                                { backgroundColor: skeletonBaseColor, opacity: skeletonOpacity },
+                            ]}
+                        />
+                        <Animated.View
+                            style={[
+                                styles.skeletonLine,
+                                styles.skeletonPromptLineShort,
+                                { backgroundColor: skeletonBaseColor, opacity: skeletonOpacity },
+                            ]}
+                        />
+                    </View>
+                ) : (
+                    <ThemedText type="subtitle" style={styles.questionPrompt}>
+                        {question.prompt}
+                    </ThemedText>
+                )}
+                <View style={styles.choiceList}>
+                    {isQuestionLoading
+                        ? new Array(4).fill(0).map((_, index) => (
+                            <View
+                                key={`skeleton_choice_${index}`}
+                                style={[
+                                    styles.choiceButton,
+                                    { backgroundColor: background, borderColor: borderColor },
+                                ]}
+                                accessibilityElementsHidden
+                                importantForAccessibility="no-hide-descendants"
+                            >
+                                <Animated.View
+                                    style={[
+                                        styles.choiceBadge,
+                                        {
+                                            backgroundColor: skeletonBaseColor,
+                                            opacity: skeletonOpacity,
+                                        },
+                                    ]}
+                                />
+                                <View style={styles.skeletonChoiceTextWrap}>
+                                    <Animated.View
+                                        style={[
+                                            styles.skeletonLine,
+                                            styles.skeletonChoiceLine,
+                                            {
+                                                width: index % 2 === 0 ? '76%' : '62%',
+                                                backgroundColor: skeletonBaseColor,
+                                                opacity: skeletonOpacity,
+                                            },
+                                        ]}
+                                    />
+                                </View>
+                            </View>
+                        ))
+                    : choices.map((choice, index) => {
+                    const isSelected = selectedChoice === index || myAnswer?.choiceIndex === index;
+                    const isDisabled = myAnswer !== undefined || isPaused || selectedChoice !== null;
                     return (
                         <Pressable
-                            key={choice.id}
-                            onPress={() => handleChoicePress(index)}
-                            disabled={isDisabled}
-                            style={({ pressed }) => [
-                                styles.choiceButton,
-                                { backgroundColor: background, borderColor: borderColor },
-                                isSelected && { backgroundColor: textColor, borderColor: textColor },
-                                pressed && !isDisabled && styles.choicePressed,
-                            ]}
-                        >
-                            <View style={[
-                                styles.choiceBadge,
-                                { backgroundColor: borderColor },
-                                isSelected && { backgroundColor: cardColor }
-                            ]}>
-                                <ThemedText style={[
-                                    styles.choiceBadgeText,
-                                    { color: textColor },
-                                ]}>
-                                    {String.fromCharCode(65 + index)}
-                                </ThemedText>
-                            </View>
-                            <ThemedText style={[
-                                styles.choiceLabel,
-                                { color: textColor },
-                                isSelected && [styles.choiceLabelSelected, { color: cardColor }]
-                            ]}>
-                                {choice.text}
-                            </ThemedText>
-                        </Pressable>
-                    );
-                })}
+                                    key={choice.id}
+                                    onPress={() => handleChoicePress(index)}
+                                    disabled={isDisabled}
+                                    style={({ pressed }) => [
+                                        styles.choiceButton,
+                                        { backgroundColor: background, borderColor: borderColor },
+                                        isSelected && { backgroundColor: textColor, borderColor: textColor },
+                                        pressed && !isDisabled && styles.choicePressed,
+                                    ]}
+                                >
+                                    <View style={[
+                                        styles.choiceBadge,
+                                        { backgroundColor: borderColor },
+                                        isSelected && { backgroundColor: cardColor }
+                                    ]}>
+                                        <ThemedText style={[
+                                            styles.choiceBadgeText,
+                                            { color: textColor },
+                                        ]}>
+                                            {String.fromCharCode(65 + index)}
+                                        </ThemedText>
+                                    </View>
+                                    <ThemedText style={[
+                                        styles.choiceLabel,
+                                        { color: textColor },
+                                        isSelected && [styles.choiceLabelSelected, { color: cardColor }]
+                                    ]}>
+                                        {choice.text}
+                                    </ThemedText>
+                                </Pressable>
+                            );
+                        })}
+                </View>
             </View>
-        </View>
-    );
+        );
+    };
 
     const renderGrace = () => (
         <View style={[styles.centerCard, { backgroundColor: cardColor }]}>
@@ -1990,7 +2142,7 @@ export default function MatchPlayScreen() {
                                         <View style={styles.leaderboardNameRow}>
                                             <ThemedText
                                                 style={[
-                                                    styles.choiceLabel,
+                                                    styles.leaderboardNameText,
                                                     { flexShrink: 1, minWidth: 0 },
                                                     isMe && [styles.leaderboardMeText, { color: textColor }],
                                                 ]}
@@ -2041,6 +2193,10 @@ export default function MatchPlayScreen() {
         const deckTitle = deckInfo?.title ?? '랜덤 덱';
         const deckDescription =
             deckInfo?.description ?? '방 생성 시 랜덤으로 선택된 덱입니다.';
+        const resultsPlayers =
+            roomStatus === 'results' && resultsSnapshot
+                ? resultsSnapshot
+                : participants;
 
         return (
             <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
@@ -2060,11 +2216,11 @@ export default function MatchPlayScreen() {
                     </View>
                 </View>
                 <View style={styles.distributionList}>
-                    {participants.map((player, index) => {
+                    {resultsPlayers.map((player, index) => {
                         const isMe = meParticipantId !== null && player.participantId === meParticipantId;
                         const isHostPlayer = hostParticipantId !== null && player.participantId === hostParticipantId;
                         const rank = player.rank ?? index + 1;
-                        const usePodiumEmoji = participants.length >= 3;
+                        const usePodiumEmoji = resultsPlayers.length >= 3;
                         const podiumEmoji =
                             usePodiumEmoji && rank === 1
                                 ? '🥇'
@@ -2074,6 +2230,21 @@ export default function MatchPlayScreen() {
                                         ? '🥉'
                                         : '';
                         const nameDisplay = player.nickname;
+                        const totalRoundsForAccuracy = roomData?.room.totalRounds ?? 0;
+                        const correctCount = player.correctCount ?? null;
+                        const accuracyPercent =
+                            totalRoundsForAccuracy > 0 && correctCount !== null
+                                ? Math.round((correctCount / totalRoundsForAccuracy) * 100)
+                                : null;
+                        const donutSize = 42;
+                        const donutStroke = 6;
+                        const donutRadius = (donutSize - donutStroke) / 2;
+                        const donutCircumference = 2 * Math.PI * donutRadius;
+                        const accuracyArc = accuracyPercent !== null
+                            ? donutCircumference * (accuracyPercent / 100)
+                            : 0;
+                        const donutTrack = dangerColor;
+                        const correctRingColor = colorScheme === 'dark' ? '#56CCF2' : '#2D9CDB';
                         return (
                             <View
                                 key={player.participantId}
@@ -2098,7 +2269,7 @@ export default function MatchPlayScreen() {
                                         <View style={styles.leaderboardNameRow}>
                                             <ThemedText
                                                 style={[
-                                                    styles.choiceLabel,
+                                                    styles.leaderboardNameText,
                                                     { flexShrink: 1, minWidth: 0 },
                                                     isMe && [styles.leaderboardMeText, { color: textColor }],
                                                 ]}
@@ -2124,6 +2295,60 @@ export default function MatchPlayScreen() {
                                         >
                                             {player.totalScore}점
                                         </ThemedText>
+                                        <View style={styles.resultAccuracyDonut}>
+                                            {accuracyPercent === null ? (
+                                                <Animated.View
+                                                    style={[
+                                                        styles.resultAccuracySkeleton,
+                                                        {
+                                                            backgroundColor: skeletonBaseColor,
+                                                            opacity: skeletonOpacity,
+                                                        },
+                                                    ]}
+                                                />
+                                            ) : (
+                                                <Svg width={donutSize} height={donutSize}>
+                                                    <Circle
+                                                        cx={donutSize / 2}
+                                                        cy={donutSize / 2}
+                                                        r={donutRadius}
+                                                        stroke={donutTrack}
+                                                        strokeWidth={donutStroke}
+                                                        fill="none"
+                                                        strokeLinecap="round"
+                                                        transform={`rotate(-90 ${donutSize / 2} ${donutSize / 2})`}
+                                                    />
+                                                    <Circle
+                                                        cx={donutSize / 2}
+                                                        cy={donutSize / 2}
+                                                        r={donutRadius}
+                                                        stroke={correctRingColor}
+                                                        strokeWidth={donutStroke}
+                                                        fill="none"
+                                                        strokeDasharray={`${accuracyArc} ${Math.max(0, donutCircumference - accuracyArc)}`}
+                                                        strokeLinecap="round"
+                                                        transform={`rotate(-90 ${donutSize / 2} ${donutSize / 2})`}
+                                                    />
+                                                </Svg>
+                                            )}
+                                            <View style={styles.resultAccuracyCenter}>
+                                                {accuracyPercent === null ? (
+                                                    <Animated.View
+                                                        style={[
+                                                            styles.resultAccuracyTextSkeleton,
+                                                            {
+                                                                backgroundColor: skeletonBaseColor,
+                                                                opacity: skeletonOpacity,
+                                                            },
+                                                        ]}
+                                                    />
+                                                ) : (
+                                                    <ThemedText style={styles.resultAccuracyText}>
+                                                        {`${accuracyPercent}%`}
+                                                    </ThemedText>
+                                                )}
+                                            </View>
+                                        </View>
                                     </View>
                                 </View>
                             </View>
@@ -2654,6 +2879,22 @@ const styles = StyleSheet.create({
         lineHeight: 28,
         fontWeight: '600',
     },
+    questionSkeletonBlock: {
+        paddingTop: Spacing.xs,
+        paddingBottom: Spacing.sm,
+        gap: Spacing.sm,
+    },
+    skeletonLine: {
+        borderRadius: Radius.sm,
+    },
+    skeletonPromptLine: {
+        height: 22,
+        width: '92%',
+    },
+    skeletonPromptLineShort: {
+        height: 22,
+        width: '68%',
+    },
     choiceList: {
         gap: Spacing.md,
     },
@@ -2677,6 +2918,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginRight: Spacing.md,
     },
+    skeletonChoiceTextWrap: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    skeletonChoiceLine: {
+        height: 16,
+    },
     choiceBadgeText: {
         fontSize: 16,
         fontWeight: '700',
@@ -2684,6 +2932,14 @@ const styles = StyleSheet.create({
     choiceLabel: {
         flexShrink: 1,
         marginLeft: Spacing.md,
+        fontSize: 16,
+        fontWeight: '500',
+        lineHeight: 22,
+        textAlignVertical: 'center',
+    },
+    leaderboardNameText: {
+        flexShrink: 1,
+        marginLeft: 0,
         fontSize: 16,
         fontWeight: '500',
         lineHeight: 22,
@@ -2830,14 +3086,14 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.xs,
+        gap: Spacing.sm,
     },
     rankBadgeText: {
         fontSize: 18,
         fontWeight: '700',
         minWidth: 32,
         textAlign: 'center',
-        marginRight: Spacing.xs,
+        marginRight: 0,
     },
     leaderboardAvatar: {},
     leaderboardNameTextGroup: {
@@ -2848,7 +3104,6 @@ const styles = StyleSheet.create({
     leaderboardNameRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.sm,
         flexWrap: 'nowrap',
         minWidth: 0,
         flexShrink: 1,
@@ -2866,11 +3121,39 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         gap: Spacing.xs,
     },
+    resultAccuracyDonut: {
+        width: 42,
+        height: 42,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: Spacing.xs,
+    },
+    resultAccuracySkeleton: {
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+    },
+    resultAccuracyCenter: {
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '70%',
+        height: '70%',
+    },
+    resultAccuracyTextSkeleton: {
+        width: 22,
+        height: 10,
+        borderRadius: Radius.sm,
+    },
+    resultAccuracyText: {
+        fontSize: 11,
+        fontWeight: '700',
+    },
     resultNameWrapper: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: Spacing.xs,
+        gap: Spacing.sm,
     },
     resultNameTextGroup: {
         flex: 1,

@@ -150,8 +150,15 @@ export default function MatchLobbyScreen() {
     }
   }, [meParticipant?.isReady, optimisticReady]);
 
+  const identityId = useMemo(() => {
+    if (status === 'authenticated' && user?.id) return user.id;
+    if (status === 'guest' && guestKey) return `guest:${guestKey}`;
+    return null;
+  }, [guestKey, status, user?.id]);
   const isSelfReady = optimisticReady !== null ? optimisticReady : (meParticipant?.isReady ?? false);
-  const isSelfHost = meParticipant?.isHost ?? false;
+  const isSelfHost =
+    meParticipant?.isHost ??
+    (!!identityId && lobby?.room.hostIdentity === identityId);
   const isStartPending = !!pendingAction && (pendingAction as any).type === 'start';
   const shouldShowHostPendingBanner = !!pendingAction && isSelfHost;
   const shouldShowParticipantPendingBanner = !!pendingAction && !isSelfHost && isStartPending;
@@ -965,7 +972,12 @@ export default function MatchLobbyScreen() {
                 ) : (
                   <View style={styles.participantGrid}>
                     {participants.map((participant) => {
-                      const isMe = participant.participantId === meParticipant?.participantId;
+                      const isMe =
+                        participant.participantId === meParticipant?.participantId ||
+                        (status === 'authenticated' && user?.id && participant.userId === user.id) ||
+                        (identityId != null &&
+                          lobby?.room.hostIdentity === identityId &&
+                          participant.isHost);
                       const displayXp = isMe && status === 'authenticated' && user ? user.xp : participant.xp;
                       const levelInfo = displayXp != null ? calculateLevel(displayXp) : null;
                       return (

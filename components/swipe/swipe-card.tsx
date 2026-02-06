@@ -172,7 +172,7 @@ export function SwipeCard({
   const difficultyMode = colorScheme === 'dark' ? 'dark' : 'light';
   const difficultyToken = DIFFICULTY_TOKENS[difficultyLevel][difficultyMode];
   const inactiveDotsCount = Math.max(0, 3 - difficultyDots);
-  const [displayCardNumber] = useState(cardNumber ?? index + 1);
+  const displayCardNumber = cardNumber ?? index + 1;
 
   const gesture = Gesture.Pan()
     .enabled(isActive && swipeEnabled)

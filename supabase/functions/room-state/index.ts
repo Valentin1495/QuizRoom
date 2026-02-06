@@ -157,6 +157,22 @@ serve(async (req: Request) => {
       }
     }
 
+    // Aggregate correctness (used for results view)
+    let correctByParticipant: Map<string, number> = new Map();
+    if (room.status === 'results' || room.status === 'leaderboard' || room.status === 'reveal') {
+      const { data: allAnswers } = await supabase
+        .from('live_match_answers')
+        .select('participant_id, is_correct')
+        .eq('room_id', roomId);
+
+      (allAnswers || []).forEach((answer: any) => {
+        if (answer?.is_correct) {
+          const current = correctByParticipant.get(answer.participant_id) ?? 0;
+          correctByParticipant.set(answer.participant_id, current + 1);
+        }
+      });
+    }
+
     // Get current round and question
     let currentRound: any = undefined;
     const { data: round } = await supabase
@@ -274,6 +290,9 @@ serve(async (req: Request) => {
       totalScore: me.total_score,
       isHost: me.is_host,
       answers: me.answers,
+      correctCount: (room.status === 'results' || room.status === 'leaderboard' || room.status === 'reveal')
+        ? (correctByParticipant.get(me.id) ?? 0)
+        : undefined,
       avgResponseMs: me.avg_response_ms,
       lastSeenAt: new Date(me.last_seen_at ?? 0).getTime(),
       disconnectedAt: me.disconnected_at ? new Date(me.disconnected_at).getTime() : null,
@@ -297,6 +316,9 @@ serve(async (req: Request) => {
         lastSeenAt: new Date(p.last_seen_at ?? 0).getTime(),
         disconnectedAt: p.disconnected_at ? new Date(p.disconnected_at).getTime() : null,
         answers: p.answers,
+        correctCount: (room.status === 'results' || room.status === 'leaderboard' || room.status === 'reveal')
+          ? (correctByParticipant.get(p.id) ?? 0)
+          : undefined,
       };
     });
 

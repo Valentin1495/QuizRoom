@@ -101,7 +101,6 @@ export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }:
                   ? 'rgba(255,255,255,0.1)'
                   : 'rgba(0,0,0,0.05)',
               },
-              pressed && styles.buttonPressed,
               isDisabled && styles.buttonDisabled,
             ]}
           >
@@ -115,21 +114,10 @@ export function ReactionBar({ onReaction, disabled = false, cooldownMs = 1000 }:
   );
 }
 
-// Short cooldown to prevent accidental double-taps while allowing rapid tapping
-const COMPACT_BUTTON_COOLDOWN_MS = 120;
-
 // 컴팩트 버전 (게임 화면용)
 export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-
-  const [cooldowns, setCooldowns] = useState<Record<ReactionEmoji, boolean>>({
-    clap: false,
-    skull: false,
-    hundred: false,
-    party: false,
-    laugh: false,
-  });
 
   const [expanded, setExpanded] = useState(false);
   const expandAnim = useRef(new Animated.Value(0)).current;
@@ -160,18 +148,12 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
 
   const handlePress = useCallback(
     (emoji: ReactionEmoji) => {
-      if (disabled || cooldowns[emoji]) return;
+      if (disabled) return;
 
       mediumHaptic();
       onReaction(emoji);
-
-      // Short cooldown to prevent accidental double-taps
-      setCooldowns((prev) => ({ ...prev, [emoji]: true }));
-      setTimeout(() => {
-        setCooldowns((prev) => ({ ...prev, [emoji]: false }));
-      }, COMPACT_BUTTON_COOLDOWN_MS);
     },
-    [cooldowns, disabled, onReaction]
+    [disabled, onReaction]
   );
 
   const panelBg = isDark ? 'rgba(20, 20, 28, 0.96)' : 'rgba(255, 255, 255, 0.98)';
@@ -192,7 +174,6 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
         style={({ pressed }) => [
           styles.toggleButton,
           { backgroundColor: panelBg, shadowColor, borderColor: panelBorderColor },
-          pressed && styles.toggleButtonPressed,
           disabled && styles.buttonDisabled,
         ]}
       >
@@ -222,7 +203,6 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
       ]}
     >
       {REACTION_CONFIG.map(({ emoji, icon }) => {
-        const isOnCooldown = cooldowns[emoji];
         const isVisuallyDisabled = disabled;
 
         return (
@@ -230,12 +210,11 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
             key={emoji}
             accessibilityRole="button"
             accessibilityLabel={`${emoji} 리액션`}
-            onPress={() => handlePress(emoji)}
-            disabled={disabled || isOnCooldown}
+            onPressIn={() => handlePress(emoji)}
+            disabled={disabled}
             style={({ pressed }) => [
               styles.compactButton,
               { backgroundColor: buttonBg },
-              pressed && styles.compactButtonPressed,
               isVisuallyDisabled && styles.buttonDisabled,
             ]}
           >
@@ -255,7 +234,6 @@ export function CompactReactionBar({ onReaction, disabled }: ReactionBarProps) {
         style={({ pressed }) => [
           styles.compactButton,
           { backgroundColor: buttonBg },
-          pressed && styles.compactButtonPressed,
           disabled && styles.buttonDisabled,
         ]}
       >

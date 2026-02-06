@@ -858,6 +858,7 @@ export function SwipeStack({
     setReportQuestionId(null);
     setReportSubject(null);
     setIsSubmittingReport(false);
+    setCardOffset(0);
     setMissCount(0);
     setHintText(null);
     setEliminatedChoiceIds(null);

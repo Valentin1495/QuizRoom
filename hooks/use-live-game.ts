@@ -70,6 +70,7 @@ export type GameParticipant = {
   lastSeenAt: number;
   disconnectedAt: number | null;
   answers: number;
+  correctCount?: number;
 };
 
 export type GameMe = {
@@ -80,6 +81,7 @@ export type GameMe = {
   totalScore: number;
   isHost: boolean;
   answers: number;
+  correctCount?: number;
   avgResponseMs: number;
   lastSeenAt: number;
   disconnectedAt: number | null;

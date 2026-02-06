@@ -1,6 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, type ViewStyle } from 'react-native';
+import { ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, type LayoutRectangle, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -15,7 +15,6 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestNickname } from '@/lib/guest';
-import { saveRecentLiveMatchDeck } from '@/lib/recent-selections';
 
 const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
 
@@ -38,6 +37,12 @@ export default function LiveMatchScreen() {
   const randomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const randomIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastAutoNicknameRef = useRef<string | null>(null);
+  const scrollRef = useRef<ScrollView | null>(null);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const keyboardHeightRef = useRef(0);
+  const scrollViewHeightRef = useRef(0);
+  const createSectionLayoutRef = useRef<LayoutRectangle | null>(null);
+  const createButtonLayoutRef = useRef<LayoutRectangle | null>(null);
 
   const createLiveMatchRoom = useCreateLiveMatchRoom();
   const joinLiveMatchRoom = useJoinLiveMatchRoom();
@@ -116,6 +121,37 @@ export default function LiveMatchScreen() {
     };
   }, []);
 
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', (event) => {
+      keyboardHeightRef.current = event.endCoordinates?.height ?? 0;
+      setKeyboardVisible(true);
+    });
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      keyboardHeightRef.current = 0;
+      setKeyboardVisible(false);
+    });
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  const scrollToCreateSection = useCallback(() => {
+    if (!scrollRef.current) return;
+    const viewportHeight = scrollViewHeightRef.current;
+    const section = createSectionLayoutRef.current;
+    if (!viewportHeight || !section) return;
+    const button = createButtonLayoutRef.current;
+    const visibleHeight = Math.max(0, viewportHeight - keyboardHeightRef.current);
+    if (!visibleHeight) return;
+    const targetBottom =
+      button
+        ? section.y + button.y + button.height + Spacing.xxl
+        : section.y + section.height + Spacing.xxl;
+    const nextY = Math.max(0, targetBottom - visibleHeight);
+    scrollRef.current.scrollTo({ y: nextY, animated: true });
+  }, []);
+
   const handleRandomDeck = useCallback(() => {
     if (isDecksLoading || liveMatchDecks.length === 0 || isRandomizing) return;
     setIsRandomizing(true);
@@ -188,204 +224,231 @@ export default function LiveMatchScreen() {
     <>
       <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
       <ThemedView style={styles.screen}>
-        <ScrollView
-          contentContainerStyle={[
-            styles.container,
-            {
-              paddingTop: insets.top + Spacing.lg,
-              paddingBottom: Spacing.xl + insets.bottom,
-            },
-          ]}
-          showsVerticalScrollIndicator={false}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={0}
+          style={styles.keyboardAvoiding}
         >
-          <View style={styles.header}>
-            <ThemedText type="title">라이브 매치</ThemedText>
-            <ThemedText style={[styles.headerSubtitle, { color: mutedColor }]}>
-              친구들과 실시간 퀴즈 배틀을 즐겨보세요
-            </ThemedText>
-          </View>
-
-          <View
-            style={[
-              styles.card,
-              { backgroundColor: cardBackground, borderColor: cardBorder },
+          <ScrollView
+            ref={scrollRef}
+            onLayout={(event) => {
+              scrollViewHeightRef.current = event.nativeEvent.layout.height;
+            }}
+            contentContainerStyle={[
+              styles.container,
+              {
+                paddingTop: insets.top + Spacing.lg,
+                paddingBottom: keyboardVisible ? 0 : Spacing.xl + insets.bottom,
+              },
             ]}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="interactive"
+            contentInsetAdjustmentBehavior="never"
           >
-            <ThemedText style={styles.cardTitle}>퀴즈룸 입장</ThemedText>
-            <ThemedText style={[styles.cardDescription, { color: mutedColor }]}>
-              초대 코드를 입력하고 닉네임을 정해주세요
-            </ThemedText>
-            <TextInput
-              value={liveMatchRoomCode}
-              onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
-              placeholder="A1B2C3"
-              autoCapitalize="characters"
-              maxLength={6}
-              style={[
-                styles.codeInput,
-                {
-                  borderColor: inputBorder,
-                  backgroundColor: inputBackground,
-                  color: themeColors.text,
-                },
-              ]}
-              placeholderTextColor={mutedColor}
-            />
-            <TextInput
-              value={joinNickname}
-              onChangeText={setJoinNickname}
-              placeholder="닉네임"
-              maxLength={24}
-              editable={!isGuest}
-              selectTextOnFocus={!isGuest}
-              style={[
-                styles.nicknameInput,
-                {
-                  borderColor: inputBorder,
-                  backgroundColor: inputBackground,
-                  color: themeColors.text,
-                },
-                isGuest && {
-                  backgroundColor: inputDisabledBackground,
-                  color: subtleColor,
-                },
-              ]}
-              placeholderTextColor={mutedColor}
-            />
-            <Button
-              variant='secondary'
-              onPress={handleJoinLiveMatchRoom}
-              disabled={isJoining || !isJoinEnabled}
-              loading={isJoining}
-              size="lg"
-            >
-              입장하기
-            </Button>
-          </View>
-
-          <View
-            style={[
-              styles.card,
-              { backgroundColor: cardBackground, borderColor: cardBorder },
-            ]}
-          >
-            <ThemedText style={styles.cardTitle}>퀴즈룸 생성</ThemedText>
-            <ThemedText style={[styles.cardDescription, { color: mutedColor }]}>
-              새 퀴즈룸을 열고 친구들에게 초대 코드를 공유하세요
-            </ThemedText>
-            <View style={styles.deckSectionHeader}>
-              <ThemedText style={styles.deckSectionTitle}>덱 선택</ThemedText>
+            <View style={styles.header}>
+              <ThemedText type="title">라이브 매치</ThemedText>
+              <ThemedText style={[styles.headerSubtitle, { color: mutedColor }]}>
+                친구들과 실시간 퀴즈 배틀을 즐겨보세요
+              </ThemedText>
             </View>
-            <View style={styles.deckList}>
-              {isDecksLoading ? (
-                <View style={styles.deckLoading}>
-                  <ActivityIndicator color={themeColors.primary} />
-                </View>
-              ) : liveMatchDecks.length > 0 ? (
-                liveMatchDecks.map((deck) => {
-                  const isSelected = deck.id === selectedDeckId;
-                  const platformCardStyle: ViewStyle =
-                    Platform.OS === 'ios'
-                      ? {
-                        shadowColor: themeColors.primary,
-                        shadowOpacity: isSelected ? 0.25 : 0,
-                        shadowRadius: isSelected ? 12 : 0,
-                        shadowOffset: { width: 0, height: isSelected ? 6 : 0 },
-                      }
-                      : {};
-                  return (
-                    <Pressable
-                      key={deck.id}
-                      onPress={() => !isRandomizing && setSelectedDeckId(deck.id)}
-                      disabled={isRandomizing}
-                      style={[
-                        styles.deckOption,
-                        {
-                          borderColor: isSelected ? deckOptionSelectedBorder : deckOptionBorder,
-                          backgroundColor: isSelected
-                            ? deckOptionSelectedBackground
-                            : deckOptionBackground,
-                          borderWidth: isSelected ? 1.5 : 1,
-                          transform: [{ scale: isSelected ? 1.02 : 1 }],
-                        },
-                        platformCardStyle,
-                      ]}
-                    >
-                      <View style={styles.deckOptionHeader}>
-                        <IconSymbol
-                          name={getDeckIcon(deck.slug)}
-                          size={20}
-                          color={isSelected ? themeColors.primary : themeColors.text}
-                        />
-                        <ThemedText
-                          style={styles.deckOptionTitle}
-                          lightColor={themeColors.text}
-                          darkColor={themeColors.text}
-                        >
-                          {deck.title}
+
+            <View
+              style={[
+                styles.card,
+                { backgroundColor: cardBackground, borderColor: cardBorder },
+              ]}
+            >
+              <ThemedText style={styles.cardTitle}>퀴즈룸 입장</ThemedText>
+              <ThemedText style={[styles.cardDescription, { color: mutedColor }]}>
+                초대 코드를 입력하고 닉네임을 정해주세요
+              </ThemedText>
+              <TextInput
+                value={liveMatchRoomCode}
+                onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+                placeholder="A1B2C3"
+                autoCapitalize="characters"
+                maxLength={6}
+                style={[
+                  styles.codeInput,
+                  {
+                    borderColor: inputBorder,
+                    backgroundColor: inputBackground,
+                    color: themeColors.text,
+                  },
+                ]}
+                placeholderTextColor={mutedColor}
+              />
+              <TextInput
+                value={joinNickname}
+                onChangeText={setJoinNickname}
+                placeholder="닉네임"
+                maxLength={24}
+                editable={!isGuest}
+                selectTextOnFocus={!isGuest}
+                style={[
+                  styles.nicknameInput,
+                  {
+                    borderColor: inputBorder,
+                    backgroundColor: inputBackground,
+                    color: themeColors.text,
+                  },
+                  isGuest && {
+                    backgroundColor: inputDisabledBackground,
+                    color: subtleColor,
+                  },
+                ]}
+                placeholderTextColor={mutedColor}
+              />
+              <Button
+                variant='secondary'
+                onPress={handleJoinLiveMatchRoom}
+                disabled={isJoining || !isJoinEnabled}
+                loading={isJoining}
+                size="lg"
+              >
+                입장하기
+              </Button>
+            </View>
+
+            <View
+              style={[
+                styles.card,
+                { backgroundColor: cardBackground, borderColor: cardBorder },
+              ]}
+              onLayout={(event) => {
+                createSectionLayoutRef.current = event.nativeEvent.layout;
+              }}
+            >
+              <ThemedText style={styles.cardTitle}>퀴즈룸 생성</ThemedText>
+              <ThemedText style={[styles.cardDescription, { color: mutedColor }]}>
+                새 퀴즈룸을 열고 친구들에게 초대 코드를 공유하세요
+              </ThemedText>
+              <View style={styles.deckSectionHeader}>
+                <ThemedText style={styles.deckSectionTitle}>덱 선택</ThemedText>
+              </View>
+              <View style={styles.deckList}>
+                {isDecksLoading ? (
+                  <View style={styles.deckLoading}>
+                    <ActivityIndicator color={themeColors.primary} />
+                  </View>
+                ) : liveMatchDecks.length > 0 ? (
+                  liveMatchDecks.map((deck) => {
+                    const isSelected = deck.id === selectedDeckId;
+                    const platformCardStyle: ViewStyle =
+                      Platform.OS === 'ios'
+                        ? {
+                          shadowColor: themeColors.primary,
+                          shadowOpacity: isSelected ? 0.25 : 0,
+                          shadowRadius: isSelected ? 12 : 0,
+                          shadowOffset: { width: 0, height: isSelected ? 6 : 0 },
+                        }
+                        : {};
+                    return (
+                      <Pressable
+                        key={deck.id}
+                        onPress={() => !isRandomizing && setSelectedDeckId(deck.id)}
+                        disabled={isRandomizing}
+                        style={[
+                          styles.deckOption,
+                          {
+                            borderColor: isSelected ? deckOptionSelectedBorder : deckOptionBorder,
+                            backgroundColor: isSelected
+                              ? deckOptionSelectedBackground
+                              : deckOptionBackground,
+                            borderWidth: isSelected ? 1.5 : 1,
+                            transform: [{ scale: isSelected ? 1.02 : 1 }],
+                          },
+                          platformCardStyle,
+                        ]}
+                      >
+                        <View style={styles.deckOptionHeader}>
+                          <IconSymbol
+                            name={getDeckIcon(deck.slug)}
+                            size={20}
+                            color={isSelected ? themeColors.primary : themeColors.text}
+                          />
+                          <ThemedText
+                            style={styles.deckOptionTitle}
+                            lightColor={themeColors.text}
+                            darkColor={themeColors.text}
+                          >
+                            {deck.title}
+                          </ThemedText>
+                        </View>
+                        <ThemedText style={[styles.deckOptionDescription, { color: mutedColor }]}>
+                          {deck.description}
                         </ThemedText>
-                      </View>
-                      <ThemedText style={[styles.deckOptionDescription, { color: mutedColor }]}>
-                        {deck.description}
-                      </ThemedText>
-                    </Pressable>
-                  );
-                })
-              ) : (
-                <ThemedText style={[styles.deckEmptyText, { color: deckEmptyTextColor }]}>
-                  사용 가능한 덱이 없습니다.
-                </ThemedText>
-              )}
-            </View>
-            <Button
-              variant="outline"
-              onPress={handleRandomDeck}
-              disabled={isRandomizing || isDecksLoading || liveMatchDecks.length === 0}
-              loading={isRandomizing}
-              leftIcon={
-                <IconSymbol
-                  name="shuffle"
-                  size={18}
-                  color={themeColors.text}
-                  style={Platform.OS === 'android' ? { marginTop: 2 } : undefined}
-                />
-              }
-            >
-              셔플하기
-            </Button>
+                      </Pressable>
+                    );
+                  })
+                ) : (
+                  <ThemedText style={[styles.deckEmptyText, { color: deckEmptyTextColor }]}>
+                    사용 가능한 덱이 없습니다.
+                  </ThemedText>
+                )}
+              </View>
+              <Button
+                variant="outline"
+                onPress={handleRandomDeck}
+                disabled={isRandomizing || isDecksLoading || liveMatchDecks.length === 0}
+                loading={isRandomizing}
+                leftIcon={
+                  <IconSymbol
+                    name="shuffle"
+                    size={18}
+                    color={themeColors.text}
+                    style={Platform.OS === 'android' ? { marginTop: 2 } : undefined}
+                  />
+                }
+              >
+                셔플하기
+              </Button>
 
-            <ThemedText style={styles.deckSectionTitle}>닉네임 입력</ThemedText>
-            <TextInput
-              value={hostNickname}
-              onChangeText={setHostNickname}
-              placeholder="호스트 닉네임"
-              maxLength={24}
-              editable={!isGuest}
-              selectTextOnFocus={!isGuest}
-              style={[
-                styles.nicknameInput,
-                {
-                  borderColor: inputBorder,
-                  backgroundColor: inputBackground,
-                  color: themeColors.text,
-                },
-                isGuest && {
-                  backgroundColor: inputDisabledBackground,
-                  color: subtleColor,
-                },
-              ]}
-              placeholderTextColor={mutedColor}
-            />
-            <Button
-              size="lg"
-              onPress={handleCreateLiveMatchRoom}
-              disabled={isCreating || isRandomizing || isDecksLoading || !selectedDeckId}
-              loading={isCreating}
-            >
-              생성하기
-            </Button>
-          </View>
-        </ScrollView>
+              <ThemedText style={styles.deckSectionTitle}>닉네임 입력</ThemedText>
+              <TextInput
+                value={hostNickname}
+                onChangeText={setHostNickname}
+                placeholder="호스트 닉네임"
+                maxLength={24}
+                editable={!isGuest}
+                selectTextOnFocus={!isGuest}
+                style={[
+                  styles.nicknameInput,
+                  {
+                    borderColor: inputBorder,
+                    backgroundColor: inputBackground,
+                    color: themeColors.text,
+                  },
+                  isGuest && {
+                    backgroundColor: inputDisabledBackground,
+                    color: subtleColor,
+                  },
+                ]}
+                placeholderTextColor={mutedColor}
+                onFocus={() => {
+                  scrollToCreateSection();
+                  requestAnimationFrame(scrollToCreateSection);
+                  setTimeout(scrollToCreateSection, 180);
+                }}
+              />
+              <View
+                onLayout={(event) => {
+                  createButtonLayoutRef.current = event.nativeEvent.layout;
+                }}
+              >
+                <Button
+                  size="lg"
+                  onPress={handleCreateLiveMatchRoom}
+                  disabled={isCreating || isRandomizing || isDecksLoading || !selectedDeckId}
+                  loading={isCreating}
+                >
+                  생성하기
+                </Button>
+              </View>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </ThemedView>
     </>
   );
@@ -393,6 +456,9 @@ export default function LiveMatchScreen() {
 
 const styles = StyleSheet.create({
   screen: {
+    flex: 1,
+  },
+  keyboardAvoiding: {
     flex: 1,
   },
   container: {
