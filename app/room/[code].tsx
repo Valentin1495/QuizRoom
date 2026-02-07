@@ -28,6 +28,7 @@ import { saveRecentLiveMatchDeck } from '@/lib/recent-selections';
 import { ROOM_IN_PROGRESS_MESSAGE } from '@/lib/supabase-api';
 
 const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
+const ENTRY_CONFIRM_MIN_VISIBLE_MS = 500;
 
 export default function MatchLobbyScreen() {
   const router = useRouter();
@@ -48,6 +49,8 @@ export default function MatchLobbyScreen() {
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
   const [pendingBannerHeight, setPendingBannerHeight] = useState(0);
   const [isStarting, setIsStarting] = useState(false);
+  const [isEntryConfirming, setIsEntryConfirming] = useState(false);
+  const entryConfirmStartedAtRef = useRef<number | null>(null);
 
   const selfGuestAvatarId = useMemo(
     () => (status === 'guest' ? deriveGuestAvatarId(guestKey) : undefined),
@@ -119,6 +122,7 @@ export default function MatchLobbyScreen() {
     () => participants.find((participant) => participant.participantId === participantId) ?? null,
     [participants, participantId]
   );
+  const isSelfParticipantPending = isEntryConfirming;
   const myLevel = useMemo(() => {
     if (status === 'authenticated' && user) {
       return calculateLevel(user.xp).level;
@@ -149,6 +153,19 @@ export default function MatchLobbyScreen() {
       }
     }
   }, [meParticipant?.isReady, optimisticReady]);
+
+  useEffect(() => {
+    if (!isEntryConfirming) return;
+    if (!meParticipant) return;
+    const startedAt = entryConfirmStartedAtRef.current ?? Date.now();
+    const elapsed = Date.now() - startedAt;
+    const remaining = Math.max(0, ENTRY_CONFIRM_MIN_VISIBLE_MS - elapsed);
+    const timeout = setTimeout(() => {
+      setIsEntryConfirming(false);
+      entryConfirmStartedAtRef.current = null;
+    }, remaining);
+    return () => clearTimeout(timeout);
+  }, [isEntryConfirming, meParticipant]);
 
   const identityId = useMemo(() => {
     if (status === 'authenticated' && user?.id) return user.id;
@@ -478,13 +495,23 @@ export default function MatchLobbyScreen() {
     if (status === 'guest' && !guestKey) return;
     if (joinAttemptRef.current) return;
     joinAttemptRef.current = true;
+    entryConfirmStartedAtRef.current = Date.now();
+    setIsEntryConfirming(true);
     void (async () => {
       try {
         const key = status === 'guest' ? guestKey ?? (await ensureGuestKey()) : undefined;
         const result = await roomActions.join({ code: roomCode, nickname: undefined, guestKey: key });
-        setParticipantId(result.participantId ?? null);
+        const nextParticipantId = result.participantId ?? null;
+        setParticipantId(nextParticipantId);
+        if (!nextParticipantId) {
+          joinAttemptRef.current = false;
+          setIsEntryConfirming(false);
+          entryConfirmStartedAtRef.current = null;
+        }
       } catch (error) {
         joinAttemptRef.current = false;
+        setIsEntryConfirming(false);
+        entryConfirmStartedAtRef.current = null;
         const message = error instanceof Error ? error.message : '';
         if (message.includes(ROOM_IN_PROGRESS_MESSAGE)) {
           Alert.alert('게임이 이미 시작됐어요', ROOM_IN_PROGRESS_MESSAGE, [
@@ -973,6 +1000,7 @@ export default function MatchLobbyScreen() {
                   <View style={styles.participantGrid}>
                     {participants.map((participant) => {
                       const isMe =
+                        participant.participantId === participantId ||
                         participant.participantId === meParticipant?.participantId ||
                         (status === 'authenticated' && user?.id && participant.userId === user.id) ||
                         (identityId != null &&
@@ -1058,19 +1086,20 @@ export default function MatchLobbyScreen() {
                     준비 완료 {readyCount}/{readySummaryTotal}
                   </ThemedText>
                 ) : null}
-                {meParticipant && !isSelfHost ? (
+                {(isSelfParticipantPending || meParticipant) && !isSelfHost ? (
                   <Button
-                    variant={isSelfReady ? 'secondary' : 'default'}
+                    variant={isSelfParticipantPending ? 'secondary' : (isSelfReady ? 'secondary' : 'default')}
                     size="lg"
                     onPress={handleToggleReady}
-                    disabled={!!pendingAction}
+                    loading={isSelfParticipantPending}
+                    disabled={isSelfParticipantPending || !!pendingAction}
                   >
-                    {isSelfReady ? '준비 취소' : '준비 완료'}
+                    {isSelfParticipantPending ? '입장 확인 중…' : (isSelfReady ? '준비 취소' : '준비 완료')}
                   </Button>
                 ) : null}
                 {isSelfHost ? (
                   <View style={styles.hostControls}>
-                    {readySummaryTotal > 0 ? (
+                    {readySummaryTotal > 0 && !isSelfParticipantPending ? (
                       <ThemedText style={styles.hostHint}>
                         {allReady
                           ? '모든 참가자가 준비를 마쳤어요!'
@@ -1078,12 +1107,13 @@ export default function MatchLobbyScreen() {
                       </ThemedText>
                     ) : null}
                     <Button
+                      variant={isSelfParticipantPending ? 'secondary' : 'default'}
                       size="lg"
                       onPress={handleStart}
-                      loading={isStarting}
-                      disabled={!allReady || !!pendingAction}
+                      loading={isStarting || isSelfParticipantPending}
+                      disabled={isSelfParticipantPending || !allReady || !!pendingAction}
                     >
-                      {isStarting ? '시작 준비 중...' : '게임 시작'}
+                      {isSelfParticipantPending ? '입장 확인 중…' : (isStarting ? '시작 준비 중...' : '게임 시작')}
                     </Button>
                   </View>
                 ) : null}
