@@ -15,7 +15,7 @@ export type AuthStatus =
   | 'upgrading';
 
 export type UnifiedUser = {
-  id: string; // Unified as string (Convex Id is string at runtime)
+  id: string;
   handle: string;
   avatarUrl?: string;
   provider: string;
@@ -72,6 +72,6 @@ export function useUnifiedAuth(): UnifiedAuthContextValue {
 }
 
 /**
- * Re-export useUnifiedAuth as useAuth for easy migration.
+ * Re-export useUnifiedAuth as useAuth.
  */
 export { useUnifiedAuth as useAuth };

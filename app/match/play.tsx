@@ -2497,7 +2497,7 @@ export default function MatchPlayScreen() {
 
     const renderHostGraceOverlay = () => {
         const nextHostMessage = (() => {
-            if (hostParticipant && meParticipantId && hostParticipant.participantId === meParticipantId) {
+            if (isHost || (hostParticipant && meParticipantId && hostParticipant.participantId === meParticipantId)) {
                 return '당신이 진행을 이어받았어요.\n게임을 계속 진행해 주세요!';
             }
             if (hostParticipant) {

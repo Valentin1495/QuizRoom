@@ -2534,7 +2534,7 @@ export function SwipeStack({
               borderColor: palette.border,
             },
           ]}
-          bottomInset={insets.bottom + Spacing.lg}
+          bottomInset={isChallenge ? insets.bottom + Spacing.lg : 0}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}

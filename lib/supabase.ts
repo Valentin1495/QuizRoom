@@ -1,6 +1,5 @@
 /**
  * Supabase Client Configuration
- * Replaces Convex client for database operations
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -105,4 +104,3 @@ export function onAuthStateChange(
 // Re-export types for convenience
 export * from './database.types';
 export type { Database } from './database.types';
-

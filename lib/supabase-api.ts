@@ -1,6 +1,5 @@
 /**
  * Supabase API Layer
- * Replaces lib/api.ts (Convex-based)
  * Provides React hooks and functions for database operations
  */
 

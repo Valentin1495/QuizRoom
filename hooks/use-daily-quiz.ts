@@ -1,12 +1,8 @@
 /**
  * Unified Daily Quiz Hook
- * Switches between Convex and Supabase based on feature flag
+ * Supabase-only implementation
  */
 
-import { useQuery } from 'convex/react';
-
-import { api } from '@/convex/_generated/api';
-import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { useDailyQuiz as useSupabaseDailyQuiz } from '@/lib/supabase-api';
 
 export type DailyQuiz = {
@@ -34,13 +30,7 @@ export type DailyQuiz = {
  * @param date Optional date string (YYYY-MM-DD format, KST)
  */
 export function useDailyQuiz(date?: string): DailyQuiz | null | undefined {
-  if (FEATURE_FLAGS.dailyQuiz) {
-    // Supabase-only path
-    const { quiz: supabaseQuiz, isLoading } = useSupabaseDailyQuiz(date);
-    if (isLoading) return undefined;
-    return supabaseQuiz as DailyQuiz | null;
-  }
-
-  // Convex-only path
-  return useQuery(api.daily.getDailyQuiz, { date }) as DailyQuiz | null | undefined;
+  const { quiz, isLoading } = useSupabaseDailyQuiz(date);
+  if (isLoading) return undefined;
+  return quiz as DailyQuiz | null;
 }

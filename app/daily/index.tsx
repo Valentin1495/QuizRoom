@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -13,16 +13,13 @@ import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
-import { api } from '@/convex/_generated/api';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useDailyQuiz } from '@/hooks/use-daily-quiz';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
-import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { lightHaptic, mediumHaptic, successHaptic, warningHaptic } from '@/lib/haptics';
 import { useLogQuizHistory } from '@/lib/supabase-api';
 import { supabase } from '@/lib/supabase-index';
-import { useMutation } from 'convex/react';
 
 const QUESTION_TIME_LIMIT = 10;
 
@@ -51,16 +48,6 @@ function formatSeconds(seconds: number) {
 
 function formatDuration(ms: number) {
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  if (minutes === 0) {
-    return `${seconds}초`;
-  }
-  return `${minutes}분 ${seconds.toString().padStart(2, '0')}초`;
-}
-
-function formatAverageDuration(ms: number) {
-  const totalSeconds = Math.max(0, Math.round(ms / 1000));
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   if (minutes === 0) {
@@ -378,7 +365,6 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null);
   const [results, setResults] = useState<QuestionResult[]>([]);
-  const shareTemplate = dailyQuiz?.shareTemplate ?? null;
   const { status: authStatus } = useAuth();
   const [quizStartedAt, setQuizStartedAt] = useState<number | null>(null);
   const [quizDurationMs, setQuizDurationMs] = useState<number | null>(null);
@@ -547,21 +533,24 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
           clearInterval(timer);
           return 0;
         }
-        const next = prev - 1;
-        // 5초, 4초, 3초일 때 경고 햅틱
-        if (next <= 5 && next >= 3) {
-          warningHaptic();
-          // Pulse 애니메이션 시작
-          timerPulseOpacity.value = withSequence(
-            withTiming(0.5, { duration: 250 }),
-            withTiming(1, { duration: 250 })
-          );
-        }
-        return next;
+        return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
   }, [phase, timerMode]);
+
+  useEffect(() => {
+    if (timerMode !== 'timed') return;
+    if (phase !== 'question') return;
+    if (questionTimeLeft === null) return;
+    if (questionTimeLeft > 5 || questionTimeLeft < 3) return;
+
+    warningHaptic();
+    timerPulseOpacity.value = withSequence(
+      withTiming(0.5, { duration: 250 }),
+      withTiming(1, { duration: 250 })
+    );
+  }, [phase, questionTimeLeft, timerMode, timerPulseOpacity]);
 
   useEffect(() => {
     if (timerMode !== 'timed') return;
@@ -794,9 +783,6 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
     }
   }, [celebrationScale, isPerfect, phase]);
 
-  const shareEmoji = shareTemplate?.emoji ?? '⚡';
-  const shareHeadline = shareTemplate?.headline ?? '문제당 10초 스피드런!';
-  const shareCta = shareTemplate?.cta ?? '친구 초대';
   const categoryDisplay = useMemo(() => {
     const fallback: { label: string; icon: IconSymbolName } = { label: '--', icon: 'lightbulb' };
     if (!dailyQuiz?.category) {
@@ -807,31 +793,6 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
     const icon = DAILY_CATEGORY_ICONS[dailyQuiz.category as DailyCategory] ?? fallback.icon;
     return { label, icon };
   }, [dailyQuiz?.category]);
-
-  const deepLink = useMemo(() => {
-    if (!dailyQuiz?.availableDate) {
-      return 'quizroom://daily';
-    }
-    return `quizroom://daily?date=${dailyQuiz.availableDate}`;
-  }, [dailyQuiz?.availableDate]);
-
-  const handleShare = useCallback(async () => {
-    if (!dailyQuiz) return;
-    const shareMessage =
-      `${shareEmoji} ${shareHeadline}\n` +
-      `오늘 퀴즈에서 ${totalQuestions}문제 중 ${correctCount}문제를 맞췄어요!\n` +
-      `같이 도전해볼래? ${deepLink}`;
-    try {
-      await Share.share({
-        message: shareMessage,
-      });
-    } catch (error) {
-      Alert.alert(
-        '공유에 실패했어요',
-        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
-      );
-    }
-  }, [correctCount, dailyQuiz, deepLink, shareEmoji, shareHeadline, totalQuestions]);
 
   const handleResultPress = () => {
     if (!allAnswered) {
@@ -1692,27 +1653,9 @@ const styles = StyleSheet.create({
   },
 });
 
-function ConvexDailyQuizScreen() {
-  const updateStats = useMutation(api.users.updateStats);
-  const logStreak = useMutation(api.users.logStreakProgress);
-  const logHistory = useMutation(api.history.logEntry);
-
-  return (
-    <DailyQuizScreenContent
-      updateStats={updateStats}
-      logStreak={logStreak}
-      logHistory={logHistory}
-    />
-  );
-}
-
 function SupabaseDailyQuizScreen() {
   const logSupabaseHistory = useLogQuizHistory();
   const { status: authStatus, applyUserDelta, user } = useAuth();
-  const noopUpdateStats = useCallback(
-    async (_params: { correct: number; total?: number; sessionId?: string }) => undefined,
-    []
-  );
   const noopLogStreak = useCallback(
     async (_params: { mode: 'daily'; answered?: number; dateKey?: string }) => undefined,
     []
@@ -1764,8 +1707,5 @@ function SupabaseDailyQuizScreen() {
 }
 
 export default function DailyQuizScreen() {
-  if (FEATURE_FLAGS.dailyQuiz) {
-    return <SupabaseDailyQuizScreen />;
-  }
-  return <ConvexDailyQuizScreen />;
+  return <SupabaseDailyQuizScreen />;
 }

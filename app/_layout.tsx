@@ -3,18 +3,11 @@ import { resultToastConfig } from '@/components/common/result-toast';
 import { ColorSchemeProvider, useColorScheme } from '@/hooks/use-color-scheme';
 import { SupabaseAuthProvider } from '@/hooks/use-supabase-auth';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
-
-// Convex client only for legacy daily quiz feature
-const convexUrl = process.env.EXPO_PUBLIC_CONVEX_URL;
-const convex = convexUrl ? new ConvexReactClient(convexUrl, {
-  unsavedChangesWarning: false,
-}) : null;
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -35,7 +28,7 @@ export default function RootLayout() {
 function RootLayoutContent() {
   const colorScheme = useColorScheme();
 
-  const content = (
+  return (
     <SupabaseAuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <AuthGate>
@@ -50,16 +43,4 @@ function RootLayoutContent() {
       </ThemeProvider>
     </SupabaseAuthProvider>
   );
-
-  // Convex provider only if Convex URL is configured (for legacy daily quiz)
-  if (convex) {
-    return (
-      <ConvexProvider client={convex}>
-        {content}
-      </ConvexProvider>
-    );
-  }
-
-  // Supabase only
-  return content;
 }

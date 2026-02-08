@@ -309,7 +309,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
 
           const email = authUser.email;
 
-          // Try to find existing user by email (for account linking from Convex migration)
+          // Try to find existing user by email for account linking
           if (email) {
             // Check if there's a user with matching handle (email prefix) from migration
             const emailPrefix = email.split('@')[0];

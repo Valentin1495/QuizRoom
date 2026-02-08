@@ -1,17 +1,19 @@
 /**
  * Unified Quiz History Hook
- * Switches between Convex and Supabase based on feature flag
+ * Supabase-only implementation
  */
 
-import { useQuery } from 'convex/react';
-
-import { api } from '@/convex/_generated/api';
-import type { Doc } from '@/convex/_generated/dataModel';
-import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { useQuizHistory as useSupabaseQuizHistory } from '@/lib/supabase-api';
 
-// Type for quiz history document (Convex style)
-export type QuizHistoryDoc = Doc<'quizHistory'>;
+export type QuizHistoryDoc = {
+  _id: string;
+  _creationTime: number;
+  userId: string;
+  mode: 'daily' | 'swipe' | 'liveMatch';
+  sessionId: string;
+  createdAt: number;
+  payload: Record<string, unknown>;
+};
 
 // Type for quiz history buckets
 export type HistoryBuckets = {
@@ -31,18 +33,6 @@ export function useQuizHistory(options?: {
   limit?: number;
   enabled?: boolean;
 }): HistoryBuckets | undefined {
-  return useQuizHistoryImpl(options);
-}
-
-// Determine which backend to use at module init.
-// If Convex URL is missing we default to Supabase to avoid provider errors.
-const USE_SUPABASE_HISTORY =
-  FEATURE_FLAGS.quizHistory || !process.env.EXPO_PUBLIC_CONVEX_URL;
-
-function useSupabaseHistory(options?: {
-  limit?: number;
-  enabled?: boolean;
-}): HistoryBuckets | undefined {
   const limit = options?.limit ?? 10;
   const enabled = options?.enabled ?? true;
 
@@ -54,24 +44,6 @@ function useSupabaseHistory(options?: {
   if (!enabled || isLoading) return undefined;
   return normalizeSupabaseHistory(supabaseResult);
 }
-
-function useConvexHistory(options?: {
-  limit?: number;
-  enabled?: boolean;
-}): HistoryBuckets | undefined {
-  const limit = options?.limit ?? 10;
-  const enabled = options?.enabled ?? true;
-
-  const convexResult = useQuery(
-    api.history.listHistory,
-    !enabled ? 'skip' : { limit }
-  );
-
-  if (!enabled) return undefined;
-  return convexResult as HistoryBuckets | undefined;
-}
-
-const useQuizHistoryImpl = USE_SUPABASE_HISTORY ? useSupabaseHistory : useConvexHistory;
 
 type SupabaseHistoryEntry = {
   id?: string;
@@ -96,13 +68,13 @@ function normalizeSupabaseHistory(data: SupabaseHistoryBuckets): HistoryBuckets 
     const normalizedMode =
       entry.mode === 'live_match' || entry.mode === 'liveMatch' ? 'liveMatch' : mode;
     return {
-      _id: (entry.id ?? sessionId ?? `${mode}-${createdAt}`) as QuizHistoryDoc['_id'],
+      _id: entry.id ?? sessionId ?? `${mode}-${createdAt}`,
       _creationTime: createdAt,
-      userId: (entry.user_id ?? 'supabase') as QuizHistoryDoc['userId'],
-      mode: normalizedMode as QuizHistoryDoc['mode'],
+      userId: entry.user_id ?? 'supabase',
+      mode: normalizedMode,
       sessionId,
       createdAt,
-      payload: (entry.payload as QuizHistoryDoc['payload']) ?? ({} as QuizHistoryDoc['payload']),
+      payload: (entry.payload as Record<string, unknown>) ?? {},
     };
   };
 
