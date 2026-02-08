@@ -21,6 +21,59 @@ const corsHeaders = {
 };
 
 const LOBBY_EXPIRES_MS = 1000 * 60 * 10;
+const MAX_NICKNAME_LENGTH = 24;
+const GUEST_ADJECTIVES = [
+  '졸린',
+  '조용한',
+  '빠른',
+  '수줍은',
+  '똑똑한',
+  '느긋한',
+  '용감한',
+  '화난',
+  '웃는',
+  '잠든',
+  '떠도는',
+  '길잃은',
+  '초보',
+  '익명의',
+];
+const GUEST_ANIMALS = [
+  '고양이',
+  '여우',
+  '수달',
+  '판다',
+  '까치',
+  '곰',
+  '다람쥐',
+  '토끼',
+  '고래',
+  '햄스터',
+];
+const GUEST_CHARACTERS = [
+  '버섯',
+  '슬라임',
+  '유령',
+  '기사',
+  '모험가',
+  '마법사',
+  '전사',
+  '연금술사',
+  '궁수',
+  '정찰병',
+];
+const BLOCKED_NICKNAME_TOKENS = [
+  '시발',
+  '씨발',
+  '병신',
+  '좆',
+  '개새끼',
+  '느금',
+  'tlqkf',
+  'fuck',
+  'shit',
+  'bitch',
+];
 
 function respondError(message: string, status = 200) {
   return new Response(
@@ -31,13 +84,62 @@ function respondError(message: string, status = 200) {
 
 const PARTICIPANT_LIMIT = 10;
 
-function deriveGuestNickname(guestKey: string) {
-  const adjectives = ['빠른', '용감한', '현명한', '친절한', '재미있는'];
-  const nouns = ['퀴즈러', '도전자', '플레이어', '탐험가', '수집가'];
-  const hash = guestKey.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
-  const adj = adjectives[Math.abs(hash) % adjectives.length];
-  const noun = nouns[Math.abs(hash >> 8) % nouns.length];
-  return `${adj} ${noun}`;
+function hashString(source: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= source.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function nicknameKey(value: string) {
+  return value.toLowerCase().replace(/\s+/g, '').replace(/[^0-9a-zA-Z가-힣]/g, '');
+}
+
+function containsBlockedToken(value: string) {
+  const key = nicknameKey(value);
+  if (!key) return false;
+  return BLOCKED_NICKNAME_TOKENS.some((token) => key.includes(token));
+}
+
+function buildGuestNickname(seed: number) {
+  const adjective = GUEST_ADJECTIVES[seed % GUEST_ADJECTIVES.length];
+  const nounPool = (seed & 1) === 0 ? GUEST_ANIMALS : GUEST_CHARACTERS;
+  const nounSeed = ((seed >>> 8) ^ (seed * 2654435761)) >>> 0;
+  const noun = nounPool[nounSeed % nounPool.length];
+  return `${adjective} ${noun}`;
+}
+
+function ensureUniqueNickname(base: string, takenKeys: Set<string>) {
+  const baseCandidate = base.slice(0, MAX_NICKNAME_LENGTH);
+  const safeBase = baseCandidate.length > 0 ? baseCandidate : '익명참가자';
+  const baseKey = nicknameKey(safeBase);
+  if (!takenKeys.has(baseKey)) {
+    takenKeys.add(baseKey);
+    return safeBase;
+  }
+
+  for (let suffix = 2; suffix <= 999; suffix += 1) {
+    const suffixText = String(suffix);
+    const trimmed = safeBase.slice(0, Math.max(1, MAX_NICKNAME_LENGTH - suffixText.length));
+    const candidate = `${trimmed}${suffixText}`;
+    const key = nicknameKey(candidate);
+    if (!takenKeys.has(key)) {
+      takenKeys.add(key);
+      return candidate;
+    }
+  }
+
+  const fallback = `익명참가자${String(Date.now()).slice(-4)}`.slice(0, MAX_NICKNAME_LENGTH);
+  const fallbackKey = nicknameKey(fallback);
+  takenKeys.add(fallbackKey);
+  return fallback;
+}
+
+function deriveGuestNickname(guestKey: string, takenKeys: Set<string>) {
+  const candidate = buildGuestNickname(hashString(guestKey)).slice(0, MAX_NICKNAME_LENGTH);
+  return ensureUniqueNickname(candidate, takenKeys);
 }
 
 function deriveGuestAvatarId(guestKey: string) {
@@ -128,7 +230,7 @@ serve(async (req: Request) => {
     if (!userId) {
       if (!guestKey) return respondError('GUEST_AUTH_REQUIRED');
       identityId = `guest:${guestKey}`;
-      nicknameFallback = deriveGuestNickname(guestKey);
+      nicknameFallback = deriveGuestNickname(guestKey, new Set<string>());
     }
 
     // Check for existing participant
@@ -152,7 +254,36 @@ serve(async (req: Request) => {
     }
 
     const now = new Date().toISOString();
-    const sanitizedNickname = (nickname?.trim() || existingParticipant?.nickname || nicknameFallback).slice(0, 24);
+    const { data: activeParticipants } = await supabase
+      .from('live_match_participants')
+      .select('id, nickname')
+      .eq('room_id', room.id)
+      .is('removed_at', null);
+
+    const takenNicknameKeys = new Set<string>(
+      (activeParticipants ?? [])
+        .filter((participant: { id: string }) => participant.id !== existingParticipant?.id)
+        .map((participant: { nickname: string }) => nicknameKey((participant.nickname ?? '').slice(0, MAX_NICKNAME_LENGTH)))
+        .filter(Boolean)
+    );
+
+    const requestedNickname = (nickname?.trim() || '').slice(0, MAX_NICKNAME_LENGTH);
+    let sanitizedNickname = '';
+    if (isGuest) {
+      if (existingParticipant?.nickname) {
+        const previousGuestNickname = existingParticipant.nickname.slice(0, MAX_NICKNAME_LENGTH);
+        sanitizedNickname = ensureUniqueNickname(previousGuestNickname, takenNicknameKeys);
+      } else {
+        sanitizedNickname = deriveGuestNickname(guestKey!, takenNicknameKeys);
+      }
+    } else {
+      sanitizedNickname = ensureUniqueNickname(
+        containsBlockedToken(requestedNickname)
+          ? (nicknameFallback || '플레이어').slice(0, MAX_NICKNAME_LENGTH)
+          : (requestedNickname || existingParticipant?.nickname || nicknameFallback || '플레이어').slice(0, MAX_NICKNAME_LENGTH),
+        takenNicknameKeys
+      );
+    }
 
     if (existingParticipant) {
       // Rejoin

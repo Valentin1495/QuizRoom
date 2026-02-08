@@ -13,6 +13,7 @@ const corsHeaders = {
 
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const LOBBY_EXPIRES_MS = 1000 * 60 * 10;
+const MAX_NICKNAME_LENGTH = 24;
 const DEFAULT_RULES = {
   rounds: 10,
   readSeconds: 3,
@@ -21,6 +22,58 @@ const DEFAULT_RULES = {
   revealSeconds: 6,
   leaderboardSeconds: 5,
 };
+const GUEST_ADJECTIVES = [
+  '졸린',
+  '조용한',
+  '빠른',
+  '수줍은',
+  '똑똑한',
+  '느긋한',
+  '용감한',
+  '화난',
+  '웃는',
+  '잠든',
+  '떠도는',
+  '길잃은',
+  '초보',
+  '익명의',
+];
+const GUEST_ANIMALS = [
+  '고양이',
+  '여우',
+  '수달',
+  '판다',
+  '까치',
+  '곰',
+  '다람쥐',
+  '토끼',
+  '고래',
+  '햄스터',
+];
+const GUEST_CHARACTERS = [
+  '버섯',
+  '슬라임',
+  '유령',
+  '기사',
+  '모험가',
+  '마법사',
+  '전사',
+  '연금술사',
+  '궁수',
+  '정찰병',
+];
+const BLOCKED_NICKNAME_TOKENS = [
+  '시발',
+  '씨발',
+  '병신',
+  '좆',
+  '개새끼',
+  '느금',
+  'tlqkf',
+  'fuck',
+  'shit',
+  'bitch',
+];
 
 async function generateUniqueCode(supabase: any, length = 6) {
   for (let attempt = 0; attempt < 6; attempt++) {
@@ -38,13 +91,35 @@ async function generateUniqueCode(supabase: any, length = 6) {
   throw new Error('FAILED_TO_ALLOCATE_CODE');
 }
 
+function hashString(source: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= source.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function nicknameKey(value: string) {
+  return value.toLowerCase().replace(/\s+/g, '').replace(/[^0-9a-zA-Z가-힣]/g, '');
+}
+
+function containsBlockedToken(value: string) {
+  const key = nicknameKey(value);
+  if (!key) return false;
+  return BLOCKED_NICKNAME_TOKENS.some((token) => key.includes(token));
+}
+
+function buildGuestNickname(seed: number) {
+  const adjective = GUEST_ADJECTIVES[seed % GUEST_ADJECTIVES.length];
+  const nounPool = (seed & 1) === 0 ? GUEST_ANIMALS : GUEST_CHARACTERS;
+  const nounSeed = ((seed >>> 8) ^ (seed * 2654435761)) >>> 0;
+  const noun = nounPool[nounSeed % nounPool.length];
+  return `${adjective} ${noun}`;
+}
+
 function deriveGuestNickname(guestKey: string) {
-  const adjectives = ['빠른', '용감한', '현명한', '친절한', '재미있는'];
-  const nouns = ['퀴즈러', '도전자', '플레이어', '탐험가', '수집가'];
-  const hash = guestKey.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
-  const adj = adjectives[Math.abs(hash) % adjectives.length];
-  const noun = nouns[Math.abs(hash >> 8) % nouns.length];
-  return `${adj} ${noun}`;
+  return buildGuestNickname(hashString(guestKey)).slice(0, MAX_NICKNAME_LENGTH);
 }
 
 function deriveGuestAvatarId(guestKey: string) {
@@ -133,7 +208,12 @@ serve(async (req) => {
 
     const code = await generateUniqueCode(supabase);
     const now = Date.now();
-    const sanitizedNickname = (nickname?.trim() || nicknameFallback).slice(0, 24);
+    const requestedNickname = (nickname?.trim() || '').slice(0, MAX_NICKNAME_LENGTH);
+    const sanitizedNickname = isGuest
+      ? nicknameFallback.slice(0, MAX_NICKNAME_LENGTH)
+      : (!containsBlockedToken(requestedNickname)
+        ? (requestedNickname || nicknameFallback).slice(0, MAX_NICKNAME_LENGTH)
+        : nicknameFallback.slice(0, MAX_NICKNAME_LENGTH));
 
     // Create room
     const { data: room, error: roomError } = await supabase

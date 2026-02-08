@@ -512,6 +512,7 @@ export function useUserActivityStreak(
   userId?: string | null,
   options?: { enabled?: boolean }
 ) {
+  type UserActivityDayRow = { day_key: string };
   const enabled = options?.enabled ?? true;
   const [streak, setStreak] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(enabled && !!userId);
@@ -539,7 +540,8 @@ export function useUserActivityStreak(
           return;
         }
 
-        const keys = new Set((data ?? []).map((row) => row.day_key));
+        const rows = (data ?? []) as UserActivityDayRow[];
+        const keys = new Set(rows.map((row) => row.day_key));
         const kstStartMs = Date.now() + KST_OFFSET_MS;
         let count = 0;
 

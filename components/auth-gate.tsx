@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -16,7 +16,7 @@ type AuthGateProps = {
 const appIcon = require('../assets/images/app-icon.png');
 
 export function AuthGate({ children }: AuthGateProps) {
-  const { status, user, error, signInWithGoogle, enterGuestMode } = useAuth();
+  const { status, user, guestKey, error, signInWithGoogle, enterGuestMode } = useAuth();
   const primaryColor = useThemeColor({}, 'primary');
   const iconBackground = useThemeColor(
     {
@@ -27,6 +27,7 @@ export function AuthGate({ children }: AuthGateProps) {
   );
   const insets = useSafeAreaInsets();
   const [showBanner, setShowBanner] = useState(false);
+  const hasEnteredAppRef = useRef(false);
 
   useEffect(() => {
     if (!error) {
@@ -37,6 +38,12 @@ export function AuthGate({ children }: AuthGateProps) {
     const timeout = setTimeout(() => setShowBanner(false), 3000);
     return () => clearTimeout(timeout);
   }, [error]);
+
+  useEffect(() => {
+    if ((status === 'authenticated' && !!user) || status === 'guest' || status === 'upgrading') {
+      hasEnteredAppRef.current = true;
+    }
+  }, [status, user]);
 
   const { isLoading, headline, helper } = useMemo(() => {
     if (status === 'authenticated' && user) {
@@ -66,9 +73,13 @@ export function AuthGate({ children }: AuthGateProps) {
     } as const;
   }, [status, user, error]);
 
+  const shouldKeepChildrenMountedWhileAuthorizing =
+    status === 'authorizing' && hasEnteredAppRef.current && (!!user || !!guestKey);
+
   if (
     (status === 'authenticated' && user) ||
     status === 'guest' ||
+    shouldKeepChildrenMountedWhileAuthorizing ||
     status === 'upgrading' ||
     status === 'error'
   ) {

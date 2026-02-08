@@ -253,7 +253,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       console.warn('[SupabaseAuth] Google Sign-In configure failed', err);
       throw err;
     }
-  }, [configureGoogleSignin]);
+  }, []);
 
   useEffect(() => {
     statusRef.current = status;
@@ -551,9 +551,9 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     };
   }, [fetchUserProfile, toAuthedUser]);
 
-  // Track settled status
+  // Track settled status (exclude transient login states).
   useEffect(() => {
-    if (status !== 'authorizing') {
+    if (status !== 'authorizing' && status !== 'upgrading') {
       lastSettledStatusRef.current = status;
     }
   }, [status]);
@@ -616,8 +616,17 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
 
   // Sign in with Google
   const signInWithGoogle = useCallback(async () => {
-    const previousStatus = lastSettledStatusRef.current;
-    if (previousStatus === 'guest' || previousStatus === 'authenticated') {
+    const currentStatus = statusRef.current;
+    const previousStatus =
+      currentStatus === 'authorizing' || currentStatus === 'upgrading'
+        ? lastSettledStatusRef.current
+        : currentStatus;
+    const shouldUpgrade =
+      previousStatus === 'guest' ||
+      previousStatus === 'authenticated' ||
+      currentStatus === 'upgrading';
+
+    if (shouldUpgrade) {
       setStatus('upgrading');
     } else {
       setStatus('authorizing');
@@ -634,13 +643,30 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
 
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const signInResult = await GoogleSignin.signIn();
+      const signInOutcome = signInResult as {
+        type?: 'success' | 'cancelled' | string;
+        data?: { idToken?: string | null } | null;
+        idToken?: string | null;
+      };
+
+      if (signInOutcome.type === 'cancelled') {
+        setStatus(previousStatus);
+        setError(null);
+        return;
+      }
 
       const idToken =
-        signInResult.data?.idToken ??
-        (signInResult as { idToken?: string }).idToken ??
+        signInOutcome.data?.idToken ??
+        signInOutcome.idToken ??
         null;
 
       if (!idToken) {
+        // Some cancellation paths return a result without idToken instead of throwing.
+        if (signInOutcome.type == null) {
+          setStatus(previousStatus);
+          setError(null);
+          return;
+        }
         throw new Error('Google ID 토큰을 가져오지 못했습니다.');
       }
 
@@ -656,13 +682,21 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       const code = (err as { code?: string } | null)?.code;
       const statusCodes = loadGoogleSigninModule()?.statusCodes;
+      const message = err instanceof Error ? err.message : '';
+      const normalizedMessage = message.toLowerCase();
+      const looksLikeCancel =
+        normalizedMessage.includes('cancel') ||
+        normalizedMessage.includes('canceled') ||
+        message.includes('취소');
 
-      if (statusCodes && code === statusCodes.SIGN_IN_CANCELLED) {
+      if ((statusCodes && code === statusCodes.SIGN_IN_CANCELLED) || looksLikeCancel) {
         setStatus(previousStatus);
+        setError(null);
         return;
       }
       if (statusCodes && code === statusCodes.IN_PROGRESS) {
-        setError('이미 로그인 중입니다.');
+        setStatus(previousStatus);
+        setError(null);
         return;
       }
       if (statusCodes && code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
@@ -683,7 +717,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
           : 'Google 로그인 중 문제가 발생했어요.'
       );
     }
-  }, []);
+  }, [configureGoogleSignin]);
 
   // Sign out
   const signOut = useCallback(async () => {

@@ -62,6 +62,8 @@ export default function HomeScreen() {
   const [isClearingStorage, setIsClearingStorage] = useState(false);
   const [isQuickCreating, setIsQuickCreating] = useState(false);
   const joinNicknameInputRef = useRef<RNTextInput | null>(null);
+  const lastAutoNicknameRef = useRef<string | null>(null);
+  const lastAuthStatusRef = useRef<typeof authStatus | null>(null);
   const scrollRef = useRef<ScrollView | null>(null);
   const liveMatchSectionLayoutRef = useRef<LayoutRectangle | null>(null);
   const scrollViewHeightRef = useRef(0);
@@ -135,7 +137,6 @@ export default function HomeScreen() {
       : '준비 중';
   const dailyHeadlineSkeletonColor = colorScheme === 'dark' ? palette.border : Palette.gray100;
 
-  const isAuthenticated = authStatus === 'authenticated' && !!user;
   const isGuest = authStatus === 'guest';
   const skillChallengeTitle = '6단계로 내 수준 확인하기';
 
@@ -201,6 +202,11 @@ export default function HomeScreen() {
     [guestKey, isGuest]
   );
 
+  const applyAutoNickname = useCallback((nickname: string) => {
+    setJoinNickname((prev) => (prev && prev !== lastAutoNicknameRef.current ? prev : nickname));
+    lastAutoNicknameRef.current = nickname;
+  }, []);
+
   useEffect(() => {
     if (!isFocused) return;
     void (async () => {
@@ -215,15 +221,23 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (!derivedGuestNickname) return;
-    setJoinNickname((prev) =>
-      prev === derivedGuestNickname || prev.length > 0 ? prev : derivedGuestNickname
-    );
-  }, [derivedGuestNickname]);
+    applyAutoNickname(derivedGuestNickname);
+  }, [applyAutoNickname, derivedGuestNickname]);
 
   useEffect(() => {
-    if (!isAuthenticated || !user?.handle) return;
-    setJoinNickname((prev) => (prev.length === 0 ? user.handle : prev));
-  }, [isAuthenticated, user?.handle]);
+    if (!user?.handle) return;
+    applyAutoNickname(user.handle);
+  }, [applyAutoNickname, user?.handle]);
+
+  useEffect(() => {
+    const prevStatus = lastAuthStatusRef.current;
+    lastAuthStatusRef.current = authStatus;
+    if (authStatus !== 'authenticated' || !user?.handle) return;
+    if (prevStatus && prevStatus !== 'authenticated') {
+      setJoinNickname(user.handle);
+      lastAutoNicknameRef.current = user.handle;
+    }
+  }, [authStatus, user?.handle]);
 
   const handleJoinLiveMatchRoom = useCallback(async () => {
     const normalizedCode = liveMatchRoomCode.trim().toUpperCase();
