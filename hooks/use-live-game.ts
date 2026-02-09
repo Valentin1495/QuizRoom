@@ -61,7 +61,6 @@ export type GameParticipant = {
   participantId: string;
   odUserId: string | null;
   avatarUrl: string | null;
-  guestAvatarId: number | null;
   nickname: string;
   totalScore: number;
   isHost: boolean;
@@ -117,7 +116,6 @@ export type GameLeaderboardEntry = {
   participantId: string;
   odUserId: string | null;
   avatarUrl: string | null;
-  guestAvatarId: number | null;
   nickname: string;
   totalScore: number;
   rank: number;
@@ -398,7 +396,6 @@ export function useLiveGame(
               participantId: participantRowId,
               odUserId: row?.user_id ?? base?.odUserId ?? null,
               avatarUrl: base?.avatarUrl ?? null,
-              guestAvatarId: row?.guest_avatar_id ?? base?.guestAvatarId ?? null,
               nickname: row?.nickname ?? base?.nickname ?? '플레이어',
               totalScore:
                 typeof row?.total_score === 'number' ? row.total_score : base?.totalScore ?? 0,

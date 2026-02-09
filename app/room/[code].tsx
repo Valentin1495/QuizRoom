@@ -22,7 +22,6 @@ import { useLiveLobby, useRoomActions } from '@/hooks/use-live-lobby';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
-import { deriveGuestAvatarId } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
 import { saveRecentLiveMatchDeck } from '@/lib/recent-selections';
 import { ROOM_IN_PROGRESS_MESSAGE } from '@/lib/supabase-api';
@@ -51,12 +50,6 @@ export default function MatchLobbyScreen() {
   const [isStarting, setIsStarting] = useState(false);
   const [isEntryConfirming, setIsEntryConfirming] = useState(false);
   const entryConfirmStartedAtRef = useRef<number | null>(null);
-
-  const selfGuestAvatarId = useMemo(
-    () => (status === 'guest' ? deriveGuestAvatarId(guestKey) : undefined),
-    [guestKey, status]
-  );
-
 
   const shouldFetchLobby = roomCode.length > 0 && !hasLeft;
   const {
@@ -229,20 +222,10 @@ export default function MatchLobbyScreen() {
   const neutralBannerBg = colorScheme === 'light' ? '#E8EDFF' : 'rgba(44, 58, 122, 0.9)';
   const neutralBannerText = colorScheme === 'light' ? '#2C3A7A' : '#E5EBFF';
   const accentForegroundColor = theme.accentForeground;
-  const borderColor = theme.borderStrong ?? theme.border;
-  const readyBadgeReadyColor =
-    colorScheme === 'dark' ? 'rgba(255,255,255,0.17)' : primaryColor;
-  const readyBadgeWaitingColor =
-    colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : mutedColor;
   const participantIconSize = Platform.OS === 'android' ? 22 : 18;
-  const isDark = colorScheme === 'dark';
 
   const renderParticipantAvatar = useCallback(
-    (
-      participant: (typeof participants)[number],
-      isMe: boolean,
-      levelInfo?: ReturnType<typeof calculateLevel>
-    ) => {
+    (participant: (typeof participants)[number]) => {
       if (participant.userId) {
         return (
           <Avatar
@@ -256,19 +239,15 @@ export default function MatchLobbyScreen() {
         );
       }
 
-      const resolvedGuestId =
-        participant.guestAvatarId ?? (isMe ? selfGuestAvatarId : null);
-
       return (
         <GuestAvatar
-          guestId={resolvedGuestId ?? undefined}
           size="md"
           radius={Radius.pill}
           style={styles.participantAvatar}
         />
       );
     },
-    [fallbackAvatarBackground, selfGuestAvatarId]
+    [fallbackAvatarBackground]
   );
 
 
@@ -947,14 +926,14 @@ export default function MatchLobbyScreen() {
                     </Pressable>
                   </View>
                 </View>
-	                {lobby.deck ? (
-	                  <Accordion
-	                    style={styles.deckCard}
-	                    contentStyle={styles.deckCardContent}
-	                    title={
-	                      <View style={styles.deckCardTitleRow}>
-	                        <IconSymbol
-	                          name={getDeckIcon(lobby.deck.slug)}
+                {lobby.deck ? (
+                  <Accordion
+                    style={styles.deckCard}
+                    contentStyle={styles.deckCardContent}
+                    title={
+                      <View style={styles.deckCardTitleRow}>
+                        <IconSymbol
+                          name={getDeckIcon(lobby.deck.slug)}
                           size={20}
                           color={primaryColor}
                         />
@@ -1013,7 +992,7 @@ export default function MatchLobbyScreen() {
                           key={participant.participantId}
                           style={[styles.participantCard, isMe && styles.participantCardMe]}
                         >
-                          {renderParticipantAvatar(participant, isMe, levelInfo ?? undefined)}
+                          {renderParticipantAvatar(participant)}
                           <View style={styles.participantTextBlock}>
                             <View style={styles.participantNameRow}>
                               <ThemedText

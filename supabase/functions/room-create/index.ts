@@ -122,11 +122,6 @@ function deriveGuestNickname(guestKey: string) {
   return buildGuestNickname(hashString(guestKey)).slice(0, MAX_NICKNAME_LENGTH);
 }
 
-function deriveGuestAvatarId(guestKey: string) {
-  const hash = guestKey.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
-  return Math.abs(hash) % 20;
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -244,7 +239,6 @@ serve(async (req) => {
         user_id: userId,
         identity_id: identityId!,
         is_guest: isGuest,
-        guest_avatar_id: isGuest ? deriveGuestAvatarId(guestKey) : null,
         nickname: sanitizedNickname,
         is_host: true,
         is_ready: false,

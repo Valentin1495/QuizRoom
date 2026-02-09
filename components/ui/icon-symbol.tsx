@@ -55,6 +55,7 @@ import {
   TargetIcon,
   TelevisionIcon,
   TrophyIcon,
+  UserCircleDashedIcon,
   UserCircleIcon,
   UserIcon,
   UsersThreeIcon,
@@ -87,6 +88,7 @@ const ICON_MAP = {
   'medal': { component: RankingIcon },
   'dot.radiowaves.left.and.right': { component: BroadcastIcon },
   'questionmark.circle': { component: SealQuestionIcon },
+  'person.crop.circle.dashed': { component: UserCircleDashedIcon, defaultWeight: 'fill' },
   // Navigation Icons
   'arrow.left': { component: ArrowLeftIcon },
   'arrow.up.forward': { component: ArrowUpRightIcon },

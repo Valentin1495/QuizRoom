@@ -19,7 +19,6 @@ type Participant = {
   id: string;
   user_id: string | null;
   is_guest: boolean;
-  guest_avatar_id: number | null;
   nickname: string;
   is_host: boolean;
   is_ready: boolean;
@@ -165,7 +164,6 @@ serve(async (req: Request) => {
         userId: p.user_id,
         avatarUrl: user?.avatar_url ?? null,
         isGuest: p.is_guest,
-        guestAvatarId: p.guest_avatar_id,
         nickname: p.nickname,
         isHost: p.is_host,
         isReady: p.is_ready ?? false,

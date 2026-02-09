@@ -64,11 +64,3 @@ export function deriveGuestNickname(key: string | null | undefined): string | nu
   if (!key) return null;
   return buildGuestNickname(hashString(key));
 }
-
-export function deriveGuestAvatarId(key: string): number;
-export function deriveGuestAvatarId(key: string | null | undefined): number | undefined;
-export function deriveGuestAvatarId(key: string | null | undefined): number | undefined {
-  if (!key) return undefined;
-  const hash = key.split('').reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
-  return Math.abs(hash) % 20;
-}

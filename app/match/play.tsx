@@ -2082,7 +2082,6 @@ export default function MatchPlayScreen() {
             />
         ) : participant ? (
             <GuestAvatar
-                guestId={participant.guestAvatarId ?? 0}
                 size="sm"
                 radius={Radius.pill}
                 style={styles.leaderboardAvatar}

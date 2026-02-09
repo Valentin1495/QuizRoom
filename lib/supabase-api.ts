@@ -542,11 +542,21 @@ export function useUserActivityStreak(
 
         const rows = (data ?? []) as UserActivityDayRow[];
         const keys = new Set(rows.map((row) => row.day_key));
-        const kstStartMs = Date.now() + KST_OFFSET_MS;
-        let count = 0;
+        const nowKstMs = Date.now() + KST_OFFSET_MS;
+        const todayKey = new Date(nowKstMs).toISOString().slice(0, 10);
+        const yesterdayKey = new Date(nowKstMs - DAY_MS).toISOString().slice(0, 10);
 
-        for (let i = 0; ; i += 1) {
-          const key = new Date(kstStartMs - i * DAY_MS).toISOString().slice(0, 10);
+        // Keep streak visible through the next day: if no activity today,
+        // treat yesterday as the latest eligible anchor.
+        const anchorOffsetDays = keys.has(todayKey) ? 0 : keys.has(yesterdayKey) ? 1 : -1;
+        if (anchorOffsetDays < 0) {
+          setStreak(0);
+          return;
+        }
+
+        let count = 0;
+        for (let i = anchorOffsetDays; ; i += 1) {
+          const key = new Date(nowKstMs - i * DAY_MS).toISOString().slice(0, 10);
           if (!keys.has(key)) break;
           count += 1;
         }

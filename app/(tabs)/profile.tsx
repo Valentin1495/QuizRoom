@@ -35,7 +35,6 @@ import { useColorScheme, useColorSchemeManager } from '@/hooks/use-color-scheme'
 import { useQuizHistory, type HistoryBuckets, type QuizHistoryDoc } from '@/hooks/use-quiz-history';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
-import { deriveGuestAvatarId } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
 import { useUserActivityStreak, useUserStats } from '@/lib/supabase-api';
 
@@ -144,7 +143,6 @@ export default function ProfileScreen() {
     void refreshUser();
   }, [isFocused, isReady, refreshUser, status]);
 
-  const guestAvatarId = useMemo(() => deriveGuestAvatarId(guestKey), [guestKey]);
   // Prefer in-memory user (updated via Realtime/applyUserDelta) over cached stats.
   const xpValue = user?.xp ?? supabaseStats?.xp ?? 0;
   const baseStreak = user?.streak ?? supabaseStats?.streak ?? 0;
@@ -248,7 +246,6 @@ export default function ProfileScreen() {
               onGoogleLogin={handleGoogleLogin}
               onAppleLogin={handleAppleLogin}
               isLoading={isAuthorizing}
-              guestId={guestAvatarId}
             />
           )}
 
@@ -377,12 +374,10 @@ function GuestHeader({
   onGoogleLogin,
   onAppleLogin,
   isLoading,
-  guestId,
 }: {
   onGoogleLogin: () => void;
   onAppleLogin: () => void;
   isLoading: boolean;
-  guestId?: number;
 }) {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -393,7 +388,6 @@ function GuestHeader({
     <Card>
       <View style={styles.headerRow}>
         <GuestAvatar
-          guestId={guestId}
           size="xl"
           radius={Radius.pill}
           style={{ borderColor: guestAvatarBorder }}

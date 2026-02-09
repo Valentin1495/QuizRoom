@@ -63,7 +63,6 @@ export type LobbyParticipant = {
   userId: string | null;
   avatarUrl: string | null;
   isGuest: boolean;
-  guestAvatarId: number | null;
   nickname: string;
   isHost: boolean;
   isReady: boolean;

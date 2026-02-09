@@ -33,7 +33,6 @@ type Participant = {
   user_id: string | null;
   identity_id: string;
   is_guest: boolean;
-  guest_avatar_id: number | null;
   nickname: string;
   is_host: boolean;
   is_ready: boolean;
@@ -218,7 +217,6 @@ serve(async (req: Request) => {
             participantId: p.id,
             odUserId: p.user_id,
             avatarUrl: user?.avatar_url ?? null,
-            guestAvatarId: p.guest_avatar_id,
             nickname: p.nickname,
             totalScore: p.total_score,
             rank: p.rank,
@@ -232,7 +230,6 @@ serve(async (req: Request) => {
             participantId: meEntry.id,
             odUserId: meEntry.user_id,
             avatarUrl: meEntry.user_id ? usersById.get(meEntry.user_id)?.avatar_url ?? null : null,
-            guestAvatarId: meEntry.guest_avatar_id,
             nickname: meEntry.nickname,
             totalScore: meEntry.total_score,
             rank: meEntry.rank,
@@ -307,7 +304,6 @@ serve(async (req: Request) => {
         participantId: p.id,
         odUserId: p.user_id,
         avatarUrl: user?.avatar_url ?? null,
-        guestAvatarId: p.guest_avatar_id,
         nickname: p.nickname,
         totalScore: p.total_score,
         isHost: p.is_host,
