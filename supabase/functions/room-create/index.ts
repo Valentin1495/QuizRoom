@@ -5,6 +5,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { deriveGuestNicknameFromKey } from '../_shared/guest.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,46 +23,6 @@ const DEFAULT_RULES = {
   revealSeconds: 6,
   leaderboardSeconds: 5,
 };
-const GUEST_ADJECTIVES = [
-  '졸린',
-  '조용한',
-  '빠른',
-  '수줍은',
-  '똑똑한',
-  '느긋한',
-  '용감한',
-  '화난',
-  '웃는',
-  '잠든',
-  '떠도는',
-  '길잃은',
-  '초보',
-  '익명의',
-];
-const GUEST_ANIMALS = [
-  '고양이',
-  '여우',
-  '수달',
-  '판다',
-  '까치',
-  '곰',
-  '다람쥐',
-  '토끼',
-  '고래',
-  '햄스터',
-];
-const GUEST_CHARACTERS = [
-  '버섯',
-  '슬라임',
-  '유령',
-  '기사',
-  '모험가',
-  '마법사',
-  '전사',
-  '연금술사',
-  '궁수',
-  '정찰병',
-];
 const BLOCKED_NICKNAME_TOKENS = [
   '시발',
   '씨발',
@@ -91,15 +52,6 @@ async function generateUniqueCode(supabase: any, length = 6) {
   throw new Error('FAILED_TO_ALLOCATE_CODE');
 }
 
-function hashString(source: string) {
-  let hash = 2166136261;
-  for (let index = 0; index < source.length; index += 1) {
-    hash ^= source.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
 function nicknameKey(value: string) {
   return value.toLowerCase().replace(/\s+/g, '').replace(/[^0-9a-zA-Z가-힣]/g, '');
 }
@@ -108,18 +60,6 @@ function containsBlockedToken(value: string) {
   const key = nicknameKey(value);
   if (!key) return false;
   return BLOCKED_NICKNAME_TOKENS.some((token) => key.includes(token));
-}
-
-function buildGuestNickname(seed: number) {
-  const adjective = GUEST_ADJECTIVES[seed % GUEST_ADJECTIVES.length];
-  const nounPool = (seed & 1) === 0 ? GUEST_ANIMALS : GUEST_CHARACTERS;
-  const nounSeed = ((seed >>> 8) ^ (seed * 2654435761)) >>> 0;
-  const noun = nounPool[nounSeed % nounPool.length];
-  return `${adjective} ${noun}`;
-}
-
-function deriveGuestNickname(guestKey: string) {
-  return buildGuestNickname(hashString(guestKey)).slice(0, MAX_NICKNAME_LENGTH);
 }
 
 serve(async (req) => {
@@ -172,7 +112,7 @@ serve(async (req) => {
     if (!userId) {
       if (!guestKey) throw new Error('GUEST_AUTH_REQUIRED');
       identityId = `guest:${guestKey}`;
-      nicknameFallback = deriveGuestNickname(guestKey);
+      nicknameFallback = deriveGuestNicknameFromKey(guestKey).slice(0, MAX_NICKNAME_LENGTH);
     }
 
     // Resolve deck

@@ -22,6 +22,7 @@ import { useLiveLobby, useRoomActions } from '@/hooks/use-live-lobby';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
+import { deriveGuestAvatarSeed } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
 import { saveRecentLiveMatchDeck } from '@/lib/recent-selections';
 import { ROOM_IN_PROGRESS_MESSAGE } from '@/lib/supabase-api';
@@ -33,6 +34,7 @@ export default function MatchLobbyScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { user, status, guestKey, ensureGuestKey } = useAuth();
+  const selfGuestAvatarSeed = useMemo(() => deriveGuestAvatarSeed(guestKey), [guestKey]);
   const params = useLocalSearchParams<{ code?: string }>();
   const roomCode = useMemo(() => (params.code ?? '').toString().toUpperCase(), [params.code]);
 
@@ -241,13 +243,19 @@ export default function MatchLobbyScreen() {
 
       return (
         <GuestAvatar
+          seed={
+            participant.avatarSeed
+            ?? (status === 'guest' && selfGuestAvatarSeed && participant.participantId === participantId
+              ? selfGuestAvatarSeed
+              : `participant:${participant.participantId}`)
+          }
           size="md"
           radius={Radius.pill}
           style={styles.participantAvatar}
         />
       );
     },
-    [fallbackAvatarBackground]
+    [fallbackAvatarBackground, participantId, selfGuestAvatarSeed, status]
   );
 
 

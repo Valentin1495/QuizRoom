@@ -35,6 +35,7 @@ import { useColorScheme, useColorSchemeManager } from '@/hooks/use-color-scheme'
 import { useQuizHistory, type HistoryBuckets, type QuizHistoryDoc } from '@/hooks/use-quiz-history';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
+import { deriveGuestAvatarSeed, deriveGuestNickname } from '@/lib/guest';
 import { calculateLevel } from '@/lib/level';
 import { useUserActivityStreak, useUserStats } from '@/lib/supabase-api';
 
@@ -81,6 +82,8 @@ export default function ProfileScreen() {
   const isLoading = status === 'loading';
   const isAuthorizing = status === 'authorizing' || status === 'upgrading';
   const isAuthenticated = status === 'authenticated' && !!user;
+  const guestAvatarSeed = useMemo(() => deriveGuestAvatarSeed(guestKey) ?? 'guest', [guestKey]);
+  const guestNickname = useMemo(() => deriveGuestNickname(guestKey) ?? '게스트 사용자', [guestKey]);
   const history = useQuizHistory({
     limit: 60,
     enabled: status === 'authenticated' && isReady,
@@ -243,6 +246,8 @@ export default function ProfileScreen() {
             />
           ) : (
             <GuestHeader
+              guestAvatarSeed={guestAvatarSeed}
+              guestNickname={guestNickname}
               onGoogleLogin={handleGoogleLogin}
               onAppleLogin={handleAppleLogin}
               isLoading={isAuthorizing}
@@ -371,10 +376,14 @@ function ProfileHeader({
 }
 
 function GuestHeader({
+  guestAvatarSeed,
+  guestNickname,
   onGoogleLogin,
   onAppleLogin,
   isLoading,
 }: {
+  guestAvatarSeed: string;
+  guestNickname: string;
   onGoogleLogin: () => void;
   onAppleLogin: () => void;
   isLoading: boolean;
@@ -388,12 +397,13 @@ function GuestHeader({
     <Card>
       <View style={styles.headerRow}>
         <GuestAvatar
+          seed={guestAvatarSeed}
           size="xl"
           radius={Radius.pill}
           style={{ borderColor: guestAvatarBorder }}
         />
         <View style={styles.headerContent}>
-          <ThemedText type="subtitle">게스트 사용자</ThemedText>
+          <ThemedText type="subtitle">{guestNickname}</ThemedText>
           <ThemedText style={[styles.statusText, { color: mutedColor }]}>
             로그인 후 나의 통계를 확인해보세요
           </ThemedText>

@@ -8,6 +8,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 // @ts-ignore - Deno imports
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { deriveAvatarSeedFromIdentity } from '../_shared/guest.ts';
 
 declare const Deno: {
   env: {
@@ -217,6 +218,7 @@ serve(async (req: Request) => {
             participantId: p.id,
             odUserId: p.user_id,
             avatarUrl: user?.avatar_url ?? null,
+            avatarSeed: deriveAvatarSeedFromIdentity(p.identity_id, `participant:${p.id}`),
             nickname: p.nickname,
             totalScore: p.total_score,
             rank: p.rank,
@@ -230,6 +232,7 @@ serve(async (req: Request) => {
             participantId: meEntry.id,
             odUserId: meEntry.user_id,
             avatarUrl: meEntry.user_id ? usersById.get(meEntry.user_id)?.avatar_url ?? null : null,
+            avatarSeed: deriveAvatarSeedFromIdentity(meEntry.identity_id, `participant:${meEntry.id}`),
             nickname: meEntry.nickname,
             totalScore: meEntry.total_score,
             rank: meEntry.rank,
@@ -282,6 +285,7 @@ serve(async (req: Request) => {
     const meData = {
       participantId: me.id,
       odUserId: me.user_id,
+      avatarSeed: deriveAvatarSeedFromIdentity(me.identity_id, `participant:${me.id}`),
       isGuest: me.is_guest,
       nickname: me.nickname,
       totalScore: me.total_score,
@@ -304,6 +308,7 @@ serve(async (req: Request) => {
         participantId: p.id,
         odUserId: p.user_id,
         avatarUrl: user?.avatar_url ?? null,
+        avatarSeed: deriveAvatarSeedFromIdentity(p.identity_id, `participant:${p.id}`),
         nickname: p.nickname,
         totalScore: p.total_score,
         isHost: p.is_host,

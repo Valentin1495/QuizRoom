@@ -5,6 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { deriveAvatarSeedFromIdentity } from '@/lib/guest';
 import { getFunctionAuthHeaders, supabase } from '@/lib/supabase-api';
 
 // ============================================
@@ -61,6 +62,7 @@ export type GameParticipant = {
   participantId: string;
   odUserId: string | null;
   avatarUrl: string | null;
+  avatarSeed?: string | null;
   nickname: string;
   totalScore: number;
   isHost: boolean;
@@ -75,6 +77,7 @@ export type GameParticipant = {
 export type GameMe = {
   participantId: string;
   odUserId: string | null;
+  avatarSeed?: string | null;
   isGuest: boolean;
   nickname: string;
   totalScore: number;
@@ -116,6 +119,7 @@ export type GameLeaderboardEntry = {
   participantId: string;
   odUserId: string | null;
   avatarUrl: string | null;
+  avatarSeed?: string | null;
   nickname: string;
   totalScore: number;
   rank: number;
@@ -396,6 +400,9 @@ export function useLiveGame(
               participantId: participantRowId,
               odUserId: row?.user_id ?? base?.odUserId ?? null,
               avatarUrl: base?.avatarUrl ?? null,
+              avatarSeed: row?.identity_id
+                ? deriveAvatarSeedFromIdentity(row.identity_id, `participant:${participantRowId}`)
+                : (base?.avatarSeed ?? null),
               nickname: row?.nickname ?? base?.nickname ?? '플레이어',
               totalScore:
                 typeof row?.total_score === 'number' ? row.total_score : base?.totalScore ?? 0,
@@ -419,6 +426,7 @@ export function useLiveGame(
               me = {
                 ...prev.me,
                 odUserId: merged.odUserId,
+                avatarSeed: merged.avatarSeed,
                 nickname: merged.nickname,
                 totalScore: merged.totalScore,
                 isHost: merged.isHost,

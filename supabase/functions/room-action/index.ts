@@ -25,6 +25,7 @@ const ACTION_DELAY_DEFAULT_MS = 3000;
 const ACTION_DELAY_MIN_MS = 2000;
 const ACTION_DELAY_MAX_MS = 10000;
 const LOBBY_EXPIRES_MS = 1000 * 60 * 10;
+const HOST_STALE_TIMEOUT_MS = 15000;
 
 const PAUSABLE_STATUSES = new Set(['countdown', 'question', 'grace', 'reveal', 'leaderboard']);
 
@@ -41,6 +42,111 @@ async function maybeExtendRoomExpiry(args: { supabase: any; roomId: string; expi
   const { supabase, roomId, expiresAt, nowMs } = args;
   if (!shouldExtendExpiry(expiresAt, nowMs)) return;
   await supabase.from('live_match_rooms').update({ expires_at: nowMs + LOBBY_EXPIRES_MS }).eq('id', roomId);
+}
+
+async function transferHostIfNeeded(args: {
+  supabase: any;
+  room: any;
+  roomId: string;
+  nowMs: number;
+  source: string;
+}) {
+  const { supabase, room, roomId, nowMs, source } = args;
+
+  const { data: activeParticipants, error: activeParticipantsError } = await supabase
+    .from('live_match_participants')
+    .select('id, user_id, identity_id, joined_at, last_seen_at, disconnected_at')
+    .eq('room_id', roomId)
+    .is('removed_at', null);
+
+  if (activeParticipantsError) {
+    console.warn('[RoomAction] failed to load active participants for host transfer', {
+      roomId,
+      error: activeParticipantsError,
+    });
+    return { transferred: false as const };
+  }
+
+  const active = (activeParticipants ?? []) as Array<{
+    id: string;
+    user_id: string | null;
+    identity_id: string;
+    joined_at: string;
+    last_seen_at: string | null;
+    disconnected_at: string | null;
+  }>;
+
+  if (!active.length) {
+    return { transferred: false as const };
+  }
+
+  const isLive = (p: { last_seen_at: string | null; disconnected_at: string | null }) => {
+    if (p.disconnected_at) return false;
+    if (!p.last_seen_at) return false;
+    return nowMs - new Date(p.last_seen_at).getTime() <= HOST_STALE_TIMEOUT_MS;
+  };
+
+  const currentHostActive = active.some((p) => {
+    const isCurrentHost =
+      (room.host_id && p.user_id === room.host_id) || p.identity_id === room.host_identity;
+    return !!isCurrentHost && isLive(p);
+  });
+
+  if (currentHostActive) {
+    return { transferred: false as const };
+  }
+
+  const eligible = active.filter(isLive);
+  if (!eligible.length) {
+    return { transferred: false as const };
+  }
+
+  const sorted = [...eligible].sort((a, b) => {
+    const authA = a.user_id ? 1 : 0;
+    const authB = b.user_id ? 1 : 0;
+    if (authA !== authB) return authB - authA; // prefer authenticated user
+    return new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime();
+  });
+  const nextHost = sorted[0];
+
+  await supabase
+    .from('live_match_rooms')
+    .update({
+      host_id: nextHost.user_id,
+      host_identity: nextHost.identity_id,
+    })
+    .eq('id', roomId);
+
+  await supabase
+    .from('live_match_participants')
+    .update({ is_host: false })
+    .eq('room_id', roomId)
+    .eq('is_host', true);
+
+  await supabase
+    .from('live_match_participants')
+    .update({ is_host: true })
+    .eq('id', nextHost.id);
+
+  await supabase.from('live_match_logs').insert({
+    room_id: roomId,
+    type: 'host_transferred',
+    payload: {
+      previousHost: room.host_id,
+      previousHostIdentity: room.host_identity,
+      newHost: nextHost.user_id,
+      newHostIdentity: nextHost.identity_id,
+      transferredAt: nowMs,
+      source,
+    },
+  });
+
+  return {
+    transferred: true as const,
+    participantId: nextHost.id,
+    hostId: nextHost.user_id,
+    hostIdentity: nextHost.identity_id,
+  };
 }
 
 function getKstDayKey(ms: number) {
@@ -388,6 +494,17 @@ serve(async (req) => {
           .update({ last_seen_at: nowIso, disconnected_at: null })
           .eq('id', participantId);
 
+        let transferredHost: Awaited<ReturnType<typeof transferHostIfNeeded>> | null = null;
+        if (room.status === 'lobby') {
+          transferredHost = await transferHostIfNeeded({
+            supabase,
+            room,
+            roomId,
+            nowMs: now,
+            source: 'room_action_heartbeat',
+          });
+        }
+
         // Prevent "active room but expired" by extending expiry while heartbeats are flowing.
         await maybeExtendRoomExpiry({ supabase, roomId, expiresAt: room.expires_at, nowMs: now }).catch((err) => {
           console.warn('[RoomAction] Failed to extend room expiry on heartbeat', err);
@@ -479,7 +596,7 @@ serve(async (req) => {
         }
 
         return new Response(
-          JSON.stringify({ data: { ok: true } }),
+          JSON.stringify({ data: { ok: true, hostTransfer: transferredHost } }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         );
       }
@@ -494,12 +611,21 @@ serve(async (req) => {
           .update({ is_ready: params.ready, last_seen_at: nowIso })
           .eq('id', participantId);
 
+        let transferredHost: Awaited<ReturnType<typeof transferHostIfNeeded>> | null = null;
+        transferredHost = await transferHostIfNeeded({
+          supabase,
+          room,
+          roomId,
+          nowMs: now,
+          source: 'room_action_set_ready',
+        });
+
         await maybeExtendRoomExpiry({ supabase, roomId, expiresAt: room.expires_at, nowMs: now }).catch((err) => {
           console.warn('[RoomAction] Failed to extend room expiry on setReady', err);
         });
 
         return new Response(
-          JSON.stringify({ data: { ok: true } }),
+          JSON.stringify({ data: { ok: true, hostTransfer: transferredHost } }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         );
       }
@@ -510,12 +636,27 @@ serve(async (req) => {
           .update({ removed_at: nowIso, is_host: false, is_ready: false })
           .eq('id', participantId);
 
+        let transferredHost: Awaited<ReturnType<typeof transferHostIfNeeded>> | null = null;
+        const leavingCurrentHost =
+          participant.is_host ||
+          (participant.user_id !== null && participant.user_id === room.host_id) ||
+          participant.identity_id === room.host_identity;
+        if (leavingCurrentHost) {
+          transferredHost = await transferHostIfNeeded({
+            supabase,
+            room,
+            roomId,
+            nowMs: now,
+            source: 'room_action_leave',
+          });
+        }
+
         await maybeExtendRoomExpiry({ supabase, roomId, expiresAt: room.expires_at, nowMs: now }).catch((err) => {
           console.warn('[RoomAction] Failed to extend room expiry on leave', err);
         });
 
         return new Response(
-          JSON.stringify({ data: { ok: true } }),
+          JSON.stringify({ data: { ok: true, hostTransfer: transferredHost } }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         );
       }

@@ -7,6 +7,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 // @ts-ignore - Deno imports
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { deriveAvatarSeedFromIdentity } from '../_shared/guest.ts';
 
 // Deno type declaration
 declare const Deno: {
@@ -18,6 +19,7 @@ declare const Deno: {
 type Participant = {
   id: string;
   user_id: string | null;
+  identity_id: string;
   is_guest: boolean;
   nickname: string;
   is_host: boolean;
@@ -163,6 +165,7 @@ serve(async (req: Request) => {
         odUserId: p.user_id,
         userId: p.user_id,
         avatarUrl: user?.avatar_url ?? null,
+        avatarSeed: deriveAvatarSeedFromIdentity(p.identity_id, `participant:${p.id}`),
         isGuest: p.is_guest,
         nickname: p.nickname,
         isHost: p.is_host,

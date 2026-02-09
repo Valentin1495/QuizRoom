@@ -1,10 +1,11 @@
 // components/ui/Avatar.tsx
 import * as Haptics from 'expo-haptics';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { buildGuestAvatarUrl } from '@/lib/guest';
 import { Colors, Palette, Radius } from '../../constants/theme';
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -21,6 +22,10 @@ type AvatarProps = {
     backgroundColorOverride?: string;
     style?: StyleProp<ViewStyle>;
     textStyle?: TextStyle;
+};
+
+type GuestAvatarProps = Omit<AvatarProps, 'name' | 'uri' | 'guestId'> & {
+    seed?: string | null;
 };
 
 const SIZE: Record<Size, number> = { xs: 24, sm: 32, md: 40, lg: 56, xl: 72 };
@@ -169,14 +174,19 @@ export function Avatar({
     );
 }
 
-export function GuestAvatar(props: Omit<AvatarProps, 'name' | 'uri' | 'guestId'>) {
+export function GuestAvatar(props: GuestAvatarProps) {
     const scheme = useColorScheme() ?? 'light';
     const c = Colors[scheme];
     const size = props.size ?? 'md';
     const px = SIZE[size];
-    // SF/Phosphor "person.crop.circle.dashed" has intrinsic padding,
-    // so overscale slightly to visually fill the avatar container.
-    const iconSize = Math.round(px * 1.2);
+    const seed = props.seed?.trim() ? props.seed.trim() : 'guest';
+    const avatarUri = useMemo(() => buildGuestAvatarUrl(seed), [seed]);
+    const [hasRenderError, setHasRenderError] = useState(false);
+
+    useEffect(() => {
+        setHasRenderError(false);
+    }, [avatarUri]);
+
     const base: ViewStyle = {
         width: px,
         height: px,
@@ -190,7 +200,16 @@ export function GuestAvatar(props: Omit<AvatarProps, 'name' | 'uri' | 'guestId'>
     };
     const body = (
         <View style={[base, props.style]}>
-            <IconSymbol name="person.crop.circle.dashed" size={iconSize} color={c.textMuted} />
+            {hasRenderError ? (
+                <IconSymbol name="person.crop.circle.dashed" size={Math.round(px * 1.2)} color={c.textMuted} />
+            ) : (
+                <Image
+                    source={{ uri: avatarUri }}
+                    resizeMode="cover"
+                    onError={() => setHasRenderError(true)}
+                    style={{ width: '100%', height: '100%' }}
+                />
+            )}
         </View>
     );
 

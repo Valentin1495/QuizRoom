@@ -28,6 +28,7 @@ import { computeTimeLeft, getComboMultiplier, useGameActions, useLiveGame } from
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
+import { deriveGuestAvatarSeed } from '@/lib/guest';
 import { getFunctionAuthHeaders, supabase } from '@/lib/supabase-api';
 
 // computeTimeLeft and getComboMultiplier are now imported from use-live-game
@@ -52,6 +53,7 @@ const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
 export default function MatchPlayScreen() {
     const router = useRouter();
     const { user, status: authStatus, guestKey, ensureGuestKey } = useAuth();
+    const selfGuestAvatarSeed = useMemo(() => deriveGuestAvatarSeed(guestKey), [guestKey]);
     const insets = useSafeAreaInsets();
     const params = useLocalSearchParams<{ roomId?: string; participantId?: string }>();
     const roomId = useMemo(() => params.roomId?.toString() ?? null, [params.roomId]);
@@ -2069,8 +2071,9 @@ export default function MatchPlayScreen() {
         </View>
     );
 
-    const renderParticipantAvatar = (participantId: string) => {
-        const participant = participantsById.get(participantId);
+    const renderParticipantAvatar = (targetParticipantId: string) => {
+        const participant = participantsById.get(targetParticipantId);
+        const selfParticipantId = meParticipantId ?? participantId;
         const avatarNode = participant?.odUserId ? (
             <Avatar
                 uri={participant.avatarUrl}
@@ -2082,6 +2085,12 @@ export default function MatchPlayScreen() {
             />
         ) : participant ? (
             <GuestAvatar
+                seed={
+                    participant.avatarSeed
+                    ?? (authStatus === 'guest' && selfGuestAvatarSeed && participant.participantId === selfParticipantId
+                        ? selfGuestAvatarSeed
+                        : `participant:${participant.participantId}`)
+                }
                 size="sm"
                 radius={Radius.pill}
                 style={styles.leaderboardAvatar}

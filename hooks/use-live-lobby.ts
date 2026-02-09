@@ -62,6 +62,7 @@ export type LobbyParticipant = {
   odUserId: string | null;
   userId: string | null;
   avatarUrl: string | null;
+  avatarSeed?: string | null;
   isGuest: boolean;
   nickname: string;
   isHost: boolean;
