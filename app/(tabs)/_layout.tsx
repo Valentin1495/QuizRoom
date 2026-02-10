@@ -14,8 +14,13 @@ export default function TabLayout() {
   const isIOS = Platform.OS === 'ios';
   const isAndroid = Platform.OS === 'android';
   const androidBottomInset = Math.max(insets.bottom, 0);
+  const THREE_BUTTON_NAV_INSET_THRESHOLD = 40;
   const androidBaseBarHeight = 56;
-  const androidBottomPadding = Math.max(androidBottomInset, 12);
+  const androidDefaultBottomPadding = 28;
+  const hasThreeButtonBarLikely = isAndroid && androidBottomInset >= THREE_BUTTON_NAV_INSET_THRESHOLD;
+  const androidBottomPadding = hasThreeButtonBarLikely
+    ? androidBottomInset
+    : androidDefaultBottomPadding;
   const androidTabBarHeight = androidBaseBarHeight + androidBottomPadding;
 
   return (
@@ -28,9 +33,9 @@ export default function TabLayout() {
         tabBarLabelStyle: isIOS ? { marginTop: 4 } : undefined,
         tabBarStyle: isAndroid
           ? {
-              height: androidTabBarHeight,
-              paddingBottom: androidBottomPadding,
-            }
+            height: androidTabBarHeight,
+            paddingBottom: androidBottomPadding,
+          }
           : undefined,
       }}>
       <Tabs.Screen

@@ -36,6 +36,7 @@ import { getFunctionAuthHeaders, supabase } from '@/lib/supabase-api';
 const FORCED_EXIT_MESSAGE = '세션이 더 이상 유지되지 않아 방과의 연결이 종료됐어요. 다시 참여하려면 초대 코드를 입력해 주세요.';
 const EXPIRED_MESSAGE = '연결이 오래 끊겼습니다.\n이번 퀴즈는 종료되었어요.';
 const TOAST_COOLDOWN_MS = 10000;
+const NOT_IN_ROOM_RECHECK_DELAY_MS = 700;
 type ConnectionState = 'online' | 'reconnecting' | 'grace' | 'expired';
 type HostConnectionState = 'online' | 'waiting' | 'expired';
 const HOST_GRACE_SECONDS = 30;
@@ -159,12 +160,54 @@ export default function MatchPlayScreen() {
 
     // Use Supabase game actions
     const gameActions = useGameActions();
+    const notInRoomRecheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const notInRoomRecheckRequestedRef = useRef(false);
 
     useEffect(() => {
-        if (!disconnectReason && isWatchingState && gameState.status === 'not_in_room') {
-            notifyForcedExit();
+        if (disconnectReason || !isWatchingState) {
+            if (notInRoomRecheckTimerRef.current) {
+                clearTimeout(notInRoomRecheckTimerRef.current);
+                notInRoomRecheckTimerRef.current = null;
+            }
+            notInRoomRecheckRequestedRef.current = false;
+            return;
         }
-    }, [disconnectReason, isWatchingState, notifyForcedExit, gameState.status]);
+
+        if (gameState.status !== 'not_in_room') {
+            if (notInRoomRecheckTimerRef.current) {
+                clearTimeout(notInRoomRecheckTimerRef.current);
+                notInRoomRecheckTimerRef.current = null;
+            }
+            notInRoomRecheckRequestedRef.current = false;
+            return;
+        }
+
+        if (notInRoomRecheckRequestedRef.current || notInRoomRecheckTimerRef.current) {
+            return;
+        }
+
+        notInRoomRecheckRequestedRef.current = true;
+        notInRoomRecheckTimerRef.current = setTimeout(() => {
+            notInRoomRecheckTimerRef.current = null;
+            void (async () => {
+                const latest = await refetchGameState();
+                if (latest?.status === 'not_in_room') {
+                    notifyForcedExit();
+                    return;
+                }
+                notInRoomRecheckRequestedRef.current = false;
+            })().catch(() => {
+                notInRoomRecheckRequestedRef.current = false;
+            });
+        }, NOT_IN_ROOM_RECHECK_DELAY_MS);
+
+        return () => {
+            if (notInRoomRecheckTimerRef.current) {
+                clearTimeout(notInRoomRecheckTimerRef.current);
+                notInRoomRecheckTimerRef.current = null;
+            }
+        };
+    }, [disconnectReason, gameState.status, isWatchingState, notifyForcedExit, refetchGameState]);
 
     const pendingAction = roomData?.room.pendingAction ?? null;
     const meParticipantId = roomData?.me.participantId ?? null;
@@ -378,6 +421,31 @@ export default function MatchPlayScreen() {
         }
         return undefined;
     }, [authStatus, ensureGuestKey, guestKey]);
+    const isNotInRoomError = useCallback((error: unknown) => {
+        const message = typeof error === 'object' && error !== null && 'message' in error
+            ? String((error as { message?: unknown }).message ?? '')
+            : '';
+        const contextBody = typeof error === 'object' && error !== null && 'context' in error
+            ? (error as { context?: { body?: unknown } }).context?.body
+            : undefined;
+
+        let bodyText = '';
+        if (typeof contextBody === 'string') {
+            bodyText = contextBody;
+        } else if (contextBody && typeof contextBody === 'object' && 'error' in contextBody) {
+            bodyText = String((contextBody as { error?: unknown }).error ?? '');
+        }
+
+        return message.includes('NOT_IN_ROOM') || bodyText.includes('NOT_IN_ROOM');
+    }, []);
+    const invokeHeartbeat = useCallback(async (args: { roomId: string; participantId: string; guestKey?: string }) => {
+        const headers = await getFunctionAuthHeaders();
+        const { error } = await supabase.functions.invoke('room-action', {
+            body: { action: 'heartbeat', ...args },
+            headers,
+        });
+        if (error) throw error;
+    }, []);
 
     const scheduleLabel = useMemo(() => {
         switch (pendingAction?.type) {
@@ -732,19 +800,19 @@ export default function MatchPlayScreen() {
         if (!participantArgs || isManualReconnectPending) return;
         setIsManualReconnectPending(true);
         try {
-            const headers = await getFunctionAuthHeaders();
-            await supabase.functions.invoke('room-action', {
-                body: { action: 'heartbeat', ...participantArgs },
-                headers,
-            });
+            await invokeHeartbeat(participantArgs);
             handleConnectionRestored();
-        } catch {
+        } catch (error) {
+            if (isNotInRoomError(error)) {
+                notifyForcedExit();
+                return;
+            }
             beginReconnecting();
             showToast('아직 연결되지 않았어요. 잠시 후 다시 시도해 주세요.', 'manual_reconnect_failed');
         } finally {
             setIsManualReconnectPending(false);
         }
-    }, [beginReconnecting, handleConnectionRestored, isManualReconnectPending, participantArgs, showToast]);
+    }, [beginReconnecting, handleConnectionRestored, invokeHeartbeat, isManualReconnectPending, isNotInRoomError, notifyForcedExit, participantArgs, showToast]);
     const performLeave = useCallback(() => {
         if (hasLeft) return;
         const shouldNotifyServer = roomStatus !== 'results';
@@ -922,14 +990,10 @@ export default function MatchPlayScreen() {
         if (hasLeft || disconnectReason || !participantArgs) return;
         const tick = async () => {
             try {
-                const headers = await getFunctionAuthHeaders();
-                await supabase.functions.invoke('room-action', {
-                    body: { action: 'heartbeat', ...participantArgs },
-                    headers,
-                });
+                await invokeHeartbeat(participantArgs);
                 handleConnectionRestored();
             } catch (err) {
-                if (err instanceof Error && err.message.includes('NOT_IN_ROOM')) {
+                if (isNotInRoomError(err)) {
                     notifyForcedExit();
                 } else {
                     beginReconnecting();
@@ -940,7 +1004,7 @@ export default function MatchPlayScreen() {
         void tick();
         const interval = setInterval(tick, HEARTBEAT_INTERVAL_MS);
         return () => clearInterval(interval);
-    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, notifyForcedExit, participantArgs]);
+    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, invokeHeartbeat, isNotInRoomError, notifyForcedExit, participantArgs]);
 
     // Bandwidth optimization: reduced pendingAction check interval from 200ms to 500ms
     const PENDING_CHECK_INTERVAL_MS = 500;
@@ -961,15 +1025,11 @@ export default function MatchPlayScreen() {
                 pendingHeartbeatRef.current = true;
                 void (async () => {
                     try {
-                        const headers = await getFunctionAuthHeaders();
-                        await supabase.functions.invoke('room-action', {
-                            body: { action: 'heartbeat', ...participantArgs },
-                            headers,
-                        });
+                        await invokeHeartbeat(participantArgs);
                         handleConnectionRestored();
                     } catch (error) {
                         pendingHeartbeatRef.current = false;
-                        if (error instanceof Error && error.message.includes('NOT_IN_ROOM')) {
+                        if (isNotInRoomError(error)) {
                             notifyForcedExit();
                         } else {
                             beginReconnecting();
@@ -982,7 +1042,7 @@ export default function MatchPlayScreen() {
         update();
         const interval = setInterval(update, PENDING_CHECK_INTERVAL_MS);
         return () => clearInterval(interval);
-    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, notifyForcedExit, participantArgs, pendingAction, serverOffsetMs]);
+    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, invokeHeartbeat, isNotInRoomError, notifyForcedExit, participantArgs, pendingAction, serverOffsetMs]);
 
     useEffect(() => {
         setSelectedChoice(null);
@@ -1686,13 +1746,16 @@ export default function MatchPlayScreen() {
         return null;
     }
 
-    if (gameState.status === 'loading') {
+    if (gameState.status === 'loading' || (gameState.status === 'not_in_room' && !disconnectReason)) {
+        const loadingLabel = gameState.status === 'not_in_room'
+            ? '참여 상태를 확인하는 중...'
+            : '퀴즈를 불러오는 중...';
         return (
             <>
                 <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
                 <ThemedView style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={textColor} />
-                    <ThemedText style={[styles.loadingLabel, { color: textMutedColor }]}>퀴즈를 불러오는 중...</ThemedText>
+                    <ThemedText style={[styles.loadingLabel, { color: textMutedColor }]}>{loadingLabel}</ThemedText>
                 </ThemedView>
                 {leaveDialogElement}
             </>

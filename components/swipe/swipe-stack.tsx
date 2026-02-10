@@ -12,6 +12,7 @@ import {
   Dimensions,
   Easing,
   PanResponder,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -311,6 +312,14 @@ export function SwipeStack({
   const [eliminatedChoiceIds, setEliminatedChoiceIds] = useState<string[] | null>(null);
   const [lifelinesUsed, setLifelinesUsed] = useState({ fifty: false, hint: false });
   const challengeCompletionNotifiedRef = useRef(false);
+  const sheetBottomOffset = isChallenge ? insets.bottom + Spacing.lg : 0;
+  const actionsSheetBottomPadding = Spacing.xl + sheetBottomOffset;
+  const reportSheetDefaultBottomPadding =
+    Platform.OS === 'android' ? Spacing.lg : Spacing.lg + (isChallenge ? insets.bottom : 0);
+  const explanationSheetBottomPadding = Spacing.xl + sheetBottomOffset;
+  const reportSheetKeyboardBehavior: 'interactive' = 'interactive';
+  const reportSheetKeyboardInputMode: 'adjustResize' = 'adjustResize';
+  const reportSheetTopInset = 0;
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<SwipeFeedback | null>(null);
@@ -380,6 +389,7 @@ export function SwipeStack({
   type ReportPayload = Parameters<typeof reportQuestion>[0];
   const [reportReason, setReportReason] = useState<ReportReasonKey | null>(null);
   const [reportNotes, setReportNotes] = useState('');
+  const [isReportInputFocused, setIsReportInputFocused] = useState(false);
   const [reportQuestionId, setReportQuestionId] = useState<ReportPayload['questionId'] | null>(null);
   const [reportSubject, setReportSubject] = useState<SwipeFeedQuestion | null>(null);
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
@@ -397,6 +407,20 @@ export function SwipeStack({
   ).current;
   const [skeletonShimmerAnim, setSkeletonShimmerAnim] = useState(() => new Animated.Value(0));
   const skeletonVisibleRef = useRef(false);
+
+  useEffect(() => {
+    if (reportReason !== 'other') {
+      setIsReportInputFocused(false);
+    }
+  }, [reportReason]);
+
+  const shouldAdjustReportSheetForKeyboard =
+    Platform.OS === 'android' &&
+    reportReason === 'other' &&
+    isReportInputFocused;
+  const reportSheetBottomPadding = shouldAdjustReportSheetForKeyboard
+    ? insets.bottom + 7 * Spacing.xxl + Spacing.xl
+    : reportSheetDefaultBottomPadding;
 
   const getFunctionAuthHeaders = useCallback(async () => {
     try {
@@ -1486,6 +1510,7 @@ export function SwipeStack({
     reportReasonResetTimeoutRef.current = setTimeout(() => {
       setReportReason(null);
       setReportNotes('');
+      setIsReportInputFocused(false);
       setReportQuestionId(null);
       setIsSubmittingReport(false);
       setReportSubject(null);
@@ -2173,17 +2198,6 @@ export function SwipeStack({
                 ) : null}
                 {isChallenge ? (
                   <>
-                    {challengeSecondaryLabel ? (
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        fullWidth
-                        onPress={handleChallengeSecondary}
-                        style={styles.completionActionButton}
-                      >
-                        {challengeSecondaryLabel}
-                      </Button>
-                    ) : null}
                     {!isChallengeFailed && isGuest ? (
                       <Button
                         size="lg"
@@ -2193,6 +2207,17 @@ export function SwipeStack({
                         style={styles.completionActionButton}
                       >
                         로그인
+                      </Button>
+                    ) : null}
+                    {challengeSecondaryLabel ? (
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        fullWidth
+                        onPress={handleChallengeSecondary}
+                        style={styles.completionActionButton}
+                      >
+                        {challengeSecondaryLabel}
                       </Button>
                     ) : null}
                   </>
@@ -2358,14 +2383,18 @@ export function SwipeStack({
               borderColor: palette.border,
             },
           ]}
-          bottomInset={isChallenge ? insets.bottom + Spacing.lg : 0}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
           keyboardBehavior="interactive"
           android_keyboardInputMode="adjustResize"
         >
-          <BottomSheetView style={styles.actionsSheetContent}>
+          <BottomSheetView
+            style={[
+              styles.actionsSheetContent,
+              { paddingBottom: actionsSheetBottomPadding },
+            ]}
+          >
             {isChallenge ? (
               <>
                 <View style={styles.actionsHeader}>
@@ -2447,10 +2476,16 @@ export function SwipeStack({
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
-          keyboardBehavior="interactive"
-          android_keyboardInputMode="adjustResize"
+          topInset={reportSheetTopInset}
+          keyboardBehavior={reportSheetKeyboardBehavior}
+          android_keyboardInputMode={reportSheetKeyboardInputMode}
         >
-          <BottomSheetView style={styles.reportSheetContent}>
+          <BottomSheetView
+            style={[
+              styles.reportSheetContent,
+              { paddingBottom: reportSheetBottomPadding },
+            ]}
+          >
             <ThemedText style={styles.sheetTitle}>문항 신고</ThemedText>
             <ThemedText style={[styles.reportSubtitle, { color: sheetMutedColor }]}>
               신고 사유를 선택해주세요
@@ -2507,6 +2542,9 @@ export function SwipeStack({
                 placeholderTextColor={sheetMutedColor}
                 value={reportNotes}
                 onChangeText={setReportNotes}
+                showSoftInputOnFocus
+                onFocus={() => setIsReportInputFocused(true)}
+                onBlur={() => setIsReportInputFocused(false)}
                 textAlignVertical="top"
                 returnKeyType="done"
                 editable={!isSubmittingReport}
@@ -2534,13 +2572,17 @@ export function SwipeStack({
               borderColor: palette.border,
             },
           ]}
-          bottomInset={isChallenge ? insets.bottom + Spacing.lg : 0}
           enablePanDownToClose
           enableDynamicSizing
           enableOverDrag={false}
         >
           {sheetFeedback?.status === 'confirmed' ? (
-            <BottomSheetView style={styles.bottomSheetContent}>
+            <BottomSheetView
+              style={[
+                styles.bottomSheetContent,
+                { paddingBottom: explanationSheetBottomPadding },
+              ]}
+            >
               <ThemedText style={styles.sheetTitle}>해설</ThemedText>
               <ThemedText style={styles.sheetBody}>
                 {sheetFeedback.explanation ?? '해설이 없습니다.'}
@@ -2571,7 +2613,12 @@ export function SwipeStack({
               </Button>
             </BottomSheetView>
           ) : (
-            <BottomSheetView style={styles.bottomSheetContent}>
+            <BottomSheetView
+              style={[
+                styles.bottomSheetContent,
+                { paddingBottom: explanationSheetBottomPadding },
+              ]}
+            >
               <ThemedText style={styles.sheetBody}>표시할 해설이 없어요.</ThemedText>
             </BottomSheetView>
           )}

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -359,6 +359,17 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
   const palette = Colors[colorScheme];
   const mutedText = useThemeColor({}, 'textMuted');
   const themedStyles = useMemo(() => getDailyThemeStyles(colorScheme), [colorScheme]);
+  const THREE_BUTTON_NAV_INSET_THRESHOLD = 40;
+  const hasThreeButtonBarLikely =
+    Platform.OS === 'android' && insets.bottom >= THREE_BUTTON_NAV_INSET_THRESHOLD;
+  const footerBottomMargin = useMemo(
+    () => Spacing.xl + (hasThreeButtonBarLikely ? insets.bottom : 0),
+    [hasThreeButtonBarLikely, insets.bottom]
+  );
+  const footerRowStyle = useMemo(
+    () => [styles.footerRow, { marginBottom: footerBottomMargin }],
+    [footerBottomMargin]
+  );
   const [phase, setPhase] = useState<Phase>('intro');
   const [timerMode, setTimerMode] = useState<TimerMode | null>(null);
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number | null>(null);
@@ -915,7 +926,7 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
             </View>
           </View>
         </ScrollView>
-        <View style={styles.footerRow}>
+        <View style={footerRowStyle}>
           <Button
             variant="outline"
             fullWidth
@@ -1078,7 +1089,7 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
             </Pressable>
           </View> */}
         </ScrollView>
-        <View style={styles.footerRow}>
+        <View style={footerRowStyle}>
           <Button
             variant="outline"
             size="lg"
@@ -1279,7 +1290,7 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
         ) : null}
       </ScrollView>
 
-      <View style={styles.footerRow}>
+      <View style={footerRowStyle}>
         <Button
           variant="outline"
           size="lg"
@@ -1509,7 +1520,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: Spacing.md,
     paddingTop: Spacing.sm,
-    marginBottom: Spacing.xl,
   },
   flexButton: {
     flex: 1,

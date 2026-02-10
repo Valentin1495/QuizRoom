@@ -164,6 +164,22 @@ function isParticipantConnected(lastSeenAt: string | null, disconnectedAt: strin
   return now - new Date(lastSeenAt).getTime() < PARTICIPANT_TIMEOUT_MS;
 }
 
+function isNotInRoomFunctionError(error: unknown): boolean {
+  const message = typeof error === 'object' && error !== null && 'message' in error
+    ? String((error as { message?: unknown }).message ?? '')
+    : '';
+  const contextBody = typeof error === 'object' && error !== null && 'context' in error
+    ? (error as { context?: { body?: unknown } }).context?.body
+    : undefined;
+  let bodyText = '';
+  if (typeof contextBody === 'string') {
+    bodyText = contextBody;
+  } else if (contextBody && typeof contextBody === 'object' && 'error' in contextBody) {
+    bodyText = String((contextBody as { error?: unknown }).error ?? '');
+  }
+  return message.includes('NOT_IN_ROOM') || bodyText.includes('NOT_IN_ROOM');
+}
+
 export function useLiveGame(
   roomId: string | null,
   participantId: string | null,
@@ -178,8 +194,8 @@ export function useLiveGame(
   const lastFetchRef = useRef<number>(0);
   const isFetchingRef = useRef(false);
 
-  const fetchGameState = useCallback(async () => {
-    if (!shouldFetch || isFetchingRef.current) return;
+  const fetchGameState = useCallback(async (): Promise<GameState | null> => {
+    if (!shouldFetch || isFetchingRef.current) return null;
 
     isFetchingRef.current = true;
     try {
@@ -192,6 +208,7 @@ export function useLiveGame(
       if (fetchError) throw fetchError;
 
       if (result?.data) {
+        let resolvedState: GameState | null = null;
         setGameState((prev) => {
           let incoming = result.data as GameState;
           if (prev.status === 'ok' && incoming.status === 'ok') {
@@ -208,6 +225,7 @@ export function useLiveGame(
                   prevVersion,
                 });
               }
+              resolvedState = prev;
               return prev;
             }
 
@@ -227,17 +245,23 @@ export function useLiveGame(
               };
             }
           }
+          resolvedState = incoming;
           return incoming;
         });
         setError(null);
+        lastFetchRef.current = Date.now();
+        return resolvedState ?? (result.data as GameState);
       } else if (result?.error) {
         throw new Error(result.error);
       }
       lastFetchRef.current = Date.now();
+      return null;
     } catch (err) {
       console.error('[Game] Failed to fetch state:', err);
       setError(err instanceof Error ? err : new Error('Failed to fetch game state'));
-      setGameState({ status: 'error' });
+      const failedState: GameState = { status: 'error' };
+      setGameState(failedState);
+      return failedState;
     } finally {
       isFetchingRef.current = false;
     }
@@ -523,10 +547,17 @@ export function useLiveGame(
     const sendHeartbeat = async () => {
       try {
         const headers = await getFunctionAuthHeaders();
-        await supabase.functions.invoke('room-action', {
+        const { error: heartbeatError } = await supabase.functions.invoke('room-action', {
           body: { action: 'heartbeat', roomId, participantId, guestKey },
           headers,
         });
+        if (heartbeatError) {
+          if (isNotInRoomFunctionError(heartbeatError)) {
+            setGameState({ status: 'not_in_room' });
+            return;
+          }
+          throw heartbeatError;
+        }
       } catch (err) {
         console.error('[Game] Heartbeat failed:', err);
       }
