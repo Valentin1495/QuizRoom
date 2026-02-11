@@ -25,7 +25,7 @@ const ACTION_DELAY_DEFAULT_MS = 3000;
 const ACTION_DELAY_MIN_MS = 2000;
 const ACTION_DELAY_MAX_MS = 10000;
 const LOBBY_EXPIRES_MS = 1000 * 60 * 10;
-const HOST_STALE_TIMEOUT_MS = 15000;
+const HOST_STALE_TIMEOUT_MS = 30000;
 
 const PAUSABLE_STATUSES = new Set(['countdown', 'question', 'grace', 'reveal', 'leaderboard']);
 
@@ -42,6 +42,75 @@ async function maybeExtendRoomExpiry(args: { supabase: any; roomId: string; expi
   const { supabase, roomId, expiresAt, nowMs } = args;
   if (!shouldExtendExpiry(expiresAt, nowMs)) return;
   await supabase.from('live_match_rooms').update({ expires_at: nowMs + LOBBY_EXPIRES_MS }).eq('id', roomId);
+}
+
+function isLiveParticipant(
+  participant: { last_seen_at: string | null; disconnected_at: string | null },
+  nowMs: number
+) {
+  if (participant.disconnected_at) return false;
+  if (!participant.last_seen_at) return false;
+  return nowMs - new Date(participant.last_seen_at).getTime() <= HOST_STALE_TIMEOUT_MS;
+}
+
+async function normalizeRoomToLobbyIfEmpty(args: {
+  supabase: any;
+  room: any;
+  roomId: string;
+  nowMs: number;
+}) {
+  const { supabase, room, roomId, nowMs } = args;
+  const { data: activeParticipants, error } = await supabase
+    .from('live_match_participants')
+    .select('id, last_seen_at, disconnected_at')
+    .eq('room_id', roomId)
+    .is('removed_at', null);
+
+  if (error) {
+    console.warn('[RoomAction] failed to count active participants for room normalization', {
+      roomId,
+      error,
+    });
+    return false;
+  }
+
+  const active = (activeParticipants ?? []) as {
+    id: string;
+    last_seen_at: string | null;
+    disconnected_at: string | null;
+  }[];
+  const liveCount = active.filter((participant) => isLiveParticipant(participant, nowMs)).length;
+  if (liveCount > 0) {
+    return false;
+  }
+
+  if (active.length > 0) {
+    await supabase
+      .from('live_match_participants')
+      .update({
+        removed_at: new Date(nowMs).toISOString(),
+        is_host: false,
+        is_ready: false,
+      })
+      .eq('room_id', roomId)
+      .is('removed_at', null);
+  }
+
+  await supabase
+    .from('live_match_rooms')
+    .update({
+      status: 'lobby',
+      current_round: 0,
+      phase_ends_at: null,
+      pending_action: null,
+      pause_state: null,
+      server_now: nowMs,
+      expires_at: nowMs + LOBBY_EXPIRES_MS,
+      version: room.version + 1,
+    })
+    .eq('id', roomId);
+
+  return true;
 }
 
 async function transferHostIfNeeded(args: {
@@ -67,36 +136,30 @@ async function transferHostIfNeeded(args: {
     return { transferred: false as const };
   }
 
-  const active = (activeParticipants ?? []) as Array<{
+  const active = (activeParticipants ?? []) as {
     id: string;
     user_id: string | null;
     identity_id: string;
     joined_at: string;
     last_seen_at: string | null;
     disconnected_at: string | null;
-  }>;
+  }[];
 
   if (!active.length) {
     return { transferred: false as const };
   }
 
-  const isLive = (p: { last_seen_at: string | null; disconnected_at: string | null }) => {
-    if (p.disconnected_at) return false;
-    if (!p.last_seen_at) return false;
-    return nowMs - new Date(p.last_seen_at).getTime() <= HOST_STALE_TIMEOUT_MS;
-  };
-
   const currentHostActive = active.some((p) => {
     const isCurrentHost =
       (room.host_id && p.user_id === room.host_id) || p.identity_id === room.host_identity;
-    return !!isCurrentHost && isLive(p);
+    return !!isCurrentHost && isLiveParticipant(p, nowMs);
   });
 
   if (currentHostActive) {
     return { transferred: false as const };
   }
 
-  const eligible = active.filter(isLive);
+  const eligible = active.filter((participant) => isLiveParticipant(participant, nowMs));
   if (!eligible.length) {
     return { transferred: false as const };
   }
@@ -495,15 +558,13 @@ serve(async (req) => {
           .eq('id', participantId);
 
         let transferredHost: Awaited<ReturnType<typeof transferHostIfNeeded>> | null = null;
-        if (room.status === 'lobby') {
-          transferredHost = await transferHostIfNeeded({
-            supabase,
-            room,
-            roomId,
-            nowMs: now,
-            source: 'room_action_heartbeat',
-          });
-        }
+        transferredHost = await transferHostIfNeeded({
+          supabase,
+          room,
+          roomId,
+          nowMs: now,
+          source: 'room_action_heartbeat',
+        });
 
         // Prevent "active room but expired" by extending expiry while heartbeats are flowing.
         await maybeExtendRoomExpiry({ supabase, roomId, expiresAt: room.expires_at, nowMs: now }).catch((err) => {
@@ -651,12 +712,20 @@ serve(async (req) => {
           });
         }
 
-        await maybeExtendRoomExpiry({ supabase, roomId, expiresAt: room.expires_at, nowMs: now }).catch((err) => {
-          console.warn('[RoomAction] Failed to extend room expiry on leave', err);
+        const normalizedToLobby = await normalizeRoomToLobbyIfEmpty({
+          supabase,
+          room,
+          roomId,
+          nowMs: now,
         });
+        if (!normalizedToLobby) {
+          await maybeExtendRoomExpiry({ supabase, roomId, expiresAt: room.expires_at, nowMs: now }).catch((err) => {
+            console.warn('[RoomAction] Failed to extend room expiry on leave', err);
+          });
+        }
 
         return new Response(
-          JSON.stringify({ data: { ok: true, hostTransfer: transferredHost } }),
+          JSON.stringify({ data: { ok: true, hostTransfer: transferredHost, normalizedToLobby } }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         );
       }
@@ -709,22 +778,22 @@ serve(async (req) => {
         const delayMs = params.delayMs ?? ACTION_DELAY_DEFAULT_MS;
         const executeAt = now + delayMs;
 
-	        await supabase
-	          .from('live_match_rooms')
-	          .update({
-	            pending_action: {
-	              type: 'start',
-	              executeAt,
-	              delayMs,
-	              createdAt: now,
-	              initiatedBy: participant.user_id,
-	              initiatedIdentity: participant.identity_id,
-	              label: '게임 시작',
-	            },
-	            expires_at: now + LOBBY_EXPIRES_MS,
-	            version: room.version + 1,
-	          })
-	          .eq('id', roomId);
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            pending_action: {
+              type: 'start',
+              executeAt,
+              delayMs,
+              createdAt: now,
+              initiatedBy: participant.user_id,
+              initiatedIdentity: participant.identity_id,
+              label: '매치 시작',
+            },
+            expires_at: now + LOBBY_EXPIRES_MS,
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
 
         return new Response(
           JSON.stringify({ data: { ok: true, executeAt } }),
@@ -776,23 +845,23 @@ serve(async (req) => {
             newPhaseEndsAt = now + rules.leaderboardSeconds * 1000;
             break;
           }
-	          case 'leaderboard': {
-	            const nextRound = room.current_round + 1;
-	            if (nextRound >= room.total_rounds) {
-	              const { data: participants } = await supabase
-	                .from('live_match_participants')
-	                .select('*')
-	                .eq('room_id', roomId)
-	                .is('removed_at', null);
+          case 'leaderboard': {
+            const nextRound = room.current_round + 1;
+            if (nextRound >= room.total_rounds) {
+              const { data: participants } = await supabase
+                .from('live_match_participants')
+                .select('*')
+                .eq('room_id', roomId)
+                .is('removed_at', null);
 
-		              if (participants?.length) {
-		                await awardLiveMatchXpOnce({ supabase, roomId, room, participants, nowMs: now });
-		                await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
-		              }
-	              newStatus = 'results';
-	              newPhaseEndsAt = null;
-	            } else {
-	              newStatus = 'countdown';
+              if (participants?.length) {
+                await awardLiveMatchXpOnce({ supabase, roomId, room, participants, nowMs: now });
+                await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
+              }
+              newStatus = 'results';
+              newPhaseEndsAt = null;
+            } else {
+              newStatus = 'countdown';
               newRound = nextRound;
               newPhaseEndsAt = now + rules.readSeconds * 1000;
             }
@@ -800,19 +869,19 @@ serve(async (req) => {
           }
         }
 
-	        await supabase
-	          .from('live_match_rooms')
-	          .update({
-	            status: newStatus,
-	            current_round: newRound,
-	            server_now: now,
-	            phase_ends_at: newPhaseEndsAt,
-	            expires_at: now + LOBBY_EXPIRES_MS,
-	            version: room.version + 1,
-	            pending_action: null,
-	            pause_state: null,
-	          })
-	          .eq('id', roomId);
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            status: newStatus,
+            current_round: newRound,
+            server_now: now,
+            phase_ends_at: newPhaseEndsAt,
+            expires_at: now + LOBBY_EXPIRES_MS,
+            version: room.version + 1,
+            pending_action: null,
+            pause_state: null,
+          })
+          .eq('id', roomId);
 
         return new Response(
           JSON.stringify({ data: { ok: true, status: newStatus } }),
@@ -972,22 +1041,22 @@ serve(async (req) => {
         const delayMs = clampDelay(params.delayMs);
         const executeAt = now + delayMs;
 
-	        await supabase
-	          .from('live_match_rooms')
-	          .update({
-	            pending_action: {
-	              type: 'rematch',
-	              executeAt,
-	              delayMs,
-	              createdAt: now,
-	              initiatedBy: participant.user_id,
-	              initiatedIdentity: participant.identity_id,
-	              label: '리매치',
-	            },
-	            expires_at: now + LOBBY_EXPIRES_MS,
-	            version: room.version + 1,
-	          })
-	          .eq('id', roomId);
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            pending_action: {
+              type: 'rematch',
+              executeAt,
+              delayMs,
+              createdAt: now,
+              initiatedBy: participant.user_id,
+              initiatedIdentity: participant.identity_id,
+              label: '리매치',
+            },
+            expires_at: now + LOBBY_EXPIRES_MS,
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
 
         return new Response(
           JSON.stringify({ data: { ok: true } }),
@@ -1014,21 +1083,21 @@ serve(async (req) => {
 
         const remainingMs = room.phase_ends_at ? Math.max(0, room.phase_ends_at - now) : undefined;
 
-	        await supabase
-	          .from('live_match_rooms')
-	          .update({
-	            status: 'paused',
-	            server_now: now,
-	            phase_ends_at: null,
-	            pause_state: {
-	              previousStatus: room.status,
-	              remainingMs,
-	              pausedAt: now,
-	            },
-	            expires_at: now + LOBBY_EXPIRES_MS,
-	            version: room.version + 1,
-	          })
-	          .eq('id', roomId);
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            status: 'paused',
+            server_now: now,
+            phase_ends_at: null,
+            pause_state: {
+              previousStatus: room.status,
+              remainingMs,
+              pausedAt: now,
+            },
+            expires_at: now + LOBBY_EXPIRES_MS,
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
 
         return new Response(
           JSON.stringify({ data: { ok: true } }),
@@ -1047,17 +1116,17 @@ serve(async (req) => {
         const previousStatus = room.pause_state.previousStatus;
         const remainingMs = room.pause_state.remainingMs;
 
-	        await supabase
-	          .from('live_match_rooms')
-	          .update({
-	            status: previousStatus,
-	            server_now: now,
-	            phase_ends_at: remainingMs !== undefined ? now + remainingMs : null,
-	            pause_state: null,
-	            expires_at: now + LOBBY_EXPIRES_MS,
-	            version: room.version + 1,
-	          })
-	          .eq('id', roomId);
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            status: previousStatus,
+            server_now: now,
+            phase_ends_at: remainingMs !== undefined ? now + remainingMs : null,
+            pause_state: null,
+            expires_at: now + LOBBY_EXPIRES_MS,
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
 
         return new Response(
           JSON.stringify({ data: { ok: true } }),
@@ -1073,14 +1142,14 @@ serve(async (req) => {
           );
         }
 
-	        await supabase
-	          .from('live_match_rooms')
-	          .update({
-	            pending_action: null,
-	            expires_at: now + LOBBY_EXPIRES_MS,
-	            version: room.version + 1,
-	          })
-	          .eq('id', roomId);
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            pending_action: null,
+            expires_at: now + LOBBY_EXPIRES_MS,
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
 
         await supabase.from('live_match_logs').insert({
           room_id: roomId,
@@ -1097,10 +1166,10 @@ serve(async (req) => {
         );
       }
 
-	      case 'finish': {
-	        if (!participant.is_host) {
-	          throw new Error('NOT_AUTHORIZED');
-	        }
+      case 'finish': {
+        if (!participant.is_host) {
+          throw new Error('NOT_AUTHORIZED');
+        }
 
         // Get all participants
         const { data: participants } = await supabase
@@ -1109,24 +1178,24 @@ serve(async (req) => {
           .eq('room_id', roomId)
           .is('removed_at', null);
 
-	        if (!participants) {
-	          throw new Error('NO_PARTICIPANTS');
-	        }
-		        await awardLiveMatchXpOnce({ supabase, roomId, room, participants, nowMs: now });
-		        await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
+        if (!participants) {
+          throw new Error('NO_PARTICIPANTS');
+        }
+        await awardLiveMatchXpOnce({ supabase, roomId, room, participants, nowMs: now });
+        await logLiveMatchHistoryOnce({ supabase, roomId, room, participants, now });
 
-		        await supabase
-		          .from('live_match_rooms')
-		          .update({
-	            status: 'results',
-	            server_now: now,
-	            phase_ends_at: null,
-	            expires_at: now + LOBBY_EXPIRES_MS,
-	            version: room.version + 1,
-	            pending_action: null,
-	            pause_state: null,
-	          })
-	          .eq('id', roomId);
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            status: 'results',
+            server_now: now,
+            phase_ends_at: null,
+            expires_at: now + LOBBY_EXPIRES_MS,
+            version: room.version + 1,
+            pending_action: null,
+            pause_state: null,
+          })
+          .eq('id', roomId);
 
         return new Response(
           JSON.stringify({ data: { ok: true } }),
@@ -1202,22 +1271,22 @@ serve(async (req) => {
           );
         }
 
-	        await supabase
-	          .from('live_match_rooms')
-	          .update({
-	            pending_action: {
-	              type: 'toLobby',
-	              executeAt,
-	              delayMs,
-	              createdAt: now,
-	              initiatedBy: participant.user_id,
-	              initiatedIdentity: participant.identity_id,
-	              label: '대기실로',
-	            },
-	            expires_at: now + LOBBY_EXPIRES_MS,
-	            version: room.version + 1,
-	          })
-	          .eq('id', roomId);
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            pending_action: {
+              type: 'toLobby',
+              executeAt,
+              delayMs,
+              createdAt: now,
+              initiatedBy: participant.user_id,
+              initiatedIdentity: participant.identity_id,
+              label: '대기실로',
+            },
+            expires_at: now + LOBBY_EXPIRES_MS,
+            version: room.version + 1,
+          })
+          .eq('id', roomId);
 
         return new Response(
           JSON.stringify({ data: { ok: true } }),

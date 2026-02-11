@@ -212,7 +212,13 @@ serve(async (req: Request) => {
       // Leaderboard data (only in reveal/leaderboard/results)
       let leaderboard = undefined;
       if (room.status === 'reveal' || room.status === 'leaderboard' || room.status === 'results') {
-        const top = rankedParticipants.map((p) => {
+        const connectedRankedParticipants = rankedParticipants.filter((p) =>
+          isParticipantConnected(p.last_seen_at, p.disconnected_at, now)
+        );
+        const connectedRanks = new Map<string, number>(
+          connectedRankedParticipants.map((p, idx) => [p.id, idx + 1])
+        );
+        const top = connectedRankedParticipants.map((p, idx) => {
           const user = p.user_id ? usersById.get(p.user_id) : undefined;
           return {
             participantId: p.id,
@@ -221,11 +227,12 @@ serve(async (req: Request) => {
             avatarSeed: deriveAvatarSeedFromIdentity(p.identity_id, `participant:${p.id}`),
             nickname: p.nickname,
             totalScore: p.total_score,
-            rank: p.rank,
+            rank: connectedRanks.get(p.id) ?? idx + 1,
           };
         });
 
         const meEntry = rankedParticipants.find((p) => p.id === me.id);
+        const meRank = meEntry ? connectedRanks.get(meEntry.id) ?? meEntry.rank : null;
         leaderboard = {
           top,
           me: meEntry ? {
@@ -235,7 +242,7 @@ serve(async (req: Request) => {
             avatarSeed: deriveAvatarSeedFromIdentity(meEntry.identity_id, `participant:${meEntry.id}`),
             nickname: meEntry.nickname,
             totalScore: meEntry.total_score,
-            rank: meEntry.rank,
+            rank: meRank,
           } : undefined,
         };
       }

@@ -1,6 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, type LayoutRectangle, type ViewStyle } from 'react-native';
+import { ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View, type LayoutRectangle, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -43,10 +43,12 @@ export default function LiveMatchScreen() {
   const scrollViewHeightRef = useRef(0);
   const createSectionLayoutRef = useRef<LayoutRectangle | null>(null);
   const createButtonLayoutRef = useRef<LayoutRectangle | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const createLiveMatchRoom = useCreateLiveMatchRoom();
   const joinLiveMatchRoom = useJoinLiveMatchRoom();
-  const { decks: liveMatchDecks, isLoading: isDecksLoading } = useLiveMatchDecks();
+  const { decks: liveMatchDecks, isLoading: isDecksLoading } = useLiveMatchDecks({ refreshKey });
   const isGuest = status === 'guest' && !user;
 
   const normalizedCode = useMemo(() => liveMatchRoomCode.trim().toUpperCase(), [liveMatchRoomCode]);
@@ -220,6 +222,19 @@ export default function LiveMatchScreen() {
     }
   }, [ensureGuestKey, guestKey, isJoinEnabled, isReady, joinLiveMatchRoom, normalizedCode, normalizedJoinNickname, router, status]);
 
+  const handleRefresh = useCallback(async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      if (isGuest && !guestKey) {
+        await ensureGuestKey();
+      }
+      setRefreshKey((prev) => prev + 1);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [ensureGuestKey, guestKey, isGuest, isRefreshing]);
+
   return (
     <>
       <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
@@ -245,6 +260,15 @@ export default function LiveMatchScreen() {
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="interactive"
             contentInsetAdjustmentBehavior="never"
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={() => void handleRefresh()}
+                tintColor={themeColors.primary}
+                colors={[themeColors.primary]}
+                progressViewOffset={Platform.OS === 'ios' ? insets.top + Spacing.md : 0}
+              />
+            }
           >
             <View style={styles.header}>
               <ThemedText type="title">라이브 매치</ThemedText>

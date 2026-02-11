@@ -11,7 +11,9 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import {
   ActivityIndicator,
   Alert,
+  Platform,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   View,
@@ -47,9 +49,11 @@ const HISTORY_PREVIEW_LIMIT = 3;
 
 export default function ProfileScreen() {
   const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey, isReady, refreshUser } = useAuth();
-  const { stats: supabaseStats } = useUserStats();
+  const [refreshKey, setRefreshKey] = useState(0);
+  const { stats: supabaseStats } = useUserStats({ refreshKey });
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const colorScheme = useColorScheme();
@@ -87,10 +91,11 @@ export default function ProfileScreen() {
   const history = useQuizHistory({
     limit: 60,
     enabled: status === 'authenticated' && isReady,
+    refreshKey,
   });
   const { streak: activityDayStreak } = useUserActivityStreak(
     isAuthenticated ? user?.id : null,
-    { enabled: isAuthenticated && isReady }
+    { enabled: isAuthenticated && isReady, refreshKey }
   );
 
   const handleSignOut = useCallback(async () => {
@@ -145,6 +150,22 @@ export default function ProfileScreen() {
     if (status !== 'authenticated') return;
     void refreshUser();
   }, [isFocused, isReady, refreshUser, status]);
+
+  const handleRefresh = useCallback(async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      if (status === 'guest' && !guestKey) {
+        await ensureGuestKey();
+      }
+      if (status === 'authenticated' && isReady) {
+        await refreshUser();
+      }
+      setRefreshKey((prev) => prev + 1);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [ensureGuestKey, guestKey, isReady, isRefreshing, refreshUser, status]);
 
   // Prefer in-memory user (updated via Realtime/applyUserDelta) over cached stats.
   const xpValue = user?.xp ?? supabaseStats?.xp ?? 0;
@@ -234,6 +255,15 @@ export default function ProfileScreen() {
             { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl },
           ]}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={() => void handleRefresh()}
+              tintColor={themeColors.primary}
+              colors={[themeColors.primary]}
+              progressViewOffset={Platform.OS === 'ios' ? insets.top + Spacing.md : 0}
+            />
+          }
         >
           {isAuthenticated && user ? (
             <ProfileHeader

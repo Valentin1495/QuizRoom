@@ -32,13 +32,15 @@ export type HistoryBuckets = {
 export function useQuizHistory(options?: {
   limit?: number;
   enabled?: boolean;
+  refreshKey?: number;
 }): HistoryBuckets | undefined {
   const limit = options?.limit ?? 10;
   const enabled = options?.enabled ?? true;
+  const refreshKey = options?.refreshKey ?? 0;
 
   const { history: supabaseResult, isLoading } = useSupabaseQuizHistory(
     enabled ? limit : 0,
-    { enabled }
+    { enabled, refreshKey }
   );
 
   if (!enabled || isLoading) return undefined;

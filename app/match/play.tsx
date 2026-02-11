@@ -29,12 +29,13 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestAvatarSeed } from '@/lib/guest';
+import { setLiveMatchLeaveIntent } from '@/lib/live-match-leave-intent';
 import { getFunctionAuthHeaders, supabase } from '@/lib/supabase-api';
 
 // computeTimeLeft and getComboMultiplier are now imported from use-live-game
 
 const FORCED_EXIT_MESSAGE = '세션이 더 이상 유지되지 않아 방과의 연결이 종료됐어요. 다시 참여하려면 초대 코드를 입력해 주세요.';
-const EXPIRED_MESSAGE = '연결이 오래 끊겼습니다.\n이번 퀴즈는 종료되었어요.';
+const EXPIRED_MESSAGE = '연결이 오래 끊겨 이번 매치에서 제외됐어요.'
 const TOAST_COOLDOWN_MS = 10000;
 const NOT_IN_ROOM_RECHECK_DELAY_MS = 700;
 type ConnectionState = 'online' | 'reconnecting' | 'grace' | 'expired';
@@ -77,6 +78,7 @@ export default function MatchPlayScreen() {
     const [connectionState, setConnectionState] = useState<ConnectionState>('online');
     const [graceRemaining, setGraceRemaining] = useState(120);
     const [isManualReconnectPending, setIsManualReconnectPending] = useState(false);
+    const [isHardLeaving, setIsHardLeaving] = useState(false);
     const [hostConnectionState, setHostConnectionState] = useState<HostConnectionState>('online');
     const [hostGraceRemaining, setHostGraceRemaining] = useState(HOST_GRACE_SECONDS);
 
@@ -130,11 +132,11 @@ export default function MatchPlayScreen() {
     const [participantId, setParticipantId] = useState<string | null>(initialParticipantId);
 
     const shouldFetch = useMemo(() => {
-        if (!roomId || hasLeft || disconnectReason) return false;
+        if (!roomId || hasLeft || disconnectReason || isHardLeaving) return false;
         if (authStatus === 'authenticated') return !!user;
         if (authStatus === 'guest') return !!guestKey;
         return false;
-    }, [authStatus, disconnectReason, guestKey, hasLeft, roomId, user]);
+    }, [authStatus, disconnectReason, guestKey, hasLeft, isHardLeaving, roomId, user]);
 
     const isWatchingState = shouldFetch && !!participantId;
 
@@ -162,9 +164,16 @@ export default function MatchPlayScreen() {
     const gameActions = useGameActions();
     const notInRoomRecheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const notInRoomRecheckRequestedRef = useRef(false);
+    const latestRoomCodeRef = useRef<string | null>(null);
 
     useEffect(() => {
-        if (disconnectReason || !isWatchingState) {
+        if (roomData?.room.code) {
+            latestRoomCodeRef.current = roomData.room.code.trim().toUpperCase();
+        }
+    }, [roomData?.room.code]);
+
+    useEffect(() => {
+        if (disconnectReason || !isWatchingState || isHardLeaving) {
             if (notInRoomRecheckTimerRef.current) {
                 clearTimeout(notInRoomRecheckTimerRef.current);
                 notInRoomRecheckTimerRef.current = null;
@@ -207,7 +216,7 @@ export default function MatchPlayScreen() {
                 notInRoomRecheckTimerRef.current = null;
             }
         };
-    }, [disconnectReason, gameState.status, isWatchingState, notifyForcedExit, refetchGameState]);
+    }, [disconnectReason, gameState.status, isHardLeaving, isWatchingState, notifyForcedExit, refetchGameState]);
 
     const pendingAction = roomData?.room.pendingAction ?? null;
     const meParticipantId = roomData?.me.participantId ?? null;
@@ -223,9 +232,21 @@ export default function MatchPlayScreen() {
         }
         return { roomId, participantId: meParticipantId };
     }, [authStatus, guestKey, meParticipantId, roomId]);
+    const leaveParticipantArgs = useMemo(() => {
+        if (!roomId || !participantId) {
+            return null;
+        }
+        if (authStatus === 'guest') {
+            if (!guestKey) {
+                return null;
+            }
+            return { roomId, participantId, guestKey };
+        }
+        return { roomId, participantId };
+    }, [authStatus, guestKey, participantId, roomId]);
 
     useEffect(() => {
-        if (!roomId || hasLeft || disconnectReason) return;
+        if (!roomId || hasLeft || disconnectReason || isHardLeaving) return;
 
         const channel = supabase.channel(`live-match-reactions-broadcast:${roomId}`, {
             config: {
@@ -278,7 +299,7 @@ export default function MatchPlayScreen() {
             reactionBroadcastChannelRef.current = null;
             void supabase.removeChannel(channel);
         };
-    }, [disconnectReason, hasLeft, meParticipantId, roomId]);
+    }, [disconnectReason, hasLeft, isHardLeaving, meParticipantId, roomId]);
 
     const refillReactionTokens = useCallback(() => {
         const now = Date.now();
@@ -396,6 +417,7 @@ export default function MatchPlayScreen() {
     const [isLobbyPending, setIsLobbyPending] = useState(false);
     const [isGameStalled, setIsGameStalled] = useState(false);
     const [promotedToHost, setPromotedToHost] = useState(false);
+    const [resolvedNextHostMessage, setResolvedNextHostMessage] = useState<string | null>(null);
     const [justReconnected, setJustReconnected] = useState(false);
     const [delayPreset] = useState<'rapid' | 'standard' | 'chill'>('chill');
     const [showConnectionWarning, setShowConnectionWarning] = useState(false);
@@ -450,7 +472,7 @@ export default function MatchPlayScreen() {
     const scheduleLabel = useMemo(() => {
         switch (pendingAction?.type) {
             case 'start':
-                return '게임 시작';
+                return '매치 시작';
             case 'rematch':
                 return '리매치';
             case 'toLobby':
@@ -538,6 +560,7 @@ export default function MatchPlayScreen() {
         [hostConnectionState, stopHostGraceTimer]
     );
     const handleConnectionRestored = useCallback(() => {
+        if (hasLeft || isHardLeaving) return;
         clearConnectionTimers();
         let shouldAnnounce = false;
         setConnectionState((prev) => {
@@ -552,15 +575,19 @@ export default function MatchPlayScreen() {
             showToast('연결이 복구됐어요! 마지막 진행 상태로 돌아갑니다.', 'connection_restored');
             void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         }
-    }, [clearConnectionTimers, showToast]);
+    }, [clearConnectionTimers, hasLeft, isHardLeaving, showToast]);
     const beginReconnecting = useCallback(() => {
+        if (hasLeft || isHardLeaving) return;
         setConnectionState((prev) => {
             if (prev === 'online') return 'reconnecting';
             if (prev === 'reconnecting' || prev === 'grace' || prev === 'expired') return prev;
             return prev;
         });
-    }, []);
+    }, [hasLeft, isHardLeaving]);
     useEffect(() => {
+        if (hasLeft || isHardLeaving) {
+            return;
+        }
         if (!socketHasEverConnected && socketPhase !== 'connected') {
             return;
         }
@@ -569,7 +596,7 @@ export default function MatchPlayScreen() {
         } else {
             beginReconnecting();
         }
-    }, [beginReconnecting, handleConnectionRestored, socketHasEverConnected, socketPhase]);
+    }, [beginReconnecting, handleConnectionRestored, hasLeft, isHardLeaving, socketHasEverConnected, socketPhase]);
 
     useEffect(() => {
         let timer: ReturnType<typeof setTimeout> | null = null;
@@ -705,8 +732,11 @@ export default function MatchPlayScreen() {
         return participants.find((p) => p.isHost) ?? null;
     }, [participants, hostUserId]);
     const hostParticipantId = hostParticipant?.participantId ?? null;
+    const hostKey = hostUserId ?? hostParticipantId ?? null;
     const hostNickname = hostParticipant?.nickname ?? '호스트';
     const hostIsConnected = hostParticipant?.isConnected ?? false;
+    const isMeNextHost =
+        (roomData?.me.isHost ?? false) || (hostParticipant && meParticipantId && hostParticipant.participantId === meParticipantId);
     const totalRounds = roomData?.room.totalRounds ?? 0;
     const isFinalLeaderboard =
         roomStatus === 'leaderboard' && totalRounds > 0 && (roomData?.room.currentRound ?? 0) + 1 >= totalRounds;
@@ -782,6 +812,7 @@ export default function MatchPlayScreen() {
     }, [participants, pendingAction?.type, resultsSnapshot, roomStatus]);
     const previousHostIdRef = useRef<string | null>(null);
     const hostConnectivityRef = useRef<boolean | null>(null);
+    const disconnectedHostKeyRef = useRef<string | null>(null);
     const waitingToastRef = useRef<{ shownForSession: boolean; lastShownAt: number | null }>({
         shownForSession: false,
         lastShownAt: null,
@@ -790,6 +821,7 @@ export default function MatchPlayScreen() {
     const pauseToastHostRef = useRef<string | null>(null);
     const historyLoggedRef = useRef<string | null>(null);
     const streakLoggedRef = useRef(false);
+    const leaveInFlightRef = useRef(false);
     const participantConnectivityRef = useRef<Map<string, boolean>>(new Map());
     const wasHostRef = useRef<boolean | null>(null);
     const roomStatusRef = useRef<string | null>(null);
@@ -797,7 +829,7 @@ export default function MatchPlayScreen() {
     const lostHostDueToGraceRef = useRef(false);
     const lostHostSkipResumeToastRef = useRef(false);
     const handleManualReconnect = useCallback(async () => {
-        if (!participantArgs || isManualReconnectPending) return;
+        if (isHardLeaving || !participantArgs || isManualReconnectPending) return;
         setIsManualReconnectPending(true);
         try {
             await invokeHeartbeat(participantArgs);
@@ -808,30 +840,49 @@ export default function MatchPlayScreen() {
                 return;
             }
             beginReconnecting();
-            showToast('아직 연결되지 않았어요. 잠시 후 다시 시도해 주세요.', 'manual_reconnect_failed');
+            showToast('아직 연결되지 않았어요.\n잠시 후 다시 시도해 주세요.', 'manual_reconnect_failed');
         } finally {
             setIsManualReconnectPending(false);
         }
-    }, [beginReconnecting, handleConnectionRestored, invokeHeartbeat, isManualReconnectPending, isNotInRoomError, notifyForcedExit, participantArgs, showToast]);
+    }, [beginReconnecting, handleConnectionRestored, invokeHeartbeat, isHardLeaving, isManualReconnectPending, isNotInRoomError, notifyForcedExit, participantArgs, showToast]);
+    const handleHostTakeoverAttempt = useCallback(() => {
+        if (isManualReconnectPending) return;
+        void (async () => {
+            await handleManualReconnect();
+            await refetchGameState();
+        })();
+    }, [handleManualReconnect, isManualReconnectPending, refetchGameState]);
     const performLeave = useCallback(() => {
-        if (hasLeft) return;
-        const shouldNotifyServer = roomStatus !== 'results';
-        if (shouldNotifyServer && !disconnectReason && participantArgs) {
-            gameActions.leave(participantArgs).catch((err) => {
-                if (err instanceof Error && err.message.includes('NOT_IN_ROOM')) {
-                    // already removed; just continue
-                } else {
-                    console.warn('Failed to leave room', err);
-                }
+        if (hasLeft || leaveInFlightRef.current) return;
+        leaveInFlightRef.current = true;
+        const participantForIntent = leaveParticipantArgs?.participantId ?? participantId ?? null;
+        const roomCodeForIntent = latestRoomCodeRef.current ?? roomData?.room.code ?? null;
+        if (roomId) {
+            void setLiveMatchLeaveIntent({
+                roomId,
+                roomCode: roomCodeForIntent,
+                participantId: participantForIntent,
+            }).catch((error) => {
+                console.warn('Failed to persist leave intent', error);
             });
         }
+        setIsHardLeaving(true);
+        leaveInFlightRef.current = false;
         pauseToastActiveRef.current = false;
         pauseToastHostRef.current = null;
         roomStatusRef.current = null;
         lostHostSkipResumeToastRef.current = false;
         setHasLeft(true);
         router.navigate('/(tabs)/live-match');
-    }, [disconnectReason, gameActions, hasLeft, participantArgs, roomStatus, router]);
+        if (leaveParticipantArgs) {
+            void gameActions.leave(leaveParticipantArgs).catch((err) => {
+                if (err instanceof Error && err.message.includes('NOT_IN_ROOM')) {
+                    return;
+                }
+                console.warn('Background leave request failed', err);
+            });
+        }
+    }, [gameActions, hasLeft, leaveParticipantArgs, participantId, roomData?.room.code, roomId, router]);
 
     const handleLeave = useCallback(() => {
         // On results screen, exit immediately without confirmation modal
@@ -987,7 +1038,7 @@ export default function MatchPlayScreen() {
     // Note: useLiveGame already handles heartbeat internally, this is for additional connection state monitoring
     const HEARTBEAT_INTERVAL_MS = 8000;
     useEffect(() => {
-        if (hasLeft || disconnectReason || !participantArgs) return;
+        if (hasLeft || disconnectReason || isHardLeaving || !participantArgs) return;
         const tick = async () => {
             try {
                 await invokeHeartbeat(participantArgs);
@@ -1004,12 +1055,12 @@ export default function MatchPlayScreen() {
         void tick();
         const interval = setInterval(tick, HEARTBEAT_INTERVAL_MS);
         return () => clearInterval(interval);
-    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, invokeHeartbeat, isNotInRoomError, notifyForcedExit, participantArgs]);
+    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, invokeHeartbeat, isHardLeaving, isNotInRoomError, notifyForcedExit, participantArgs]);
 
     // Bandwidth optimization: reduced pendingAction check interval from 200ms to 500ms
     const PENDING_CHECK_INTERVAL_MS = 500;
     useEffect(() => {
-        if (hasLeft || disconnectReason) return;
+        if (hasLeft || disconnectReason || isHardLeaving) return;
         pendingHeartbeatRef.current = false;
         if (!pendingAction) {
             setPendingMs(0);
@@ -1042,7 +1093,7 @@ export default function MatchPlayScreen() {
         update();
         const interval = setInterval(update, PENDING_CHECK_INTERVAL_MS);
         return () => clearInterval(interval);
-    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, invokeHeartbeat, isNotInRoomError, notifyForcedExit, participantArgs, pendingAction, serverOffsetMs]);
+    }, [beginReconnecting, disconnectReason, handleConnectionRestored, hasLeft, invokeHeartbeat, isHardLeaving, isNotInRoomError, notifyForcedExit, participantArgs, pendingAction, serverOffsetMs]);
 
     useEffect(() => {
         setSelectedChoice(null);
@@ -1125,6 +1176,50 @@ export default function MatchPlayScreen() {
     const hostGraceElapsedMs =
         hostDisconnectedElapsedMs ??
         (hostSnapshotFresh && hostLagMs !== null && hostLagMs > HOST_HEARTBEAT_GRACE_MS ? hostLagMs : 0);
+
+    useEffect(() => {
+        if (hostConnectionState === 'online') {
+            disconnectedHostKeyRef.current = null;
+            return;
+        }
+        if (disconnectedHostKeyRef.current === null) {
+            disconnectedHostKeyRef.current = hostKey;
+        }
+    }, [hostConnectionState, hostKey]);
+
+    useEffect(() => {
+        if (disconnectReason || hasLeft || hostConnectionState === 'online') {
+            setResolvedNextHostMessage(null);
+            return;
+        }
+
+        if (isMeNextHost) {
+            setResolvedNextHostMessage('당신이 진행을 이어받았어요.\n매치를 계속 진행해 주세요!');
+            return;
+        }
+
+        const disconnectedHostKey = disconnectedHostKeyRef.current;
+        const hasNewHostAfterDisconnect =
+            hostKey !== null &&
+            disconnectedHostKey !== null &&
+            hostKey !== disconnectedHostKey;
+        if (hostParticipant?.isConnected && hasNewHostAfterDisconnect) {
+            setResolvedNextHostMessage(`${hostNickname}님이 진행을 이어받았어요.`);
+            return;
+        }
+
+        setResolvedNextHostMessage((prev) =>
+            prev ?? '호스트 재지정을 확인하는 중이에요.\n아래 버튼으로 진행 이어받기를 다시 시도해 주세요.'
+        );
+    }, [
+        disconnectReason,
+        hasLeft,
+        hostConnectionState,
+        hostKey,
+        hostNickname,
+        hostParticipant,
+        isMeNextHost,
+    ]);
 
     const pausedRemainingSeconds = useMemo(() => {
         if (!pauseState || pauseState.remainingMs == null) return null;
@@ -1211,7 +1306,7 @@ export default function MatchPlayScreen() {
             hostConnectivityRef.current = perceivedOnline;
             if (hostConnectionState !== 'online') {
                 resetHostGraceState();
-                showToast(`${hostNickname}님 연결이 복구됐어요. 게임을 다시 시작합니다.`, 'host_reconnect');
+                showToast(`${hostNickname}님 연결이 복구됐어요. 매치를 다시 시작합니다.`, 'host_reconnect');
                 void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
             } else {
                 resetHostGraceState();
@@ -1337,12 +1432,12 @@ export default function MatchPlayScreen() {
         const prevStatus = roomStatusRef.current;
         if (prevStatus !== null && prevStatus !== roomStatus && !isHost) {
             if (isPaused) {
-                showToast('호스트가 게임을 일시정지했어요');
+                showToast('호스트가 매치를 일시정지했어요');
             } else if (prevStatus === 'paused' && !isPaused) {
                 if (lostHostSkipResumeToastRef.current) {
                     lostHostSkipResumeToastRef.current = false;
                 } else {
-                    showToast('게임이 다시 시작됐어요');
+                    showToast('매치가 다시 시작됐어요');
                 }
             }
         }
@@ -1734,7 +1829,7 @@ export default function MatchPlayScreen() {
                     <ThemedText type="title">연결이 종료됐어요</ThemedText>
                     <ThemedText style={[styles.loadingLabel, styles.disconnectLabel]}>{disconnectReason}</ThemedText>
                     <Button variant="default" size="lg" onPress={() => performLeave()}>
-                        퀴즈룸 찾기
+                        나가기
                     </Button>
                 </ThemedView>
                 {leaveDialogElement}
@@ -1748,7 +1843,7 @@ export default function MatchPlayScreen() {
 
     if (gameState.status === 'loading' || (gameState.status === 'not_in_room' && !disconnectReason)) {
         const loadingLabel = gameState.status === 'not_in_room'
-            ? '참여 상태를 확인하는 중...'
+            ? '참가 상태를 확인하는 중...'
             : '퀴즈를 불러오는 중...';
         return (
             <>
@@ -1767,14 +1862,14 @@ export default function MatchPlayScreen() {
             <>
                 <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
                 <ThemedView style={styles.loadingContainer}>
-                    <ThemedText type="title">게임 정보를 찾을 수 없어요</ThemedText>
+                    <ThemedText type="title">매치 정보를 찾을 수 없어요</ThemedText>
                     <Button
                         variant="default"
                         size="lg"
                         style={styles.loadingAction}
-                        onPress={() => router.navigate('/(tabs)/live-match')}
+                        onPress={() => performLeave()}
                     >
-                        홈으로 이동
+                        나가기
                     </Button>
                 </ThemedView>
                 {leaveDialogElement}
@@ -1886,11 +1981,11 @@ export default function MatchPlayScreen() {
                                 </View>
                             </View>
                         ))
-                    : choices.map((choice, index) => {
-                    const isSelected = selectedChoice === index || myAnswer?.choiceIndex === index;
-                    const isDisabled = myAnswer !== undefined || isPaused || selectedChoice !== null;
-                    return (
-                        <Pressable
+                        : choices.map((choice, index) => {
+                            const isSelected = selectedChoice === index || myAnswer?.choiceIndex === index;
+                            const isDisabled = myAnswer !== undefined || isPaused || selectedChoice !== null;
+                            return (
+                                <Pressable
                                     key={choice.id}
                                     onPress={() => handleChoicePress(index)}
                                     disabled={isDisabled}
@@ -2170,95 +2265,103 @@ export default function MatchPlayScreen() {
 
         return avatarNode;
     };
-
-    const renderLeaderboard = () => (
-        <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
-            <View style={styles.iconHeadingRow}>
-                <IconSymbol
-                    name="dot.radiowaves.left.and.right"
-                    size={Platform.OS === 'ios' ? 36 : 40}
-                    color={textColor}
-                    style={Platform.OS === 'ios' && { marginTop: -4 }}
-                />
-                <ThemedText type="title" style={styles.cardTitle}>리더보드</ThemedText>
-            </View>
-            <View style={styles.distributionList}>
-                {currentRound?.leaderboard?.top.length ? (
-                    currentRound.leaderboard.top.map((entry, index) => {
-                        const isMe = meParticipantId !== null && entry.participantId === meParticipantId;
-                        const rank = entry.rank ?? index + 1;
-                        const rankDisplay = rank;
-                        const nameDisplay = entry.nickname;
-                        return (
-                            <View
-                                key={entry.participantId}
-                                style={[
-                                    styles.distributionRow,
-                                    { backgroundColor: background },
-                                    isMe && [styles.leaderboardMeRow, { borderColor: textColor }],
-                                ]}
-                                accessibilityRole="text"
-                                accessibilityLabel={`${rank}위 ${entry.nickname}`}
-                            >
-                                <View style={styles.leaderboardNameWrapper}>
-                                    <ThemedText
-                                        style={styles.rankBadgeText}
-                                        lightColor={Palette.gray900}
-                                        darkColor={Palette.gray25}
-                                    >
-                                        {rankDisplay}
-                                    </ThemedText>
-                                    {renderParticipantAvatar(entry.participantId)}
-                                    <View style={styles.leaderboardNameTextGroup}>
-                                        <View style={styles.leaderboardNameRow}>
+    const isParticipantVisibleOnLeaderboard = (targetParticipantId: string) => {
+        const participant = participantsById.get(targetParticipantId);
+        return participant ? participant.isConnected : true;
+    };
+    const renderLeaderboard = () => {
+        const leaderboardEntries = (currentRound?.leaderboard?.top ?? []).filter((entry) =>
+            isParticipantVisibleOnLeaderboard(entry.participantId)
+        );
+        return (
+            <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
+                <View style={styles.iconHeadingRow}>
+                    <IconSymbol
+                        name="dot.radiowaves.left.and.right"
+                        size={Platform.OS === 'ios' ? 36 : 40}
+                        color={textColor}
+                        style={Platform.OS === 'ios' && { marginTop: -4 }}
+                    />
+                    <ThemedText type="title" style={styles.cardTitle}>리더보드</ThemedText>
+                </View>
+                <View style={styles.distributionList}>
+                    {leaderboardEntries.length ? (
+                        leaderboardEntries.map((entry, index) => {
+                            const isMe = meParticipantId !== null && entry.participantId === meParticipantId;
+                            const rank = entry.rank ?? index + 1;
+                            const rankDisplay = rank;
+                            const nameDisplay = entry.nickname;
+                            return (
+                                <View
+                                    key={entry.participantId}
+                                    style={[
+                                        styles.distributionRow,
+                                        { backgroundColor: background },
+                                        isMe && [styles.leaderboardMeRow, { borderColor: textColor }],
+                                    ]}
+                                    accessibilityRole="text"
+                                    accessibilityLabel={`${rank}위 ${entry.nickname}`}
+                                >
+                                    <View style={styles.leaderboardNameWrapper}>
+                                        <ThemedText
+                                            style={styles.rankBadgeText}
+                                            lightColor={Palette.gray900}
+                                            darkColor={Palette.gray25}
+                                        >
+                                            {rankDisplay}
+                                        </ThemedText>
+                                        {renderParticipantAvatar(entry.participantId)}
+                                        <View style={styles.leaderboardNameTextGroup}>
+                                            <View style={styles.leaderboardNameRow}>
+                                                <ThemedText
+                                                    style={[
+                                                        styles.leaderboardNameText,
+                                                        { flexShrink: 1, minWidth: 0 },
+                                                        isMe && [styles.leaderboardMeText, { color: textColor }],
+                                                    ]}
+                                                    numberOfLines={1}
+                                                    ellipsizeMode="tail"
+                                                >
+                                                    {nameDisplay}
+                                                </ThemedText>
+                                            </View>
+                                        </View>
+                                    </View>
+                                    <View style={styles.leaderboardScoreWrapper}>
+                                        <View style={styles.leaderboardScoreRow}>
                                             <ThemedText
                                                 style={[
-                                                    styles.leaderboardNameText,
-                                                    { flexShrink: 1, minWidth: 0 },
+                                                    styles.distributionCount,
+                                                    styles.leaderboardScore,
                                                     isMe && [styles.leaderboardMeText, { color: textColor }],
                                                 ]}
-                                                numberOfLines={1}
-                                                ellipsizeMode="tail"
                                             >
-                                                {nameDisplay}
+                                                {entry.totalScore}점
                                             </ThemedText>
                                         </View>
                                     </View>
                                 </View>
-                                <View style={styles.leaderboardScoreWrapper}>
-                                    <View style={styles.leaderboardScoreRow}>
-                                        <ThemedText
-                                            style={[
-                                                styles.distributionCount,
-                                                styles.leaderboardScore,
-                                                isMe && [styles.leaderboardMeText, { color: textColor }],
-                                            ]}
-                                        >
-                                            {entry.totalScore}점
-                                        </ThemedText>
-                                    </View>
-                                </View>
-                            </View>
-                        );
-                    })
-                ) : (
-                    <ThemedText style={styles.timerText}>집계 중...</ThemedText>
-                )}
-            </View>
-            {currentRound?.leaderboard?.me ? (
-                <View style={[styles.myRankBadge, { backgroundColor: background, borderColor: borderColor }]}>
-                    <ThemedText style={[styles.myRankText, { color: textMutedColor }]}>
-                        현재 순위 #{currentRound.leaderboard.me.rank} · {currentRound.leaderboard.me.totalScore}점
-                    </ThemedText>
+                            );
+                        })
+                    ) : (
+                        <ThemedText style={styles.timerText}>집계 중...</ThemedText>
+                    )}
                 </View>
-            ) : null}
-            <ThemedText style={[styles.nextRoundHint, { color: textMutedColor }]}>
-                {isFinalLeaderboard
-                    ? `${timeLeft ?? '-'}초 후 최종 결과 화면으로 이동해요`
-                    : `다음 라운드 준비까지 ${timeLeft ?? '-'}초`}
-            </ThemedText>
-        </View>
-    );
+                {currentRound?.leaderboard?.me ? (
+                    <View style={[styles.myRankBadge, { backgroundColor: background, borderColor: borderColor }]}>
+                        <ThemedText style={[styles.myRankText, { color: textMutedColor }]}>
+                            현재 순위 #{currentRound.leaderboard.me.rank} · {currentRound.leaderboard.me.totalScore}점
+                        </ThemedText>
+                    </View>
+                ) : null}
+                <ThemedText style={[styles.nextRoundHint, { color: textMutedColor }]}>
+                    {isFinalLeaderboard
+                        ? `${timeLeft ?? '-'}초 후 최종 결과 화면으로 이동해요`
+                        : `다음 라운드 준비까지 ${timeLeft ?? '-'}초`}
+                </ThemedText>
+            </View>
+        );
+    };
     const renderResults = () => {
         const deckInfo = roomData?.deck;
         const deckTitle = deckInfo?.title ?? '랜덤 덱';
@@ -2268,6 +2371,20 @@ export default function MatchPlayScreen() {
             roomStatus === 'results' && resultsSnapshot
                 ? resultsSnapshot
                 : participants;
+        const resultsPlayersById = new Map(resultsPlayers.map((player) => [player.participantId, player]));
+        const connectedLeaderboardEntries = (currentRound?.leaderboard?.top ?? []).filter((entry) =>
+            isParticipantVisibleOnLeaderboard(entry.participantId)
+        );
+        const connectedLeaderboardRankById = new Map(
+            connectedLeaderboardEntries.map((entry, index) => [entry.participantId, entry.rank ?? index + 1])
+        );
+        const visibleResultsPlayers =
+            connectedLeaderboardEntries.length > 0
+                ? connectedLeaderboardEntries
+                    .map((entry) => resultsPlayersById.get(entry.participantId))
+                    .filter((player): player is (typeof resultsPlayers)[number] => player !== undefined)
+                : resultsPlayers.filter((player) => isParticipantVisibleOnLeaderboard(player.participantId));
+        const shouldShowPodiumEmoji = visibleResultsPlayers.length >= 3;
 
         return (
             <View style={[styles.revealCard, { backgroundColor: cardColor }]}>
@@ -2287,17 +2404,16 @@ export default function MatchPlayScreen() {
                     </View>
                 </View>
                 <View style={styles.distributionList}>
-                    {resultsPlayers.map((player, index) => {
+                    {visibleResultsPlayers.length ? visibleResultsPlayers.map((player, index) => {
                         const isMe = meParticipantId !== null && player.participantId === meParticipantId;
                         const isHostPlayer = hostParticipantId !== null && player.participantId === hostParticipantId;
-                        const rank = player.rank ?? index + 1;
-                        const usePodiumEmoji = resultsPlayers.length >= 3;
+                        const rank = connectedLeaderboardRankById.get(player.participantId) ?? index + 1;
                         const podiumEmoji =
-                            usePodiumEmoji && rank === 1
+                            shouldShowPodiumEmoji && rank === 1
                                 ? '🥇'
-                                : usePodiumEmoji && rank === 2
+                                : shouldShowPodiumEmoji && rank === 2
                                     ? '🥈'
-                                    : usePodiumEmoji && rank === 3
+                                    : shouldShowPodiumEmoji && rank === 3
                                         ? '🥉'
                                         : '';
                         const nameDisplay = player.nickname;
@@ -2424,7 +2540,7 @@ export default function MatchPlayScreen() {
                                 </View>
                             </View>
                         );
-                    })}
+                    }) : <ThemedText style={styles.timerText}>집계 중...</ThemedText>}
                 </View>
                 <Button
                     variant="default"
@@ -2532,7 +2648,6 @@ export default function MatchPlayScreen() {
         const progress = Math.max(0, Math.min(1, graceRemaining / 120));
         const minutes = Math.floor(graceRemaining / 60);
         const seconds = graceRemaining % 60;
-        const graceRemainingLabel = minutes > 0 ? `${minutes}분` : `${seconds}초`;
         const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         const graceBackdropColor = colorScheme === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.25)';
         return (
@@ -2542,7 +2657,7 @@ export default function MatchPlayScreen() {
                     <ThemedText style={[styles.graceTitle, { color: textColor }]}>연결 대기 중</ThemedText>
                     <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>
                         연결이 끊겼어요.{'\n'}
-                        {graceRemainingLabel} 안에 복구되면 이어서 진행돼요.
+                        남은 시간 안에 복구되면 이어서 진행돼요.
                     </ThemedText>
                     <ThemedText style={[styles.graceTimer, { color: textColor }]}>{formattedTime}</ThemedText>
                     <View style={[styles.graceProgressBar, { backgroundColor: borderColor }]}>
@@ -2567,15 +2682,10 @@ export default function MatchPlayScreen() {
     };
 
     const renderHostGraceOverlay = () => {
-        const nextHostMessage = (() => {
-            if (isHost || (hostParticipant && meParticipantId && hostParticipant.participantId === meParticipantId)) {
-                return '당신이 진행을 이어받았어요.\n게임을 계속 진행해 주세요!';
-            }
-            if (hostParticipant) {
-                return `${hostNickname}님이 진행을 이어받았어요.`;
-            }
-            return '다른 참가자가 진행을 이어받았어요.';
-        })();
+        const nextHostMessage = isMeNextHost
+            ? '당신이 진행을 이어받았어요.\n매치를 계속 진행해 주세요!'
+            : (resolvedNextHostMessage
+                ?? '호스트 재지정을 확인하는 중이에요.\n아래 버튼으로 진행 이어받기를 다시 시도해 주세요.');
         const graceBackdropColor = colorScheme === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.25)';
         if (promotedToHost) {
             return (
@@ -2646,7 +2756,17 @@ export default function MatchPlayScreen() {
                         <ThemedText style={[styles.graceTitle, { color: textColor }]}>호스트 연결이 오래 끊겼습니다.</ThemedText>
                     </View>
                     <ThemedText style={[styles.graceSubtitle, { color: textMutedColor }]}>{nextHostMessage}</ThemedText>
-                    <Button variant="default" size="lg" fullWidth onPress={handleLeave}>
+                    <Button
+                        variant="default"
+                        size="lg"
+                        fullWidth
+                        onPress={handleHostTakeoverAttempt}
+                        disabled={isManualReconnectPending}
+                        loading={isManualReconnectPending}
+                    >
+                        {isManualReconnectPending ? '확인 중...' : '진행 이어받기 시도'}
+                    </Button>
+                    <Button variant="secondary" size="lg" fullWidth onPress={handleLeave}>
                         나가기
                     </Button>
                 </View>
@@ -2694,30 +2814,10 @@ export default function MatchPlayScreen() {
     //     </View>
     // );
 
-    const renderPauseNotice = () => {
-        if (!isPaused) return null;
-        return (
-            <View style={[styles.pauseBanner, { backgroundColor: textColor }]}>
-                <View style={styles.iconHeadingRow}>
-                    <IconSymbol name="pause.circle.fill" size={24} color={cardColor} />
-                    <ThemedText type="subtitle" style={[styles.pauseBannerTitle, { color: cardColor }]}>
-                        게임이 일시정지됐어요
-                    </ThemedText>
-                </View>
-                <ThemedText style={[styles.pauseBannerSubtitle, { color: cardColor }]}>
-                    호스트가 일시정지를 해제할 때까지 기다려주세요.
-                </ThemedText>
-                {pausedRemainingSeconds !== null ? (
-                    <ThemedText style={[styles.pauseBannerHint, { color: cardColor }]}>재개 시 남은 시간 약 {pausedRemainingSeconds}초</ThemedText>
-                ) : null}
-            </View>
-        );
-    };
-
     const renderBootstrapping = () => (
         <View style={[styles.centerCard, { backgroundColor: cardColor }]}>
             <ActivityIndicator size="large" color={textColor} />
-            <ThemedText style={[styles.centerSubtitle, { color: textMutedColor }]}>게임을 준비 중이에요...</ThemedText>
+            <ThemedText style={[styles.centerSubtitle, { color: textMutedColor }]}>매치를 준비 중이에요...</ThemedText>
         </View>
     );
 
@@ -2769,7 +2869,6 @@ export default function MatchPlayScreen() {
                         {leaveControl}
                     </View>
                 ) : null}
-                {connectionState === 'online' ? renderPauseNotice() : null}
                 <View style={styles.stageContainer}>
                     {content}
                     {persistentReactionBar}

@@ -350,7 +350,7 @@ export default function MatchLobbyScreen() {
       const key = await resolveHostGuestKey();
       const executeAt = Date.now() - serverOffsetMs + resolveDelayMs;
       setLocalPendingAction({
-        label: '라이브 매치 시작 준비 중...',
+        label: '매치 시작 준비 중...',
         executeAt,
       });
       setPendingMs(resolveDelayMs);
@@ -501,7 +501,7 @@ export default function MatchLobbyScreen() {
         entryConfirmStartedAtRef.current = null;
         const message = error instanceof Error ? error.message : '';
         if (message.includes(ROOM_IN_PROGRESS_MESSAGE)) {
-          Alert.alert('게임이 이미 시작됐어요', ROOM_IN_PROGRESS_MESSAGE, [
+          Alert.alert('매치가 이미 시작됐어요', ROOM_IN_PROGRESS_MESSAGE, [
             {
               text: '확인',
               onPress: () => {
@@ -533,7 +533,7 @@ export default function MatchLobbyScreen() {
     if (!lobby) return;
     if (!participantId) return;
     if (lobby.room.status !== 'lobby') {
-      showResultToast({ message: '게임을 시작합니다!' });
+      showResultToast({ message: '매치를 시작합니다!' });
       setHasLeft(true);
       router.replace({
         pathname: '/match/play',
@@ -895,7 +895,7 @@ export default function MatchLobbyScreen() {
                     }}
                   >
                     <ThemedText type="subtitle" style={styles.pendingTitle}>
-                      게임이 곧 시작돼요
+                      매치가 곧 시작돼요
                     </ThemedText>
                     <ThemedText style={styles.pendingSubtitle}>
                       호스트가 시작을 눌렀어요. 곧 자동으로 시작돼요.
@@ -921,7 +921,7 @@ export default function MatchLobbyScreen() {
               <View style={styles.header}>
                 <ThemedText type="title">퀴즈룸</ThemedText>
                 <ThemedText style={styles.headerSubtitle}>
-                  대기실에 입장했어요. {'\n'}게임을 시작하면 화면이 자동으로 넘어가고, {'\n'}네트워크 상황에 따라 1~2초 정도 지연될 수 있어요.
+                  대기실에 입장했어요. {'\n'}매치를 시작하면 화면이 자동으로 넘어가고, {'\n'}네트워크 상황에 따라 1~2초 정도 지연될 수 있어요.
                 </ThemedText>
                 <View style={styles.codeBadgeWrapper}>
                   <View style={styles.codeBadgeRow}>
@@ -1100,7 +1100,7 @@ export default function MatchLobbyScreen() {
                       loading={isStarting || isSelfParticipantPending}
                       disabled={isSelfParticipantPending || !allReady || !!pendingAction}
                     >
-                      {isSelfParticipantPending ? '입장 확인 중…' : (isStarting ? '시작 준비 중...' : '게임 시작')}
+                      {isSelfParticipantPending ? '입장 확인 중…' : (isStarting ? '시작 준비 중...' : '매치 시작')}
                     </Button>
                   </View>
                 ) : null}

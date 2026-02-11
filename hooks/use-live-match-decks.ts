@@ -19,11 +19,14 @@ export type LiveMatchDeck = {
  * Hook to fetch live match decks
  * Returns { decks, isLoading }
  */
-export function useLiveMatchDecks(): {
+export function useLiveMatchDecks(options?: { refreshKey?: number }): {
   decks: LiveMatchDeck[];
   isLoading: boolean;
 } {
-  const { decks, isLoading } = useSupabaseLiveMatchDecks({ enabled: true });
+  const { decks, isLoading } = useSupabaseLiveMatchDecks({
+    enabled: true,
+    refreshKey: options?.refreshKey,
+  });
 
   return {
     decks: decks as LiveMatchDeck[],

@@ -259,9 +259,15 @@ export function useLiveGame(
     } catch (err) {
       console.error('[Game] Failed to fetch state:', err);
       setError(err instanceof Error ? err : new Error('Failed to fetch game state'));
-      const failedState: GameState = { status: 'error' };
-      setGameState(failedState);
-      return failedState;
+      let resolvedState: GameState = { status: 'error' };
+      setGameState((prev) => {
+        if (prev.status === 'ok') {
+          resolvedState = prev;
+          return prev;
+        }
+        return resolvedState;
+      });
+      return resolvedState;
     } finally {
       isFetchingRef.current = false;
     }

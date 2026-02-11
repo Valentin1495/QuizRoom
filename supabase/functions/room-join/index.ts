@@ -23,18 +23,7 @@ const corsHeaders = {
 
 const LOBBY_EXPIRES_MS = 1000 * 60 * 10;
 const MAX_NICKNAME_LENGTH = 24;
-const BLOCKED_NICKNAME_TOKENS = [
-  '시발',
-  '씨발',
-  '병신',
-  '좆',
-  '개새끼',
-  '느금',
-  'tlqkf',
-  'fuck',
-  'shit',
-  'bitch',
-];
+const PARTICIPANT_STALE_TIMEOUT_MS = 30 * 1000;
 
 function respondError(message: string, status = 200) {
   return new Response(
@@ -47,12 +36,6 @@ const PARTICIPANT_LIMIT = 10;
 
 function nicknameKey(value: string) {
   return value.toLowerCase().replace(/\s+/g, '').replace(/[^0-9a-zA-Z가-힣]/g, '');
-}
-
-function containsBlockedToken(value: string) {
-  const key = nicknameKey(value);
-  if (!key) return false;
-  return BLOCKED_NICKNAME_TOKENS.some((token) => key.includes(token));
 }
 
 function ensureUniqueNickname(base: string, takenKeys: Set<string>) {
@@ -86,6 +69,12 @@ function deriveGuestNickname(guestKey: string, takenKeys: Set<string>) {
   return ensureUniqueNickname(candidate, takenKeys);
 }
 
+function isLiveParticipant(participant: { last_seen_at: string | null; disconnected_at: string | null }, nowMs: number) {
+  if (participant.disconnected_at) return false;
+  if (!participant.last_seen_at) return false;
+  return nowMs - new Date(participant.last_seen_at).getTime() <= PARTICIPANT_STALE_TIMEOUT_MS;
+}
+
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -111,6 +100,67 @@ serve(async (req: Request) => {
 
     if (roomError || !room) {
       return respondError('퀴즈룸을 찾을 수 없어요. 초대 코드를 확인해주세요.');
+    }
+
+    // Block all code-based joins unless the room is in lobby.
+    // If the room is stuck in an in-progress state with zero active participants,
+    // normalize it back to lobby so code re-entry can recover.
+    if (room.status !== 'lobby') {
+      const nowMs = Date.now();
+      const { data: activeParticipants, error: activeCountError } = await supabase
+        .from('live_match_participants')
+        .select('id, last_seen_at, disconnected_at')
+        .eq('room_id', room.id)
+        .is('removed_at', null);
+
+      if (activeCountError) {
+        throw activeCountError;
+      }
+
+      const active = (activeParticipants ?? []) as {
+        id: string;
+        last_seen_at: string | null;
+        disconnected_at: string | null;
+      }[];
+      const liveCount = active.filter((participant) => isLiveParticipant(participant, nowMs)).length;
+
+      if (liveCount === 0) {
+        if (active.length > 0) {
+          await supabase
+            .from('live_match_participants')
+            .update({
+              removed_at: new Date(nowMs).toISOString(),
+              is_host: false,
+              is_ready: false,
+            })
+            .eq('room_id', room.id)
+            .is('removed_at', null);
+        }
+
+        await supabase
+          .from('live_match_rooms')
+          .update({
+            status: 'lobby',
+            current_round: 0,
+            phase_ends_at: null,
+            pending_action: null,
+            pause_state: null,
+            server_now: nowMs,
+            expires_at: nowMs + LOBBY_EXPIRES_MS,
+            version: (room.version ?? 0) + 1,
+          })
+          .eq('id', room.id);
+        room.status = 'lobby';
+        room.current_round = 0;
+        room.phase_ends_at = null;
+        room.pending_action = null;
+        room.pause_state = null;
+        room.server_now = nowMs;
+        room.expires_at = nowMs + LOBBY_EXPIRES_MS;
+        room.version = (room.version ?? 0) + 1;
+      } else {
+        return respondError('현재 게임이 진행 중이에요. 종료 후 다시 시도해 주세요.');
+      }
     }
 
     // Check expiry
@@ -173,23 +223,29 @@ serve(async (req: Request) => {
     }
 
     // Check for existing participant
-    let existingParticipant;
+    let existingParticipant: any = null;
     if (userId) {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('live_match_participants')
         .select('*')
         .eq('room_id', room.id)
         .eq('user_id', userId)
-        .single();
-      existingParticipant = data;
+        .order('joined_at', { ascending: false });
+      if (error) throw error;
+      const rows = data ?? [];
+      const active = rows.find((row: any) => !row.removed_at) ?? null;
+      existingParticipant = active ?? rows[0] ?? null;
     } else {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('live_match_participants')
         .select('*')
         .eq('room_id', room.id)
         .eq('identity_id', identityId!)
-        .single();
-      existingParticipant = data;
+        .order('joined_at', { ascending: false });
+      if (error) throw error;
+      const rows = data ?? [];
+      const active = rows.find((row: any) => !row.removed_at) ?? null;
+      existingParticipant = active ?? rows[0] ?? null;
     }
 
     const now = new Date().toISOString();
@@ -217,21 +273,13 @@ serve(async (req: Request) => {
       }
     } else {
       sanitizedNickname = ensureUniqueNickname(
-        containsBlockedToken(requestedNickname)
-          ? (nicknameFallback || '플레이어').slice(0, MAX_NICKNAME_LENGTH)
-          : (requestedNickname || existingParticipant?.nickname || nicknameFallback || '플레이어').slice(0, MAX_NICKNAME_LENGTH),
+        (requestedNickname || existingParticipant?.nickname || nicknameFallback || '플레이어').slice(0, MAX_NICKNAME_LENGTH),
         takenNicknameKeys
       );
     }
 
     if (existingParticipant) {
-      // Rejoin
-      if (existingParticipant.removed_at) {
-        if (room.status !== 'lobby') {
-          return respondError('현재 게임이 진행 중이에요. 종료 후 다시 시도해 주세요.');
-        }
-      }
-
+      // Rejoin (lobby only; non-lobby is rejected above)
       await supabase
         .from('live_match_participants')
         .update({
@@ -262,11 +310,6 @@ serve(async (req: Request) => {
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
       );
-    }
-
-    // Prevent new participants from joining once the game has started
-    if (room.status !== 'lobby') {
-      return respondError('현재 게임이 진행 중이에요. 종료 후 다시 시도해 주세요.');
     }
 
     // Check participant limit

@@ -8,6 +8,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -48,7 +49,8 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
-  const dailyQuiz = useDailyQuiz();
+  const [refreshKey, setRefreshKey] = useState(0);
+  const dailyQuiz = useDailyQuiz(undefined, { refreshKey });
   const joinLiveMatchRoom = useJoinLiveMatchRoom();
   const createLiveMatchRoom = useCreateLiveMatchRoom();
   const [timeLeft, setTimeLeft] = useState(() => {
@@ -71,6 +73,7 @@ export default function HomeScreen() {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [recentSwipeCategory, setRecentSwipeCategory] = useState<RecentSwipeCategory | null>(null);
   const [recentLiveMatchDeck, setRecentLiveMatchDeck] = useState<RecentLiveMatchDeck | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -207,17 +210,19 @@ export default function HomeScreen() {
     lastAutoNicknameRef.current = nickname;
   }, []);
 
+  const loadRecentSelections = useCallback(async () => {
+    const [category, deck] = await Promise.all([
+      loadRecentSwipeCategory(),
+      loadRecentLiveMatchDeck(),
+    ]);
+    setRecentSwipeCategory(category);
+    setRecentLiveMatchDeck(deck);
+  }, []);
+
   useEffect(() => {
     if (!isFocused) return;
-    void (async () => {
-      const [category, deck] = await Promise.all([
-        loadRecentSwipeCategory(),
-        loadRecentLiveMatchDeck(),
-      ]);
-      setRecentSwipeCategory(category);
-      setRecentLiveMatchDeck(deck);
-    })();
-  }, [isFocused]);
+    void loadRecentSelections();
+  }, [isFocused, loadRecentSelections]);
 
   useEffect(() => {
     if (!derivedGuestNickname) return;
@@ -344,6 +349,20 @@ export default function HomeScreen() {
     );
   }, [isClearingStorage]);
 
+  const handleRefresh = useCallback(async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      if (isGuest && !guestKey) {
+        await ensureGuestKey();
+      }
+      await loadRecentSelections();
+      setRefreshKey((prev) => prev + 1);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [ensureGuestKey, guestKey, isGuest, isRefreshing, loadRecentSelections]);
+
   return (
     <ThemedView style={styles.container}>
       <KeyboardAvoidingView
@@ -367,6 +386,15 @@ export default function HomeScreen() {
           keyboardDismissMode="interactive"
           contentInsetAdjustmentBehavior="never"
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={() => void handleRefresh()}
+              tintColor={palette.primary}
+              colors={[palette.primary]}
+              progressViewOffset={Platform.OS === 'ios' ? insets.top + Spacing.md : 0}
+            />
+          }
         >
           <View style={styles.section}>
             <SectionHeader title="빠른 시작" tagline="최근 선택으로 바로 플레이" muted={muted} />

@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { getFunctionAuthHeaders, supabase } from '@/lib/supabase-api';
+import { getFunctionAuthHeaders, resolveLeaveIntentBeforeJoinByCode, supabase } from '@/lib/supabase-api';
 
 // ============================================
 // Types
@@ -271,9 +271,10 @@ export function useRoomActions() {
 
   const join = useCallback(
     async (args: { code: string; nickname?: string; guestKey?: string }) => {
+      const normalizedCode = await resolveLeaveIntentBeforeJoinByCode(args.code);
       const headers = await getFunctionAuthHeaders();
       const { data, error } = await supabase.functions.invoke('room-join', {
-        body: args,
+        body: { ...args, code: normalizedCode },
         headers,
       });
       if (error) throw error;

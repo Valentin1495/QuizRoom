@@ -29,8 +29,11 @@ export type DailyQuiz = {
  * 
  * @param date Optional date string (YYYY-MM-DD format, KST)
  */
-export function useDailyQuiz(date?: string): DailyQuiz | null | undefined {
-  const { quiz, isLoading } = useSupabaseDailyQuiz(date);
+export function useDailyQuiz(
+  date?: string,
+  options?: { enabled?: boolean; refreshKey?: number }
+): DailyQuiz | null | undefined {
+  const { quiz, isLoading } = useSupabaseDailyQuiz(date, options);
   if (isLoading) return undefined;
   return quiz as DailyQuiz | null;
 }

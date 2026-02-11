@@ -5,6 +5,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import {
+  LEAVE_INTENT_BLOCK_MESSAGE,
+  clearLiveMatchLeaveIntentForCode,
+  hasLiveMatchLeaveIntentForCode,
+} from './live-match-leave-intent';
 import { supabase, type Database } from './supabase';
 
 // ============================================
@@ -61,7 +66,7 @@ export const ROOM_EXPIRED_MESSAGE = '퀴즈룸이 만료됐어요. 새로 생성
 export const ROOM_NOT_FOUND_MESSAGE = '퀴즈룸을 찾을 수 없어요. 초대 코드를 확인해주세요.';
 export const ROOM_FULL_MESSAGE = '퀴즈룸이 가득 찼어요. 다른 방을 찾아주세요.';
 export const ROOM_IN_PROGRESS_MESSAGE =
-  '현재 게임이 진행 중이에요. 종료 후 다시 시도해 주세요.';
+  '현재 매치가 진행 중이에요. 종료 후 다시 시도해 주세요.';
 
 function extractFunctionsErrorMessage(error: unknown) {
   const anyError = error as any;
@@ -117,8 +122,67 @@ export async function getFunctionAuthHeaders() {
   return { Authorization: `Bearer ${anonKey}` };
 }
 
-export function useDailyQuiz(date?: string, options?: { enabled?: boolean }) {
+export async function resolveLeaveIntentBeforeJoinByCode(code: string) {
+  const normalizedCode = code.trim().toUpperCase();
+  if (!normalizedCode) return normalizedCode;
+
+  const hasLeaveIntent = await hasLiveMatchLeaveIntentForCode(normalizedCode);
+  if (!hasLeaveIntent) return normalizedCode;
+
+  const headers = await getFunctionAuthHeaders();
+  const { data: lobbyResult, error: lobbyError } = await supabase.functions.invoke('room-lobby', {
+    body: { code: normalizedCode },
+    headers,
+  });
+
+  if (lobbyError) {
+    // If verification fails (network/function transient), don't hard-block join precheck.
+    // room-join will still enforce in-progress restrictions server-side.
+    return normalizedCode;
+  }
+
+  const lobbyData =
+    (lobbyResult as {
+      data?: {
+        room?: { status?: string } | null;
+        participants?: { participantId?: string }[];
+      } | null;
+    } | null)?.data ?? null;
+  const roomStatus = lobbyData?.room?.status ?? null;
+  const activeParticipantCount = lobbyData?.participants?.length ?? 0;
+
+  if (!lobbyData?.room) {
+    await clearLiveMatchLeaveIntentForCode(normalizedCode);
+    return normalizedCode;
+  }
+
+  // Only block when we can confirm that the room is actively in progress.
+  if (
+    roomStatus === 'countdown' ||
+    roomStatus === 'question' ||
+    roomStatus === 'grace' ||
+    roomStatus === 'reveal' ||
+    roomStatus === 'leaderboard' ||
+    roomStatus === 'paused'
+  ) {
+    // If nobody is in the room, don't hard-block here.
+    // room-join will normalize stale room states when needed.
+    if (activeParticipantCount > 0) {
+      throw new Error(LEAVE_INTENT_BLOCK_MESSAGE);
+    }
+  }
+
+  // Treat lobby-like/unknown statuses as join-allowed and clear stale leave intent.
+  await clearLiveMatchLeaveIntentForCode(normalizedCode);
+  return normalizedCode;
+}
+
+export function useDailyQuiz(
+  date?: string,
+  options?: { enabled?: boolean; refreshKey?: number }
+) {
   const enabled = options?.enabled ?? true;
+  const refreshKey = options?.refreshKey ?? 0;
   const [data, setData] = useState<DailyQuiz | null>(null);
   const [isLoading, setIsLoading] = useState(enabled);
   const [error, setError] = useState<Error | null>(null);
@@ -156,7 +220,7 @@ export function useDailyQuiz(date?: string, options?: { enabled?: boolean }) {
     };
 
     fetchQuiz();
-  }, [date, enabled]);
+  }, [date, enabled, refreshKey]);
 
   return { quiz: data, isLoading, error };
 }
@@ -210,8 +274,9 @@ export function useDeckFeed(options?: { tag?: string; limit?: number }) {
 // Live Match Deck Hooks
 // ============================================
 
-export function useLiveMatchDecks(options?: { enabled?: boolean }) {
+export function useLiveMatchDecks(options?: { enabled?: boolean; refreshKey?: number }) {
   const enabled = options?.enabled ?? true;
+  const refreshKey = options?.refreshKey ?? 0;
   const [decks, setDecks] = useState<LiveMatchDeck[]>([]);
   const [isLoading, setIsLoading] = useState(enabled);
 
@@ -249,7 +314,7 @@ export function useLiveMatchDecks(options?: { enabled?: boolean }) {
     };
 
     fetchDecks();
-  }, [enabled]);
+  }, [enabled, refreshKey]);
 
   return { decks, isLoading };
 }
@@ -298,10 +363,11 @@ export function useCreateLiveMatchRoom() {
 export function useJoinLiveMatchRoom() {
   return useCallback(
     async (args: { code: string; nickname?: string; guestKey?: string }) => {
+      const normalizedCode = await resolveLeaveIntentBeforeJoinByCode(args.code);
       const headers = await getFunctionAuthHeaders();
       const { data: result, error } = await supabase.functions.invoke('room-join', {
         body: {
-          code: args.code,
+          code: normalizedCode,
           nickname: args.nickname,
           guestKey: args.guestKey,
         },
@@ -357,8 +423,9 @@ export function useRoomAction() {
 // Quiz History Hooks
 // ============================================
 
-export function useQuizHistory(limit = 10, options?: { enabled?: boolean }) {
+export function useQuizHistory(limit = 10, options?: { enabled?: boolean; refreshKey?: number }) {
   const enabled = options?.enabled ?? true;
+  const refreshKey = options?.refreshKey ?? 0;
   const [history, setHistory] = useState<{
     daily: QuizHistoryEntry[];
     swipe: QuizHistoryEntry[];
@@ -387,7 +454,7 @@ export function useQuizHistory(limit = 10, options?: { enabled?: boolean }) {
     };
 
     fetchHistory();
-  }, [limit, enabled]);
+  }, [limit, enabled, refreshKey]);
 
   return { history, isLoading };
 }
@@ -413,7 +480,8 @@ export function useLogQuizHistory() {
 // User Stats Hooks
 // ============================================
 
-export function useUserStats() {
+export function useUserStats(options?: { refreshKey?: number }) {
+  const refreshKey = options?.refreshKey ?? 0;
   const [stats, setStats] = useState<{
     streak: number;
     xp: number;
@@ -503,17 +571,18 @@ export function useUserStats() {
     return () => {
       channel.data.subscription.unsubscribe();
     };
-  }, []);
+  }, [refreshKey]);
 
   return { stats, isLoading };
 }
 
 export function useUserActivityStreak(
   userId?: string | null,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean; refreshKey?: number }
 ) {
   type UserActivityDayRow = { day_key: string };
   const enabled = options?.enabled ?? true;
+  const refreshKey = options?.refreshKey ?? 0;
   const [streak, setStreak] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(enabled && !!userId);
 
@@ -571,7 +640,7 @@ export function useUserActivityStreak(
     };
 
     fetchActivityDays();
-  }, [enabled, userId]);
+  }, [enabled, userId, refreshKey]);
 
   return { streak, isLoading };
 }
