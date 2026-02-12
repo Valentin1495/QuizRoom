@@ -164,20 +164,64 @@ function isParticipantConnected(lastSeenAt: string | null, disconnectedAt: strin
   return now - new Date(lastSeenAt).getTime() < PARTICIPANT_TIMEOUT_MS;
 }
 
-function isNotInRoomFunctionError(error: unknown): boolean {
-  const message = typeof error === 'object' && error !== null && 'message' in error
-    ? String((error as { message?: unknown }).message ?? '')
-    : '';
-  const contextBody = typeof error === 'object' && error !== null && 'context' in error
-    ? (error as { context?: { body?: unknown } }).context?.body
-    : undefined;
-  let bodyText = '';
-  if (typeof contextBody === 'string') {
-    bodyText = contextBody;
-  } else if (contextBody && typeof contextBody === 'object' && 'error' in contextBody) {
-    bodyText = String((contextBody as { error?: unknown }).error ?? '');
+function extractFunctionsErrorMessage(error: unknown): string {
+  const anyError = error as {
+    message?: unknown;
+    context?: { body?: unknown; response?: { body?: unknown; data?: unknown } };
+    cause?: { body?: unknown; response?: { body?: unknown; data?: unknown } };
+  };
+
+  const parseMessage = (raw: unknown): string | null => {
+    if (!raw) return null;
+    if (typeof raw === 'string') {
+      try {
+        const parsed = JSON.parse(raw) as { error?: unknown; message?: unknown };
+        const parsedMessage = parsed?.error ?? parsed?.message;
+        return typeof parsedMessage === 'string' ? parsedMessage : null;
+      } catch {
+        return raw;
+      }
+    }
+    if (typeof raw === 'object') {
+      const parsed = raw as { error?: unknown; message?: unknown };
+      if (typeof parsed.error === 'string') return parsed.error;
+      if (typeof parsed.message === 'string') return parsed.message;
+    }
+    return null;
+  };
+
+  const candidates = [
+    anyError?.context?.response?.body,
+    anyError?.context?.body,
+    anyError?.context?.response?.data,
+    anyError?.cause?.response?.body,
+    anyError?.cause?.body,
+    anyError?.cause?.response?.data,
+  ];
+
+  for (const candidate of candidates) {
+    const parsed = parseMessage(candidate);
+    if (parsed) return parsed;
   }
-  return message.includes('NOT_IN_ROOM') || bodyText.includes('NOT_IN_ROOM');
+
+  if (typeof anyError?.message === 'string' && anyError.message.length > 0) {
+    const message = anyError.message;
+    const lowered = message.toLowerCase();
+    if (
+      lowered.includes('failed to send a request to the edge function') ||
+      lowered.includes('network request failed') ||
+      lowered.includes('failed to fetch')
+    ) {
+      return '네트워크 연결이 불안정해 요청을 보내지 못했어요. 연결을 확인한 뒤 다시 시도해 주세요.';
+    }
+    return message;
+  }
+  return '알 수 없는 오류가 발생했습니다.';
+}
+
+function isNotInRoomFunctionError(error: unknown): boolean {
+  const message = extractFunctionsErrorMessage(error);
+  return message.includes('NOT_IN_ROOM');
 }
 
 export function useLiveGame(
@@ -205,7 +249,7 @@ export function useLiveGame(
         { body: { roomId, participantId, guestKey }, headers }
       );
 
-      if (fetchError) throw fetchError;
+      if (fetchError) throw new Error(extractFunctionsErrorMessage(fetchError));
 
       if (result?.data) {
         let resolvedState: GameState | null = null;
@@ -562,7 +606,7 @@ export function useLiveGame(
             setGameState({ status: 'not_in_room' });
             return;
           }
-          throw heartbeatError;
+          throw new Error(extractFunctionsErrorMessage(heartbeatError));
         }
       } catch (err) {
         console.error('[Game] Heartbeat failed:', err);
@@ -594,7 +638,7 @@ export function useGameActions() {
         body: { action, ...args },
         headers,
       });
-      if (error) throw error;
+      if (error) throw new Error(extractFunctionsErrorMessage(error));
       if (data?.error) throw new Error(data.error);
       return data?.data;
     },

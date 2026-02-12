@@ -899,13 +899,17 @@ serve(async (req) => {
         });
 
         // Check if already answered
-        const { data: existingAnswer } = await supabase
+        const { data: existingAnswer, error: existingAnswerError } = await supabase
           .from('live_match_answers')
           .select('id')
           .eq('room_id', roomId)
           .eq('round_index', room.current_round)
           .eq('participant_id', participantId)
-          .single();
+          .maybeSingle();
+
+        if (existingAnswerError) {
+          throw existingAnswerError;
+        }
 
         if (existingAnswer) {
           return new Response(
@@ -915,14 +919,14 @@ serve(async (req) => {
         }
 
         // Get round and question
-        const { data: round } = await supabase
+        const { data: round, error: roundError } = await supabase
           .from('live_match_rounds')
           .select('*, questions(*)')
           .eq('room_id', roomId)
           .eq('index', room.current_round)
           .single();
 
-        if (!round || !round.questions) {
+        if (roundError || !round || !round.questions) {
           throw new Error('ROUND_NOT_FOUND');
         }
 
@@ -940,7 +944,7 @@ serve(async (req) => {
         const { score: delta } = computeScoreDelta(isCorrect, elapsed, rules, newStreak);
 
         // Insert answer
-        await supabase.from('live_match_answers').insert({
+        const { error: insertAnswerError } = await supabase.from('live_match_answers').insert({
           room_id: roomId,
           round_index: room.current_round,
           participant_id: participantId,
@@ -950,13 +954,23 @@ serve(async (req) => {
           score_delta: delta,
         });
 
+        if (insertAnswerError) {
+          if (insertAnswerError.code === '23505') {
+            return new Response(
+              JSON.stringify({ data: { ok: true, alreadyAnswered: true } }),
+              { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+            );
+          }
+          throw insertAnswerError;
+        }
+
         // Update participant stats
         const totalAnswers = participant.answers + 1;
         const totalAvg = participant.avg_response_ms * participant.answers;
         const newAvg = (totalAvg + elapsed) / totalAnswers;
         const newMaxStreak = Math.max(participant.max_streak ?? 0, newStreak);
 
-        await supabase
+        const { error: participantUpdateError } = await supabase
           .from('live_match_participants')
           .update({
             total_score: participant.total_score + delta,
@@ -967,6 +981,10 @@ serve(async (req) => {
             max_streak: newMaxStreak,
           })
           .eq('id', participantId);
+
+        if (participantUpdateError) {
+          throw participantUpdateError;
+        }
 
         return new Response(
           JSON.stringify({ data: { ok: true, isCorrect, scoreDelta: delta } }),

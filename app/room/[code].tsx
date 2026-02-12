@@ -168,9 +168,20 @@ export default function MatchLobbyScreen() {
     return null;
   }, [guestKey, status, user?.id]);
   const isSelfReady = optimisticReady !== null ? optimisticReady : (meParticipant?.isReady ?? false);
-  const isSelfHost =
-    meParticipant?.isHost ??
-    (!!identityId && lobby?.room.hostIdentity === identityId);
+  const shouldPromoteSoloParticipantToHost = useMemo(() => {
+    if (!participantId || !meParticipant) return false;
+    if (participants.length !== 1) return false;
+    return meParticipant.participantId === participantId;
+  }, [meParticipant, participantId, participants.length]);
+  const isSelfHost = !!(
+    meParticipant?.isHost ||
+    (!!identityId && lobby?.room.hostIdentity === identityId) ||
+    shouldPromoteSoloParticipantToHost
+  );
+  const isParticipantDisplayedAsHost = useCallback((participant: (typeof participants)[number]) => {
+    if (participant.isHost) return true;
+    return shouldPromoteSoloParticipantToHost && participant.participantId === participantId;
+  }, [participantId, shouldPromoteSoloParticipantToHost]);
   const isStartPending = !!pendingAction && (pendingAction as any).type === 'start';
   const shouldShowHostPendingBanner = !!pendingAction && isSelfHost;
   const shouldShowParticipantPendingBanner = !!pendingAction && !isSelfHost && isStartPending;
@@ -179,18 +190,18 @@ export default function MatchLobbyScreen() {
   const readyCount = useMemo(
     () =>
       participants.filter((participant) => {
-        if (participant.isHost) return false;
+        if (isParticipantDisplayedAsHost(participant)) return false;
         // Use optimistic state for self
         if (participant.participantId === participantId && optimisticReady !== null) {
           return optimisticReady;
         }
         return participant.isReady;
       }).length,
-    [participants, participantId, optimisticReady]
+    [isParticipantDisplayedAsHost, participants, participantId, optimisticReady]
   );
   const readyTotal = useMemo(
-    () => participants.filter((participant) => !participant.isHost).length,
-    [participants]
+    () => participants.filter((participant) => !isParticipantDisplayedAsHost(participant)).length,
+    [isParticipantDisplayedAsHost, participants]
   );
   const allReady = useMemo(() => {
     if (readyTotal === 0) {
@@ -332,7 +343,7 @@ export default function MatchLobbyScreen() {
       // 서버 기준 최신 대기실 상태로 한 번 더 확인
       const freshLobby = await refetchLobby();
       const participantsNow = freshLobby?.participants ?? participants;
-      const nonHostNow = participantsNow.filter((participant) => !participant.isHost);
+      const nonHostNow = participantsNow.filter((participant) => !isParticipantDisplayedAsHost(participant));
       const allReadyNow =
         nonHostNow.length === 0
           ? participantsNow.length > 0
@@ -379,6 +390,7 @@ export default function MatchLobbyScreen() {
     pendingAction,
     participantId,
     participants,
+    isParticipantDisplayedAsHost,
     refetchLobby,
     resolveDelayMs,
     resolveHostGuestKey,
@@ -993,6 +1005,7 @@ export default function MatchLobbyScreen() {
                         (identityId != null &&
                           lobby?.room.hostIdentity === identityId &&
                           participant.isHost);
+                      const isParticipantHost = isParticipantDisplayedAsHost(participant);
                       const displayXp = isMe && status === 'authenticated' && user ? user.xp : participant.xp;
                       const levelInfo = displayXp != null ? calculateLevel(displayXp) : null;
                       return (
@@ -1024,7 +1037,7 @@ export default function MatchLobbyScreen() {
                             ) : null}
                           </View>
                           <View style={styles.participantBottomRow}>
-                            {participant.isHost ? (
+                            {isParticipantHost ? (
                               <View style={styles.hostBadge}>
                                 <IconSymbol name="crown.fill" size={18} color={accentForegroundColor} />
                                 <ThemedText style={styles.hostBadgeLabel}>호스트</ThemedText>

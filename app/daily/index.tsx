@@ -363,8 +363,8 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
   const hasThreeButtonBarLikely =
     Platform.OS === 'android' && insets.bottom >= THREE_BUTTON_NAV_INSET_THRESHOLD;
   const footerBottomMargin = useMemo(
-    () => Spacing.xl + (hasThreeButtonBarLikely ? insets.bottom : 0),
-    [hasThreeButtonBarLikely, insets.bottom]
+    () => Spacing.xl + (hasThreeButtonBarLikely ? Spacing.md : 0),
+    [hasThreeButtonBarLikely]
   );
   const footerRowStyle = useMemo(
     () => [styles.footerRow, { marginBottom: footerBottomMargin }],
@@ -866,7 +866,7 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
           <View style={[styles.introCard, themedStyles.introCard]}>
             <ThemedText type="title">오늘의 퀴즈 시작</ThemedText>
             <ThemedText style={styles.introSubtitle}>
-              시간 제한을 선택하고 시작해보세요. 타임어택에서는 문항당 10초 안에 답해야 해요.
+              시간 제한을 선택하고 시작해보세요.{'\n'}타임어택에서는 문항당 10초 안에 답해야 해요.
             </ThemedText>
             <View
               style={[

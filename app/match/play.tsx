@@ -475,8 +475,6 @@ export default function MatchPlayScreen() {
                 return '매치 시작';
             case 'rematch':
                 return '리매치';
-            case 'toLobby':
-                return '대기실로';
             default:
                 return '진행';
         }
@@ -1547,6 +1545,8 @@ export default function MatchPlayScreen() {
                 choiceIndex,
             });
         } catch (err) {
+            answerSubmitLockRef.current = false;
+            setSelectedChoice(null);
             if (err instanceof Error && err.message.includes('ROUND_NOT_ACTIVE')) {
                 Alert.alert('제출 시간이 지났어요', '다음 라운드에서 다시 도전해주세요.');
                 return;
@@ -1695,7 +1695,6 @@ export default function MatchPlayScreen() {
             setIsLobbyPending(true);
             try {
                 await gameActions.requestLobby({ ...participantArgs, delayMs: resolveDelay() });
-                showToast('호스트가 대기실로 이동하면 전환돼요');
             } catch (err) {
                 Alert.alert('요청을 보내지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
             } finally {
@@ -1718,18 +1717,7 @@ export default function MatchPlayScreen() {
         } finally {
             setIsLobbyPending(false);
         }
-    }, [gameActions, isHost, isLobbyPending, isRematchPending, meParticipantId, participantArgs, pendingAction, resolveHostGuestKey, roomId, roomStatus, showToast, resolveDelay]);
-
-    const handleCancelPending = useCallback(async () => {
-        if (!roomId || !meParticipantId || !pendingAction) return;
-        try {
-            const key = await resolveHostGuestKey();
-            await gameActions.cancelPendingAction({ roomId, participantId: meParticipantId, guestKey: key });
-            showToast('매치가 취소되었어요');
-        } catch (err) {
-            Alert.alert('취소하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
-        }
-    }, [gameActions, meParticipantId, pendingAction, resolveHostGuestKey, roomId, showToast]);
+    }, [gameActions, isHost, isLobbyPending, isRematchPending, meParticipantId, participantArgs, pendingAction, resolveHostGuestKey, roomId, roomStatus, resolveDelay]);
 
     useEffect(() => {
         if (roomStatus !== 'results') {
@@ -2575,6 +2563,7 @@ export default function MatchPlayScreen() {
 
     const renderPendingBanner = () => {
         if (!pendingAction) return null;
+        if (pendingAction.type === 'toLobby') return null;
         const seconds = Math.ceil(pendingMs / 1000);
         return (
             <View style={[styles.pendingBanner, { backgroundColor: background }]}>
@@ -2583,14 +2572,9 @@ export default function MatchPlayScreen() {
                 </ThemedText>
                 <ThemedText style={[styles.pendingSubtitle, { color: textMutedColor }]}>
                     {seconds > 0
-                        ? `${seconds}초 후 자동 진행됩니다. 호스트가 취소할 수 있어요.`
+                        ? `${seconds}초 후 자동 진행됩니다.`
                         : '잠시 후 자동으로 실행됩니다.'}
                 </ThemedText>
-                {isHost ? (
-                    <Button fullWidth size="sm" onPress={handleCancelPending}>
-                        취소
-                    </Button>
-                ) : null}
             </View>
         );
     };
