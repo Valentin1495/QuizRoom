@@ -614,104 +614,17 @@ export default function MatchPlayScreen() {
         stopHostGraceTimer();
     }, [stopHostGraceTimer]);
 
-    // 상태 안정화: 깜빡임 방지를 위한 디바운스 로직
-    // 초기값을 null로 설정하여 서버 데이터 수신 전 리다이렉트 방지
+    // 초기값을 null로 두어 서버 데이터 수신 전 리다이렉트를 방지한다.
     const [stableRoomStatus, setStableRoomStatus] = useState<string | null>(null);
-    const [stablePauseState, setStablePauseState] = useState<{
-        remainingMs?: number;
-        previousStatus: string;
-        pausedAt: number;
-    } | null>(null);
-    const statusDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const hasReceivedInitialStatus = useRef(false);
 
     const rawRoomStatus = (roomData?.room.status ?? null) as string | null;
-    const rawPauseState = roomData?.room.pauseState ?? null;
-    const isSamePauseState = useCallback(
-        (
-            a: { remainingMs?: number; previousStatus: string; pausedAt: number } | null,
-            b: { remainingMs?: number; previousStatus: string; pausedAt: number } | null
-        ) => {
-            if (a === b) return true;
-            if (!a || !b) return false;
-            return a.previousStatus === b.previousStatus && a.remainingMs === b.remainingMs && a.pausedAt === b.pausedAt;
-        },
-        []
-    );
 
     useEffect(() => {
-        // roomData가 없으면 이전 상태 유지
         if (!rawRoomStatus) return;
-
-        // 첫 번째 상태는 항상 즉시 반영 (초기 로딩)
-        if (!hasReceivedInitialStatus.current) {
-            hasReceivedInitialStatus.current = true;
-            if (stableRoomStatus !== rawRoomStatus) {
-                setStableRoomStatus(rawRoomStatus);
-            }
-            if (!isSamePauseState(stablePauseState, rawPauseState)) {
-                setStablePauseState(rawPauseState);
-            }
-            return;
-        }
-
-        // paused 상태로 진입하는 경우: 즉시 반영
-        if (rawRoomStatus === 'paused') {
-            if (statusDebounceRef.current) {
-                clearTimeout(statusDebounceRef.current);
-                statusDebounceRef.current = null;
-            }
-            if (stableRoomStatus !== 'paused') {
-                setStableRoomStatus('paused');
-            }
-            if (!isSamePauseState(stablePauseState, rawPauseState)) {
-                setStablePauseState(rawPauseState);
-            }
-            return;
-        }
-
-        // paused에서 다른 상태로 나가는 경우: 디바운스 적용 (깜빡임 방지)
-        if (stableRoomStatus === 'paused' && rawRoomStatus !== 'paused') {
-            // 300ms 동안 paused가 아닌 상태가 유지되면 전환
-            if (!statusDebounceRef.current) {
-                statusDebounceRef.current = setTimeout(() => {
-                    if (stableRoomStatus !== rawRoomStatus) {
-                        setStableRoomStatus(rawRoomStatus);
-                    }
-                    if (!isSamePauseState(stablePauseState, rawPauseState)) {
-                        setStablePauseState(rawPauseState);
-                    }
-                    statusDebounceRef.current = null;
-                }, 300);
-            }
-            return;
-        }
-
-        // 일반 상태 변화: 즉시 반영
-        if (statusDebounceRef.current) {
-            clearTimeout(statusDebounceRef.current);
-            statusDebounceRef.current = null;
-        }
-        if (stableRoomStatus !== rawRoomStatus) {
-            setStableRoomStatus(rawRoomStatus);
-        }
-        if (!isSamePauseState(stablePauseState, rawPauseState)) {
-            setStablePauseState(rawPauseState);
-        }
-    }, [isSamePauseState, rawRoomStatus, rawPauseState, stableRoomStatus, stablePauseState]);
-
-    // 컴포넌트 언마운트 시 타이머 정리
-    useEffect(() => {
-        return () => {
-            if (statusDebounceRef.current) {
-                clearTimeout(statusDebounceRef.current);
-            }
-        };
-    }, []);
+        setStableRoomStatus((prev) => (prev === rawRoomStatus ? prev : rawRoomStatus));
+    }, [rawRoomStatus]);
 
     const roomStatus = stableRoomStatus;
-    const pauseState = stablePauseState;
-    const isPaused = roomStatus === 'paused';
 
     const currentRound = roomData?.currentRound ?? null;
     const participants = useMemo(() => roomData?.participants ?? [], [roomData]);
@@ -739,9 +652,6 @@ export default function MatchPlayScreen() {
     const isFinalLeaderboard =
         roomStatus === 'leaderboard' && totalRounds > 0 && (roomData?.room.currentRound ?? 0) + 1 >= totalRounds;
 
-    const pausedPreviousStatus = pauseState?.previousStatus ?? null;
-
-    const [pendingMs, setPendingMs] = useState(0);
     const pendingHeartbeatRef = useRef(false);
 
     // When a rematch is scheduled, the server may optimistically reset scores while still showing the results screen.
@@ -815,17 +725,13 @@ export default function MatchPlayScreen() {
         shownForSession: false,
         lastShownAt: null,
     });
-    const pauseToastActiveRef = useRef(false);
-    const pauseToastHostRef = useRef<string | null>(null);
     const historyLoggedRef = useRef<string | null>(null);
     const streakLoggedRef = useRef(false);
     const leaveInFlightRef = useRef(false);
     const participantConnectivityRef = useRef<Map<string, boolean>>(new Map());
     const wasHostRef = useRef<boolean | null>(null);
-    const roomStatusRef = useRef<string | null>(null);
     const isInitialMount = useRef(true);
     const lostHostDueToGraceRef = useRef(false);
-    const lostHostSkipResumeToastRef = useRef(false);
     const handleManualReconnect = useCallback(async () => {
         if (isHardLeaving || !participantArgs || isManualReconnectPending) return;
         setIsManualReconnectPending(true);
@@ -866,10 +772,6 @@ export default function MatchPlayScreen() {
         }
         setIsHardLeaving(true);
         leaveInFlightRef.current = false;
-        pauseToastActiveRef.current = false;
-        pauseToastHostRef.current = null;
-        roomStatusRef.current = null;
-        lostHostSkipResumeToastRef.current = false;
         setHasLeft(true);
         router.navigate('/(tabs)/live-match');
         if (leaveParticipantArgs) {
@@ -1061,7 +963,6 @@ export default function MatchPlayScreen() {
         if (hasLeft || disconnectReason || isHardLeaving) return;
         pendingHeartbeatRef.current = false;
         if (!pendingAction) {
-            setPendingMs(0);
             return;
         }
 
@@ -1069,7 +970,6 @@ export default function MatchPlayScreen() {
             const base = serverNowBaseRef.current;
             const serverNow = base ? base.serverNow + (Date.now() - base.receivedAt) : Date.now() - serverOffsetMs;
             const diff = pendingAction.executeAt - serverNow;
-            setPendingMs(Math.max(0, diff));
             if (diff <= 0 && participantArgs && !pendingHeartbeatRef.current) {
                 pendingHeartbeatRef.current = true;
                 void (async () => {
@@ -1110,13 +1010,11 @@ export default function MatchPlayScreen() {
         }
         if (previous && !currentHost) {
             lostHostDueToGraceRef.current = hostConnectionState !== 'online';
-            lostHostSkipResumeToastRef.current = true;
             showToast('연결이 끊긴 동안 다른 참가자가 진행을 이어받았어요.', 'lost_host_role');
         } else if (!previous && currentHost) {
 
             const lostDueToGrace = lostHostDueToGraceRef.current;
             lostHostDueToGraceRef.current = false;
-            lostHostSkipResumeToastRef.current = false;
             if (!lostDueToGrace) {
                 setPromotedToHost(true);
             }
@@ -1151,12 +1049,27 @@ export default function MatchPlayScreen() {
         if (!roomData?.room.phaseEndsAt || syncedNow == null) return null;
         return computeTimeLeft(roomData.room.phaseEndsAt, syncedNow);
     }, [phaseCountdownMs, roomData?.room.phaseEndsAt, syncedNow]);
+    const displayTimerPhaseKey = `${roomId ?? 'none'}-${roomStatus ?? 'none'}-${roomData?.room.currentRound ?? 'none'}-${roomData?.room.phaseEndsAt ?? 'none'}`;
+    const displayTimeLeftRef = useRef<{ key: string; value: number | null }>({ key: '', value: null });
+    const displayTimeLeft = useMemo(() => {
+        if (timeLeft == null) {
+            displayTimeLeftRef.current = { key: displayTimerPhaseKey, value: null };
+            return null;
+        }
+        const previous = displayTimeLeftRef.current;
+        if (previous.key !== displayTimerPhaseKey) {
+            displayTimeLeftRef.current = { key: displayTimerPhaseKey, value: timeLeft };
+            return timeLeft;
+        }
+        const clamped = previous.value == null ? timeLeft : Math.min(previous.value, timeLeft);
+        displayTimeLeftRef.current = { key: displayTimerPhaseKey, value: clamped };
+        return clamped;
+    }, [displayTimerPhaseKey, timeLeft]);
     const isHostWaitingPhase =
         roomStatus !== null &&
         ['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(roomStatus) &&
         timeLeft !== null &&
         timeLeft <= 0 &&
-        !isPaused &&
         !pendingAction;
     const hostBannerVisible = hostConnectionState === 'waiting';
     const isHostOverlayActive = hostConnectionState !== 'online';
@@ -1218,17 +1131,6 @@ export default function MatchPlayScreen() {
         hostParticipant,
         isMeNextHost,
     ]);
-
-    const pausedRemainingSeconds = useMemo(() => {
-        if (!pauseState || pauseState.remainingMs == null) return null;
-        const baseRemaining = Math.max(0, pauseState.remainingMs);
-        if (syncedNow == null || pauseState.pausedAt == null) {
-            return Math.ceil(baseRemaining / 1000);
-        }
-        const elapsed = Math.max(0, syncedNow - pauseState.pausedAt);
-        const remaining = Math.max(0, baseRemaining - elapsed);
-        return Math.ceil(remaining / 1000);
-    }, [pauseState, syncedNow]);
 
     useEffect(() => {
         const deadline = roomData?.room.phaseEndsAt ?? null;
@@ -1425,23 +1327,6 @@ export default function MatchPlayScreen() {
         }
     }, [disconnectReason, roomStatus, roomData?.room.code, router]);
 
-    useEffect(() => {
-        if (hasLeft || disconnectReason || connectionState !== 'online') return;
-        const prevStatus = roomStatusRef.current;
-        if (prevStatus !== null && prevStatus !== roomStatus && !isHost) {
-            if (isPaused) {
-                showToast('호스트가 매치를 일시정지했어요');
-            } else if (prevStatus === 'paused' && !isPaused) {
-                if (lostHostSkipResumeToastRef.current) {
-                    lostHostSkipResumeToastRef.current = false;
-                } else {
-                    showToast('매치가 다시 시작됐어요');
-                }
-            }
-        }
-        roomStatusRef.current = roomStatus;
-    }, [connectionState, disconnectReason, hasLeft, isHost, isPaused, roomStatus, showToast]);
-
     // 콤보 달성 시 토스트 및 햅틱 피드백
     const prevStreakRef = useRef<number>(0);
     const comboToastShownForRoundRef = useRef<number | null>(null);
@@ -1492,7 +1377,7 @@ export default function MatchPlayScreen() {
 
     useEffect(() => {
         if (hasLeft || disconnectReason) return;
-        if (isHost || isPaused || hostIsConnected) {
+        if (isHost || hostIsConnected) {
             setIsGameStalled(false);
             return;
         }
@@ -1504,7 +1389,7 @@ export default function MatchPlayScreen() {
         } else {
             setIsGameStalled(false);
         }
-    }, [disconnectReason, hasLeft, hostIsConnected, isHost, isHostWaitingPhase, isPaused, roomStatus]);
+    }, [disconnectReason, hasLeft, hostIsConnected, isHost, isHostWaitingPhase, roomStatus]);
 
     useEffect(() => {
         if (hasLeft || disconnectReason || hostIsConnected) return;
@@ -1561,7 +1446,7 @@ export default function MatchPlayScreen() {
             showToast('지금은 호스트가 아니에요. 다른 참가자가 진행을 이어받았어요.', 'not_host_cannot_progress');
             return false;
         }
-        if (pendingAction || isPaused) {
+        if (pendingAction) {
             return false;
         }
         try {
@@ -1576,7 +1461,7 @@ export default function MatchPlayScreen() {
             Alert.alert('상태 전환 실패', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
             return false;
         }
-    }, [gameActions, isHost, isPaused, meParticipantId, pendingAction, resolveHostGuestKey, roomId, showToast]);
+    }, [gameActions, isHost, meParticipantId, pendingAction, resolveHostGuestKey, roomId, showToast]);
 
     const autoAdvancePhaseRef = useRef<string | null>(null);
     const autoAdvanceTriggeredRef = useRef(false);
@@ -1613,7 +1498,7 @@ export default function MatchPlayScreen() {
         if (!roomStatus || !['countdown', 'question', 'grace', 'reveal', 'leaderboard'].includes(roomStatus)) return;
         if (phaseRemainingMs === null) return;
         if (phaseRemainingMs > 0) return;
-        if (pendingAction || isPaused) return;
+        if (pendingAction) return;
         if (!roomId || !meParticipantId) return;
         if (autoAdvanceTriggeredRef.current) return;
         const attemptKey = guardKey;
@@ -1626,7 +1511,7 @@ export default function MatchPlayScreen() {
                 autoAdvanceTriggeredRef.current = false;
             }
         });
-    }, [connectionState, handleAdvance, hasLeft, isHost, isPaused, meParticipantId, pendingAction, roomData?.room.currentRound, roomData?.room.phaseEndsAt, roomId, roomStatus, phaseRemainingMs]);
+    }, [connectionState, handleAdvance, hasLeft, isHost, meParticipantId, pendingAction, roomData?.room.currentRound, roomData?.room.phaseEndsAt, roomId, roomStatus, phaseRemainingMs]);
 
     useEffect(() => {
         if (phaseCountdownMs === null) {
@@ -1876,7 +1761,7 @@ export default function MatchPlayScreen() {
         <View style={[styles.centerCard, { backgroundColor: cardColor }]}>
             <ThemedText type="title" style={styles.cardTitle}>다음 라운드 준비!</ThemedText>
             <ThemedText style={[styles.centerSubtitle, { color: textMutedColor }]}>
-                <ThemedText style={[styles.timerHighlight, { color: textColor }]}>{timeLeft ?? '...'}</ThemedText>초 후 시작
+                <ThemedText style={[styles.timerHighlight, { color: textColor }]}>{displayTimeLeft ?? '...'}</ThemedText>초 후 시작
             </ThemedText>
         </View>
     );
@@ -1907,7 +1792,7 @@ export default function MatchPlayScreen() {
                     </ThemedText>
                     <View style={[styles.timerBadge, { backgroundColor: textColor }]}>
                         <ThemedText style={[styles.timerBadgeText, { color: cardColor }]}>
-                            {(isPaused && pausedRemainingSeconds !== null ? pausedRemainingSeconds : timeLeft) ?? '-'}초
+                            {displayTimeLeft ?? '-'}초
                         </ThemedText>
                     </View>
                 </View>
@@ -1971,7 +1856,7 @@ export default function MatchPlayScreen() {
                         ))
                         : choices.map((choice, index) => {
                             const isSelected = selectedChoice === index || myAnswer?.choiceIndex === index;
-                            const isDisabled = myAnswer !== undefined || isPaused || selectedChoice !== null;
+                            const isDisabled = myAnswer !== undefined || selectedChoice !== null;
                             return (
                                 <Pressable
                                     key={choice.id}
@@ -2014,7 +1899,7 @@ export default function MatchPlayScreen() {
     const renderGrace = () => (
         <View style={[styles.centerCard, { backgroundColor: cardColor }]}>
             <ThemedText type="title">답안 마감 중</ThemedText>
-            <ThemedText style={[styles.centerSubtitle, { color: textMutedColor }]}>{timeLeft !== null ? `${timeLeft}초` : '...'} 후 정답 공개</ThemedText>
+            <ThemedText style={[styles.centerSubtitle, { color: textMutedColor }]}>{displayTimeLeft !== null ? `${displayTimeLeft}초` : '...'} 후 정답 공개</ThemedText>
         </View>
     );
 
@@ -2344,8 +2229,8 @@ export default function MatchPlayScreen() {
                 ) : null}
                 <ThemedText style={[styles.nextRoundHint, { color: textMutedColor }]}>
                     {isFinalLeaderboard
-                        ? `${timeLeft ?? '-'}초 후 최종 결과 화면으로 이동해요`
-                        : `다음 라운드 준비까지 ${timeLeft ?? '-'}초`}
+                        ? `${displayTimeLeft ?? '-'}초 후 최종 결과 화면으로 이동해요`
+                        : `다음 라운드 준비까지 ${displayTimeLeft ?? '-'}초`}
                 </ThemedText>
             </View>
         );
@@ -2564,16 +2449,13 @@ export default function MatchPlayScreen() {
     const renderPendingBanner = () => {
         if (!pendingAction) return null;
         if (pendingAction.type === 'toLobby') return null;
-        const seconds = Math.ceil(pendingMs / 1000);
         return (
             <View style={[styles.pendingBanner, { backgroundColor: background }]}>
                 <ThemedText type="subtitle" style={styles.pendingTitle}>
                     {scheduleLabel}
                 </ThemedText>
                 <ThemedText style={[styles.pendingSubtitle, { color: textMutedColor }]}>
-                    {seconds > 0
-                        ? `${seconds}초 후 자동 진행됩니다.`
-                        : '잠시 후 자동으로 실행됩니다.'}
+                    곧 자동으로 진행됩니다.
                 </ThemedText>
             </View>
         );
@@ -2818,18 +2700,6 @@ export default function MatchPlayScreen() {
         content = renderReveal();
     } else if (roomStatus === 'leaderboard') {
         content = renderLeaderboard();
-    } else if (roomStatus === 'paused') {
-        if (pausedPreviousStatus === 'question') {
-            content = renderQuestion();
-        } else if (pausedPreviousStatus === 'grace') {
-            content = renderGrace();
-        } else if (pausedPreviousStatus === 'reveal') {
-            content = renderReveal();
-        } else if (pausedPreviousStatus === 'leaderboard') {
-            content = renderLeaderboard();
-        } else if (pausedPreviousStatus === 'countdown' && (roomData?.room.currentRound ?? 0) > 0) {
-            content = renderCountdown();
-        }
     } else if (roomStatus === 'results') {
         content = renderResults();
     }
@@ -3380,24 +3250,6 @@ const styles = StyleSheet.create({
     },
     leaveControl: {
         paddingHorizontal: Spacing.lg,
-    },
-    pauseBanner: {
-        padding: Spacing.lg,
-        borderRadius: Radius.lg,
-        marginBottom: Spacing.md,
-        gap: Spacing.md,
-        ...Elevation.sm,
-    },
-    pauseBannerTitle: {
-        fontWeight: '700',
-        fontSize: 18,
-    },
-    pauseBannerSubtitle: {
-        fontSize: 15,
-        lineHeight: 22,
-    },
-    pauseBannerHint: {
-        fontSize: 14,
     },
     pendingBanner: {
         padding: Spacing.lg,
