@@ -34,6 +34,13 @@ export default function MatchLobbyScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { user, status, guestKey, ensureGuestKey } = useAuth();
+  const recentSelectionScope = useMemo(
+    () => ({
+      userId: status === 'authenticated' ? user?.id : null,
+      guestKey: status === 'guest' ? guestKey : null,
+    }),
+    [guestKey, status, user?.id]
+  );
   const selfGuestAvatarSeed = useMemo(() => deriveGuestAvatarSeed(guestKey), [guestKey]);
   const params = useLocalSearchParams<{ code?: string }>();
   const roomCode = useMemo(() => (params.code ?? '').toString().toUpperCase(), [params.code]);
@@ -85,8 +92,8 @@ export default function MatchLobbyScreen() {
       slug: lobby.deck.slug,
       title: lobby.deck.title,
       emoji: lobby.deck.emoji,
-    });
-  }, [lobby?.deck, participantId]);
+    }, recentSelectionScope);
+  }, [lobby?.deck, participantId, recentSelectionScope]);
 
   useEffect(() => {
     Animated.timing(pendingBannerAnim, {

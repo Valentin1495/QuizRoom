@@ -110,6 +110,21 @@ export function extractJoinErrorMessage(error: unknown) {
   return message;
 }
 
+export async function deleteMyAccount(): Promise<{ ok: true }> {
+  const { data: result, error } = await supabase.functions.invoke('account-delete', {
+    body: {},
+  });
+
+  if (error) {
+    throw new Error(extractFunctionsErrorMessage(error));
+  }
+  if (!result?.data?.ok) {
+    throw new Error('ACCOUNT_DELETE_FAILED');
+  }
+
+  return { ok: true };
+}
+
 // ============================================
 // Daily Quiz Hooks
 // ============================================

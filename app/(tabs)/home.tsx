@@ -141,6 +141,13 @@ export default function HomeScreen() {
   const dailyHeadlineSkeletonColor = colorScheme === 'dark' ? palette.border : Palette.gray100;
 
   const isGuest = authStatus === 'guest';
+  const recentSelectionScope = useMemo(
+    () => ({
+      userId: authStatus === 'authenticated' ? user?.id : null,
+      guestKey: authStatus === 'guest' ? guestKey : null,
+    }),
+    [authStatus, guestKey, user?.id]
+  );
   const skillChallengeTitle = '6단계로 내 수준 확인하기';
 
   useEffect(() => {
@@ -212,12 +219,12 @@ export default function HomeScreen() {
 
   const loadRecentSelections = useCallback(async () => {
     const [category, deck] = await Promise.all([
-      loadRecentSwipeCategory(),
-      loadRecentLiveMatchDeck(),
+      loadRecentSwipeCategory(recentSelectionScope),
+      loadRecentLiveMatchDeck(recentSelectionScope),
     ]);
     setRecentSwipeCategory(category);
     setRecentLiveMatchDeck(deck);
-  }, []);
+  }, [recentSelectionScope]);
 
   useEffect(() => {
     if (!isFocused) return;

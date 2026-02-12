@@ -38,6 +38,7 @@ export type UnifiedAuthContextValue = {
   isReady: boolean;
   refreshUser: () => Promise<void>;
   resetUser: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   applyUserDelta?: (delta: { xp?: number; streak?: number; totalCorrect?: number; totalPlayed?: number }) => void;
 };
 
@@ -67,6 +68,7 @@ export function useUnifiedAuth(): UnifiedAuthContextValue {
     isReady: supabaseAuth.isReady,
     refreshUser: supabaseAuth.refreshUser,
     resetUser: supabaseAuth.resetUser,
+    deleteAccount: supabaseAuth.deleteAccount,
     applyUserDelta: supabaseAuth.applyUserDelta,
   };
 }

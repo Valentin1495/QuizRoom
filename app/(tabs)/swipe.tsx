@@ -1,5 +1,5 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -24,8 +24,15 @@ export default function SwipeScreen() {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const insets = useSafeAreaInsets();
   const iconColor = useThemeColor({}, 'text');
-  const { status, user } = useAuth();
+  const { status, user, guestKey } = useAuth();
   const isGuest = status === 'guest' && !user;
+  const recentSelectionScope = useMemo(
+    () => ({
+      userId: status === 'authenticated' ? user?.id : null,
+      guestKey: status === 'guest' ? guestKey : null,
+    }),
+    [guestKey, status, user?.id]
+  );
 
   useEffect(() => {
     if (selectedCategory) return;
@@ -34,13 +41,13 @@ export default function SwipeScreen() {
     const found = categories.find((category) => category.slug === slug);
     if (!found) return;
     setSelectedCategory(found);
-    void saveRecentSwipeCategory(found);
-  }, [params.category, selectedCategory]);
+    void saveRecentSwipeCategory(found, recentSelectionScope);
+  }, [params.category, recentSelectionScope, selectedCategory]);
 
   const handleSelectCategory = useCallback((category: CategoryMeta) => {
     setSelectedCategory(category);
-    void saveRecentSwipeCategory(category);
-  }, []);
+    void saveRecentSwipeCategory(category, recentSelectionScope);
+  }, [recentSelectionScope]);
 
   const handleReset = useCallback(() => {
     if (!selectedCategory) {

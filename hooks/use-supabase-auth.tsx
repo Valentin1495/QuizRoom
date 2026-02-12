@@ -17,6 +17,7 @@ import {
 } from 'react';
 import { AppState, Platform } from 'react-native';
 
+import { deleteMyAccount } from '@/lib/supabase-api';
 import { supabase, type Database, type User } from '@/lib/supabase';
 
 type UserInsert = Database['public']['Tables']['users']['Insert'];
@@ -73,6 +74,7 @@ type AuthContextValue = {
   isReady: boolean;
   refreshUser: () => Promise<void>;
   resetUser: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   applyUserDelta: (delta: Partial<Pick<AuthedUser, 'xp' | 'streak' | 'totalCorrect' | 'totalPlayed'>>) => void;
 };
 
@@ -823,6 +825,11 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     await signOut();
   }, [signOut]);
 
+  const deleteAccount = useCallback(async () => {
+    await deleteMyAccount();
+    await enterGuestMode();
+  }, [enterGuestMode]);
+
   // Refresh token on app focus
   useEffect(() => {
     const subscription = AppState.addEventListener('change', async (nextAppState) => {
@@ -854,6 +861,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       isReady,
       refreshUser,
       resetUser,
+      deleteAccount,
       applyUserDelta,
     }),
     [
@@ -868,6 +876,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       isReady,
       refreshUser,
       resetUser,
+      deleteAccount,
       applyUserDelta,
     ]
   );

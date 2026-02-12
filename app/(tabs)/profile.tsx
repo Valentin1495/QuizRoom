@@ -48,11 +48,14 @@ type HistoryEntry = QuizHistoryDoc & { id?: string };
 const HISTORY_PREVIEW_LIMIT = 3;
 
 export default function ProfileScreen() {
-  const { status, user, signOut, signInWithGoogle, guestKey, ensureGuestKey, isReady, refreshUser } = useAuth();
+  const { status, user, signOut, deleteAccount, signInWithGoogle, guestKey, ensureGuestKey, isReady, refreshUser } = useAuth();
   const [refreshKey, setRefreshKey] = useState(0);
   const { stats: supabaseStats } = useUserStats({ refreshKey });
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
+  const [isDeleteWarningDialogVisible, setDeleteWarningDialogVisible] = useState(false);
+  const [isDeleteConfirmDialogVisible, setDeleteConfirmDialogVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
@@ -83,6 +86,22 @@ export default function ProfileScreen() {
     setLogoutDialogVisible(false);
   }, []);
 
+  const handleOpenDeleteWarningDialog = useCallback(() => {
+    setDeleteWarningDialogVisible(true);
+  }, []);
+
+  const handleCloseDeleteWarningDialog = useCallback(() => {
+    setDeleteWarningDialogVisible(false);
+  }, []);
+
+  const handleOpenDeleteConfirmDialog = useCallback(() => {
+    setDeleteConfirmDialogVisible(true);
+  }, []);
+
+  const handleCloseDeleteConfirmDialog = useCallback(() => {
+    setDeleteConfirmDialogVisible(false);
+  }, []);
+
   const isLoading = status === 'loading';
   const isAuthorizing = status === 'authorizing' || status === 'upgrading';
   const isAuthenticated = status === 'authenticated' && !!user;
@@ -99,7 +118,7 @@ export default function ProfileScreen() {
   );
 
   const handleSignOut = useCallback(async () => {
-    if (isSigningOut) return;
+    if (isSigningOut || isDeletingAccount) return;
 
     try {
       handleCloseLogoutDialog();
@@ -113,7 +132,30 @@ export default function ProfileScreen() {
     } finally {
       setIsSigningOut(false);
     }
-  }, [handleCloseLogoutDialog, isSigningOut, signOut]);
+  }, [handleCloseLogoutDialog, isDeletingAccount, isSigningOut, signOut]);
+
+  const handleContinueDeleteAccount = useCallback(() => {
+    handleCloseDeleteWarningDialog();
+    handleOpenDeleteConfirmDialog();
+  }, [handleCloseDeleteWarningDialog, handleOpenDeleteConfirmDialog]);
+
+  const handleDeleteAccount = useCallback(async () => {
+    if (isDeletingAccount || isSigningOut) return;
+
+    try {
+      handleCloseDeleteConfirmDialog();
+      setIsDeletingAccount(true);
+      await deleteAccount();
+      Alert.alert('탈퇴 완료', '계정이 삭제되어 게스트 모드로 전환했어요.');
+    } catch (error) {
+      Alert.alert(
+        '회원 탈퇴에 실패했어요',
+        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
+      );
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  }, [deleteAccount, handleCloseDeleteConfirmDialog, isDeletingAccount, isSigningOut]);
 
   const handleShareCard = useCallback(() => {
     Alert.alert('공유 카드', '퀴즈 공유 카드는 곧 제공될 예정이에요!');
@@ -299,6 +341,8 @@ export default function ProfileScreen() {
             isAuthenticated={isAuthenticated}
             onSignOut={handleOpenLogoutDialog}
             isSigningOut={isSigningOut}
+            onDeleteAccount={handleOpenDeleteWarningDialog}
+            isDeletingAccount={isDeletingAccount}
             onSupport={() =>
               Alert.alert('문의하기', 'valentink1495@gmail.com\n언제든 편하게 연락주세요!')
             }
@@ -326,7 +370,37 @@ export default function ProfileScreen() {
           description="계정에서 로그아웃하시겠어요?"
           actions={[
             { label: '취소', tone: 'secondary' },
-            { label: '로그아웃', tone: 'destructive', onPress: handleSignOut, disabled: isSigningOut },
+            { label: '로그아웃', tone: 'destructive', onPress: handleSignOut, disabled: isSigningOut || isDeletingAccount },
+          ]}
+        />
+        <AlertDialog
+          visible={isDeleteWarningDialogVisible}
+          onClose={handleCloseDeleteWarningDialog}
+          title="회원 탈퇴"
+          description="탈퇴하면 계정, 기록 등 모든 데이터가 삭제되며 복구할 수 없어요."
+          actions={[
+            { label: '취소', tone: 'secondary' },
+            {
+              label: '탈퇴',
+              tone: 'destructive',
+              onPress: handleContinueDeleteAccount,
+              disabled: isDeletingAccount || isSigningOut,
+            },
+          ]}
+        />
+        <AlertDialog
+          visible={isDeleteConfirmDialogVisible}
+          onClose={handleCloseDeleteConfirmDialog}
+          title="정말 탈퇴하시겠어요?"
+          description="이 작업은 되돌릴 수 없어요."
+          actions={[
+            { label: '취소', tone: 'secondary' },
+            {
+              label: '탈퇴하기',
+              tone: 'destructive',
+              onPress: handleDeleteAccount,
+              disabled: isDeletingAccount || isSigningOut,
+            },
           ]}
         />
       </ThemedView>
@@ -1047,11 +1121,15 @@ function FooterSection({
   isAuthenticated,
   onSignOut,
   isSigningOut,
+  onDeleteAccount,
+  isDeletingAccount,
   onSupport,
 }: {
   isAuthenticated: boolean;
   onSignOut: () => void;
   isSigningOut: boolean;
+  onDeleteAccount: () => void;
+  isDeletingAccount: boolean;
   onSupport: () => void;
 }) {
   return (
@@ -1068,10 +1146,18 @@ function FooterSection({
           <Button
             onPress={onSignOut}
             loading={isSigningOut}
-            disabled={isSigningOut}
-            variant="destructive"
+            disabled={isSigningOut || isDeletingAccount}
+            variant="secondary"
           >
             로그아웃
+          </Button>
+          <Button
+            onPress={onDeleteAccount}
+            loading={isDeletingAccount}
+            disabled={isDeletingAccount || isSigningOut}
+            variant="destructive"
+          >
+            회원 탈퇴
           </Button>
         </View>
       ) : null}

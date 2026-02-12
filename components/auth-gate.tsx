@@ -40,7 +40,7 @@ export function AuthGate({ children }: AuthGateProps) {
   }, [error]);
 
   useEffect(() => {
-    if ((status === 'authenticated' && !!user) || status === 'guest' || status === 'upgrading') {
+    if ((status === 'authenticated' && !!user) || status === 'guest') {
       hasEnteredAppRef.current = true;
     }
   }, [status, user]);
@@ -52,7 +52,7 @@ export function AuthGate({ children }: AuthGateProps) {
     if (status === 'guest') {
       return { isLoading: false, headline: null, helper: null };
     }
-    if (status === 'authorizing' || status === 'loading') {
+    if (status === 'authorizing' || status === 'upgrading' || status === 'loading') {
       return {
         isLoading: true,
         headline: '사용자 정보를 확인하는 중',
@@ -74,14 +74,15 @@ export function AuthGate({ children }: AuthGateProps) {
   }, [status, user, error]);
 
   const shouldKeepChildrenMountedWhileAuthorizing =
-    status === 'authorizing' && hasEnteredAppRef.current && (!!user || !!guestKey);
+    status === 'authorizing' && hasEnteredAppRef.current && !!user;
+  const shouldKeepChildrenMountedForUpgradeOrError =
+    hasEnteredAppRef.current && (status === 'upgrading' || status === 'error');
 
   if (
     (status === 'authenticated' && user) ||
     status === 'guest' ||
     shouldKeepChildrenMountedWhileAuthorizing ||
-    status === 'upgrading' ||
-    status === 'error'
+    shouldKeepChildrenMountedForUpgradeOrError
   ) {
     return (
       <View style={styles.passThroughContainer}>
@@ -136,7 +137,7 @@ export function AuthGate({ children }: AuthGateProps) {
               onPress={() => {
                 void signInWithGoogle();
               }}
-              disabled={status === 'authorizing'}
+              disabled={status === 'authorizing' || status === 'upgrading'}
             >
               Google 로그인
             </Button>
@@ -150,7 +151,7 @@ export function AuthGate({ children }: AuthGateProps) {
               onPress={() => {
                 void enterGuestMode();
               }}
-              disabled={status === 'authorizing'}
+              disabled={status === 'authorizing' || status === 'upgrading'}
             >
               게스트로 시작
             </Button>
