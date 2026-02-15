@@ -1,3 +1,4 @@
+import { usePreventRemove } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -6,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SwipeStack, type SwipeChallengeSummary } from '@/components/swipe/swipe-stack';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SKILL_ASSESSMENT_CHALLENGE } from '@/constants/challenges';
@@ -69,6 +71,8 @@ export default function SkillAssessmentScreen() {
   const stageBaseCorrectRef = useRef(0);
   const completionTotalsRef = useRef<{ answered: number; correct: number } | null>(null);
   const [excludedQuestionIds, setExcludedQuestionIds] = useState<string[]>([]);
+  const [isBlockedBackDialogVisible, setIsBlockedBackDialogVisible] = useState(false);
+  const [isExitConfirmDialogVisible, setIsExitConfirmDialogVisible] = useState(false);
 
   const currentLevel = EDU_LEVEL_STEPS[Math.min(levelIndex, EDU_LEVEL_STEPS.length - 1)];
   const isFinalLevel = levelIndex >= EDU_LEVEL_STEPS.length - 1;
@@ -146,6 +150,20 @@ export default function SkillAssessmentScreen() {
     setExcludedQuestionIds([]);
   }, []);
 
+  const handleOpenExitConfirmDialog = useCallback(() => {
+    if (!isRunning) return;
+    setIsExitConfirmDialogVisible(true);
+  }, [isRunning]);
+
+  const handleCloseExitConfirmDialog = useCallback(() => {
+    setIsExitConfirmDialogVisible(false);
+  }, []);
+
+  const handleConfirmExit = useCallback(() => {
+    setIsExitConfirmDialogVisible(false);
+    handleExitToSelection();
+  }, [handleExitToSelection]);
+
   useEffect(() => {
     cumulativeAnsweredRef.current = cumulativeAnswered;
   }, [cumulativeAnswered]);
@@ -217,19 +235,35 @@ export default function SkillAssessmentScreen() {
     setCompletionTotals(null);
   }, [cumulativeAnswered, cumulativeCorrect, isRunning, levelIndex]);
 
+  usePreventRemove(isRunning, () => {
+    setIsBlockedBackDialogVisible(true);
+  });
+
   return (
     <ThemedView style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + Spacing.lg }]}>
         <View style={styles.headerTopRow}>
           <ThemedText type="title">{SKILL_ASSESSMENT_CHALLENGE.title}</ThemedText>
-          <Button
-            variant="ghost"
-            size="icon"
-            rounded="full"
-            onPress={() => router.back()}
-            leftIcon={<IconSymbol name="arrow.left" size={22} color={palette.text} />}
-            accessibilityLabel="뒤로가기"
-          />
+          {isRunning ? (
+            <Button
+              variant="outline"
+              size="sm"
+              rounded="full"
+              onPress={handleOpenExitConfirmDialog}
+              textStyle={styles.exitButtonLabel}
+            >
+              종료
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              rounded="full"
+              onPress={() => router.back()}
+              leftIcon={<IconSymbol name="arrow.left" size={22} color={palette.text} />}
+              accessibilityLabel="뒤로가기"
+            />
+          )}
         </View>
         <ThemedText style={[styles.headerTagline, { color: palette.textMuted }]}>
           {SKILL_ASSESSMENT_CHALLENGE.tagline}
@@ -381,6 +415,37 @@ export default function SkillAssessmentScreen() {
           </ScrollView>
         )}
       </View>
+      <AlertDialog
+        visible={isBlockedBackDialogVisible}
+        onClose={() => setIsBlockedBackDialogVisible(false)}
+        title="실력 측정 진행 중"
+        description={`뒤로가기는 사용할 수 없어요.\n상단의 종료 버튼을 눌러 측정을 끝내주세요.`}
+        actions={[
+          {
+            label: '확인',
+            tone: 'default',
+            onPress: () => setIsBlockedBackDialogVisible(false),
+          },
+        ]}
+      />
+      <AlertDialog
+        visible={isExitConfirmDialogVisible}
+        onClose={handleCloseExitConfirmDialog}
+        title="실력 측정을 종료할까요?"
+        description="현재 단계 진행은 취소되고 과목 선택 화면으로 돌아가요."
+        actions={[
+          {
+            label: '계속 진행',
+            tone: 'outline',
+            onPress: handleCloseExitConfirmDialog,
+          },
+          {
+            label: '종료',
+            tone: 'destructive',
+            onPress: handleConfirmExit,
+          },
+        ]}
+      />
     </ThemedView>
   );
 }
@@ -398,6 +463,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  exitButtonLabel: {
+    fontSize: 12,
+    fontWeight: '700',
   },
   headerTagline: {
     fontSize: 14,

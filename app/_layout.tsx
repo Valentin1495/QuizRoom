@@ -34,7 +34,8 @@ function RootLayoutContent() {
         <AuthGate>
           <Stack screenOptions={HIDDEN_HEADER_OPTIONS}>
             <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="daily/index" />
+            <Stack.Screen name="daily/index" options={{ headerBackButtonMenuEnabled: false }} />
+            <Stack.Screen name="skill-assessment/index" options={{ headerBackButtonMenuEnabled: false }} />
             <Stack.Screen name="room" options={HIDDEN_HEADER_OPTIONS} />
           </Stack>
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />

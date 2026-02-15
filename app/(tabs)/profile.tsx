@@ -11,7 +11,6 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import {
   ActivityIndicator,
   Alert,
-  Platform,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -195,6 +194,8 @@ export default function ProfileScreen() {
 
   const handleRefresh = useCallback(async () => {
     if (isRefreshing) return;
+    const refreshStartedAt = Date.now();
+    const MIN_REFRESH_INDICATOR_MS = 1000;
     setIsRefreshing(true);
     try {
       if (status === 'guest' && !guestKey) {
@@ -204,6 +205,10 @@ export default function ProfileScreen() {
         await refreshUser();
       }
       setRefreshKey((prev) => prev + 1);
+      const elapsed = Date.now() - refreshStartedAt;
+      if (elapsed < MIN_REFRESH_INDICATOR_MS) {
+        await new Promise((resolve) => setTimeout(resolve, MIN_REFRESH_INDICATOR_MS - elapsed));
+      }
     } finally {
       setIsRefreshing(false);
     }
@@ -297,16 +302,26 @@ export default function ProfileScreen() {
             { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl },
           ]}
           showsVerticalScrollIndicator={false}
+          bounces
+          alwaysBounceVertical
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
               onRefresh={() => void handleRefresh()}
               tintColor={themeColors.primary}
               colors={[themeColors.primary]}
-              progressViewOffset={Platform.OS === 'ios' ? insets.top + Spacing.md : 0}
+              progressViewOffset={0}
             />
           }
         >
+          {isRefreshing ? (
+            <View style={styles.refreshIndicatorRow}>
+              <ActivityIndicator size="small" color={themeColors.primary} />
+              <ThemedText style={[styles.refreshIndicatorLabel, { color: mutedColor }]}>
+                새로고침 중...
+              </ThemedText>
+            </View>
+          ) : null}
           {isAuthenticated && user ? (
             <ProfileHeader
               user={user}
@@ -950,14 +965,6 @@ function formatSecondsLabel(ms?: number) {
   return `${seconds}초`;
 }
 
-function formatAverageSeconds(ms: number) {
-  const seconds = ms / 1000;
-  if (seconds >= 10) {
-    return `${seconds.toFixed(1)}초`;
-  }
-  return `${seconds.toFixed(2)}초`;
-}
-
 function computeAccuracy(correct: number, total: number) {
   if (total <= 0) return 0;
   return Math.round((correct / total) * 100);
@@ -1022,11 +1029,13 @@ function SwipeHistoryRow({ entry }: { entry: QuizHistoryDoc }) {
   const categoryIcon = categoryMeta?.icon ?? 'lightbulb';
   const totalDurationLabel = formatSecondsLabel(payload.durationMs);
   const xpEarned =
-    typeof payload.bonusXpGain === 'number'
-      ? payload.bonusXpGain
+    typeof payload.bonusXpGain === 'number' && typeof payload.xpGain === 'number'
+      ? payload.bonusXpGain + payload.xpGain
       : typeof payload.xpGain === 'number'
         ? payload.xpGain
-        : null;
+        : typeof payload.bonusXpGain === 'number'
+          ? payload.bonusXpGain
+          : null;
   const totalXpLabel = xpEarned ? `XP +${xpEarned}` : null;
 
   const colorScheme = useColorScheme();
@@ -1236,6 +1245,16 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: Spacing.lg,
     gap: Spacing.xl,
+  },
+  refreshIndicatorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.xs,
+  },
+  refreshIndicatorLabel: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   loadingContainer: {
     flex: 1,

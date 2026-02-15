@@ -16,9 +16,10 @@ const corsHeaders = {
 const isString = (v: unknown): v is string => typeof v === 'string' && v.trim().length > 0;
 const isNumber = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 
-const SWIPE_COMPLETION_MIN_ANSWERED = 20;
 const SWIPE_COMPLETION_BONUS_XP = 30;
 const SWIPE_PERFECT_BONUS_XP = 50;
+const CHALLENGE_FINAL_COMPLETION_BONUS_XP = 30;
+const CHALLENGE_FINAL_PERFECT_BONUS_XP = 50;
 
 function asObject(value: unknown): Record<string, unknown> {
   if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>;
@@ -37,6 +38,11 @@ serve(async (req) => {
 
     const answered = payloadData.answered;
     const correct = payloadData.correct;
+    const skipped = payloadData.skipped;
+    const isChallenge = payloadData.isChallenge === true;
+    const isFinalStage = payloadData.isFinalStage === true;
+    const challengeFailed = payloadData.challengeFailed === true;
+    const totalQuestions = payloadData.totalQuestions;
 
     if (!isString(sessionId) || !isNumber(answered) || !isNumber(correct)) {
       return new Response(
@@ -44,6 +50,10 @@ serve(async (req) => {
         { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
+    const safeSkipped = isNumber(skipped) ? Math.max(0, Math.round(skipped)) : null;
+    const safeTotalQuestions = isNumber(totalQuestions)
+      ? Math.max(0, Math.round(totalQuestions))
+      : 0;
 
     const now = Date.now();
     const createdAt = new Date(now).toISOString();
@@ -117,8 +127,45 @@ serve(async (req) => {
       );
     }
 
-    if (answered < SWIPE_COMPLETION_MIN_ANSWERED) {
-      const mergedPayload = { ...existingPayload, ...payloadData };
+    const isSwipeCompletionBonusEligible =
+      !isChallenge && answered > 0 && safeSkipped !== null && safeSkipped === 0;
+    const isSwipePerfectBonusEligible =
+      !isChallenge &&
+      answered > 0 &&
+      correct === answered &&
+      safeSkipped !== null &&
+      safeSkipped === 0;
+    const isChallengeCompletionBonusEligible =
+      isChallenge &&
+      isFinalStage &&
+      !challengeFailed &&
+      safeTotalQuestions > 0 &&
+      answered >= safeTotalQuestions;
+    const isChallengePerfectBonusEligible =
+      isChallengeCompletionBonusEligible &&
+      answered > 0 &&
+      correct === answered;
+
+    const completionBonusXp = isSwipeCompletionBonusEligible
+      ? SWIPE_COMPLETION_BONUS_XP
+      : isChallengeCompletionBonusEligible
+        ? CHALLENGE_FINAL_COMPLETION_BONUS_XP
+        : 0;
+    const perfectBonusXp = isSwipePerfectBonusEligible
+      ? SWIPE_PERFECT_BONUS_XP
+      : isChallengePerfectBonusEligible
+        ? CHALLENGE_FINAL_PERFECT_BONUS_XP
+        : 0;
+    const xpGain = completionBonusXp + perfectBonusXp;
+
+    if (xpGain <= 0) {
+      const mergedPayload = {
+        ...existingPayload,
+        ...payloadData,
+        completionBonusXp,
+        perfectBonusXp,
+        bonusXpGain: xpGain,
+      };
       if (existingHistory?.id) {
         await supabaseAdmin
           .from('quiz_history')
@@ -142,19 +189,15 @@ serve(async (req) => {
             ok: true,
             alreadyClaimed: false,
             notEligible: true,
-            xpGain: 0,
-            completionBonusXp: 0,
-            perfectBonusXp: 0,
+            xpGain,
+            completionBonusXp,
+            perfectBonusXp,
             xp: dbUser.xp ?? 0,
           },
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
-
-    const completionBonusXp = SWIPE_COMPLETION_BONUS_XP;
-    const perfectBonusXp = correct >= answered ? SWIPE_PERFECT_BONUS_XP : 0;
-    const xpGain = completionBonusXp + perfectBonusXp;
 
     const nextXp = (dbUser.xp ?? 0) + xpGain;
     await supabaseAdmin
@@ -209,4 +252,3 @@ serve(async (req) => {
     );
   }
 });
-

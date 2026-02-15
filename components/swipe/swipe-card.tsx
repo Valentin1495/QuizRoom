@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Dimensions, Image, LayoutChangeEvent, Platform, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { runOnJS } from 'react-native-worklets';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -22,20 +22,20 @@ import { AnswerSheet } from './answer-sheet';
 
 export type SwipeFeedback =
   | {
-      status: 'optimistic';
-      isCorrect: boolean;
-      correctChoiceId: string | null;
-      correctChoiceIndex: number | null;
-    }
+    status: 'optimistic';
+    isCorrect: boolean;
+    correctChoiceId: string | null;
+    correctChoiceIndex: number | null;
+  }
   | {
-      status: 'confirmed';
-      isCorrect: boolean;
-      correctChoiceId: string | null;
-      correctChoiceIndex: number | null;
-      explanation: string | null;
-      scoreDelta: number;
-      streak: number;
-    };
+    status: 'confirmed';
+    isCorrect: boolean;
+    correctChoiceId: string | null;
+    correctChoiceIndex: number | null;
+    explanation: string | null;
+    scoreDelta: number;
+    streak: number;
+  };
 export type SwipeCardProps = {
   card: SwipeFeedQuestion;
   index: number;

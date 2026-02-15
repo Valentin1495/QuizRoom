@@ -24,6 +24,7 @@ import { hideResultToast, showResultToast } from '@/components/common/result-toa
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
+import type { CategoryMeta } from '@/constants/categories';
 import { Colors, Elevation, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -36,7 +37,6 @@ import { supabase } from '@/lib/supabase-index';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
-import type { CategoryMeta } from '@/constants/categories';
 import type { SwipeFeedback } from './swipe-card';
 import { SwipeCard } from './swipe-card';
 
@@ -80,6 +80,7 @@ export type SwipeStackProps = {
   onChallengeAdvance?: () => void;
   challengeAdvanceLabel?: string;
   onChallengeComplete?: (summary: SwipeChallengeSummary) => void;
+  onCompletionVisibilityChange?: (visible: boolean) => void;
   challengeCompletionLabel?: string;
   challengeProgressLabel?: string;
   challengeSubjectLabel?: string;
@@ -104,6 +105,8 @@ type SessionStats = {
   totalScoreDelta: number;
   maxStreak: number;
   skipped: number;
+  answerXpGain: number;
+  bonusXpGain: number;
 };
 
 const INITIAL_SESSION_STATS: SessionStats = {
@@ -113,12 +116,19 @@ const INITIAL_SESSION_STATS: SessionStats = {
   totalScoreDelta: 0,
   maxStreak: 0,
   skipped: 0,
+  answerXpGain: 0,
+  bonusXpGain: 0,
 };
 
 const MIN_STACK_HEIGHT = 420;
 const ONBOARDING_KEY = '@swipe_onboarding_completed';
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const ONBOARDING_SLIDE_WIDTH = Math.max(Math.min(WINDOW_WIDTH - Spacing.xl * 2, 400), 280);
+const SWIPE_COMPLETION_BONUS_XP = 30;
+const SWIPE_ACCURACY_BONUS_XP = 50;
+const CHALLENGE_FINAL_COMPLETION_BONUS_XP = 30;
+const CHALLENGE_FINAL_ACCURACY_BONUS_XP = 50;
+const DEBUG_COMPLETION = false;
 
 const getComboMultiplier = (streak: number) => {
   if (streak >= 10) return 3.0;
@@ -228,14 +238,13 @@ export function SwipeStack({
   cumulativeAnswered,
   cumulativeCorrect,
   isFinalStage,
-  setSelectedCategory,
   challenge,
   onExit,
   onChallengeAdvance,
   challengeAdvanceLabel,
   onChallengeComplete,
+  onCompletionVisibilityChange,
   challengeCompletionLabel,
-  challengeProgressLabel,
   challengeSubjectLabel,
   persistLifelines,
   lifelinesDisabled,
@@ -303,6 +312,7 @@ export function SwipeStack({
   const [completionPending, setCompletionPending] = useState(false);
   const [completionTotals, setCompletionTotals] = useState<{ answered: number; correct: number } | null>(null);
   const [isStageTransitioning, setIsStageTransitioning] = useState(false);
+  const [isCompletionMetricsLoading, setIsCompletionMetricsLoading] = useState(false);
   const stageTransitionFromKeyRef = useRef<string | null>(null);
   const stageTransitionStartIdRef = useRef<string | null>(null);
   const stageTransitionStartedAtRef = useRef<number | null>(null);
@@ -320,6 +330,7 @@ export function SwipeStack({
   const reportSheetKeyboardBehavior: 'interactive' = 'interactive';
   const reportSheetKeyboardInputMode: 'adjustResize' = 'adjustResize';
   const reportSheetTopInset = 0;
+  const completionMetricShimmerAnim = useRef(new Animated.Value(0)).current;
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<SwipeFeedback | null>(null);
@@ -464,7 +475,7 @@ export function SwipeStack({
       skeletonShimmerAnim.setValue(0);
       animation = Animated.timing(skeletonShimmerAnim, {
         toValue: 1,
-        duration: 1200,
+        duration: Platform.OS === 'ios' ? 1500 : 1200,
         easing: Easing.linear,
         useNativeDriver: true,
       });
@@ -484,6 +495,41 @@ export function SwipeStack({
       }
     };
   }, [skeletonShimmerAnim]);
+
+  useEffect(() => {
+    if (!isCompletionMetricsLoading) {
+      completionMetricShimmerAnim.stopAnimation();
+      return;
+    }
+
+    let isActive = true;
+    let animation: Animated.CompositeAnimation | null = null;
+
+    const run = () => {
+      if (!isActive) return;
+      completionMetricShimmerAnim.setValue(0);
+      animation = Animated.timing(completionMetricShimmerAnim, {
+        toValue: 1,
+        duration: Platform.OS === 'ios' ? 1100 : 900,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      });
+      animation.start(({ finished }) => {
+        if (finished && isActive) {
+          run();
+        }
+      });
+    };
+
+    run();
+
+    return () => {
+      isActive = false;
+      if (animation) {
+        animation.stop();
+      }
+    };
+  }, [completionMetricShimmerAnim, isCompletionMetricsLoading]);
 
   useEffect(() => {
     const checkOnboarding = async () => {
@@ -535,6 +581,7 @@ export function SwipeStack({
       setPendingAnswerCorrect(null);
       setCompletionPending(false);
       setCompletionTotals(null);
+      setIsCompletionMetricsLoading(false);
       completedSessionIdRef.current = null;
       setSelectedIndex(null);
       setFeedback(null);
@@ -724,6 +771,7 @@ export function SwipeStack({
           scoreDelta,
           streak: nextStreak,
         };
+        let answerXpGain = 0;
         if (FEATURE_FLAGS.auth) {
           const safeSessionKey = sessionKey ?? `swipe-${Date.now().toString(36)}`;
           const payload = {
@@ -732,6 +780,7 @@ export function SwipeStack({
             tags: current.tags ?? [],
             choiceId: selectedChoice.id,
             isCorrect: response.isCorrect,
+            comboStreak: isChallenge ? 0 : nextStreak,
             timeMs: measuredTimeMs,
             answerToken: (current as { answerToken?: string }).answerToken,
             sessionKey: safeSessionKey,
@@ -767,12 +816,15 @@ export function SwipeStack({
             }
             const payloadData = (data as { data?: { xpGain?: number; streak?: number; totalCorrect?: number; totalPlayed?: number } })?.data;
             if (payloadData && typeof payloadData.xpGain === 'number' && applyUserDelta) {
+              answerXpGain = payloadData.xpGain;
               applyUserDelta({
                 xp: (user?.xp ?? 0) + (payloadData.xpGain ?? 0),
                 streak: payloadData.streak ?? user?.streak,
                 totalCorrect: payloadData.totalCorrect ?? user?.totalCorrect,
                 totalPlayed: payloadData.totalPlayed ?? user?.totalPlayed,
               });
+            } else if (payloadData && typeof payloadData.xpGain === 'number') {
+              answerXpGain = payloadData.xpGain;
             }
           } catch (err) {
             console.warn('Failed to log swipe answer to Supabase', err);
@@ -791,6 +843,8 @@ export function SwipeStack({
             totalScoreDelta,
             maxStreak,
             skipped: prev.skipped,
+            answerXpGain: prev.answerXpGain + answerXpGain,
+            bonusXpGain: prev.bonusXpGain,
           };
         });
         setPendingAnswerCorrect(null);
@@ -890,6 +944,7 @@ export function SwipeStack({
     setCurrentStreak(0);
     setCompletionPending(false);
     setCompletionTotals(null);
+    setIsCompletionMetricsLoading(false);
     completedSessionIdRef.current = null;
     lastAdvancedQuestionIdRef.current = null;
     challengeCompletionNotifiedRef.current = false;
@@ -937,7 +992,8 @@ export function SwipeStack({
     setEliminatedChoiceIds(shuffled.slice(0, removableCount).map((choice) => choice.id));
     setLifelinesUsed((prev) => ({ ...prev, fifty: true }));
     lightHaptic();
-  }, [current, feedback, isChallenge, lifelinesDisabled, lifelinesUsed.fifty]);
+    closeActionsSheet();
+  }, [closeActionsSheet, current, feedback, isChallenge, lifelinesDisabled, lifelinesUsed.fifty]);
 
   const handleUseHint = useCallback(() => {
     if (!isChallenge || lifelinesDisabled || !current || feedback || lifelinesUsed.hint) {
@@ -958,7 +1014,8 @@ export function SwipeStack({
     }
     setLifelinesUsed((prev) => ({ ...prev, hint: true }));
     lightHaptic();
-  }, [current, feedback, isChallenge, lifelinesDisabled, lifelinesUsed.hint]);
+    closeActionsSheet();
+  }, [closeActionsSheet, current, feedback, isChallenge, lifelinesDisabled, lifelinesUsed.hint]);
 
   useEffect(() => {
     currentStreakRef.current = currentStreak;
@@ -1052,6 +1109,13 @@ export function SwipeStack({
     (totalQuestions > 0 && answeredForMetrics >= totalQuestions) ||
     (totalQuestions === 0 && feedExhausted && answeredForMetrics > 0)
     : feedExhausted;
+  const completionProgressText = useMemo(() => {
+    if (!isChallenge) return null;
+    if (totalQuestions > 0) {
+      return `${Math.min(answeredForMetrics, totalQuestions)} / ${totalQuestions}`;
+    }
+    return `${answeredForMetrics} 문항`;
+  }, [answeredForMetrics, isChallenge, totalQuestions]);
   const effectiveCardOffset = Math.min(cardOffset, answeredForCompletion);
   const hasSwipedLastAnswered =
     answeredForCompletion > 0 && effectiveCardOffset >= answeredForCompletion;
@@ -1062,15 +1126,15 @@ export function SwipeStack({
     ? completionPending
     : feedExhausted;
   const shouldShowCompletion = showCompletion || completionPending || forceCompletion;
+
+  useEffect(() => {
+    onCompletionVisibilityChange?.(shouldShowCompletion);
+  }, [onCompletionVisibilityChange, shouldShowCompletion]);
   const initialLives =
     eduLevel === 'college_basic' || eduLevel === 'college_plus' ? 1 : 2;
   const livesRemaining = Math.max(0, initialLives - missCount);
   const missLabel = `${livesRemaining}`;
   const missLabelColor = livesRemaining === 0 ? palette.textMuted : palette.error;
-  const missSummaryHint = useMemo(() => {
-    if (!isChallenge) return null;
-    return initialLives === 1 ? '목숨 1개 · 오답 1번이면 종료' : '목숨 2개 · 오답 2번이면 종료';
-  }, [initialLives, isChallenge]);
 
   const showAccuracyCard = isChallenge && (isChallengeFailed || Boolean(isFinalStage));
   const useCumulativeAccuracy =
@@ -1090,7 +1154,7 @@ export function SwipeStack({
   const effectiveAnswered = resolvedCompletionTotals?.answered ?? computedAnswered;
   const effectiveCorrect = resolvedCompletionTotals?.correct ?? computedCorrect;
   useEffect(() => {
-    if (!__DEV__ || !shouldShowCompletion) return;
+    if (!__DEV__ || !DEBUG_COMPLETION || !shouldShowCompletion) return;
     console.log('[SwipeStack] completion visible', {
       sessionId,
       isChallenge,
@@ -1129,6 +1193,7 @@ export function SwipeStack({
     shouldShowCompletion,
     showCompletion,
     totalQuestions,
+    DEBUG_COMPLETION,
   ]);
   const accuracyPercent = useMemo(() => {
     if (!effectiveAnswered) return null;
@@ -1152,11 +1217,78 @@ export function SwipeStack({
     return Math.round((sessionStats.skipped / totalViewed) * 100);
   }, [sessionStats.skipped, totalViewed]);
 
+  const baseXpEarned = useMemo(
+    () => sessionStats.correct * 15,
+    [sessionStats.correct]
+  );
+  const resolvedAnswerXpGain = useMemo(() => {
+    if (!sessionStats.answered) return 0;
+    if (sessionStats.answerXpGain > 0) return sessionStats.answerXpGain;
+    // Fallback to base XP so completion card/profile stay consistent when per-answer XP sync is missing.
+    return baseXpEarned;
+  }, [baseXpEarned, sessionStats.answered, sessionStats.answerXpGain]);
+  const hasSwipeCompletionBonus = useMemo(
+    () => !isChallenge && sessionStats.answered > 0 && sessionStats.skipped === 0,
+    [isChallenge, sessionStats.answered, sessionStats.skipped]
+  );
+  const hasSwipeAccuracyBonus = useMemo(
+    () =>
+      !isChallenge &&
+      sessionStats.answered > 0 &&
+      sessionStats.correct === sessionStats.answered &&
+      sessionStats.skipped === 0,
+    [isChallenge, sessionStats.answered, sessionStats.correct, sessionStats.skipped]
+  );
+  const hasChallengeCompletionBonus = useMemo(
+    () =>
+      isChallenge &&
+      Boolean(isFinalStage) &&
+      !isChallengeFailed &&
+      totalQuestions > 0 &&
+      sessionStats.answered >= totalQuestions,
+    [isChallenge, isChallengeFailed, isFinalStage, sessionStats.answered, totalQuestions]
+  );
+  const hasChallengeAccuracyBonus = useMemo(
+    () =>
+      hasChallengeCompletionBonus &&
+      sessionStats.answered > 0 &&
+      sessionStats.correct === sessionStats.answered,
+    [hasChallengeCompletionBonus, sessionStats.answered, sessionStats.correct]
+  );
+  const hasCompletionBonus = hasSwipeCompletionBonus || hasChallengeCompletionBonus;
+  const hasAccuracyBonus = hasSwipeAccuracyBonus || hasChallengeAccuracyBonus;
+  const expectedCompletionBonusXp = useMemo(
+    () =>
+      hasSwipeCompletionBonus
+        ? SWIPE_COMPLETION_BONUS_XP
+        : hasChallengeCompletionBonus
+          ? CHALLENGE_FINAL_COMPLETION_BONUS_XP
+          : 0,
+    [hasChallengeCompletionBonus, hasSwipeCompletionBonus]
+  );
+  const expectedAccuracyBonusXp = useMemo(
+    () =>
+      hasSwipeAccuracyBonus
+        ? SWIPE_ACCURACY_BONUS_XP
+        : hasChallengeAccuracyBonus
+          ? CHALLENGE_FINAL_ACCURACY_BONUS_XP
+          : 0,
+    [hasChallengeAccuracyBonus, hasSwipeAccuracyBonus]
+  );
+  const expectedSessionBonusXp = useMemo(
+    () => expectedCompletionBonusXp + expectedAccuracyBonusXp,
+    [expectedAccuracyBonusXp, expectedCompletionBonusXp]
+  );
+  const resolvedSessionBonusXp = useMemo(() => {
+    if (sessionStats.bonusXpGain > 0) return sessionStats.bonusXpGain;
+    return expectedSessionBonusXp;
+  }, [expectedSessionBonusXp, sessionStats.bonusXpGain]);
   const totalXpEarned = useMemo(() => {
     if (!sessionStats.answered) return 0;
-    const incorrect = sessionStats.answered - sessionStats.correct;
-    return sessionStats.correct * 15 + incorrect * 5;
-  }, [sessionStats.answered, sessionStats.correct]);
+    return resolvedAnswerXpGain + resolvedSessionBonusXp;
+  }, [resolvedAnswerXpGain, resolvedSessionBonusXp, sessionStats.answered]);
+  const completionXpLabel = useMemo(() => `+${totalXpEarned}`, [totalXpEarned]);
+  const completionMetricSkeletonColor = colorScheme === 'dark' ? Palette.gray700 : Palette.gray200;
 
   const completionTitle = useMemo(() => {
     const answered = effectiveAnswered ?? sessionStats.answered;
@@ -1236,7 +1368,7 @@ export function SwipeStack({
       return;
     }
     if (completionTotals) return;
-    if (__DEV__) {
+    if (__DEV__ && DEBUG_COMPLETION) {
       console.log('[SwipeStack] completionTotals snapshot', {
         computedAnswered,
         computedCorrect,
@@ -1292,7 +1424,7 @@ export function SwipeStack({
     completedSessionIdRef.current = sessionId;
     const questionIds = Array.from(seenQuestionIdsRef.current);
     seenQuestionIdsRef.current.clear();
-    if (__DEV__) {
+    if (__DEV__ && DEBUG_COMPLETION) {
       console.log('[SwipeStack] onChallengeComplete', {
         answered: challengeSummary.answered,
         correct: challengeSummary.correct,
@@ -1346,6 +1478,24 @@ export function SwipeStack({
     }
   }, [completionPending, completionReady, showCompletion]);
 
+  const totalScoreLabel = useMemo(() => {
+    if (!sessionStats.answered) return '+0';
+    const value = Math.round(sessionStats.totalScoreDelta);
+    return `${value >= 0 ? '+' : ''}${value}`;
+  }, [sessionStats.answered, sessionStats.totalScoreDelta]);
+
+  useEffect(() => {
+    if (!shouldShowCompletion) {
+      setIsCompletionMetricsLoading(false);
+      return;
+    }
+    setIsCompletionMetricsLoading(true);
+    const timeout = setTimeout(() => {
+      setIsCompletionMetricsLoading(false);
+    }, 450);
+    return () => clearTimeout(timeout);
+  }, [shouldShowCompletion, totalScoreLabel, totalXpEarned]);
+
   const challengeSecondaryLabel = useMemo(() => {
     if (isChallengeFailed) {
       return onExit ? '과목 선택으로' : null;
@@ -1379,12 +1529,6 @@ export function SwipeStack({
     onExit?.();
   }, [current?.id, filterKey, isChallengeFailed, isStageTransitioning, onChallengeAdvance, onExit]);
 
-  const totalScoreLabel = useMemo(() => {
-    if (!sessionStats.answered) return '+0';
-    const value = Math.round(sessionStats.totalScoreDelta);
-    return `${value >= 0 ? '+' : ''}${value}`;
-  }, [sessionStats.answered, sessionStats.totalScoreDelta]);
-
   useEffect(() => {
     if (!shouldShowCompletion) {
       return;
@@ -1406,11 +1550,17 @@ export function SwipeStack({
         const data = {
           category,
           tags: tags && tags.length ? tags : undefined,
+          isChallenge,
+          isFinalStage: Boolean(isFinalStage),
+          challengeFailed: isChallengeFailed,
+          totalQuestions,
           answered: sessionStats.answered,
           correct: sessionStats.correct,
+          skipped: sessionStats.skipped,
           maxStreak: sessionStats.maxStreak,
           avgResponseMs,
           totalScoreDelta: sessionStats.totalScoreDelta,
+          xpGain: resolvedAnswerXpGain,
         };
 
         if (FEATURE_FLAGS.auth) {
@@ -1420,9 +1570,15 @@ export function SwipeStack({
             body: { sessionId, data },
           });
           if (error) {
-            console.warn('Failed to log swipe result', error);
+            throw error;
           }
           const payload = (result as { data?: { xpGain?: number; xp?: number } })?.data;
+          if (typeof payload?.xpGain === 'number') {
+            setSessionStats((prev) => ({
+              ...prev,
+              bonusXpGain: payload.xpGain ?? 0,
+            }));
+          }
           if (payload && typeof payload.xp === 'number' && applyUserDelta) {
             applyUserDelta({ xp: payload.xp });
           } else if (payload && typeof payload.xpGain === 'number' && applyUserDelta && user) {
@@ -1439,17 +1595,23 @@ export function SwipeStack({
   }, [
     authStatus,
     category,
+    isChallenge,
+    isChallengeFailed,
+    isFinalStage,
     logHistory,
     sessionId,
     sessionStats.answered,
     sessionStats.correct,
+    sessionStats.skipped,
     sessionStats.maxStreak,
     sessionStats.totalScoreDelta,
     sessionStats.totalTimeMs,
     shouldShowCompletion,
     tags,
+    totalQuestions,
     getFunctionAuthHeaders,
     applyUserDelta,
+    resolvedAnswerXpGain,
     user,
   ]);
 
@@ -1785,6 +1947,17 @@ export function SwipeStack({
   );
 
   const skeletonBlockColor = colorScheme === 'dark' ? Palette.gray600 : Palette.gray150;
+  const skeletonShimmerCoreColor =
+    colorScheme === 'dark' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.45)';
+  const skeletonShimmerEdgeColor =
+    colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.18)';
+  const skeletonShimmerTransparentColor = 'rgba(255,255,255,0)';
+  const completionMetricShimmerWidth = 40;
+  const completionMetricShimmerTranslateX = completionMetricShimmerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-completionMetricShimmerWidth, 84 + completionMetricShimmerWidth],
+  });
+
   const renderSkeletonCard = useCallback(() => {
     const skeletonWidth = Math.max(0, WINDOW_WIDTH - Spacing.xl * 2);
     const shimmerWidth = Math.max(80, Math.floor(skeletonWidth * 0.35));
@@ -1792,10 +1965,6 @@ export function SwipeStack({
       inputRange: [0, 1],
       outputRange: [-shimmerWidth, skeletonWidth + shimmerWidth],
     });
-    const shimmerCoreColor =
-      colorScheme === 'dark' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.45)';
-    const shimmerEdgeColor =
-      colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.18)';
     return (
       <View style={styles.skeletonWrapper}>
         <View
@@ -1847,7 +2016,13 @@ export function SwipeStack({
             ]}
           >
             <LinearGradient
-              colors={['transparent', shimmerEdgeColor, shimmerCoreColor, shimmerEdgeColor, 'transparent']}
+              colors={[
+                skeletonShimmerTransparentColor,
+                skeletonShimmerEdgeColor,
+                skeletonShimmerCoreColor,
+                skeletonShimmerEdgeColor,
+                skeletonShimmerTransparentColor,
+              ]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.skeletonShimmerGradient}
@@ -1857,17 +2032,20 @@ export function SwipeStack({
       </View>
     );
   }, [
-    colorScheme,
     palette.cardElevated,
     palette.border,
     skeletonBlockColor,
+    skeletonShimmerCoreColor,
+    skeletonShimmerEdgeColor,
+    skeletonShimmerTransparentColor,
     skeletonShimmerAnim,
     stackHeight,
   ]);
 
   const isTransitioning = isStageTransitioning || isFilterChanging;
   const forceSkeleton = __DEV__ && false;
-  const shouldShowLoading = !current && !shouldShowCompletion && (isLoading || hasMore);
+  const shouldShowLoading =
+    !current && !shouldShowCompletion && !completionReady && (isLoading || hasMore);
   const isShowingSkeleton = isTransitioning || forceSkeleton || shouldShowLoading;
   const skeletonTopOffset =
     Spacing.sm + (isChallenge ? Spacing.lg : Spacing.md + Spacing.md) + 4;
@@ -1892,9 +2070,9 @@ export function SwipeStack({
   }
 
   const shouldShowLoadingWithForce =
-    forceSkeleton || (!current && !shouldShowCompletion && (isLoading || hasMore));
+    forceSkeleton || (!current && !shouldShowCompletion && !completionReady && (isLoading || hasMore));
 
-  if (!current && !shouldShowCompletion) {
+  if (!current && !shouldShowCompletion && !completionReady) {
     return (
       <View style={styles.emptyState}>
         {shouldShowLoadingWithForce ? (
@@ -2089,9 +2267,42 @@ export function SwipeStack({
                       lightColor={palette.textMuted}
                       darkColor={Palette.gray200}
                     >
-                      획득 점수
+                      점수
                     </ThemedText>
-                    <ThemedText style={styles.completionMetricValue}>{totalScoreLabel}</ThemedText>
+                    {isCompletionMetricsLoading ? (
+                      <View
+                        style={[
+                          styles.completionMetricValueSkeleton,
+                          { backgroundColor: completionMetricSkeletonColor },
+                        ]}
+                      >
+                        <Animated.View
+                          pointerEvents="none"
+                          style={[
+                            styles.completionMetricSkeletonShimmer,
+                            {
+                              width: completionMetricShimmerWidth,
+                              transform: [{ translateX: completionMetricShimmerTranslateX }],
+                            },
+                          ]}
+                        >
+                          <LinearGradient
+                            colors={[
+                              skeletonShimmerTransparentColor,
+                              skeletonShimmerEdgeColor,
+                              skeletonShimmerCoreColor,
+                              skeletonShimmerEdgeColor,
+                              skeletonShimmerTransparentColor,
+                            ]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.completionMetricSkeletonShimmerGradient}
+                          />
+                        </Animated.View>
+                      </View>
+                    ) : (
+                      <ThemedText style={styles.completionMetricValue}>{totalScoreLabel}</ThemedText>
+                    )}
                   </View>
                 )}
                 {!isChallenge ? (
@@ -2168,21 +2379,56 @@ export function SwipeStack({
                   </>
                 ) : null}
                 {isGuest ? null : (
-                  <View
-                    style={[
-                      styles.completionMetric,
-                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
-                    ]}
-                  >
+                  <>
+                    <View
+                      style={[
+                        styles.completionMetric,
+                        { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                      ]}
+                    >
                     <ThemedText
                       style={styles.completionMetricLabel}
                       lightColor={palette.textMuted}
                       darkColor={Palette.gray200}
                     >
-                      획득 XP
+                      XP
                     </ThemedText>
-                    <ThemedText style={styles.completionMetricValue}>+{totalXpEarned}</ThemedText>
+                    {isCompletionMetricsLoading ? (
+                      <View
+                        style={[
+                          styles.completionMetricValueSkeleton,
+                          { backgroundColor: completionMetricSkeletonColor },
+                        ]}
+                      >
+                        <Animated.View
+                          pointerEvents="none"
+                          style={[
+                            styles.completionMetricSkeletonShimmer,
+                            {
+                              width: completionMetricShimmerWidth,
+                              transform: [{ translateX: completionMetricShimmerTranslateX }],
+                            },
+                          ]}
+                        >
+                          <LinearGradient
+                            colors={[
+                              skeletonShimmerTransparentColor,
+                              skeletonShimmerEdgeColor,
+                              skeletonShimmerCoreColor,
+                              skeletonShimmerEdgeColor,
+                              skeletonShimmerTransparentColor,
+                            ]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.completionMetricSkeletonShimmerGradient}
+                          />
+                        </Animated.View>
+                      </View>
+                    ) : (
+                      <ThemedText style={styles.completionMetricValue}>{completionXpLabel}</ThemedText>
+                    )}
                   </View>
+                  </>
                 )}
               </View>
               <View style={styles.completionActions}>
@@ -2275,19 +2521,34 @@ export function SwipeStack({
                   </ThemedText>
                 </View>
               </View>
-              {completionReady && !shouldShowCompletion ? (
+              {!shouldShowCompletion ? (
                 <Pressable
-                  onPress={handleOpenCompletion}
+                  onPress={completionReady ? handleOpenCompletion : undefined}
+                  disabled={!completionReady}
                   style={[
                     styles.completionCta,
                     { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    !completionReady && styles.completionCtaDisabled,
                   ]}
                 >
                   <View style={styles.completionCtaContent}>
-                    <ThemedText style={styles.completionCtaLabel}>단계 종료</ThemedText>
+                    <ThemedText style={styles.completionCtaLabel}>
+                      {completionReady ? '단계 종료' : '단계 진행중'}
+                    </ThemedText>
                     <View style={styles.completionCtaAction}>
-                      <ThemedText style={styles.completionCtaActionText}>결과 보기</ThemedText>
-                      <IconSymbol name="chevron.right" size={16} color={palette.text} />
+                      <ThemedText
+                        style={[
+                          styles.completionCtaActionText,
+                          !completionReady && styles.completionCtaActionTextMuted,
+                        ]}
+                      >
+                        {completionReady ? '결과 보기' : completionProgressText}
+                      </ThemedText>
+                      <IconSymbol
+                        name="chevron.right"
+                        size={16}
+                        color={completionReady ? palette.text : palette.textMuted}
+                      />
                     </View>
                   </View>
                 </Pressable>
@@ -2958,6 +3219,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
   },
+  completionMetricValueSkeleton: {
+    width: 84,
+    height: 20,
+    borderRadius: Radius.sm,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  completionMetricSkeletonShimmer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+  },
+  completionMetricSkeletonShimmerGradient: {
+    flex: 1,
+    width: '100%',
+  },
   completionMetricHint: {
     fontSize: 12,
     textAlign: 'center',
@@ -2979,6 +3257,9 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
   },
+  completionCtaDisabled: {
+    opacity: 0.78,
+  },
   completionCtaContent: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -2996,6 +3277,9 @@ const styles = StyleSheet.create({
   completionCtaActionText: {
     fontSize: 13,
     fontWeight: '600',
+  },
+  completionCtaActionTextMuted: {
+    fontWeight: '500',
   },
   completionActions: {
     flexDirection: 'row',

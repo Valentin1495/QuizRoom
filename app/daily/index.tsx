@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, usePreventRemove } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -8,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -350,6 +352,7 @@ const getSummaryAppearance = (mode: ColorMode, status: SummaryStatus): SummaryAp
 
 function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQuizActions) {
   const router = useRouter();
+  const navigation = useNavigation();
   const params = useLocalSearchParams<{ date?: string | string[] }>();
   const resolvedDate = Array.isArray(params.date) ? params.date[0] : params.date;
   const tint = useThemeColor({}, 'tint');
@@ -385,6 +388,10 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
   const xpStoredRef = useRef<string | null>(null);
   const perfectCelebratedRef = useRef(false);
   const [awardedXp, setAwardedXp] = useState<number | null>(null);
+  const [isLeaveDialogVisible, setIsLeaveDialogVisible] = useState(false);
+  const [allowLeave, setAllowLeave] = useState(false);
+  const pendingLeaveActionRef = useRef<unknown | null>(null);
+  const shouldConfirmLeave = phase === 'question' || phase === 'reveal';
 
   // 타이머 pulse 애니메이션
   const timerPulseOpacity = useSharedValue(1);
@@ -749,6 +756,36 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
         xpStoredRef.current = null;
       });
   }, [correctCount, dailySessionKey, isPerfect, phase, totalQuestions]);
+
+  useEffect(() => {
+    if (!shouldConfirmLeave) {
+      setIsLeaveDialogVisible(false);
+      setAllowLeave(false);
+      pendingLeaveActionRef.current = null;
+    }
+  }, [shouldConfirmLeave]);
+  usePreventRemove(shouldConfirmLeave && !allowLeave, ({ data }) => {
+    pendingLeaveActionRef.current = data.action;
+    setIsLeaveDialogVisible(true);
+  });
+
+  const handleCancelLeave = useCallback(() => {
+    setIsLeaveDialogVisible(false);
+    pendingLeaveActionRef.current = null;
+  }, []);
+
+  const handleConfirmLeave = useCallback(() => {
+    setIsLeaveDialogVisible(false);
+    const action = pendingLeaveActionRef.current;
+    pendingLeaveActionRef.current = null;
+    setAllowLeave(true);
+    if (action) {
+      navigation.dispatch(action as never);
+    } else {
+      router.back();
+    }
+  }, [navigation, router]);
+
   const unansweredCount = totalQuestions - totalAnswered;
   const isLastQuestion = currentIndex === totalQuestions - 1;
   const allAnswered = unansweredCount === 0;
@@ -994,7 +1031,7 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
               <View style={[styles.summaryStatCard, themedStyles.summaryStatCard]}>
                 <ThemedText style={styles.summaryStatLabel}>정답률</ThemedText>
                 <ThemedText type="subtitle">
-                  {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}% - {correctCount}/{totalQuestions}
+                  {totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0}% - {correctCount} / {totalQuestions} 문항
                 </ThemedText>
               </View>
             </View>
@@ -1319,6 +1356,24 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
           </Button>
         )}
       </View>
+      <AlertDialog
+        visible={isLeaveDialogVisible}
+        onClose={handleCancelLeave}
+        title="퀴즈에서 나가시겠어요?"
+        description="문제 풀이 도중 나가면 현재 진행 기록은 사라져요."
+        actions={[
+          {
+            label: '계속 풀기',
+            tone: 'outline',
+            onPress: handleCancelLeave,
+          },
+          {
+            label: '나가기',
+            tone: 'destructive',
+            onPress: handleConfirmLeave,
+          },
+        ]}
+      />
     </ThemedView>
   );
 }

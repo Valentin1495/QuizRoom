@@ -19,18 +19,16 @@ const isStringArray = (v: unknown): v is string[] =>
 const isUuid = (value: string) =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 
-const getStreakMultiplier = (streak: number) => {
-  if (streak >= 7) return 2.0;
-  if (streak >= 6) return 1.8;
-  if (streak >= 5) return 1.6;
-  if (streak >= 4) return 1.4;
-  if (streak >= 3) return 1.25;
-  if (streak >= 2) return 1.1;
+const getComboMultiplier = (streak: number) => {
+  if (streak >= 10) return 3.0;
+  if (streak >= 7) return 2.5;
+  if (streak >= 5) return 2.0;
+  if (streak >= 3) return 1.5;
   return 1.0;
 };
 
-const applyStreakBonus = (baseXp: number, streak: number) =>
-  Math.round(baseXp * getStreakMultiplier(streak));
+const applyComboBonus = (baseXp: number, streak: number) =>
+  Math.round(baseXp * getComboMultiplier(streak));
 
 const getKstDayKey = (ms: number) => {
   const kstMs = ms + 9 * 60 * 60 * 1000;
@@ -78,6 +76,7 @@ serve(async (req) => {
       tags,
       choiceId,
       isCorrect,
+      comboStreak,
       timeMs,
       answerToken,
       sessionKey,
@@ -103,6 +102,10 @@ serve(async (req) => {
 
     const sanitizedTags = isStringArray(tags) ? tags : [];
     const safeTimeMs = Math.max(0, Math.round(timeMs));
+    const safeComboStreak =
+      typeof comboStreak === 'number' && Number.isFinite(comboStreak)
+        ? Math.max(0, Math.min(99, Math.round(comboStreak)))
+        : 0;
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
@@ -181,7 +184,7 @@ serve(async (req) => {
       // XP/스탯 업데이트 (정답일 때만 XP 지급)
       const currentStreak = activity.streak ?? (dbUser.streak ?? 0);
       const baseXp = isCorrect ? 15 : 0;
-      const xpGain = isCorrect ? applyStreakBonus(baseXp, currentStreak) : 0;
+      const xpGain = isCorrect ? applyComboBonus(baseXp, safeComboStreak) : 0;
 
       const updatedTotalPlayed = (dbUser.total_played ?? 0) + 1;
       const updatedTotalCorrect = (dbUser.total_correct ?? 0) + (isCorrect ? 1 : 0);

@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Dimensions, StyleSheet, Text } from 'react-native';
+import { runOnJS } from 'react-native-worklets';
 import Animated, {
   Easing,
   interpolate,
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,

@@ -224,12 +224,18 @@ export default function LiveMatchScreen() {
 
   const handleRefresh = useCallback(async () => {
     if (isRefreshing) return;
+    const refreshStartedAt = Date.now();
+    const MIN_REFRESH_INDICATOR_MS = 1000;
     setIsRefreshing(true);
     try {
       if (isGuest && !guestKey) {
         await ensureGuestKey();
       }
       setRefreshKey((prev) => prev + 1);
+      const elapsed = Date.now() - refreshStartedAt;
+      if (elapsed < MIN_REFRESH_INDICATOR_MS) {
+        await new Promise((resolve) => setTimeout(resolve, MIN_REFRESH_INDICATOR_MS - elapsed));
+      }
     } finally {
       setIsRefreshing(false);
     }
@@ -259,6 +265,8 @@ export default function LiveMatchScreen() {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="interactive"
+            bounces
+            alwaysBounceVertical
             contentInsetAdjustmentBehavior="never"
             refreshControl={
               <RefreshControl
@@ -266,10 +274,18 @@ export default function LiveMatchScreen() {
                 onRefresh={() => void handleRefresh()}
                 tintColor={themeColors.primary}
                 colors={[themeColors.primary]}
-                progressViewOffset={Platform.OS === 'ios' ? insets.top + Spacing.md : 0}
+                progressViewOffset={0}
               />
             }
           >
+            {isRefreshing ? (
+              <View style={styles.refreshIndicatorRow}>
+                <ActivityIndicator size="small" color={themeColors.primary} />
+                <ThemedText style={[styles.refreshIndicatorLabel, { color: mutedColor }]}>
+                  새로고침 중...
+                </ThemedText>
+              </View>
+            ) : null}
             <View style={styles.header}>
               <ThemedText type="title">라이브 매치</ThemedText>
               <ThemedText style={[styles.headerSubtitle, { color: mutedColor }]}>
@@ -488,6 +504,16 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: Spacing.lg,
     gap: Spacing.xl,
+  },
+  refreshIndicatorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.xs,
+  },
+  refreshIndicatorLabel: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   header: {
     gap: Spacing.sm,

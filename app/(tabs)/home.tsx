@@ -4,6 +4,7 @@ import { Link, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutRectangle, TextInput as RNTextInput } from 'react-native';
 import {
+  ActivityIndicator,
   Alert,
   Keyboard,
   KeyboardAvoidingView,
@@ -358,6 +359,8 @@ export default function HomeScreen() {
 
   const handleRefresh = useCallback(async () => {
     if (isRefreshing) return;
+    const refreshStartedAt = Date.now();
+    const MIN_REFRESH_INDICATOR_MS = 1000;
     setIsRefreshing(true);
     try {
       if (isGuest && !guestKey) {
@@ -365,6 +368,10 @@ export default function HomeScreen() {
       }
       await loadRecentSelections();
       setRefreshKey((prev) => prev + 1);
+      const elapsed = Date.now() - refreshStartedAt;
+      if (elapsed < MIN_REFRESH_INDICATOR_MS) {
+        await new Promise((resolve) => setTimeout(resolve, MIN_REFRESH_INDICATOR_MS - elapsed));
+      }
     } finally {
       setIsRefreshing(false);
     }
@@ -391,6 +398,8 @@ export default function HomeScreen() {
           ]}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="interactive"
+          bounces
+          alwaysBounceVertical
           contentInsetAdjustmentBehavior="never"
           showsVerticalScrollIndicator={false}
           refreshControl={
@@ -399,10 +408,18 @@ export default function HomeScreen() {
               onRefresh={() => void handleRefresh()}
               tintColor={palette.primary}
               colors={[palette.primary]}
-              progressViewOffset={Platform.OS === 'ios' ? insets.top + Spacing.md : 0}
+              progressViewOffset={0}
             />
           }
         >
+          {isRefreshing ? (
+            <View style={styles.refreshIndicatorRow}>
+              <ActivityIndicator size="small" color={palette.primary} />
+              <ThemedText style={[styles.refreshIndicatorLabel, { color: muted }]}>
+                새로고침 중...
+              </ThemedText>
+            </View>
+          ) : null}
           <View style={styles.section}>
             <SectionHeader title="빠른 시작" tagline="최근 선택으로 바로 플레이" muted={muted} />
             <View style={[styles.quickStartCard, { backgroundColor: cardBackground, borderColor }]}>
@@ -691,6 +708,16 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     gap: Spacing.xl,
+  },
+  refreshIndicatorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.xs,
+  },
+  refreshIndicatorLabel: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   quickStartCard: {
     borderWidth: 1,

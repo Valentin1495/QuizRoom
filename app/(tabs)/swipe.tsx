@@ -22,6 +22,7 @@ export default function SwipeScreen() {
   const params = useLocalSearchParams<{ category?: string }>();
   const [selectedCategory, setSelectedCategory] = useState<CategoryMeta | null>(null);
   const [showResetDialog, setShowResetDialog] = useState(false);
+  const [isCompletionVisible, setIsCompletionVisible] = useState(false);
   const insets = useSafeAreaInsets();
   const iconColor = useThemeColor({}, 'text');
   const { status, user, guestKey } = useAuth();
@@ -46,6 +47,7 @@ export default function SwipeScreen() {
 
   const handleSelectCategory = useCallback((category: CategoryMeta) => {
     setSelectedCategory(category);
+    setIsCompletionVisible(false);
     void saveRecentSwipeCategory(category, recentSelectionScope);
   }, [recentSelectionScope]);
 
@@ -53,12 +55,13 @@ export default function SwipeScreen() {
     if (!selectedCategory) {
       return;
     }
-    if (isGuest) {
+    if (isGuest || isCompletionVisible) {
+      setShowResetDialog(false);
       setSelectedCategory(null);
       return;
     }
     setShowResetDialog(true);
-  }, [isGuest, selectedCategory]);
+  }, [isCompletionVisible, isGuest, selectedCategory]);
 
   const handleConfirmReset = useCallback(() => {
     setShowResetDialog(false);
@@ -101,6 +104,7 @@ export default function SwipeScreen() {
           key={selectedCategory.slug}
           category={selectedCategory.slug}
           setSelectedCategory={setSelectedCategory}
+          onCompletionVisibilityChange={setIsCompletionVisible}
         />
       </ThemedView>
       <AlertDialog
