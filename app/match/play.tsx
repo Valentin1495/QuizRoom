@@ -1,4 +1,5 @@
 import type { RealtimeChannel } from '@supabase/supabase-js';
+import { useNavigation, usePreventRemove } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -54,6 +55,7 @@ const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
 
 export default function MatchPlayScreen() {
     const router = useRouter();
+    const navigation = useNavigation();
     const { user, status: authStatus, guestKey, ensureGuestKey } = useAuth();
     const selfGuestAvatarSeed = useMemo(() => deriveGuestAvatarSeed(guestKey), [guestKey]);
     const insets = useSafeAreaInsets();
@@ -81,6 +83,7 @@ export default function MatchPlayScreen() {
     const [isHardLeaving, setIsHardLeaving] = useState(false);
     const [hostConnectionState, setHostConnectionState] = useState<HostConnectionState>('online');
     const [hostGraceRemaining, setHostGraceRemaining] = useState(HOST_GRACE_SECONDS);
+    const leaveRequestedRef = useRef(false);
 
     // Reaction system
     const reactionLayerRef = useRef<ReactionLayerRef>(null);
@@ -757,8 +760,9 @@ export default function MatchPlayScreen() {
         })();
     }, [handleManualReconnect, isManualReconnectPending, refetchGameState]);
     const performLeave = useCallback(() => {
-        if (hasLeft || leaveInFlightRef.current) return;
+        if (hasLeft || leaveInFlightRef.current || leaveRequestedRef.current) return;
         leaveInFlightRef.current = true;
+        leaveRequestedRef.current = true;
         const participantForIntent = leaveParticipantArgs?.participantId ?? participantId ?? null;
         const roomCodeForIntent = latestRoomCodeRef.current ?? roomData?.room.code ?? null;
         if (roomId) {
@@ -801,6 +805,15 @@ export default function MatchPlayScreen() {
     const handleCancelLeave = useCallback(() => {
         setLeaveDialogVisible(false);
     }, []);
+
+    usePreventRemove(!hasLeft && !isHardLeaving, ({ data }) => {
+        // Allow internal transitions like play -> lobby and explicit leave navigation.
+        if (leaveRequestedRef.current || data.action.type === 'REPLACE') {
+            navigation.dispatch(data.action);
+            return;
+        }
+        handleLeave();
+    });
     useEffect(() => {
         if (connectionState === 'reconnecting') {
             if (reconnectTransitionRef.current) return;
@@ -1665,7 +1678,7 @@ export default function MatchPlayScreen() {
             title="퀴즈룸을 나가시겠어요?"
             description="진행 중인 매치를 종료하고 이전 화면으로 돌아갑니다."
             actions={[
-                { label: '취소', tone: 'secondary', onPress: handleCancelLeave },
+                { label: '계속하기', tone: 'secondary', onPress: handleCancelLeave },
                 { label: '나가기', tone: 'destructive', onPress: handleConfirmLeave },
             ]}
         />

@@ -358,9 +358,6 @@ export default function ProfileScreen() {
             isSigningOut={isSigningOut}
             onDeleteAccount={handleOpenDeleteWarningDialog}
             isDeletingAccount={isDeletingAccount}
-            onSupport={() =>
-              Alert.alert('문의하기', 'valentink1495@gmail.com\n언제든 편하게 연락주세요!')
-            }
           />
         </ScrollView>
         <HistoryBottomSheet
@@ -1132,31 +1129,22 @@ function FooterSection({
   isSigningOut,
   onDeleteAccount,
   isDeletingAccount,
-  onSupport,
 }: {
   isAuthenticated: boolean;
   onSignOut: () => void;
   isSigningOut: boolean;
   onDeleteAccount: () => void;
   isDeletingAccount: boolean;
-  onSupport: () => void;
 }) {
   return (
     <>
       {isAuthenticated ? (
         <View style={styles.footerStandalone}>
           <Button
-            variant="outline"
-            style={styles.footerButton}
-            onPress={onSupport}
-          >
-            문의하기
-          </Button>
-          <Button
             onPress={onSignOut}
             loading={isSigningOut}
             disabled={isSigningOut || isDeletingAccount}
-            variant="secondary"
+            variant="outline"
           >
             로그아웃
           </Button>
@@ -1405,9 +1393,6 @@ const styles = StyleSheet.create({
   footerActions: {
     flexDirection: 'row',
     gap: Spacing.md,
-  },
-  footerButton: {
-    flex: 1,
   },
   footerStandalone: {
     gap: Spacing.md,

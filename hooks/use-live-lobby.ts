@@ -79,6 +79,68 @@ export type LobbyData = {
   now: number;
 } | null;
 
+function isPendingActionEqual(
+  a: LobbyRoom['pendingAction'],
+  b: LobbyRoom['pendingAction']
+): boolean {
+  if (a === b) return true;
+  if (!a || !b) return false;
+  return (
+    a.type === b.type
+    && a.executeAt === b.executeAt
+    && a.delayMs === b.delayMs
+    && a.createdAt === b.createdAt
+    && a.initiatedBy === b.initiatedBy
+    && a.initiatedIdentity === b.initiatedIdentity
+    && a.label === b.label
+  );
+}
+
+function defaultPendingLabel(type: string, fallback: string): string {
+  if (type === 'start') return '매치 시작 준비 중';
+  return fallback;
+}
+
+function normalizePendingAction(
+  pending: any,
+  previous: LobbyRoom['pendingAction']
+): LobbyRoom['pendingAction'] {
+  if (pending === undefined) return previous ?? null;
+  if (pending === null) return null;
+  const type = typeof pending.type === 'string' ? pending.type : (previous?.type ?? '');
+  const executeAtRaw = pending.executeAt ?? pending.execute_at ?? previous?.executeAt ?? 0;
+  const executeAt = typeof executeAtRaw === 'number' ? executeAtRaw : Number(executeAtRaw) || 0;
+  const delayMsRaw = pending.delayMs ?? pending.delay_ms ?? previous?.delayMs ?? 0;
+  const delayMs = typeof delayMsRaw === 'number' ? delayMsRaw : Number(delayMsRaw) || 0;
+  const createdAtRaw = pending.createdAt ?? pending.created_at ?? previous?.createdAt ?? Date.now();
+  const createdAt = typeof createdAtRaw === 'number' ? createdAtRaw : Number(createdAtRaw) || Date.now();
+  const initiatedBy =
+    typeof pending.initiatedBy === 'string'
+      ? pending.initiatedBy
+      : (typeof pending.initiated_by === 'string' ? pending.initiated_by : (previous?.initiatedBy ?? null));
+  const initiatedIdentity =
+    typeof pending.initiatedIdentity === 'string'
+      ? pending.initiatedIdentity
+      : (typeof pending.initiated_identity === 'string'
+          ? pending.initiated_identity
+          : (previous?.initiatedIdentity ?? undefined));
+  const incomingLabel = typeof pending.label === 'string' ? pending.label.trim() : '';
+  const label =
+    previous && previous.type === type && previous.executeAt === executeAt
+      ? previous.label
+      : defaultPendingLabel(type, incomingLabel || previous?.label || '');
+
+  return {
+    type,
+    executeAt,
+    delayMs,
+    createdAt,
+    initiatedBy,
+    initiatedIdentity,
+    label,
+  };
+}
+
 // ============================================
 // Lobby Hook with Realtime
 // ============================================
@@ -107,8 +169,11 @@ export function useLiveLobby(code: string, options?: { enabled?: boolean }) {
       if (fetchError) throw fetchError;
       const fetchedLobby: LobbyData = result?.data ?? null;
       if (fetchedLobby && fetchedLobby.room) {
-        fetchedLobby.room.pendingAction =
-          fetchedLobby.room.pendingAction ?? latestPendingAction ?? null;
+        const normalizedFetchedPending = normalizePendingAction(
+          fetchedLobby.room.pendingAction,
+          latestPendingAction
+        );
+        fetchedLobby.room.pendingAction = normalizedFetchedPending ?? latestPendingAction ?? null;
       }
       setLobby(fetchedLobby);
       setError(null);
@@ -177,30 +242,33 @@ export function useLiveLobby(code: string, options?: { enabled?: boolean }) {
         },
         (payload) => {
           const row = payload.new as any;
-          const pending = row?.pending_action;
+          const hasPendingColumn =
+            !!row && Object.prototype.hasOwnProperty.call(row, 'pending_action');
+          const pending = hasPendingColumn ? row.pending_action : undefined;
           const serverNow = payload.commit_timestamp
             ? new Date(payload.commit_timestamp).getTime()
             : undefined;
           console.log('[LiveLobby] room update', payload.eventType, {
             status: row?.status,
+            hasPendingColumn,
             pending,
             serverNow,
           });
-          const normalizedPending = pending
-            ? {
-              type: pending.type,
-              executeAt: pending.executeAt ?? pending.execute_at,
-              delayMs: pending.delayMs ?? pending.delay_ms,
-              createdAt: pending.createdAt ?? pending.created_at,
-              initiatedBy: pending.initiatedBy ?? pending.initiated_by,
-              initiatedIdentity: pending.initiatedIdentity ?? pending.initiated_identity,
-              label: pending.label ?? '',
-            }
-            : null;
-          setLatestPendingAction(normalizedPending);
+          setLatestPendingAction((prev) => {
+            if (!hasPendingColumn) return prev;
+            const next = normalizePendingAction(pending, prev);
+            return isPendingActionEqual(prev, next) ? prev : next;
+          });
           setLobby((prev) => {
             if (!prev) return prev;
             if (prev.room._id !== roomId) return prev;
+            const nextPending = (() => {
+              if (!hasPendingColumn) return prev.room.pendingAction;
+              const normalizedPending = normalizePendingAction(pending, prev.room.pendingAction);
+              return isPendingActionEqual(prev.room.pendingAction, normalizedPending)
+                ? prev.room.pendingAction
+                : normalizedPending;
+            })();
             const updatedRoom = {
               ...prev.room,
               status: row?.status ?? prev.room.status,
@@ -212,7 +280,7 @@ export function useLiveLobby(code: string, options?: { enabled?: boolean }) {
                 typeof row?.phase_ends_at === 'number' || row?.phase_ends_at === null
                   ? row.phase_ends_at
                   : prev.room.phaseEndsAt,
-              pendingAction: normalizedPending,
+              pendingAction: nextPending,
               pauseState: row?.pause_state ?? prev.room.pauseState,
               serverNow: serverNow ?? row?.server_now ?? prev.room.serverNow,
               expiresAt:

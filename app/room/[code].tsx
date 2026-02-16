@@ -1,4 +1,5 @@
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useNavigation, usePreventRemove } from '@react-navigation/native';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -29,9 +30,18 @@ import { ROOM_IN_PROGRESS_MESSAGE } from '@/lib/supabase-api';
 
 const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
 const ENTRY_CONFIRM_MIN_VISIBLE_MS = 500;
+const SERVER_OFFSET_JITTER_THRESHOLD_MS = 300;
+const PENDING_ACTION_VISUAL_GRACE_MS = 700;
+
+type PendingActionView = {
+  label: string;
+  executeAt: number;
+  type?: string;
+};
 
 export default function MatchLobbyScreen() {
   const router = useRouter();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { user, status, guestKey, ensureGuestKey } = useAuth();
   const recentSelectionScope = useMemo(
@@ -59,28 +69,59 @@ export default function MatchLobbyScreen() {
   const [isStarting, setIsStarting] = useState(false);
   const [isEntryConfirming, setIsEntryConfirming] = useState(false);
   const entryConfirmStartedAtRef = useRef<number | null>(null);
+  const leaveRequestedRef = useRef(false);
 
   const shouldFetchLobby = roomCode.length > 0 && !hasLeft;
   const {
     lobby,
     isLoading: isLobbyLoading,
-    refetch: refetchLobby,
   } = useLiveLobby(roomCode, { enabled: shouldFetchLobby });
   const roomActions = useRoomActions();
   const roomId = lobby?.room._id ?? null;
-  const pendingActionServer = lobby?.room.pendingAction ?? null;
-  const [localPendingAction, setLocalPendingAction] = useState<{
-    label: string;
-    executeAt: number;
-  } | null>(null);
+  const pendingActionServer = (lobby?.room.pendingAction as PendingActionView | null) ?? null;
+  const [localPendingAction, setLocalPendingAction] = useState<PendingActionView | null>(null);
   const pendingAction = pendingActionServer ?? localPendingAction;
-  const pendingBannerAnim = useRef(new Animated.Value(pendingAction ? 1 : 0)).current;
+  const [displayPendingAction, setDisplayPendingAction] = useState<PendingActionView | null>(pendingAction);
+  const pendingHideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const activePendingAction = pendingAction ?? displayPendingAction;
+  const pendingBannerAnim = useRef(new Animated.Value(activePendingAction ? 1 : 0)).current;
 
   useEffect(() => {
     if (pendingActionServer) {
       setLocalPendingAction(null);
     }
   }, [pendingActionServer]);
+
+  useEffect(() => {
+    if (pendingHideTimeoutRef.current) {
+      clearTimeout(pendingHideTimeoutRef.current);
+      pendingHideTimeoutRef.current = null;
+    }
+    if (pendingAction) {
+      setDisplayPendingAction((prev) => {
+        if (
+          prev
+          && prev.executeAt === pendingAction.executeAt
+          && prev.label === pendingAction.label
+          && prev.type === pendingAction.type
+        ) {
+          return prev;
+        }
+        return pendingAction;
+      });
+      return;
+    }
+    pendingHideTimeoutRef.current = setTimeout(() => {
+      setDisplayPendingAction(null);
+      pendingHideTimeoutRef.current = null;
+    }, PENDING_ACTION_VISUAL_GRACE_MS);
+    return () => {
+      if (pendingHideTimeoutRef.current) {
+        clearTimeout(pendingHideTimeoutRef.current);
+        pendingHideTimeoutRef.current = null;
+      }
+    };
+  }, [pendingAction]);
 
   useEffect(() => {
     if (!lobby?.deck) return;
@@ -97,12 +138,12 @@ export default function MatchLobbyScreen() {
 
   useEffect(() => {
     Animated.timing(pendingBannerAnim, {
-      toValue: pendingAction ? 1 : 0,
+      toValue: activePendingAction ? 1 : 0,
       duration: 220,
       easing: Easing.out(Easing.ease),
       useNativeDriver: false,
     }).start();
-  }, [pendingAction, pendingBannerAnim]);
+  }, [activePendingAction, pendingBannerAnim]);
 
   const fallbackBannerHeight = 88;
   const bannerHeight = pendingBannerHeight || fallbackBannerHeight;
@@ -189,10 +230,11 @@ export default function MatchLobbyScreen() {
     if (participant.isHost) return true;
     return shouldPromoteSoloParticipantToHost && participant.participantId === participantId;
   }, [participantId, shouldPromoteSoloParticipantToHost]);
-  const isStartPending = !!pendingAction && (pendingAction as any).type === 'start';
-  const shouldShowHostPendingBanner = !!pendingAction && isSelfHost;
-  const shouldShowParticipantPendingBanner = !!pendingAction && !isSelfHost && isStartPending;
-  const shouldShowPendingBanner = !!pendingAction;
+  const hasActivePendingAction = !!activePendingAction;
+  const isStartPending = activePendingAction?.type === 'start';
+  const shouldShowHostPendingBanner = hasActivePendingAction && isSelfHost;
+  const shouldShowParticipantPendingBanner = hasActivePendingAction && !isSelfHost && isStartPending;
+  const shouldShowPendingBanner = hasActivePendingAction;
 
   const readyCount = useMemo(
     () =>
@@ -217,7 +259,20 @@ export default function MatchLobbyScreen() {
     return readyCount === readyTotal;
   }, [participants.length, readyCount, readyTotal]);
   const readySummaryTotal = useMemo(() => readyTotal, [readyTotal]);
-  const pendingSeconds = Math.ceil(pendingMs / 1000);
+  const pendingScheduleKey = activePendingAction?.executeAt ?? null;
+  const pendingHostTitle = useMemo(() => {
+    if (!activePendingAction) return '';
+    if (activePendingAction.type === 'start') return '매치 시작 준비 중';
+    return activePendingAction.label;
+  }, [activePendingAction]);
+  const pendingHostSubtitle = useMemo(
+    () => {
+      if (pendingMs <= 0) return '지금 시작';
+      if (pendingMs <= 2000) return '곧 시작';
+      return '잠시 후 시작';
+    },
+    [pendingMs]
+  );
 
   useEffect(() => {
     if (status === 'guest' && !guestKey) {
@@ -339,7 +394,7 @@ export default function MatchLobbyScreen() {
       Alert.alert('아직 준비되지 않았어요', '모든 참가자가 준비 완료 상태가 되어야 시작할 수 있어요.');
       return;
     }
-    if (pendingAction) {
+    if (hasActivePendingAction) {
       Alert.alert('이미 예약된 작업이 있어요');
       return;
     }
@@ -347,29 +402,13 @@ export default function MatchLobbyScreen() {
     setIsStarting(true);
 
     try {
-      // 서버 기준 최신 대기실 상태로 한 번 더 확인
-      const freshLobby = await refetchLobby();
-      const participantsNow = freshLobby?.participants ?? participants;
-      const nonHostNow = participantsNow.filter((participant) => !isParticipantDisplayedAsHost(participant));
-      const allReadyNow =
-        nonHostNow.length === 0
-          ? participantsNow.length > 0
-          : nonHostNow.every((participant) => participant.isReady);
-
-      if (!allReadyNow) {
-        Alert.alert(
-          '아직 준비되지 않았어요',
-          '누군가 방금 준비를 취소했어요. 모두 준비되면 다시 시작해 주세요.'
-        );
-        return;
-      }
-
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       const key = await resolveHostGuestKey();
       const executeAt = Date.now() - serverOffsetMs + resolveDelayMs;
       setLocalPendingAction({
         label: '매치 시작 준비 중...',
         executeAt,
+        type: 'start',
       });
       setPendingMs(resolveDelayMs);
       await roomActions.start({
@@ -394,11 +433,8 @@ export default function MatchLobbyScreen() {
   }, [
     allReady,
     isStarting,
-    pendingAction,
+    hasActivePendingAction,
     participantId,
-    participants,
-    isParticipantDisplayedAsHost,
-    refetchLobby,
     resolveDelayMs,
     resolveHostGuestKey,
     roomActions,
@@ -407,7 +443,8 @@ export default function MatchLobbyScreen() {
   ]);
 
   const handleLeave = useCallback(() => {
-    if (hasLeft) return;
+    if (hasLeft || leaveRequestedRef.current) return;
+    leaveRequestedRef.current = true;
     setHasLeft(true);
     if (roomId && participantId) {
       const guestKeyValue = status === 'guest' ? guestKey ?? undefined : undefined;
@@ -418,10 +455,22 @@ export default function MatchLobbyScreen() {
     router.replace('/(tabs)/live-match');
   }, [guestKey, hasLeft, participantId, roomActions, roomId, router, status]);
 
+  usePreventRemove(!hasLeft, ({ data }) => {
+    // Allow internal transitions like lobby -> play and explicit leave navigation.
+    if (leaveRequestedRef.current || data.action.type === 'REPLACE') {
+      navigation.dispatch(data.action);
+      return;
+    }
+    handleLeave();
+  });
+
   useEffect(() => {
     if (hasLeft) return;
     if (typeof lobby?.now === 'number') {
-      setServerOffsetMs(Date.now() - lobby.now);
+      const nextOffset = Date.now() - lobby.now;
+      setServerOffsetMs((prev) =>
+        Math.abs(prev - nextOffset) >= SERVER_OFFSET_JITTER_THRESHOLD_MS ? nextOffset : prev
+      );
     }
   }, [hasLeft, lobby?.now]);
 
@@ -437,13 +486,13 @@ export default function MatchLobbyScreen() {
     if (hasLeft) return;
     if (status === 'guest' && !guestKey) return;
     pendingExecutedRef.current = false;
-    if (!pendingAction) {
+    if (!pendingScheduleKey) {
       setPendingMs(0);
       return;
     }
 
     const update = () => {
-      const diff = pendingAction.executeAt - (Date.now() - serverOffsetMs);
+      const diff = pendingScheduleKey - (Date.now() - serverOffsetMs);
       setPendingMs(Math.max(0, diff));
       if (roomId && participantId && diff <= 0 && !pendingExecutedRef.current) {
         pendingExecutedRef.current = true;
@@ -466,9 +515,9 @@ export default function MatchLobbyScreen() {
     };
 
     update();
-    const interval = setInterval(update, 200);
+    const interval = setInterval(update, 100);
     return () => clearInterval(interval);
-  }, [guestKey, hasLeft, participantId, pendingAction, roomActions, roomId, serverOffsetMs, status]);
+  }, [guestKey, hasLeft, participantId, pendingScheduleKey, roomActions, roomId, serverOffsetMs, status]);
 
   useEffect(() => {
     if (hasLeft || !roomId || !participantId) return;
@@ -645,11 +694,29 @@ export default function MatchLobbyScreen() {
         deckCardDescription: {
           color: mutedColor,
           fontSize: 12,
+          flex: 1,
+          lineHeight: 17,
+        },
+        deckCardBulletRow: {
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+          gap: Spacing.xs,
+        },
+        deckCardBulletMarker: {
+          color: mutedColor,
+          fontSize: 12,
+          lineHeight: 17,
+          width: 10,
         },
         deckCardWarning: {
           color: destructiveColor,
           fontSize: 12,
           fontWeight: '600',
+          flex: 1,
+          lineHeight: 17,
+        },
+        deckCardWarningMarker: {
+          color: destructiveColor,
         },
         deckCardContent: {
           paddingHorizontal: Spacing.md,
@@ -893,12 +960,10 @@ export default function MatchLobbyScreen() {
                     }}
                   >
                     <ThemedText type="subtitle" style={styles.pendingTitle}>
-                      {pendingAction.label}
+                      {pendingHostTitle}
                     </ThemedText>
                     <ThemedText style={styles.pendingSubtitle}>
-                      {pendingSeconds > 0
-                        ? `${pendingSeconds}초 후 자동으로 진행됩니다.`
-                        : '잠시 후 자동으로 실행됩니다.'}
+                      {pendingHostSubtitle}
                     </ThemedText>
                   </View>
                 ) : null}
@@ -940,7 +1005,7 @@ export default function MatchLobbyScreen() {
               <View style={styles.header}>
                 <ThemedText type="title">퀴즈룸</ThemedText>
                 <ThemedText style={styles.headerSubtitle}>
-                  대기실에 입장했어요. {'\n'}매치를 시작하면 화면이 자동으로 넘어가고, {'\n'}네트워크 상황에 따라 1~2초 정도 지연될 수 있어요.
+                  대기실 입장 완료. 게임을 시작해볼까요?
                 </ThemedText>
                 <View style={styles.codeBadgeWrapper}>
                   <View style={styles.codeBadgeRow}>
@@ -970,20 +1035,38 @@ export default function MatchLobbyScreen() {
                       </View>
                     }
                   >
-                    <ThemedText style={styles.deckCardDescription}>• 문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.</ThemedText>
-                    <ThemedText style={styles.deckCardDescription}>
-                      • 총 10라운드로 진행돼요.
-                    </ThemedText>
-                    <ThemedText style={styles.deckCardDescription}>• 최대 10명까지 참여할 수 있어요.</ThemedText>
-                    <ThemedText style={styles.deckCardDescription}>
-                      • 정답이라도 빨리 고를수록 더 많은 점수를 받아요.
-                    </ThemedText>
-                    <ThemedText style={styles.deckCardDescription}>
-                      • 연속 정답으로 콤보 배수를 쌓아 더 높은 점수를 노려보세요!
-                    </ThemedText>
-                    <ThemedText style={styles.deckCardWarning}>
-                      • 보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
-                    </ThemedText>
+                    <View style={styles.deckCardBulletRow}>
+                      <ThemedText style={styles.deckCardBulletMarker}>•</ThemedText>
+                      <ThemedText style={styles.deckCardDescription}>
+                        문제를 동시에 풀고 실시간으로 순위를 확인할 수 있어요.
+                      </ThemedText>
+                    </View>
+                    <View style={styles.deckCardBulletRow}>
+                      <ThemedText style={styles.deckCardBulletMarker}>•</ThemedText>
+                      <ThemedText style={styles.deckCardDescription}>총 10라운드로 진행돼요.</ThemedText>
+                    </View>
+                    <View style={styles.deckCardBulletRow}>
+                      <ThemedText style={styles.deckCardBulletMarker}>•</ThemedText>
+                      <ThemedText style={styles.deckCardDescription}>최대 10명까지 참여할 수 있어요.</ThemedText>
+                    </View>
+                    <View style={styles.deckCardBulletRow}>
+                      <ThemedText style={styles.deckCardBulletMarker}>•</ThemedText>
+                      <ThemedText style={styles.deckCardDescription}>
+                        정답이라도 빨리 고를수록 더 많은 점수를 받아요.
+                      </ThemedText>
+                    </View>
+                    <View style={styles.deckCardBulletRow}>
+                      <ThemedText style={styles.deckCardBulletMarker}>•</ThemedText>
+                      <ThemedText style={styles.deckCardDescription}>
+                        연속 정답으로 콤보 배수를 쌓아 더 높은 점수를 노려보세요!
+                      </ThemedText>
+                    </View>
+                    <View style={styles.deckCardBulletRow}>
+                      <ThemedText style={[styles.deckCardBulletMarker, styles.deckCardWarningMarker]}>•</ThemedText>
+                      <ThemedText style={styles.deckCardWarning}>
+                        보기는 선택하는 순간 바로 확정됩니다. 신중히 골라주세요!
+                      </ThemedText>
+                    </View>
                   </Accordion>
                 ) : null}
               </View>
@@ -1099,7 +1182,7 @@ export default function MatchLobbyScreen() {
                     size="lg"
                     onPress={handleToggleReady}
                     loading={isSelfParticipantPending}
-                    disabled={isSelfParticipantPending || !!pendingAction}
+                    disabled={isSelfParticipantPending || hasActivePendingAction}
                   >
                     {isSelfParticipantPending ? '입장 확인 중…' : (isSelfReady ? '준비 취소' : '준비 완료')}
                   </Button>
@@ -1118,7 +1201,7 @@ export default function MatchLobbyScreen() {
                       size="lg"
                       onPress={handleStart}
                       loading={isStarting || isSelfParticipantPending}
-                      disabled={isSelfParticipantPending || !allReady || !!pendingAction}
+                      disabled={isSelfParticipantPending || !allReady || hasActivePendingAction}
                     >
                       {isSelfParticipantPending ? '입장 확인 중…' : (isStarting ? '시작 준비 중...' : '매치 시작')}
                     </Button>
@@ -1128,7 +1211,7 @@ export default function MatchLobbyScreen() {
                   variant="outline"
                   onPress={handleLeave}
                   size="lg"
-                  disabled={!!pendingAction}
+                  disabled={hasActivePendingAction}
                 >
                   나가기
                 </Button>

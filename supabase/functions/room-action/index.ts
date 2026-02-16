@@ -750,50 +750,113 @@ serve(async (req) => {
           throw new Error('게스트와 참가자 모두 준비를 완료해야 해요.');
         }
 
-        // Get questions for rounds
-        const { data: deck } = await supabase
-          .from('live_match_decks')
-          .select('question_ids')
-          .eq('id', room.deck_id)
-          .single();
-
-        if (!deck || !deck.question_ids.length) {
-          throw new Error('NO_QUESTIONS_AVAILABLE');
-        }
-
-        // Shuffle and select questions
-        const shuffled = [...deck.question_ids].sort(() => Math.random() - 0.5);
-        const selectedIds = shuffled.slice(0, room.total_rounds);
-
-        // Create rounds
-        for (let i = 0; i < selectedIds.length; i++) {
-          await supabase.from('live_match_rounds').insert({
-            room_id: roomId,
-            index: i,
-            question_id: selectedIds[i],
-            started_at: 0,
-          });
-        }
-
-        const delayMs = params.delayMs ?? ACTION_DELAY_DEFAULT_MS;
+        const delayMs = clampDelay(params.delayMs);
         const executeAt = now + delayMs;
+        const pendingAction = {
+          type: 'start',
+          executeAt,
+          delayMs,
+          createdAt: now,
+          initiatedBy: participant.user_id,
+          initiatedIdentity: participant.identity_id,
+          label: '매치 시작',
+        };
+        const lockPendingAction = {
+          ...pendingAction,
+          type: 'start_lock',
+          label: '매치 시작 준비 중',
+        };
 
-        await supabase
+        // Lock start immediately so room-join cannot slip in while rounds are being prepared.
+        const { data: lockRow, error: lockError } = await supabase
           .from('live_match_rooms')
           .update({
-            pending_action: {
-              type: 'start',
-              executeAt,
-              delayMs,
-              createdAt: now,
-              initiatedBy: participant.user_id,
-              initiatedIdentity: participant.identity_id,
-              label: '매치 시작',
-            },
+            pending_action: lockPendingAction,
             expires_at: now + LOBBY_EXPIRES_MS,
             version: room.version + 1,
           })
+          .eq('id', roomId)
+          .eq('status', 'lobby')
+          .is('pending_action', null)
+          .select('id')
+          .maybeSingle();
+
+        if (lockError) {
+          throw lockError;
+        }
+        if (!lockRow) {
+          throw new Error('ACTION_PENDING');
+        }
+
+        try {
+          // Get questions for rounds
+          const { data: deck, error: deckError } = await supabase
+            .from('live_match_decks')
+            .select('question_ids')
+            .eq('id', room.deck_id)
+            .single();
+          if (deckError) {
+            throw deckError;
+          }
+
+          if (!deck || !deck.question_ids.length) {
+            throw new Error('NO_QUESTIONS_AVAILABLE');
+          }
+
+          // Shuffle and select questions
+          const shuffled = [...deck.question_ids].sort(() => Math.random() - 0.5);
+          const selectedIds = shuffled.slice(0, room.total_rounds);
+
+          // Ensure stale rounds from a failed previous attempt do not conflict.
+          const { error: clearRoundsError } = await supabase.from('live_match_rounds').delete().eq('room_id', roomId);
+          if (clearRoundsError) {
+            throw clearRoundsError;
+          }
+
+          // Create rounds
+          for (let i = 0; i < selectedIds.length; i++) {
+            const { error: insertRoundError } = await supabase.from('live_match_rounds').insert({
+              room_id: roomId,
+              index: i,
+              question_id: selectedIds[i],
+              started_at: 0,
+            });
+            if (insertRoundError) {
+              throw insertRoundError;
+            }
+          }
+        } catch (error) {
+          await supabase
+            .from('live_match_rooms')
+            .update({
+              pending_action: null,
+              expires_at: now + LOBBY_EXPIRES_MS,
+            })
+            .eq('id', roomId)
+            .eq('status', 'lobby');
+          await supabase.from('live_match_rounds').delete().eq('room_id', roomId);
+          throw error;
+        }
+
+        const { error: finalizePendingError } = await supabase
+          .from('live_match_rooms')
+          .update({
+            pending_action: pendingAction,
+            expires_at: now + LOBBY_EXPIRES_MS,
+          })
           .eq('id', roomId);
+        if (finalizePendingError) {
+          await supabase
+            .from('live_match_rooms')
+            .update({
+              pending_action: null,
+              expires_at: now + LOBBY_EXPIRES_MS,
+            })
+            .eq('id', roomId)
+            .eq('status', 'lobby');
+          await supabase.from('live_match_rounds').delete().eq('room_id', roomId);
+          throw finalizePendingError;
+        }
 
         return new Response(
           JSON.stringify({ data: { ok: true, executeAt } }),
