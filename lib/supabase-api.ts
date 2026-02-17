@@ -68,7 +68,7 @@ export const ROOM_FULL_MESSAGE = '퀴즈룸이 가득 찼어요. 다른 방을 �
 export const ROOM_IN_PROGRESS_MESSAGE =
   '현재 매치가 진행 중이에요. 종료 후 다시 시도해 주세요.';
 
-function extractFunctionsErrorMessage(error: unknown) {
+export function extractFunctionsErrorMessage(error: unknown) {
   const anyError = error as any;
   const ctx = anyError?.context ?? anyError?.cause;
   const body = ctx?.response?.body ?? ctx?.body ?? ctx?.response?.data;

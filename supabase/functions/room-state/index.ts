@@ -184,13 +184,21 @@ serve(async (req: Request) => {
 
     if (round && round.questions) {
       const question = round.questions;
+      const roundStartedAtMs =
+        typeof round.started_at === 'number' && round.started_at > 0
+          ? round.started_at
+          : null;
 
       // Get answers for this round
-      const { data: answers } = await supabase
+      let answersQuery = supabase
         .from('live_match_answers')
         .select('*')
         .eq('room_id', roomId)
         .eq('round_index', room.current_round);
+      if (roundStartedAtMs !== null) {
+        answersQuery = answersQuery.gte('received_at', roundStartedAtMs);
+      }
+      const { data: answers } = await answersQuery;
 
       const myAnswer = answers?.find((a: any) => a.participant_id === me.id);
 

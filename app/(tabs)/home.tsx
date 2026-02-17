@@ -412,7 +412,7 @@ export default function HomeScreen() {
             />
           }
         >
-          {isRefreshing ? (
+          {isRefreshing && Platform.OS === 'ios' ? (
             <View style={styles.refreshIndicatorRow}>
               <ActivityIndicator size="small" color={palette.primary} />
               <ThemedText style={[styles.refreshIndicatorLabel, { color: muted }]}>

@@ -303,8 +303,6 @@ export function SwipeStack({
   const onboardingIndicatorActive = palette.text;
   const onboardingIndicatorInactive = colorScheme === 'dark' ? Palette.gray700 : Palette.gray200;
   const dangerColor = palette.danger;
-  const sheetStatBackground = colorScheme === 'dark' ? palette.cardElevated : palette.card;
-  const sheetStatBorder = palette.border;
   const { logHistory, logStreakProgress } = useSwipeLoggers();
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
   const [missCount, setMissCount] = useState(0);
@@ -2848,22 +2846,6 @@ export function SwipeStack({
               <ThemedText style={styles.sheetBody}>
                 {sheetFeedback.explanation ?? '해설이 없습니다.'}
               </ThemedText>
-              {!isChallenge ? (
-                <View style={styles.sheetStatsRow}>
-                  <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
-                    <ThemedText style={[styles.sheetStatLabel, { color: sheetMutedColor }]}>점수 변화</ThemedText>
-                    <ThemedText style={styles.sheetStatValue}>
-                      {sheetFeedback.scoreDelta >= 0
-                        ? `+${sheetFeedback.scoreDelta}`
-                        : sheetFeedback.scoreDelta}
-                    </ThemedText>
-                  </View>
-                  <View style={[styles.sheetStat, { backgroundColor: sheetStatBackground, borderColor: sheetStatBorder }]}>
-                    <ThemedText style={[styles.sheetStatLabel, { color: sheetMutedColor }]}>현재 연속 정답</ThemedText>
-                    <ThemedText style={styles.sheetStatValue}>{sheetFeedback.streak}</ThemedText>
-                  </View>
-                </View>
-              ) : null}
               <Button
                 variant="default"
                 fullWidth
@@ -3429,25 +3411,6 @@ const styles = StyleSheet.create({
   sheetBody: {
     fontSize: 14,
     lineHeight: 20,
-  },
-  sheetStatsRow: {
-    flexDirection: 'row',
-    gap: Spacing.md,
-  },
-  sheetStat: {
-    flex: 1,
-    padding: Spacing.md,
-    borderRadius: Radius.md,
-    borderWidth: 1,
-  },
-  sheetStatLabel: {
-    fontSize: 12,
-    marginBottom: 4,
-    color: Palette.gray500,
-  },
-  sheetStatValue: {
-    fontSize: 16,
-    fontWeight: '700',
   },
   reloadButton: {
     paddingHorizontal: Spacing.lg,

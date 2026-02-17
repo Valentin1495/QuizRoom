@@ -67,6 +67,7 @@ export default function MatchLobbyScreen() {
   const [selectedDelay, _] = useState<'rapid' | 'standard' | 'chill'>('chill');
   const [pendingBannerHeight, setPendingBannerHeight] = useState(0);
   const [isStarting, setIsStarting] = useState(false);
+  const [isStartPendingSticky, setIsStartPendingSticky] = useState(false);
   const [isEntryConfirming, setIsEntryConfirming] = useState(false);
   const entryConfirmStartedAtRef = useRef<number | null>(null);
   const leaveRequestedRef = useRef(false);
@@ -83,14 +84,38 @@ export default function MatchLobbyScreen() {
   const pendingAction = pendingActionServer ?? localPendingAction;
   const [displayPendingAction, setDisplayPendingAction] = useState<PendingActionView | null>(pendingAction);
   const pendingHideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const activePendingAction = pendingAction ?? displayPendingAction;
+  const stickyStartPendingAction = useMemo<PendingActionView | null>(() => {
+    if (!isStartPendingSticky) return null;
+    if (pendingAction?.type === 'start') return pendingAction;
+    if (displayPendingAction?.type === 'start') return displayPendingAction;
+    if (localPendingAction?.type === 'start') return localPendingAction;
+    return {
+      label: '매치 시작 준비 중...',
+      executeAt: Date.now() + 3000,
+      type: 'start',
+    };
+  }, [displayPendingAction, isStartPendingSticky, localPendingAction, pendingAction]);
+  const activePendingAction = pendingAction ?? stickyStartPendingAction ?? displayPendingAction;
   const pendingBannerAnim = useRef(new Animated.Value(activePendingAction ? 1 : 0)).current;
 
   useEffect(() => {
     if (pendingActionServer) {
       setLocalPendingAction(null);
+      if (pendingActionServer.type === 'start') {
+        setIsStartPendingSticky(true);
+      }
     }
   }, [pendingActionServer]);
+
+  useEffect(() => {
+    if (hasLeft) {
+      setIsStartPendingSticky(false);
+      return;
+    }
+    if (lobby?.room.status && lobby.room.status !== 'lobby') {
+      setIsStartPendingSticky(false);
+    }
+  }, [hasLeft, lobby?.room.status]);
 
   useEffect(() => {
     if (pendingHideTimeoutRef.current) {
@@ -265,14 +290,7 @@ export default function MatchLobbyScreen() {
     if (activePendingAction.type === 'start') return '매치 시작 준비 중';
     return activePendingAction.label;
   }, [activePendingAction]);
-  const pendingHostSubtitle = useMemo(
-    () => {
-      if (pendingMs <= 0) return '지금 시작';
-      if (pendingMs <= 2000) return '곧 시작';
-      return '잠시 후 시작';
-    },
-    [pendingMs]
-  );
+  const pendingHostSubtitle = '잠시 후 자동으로 진행됩니다.';
 
   useEffect(() => {
     if (status === 'guest' && !guestKey) {
@@ -405,6 +423,7 @@ export default function MatchLobbyScreen() {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       const key = await resolveHostGuestKey();
       const executeAt = Date.now() - serverOffsetMs + resolveDelayMs;
+      setIsStartPendingSticky(true);
       setLocalPendingAction({
         label: '매치 시작 준비 중...',
         executeAt,
@@ -420,9 +439,11 @@ export default function MatchLobbyScreen() {
     } catch (error) {
       setLocalPendingAction(null);
       if (error instanceof Error && error.message.includes('ACTION_PENDING')) {
+        setIsStartPendingSticky(true);
         Alert.alert('이미 시작을 준비 중이에요', '곧 자동으로 시작돼요. 잠시만 기다려주세요!');
         return;
       }
+      setIsStartPendingSticky(false);
       Alert.alert(
         '시작 실패',
         error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'

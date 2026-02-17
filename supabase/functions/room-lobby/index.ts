@@ -60,7 +60,13 @@ serve(async (req: Request) => {
     );
 
     const { code } = await req.json();
-    const normalizedCode = code.trim().toUpperCase();
+    const normalizedCode = typeof code === 'string' ? code.trim().toUpperCase() : '';
+    if (!normalizedCode) {
+      return new Response(
+        JSON.stringify({ data: null }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      );
+    }
 
     // Get room by code
     const { data: room, error: roomError } = await supabase

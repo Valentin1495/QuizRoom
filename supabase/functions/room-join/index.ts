@@ -280,9 +280,7 @@ serve(async (req: Request) => {
 
     if (existingParticipant) {
       const pendingAction = room.pending_action as { type?: string } | null;
-      const isStartPending =
-        room.status === 'lobby' &&
-        (pendingAction?.type === 'start' || pendingAction?.type === 'start_lock');
+      const isStartPending = room.status === 'lobby' && pendingAction?.type === 'start';
       const isExistingActiveParticipant = !existingParticipant.removed_at;
       if (isStartPending && !isExistingActiveParticipant) {
         return respondError('현재 매치가 진행 중이에요. 종료 후 다시 시도해 주세요.');
@@ -322,9 +320,7 @@ serve(async (req: Request) => {
     }
 
     const pendingAction = room.pending_action as { type?: string } | null;
-    const isStartPending =
-      room.status === 'lobby' &&
-      (pendingAction?.type === 'start' || pendingAction?.type === 'start_lock');
+    const isStartPending = room.status === 'lobby' && pendingAction?.type === 'start';
     if (isStartPending) {
       return respondError('현재 매치가 진행 중이에요. 종료 후 다시 시도해 주세요.');
     }

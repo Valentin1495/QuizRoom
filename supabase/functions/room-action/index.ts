@@ -576,6 +576,24 @@ serve(async (req) => {
           const pendingAction = room.pending_action;
 
           if (pendingAction.type === 'start' && room.status === 'lobby') {
+            const { data: firstRound, error: firstRoundError } = await supabase
+              .from('live_match_rounds')
+              .select('id')
+              .eq('room_id', roomId)
+              .eq('index', 0)
+              .maybeSingle();
+            if (firstRoundError) {
+              throw firstRoundError;
+            }
+            // Start can be scheduled before rounds are fully prepared.
+            // Keep pending action until round 0 exists.
+            if (!firstRound) {
+              return new Response(
+                JSON.stringify({ data: { ok: true, hostTransfer: transferredHost, pendingPreparation: true } }),
+                { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+              );
+            }
+
             const rules = room.rules || DEFAULT_RULES;
             // First round should start immediately with a question.
             await supabase
@@ -640,6 +658,12 @@ serve(async (req) => {
               })
               .eq('id', roomId);
           } else if (pendingAction.type === 'toLobby' && room.status === 'results') {
+            await supabase
+              .from('live_match_participants')
+              .update({ total_score: 0, answers: 0, avg_response_ms: 0, is_ready: false, current_streak: 0, max_streak: 0 })
+              .eq('room_id', roomId);
+            await supabase.from('live_match_answers').delete().eq('room_id', roomId);
+            await supabase.from('live_match_rounds').delete().eq('room_id', roomId);
             await supabase
               .from('live_match_rooms')
               .update({
@@ -761,17 +785,12 @@ serve(async (req) => {
           initiatedIdentity: participant.identity_id,
           label: '매치 시작',
         };
-        const lockPendingAction = {
-          ...pendingAction,
-          type: 'start_lock',
-          label: '매치 시작 준비 중',
-        };
 
         // Lock start immediately so room-join cannot slip in while rounds are being prepared.
         const { data: lockRow, error: lockError } = await supabase
           .from('live_match_rooms')
           .update({
-            pending_action: lockPendingAction,
+            pending_action: pendingAction,
             expires_at: now + LOBBY_EXPIRES_MS,
             version: room.version + 1,
           })
@@ -789,6 +808,15 @@ serve(async (req) => {
         }
 
         try {
+          const { error: resetParticipantsError } = await supabase
+            .from('live_match_participants')
+            .update({ total_score: 0, answers: 0, avg_response_ms: 0, is_ready: false, current_streak: 0, max_streak: 0 })
+            .eq('room_id', roomId)
+            .is('removed_at', null);
+          if (resetParticipantsError) {
+            throw resetParticipantsError;
+          }
+
           // Get questions for rounds
           const { data: deck, error: deckError } = await supabase
             .from('live_match_decks')
@@ -806,6 +834,11 @@ serve(async (req) => {
           // Shuffle and select questions
           const shuffled = [...deck.question_ids].sort(() => Math.random() - 0.5);
           const selectedIds = shuffled.slice(0, room.total_rounds);
+
+          const { error: clearAnswersError } = await supabase.from('live_match_answers').delete().eq('room_id', roomId);
+          if (clearAnswersError) {
+            throw clearAnswersError;
+          }
 
           // Ensure stale rounds from a failed previous attempt do not conflict.
           const { error: clearRoundsError } = await supabase.from('live_match_rounds').delete().eq('room_id', roomId);
@@ -834,6 +867,7 @@ serve(async (req) => {
             })
             .eq('id', roomId)
             .eq('status', 'lobby');
+          await supabase.from('live_match_answers').delete().eq('room_id', roomId);
           await supabase.from('live_match_rounds').delete().eq('room_id', roomId);
           throw error;
         }
@@ -854,6 +888,7 @@ serve(async (req) => {
             })
             .eq('id', roomId)
             .eq('status', 'lobby');
+          await supabase.from('live_match_answers').delete().eq('room_id', roomId);
           await supabase.from('live_match_rounds').delete().eq('room_id', roomId);
           throw finalizePendingError;
         }
@@ -961,26 +996,6 @@ serve(async (req) => {
           console.warn('[RoomAction] Failed to extend room expiry on submitAnswer', err);
         });
 
-        // Check if already answered
-        const { data: existingAnswer, error: existingAnswerError } = await supabase
-          .from('live_match_answers')
-          .select('id')
-          .eq('room_id', roomId)
-          .eq('round_index', room.current_round)
-          .eq('participant_id', participantId)
-          .maybeSingle();
-
-        if (existingAnswerError) {
-          throw existingAnswerError;
-        }
-
-        if (existingAnswer) {
-          return new Response(
-            JSON.stringify({ data: { ok: true, alreadyAnswered: true } }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-          );
-        }
-
         // Get round and question
         const { data: round, error: roundError } = await supabase
           .from('live_match_rounds')
@@ -991,6 +1006,34 @@ serve(async (req) => {
 
         if (roundError || !round || !round.questions) {
           throw new Error('ROUND_NOT_FOUND');
+        }
+
+        const roundStartedAtMs =
+          typeof round.started_at === 'number' && round.started_at > 0
+            ? round.started_at
+            : null;
+
+        // Check if already answered
+        let existingAnswerQuery = supabase
+          .from('live_match_answers')
+          .select('id')
+          .eq('room_id', roomId)
+          .eq('round_index', room.current_round)
+          .eq('participant_id', participantId);
+        if (roundStartedAtMs !== null) {
+          existingAnswerQuery = existingAnswerQuery.gte('received_at', roundStartedAtMs);
+        }
+        const { data: existingAnswer, error: existingAnswerError } = await existingAnswerQuery.maybeSingle();
+
+        if (existingAnswerError) {
+          throw existingAnswerError;
+        }
+
+        if (existingAnswer) {
+          return new Response(
+            JSON.stringify({ data: { ok: true, alreadyAnswered: true } }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+          );
         }
 
         const question = round.questions;
@@ -1112,7 +1155,7 @@ serve(async (req) => {
         // Reset participants
         await supabase
           .from('live_match_participants')
-          .update({ total_score: 0, answers: 0, avg_response_ms: 0, is_ready: false, current_streak: 0 })
+          .update({ total_score: 0, answers: 0, avg_response_ms: 0, is_ready: false, current_streak: 0, max_streak: 0 })
           .eq('room_id', roomId);
 
         // Delete old answers and rounds
@@ -1295,7 +1338,7 @@ serve(async (req) => {
         // Reset participants
         await supabase
           .from('live_match_participants')
-          .update({ total_score: 0, answers: 0, avg_response_ms: 0, is_ready: false, current_streak: 0 })
+          .update({ total_score: 0, answers: 0, avg_response_ms: 0, is_ready: false, current_streak: 0, max_streak: 0 })
           .eq('room_id', roomId);
 
         // Delete old answers and rounds

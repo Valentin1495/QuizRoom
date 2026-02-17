@@ -5,7 +5,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { getFunctionAuthHeaders, resolveLeaveIntentBeforeJoinByCode, supabase } from '@/lib/supabase-api';
+import {
+  extractFunctionsErrorMessage,
+  getFunctionAuthHeaders,
+  resolveLeaveIntentBeforeJoinByCode,
+  supabase,
+} from '@/lib/supabase-api';
 
 // ============================================
 // Types
@@ -330,7 +335,7 @@ export function useRoomActions() {
         body: { action, ...args },
         headers,
       });
-      if (error) throw error;
+      if (error) throw new Error(extractFunctionsErrorMessage(error));
       if (data?.error) throw new Error(data.error);
       return data?.data;
     },
@@ -345,7 +350,7 @@ export function useRoomActions() {
         body: { ...args, code: normalizedCode },
         headers,
       });
-      if (error) throw error;
+      if (error) throw new Error(extractFunctionsErrorMessage(error));
       if (data?.error) throw new Error(data.error);
       return data?.data;
     },

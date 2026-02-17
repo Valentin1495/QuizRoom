@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import {
   ActivityIndicator,
   Alert,
+  Platform,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -314,7 +315,7 @@ export default function ProfileScreen() {
             />
           }
         >
-          {isRefreshing ? (
+          {isRefreshing && Platform.OS === 'ios' ? (
             <View style={styles.refreshIndicatorRow}>
               <ActivityIndicator size="small" color={themeColors.primary} />
               <ThemedText style={[styles.refreshIndicatorLabel, { color: mutedColor }]}>

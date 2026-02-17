@@ -1009,7 +1009,7 @@ export default function MatchPlayScreen() {
     useEffect(() => {
         setSelectedChoice(null);
         answerSubmitLockRef.current = false;
-    }, [roomData?.currentRound?.index]);
+    }, [roomData?.currentRound?.index, roomData?.currentRound?.question?.id]);
 
     useEffect(() => {
         if (disconnectReason || !roomData?.me) {

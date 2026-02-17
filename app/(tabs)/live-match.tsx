@@ -278,7 +278,7 @@ export default function LiveMatchScreen() {
               />
             }
           >
-            {isRefreshing ? (
+            {isRefreshing && Platform.OS === 'ios' ? (
               <View style={styles.refreshIndicatorRow}>
                 <ActivityIndicator size="small" color={themeColors.primary} />
                 <ThemedText style={[styles.refreshIndicatorLabel, { color: mutedColor }]}>
