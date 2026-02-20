@@ -340,43 +340,43 @@ export default function ProfileScreen() {
               onScroll={pullRefresh.onScroll}
               scrollEventThrottle={pullRefresh.scrollEventThrottle}
             >
-          {isAuthenticated && user ? (
-            <ProfileHeader
-              user={user}
-              xp={xpValue}
-              streak={displayStreak}
-              onEdit={handleEditProfile}
-              onShare={handleShareCard}
-              onOpenLevelSheet={openLevelSheet}
-            />
-          ) : (
-            <GuestHeader
-              guestAvatarSeed={guestAvatarSeed}
-              guestNickname={guestNickname}
-              onGoogleLogin={handleGoogleLogin}
-              onAppleLogin={handleAppleLogin}
-              isLoading={isAuthorizing}
-            />
-          )}
+              {isAuthenticated && user ? (
+                <ProfileHeader
+                  user={user}
+                  xp={xpValue}
+                  streak={displayStreak}
+                  onEdit={handleEditProfile}
+                  onShare={handleShareCard}
+                  onOpenLevelSheet={openLevelSheet}
+                />
+              ) : (
+                <GuestHeader
+                  guestAvatarSeed={guestAvatarSeed}
+                  guestNickname={guestNickname}
+                  onGoogleLogin={handleGoogleLogin}
+                  onAppleLogin={handleAppleLogin}
+                  isLoading={isAuthorizing}
+                />
+              )}
 
-          <QuizHistoryPanel
-            isAuthenticated={isAuthenticated}
-            history={history}
-            onLogin={handleGoogleLogin}
-            loginLoading={isAuthorizing}
-            onOpenSheet={handleOpenHistorySheet}
-            previewLimit={HISTORY_PREVIEW_LIMIT}
-          />
+              <QuizHistoryPanel
+                isAuthenticated={isAuthenticated}
+                history={history}
+                onLogin={handleGoogleLogin}
+                loginLoading={isAuthorizing}
+                onOpenSheet={handleOpenHistorySheet}
+                previewLimit={HISTORY_PREVIEW_LIMIT}
+              />
 
-          <ThemePreferencesCard />
+              <ThemePreferencesCard />
 
-          <FooterSection
-            isAuthenticated={isAuthenticated}
-            onSignOut={handleOpenLogoutDialog}
-            isSigningOut={isSigningOut}
-            onDeleteAccount={handleOpenDeleteWarningDialog}
-            isDeletingAccount={isDeletingAccount}
-          />
+              <FooterSection
+                isAuthenticated={isAuthenticated}
+                onSignOut={handleOpenLogoutDialog}
+                isSigningOut={isSigningOut}
+                onDeleteAccount={handleOpenDeleteWarningDialog}
+                isDeletingAccount={isDeletingAccount}
+              />
             </AnimatedScrollView>
           </Animated.View>
         </GestureDetector>
@@ -635,7 +635,7 @@ function GuestHistoryPlaceholder({
       >
         <View style={styles.modalDialog}>
           <IconSymbol
-            name="lock"
+            name="lock.open"
             size={28}
             color={textColor}
             style={{ marginBottom: Spacing.sm }}

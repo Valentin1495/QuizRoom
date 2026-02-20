@@ -29,6 +29,7 @@ import {
   HouseLineIcon,
   LightbulbIcon,
   LockIcon,
+  LockOpenIcon,
   MicrophoneStageIcon,
   MoonIcon,
   MusicNoteIcon,
@@ -76,6 +77,7 @@ type IconMapping = {
  */
 const ICON_MAP = {
   'lock': { component: LockIcon },
+  'lock.open': { component: LockOpenIcon },
   'hourglass': { component: HourglassMediumIcon, defaultWeight: 'fill' },
   'party.popper': { component: ConfettiIcon },
   'rectangle.grid.2x2': { component: SquaresFourIcon },
