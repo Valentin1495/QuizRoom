@@ -243,7 +243,19 @@ export default function SkillAssessmentScreen() {
     <ThemedView style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + Spacing.lg }]}>
         <View style={styles.headerTopRow}>
-          <ThemedText type="title">{SKILL_ASSESSMENT_CHALLENGE.title}</ThemedText>
+          <View style={styles.headerTitleRow}>
+            {!isRunning ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                rounded="full"
+                onPress={() => router.back()}
+                leftIcon={<IconSymbol name="arrow.left" size={22} color={palette.text} />}
+                accessibilityLabel="뒤로가기"
+              />
+            ) : null}
+            <ThemedText type="title">{SKILL_ASSESSMENT_CHALLENGE.title}</ThemedText>
+          </View>
           {isRunning ? (
             <Button
               variant="outline"
@@ -254,16 +266,7 @@ export default function SkillAssessmentScreen() {
             >
               종료
             </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              rounded="full"
-              onPress={() => router.back()}
-              leftIcon={<IconSymbol name="arrow.left" size={22} color={palette.text} />}
-              accessibilityLabel="뒤로가기"
-            />
-          )}
+          ) : null}
         </View>
         <ThemedText style={[styles.headerTagline, { color: palette.textMuted }]}>
           {SKILL_ASSESSMENT_CHALLENGE.tagline}
@@ -463,6 +466,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  headerTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
   },
   exitButtonLabel: {
     fontSize: 12,

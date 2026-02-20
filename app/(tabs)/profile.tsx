@@ -11,19 +11,20 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import {
   ActivityIndicator,
   Alert,
-  Platform,
   Pressable,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   View,
   type StyleProp,
   type ViewStyle
 } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge, XpProgressBar } from '@/components/common/level-badge';
 import { LevelInfoSheet } from '@/components/common/level-info-sheet';
+import { PullRefreshCompleteStrip, PullRefreshStretchHeader } from '@/components/common/pull-refresh-reveal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AlertDialog } from '@/components/ui/alert-dialog';
@@ -34,6 +35,7 @@ import { categories } from '@/constants/categories';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme, useColorSchemeManager } from '@/hooks/use-color-scheme';
+import { usePullRefreshReveal } from '@/hooks/use-pull-refresh-reveal';
 import { useQuizHistory, type HistoryBuckets, type QuizHistoryDoc } from '@/hooks/use-quiz-history';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
@@ -46,6 +48,7 @@ type HistorySectionKey = 'daily' | 'swipe' | 'liveMatch';
 type HistoryEntry = QuizHistoryDoc & { id?: string };
 
 const HISTORY_PREVIEW_LIMIT = 3;
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export default function ProfileScreen() {
   const { status, user, signOut, deleteAccount, signInWithGoogle, guestKey, ensureGuestKey, isReady, refreshUser } = useAuth();
@@ -64,6 +67,7 @@ export default function ProfileScreen() {
   const mutedColor = useThemeColor({}, 'textMuted');
   const historySheetRef = useRef<BottomSheetModal>(null);
   const levelSheetRef = useRef<BottomSheetModal>(null);
+  const scrollRef = useRef<ScrollView | null>(null);
   const [historySheetSection, setHistorySheetSection] = useState<HistorySectionKey | null>(null);
   const historySheetSnapPoints = useMemo(() => ['50%', '100%'], []);
   const historySheetBackdrop = useCallback(
@@ -215,6 +219,11 @@ export default function ProfileScreen() {
     }
   }, [ensureGuestKey, guestKey, isReady, isRefreshing, refreshUser, status]);
 
+  const pullRefresh = usePullRefreshReveal({
+    isRefreshing,
+    onRefresh: handleRefresh,
+  });
+
   // Prefer in-memory user (updated via Realtime/applyUserDelta) over cached stats.
   const xpValue = user?.xp ?? supabaseStats?.xp ?? 0;
   const baseStreak = user?.streak ?? supabaseStats?.streak ?? 0;
@@ -297,32 +306,40 @@ export default function ProfileScreen() {
   return (
     <BottomSheetModalProvider>
       <ThemedView style={styles.container}>
-        <ScrollView
-          contentContainerStyle={[
-            styles.contentContainer,
-            { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl },
-          ]}
-          showsVerticalScrollIndicator={false}
-          bounces
-          alwaysBounceVertical
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={() => void handleRefresh()}
-              tintColor={themeColors.primary}
-              colors={[themeColors.primary]}
-              progressViewOffset={0}
-            />
-          }
-        >
-          {isRefreshing && Platform.OS === 'ios' ? (
-            <View style={styles.refreshIndicatorRow}>
-              <ActivityIndicator size="small" color={themeColors.primary} />
-              <ThemedText style={[styles.refreshIndicatorLabel, { color: mutedColor }]}>
-                새로고침 중...
-              </ThemedText>
-            </View>
-          ) : null}
+        <PullRefreshCompleteStrip
+          visible={pullRefresh.showCompletion}
+          top={insets.top + Spacing.sm}
+          color={themeColors.primary}
+          textColor={mutedColor}
+          backgroundColor={themeColors.card}
+          borderColor={themeColors.border}
+        />
+        <PullRefreshStretchHeader
+          visible={pullRefresh.showStretchHeader}
+          top={insets.top + Spacing.xs}
+          distance={pullRefresh.distance}
+          progress={pullRefresh.progress}
+          label={pullRefresh.label}
+          isRefreshing={isRefreshing}
+          color={themeColors.primary}
+          textColor={mutedColor}
+          backgroundColor={themeColors.card}
+          borderColor={themeColors.border}
+        />
+        <GestureDetector gesture={pullRefresh.gesture}>
+          <Animated.View style={[styles.scrollWrapper, pullRefresh.containerAnimatedStyle]}>
+            <AnimatedScrollView
+              ref={scrollRef}
+              contentContainerStyle={[
+                styles.contentContainer,
+                { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl },
+              ]}
+              showsVerticalScrollIndicator={false}
+              bounces
+              alwaysBounceVertical
+              onScroll={pullRefresh.onScroll}
+              scrollEventThrottle={pullRefresh.scrollEventThrottle}
+            >
           {isAuthenticated && user ? (
             <ProfileHeader
               user={user}
@@ -360,7 +377,9 @@ export default function ProfileScreen() {
             onDeleteAccount={handleOpenDeleteWarningDialog}
             isDeletingAccount={isDeletingAccount}
           />
-        </ScrollView>
+            </AnimatedScrollView>
+          </Animated.View>
+        </GestureDetector>
         <HistoryBottomSheet
           sheetRef={historySheetRef}
           activeSection={historySheetSection}
@@ -1231,19 +1250,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  scrollWrapper: {
+    flex: 1,
+  },
   contentContainer: {
     paddingHorizontal: Spacing.lg,
     gap: Spacing.xl,
-  },
-  refreshIndicatorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.xs,
-  },
-  refreshIndicatorLabel: {
-    fontSize: 12,
-    fontWeight: '600',
   },
   loadingContainer: {
     flex: 1,

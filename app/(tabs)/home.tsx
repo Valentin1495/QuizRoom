@@ -4,19 +4,20 @@ import { Link, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutRectangle, TextInput as RNTextInput } from 'react-native';
 import {
-  ActivityIndicator,
   Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   TextInput,
   View
 } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { PullRefreshCompleteStrip, PullRefreshStretchHeader } from '@/components/common/pull-refresh-reveal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
@@ -28,11 +29,14 @@ import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useDailyQuiz } from '@/hooks/use-daily-quiz';
 import { extractJoinErrorMessage, useCreateLiveMatchRoom, useJoinLiveMatchRoom } from '@/hooks/use-live-match-room';
+import { usePullRefreshReveal } from '@/hooks/use-pull-refresh-reveal';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestNickname } from '@/lib/guest';
 import type { RecentLiveMatchDeck, RecentSwipeCategory } from '@/lib/recent-selections';
 import { loadRecentLiveMatchDeck, loadRecentSwipeCategory } from '@/lib/recent-selections';
+
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 function formatTimeLeft(target: Date) {
   const diff = target.getTime() - Date.now();
@@ -377,6 +381,11 @@ export default function HomeScreen() {
     }
   }, [ensureGuestKey, guestKey, isGuest, isRefreshing, loadRecentSelections]);
 
+  const pullRefresh = usePullRefreshReveal({
+    isRefreshing,
+    onRefresh: handleRefresh,
+  });
+
   return (
     <ThemedView style={styles.container}>
       <KeyboardAvoidingView
@@ -384,42 +393,49 @@ export default function HomeScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}
       >
-        <ScrollView
-          ref={scrollRef}
-          onLayout={(event) => {
-            scrollViewHeightRef.current = event.nativeEvent.layout.height;
-          }}
-          contentContainerStyle={[
-            styles.scrollContent,
-            {
-              paddingTop: insets.top + Spacing.lg,
-              paddingBottom: keyboardVisible ? 0 : Spacing.xl + insets.bottom,
-            },
-          ]}
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="interactive"
-          bounces
-          alwaysBounceVertical
-          contentInsetAdjustmentBehavior="never"
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={() => void handleRefresh()}
-              tintColor={palette.primary}
-              colors={[palette.primary]}
-              progressViewOffset={0}
-            />
-          }
-        >
-          {isRefreshing && Platform.OS === 'ios' ? (
-            <View style={styles.refreshIndicatorRow}>
-              <ActivityIndicator size="small" color={palette.primary} />
-              <ThemedText style={[styles.refreshIndicatorLabel, { color: muted }]}>
-                새로고침 중...
-              </ThemedText>
-            </View>
-          ) : null}
+        <PullRefreshCompleteStrip
+          visible={pullRefresh.showCompletion}
+          top={insets.top + Spacing.sm}
+          color={palette.primary}
+          textColor={muted}
+          backgroundColor={cardBackground}
+          borderColor={borderColor}
+        />
+        <PullRefreshStretchHeader
+          visible={pullRefresh.showStretchHeader}
+          top={insets.top + Spacing.xs}
+          distance={pullRefresh.distance}
+          progress={pullRefresh.progress}
+          label={pullRefresh.label}
+          isRefreshing={isRefreshing}
+          color={palette.primary}
+          textColor={muted}
+          backgroundColor={cardBackground}
+          borderColor={borderColor}
+        />
+        <GestureDetector gesture={pullRefresh.gesture}>
+          <Animated.View style={[styles.scrollWrapper, pullRefresh.containerAnimatedStyle]}>
+            <AnimatedScrollView
+              ref={scrollRef}
+              onLayout={(event) => {
+                scrollViewHeightRef.current = event.nativeEvent.layout.height;
+              }}
+              contentContainerStyle={[
+                styles.scrollContent,
+                {
+                  paddingTop: insets.top + Spacing.lg,
+                  paddingBottom: keyboardVisible ? 0 : Spacing.xl + insets.bottom,
+                },
+              ]}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="interactive"
+              bounces
+              alwaysBounceVertical
+              contentInsetAdjustmentBehavior="never"
+              showsVerticalScrollIndicator={false}
+              onScroll={pullRefresh.onScroll}
+              scrollEventThrottle={pullRefresh.scrollEventThrottle}
+            >
           <View style={styles.section}>
             <SectionHeader title="빠른 시작" tagline="최근 선택으로 바로 플레이" muted={muted} />
             <View style={[styles.quickStartCard, { backgroundColor: cardBackground, borderColor }]}>
@@ -682,7 +698,9 @@ export default function HomeScreen() {
               </View>
             </View>
           ) : null}
-        </ScrollView>
+            </AnimatedScrollView>
+          </Animated.View>
+        </GestureDetector>
       </KeyboardAvoidingView>
     </ThemedView>
   );
@@ -705,19 +723,12 @@ const styles = StyleSheet.create({
   keyboardAvoiding: {
     flex: 1,
   },
+  scrollWrapper: {
+    flex: 1,
+  },
   scrollContent: {
     paddingHorizontal: 20,
     gap: Spacing.xl,
-  },
-  refreshIndicatorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.xs,
-  },
-  refreshIndicatorLabel: {
-    fontSize: 12,
-    fontWeight: '600',
   },
   quickStartCard: {
     borderWidth: 1,

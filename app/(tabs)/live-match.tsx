@@ -1,8 +1,11 @@
 import { Stack, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View, type LayoutRectangle, type ViewStyle } from 'react-native';
+import { ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, type LayoutRectangle, type ViewStyle } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { PullRefreshCompleteStrip, PullRefreshStretchHeader } from '@/components/common/pull-refresh-reveal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
@@ -11,12 +14,14 @@ import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useLiveMatchDecks } from '@/hooks/use-live-match-decks';
 import { extractJoinErrorMessage, useCreateLiveMatchRoom, useJoinLiveMatchRoom } from '@/hooks/use-live-match-room';
+import { usePullRefreshReveal } from '@/hooks/use-pull-refresh-reveal';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import { getDeckIcon } from '@/lib/deck-icons';
 import { deriveGuestNickname } from '@/lib/guest';
 
 const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export default function LiveMatchScreen() {
   const router = useRouter();
@@ -241,6 +246,11 @@ export default function LiveMatchScreen() {
     }
   }, [ensureGuestKey, guestKey, isGuest, isRefreshing]);
 
+  const pullRefresh = usePullRefreshReveal({
+    isRefreshing,
+    onRefresh: handleRefresh,
+  });
+
   return (
     <>
       <Stack.Screen options={HIDDEN_HEADER_OPTIONS} />
@@ -250,42 +260,49 @@ export default function LiveMatchScreen() {
           keyboardVerticalOffset={0}
           style={styles.keyboardAvoiding}
         >
-          <ScrollView
-            ref={scrollRef}
-            onLayout={(event) => {
-              scrollViewHeightRef.current = event.nativeEvent.layout.height;
-            }}
-            contentContainerStyle={[
-              styles.container,
-              {
-                paddingTop: insets.top + Spacing.lg,
-                paddingBottom: keyboardVisible ? 0 : Spacing.xl + insets.bottom,
-              },
-            ]}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="interactive"
-            bounces
-            alwaysBounceVertical
-            contentInsetAdjustmentBehavior="never"
-            refreshControl={
-              <RefreshControl
-                refreshing={isRefreshing}
-                onRefresh={() => void handleRefresh()}
-                tintColor={themeColors.primary}
-                colors={[themeColors.primary]}
-                progressViewOffset={0}
-              />
-            }
-          >
-            {isRefreshing && Platform.OS === 'ios' ? (
-              <View style={styles.refreshIndicatorRow}>
-                <ActivityIndicator size="small" color={themeColors.primary} />
-                <ThemedText style={[styles.refreshIndicatorLabel, { color: mutedColor }]}>
-                  새로고침 중...
-                </ThemedText>
-              </View>
-            ) : null}
+          <PullRefreshCompleteStrip
+            visible={pullRefresh.showCompletion}
+            top={insets.top + Spacing.sm}
+            color={themeColors.primary}
+            textColor={mutedColor}
+            backgroundColor={cardBackground}
+            borderColor={cardBorder}
+          />
+          <PullRefreshStretchHeader
+            visible={pullRefresh.showStretchHeader}
+            top={insets.top + Spacing.xs}
+            distance={pullRefresh.distance}
+            progress={pullRefresh.progress}
+            label={pullRefresh.label}
+            isRefreshing={isRefreshing}
+            color={themeColors.primary}
+            textColor={mutedColor}
+            backgroundColor={cardBackground}
+            borderColor={cardBorder}
+          />
+          <GestureDetector gesture={pullRefresh.gesture}>
+            <Animated.View style={[styles.scrollWrapper, pullRefresh.containerAnimatedStyle]}>
+              <AnimatedScrollView
+                ref={scrollRef}
+                onLayout={(event) => {
+                  scrollViewHeightRef.current = event.nativeEvent.layout.height;
+                }}
+                contentContainerStyle={[
+                  styles.container,
+                  {
+                    paddingTop: insets.top + Spacing.lg,
+                    paddingBottom: keyboardVisible ? 0 : Spacing.xl + insets.bottom,
+                  },
+                ]}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="interactive"
+                bounces
+                alwaysBounceVertical
+                contentInsetAdjustmentBehavior="never"
+                onScroll={pullRefresh.onScroll}
+                scrollEventThrottle={pullRefresh.scrollEventThrottle}
+              >
             <View style={styles.header}>
               <ThemedText type="title">라이브 매치</ThemedText>
               <ThemedText style={[styles.headerSubtitle, { color: mutedColor }]}>
@@ -487,7 +504,9 @@ export default function LiveMatchScreen() {
                 </Button>
               </View>
             </View>
-          </ScrollView>
+              </AnimatedScrollView>
+            </Animated.View>
+          </GestureDetector>
         </KeyboardAvoidingView>
       </ThemedView>
     </>
@@ -501,19 +520,12 @@ const styles = StyleSheet.create({
   keyboardAvoiding: {
     flex: 1,
   },
+  scrollWrapper: {
+    flex: 1,
+  },
   container: {
     paddingHorizontal: Spacing.lg,
     gap: Spacing.xl,
-  },
-  refreshIndicatorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.xs,
-  },
-  refreshIndicatorLabel: {
-    fontSize: 12,
-    fontWeight: '600',
   },
   header: {
     gap: Spacing.sm,
