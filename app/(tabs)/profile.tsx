@@ -24,7 +24,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge, XpProgressBar } from '@/components/common/level-badge';
 import { LevelInfoSheet } from '@/components/common/level-info-sheet';
-import { PullRefreshCompleteStrip, PullRefreshStretchHeader } from '@/components/common/pull-refresh-reveal';
+import { PullRefreshCompleteStrip, PullRefreshHeader } from '@/components/common/pull-refresh-reveal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AlertDialog } from '@/components/ui/alert-dialog';
@@ -308,14 +308,14 @@ export default function ProfileScreen() {
       <ThemedView style={styles.container}>
         <PullRefreshCompleteStrip
           visible={pullRefresh.showCompletion}
-          top={insets.top + Spacing.sm}
+          top={insets.top + Spacing.xs}
           color={themeColors.primary}
           textColor={mutedColor}
           backgroundColor={themeColors.card}
           borderColor={themeColors.border}
         />
-        <PullRefreshStretchHeader
-          visible={pullRefresh.showStretchHeader}
+        <PullRefreshHeader
+          visible={pullRefresh.showHeader}
           top={insets.top + Spacing.xs}
           distance={pullRefresh.distance}
           progress={pullRefresh.progress}
@@ -326,58 +326,61 @@ export default function ProfileScreen() {
           backgroundColor={themeColors.card}
           borderColor={themeColors.border}
         />
-        <GestureDetector gesture={pullRefresh.gesture}>
+        <GestureDetector gesture={pullRefresh.panGesture}>
           <Animated.View style={[styles.scrollWrapper, pullRefresh.containerAnimatedStyle]}>
-            <AnimatedScrollView
-              ref={scrollRef}
-              contentContainerStyle={[
-                styles.contentContainer,
-                { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl },
-              ]}
-              showsVerticalScrollIndicator={false}
-              bounces
-              alwaysBounceVertical
-              onScroll={pullRefresh.onScroll}
-              scrollEventThrottle={pullRefresh.scrollEventThrottle}
-            >
-              {isAuthenticated && user ? (
-                <ProfileHeader
-                  user={user}
-                  xp={xpValue}
-                  streak={displayStreak}
-                  onEdit={handleEditProfile}
-                  onShare={handleShareCard}
-                  onOpenLevelSheet={openLevelSheet}
+            <GestureDetector gesture={pullRefresh.nativeGesture}>
+              <AnimatedScrollView
+                ref={scrollRef}
+                contentContainerStyle={[
+                  styles.contentContainer,
+                  { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl },
+                ]}
+                showsVerticalScrollIndicator={false}
+                bounces
+                alwaysBounceVertical
+                overScrollMode="never"
+                onScroll={pullRefresh.onScroll}
+                scrollEventThrottle={pullRefresh.scrollEventThrottle}
+              >
+                {isAuthenticated && user ? (
+                  <ProfileHeader
+                    user={user}
+                    xp={xpValue}
+                    streak={displayStreak}
+                    onEdit={handleEditProfile}
+                    onShare={handleShareCard}
+                    onOpenLevelSheet={openLevelSheet}
+                  />
+                ) : (
+                  <GuestHeader
+                    guestAvatarSeed={guestAvatarSeed}
+                    guestNickname={guestNickname}
+                    onGoogleLogin={handleGoogleLogin}
+                    onAppleLogin={handleAppleLogin}
+                    isLoading={isAuthorizing}
+                  />
+                )}
+
+                <QuizHistoryPanel
+                  isAuthenticated={isAuthenticated}
+                  history={history}
+                  onLogin={handleGoogleLogin}
+                  loginLoading={isAuthorizing}
+                  onOpenSheet={handleOpenHistorySheet}
+                  previewLimit={HISTORY_PREVIEW_LIMIT}
                 />
-              ) : (
-                <GuestHeader
-                  guestAvatarSeed={guestAvatarSeed}
-                  guestNickname={guestNickname}
-                  onGoogleLogin={handleGoogleLogin}
-                  onAppleLogin={handleAppleLogin}
-                  isLoading={isAuthorizing}
+
+                <ThemePreferencesCard />
+
+                <FooterSection
+                  isAuthenticated={isAuthenticated}
+                  onSignOut={handleOpenLogoutDialog}
+                  isSigningOut={isSigningOut}
+                  onDeleteAccount={handleOpenDeleteWarningDialog}
+                  isDeletingAccount={isDeletingAccount}
                 />
-              )}
-
-              <QuizHistoryPanel
-                isAuthenticated={isAuthenticated}
-                history={history}
-                onLogin={handleGoogleLogin}
-                loginLoading={isAuthorizing}
-                onOpenSheet={handleOpenHistorySheet}
-                previewLimit={HISTORY_PREVIEW_LIMIT}
-              />
-
-              <ThemePreferencesCard />
-
-              <FooterSection
-                isAuthenticated={isAuthenticated}
-                onSignOut={handleOpenLogoutDialog}
-                isSigningOut={isSigningOut}
-                onDeleteAccount={handleOpenDeleteWarningDialog}
-                isDeletingAccount={isDeletingAccount}
-              />
-            </AnimatedScrollView>
+              </AnimatedScrollView>
+            </GestureDetector>
           </Animated.View>
         </GestureDetector>
         <HistoryBottomSheet

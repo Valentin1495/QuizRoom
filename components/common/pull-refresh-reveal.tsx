@@ -5,7 +5,7 @@ import { Radius, Spacing } from '@/constants/theme';
 import { ThemedText } from '../themed-text';
 import { IconSymbol } from '../ui/icon-symbol';
 
-type PullRefreshStretchHeaderProps = {
+type PullRefreshHeaderProps = {
   visible: boolean;
   top: number;
   distance: number;
@@ -31,8 +31,9 @@ type PullRefreshCompleteStripProps = {
 const MAX_HEADER_HEIGHT = 88;
 const MIN_REFRESHING_HEIGHT = 40;
 const MIN_VISIBLE_HEIGHT = 4;
+const FIXED_HEADER_HEIGHT = 34;
 
-export function PullRefreshStretchHeader({
+export function PullRefreshHeader({
   visible,
   top,
   distance,
@@ -43,7 +44,7 @@ export function PullRefreshStretchHeader({
   textColor,
   backgroundColor,
   borderColor,
-}: PullRefreshStretchHeaderProps) {
+}: PullRefreshHeaderProps) {
   if (!visible) return null;
 
   const baseHeight = isRefreshing ? Math.max(distance, MIN_REFRESHING_HEIGHT) : distance;
@@ -55,7 +56,7 @@ export function PullRefreshStretchHeader({
 
   return (
     <View pointerEvents="none" style={[styles.headerOverlay, { top }]}>
-      <View style={[styles.headerContainer, { height }]}>
+      <View style={styles.headerContainer}>
         <View
           style={[
             styles.headerCard,
@@ -63,6 +64,7 @@ export function PullRefreshStretchHeader({
               backgroundColor,
               borderColor,
               opacity,
+              minHeight: FIXED_HEADER_HEIGHT,
             },
           ]}
         >
@@ -97,7 +99,7 @@ export function PullRefreshCompleteStrip({
   return (
     <View pointerEvents="none" style={[styles.stripOverlay, { top }]}>
       <View style={[styles.stripCard, { backgroundColor, borderColor }]}>
-        <IconSymbol name="checkmark.circle.fill" size={14} color={color} />
+        <IconSymbol name="arrow.trianglehead.2.clockwise.rotate.90" size={14} color={color} />
         <ThemedText style={[styles.stripLabel, { color: textColor }]}>{label}</ThemedText>
       </View>
     </View>

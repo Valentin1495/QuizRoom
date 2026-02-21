@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Gesture } from 'react-native-gesture-handler';
-import { Easing, cancelAnimation, useAnimatedReaction, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Easing, cancelAnimation, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { runOnJS } from 'react-native-worklets';
 
 type UsePullRefreshRevealParams = {
@@ -16,7 +17,7 @@ type UsePullRefreshRevealParams = {
 const DEFAULT_THRESHOLD = 64;
 const DEFAULT_MAX_DISTANCE = 108;
 const DEFAULT_DRAG_RATIO = 0.55;
-const DEFAULT_TOP_TOLERANCE = 4;
+const DEFAULT_TOP_TOLERANCE = 12;
 
 const RESET_TIMING_CONFIG = {
   duration: 240,
@@ -121,15 +122,20 @@ export function usePullRefreshReveal({
     };
   }, []);
 
-  const onScroll = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollY.value = event.contentOffset.y;
+  const onScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      scrollY.value = event.nativeEvent.contentOffset.y;
     },
-  });
+    [scrollY]
+  );
+
+  const nativeGesture = useMemo(() => Gesture.Native(), []);
 
   const panGesture = useMemo(
     () =>
       Gesture.Pan()
+        .activeOffsetY([-8, 8])
+        .simultaneousWithExternalGesture(nativeGesture)
         .onBegin(() => {
           canPull.value = false;
           isPullingDown.value = false;
@@ -193,6 +199,7 @@ export function usePullRefreshReveal({
       isPullingDown,
       isRefreshingShared,
       maxDistance,
+      nativeGesture,
       pullDistance,
       refreshingDistance,
       runRefresh,
@@ -202,18 +209,12 @@ export function usePullRefreshReveal({
     ]
   );
 
-  const nativeGesture = useMemo(() => Gesture.Native(), []);
-  const gesture = useMemo(
-    () => Gesture.Simultaneous(nativeGesture, panGesture),
-    [nativeGesture, panGesture]
-  );
-
   const containerAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: pullDistance.value }],
   }));
 
   const progress = Math.min(1, distance / threshold);
-  const showStretchHeader = isRefreshing || isPullingDownState;
+  const showHeader = isRefreshing || isPullingDownState;
   const label = isRefreshing
     ? '새로고침 중...'
     : progress >= 1
@@ -221,10 +222,11 @@ export function usePullRefreshReveal({
       : '당겨서 새로고침';
 
   return {
-    gesture,
+    panGesture,
+    nativeGesture,
     onScroll,
     containerAnimatedStyle,
-    showStretchHeader,
+    showHeader,
     showCompletion,
     distance,
     progress,

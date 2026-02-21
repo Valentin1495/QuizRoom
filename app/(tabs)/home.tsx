@@ -17,7 +17,7 @@ import { GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PullRefreshCompleteStrip, PullRefreshStretchHeader } from '@/components/common/pull-refresh-reveal';
+import { PullRefreshCompleteStrip, PullRefreshHeader } from '@/components/common/pull-refresh-reveal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
@@ -395,14 +395,14 @@ export default function HomeScreen() {
       >
         <PullRefreshCompleteStrip
           visible={pullRefresh.showCompletion}
-          top={insets.top + Spacing.sm}
+          top={insets.top + Spacing.xs}
           color={palette.primary}
           textColor={muted}
           backgroundColor={cardBackground}
           borderColor={borderColor}
         />
-        <PullRefreshStretchHeader
-          visible={pullRefresh.showStretchHeader}
+        <PullRefreshHeader
+          visible={pullRefresh.showHeader}
           top={insets.top + Spacing.xs}
           distance={pullRefresh.distance}
           progress={pullRefresh.progress}
@@ -413,292 +413,295 @@ export default function HomeScreen() {
           backgroundColor={cardBackground}
           borderColor={borderColor}
         />
-        <GestureDetector gesture={pullRefresh.gesture}>
+        <GestureDetector gesture={pullRefresh.panGesture}>
           <Animated.View style={[styles.scrollWrapper, pullRefresh.containerAnimatedStyle]}>
-            <AnimatedScrollView
-              ref={scrollRef}
-              onLayout={(event) => {
-                scrollViewHeightRef.current = event.nativeEvent.layout.height;
-              }}
-              contentContainerStyle={[
-                styles.scrollContent,
-                {
-                  paddingTop: insets.top + Spacing.lg,
-                  paddingBottom: keyboardVisible ? 0 : Spacing.xl + insets.bottom,
-                },
-              ]}
-              keyboardShouldPersistTaps="handled"
-              keyboardDismissMode="interactive"
-              bounces
-              alwaysBounceVertical
-              contentInsetAdjustmentBehavior="never"
-              showsVerticalScrollIndicator={false}
-              onScroll={pullRefresh.onScroll}
-              scrollEventThrottle={pullRefresh.scrollEventThrottle}
-            >
-          <View style={styles.section}>
-            <SectionHeader title="빠른 시작" tagline="최근 선택으로 바로 플레이" muted={muted} />
-            <View style={[styles.quickStartCard, { backgroundColor: cardBackground, borderColor }]}>
-              <View style={styles.quickStartRow}>
-                <View style={styles.quickStartRowLeft}>
-                  <IconSymbol
-                    name={(recentSwipeCategory?.icon as IconSymbolName) ?? 'rectangle.grid.2x2'}
-                    size={24}
-                    color={textColor}
-                    style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
-                  />
-                  <View style={styles.quickStartRowText}>
-                    <ThemedText type="defaultSemiBold">스와이프</ThemedText>
-                    <ThemedText style={[styles.quickStartHint, { color: muted }]}>
-                      {recentSwipeCategory?.title ?? '최근 카테고리 없음'}
-                    </ThemedText>
+            <GestureDetector gesture={pullRefresh.nativeGesture}>
+              <AnimatedScrollView
+                ref={scrollRef}
+                onLayout={(event) => {
+                  scrollViewHeightRef.current = event.nativeEvent.layout.height;
+                }}
+                contentContainerStyle={[
+                  styles.scrollContent,
+                  {
+                    paddingTop: insets.top + Spacing.lg,
+                    paddingBottom: keyboardVisible ? 0 : Spacing.xl + insets.bottom,
+                  },
+                ]}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="interactive"
+                bounces
+                alwaysBounceVertical
+                overScrollMode="never"
+                contentInsetAdjustmentBehavior="never"
+                showsVerticalScrollIndicator={false}
+                onScroll={pullRefresh.onScroll}
+                scrollEventThrottle={pullRefresh.scrollEventThrottle}
+              >
+                <View style={styles.section}>
+                  <SectionHeader title="빠른 시작" tagline="최근 선택으로 바로 플레이" muted={muted} />
+                  <View style={[styles.quickStartCard, { backgroundColor: cardBackground, borderColor }]}>
+                    <View style={styles.quickStartRow}>
+                      <View style={styles.quickStartRowLeft}>
+                        <IconSymbol
+                          name={(recentSwipeCategory?.icon as IconSymbolName) ?? 'rectangle.grid.2x2'}
+                          size={24}
+                          color={textColor}
+                          style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
+                        />
+                        <View style={styles.quickStartRowText}>
+                          <ThemedText type="defaultSemiBold">스와이프</ThemedText>
+                          <ThemedText style={[styles.quickStartHint, { color: muted }]}>
+                            {recentSwipeCategory?.title ?? '최근 카테고리 없음'}
+                          </ThemedText>
+                        </View>
+                      </View>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        rounded="full"
+                        onPress={handleQuickStartSwipe}
+                      >
+                        시작
+                      </Button>
+                    </View>
+
+                    <View style={styles.quickStartRow}>
+                      <View style={styles.quickStartRowLeft}>
+                        <IconSymbol
+                          name={recentLiveMatchDeck?.slug ? getDeckIcon(recentLiveMatchDeck.slug) : 'sparkles'}
+                          size={24}
+                          color={textColor}
+                          style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
+                        />
+                        <View style={styles.quickStartRowText}>
+                          <ThemedText type="defaultSemiBold">퀴즈룸 생성</ThemedText>
+                          <ThemedText style={[styles.quickStartHint, { color: muted }]}>
+                            {recentLiveMatchDeck?.title ?? '최근 덱 없음'}
+                          </ThemedText>
+                        </View>
+                      </View>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        rounded="full"
+                        onPress={handleQuickCreateRoom}
+                        loading={isQuickCreating}
+                      >
+                        {recentLiveMatchDeck ? '생성' : '선택'}
+                      </Button>
+                    </View>
                   </View>
                 </View>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  rounded="full"
-                  onPress={handleQuickStartSwipe}
-                >
-                  시작
-                </Button>
-              </View>
 
-              <View style={styles.quickStartRow}>
-                <View style={styles.quickStartRowLeft}>
-                  <IconSymbol
-                    name={recentLiveMatchDeck?.slug ? getDeckIcon(recentLiveMatchDeck.slug) : 'sparkles'}
-                    size={24}
-                    color={textColor}
-                    style={Platform.OS === 'android' ? { marginTop: 1 } : undefined}
-                  />
-                  <View style={styles.quickStartRowText}>
-                    <ThemedText type="defaultSemiBold">퀴즈룸 생성</ThemedText>
-                    <ThemedText style={[styles.quickStartHint, { color: muted }]}>
-                      {recentLiveMatchDeck?.title ?? '최근 덱 없음'}
-                    </ThemedText>
-                  </View>
-                </View>
-                <Button
-                  variant="default"
-                  size="sm"
-                  rounded="full"
-                  onPress={handleQuickCreateRoom}
-                  loading={isQuickCreating}
-                >
-                  {recentLiveMatchDeck ? '생성' : '선택'}
-                </Button>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <SectionHeader title="오늘의 퀴즈" tagline="60초 O/X 퀴즈" muted={muted} />
-            <View
-              style={[
-                styles.dailyCard,
-                { backgroundColor: cardBackground, borderColor },
-              ]}
-            >
-              <View style={styles.dailyHeadlineContainer}>
-                {dailyHeadline.state === 'loading' ? (
+                <View style={styles.section}>
+                  <SectionHeader title="오늘의 퀴즈" tagline="60초 O/X 퀴즈" muted={muted} />
                   <View
                     style={[
-                      styles.dailyHeadlineSkeleton,
-                      { backgroundColor: dailyHeadlineSkeletonColor },
+                      styles.dailyCard,
+                      { backgroundColor: cardBackground, borderColor },
                     ]}
-                  />
-                ) : dailyHeadline.state === 'ready' && dailyHeadline.category ? (
-                  <View style={styles.dailyHeadlineRow}>
-                    <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
+                  >
+                    <View style={styles.dailyHeadlineContainer}>
+                      {dailyHeadline.state === 'loading' ? (
+                        <View
+                          style={[
+                            styles.dailyHeadlineSkeleton,
+                            { backgroundColor: dailyHeadlineSkeletonColor },
+                          ]}
+                        />
+                      ) : dailyHeadline.state === 'ready' && dailyHeadline.category ? (
+                        <View style={styles.dailyHeadlineRow}>
+                          <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
+                          <View
+                            style={[
+                              styles.dailyHeadlineBadge,
+                              { borderColor, backgroundColor: palette.card },
+                            ]}
+                          >
+                            <IconSymbol
+                              name={dailyHeadline.category.icon}
+                              size={20}
+                              color={palette.text}
+                            />
+                            <ThemedText style={styles.dailyHeadlineBadgeLabel}>
+                              {dailyHeadline.category.label}
+                            </ThemedText>
+                          </View>
+                          {dailyHeadline.suffix ? (
+                            <ThemedText style={styles.dailyHeadline}>{dailyHeadline.suffix}</ThemedText>
+                          ) : null}
+                        </View>
+                      ) : (
+                        <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
+                      )}
+                    </View>
+                    {hasDailyQuiz ? (
+                      <Link href="/daily" asChild>
+                        <Button
+                          variant="default"
+                          size="lg"
+                          rounded="full"
+                          style={styles.primaryButton}
+                        >
+                          {dailyCTA}
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button
+                        variant="default"
+                        size="lg"
+                        rounded="full"
+                        style={styles.primaryButton}
+                        loading={isLoadingDailyQuiz}
+                        disabled={!isLoadingDailyQuiz}
+                      >
+                        {dailyCTA}
+                      </Button>
+                    )}
                     <View
                       style={[
-                        styles.dailyHeadlineBadge,
-                        { borderColor, backgroundColor: palette.card },
+                        styles.timerPill,
+                        { borderColor },
                       ]}
                     >
                       <IconSymbol
-                        name={dailyHeadline.category.icon}
-                        size={20}
-                        color={palette.text}
+                        name='hourglass'
+                        size={18}
+                        color={textColor}
+                        style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
                       />
-                      <ThemedText style={styles.dailyHeadlineBadgeLabel}>
-                        {dailyHeadline.category.label}
+                      <ThemedText style={styles.timerLabel}>
+                        {timeLeft}
                       </ThemedText>
                     </View>
-                    {dailyHeadline.suffix ? (
-                      <ThemedText style={styles.dailyHeadline}>{dailyHeadline.suffix}</ThemedText>
-                    ) : null}
                   </View>
-                ) : (
-                  <ThemedText style={styles.dailyHeadline}>{dailyHeadline.prefix}</ThemedText>
-                )}
-              </View>
-              {hasDailyQuiz ? (
-                <Link href="/daily" asChild>
-                  <Button
-                    variant="default"
-                    size="lg"
-                    rounded="full"
-                    style={styles.primaryButton}
-                  >
-                    {dailyCTA}
-                  </Button>
-                </Link>
-              ) : (
-                <Button
-                  variant="default"
-                  size="lg"
-                  rounded="full"
-                  style={styles.primaryButton}
-                  loading={isLoadingDailyQuiz}
-                  disabled={!isLoadingDailyQuiz}
-                >
-                  {dailyCTA}
-                </Button>
-              )}
-              <View
-                style={[
-                  styles.timerPill,
-                  { borderColor },
-                ]}
-              >
-                <IconSymbol
-                  name='hourglass'
-                  size={18}
-                  color={textColor}
-                  style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
-                />
-                <ThemedText style={styles.timerLabel}>
-                  {timeLeft}
-                </ThemedText>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <SectionHeader title="실력 측정" tagline="챌린지" muted={muted} />
-            <View style={[styles.challengeCard, { backgroundColor: cardBackground, borderColor }]}>
-              <View style={styles.challengeHeader}>
-                <View style={styles.challengeTitleRow}>
-                  <IconSymbol
-                    name="brain"
-                    size={24}
-                    color={palette.text}
-                    style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
-                  />
-                  <ThemedText style={styles.dailyHeadline}>{skillChallengeTitle}</ThemedText>
                 </View>
-              </View>
-              <Link href={SKILL_ASSESSMENT_CHALLENGE.route} asChild>
-                <Button variant="default" size="lg" rounded="full" style={styles.primaryButton}>
-                  {SKILL_ASSESSMENT_CHALLENGE.ctaLabel}
-                </Button>
-              </Link>
-            </View>
-          </View>
 
-          <View
-            style={styles.section}
-            onLayout={(event) => {
-              liveMatchSectionLayoutRef.current = event.nativeEvent.layout;
-            }}
-          >
-            <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" muted={muted} />
-            <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
-            >
-              <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
-              <TextInput
-                value={liveMatchRoomCode}
-                onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
-                placeholder="A1B2C3"
-                autoCapitalize="characters"
-                autoCorrect={false}
-                autoComplete="off"
-                importantForAutofill="no"
-                submitBehavior="submit"
-                returnKeyType="next"
-                onSubmitEditing={() => joinNicknameInputRef.current?.focus()}
-                maxLength={6}
-                style={[styles.partyInput, { backgroundColor: palette.background, borderColor, color: palette.text, letterSpacing: 4 }]}
-                placeholderTextColor={muted}
-                editable={!isJoining}
-                onFocus={() => {
-                  scrollToLiveMatchSection();
-                  requestAnimationFrame(scrollToLiveMatchSection);
-                  setTimeout(scrollToLiveMatchSection, 180);
-                }}
-              />
-              <TextInput
-                ref={joinNicknameInputRef}
-                value={joinNickname}
-                onChangeText={setJoinNickname}
-                placeholder="닉네임"
-                maxLength={24}
-                autoCapitalize="none"
-                autoCorrect={false}
-                autoComplete="nickname"
-                returnKeyType="done"
-                onSubmitEditing={handleJoinLiveMatchRoomSubmit}
-                editable={!isGuest}
-                selectTextOnFocus={!isGuest}
-                style={[
-                  styles.partyInput,
-                  { backgroundColor: palette.background, borderColor, color: palette.text },
-                  isGuest && { backgroundColor: palette.cardElevated, color: subtle },
-                ]}
-                placeholderTextColor={muted}
-                onFocus={() => {
-                  scrollToLiveMatchSection();
-                  requestAnimationFrame(scrollToLiveMatchSection);
-                  setTimeout(scrollToLiveMatchSection, 180);
-                }}
-              />
-              <Button
-                variant="default"
-                size="lg"
-                rounded="full"
-                style={styles.joinButton}
-                textStyle={styles.joinButtonLabel}
-                onPress={handleJoinLiveMatchRoom}
-                disabled={!isCodeValid}
-                loading={isJoining}
-                fullWidth
-              >
-                {isJoining ? '참가 중…' : '참가하기'}
-              </Button>
-              <Link href="/live-match" asChild>
-                <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.up.forward' size={16} color={textColor} />}>
-                  퀴즈룸 만들기
-                </Button>
-              </Link>
-            </View>
-          </View>
+                <View style={styles.section}>
+                  <SectionHeader title="실력 측정" tagline="챌린지" muted={muted} />
+                  <View style={[styles.challengeCard, { backgroundColor: cardBackground, borderColor }]}>
+                    <View style={styles.challengeHeader}>
+                      <View style={styles.challengeTitleRow}>
+                        <IconSymbol
+                          name="brain"
+                          size={24}
+                          color={palette.text}
+                          style={Platform.OS === 'android' ? { transform: [{ translateY: 1 }] } : undefined}
+                        />
+                        <ThemedText style={styles.dailyHeadline}>{skillChallengeTitle}</ThemedText>
+                      </View>
+                    </View>
+                    <Link href={SKILL_ASSESSMENT_CHALLENGE.route} asChild>
+                      <Button variant="default" size="lg" rounded="full" style={styles.primaryButton}>
+                        {SKILL_ASSESSMENT_CHALLENGE.ctaLabel}
+                      </Button>
+                    </Link>
+                  </View>
+                </View>
 
-          {__DEV__ ? (
-            <View style={styles.section}>
-              <SectionHeader title="디버그" tagline="개발 중 전용 도구" muted={muted} />
-              <View style={[styles.debugCard, { backgroundColor: cardBackground, borderColor }]}>
-                <ThemedText style={styles.debugTitle}>AsyncStorage 초기화</ThemedText>
-                <ThemedText style={[styles.debugDescription, { color: muted }]}>
-                  로컬에 저장된 온보딩, 세션 등 모든 값을 삭제합니다. 개발 중에만 사용하세요.
-                </ThemedText>
-                <Button
-                  variant="destructive"
-                  size="md"
-                  rounded="full"
-                  onPress={handleClearAsyncStorage}
-                  loading={isClearingStorage}
-                  disabled={isClearingStorage}
-                  style={styles.debugButton}
-                  textStyle={styles.debugButtonLabel}
+                <View
+                  style={styles.section}
+                  onLayout={(event) => {
+                    liveMatchSectionLayoutRef.current = event.nativeEvent.layout;
+                  }}
                 >
-                  AsyncStorage 초기화
-                </Button>
-              </View>
-            </View>
-          ) : null}
-            </AnimatedScrollView>
+                  <SectionHeader title="라이브 매치" tagline="친구들과 대결하기" muted={muted} />
+                  <View style={[styles.partyCard, { backgroundColor: cardBackground, borderColor }]}
+                  >
+                    <ThemedText style={styles.partyLabel}>초대 코드</ThemedText>
+                    <TextInput
+                      value={liveMatchRoomCode}
+                      onChangeText={(value) => setLiveMatchRoomCode(value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase())}
+                      placeholder="A1B2C3"
+                      autoCapitalize="characters"
+                      autoCorrect={false}
+                      autoComplete="off"
+                      importantForAutofill="no"
+                      submitBehavior="submit"
+                      returnKeyType="next"
+                      onSubmitEditing={() => joinNicknameInputRef.current?.focus()}
+                      maxLength={6}
+                      style={[styles.partyInput, { backgroundColor: palette.background, borderColor, color: palette.text, letterSpacing: 4 }]}
+                      placeholderTextColor={muted}
+                      editable={!isJoining}
+                      onFocus={() => {
+                        scrollToLiveMatchSection();
+                        requestAnimationFrame(scrollToLiveMatchSection);
+                        setTimeout(scrollToLiveMatchSection, 180);
+                      }}
+                    />
+                    <TextInput
+                      ref={joinNicknameInputRef}
+                      value={joinNickname}
+                      onChangeText={setJoinNickname}
+                      placeholder="닉네임"
+                      maxLength={24}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      autoComplete="nickname"
+                      returnKeyType="done"
+                      onSubmitEditing={handleJoinLiveMatchRoomSubmit}
+                      editable={!isGuest}
+                      selectTextOnFocus={!isGuest}
+                      style={[
+                        styles.partyInput,
+                        { backgroundColor: palette.background, borderColor, color: palette.text },
+                        isGuest && { backgroundColor: palette.cardElevated, color: subtle },
+                      ]}
+                      placeholderTextColor={muted}
+                      onFocus={() => {
+                        scrollToLiveMatchSection();
+                        requestAnimationFrame(scrollToLiveMatchSection);
+                        setTimeout(scrollToLiveMatchSection, 180);
+                      }}
+                    />
+                    <Button
+                      variant="default"
+                      size="lg"
+                      rounded="full"
+                      style={styles.joinButton}
+                      textStyle={styles.joinButtonLabel}
+                      onPress={handleJoinLiveMatchRoom}
+                      disabled={!isCodeValid}
+                      loading={isJoining}
+                      fullWidth
+                    >
+                      {isJoining ? '참가 중…' : '참가하기'}
+                    </Button>
+                    <Link href="/live-match" asChild>
+                      <Button variant='ghost' rounded='full' rightIcon={<IconSymbol name='arrow.up.forward' size={16} color={textColor} />}>
+                        퀴즈룸 만들기
+                      </Button>
+                    </Link>
+                  </View>
+                </View>
+
+                {__DEV__ ? (
+                  <View style={styles.section}>
+                    <SectionHeader title="디버그" tagline="개발 중 전용 도구" muted={muted} />
+                    <View style={[styles.debugCard, { backgroundColor: cardBackground, borderColor }]}>
+                      <ThemedText style={styles.debugTitle}>AsyncStorage 초기화</ThemedText>
+                      <ThemedText style={[styles.debugDescription, { color: muted }]}>
+                        로컬에 저장된 온보딩, 세션 등 모든 값을 삭제합니다. 개발 중에만 사용하세요.
+                      </ThemedText>
+                      <Button
+                        variant="destructive"
+                        size="md"
+                        rounded="full"
+                        onPress={handleClearAsyncStorage}
+                        loading={isClearingStorage}
+                        disabled={isClearingStorage}
+                        style={styles.debugButton}
+                        textStyle={styles.debugButtonLabel}
+                      >
+                        AsyncStorage 초기화
+                      </Button>
+                    </View>
+                  </View>
+                ) : null}
+              </AnimatedScrollView>
+            </GestureDetector>
           </Animated.View>
         </GestureDetector>
       </KeyboardAvoidingView>

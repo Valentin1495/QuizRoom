@@ -5,6 +5,7 @@ import type { Icon, IconWeight } from 'phosphor-react-native';
 import {
   ArrowClockwiseIcon,
   ArrowLeftIcon,
+  ArrowsClockwiseIcon,
   ArrowsLeftRightIcon,
   ArrowUpRightIcon,
   BrainIcon,
@@ -91,6 +92,7 @@ const ICON_MAP = {
   'dot.radiowaves.left.and.right': { component: BroadcastIcon },
   'questionmark.circle': { component: SealQuestionIcon },
   'person.crop.circle.dashed': { component: UserCircleDashedIcon, defaultWeight: 'fill' },
+  'arrow.trianglehead.2.clockwise.rotate.90': { component: ArrowsClockwiseIcon, defaultWeight: 'fill' },
   // Navigation Icons
   'arrow.left': { component: ArrowLeftIcon },
   'arrow.up.forward': { component: ArrowUpRightIcon },
