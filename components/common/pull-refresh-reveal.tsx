@@ -1,4 +1,6 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import type { SharedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { Radius, Spacing } from '@/constants/theme';
 
@@ -8,7 +10,7 @@ import { IconSymbol } from '../ui/icon-symbol';
 type PullRefreshHeaderProps = {
   visible: boolean;
   top: number;
-  distance: number;
+  pullDistanceSV: SharedValue<number>;
   progress: number;
   label: string;
   isRefreshing: boolean;
@@ -30,13 +32,12 @@ type PullRefreshCompleteStripProps = {
 
 const MAX_HEADER_HEIGHT = 88;
 const MIN_REFRESHING_HEIGHT = 40;
-const MIN_VISIBLE_HEIGHT = 4;
 const FIXED_HEADER_HEIGHT = 34;
 
 export function PullRefreshHeader({
   visible,
   top,
-  distance,
+  pullDistanceSV,
   progress,
   label,
   isRefreshing,
@@ -45,27 +46,28 @@ export function PullRefreshHeader({
   backgroundColor,
   borderColor,
 }: PullRefreshHeaderProps) {
+  const cardAnimatedStyle = useAnimatedStyle(() => {
+    const dist = pullDistanceSV.value;
+    const baseHeight = isRefreshing ? Math.max(dist, MIN_REFRESHING_HEIGHT) : dist;
+    const height = Math.min(MAX_HEADER_HEIGHT, Math.max(0, baseHeight));
+    const opacity = Math.min(1, height / 26);
+    return { opacity };
+  });
+
   if (!visible) return null;
-
-  const baseHeight = isRefreshing ? Math.max(distance, MIN_REFRESHING_HEIGHT) : distance;
-  const height = Math.min(MAX_HEADER_HEIGHT, Math.max(0, baseHeight));
-
-  if (!isRefreshing && height < MIN_VISIBLE_HEIGHT) return null;
-
-  const opacity = Math.min(1, height / 26);
 
   return (
     <View pointerEvents="none" style={[styles.headerOverlay, { top }]}>
       <View style={styles.headerContainer}>
-        <View
+        <Animated.View
           style={[
             styles.headerCard,
             {
               backgroundColor,
               borderColor,
-              opacity,
               minHeight: FIXED_HEADER_HEIGHT,
             },
+            cardAnimatedStyle,
           ]}
         >
           {isRefreshing ? (
@@ -79,7 +81,7 @@ export function PullRefreshHeader({
             />
           )}
           <ThemedText style={[styles.headerLabel, { color: textColor }]}>{label}</ThemedText>
-        </View>
+        </Animated.View>
       </View>
     </View>
   );

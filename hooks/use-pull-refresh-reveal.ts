@@ -226,6 +226,7 @@ export function usePullRefreshReveal({
     nativeGesture,
     onScroll,
     containerAnimatedStyle,
+    pullDistanceSV: pullDistance,
     showHeader,
     showCompletion,
     distance,

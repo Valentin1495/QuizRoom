@@ -271,7 +271,7 @@ export default function LiveMatchScreen() {
           <PullRefreshHeader
             visible={pullRefresh.showHeader}
             top={insets.top + Spacing.xs}
-            distance={pullRefresh.distance}
+            pullDistanceSV={pullRefresh.pullDistanceSV}
             progress={pullRefresh.progress}
             label={pullRefresh.label}
             isRefreshing={isRefreshing}
