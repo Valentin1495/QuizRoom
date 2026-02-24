@@ -31,12 +31,15 @@ export type UnifiedAuthContextValue = {
   user: UnifiedUser | null;
   guestKey: string | null;
   signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
+  signInWithReviewerAccount: () => Promise<void>;
   signOut: () => Promise<void>;
   enterGuestMode: () => Promise<void>;
   ensureGuestKey: () => Promise<string>;
   error: string | null;
   isReady: boolean;
   refreshUser: () => Promise<void>;
+  updateProfileHandle: (nextHandle: string) => Promise<void>;
   resetUser: () => Promise<void>;
   deleteAccount: () => Promise<void>;
   applyUserDelta?: (delta: { xp?: number; streak?: number; totalCorrect?: number; totalPlayed?: number }) => void;
@@ -61,12 +64,15 @@ export function useUnifiedAuth(): UnifiedAuthContextValue {
       : null,
     guestKey: supabaseAuth.guestKey,
     signInWithGoogle: supabaseAuth.signInWithGoogle,
+    signInWithApple: supabaseAuth.signInWithApple,
+    signInWithReviewerAccount: supabaseAuth.signInWithReviewerAccount,
     signOut: supabaseAuth.signOut,
     enterGuestMode: supabaseAuth.enterGuestMode,
     ensureGuestKey: supabaseAuth.ensureGuestKey,
     error: supabaseAuth.error,
     isReady: supabaseAuth.isReady,
     refreshUser: supabaseAuth.refreshUser,
+    updateProfileHandle: supabaseAuth.updateProfileHandle,
     resetUser: supabaseAuth.resetUser,
     deleteAccount: supabaseAuth.deleteAccount,
     applyUserDelta: supabaseAuth.applyUserDelta,

@@ -33,6 +33,10 @@ export type AlertDialogAction = {
    * 버튼 비활성화 여부
    */
   disabled?: boolean;
+  /**
+   * 클릭 후 다이얼로그를 자동으로 닫을지 여부 (기본 true)
+   */
+  closeOnPress?: boolean;
 };
 
 export type AlertDialogProps = {
@@ -104,10 +108,12 @@ export function AlertDialog({
 
   const renderAction = useCallback(
     (action: AlertDialogAction, index: number) => {
-      const { label: actionLabel, tone = 'default', onPress, disabled } = action;
+      const { label: actionLabel, tone = 'default', onPress, disabled, closeOnPress = true } = action;
       const handlePress = () => {
         onPress?.();
-        onClose();
+        if (closeOnPress) {
+          onClose();
+        }
       };
 
       return (

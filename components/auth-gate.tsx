@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Image, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -15,8 +15,11 @@ type AuthGateProps = {
 
 const appIcon = require('../assets/images/app-icon.png');
 
+const REVIEWER_TAP_THRESHOLD = 7;
+const REVIEWER_TAP_WINDOW_MS = 800;
+
 export function AuthGate({ children }: AuthGateProps) {
-  const { status, user, guestKey, error, signInWithGoogle, enterGuestMode } = useAuth();
+  const { status, user, guestKey, error, signInWithGoogle, signInWithApple, signInWithReviewerAccount, enterGuestMode } = useAuth();
   const primaryColor = useThemeColor({}, 'primary');
   const iconBackground = useThemeColor(
     {
@@ -28,6 +31,19 @@ export function AuthGate({ children }: AuthGateProps) {
   const insets = useSafeAreaInsets();
   const [showBanner, setShowBanner] = useState(false);
   const hasEnteredAppRef = useRef(false);
+  const [reviewerTapCount, setReviewerTapCount] = useState(0);
+  const lastReviewerTapRef = useRef(0);
+
+  const handleIconTap = () => {
+    const now = Date.now();
+    const next = now - lastReviewerTapRef.current > REVIEWER_TAP_WINDOW_MS ? 1 : reviewerTapCount + 1;
+    lastReviewerTapRef.current = now;
+    setReviewerTapCount(next);
+    if (next >= REVIEWER_TAP_THRESHOLD) {
+      setReviewerTapCount(0);
+      void signInWithReviewerAccount();
+    }
+  };
 
   useEffect(() => {
     if (!error) {
@@ -110,9 +126,11 @@ export function AuthGate({ children }: AuthGateProps) {
       >
         {/* Hero Section */}
         <View style={styles.hero}>
-          <View style={[styles.appIconWrapper, { backgroundColor: iconBackground }]}>
-            <Image source={appIcon} style={styles.appIcon} resizeMode="contain" />
-          </View>
+          <Pressable onPress={handleIconTap}>
+            <View style={[styles.appIconWrapper, { backgroundColor: iconBackground }]}>
+              <Image source={appIcon} style={styles.appIcon} resizeMode="contain" />
+            </View>
+          </Pressable>
           <ThemedText type="title" style={styles.title}>
             {headline}
           </ThemedText>
@@ -142,9 +160,25 @@ export function AuthGate({ children }: AuthGateProps) {
               Google 로그인
             </Button>
 
+            {/* Apple Sign In (iOS only) */}
+            {Platform.OS === 'ios' ? (
+              <Button
+                variant="secondary"
+                size="lg"
+                rounded="lg"
+                fullWidth
+                onPress={() => {
+                  void signInWithApple();
+                }}
+                disabled={status === 'authorizing' || status === 'upgrading'}
+              >
+                Apple 로그인
+              </Button>
+            ) : null}
+
             {/* Secondary CTA - Guest Mode */}
             <Button
-              variant="secondary"
+              variant="ghost"
               size="lg"
               rounded="lg"
               fullWidth

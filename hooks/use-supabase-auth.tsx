@@ -17,6 +17,7 @@ import {
 } from 'react';
 import { AppState, Platform } from 'react-native';
 
+import { buildGuestAvatarUrl, deriveAvatarSeedFromIdentity, deriveGuestNickname } from '@/lib/guest';
 import { deleteMyAccount } from '@/lib/supabase-api';
 import { supabase, type Database, type User } from '@/lib/supabase';
 
@@ -67,12 +68,15 @@ type AuthContextValue = {
   user: AuthedUser | null;
   guestKey: string | null;
   signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
+  signInWithReviewerAccount: () => Promise<void>;
   signOut: () => Promise<void>;
   enterGuestMode: () => Promise<void>;
   ensureGuestKey: () => Promise<string>;
   error: string | null;
   isReady: boolean;
   refreshUser: () => Promise<void>;
+  updateProfileHandle: (nextHandle: string) => Promise<void>;
   resetUser: () => Promise<void>;
   deleteAccount: () => Promise<void>;
   applyUserDelta: (delta: Partial<Pick<AuthedUser, 'xp' | 'streak' | 'totalCorrect' | 'totalPlayed'>>) => void;
@@ -87,24 +91,95 @@ const PROFILE_CACHE_KEY_PREFIX = 'quizroomProfileCache_';
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+type PendingAppleProfile = {
+  fullName: string | null;
+  email: string | null;
+};
+
 function generateGuestKey() {
   return `gr-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+function normalizeProfileName(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function buildAppleFullNameString(fullName?: {
+  givenName?: string | null;
+  middleName?: string | null;
+  familyName?: string | null;
+  nickname?: string | null;
+} | null): string | null {
+  if (!fullName) return null;
+  const parts = [
+    normalizeProfileName(fullName.familyName),
+    normalizeProfileName(fullName.middleName),
+    normalizeProfileName(fullName.givenName),
+  ].filter(Boolean);
+  if (parts.length > 0) return parts.join('');
+  return normalizeProfileName(fullName.nickname);
+}
+
+function buildAppleGuestLikeFallback(identityId: string) {
+  const nickname =
+    deriveGuestNickname(`apple:${identityId}`) ??
+    `user-${identityId.slice(-6)}`;
+  const avatarSeed = deriveAvatarSeedFromIdentity(`apple:${identityId}`, 'apple');
+  return {
+    handle: nickname,
+    avatarUrl: buildGuestAvatarUrl(avatarSeed),
+  };
+}
+
+function deriveDisplayNameSource(params: {
+  provider: string;
+  metadataName: string | null;
+  pendingAppleName: string | null;
+}) {
+  const { provider, metadataName, pendingAppleName } = params;
+  if (provider === 'google' && metadataName) return 'google';
+  if (provider === 'apple' && (metadataName || pendingAppleName)) return 'apple_first_login';
+  return 'generated';
+}
+
+function isApplePrivateRelayEmail(email: string | null | undefined) {
+  if (!email) return false;
+  return email.toLowerCase().endsWith('@privaterelay.appleid.com');
+}
+
+function shouldAttemptLegacyHandleLink(authUser: SupabaseAuthUser) {
+  const provider = authUser.app_metadata?.provider;
+  if (provider !== 'google') return false;
+  if (!authUser.email) return false;
+  if (isApplePrivateRelayEmail(authUser.email)) return false;
+  return true;
+}
+
 function buildFallbackUserFromSession(sessionUser: SupabaseAuthUser): AuthedUser {
+  const provider = sessionUser.app_metadata?.provider || 'unknown';
+  const metadataName =
+    normalizeProfileName(sessionUser.user_metadata?.name) ??
+    normalizeProfileName(sessionUser.user_metadata?.full_name);
+  const metadataAvatar =
+    normalizeProfileName(sessionUser.user_metadata?.avatar_url) ??
+    normalizeProfileName(sessionUser.user_metadata?.picture);
+  const appleFallback =
+    provider === 'apple' && (!metadataName || !metadataAvatar)
+      ? buildAppleGuestLikeFallback(sessionUser.id)
+      : null;
   const handle =
-    sessionUser.user_metadata?.name ||
+    metadataName ||
+    appleFallback?.handle ||
     sessionUser.email?.split('@')[0] ||
     `user-${sessionUser.id.slice(-6)}`;
-  const avatarUrl =
-    sessionUser.user_metadata?.avatar_url ||
-    sessionUser.user_metadata?.picture ||
-    undefined;
+  const avatarUrl = metadataAvatar || appleFallback?.avatarUrl || undefined;
   return {
     id: sessionUser.id,
     handle,
     avatarUrl,
-    provider: sessionUser.app_metadata?.provider || 'unknown',
+    provider,
     streak: 0,
     xp: 0,
     totalCorrect: 0,
@@ -239,6 +314,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
   const authRequestIdRef = useRef(0);
   const identityIdRef = useRef<string | null>(null);
   const googleSigninConfiguredRef = useRef(false);
+  const pendingAppleProfileRef = useRef<PendingAppleProfile | null>(null);
 
   const configureGoogleSignin = useCallback((module: GoogleSigninModule) => {
     if (googleSigninConfiguredRef.current) return;
@@ -311,8 +387,9 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
 
           const email = authUser.email;
 
-          // Try to find existing user by email for account linking
-          if (email) {
+          // Try to find existing user by legacy handle (migration path).
+          // Keep this conservative to avoid accidental account linking.
+          if (email && shouldAttemptLegacyHandleLink(authUser)) {
             // Check if there's a user with matching handle (email prefix) from migration
             const emailPrefix = email.split('@')[0];
             const { data: existingByHandle } = await supabase
@@ -337,6 +414,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
                 .single();
 
               if (linkError) throw linkError;
+              pendingAppleProfileRef.current = null;
               return linkedUser;
             }
           }
@@ -347,10 +425,43 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
           }
 
           const newUser: UserInsert = {
+            ...(function () {
+              const provider = authUser.app_metadata.provider || 'unknown';
+              const metadataName =
+                normalizeProfileName(authUser.user_metadata.name) ??
+                normalizeProfileName(authUser.user_metadata.full_name);
+              const metadataAvatar =
+                normalizeProfileName(authUser.user_metadata.avatar_url) ??
+                normalizeProfileName(authUser.user_metadata.picture);
+              const pendingAppleName =
+                provider === 'apple'
+                  ? pendingAppleProfileRef.current?.fullName ?? null
+                  : null;
+              const appleFallback =
+                provider === 'apple' && (!metadataName && !pendingAppleName || !metadataAvatar)
+                  ? buildAppleGuestLikeFallback(authUserId)
+                  : null;
+
+              return {
+                provider,
+                handle:
+                  metadataName ||
+                  pendingAppleName ||
+                  (provider === 'apple' ? appleFallback?.handle : null) ||
+                  authUser.email?.split('@')[0] ||
+                  `user-${authUserId.slice(-6)}`,
+                display_name_source: deriveDisplayNameSource({
+                  provider,
+                  metadataName,
+                  pendingAppleName,
+                }),
+                avatar_url:
+                  metadataAvatar ||
+                  (provider === 'apple' ? appleFallback?.avatarUrl : null) ||
+                  null,
+              };
+            })(),
             identity_id: authUserId,
-            provider: authUser.app_metadata.provider || 'unknown',
-            handle: authUser.user_metadata.name || authUser.email?.split('@')[0] || `user-${authUserId.slice(-6)}`,
-            avatar_url: authUser.user_metadata.avatar_url || authUser.user_metadata.picture,
             interests: [] as string[],
             streak: 0,
             xp: 0,
@@ -374,6 +485,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
           if (__DEV__) {
             console.log('[SupabaseAuth] New user created:', (insertedUser as User)?.handle);
           }
+          pendingAppleProfileRef.current = null;
           return insertedUser as User;
         }
         throw fetchError;
@@ -382,6 +494,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       if (__DEV__) {
         console.log('[SupabaseAuth] Found existing user:', (data as User)?.handle);
       }
+      pendingAppleProfileRef.current = null;
       return data as User;
     } catch (err) {
       console.error('[SupabaseAuth] fetchUserProfile error:', err);
@@ -721,6 +834,85 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     }
   }, [configureGoogleSignin]);
 
+  // Sign in with Apple
+  const signInWithApple = useCallback(async () => {
+    const currentStatus = statusRef.current;
+    const previousStatus =
+      currentStatus === 'authorizing' || currentStatus === 'upgrading'
+        ? lastSettledStatusRef.current
+        : currentStatus;
+    const shouldUpgrade =
+      previousStatus === 'guest' ||
+      previousStatus === 'authenticated' ||
+      currentStatus === 'upgrading';
+
+    if (shouldUpgrade) {
+      setStatus('upgrading');
+    } else {
+      setStatus('authorizing');
+    }
+    setError(null);
+
+    try {
+      if (Platform.OS !== 'ios') {
+        throw new Error('Apple 로그인은 iOS에서만 사용할 수 있습니다.');
+      }
+
+      const AppleAuthentication = await import('expo-apple-authentication');
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      if (!credential.identityToken) {
+        throw new Error('Apple ID 토큰을 가져오지 못했습니다.');
+      }
+
+      pendingAppleProfileRef.current = {
+        fullName: buildAppleFullNameString(credential.fullName),
+        email: normalizeProfileName(credential.email),
+      };
+
+      const { error: signInError } = await supabase.auth.signInWithIdToken({
+        provider: 'apple',
+        token: credential.identityToken,
+      });
+
+      if (signInError) throw signInError;
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code;
+      if (code === 'ERR_REQUEST_CANCELED') {
+        pendingAppleProfileRef.current = null;
+        setStatus(previousStatus);
+        setError(null);
+        return;
+      }
+      pendingAppleProfileRef.current = null;
+      console.error('[SupabaseAuth] Apple sign-in failed', err);
+      setStatus('error');
+      setError(err instanceof Error ? err.message : 'Apple 로그인 중 문제가 발생했어요.');
+    }
+  }, []);
+
+  // Sign in with reviewer demo account (for App Store review bypass)
+  const signInWithReviewerAccount = useCallback(async () => {
+    setStatus('authorizing');
+    setError(null);
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: 'reviewer@quizroom.app',
+        password: 'ReviewerPass123!',
+      });
+      if (signInError) throw signInError;
+    } catch (err) {
+      console.error('[SupabaseAuth] Reviewer sign-in failed', err);
+      setStatus('error');
+      setError(err instanceof Error ? err.message : 'Demo login failed');
+    }
+  }, []);
+
   // Sign out
   const signOut = useCallback(async () => {
     try {
@@ -732,6 +924,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.error('Sign out failed', err);
     }
+    pendingAppleProfileRef.current = null;
     setUser(null);
     setStatus('unauthenticated');
     setError(null);
@@ -791,6 +984,58 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       console.error('Failed to refresh user', err);
     }
   }, [fetchUserProfile, toAuthedUser]);
+
+  const updateProfileHandle = useCallback(async (nextHandleRaw: string) => {
+    const nextHandle = normalizeProfileName(nextHandleRaw);
+    if (!nextHandle) {
+      throw new Error('닉네임을 입력해주세요.');
+    }
+    if (nextHandle.length < 2) {
+      throw new Error('닉네임은 2자 이상이어야 해요.');
+    }
+    if (nextHandle.length > 24) {
+      throw new Error('닉네임은 24자 이하로 입력해주세요.');
+    }
+
+    const currentUser = userRef.current;
+    if (currentUser && currentUser.handle === nextHandle) {
+      return;
+    }
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error('로그인이 필요합니다.');
+    }
+
+    const { data, error: updateError } = await (supabase
+      .from('users') as any)
+      .update({
+        handle: nextHandle,
+        display_name_source: 'user_edit',
+      })
+      .eq('identity_id', session.user.id)
+      .select()
+      .single();
+
+    if (updateError) {
+      const message = String(updateError.message ?? '').toLowerCase();
+      if (
+        updateError.code === '23505' ||
+        message.includes('duplicate') ||
+        message.includes('unique')
+      ) {
+        throw new Error('이미 사용 중인 닉네임이에요.');
+      }
+      throw updateError;
+    }
+
+    const nextUser = toAuthedUser(data as User);
+    setUser(nextUser);
+    const identityId = identityIdRef.current ?? session.user.id;
+    if (identityId) {
+      void storeProfileCache(identityId, nextUser);
+    }
+  }, [toAuthedUser]);
 
   // Optimistically apply user stat deltas (e.g., XP gain) in UI
   const applyUserDelta = useCallback((delta: Partial<Pick<AuthedUser, 'xp' | 'streak' | 'totalCorrect' | 'totalPlayed'>>) => {
@@ -854,12 +1099,15 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       user,
       guestKey,
       signInWithGoogle,
+      signInWithApple,
+      signInWithReviewerAccount,
       signOut,
       enterGuestMode,
       ensureGuestKey,
       error,
       isReady,
       refreshUser,
+      updateProfileHandle,
       resetUser,
       deleteAccount,
       applyUserDelta,
@@ -869,12 +1117,15 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       user,
       guestKey,
       signInWithGoogle,
+      signInWithApple,
+      signInWithReviewerAccount,
       signOut,
       enterGuestMode,
       ensureGuestKey,
       error,
       isReady,
       refreshUser,
+      updateProfileHandle,
       resetUser,
       deleteAccount,
       applyUserDelta,

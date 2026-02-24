@@ -21,6 +21,7 @@ export type Database = {
           identity_id: string
           provider: string
           handle: string
+          display_name_source: string
           avatar_url: string | null
           interests: string[]
           streak: number
@@ -38,6 +39,7 @@ export type Database = {
           identity_id: string
           provider: string
           handle: string
+          display_name_source?: string
           avatar_url?: string | null
           interests?: string[]
           streak?: number
@@ -55,6 +57,7 @@ export type Database = {
           identity_id?: string
           provider?: string
           handle?: string
+          display_name_source?: string
           avatar_url?: string | null
           interests?: string[]
           streak?: number

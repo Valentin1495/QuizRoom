@@ -11,9 +11,11 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import {
   ActivityIndicator,
   Alert,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
+  TextInput,
   View,
   type StyleProp,
   type ViewStyle
@@ -51,7 +53,7 @@ const HISTORY_PREVIEW_LIMIT = 3;
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export default function ProfileScreen() {
-  const { status, user, signOut, deleteAccount, signInWithGoogle, guestKey, ensureGuestKey, isReady, refreshUser } = useAuth();
+  const { status, user, signOut, deleteAccount, signInWithGoogle, signInWithApple, guestKey, ensureGuestKey, isReady, refreshUser, updateProfileHandle } = useAuth();
   const [refreshKey, setRefreshKey] = useState(0);
   const { stats: supabaseStats } = useUserStats({ refreshKey });
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -59,7 +61,12 @@ export default function ProfileScreen() {
   const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
   const [isDeleteWarningDialogVisible, setDeleteWarningDialogVisible] = useState(false);
   const [isDeleteConfirmDialogVisible, setDeleteConfirmDialogVisible] = useState(false);
+  const [isEditProfileDialogVisible, setEditProfileDialogVisible] = useState(false);
+  const [profileHandleDraft, setProfileHandleDraft] = useState('');
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const colorScheme = useColorScheme();
@@ -166,14 +173,63 @@ export default function ProfileScreen() {
   }, []);
 
   const handleEditProfile = useCallback(() => {
-    Alert.alert('프로필 편집', '프로필 편집 기능은 곧 추가될 예정입니다.');
-  }, []);
+    if (!(status === 'authenticated' && user)) return;
+    setProfileHandleDraft(user.handle);
+    setEditProfileDialogVisible(true);
+  }, [status, user]);
 
-  const handleAppleLogin = useCallback(() => {
-    Alert.alert('Apple 로그인', 'Apple 로그인은 준비 중이에요. 잠시만 기다려 주세요!');
-  }, []);
+  const handleCloseEditProfileDialog = useCallback(() => {
+    if (isSavingProfile) return;
+    setEditProfileDialogVisible(false);
+  }, [isSavingProfile]);
+
+  const handleSaveProfile = useCallback(async () => {
+    if (!(status === 'authenticated' && user)) return;
+
+    const nextHandle = profileHandleDraft.trim();
+    if (nextHandle.length < 2) {
+      Alert.alert('닉네임 오류', '닉네임은 2자 이상이어야 해요.');
+      return;
+    }
+    if (nextHandle.length > 24) {
+      Alert.alert('닉네임 오류', '닉네임은 24자 이하로 입력해주세요.');
+      return;
+    }
+    if (nextHandle === user.handle) {
+      setEditProfileDialogVisible(false);
+      return;
+    }
+
+    try {
+      setIsSavingProfile(true);
+      await updateProfileHandle(nextHandle);
+      setEditProfileDialogVisible(false);
+    } catch (error) {
+      Alert.alert(
+        '프로필 저장 실패',
+        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
+      );
+    } finally {
+      setIsSavingProfile(false);
+    }
+  }, [profileHandleDraft, status, updateProfileHandle, user]);
+
+  const handleAppleLogin = useCallback(async () => {
+    setIsAppleLoading(true);
+    try {
+      await signInWithApple();
+    } catch (error) {
+      Alert.alert(
+        '로그인에 실패했어요',
+        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
+      );
+    } finally {
+      setIsAppleLoading(false);
+    }
+  }, [signInWithApple]);
 
   const handleGoogleLogin = useCallback(async () => {
+    setIsGoogleLoading(true);
     try {
       await signInWithGoogle();
     } catch (error) {
@@ -181,6 +237,8 @@ export default function ProfileScreen() {
         '로그인에 실패했어요',
         error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
       );
+    } finally {
+      setIsGoogleLoading(false);
     }
   }, [signInWithGoogle]);
 
@@ -223,6 +281,12 @@ export default function ProfileScreen() {
     isRefreshing,
     onRefresh: handleRefresh,
   });
+  const normalizedProfileHandleDraft = profileHandleDraft.trim();
+  const isProfileHandleValid =
+    normalizedProfileHandleDraft.length >= 2 && normalizedProfileHandleDraft.length <= 24;
+  const isProfileHandleChanged = Boolean(
+    user && normalizedProfileHandleDraft.length > 0 && normalizedProfileHandleDraft !== user.handle
+  );
 
   // Prefer in-memory user (updated via Realtime/applyUserDelta) over cached stats.
   const xpValue = user?.xp ?? supabaseStats?.xp ?? 0;
@@ -357,15 +421,14 @@ export default function ProfileScreen() {
                     guestNickname={guestNickname}
                     onGoogleLogin={handleGoogleLogin}
                     onAppleLogin={handleAppleLogin}
-                    isLoading={isAuthorizing}
+                    isGoogleLoading={isGoogleLoading}
+                    isAppleLoading={isAppleLoading}
                   />
                 )}
 
                 <QuizHistoryPanel
                   isAuthenticated={isAuthenticated}
                   history={history}
-                  onLogin={handleGoogleLogin}
-                  loginLoading={isAuthorizing}
                   onOpenSheet={handleOpenHistorySheet}
                   previewLimit={HISTORY_PREVIEW_LIMIT}
                 />
@@ -398,6 +461,45 @@ export default function ProfileScreen() {
           currentXp={xpValue}
           onClose={closeLevelSheet}
         />
+        <AlertDialog
+          visible={isEditProfileDialogVisible}
+          onClose={handleCloseEditProfileDialog}
+          dismissable={!isSavingProfile}
+          title="프로필 편집"
+          description="닉네임을 수정할 수 있어요."
+          actions={[
+            { label: '취소', tone: 'secondary', disabled: isSavingProfile },
+            {
+              label: isSavingProfile ? '저장 중...' : '저장',
+              onPress: () => {
+                void handleSaveProfile();
+              },
+              disabled: isSavingProfile || !isProfileHandleValid || !isProfileHandleChanged,
+              closeOnPress: false,
+            },
+          ]}
+        >
+          <TextInput
+            value={profileHandleDraft}
+            onChangeText={setProfileHandleDraft}
+            placeholder="닉네임"
+            maxLength={24}
+            autoFocus
+            editable={!isSavingProfile}
+            style={[
+              styles.profileHandleInput,
+              {
+                color: themeColors.text,
+                borderColor: themeColors.border,
+                backgroundColor: themeColors.cardElevated,
+              },
+            ]}
+            placeholderTextColor={mutedColor}
+          />
+          <ThemedText style={[styles.profileHandleHint, { color: mutedColor }]}>
+            2-24자, 저장 시 프로필 닉네임으로 반영됩니다.
+          </ThemedText>
+        </AlertDialog>
         <AlertDialog
           visible={isLogoutDialogVisible}
           onClose={handleCloseLogoutDialog}
@@ -519,13 +621,15 @@ function GuestHeader({
   guestNickname,
   onGoogleLogin,
   onAppleLogin,
-  isLoading,
+  isGoogleLoading,
+  isAppleLoading,
 }: {
   guestAvatarSeed: string;
   guestNickname: string;
   onGoogleLogin: () => void;
   onAppleLogin: () => void;
-  isLoading: boolean;
+  isGoogleLoading: boolean;
+  isAppleLoading: boolean;
 }) {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -548,29 +652,33 @@ function GuestHeader({
           </ThemedText>
         </View>
       </View>
-      <View style={styles.headerActions}>
+      <View style={styles.loginActions}>
         <Button
           onPress={onGoogleLogin}
-          loading={isLoading}
-          disabled={isLoading}
+          loading={isGoogleLoading}
+          disabled={isGoogleLoading || isAppleLoading}
           fullWidth
           variant='secondary'
         >
-          {isLoading ? '로그인 중...' : 'Google 로그인'}
+          {isGoogleLoading ? '로그인 중...' : 'Google 로그인'}
         </Button>
-        {/* <ActionButton label="Apple 로그인" tone="secondary" onPress={onAppleLogin} /> */}
+        {Platform.OS === 'ios' ? (
+          <Button
+            onPress={onAppleLogin}
+            loading={isAppleLoading}
+            disabled={isAppleLoading || isGoogleLoading}
+            fullWidth
+            variant='outline'
+          >
+            {isAppleLoading ? '로그인 중...' : 'Apple 로그인'}
+          </Button>
+        ) : null}
       </View>
     </Card>
   );
 }
 
-function GuestHistoryPlaceholder({
-  onLogin,
-  loginLoading,
-}: {
-  onLogin: () => void;
-  loginLoading: boolean;
-}) {
+function GuestHistoryPlaceholder() {
   const textColor = useThemeColor({}, 'text');
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -648,18 +756,11 @@ function GuestHistoryPlaceholder({
           </ThemedText>
           <ThemedText
             style={[
-              { color: textColor, textAlign: 'center', marginBottom: Spacing.lg },
+              { color: textColor, textAlign: 'center' },
             ]}
           >
             로그인하고 나의 퀴즈 기록을 쌓아보세요!
           </ThemedText>
-          <Button
-            onPress={onLogin}
-            loading={loginLoading}
-            disabled={loginLoading}
-          >
-            {loginLoading ? '로그인 중...' : 'Google 로그인'}
-          </Button>
         </View>
       </View>
     </View>
@@ -669,15 +770,11 @@ function GuestHistoryPlaceholder({
 function QuizHistoryPanel({
   isAuthenticated,
   history,
-  onLogin,
-  loginLoading,
   onOpenSheet,
   previewLimit,
 }: {
   isAuthenticated: boolean;
   history: HistoryBuckets | undefined;
-  onLogin: () => void;
-  loginLoading: boolean;
   onOpenSheet: (section: HistorySectionKey) => void;
   previewLimit: number;
 }) {
@@ -691,7 +788,7 @@ function QuizHistoryPanel({
         <View style={{ paddingHorizontal: Spacing.lg, paddingTop: Spacing.lg }}>
           <ThemedText type="subtitle">퀴즈 히스토리</ThemedText>
         </View>
-        <GuestHistoryPlaceholder onLogin={onLogin} loginLoading={loginLoading} />
+        <GuestHistoryPlaceholder />
       </Card>
     );
   }
@@ -1297,6 +1394,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: Spacing.md,
   },
+  loginActions: {
+    flexDirection: 'column',
+    gap: Spacing.sm,
+  },
   sectionStack: {
     gap: Spacing.xl,
   },
@@ -1402,6 +1503,18 @@ const styles = StyleSheet.create({
   },
   themeOptionButton: {
     flex: 1,
+  },
+  profileHandleInput: {
+    borderWidth: 1,
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    minHeight: 48,
+    fontSize: 16,
+  },
+  profileHandleHint: {
+    fontSize: 12,
+    lineHeight: 18,
   },
   themeOptionLabel: {
     fontWeight: '600',
