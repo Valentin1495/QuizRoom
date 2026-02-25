@@ -29,9 +29,9 @@ import { LevelInfoSheet } from '@/components/common/level-info-sheet';
 import { PullRefreshCompleteStrip, PullRefreshHeader } from '@/components/common/pull-refresh-reveal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { categories } from '@/constants/categories';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
@@ -75,6 +75,7 @@ export default function ProfileScreen() {
   const historySheetRef = useRef<BottomSheetModal>(null);
   const levelSheetRef = useRef<BottomSheetModal>(null);
   const scrollRef = useRef<ScrollView | null>(null);
+  const profileHandleInputRef = useRef<TextInput | null>(null);
   const [historySheetSection, setHistorySheetSection] = useState<HistorySectionKey | null>(null);
   const historySheetSnapPoints = useMemo(() => ['50%', '100%'], []);
   const historySheetBackdrop = useCallback(
@@ -461,10 +462,18 @@ export default function ProfileScreen() {
           currentXp={xpValue}
           onClose={closeLevelSheet}
         />
-        <AlertDialog
+        <Dialog
           visible={isEditProfileDialogVisible}
           onClose={handleCloseEditProfileDialog}
           dismissable={!isSavingProfile}
+          keyboardAware
+          onShow={() => {
+            if (Platform.OS === 'android') {
+              setTimeout(() => profileHandleInputRef.current?.focus(), 100);
+            } else {
+              profileHandleInputRef.current?.focus();
+            }
+          }}
           title="프로필 편집"
           description="닉네임을 수정할 수 있어요."
           actions={[
@@ -480,11 +489,11 @@ export default function ProfileScreen() {
           ]}
         >
           <TextInput
+            ref={profileHandleInputRef}
             value={profileHandleDraft}
             onChangeText={setProfileHandleDraft}
             placeholder="닉네임"
             maxLength={24}
-            autoFocus
             editable={!isSavingProfile}
             style={[
               styles.profileHandleInput,
@@ -499,8 +508,8 @@ export default function ProfileScreen() {
           <ThemedText style={[styles.profileHandleHint, { color: mutedColor }]}>
             2-24자, 저장 시 프로필 닉네임으로 반영됩니다.
           </ThemedText>
-        </AlertDialog>
-        <AlertDialog
+        </Dialog>
+        <Dialog
           visible={isLogoutDialogVisible}
           onClose={handleCloseLogoutDialog}
           title="로그아웃"
@@ -510,7 +519,7 @@ export default function ProfileScreen() {
             { label: '로그아웃', tone: 'destructive', onPress: handleSignOut, disabled: isSigningOut || isDeletingAccount },
           ]}
         />
-        <AlertDialog
+        <Dialog
           visible={isDeleteWarningDialogVisible}
           onClose={handleCloseDeleteWarningDialog}
           title="회원 탈퇴"
@@ -525,7 +534,7 @@ export default function ProfileScreen() {
             },
           ]}
         />
-        <AlertDialog
+        <Dialog
           visible={isDeleteConfirmDialogVisible}
           onClose={handleCloseDeleteConfirmDialog}
           title="정말 탈퇴하시겠어요?"

@@ -9,8 +9,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DAILY_CATEGORY_ICONS, DailyCategory, resolveDailyCategoryCopy } from '@/constants/daily';
@@ -1356,7 +1356,7 @@ function DailyQuizScreenContent({ updateStats, logStreak, logHistory }: DailyQui
           </Button>
         )}
       </View>
-      <AlertDialog
+      <Dialog
         visible={isLeaveDialogVisible}
         onClose={handleCancelLeave}
         title="퀴즈에서 나가시겠어요?"

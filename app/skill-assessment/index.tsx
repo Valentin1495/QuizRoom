@@ -7,8 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SwipeStack, type SwipeChallengeSummary } from '@/components/swipe/swipe-stack';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SKILL_ASSESSMENT_CHALLENGE } from '@/constants/challenges';
 import { Colors, Radius, Spacing } from '@/constants/theme';
@@ -418,7 +418,7 @@ export default function SkillAssessmentScreen() {
           </ScrollView>
         )}
       </View>
-      <AlertDialog
+      <Dialog
         visible={isBlockedBackDialogVisible}
         onClose={() => setIsBlockedBackDialogVisible(false)}
         title="실력 측정 진행 중"
@@ -431,7 +431,7 @@ export default function SkillAssessmentScreen() {
           },
         ]}
       />
-      <AlertDialog
+      <Dialog
         visible={isExitConfirmDialogVisible}
         onClose={handleCloseExitConfirmDialog}
         title="실력 측정을 종료할까요?"

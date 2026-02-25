@@ -148,7 +148,7 @@ export function AuthGate({ children }: AuthGateProps) {
           <View style={styles.buttonGroup}>
             {/* Primary CTA - Google Sign In */}
             <Button
-              variant="default"
+              variant="secondary"
               size="lg"
               rounded="lg"
               fullWidth
@@ -163,7 +163,7 @@ export function AuthGate({ children }: AuthGateProps) {
             {/* Apple Sign In (iOS only) */}
             {Platform.OS === 'ios' ? (
               <Button
-                variant="secondary"
+                variant="outline"
                 size="lg"
                 rounded="lg"
                 fullWidth

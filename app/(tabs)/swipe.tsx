@@ -1,6 +1,6 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,14 +8,14 @@ import { CategoryPicker } from '@/components/swipe/category-picker';
 import { SwipeStack } from '@/components/swipe/swipe-stack';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { CategoryMeta } from '@/constants/categories';
 import { categories } from '@/constants/categories';
 import { Spacing } from '@/constants/theme';
-import { useAuth } from '@/hooks/use-unified-auth';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useAuth } from '@/hooks/use-unified-auth';
 import { saveRecentSwipeCategory } from '@/lib/recent-selections';
 
 export default function SwipeScreen() {
@@ -107,7 +107,7 @@ export default function SwipeScreen() {
           onCompletionVisibilityChange={setIsCompletionVisible}
         />
       </ThemedView>
-      <AlertDialog
+      <Dialog
         visible={showResetDialog}
         onClose={() => setShowResetDialog(false)}
         title="카테고리를 변경하시겠어요?"

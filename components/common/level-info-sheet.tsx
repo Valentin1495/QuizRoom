@@ -10,6 +10,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import {
   calculateLevel,
+  getContrastTextColor,
   getLevelColor,
   getLevelTitle,
   getNextTierInfo,
@@ -346,7 +347,7 @@ export function LevelInfoSheet({
                             </ThemedText>
                             {isActive && (
                               <View style={[styles.activeBadge, { backgroundColor: getLevelColor(tier.from, isDark) }]}>
-                                <ThemedText style={styles.activeBadgeText}>진행 중</ThemedText>
+                                <ThemedText style={[styles.activeBadgeText, { color: getContrastTextColor(getLevelColor(tier.from, isDark)) }]}>진행 중</ThemedText>
                               </View>
                             )}
                           </View>

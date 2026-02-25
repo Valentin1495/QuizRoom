@@ -1,5 +1,5 @@
-import type { RealtimeChannel } from '@supabase/supabase-js';
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import * as Haptics from 'expo-haptics';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -18,9 +18,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Avatar, GuestAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Elevation, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -1672,7 +1672,7 @@ export default function MatchPlayScreen() {
     ]);
 
     const leaveDialogElement = (
-        <AlertDialog
+        <Dialog
             visible={isLeaveDialogVisible}
             onClose={handleCancelLeave}
             title="퀴즈룸을 나가시겠어요?"

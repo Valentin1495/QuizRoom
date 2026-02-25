@@ -1,6 +1,8 @@
 import { ReactNode, useCallback, useEffect } from 'react';
 import {
+  Keyboard,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   View,
@@ -16,7 +18,7 @@ import { Button, type ButtonVariant } from '@/components/ui/button';
 import { Colors, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export type AlertDialogAction = {
+export type DialogAction = {
   /**
    * 버튼에 표시할 레이블
    */
@@ -39,12 +41,12 @@ export type AlertDialogAction = {
   closeOnPress?: boolean;
 };
 
-export type AlertDialogProps = {
+export type DialogProps = {
   visible: boolean;
   onClose: () => void;
   title?: string;
   description?: string | ReactNode;
-  actions?: AlertDialogAction[];
+  actions?: DialogAction[];
   /**
    * 바깥 영역을 눌러 닫을 수 있는지 여부 (기본 true)
    */
@@ -57,9 +59,17 @@ export type AlertDialogProps = {
    * 추가 컨텐츠 렌더링 (예: 커스텀 입력)
    */
   children?: ReactNode;
+  /**
+   * 키보드가 올라올 때 다이얼로그를 위로 밀어올릴지 여부 (기본 false)
+   */
+  keyboardAware?: boolean;
+  /**
+   * 모달이 완전히 열린 후 호출되는 콜백 (Android에서 키보드 포커스 타이밍 조정에 활용)
+   */
+  onShow?: () => void;
 };
 
-export function AlertDialog({
+export function Dialog({
   visible,
   onClose,
   title,
@@ -73,11 +83,14 @@ export function AlertDialog({
   dismissable = true,
   scrollable = false,
   children,
-}: AlertDialogProps) {
+  keyboardAware = false,
+  onShow,
+}: DialogProps) {
   const scheme = useColorScheme();
   const palette = Colors[scheme ?? 'light'];
   const overlayOpacity = useSharedValue(0);
   const scale = useSharedValue(0.92);
+  const keyboardOffset = useSharedValue(0);
 
   useEffect(() => {
     if (visible) {
@@ -86,8 +99,30 @@ export function AlertDialog({
     } else {
       overlayOpacity.value = withTiming(0, { duration: 180 });
       scale.value = withTiming(0.92, { duration: 160 });
+      keyboardOffset.value = withTiming(0, { duration: 200 });
     }
-  }, [overlayOpacity, scale, visible]);
+  }, [overlayOpacity, scale, keyboardOffset, visible]);
+
+  useEffect(() => {
+    if (!keyboardAware) return;
+
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      const duration = Platform.OS === 'ios' ? e.duration : 200;
+      keyboardOffset.value = withTiming(e.endCoordinates.height / 5, { duration });
+    });
+    const hideSub = Keyboard.addListener(hideEvent, (e) => {
+      const duration = Platform.OS === 'ios' ? e.duration : 200;
+      keyboardOffset.value = withTiming(0, { duration });
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, [keyboardAware, keyboardOffset]);
 
   const overlayStyle = useAnimatedStyle(() => ({
     backgroundColor:
@@ -97,7 +132,10 @@ export function AlertDialog({
   }));
 
   const cardStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [
+      { scale: scale.value },
+      { translateY: -keyboardOffset.value },
+    ],
     opacity: overlayOpacity.value,
   }));
 
@@ -107,7 +145,7 @@ export function AlertDialog({
   }, [dismissable, onClose]);
 
   const renderAction = useCallback(
-    (action: AlertDialogAction, index: number) => {
+    (action: DialogAction, index: number) => {
       const { label: actionLabel, tone = 'default', onPress, disabled, closeOnPress = true } = action;
       const handlePress = () => {
         onPress?.();
@@ -137,6 +175,7 @@ export function AlertDialog({
       transparent
       animationType="none"
       onRequestClose={handleClose}
+      onShow={onShow}
     >
       <Pressable style={styles.overlayContainer} onPress={handleClose}>
         <Animated.View style={[styles.overlay, overlayStyle]} />

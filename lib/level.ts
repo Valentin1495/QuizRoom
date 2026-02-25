@@ -66,6 +66,17 @@ export function getLevelBackgroundColor(level: number, isDark: boolean): string 
   return isDark ? 'rgba(120, 53, 15, 0.25)' : 'rgba(229, 206, 188, 0.5)'; // 아이언: 다크 모드용 어두운 브라운, 라이트 모드용 옅은 브라운
 }
 
+// 헥스 색상의 상대 휘도를 기반으로 대비 텍스트 색상 반환 (WCAG 기준)
+export function getContrastTextColor(hexColor: string): string {
+  const hex = hexColor.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16) / 255;
+  const g = parseInt(hex.substring(2, 4), 16) / 255;
+  const b = parseInt(hex.substring(4, 6), 16) / 255;
+  const toLinear = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  const luminance = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+  return luminance > 0.25 ? '#111827' : '#ffffff';
+}
+
 // 다음 레벨까지 필요한 XP
 export function getXpToNextLevel(xp: number): number {
   const info = calculateLevel(xp);
