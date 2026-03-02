@@ -67,8 +67,8 @@ type AuthContextValue = {
   status: AuthStatus;
   user: AuthedUser | null;
   guestKey: string | null;
-  signInWithGoogle: () => Promise<void>;
-  signInWithApple: () => Promise<void>;
+  signInWithGoogle: () => Promise<boolean>;
+  signInWithApple: () => Promise<boolean>;
   signInWithReviewerAccount: () => Promise<void>;
   signOut: () => Promise<void>;
   enterGuestMode: () => Promise<void>;
@@ -767,7 +767,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       if (signInOutcome.type === 'cancelled') {
         setStatus(previousStatus);
         setError(null);
-        return;
+        return false;
       }
 
       const idToken =
@@ -780,7 +780,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
         if (signInOutcome.type == null) {
           setStatus(previousStatus);
           setError(null);
-          return;
+          return false;
         }
         throw new Error('Google ID 토큰을 가져오지 못했습니다.');
       }
@@ -794,6 +794,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       if (signInError) throw signInError;
 
       // Auth state change listener will handle the rest
+      return true;
     } catch (err) {
       const code = (err as { code?: string } | null)?.code;
       const statusCodes = loadGoogleSigninModule()?.statusCodes;
@@ -807,17 +808,17 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       if ((statusCodes && code === statusCodes.SIGN_IN_CANCELLED) || looksLikeCancel) {
         setStatus(previousStatus);
         setError(null);
-        return;
+        return false;
       }
       if (statusCodes && code === statusCodes.IN_PROGRESS) {
         setStatus(previousStatus);
         setError(null);
-        return;
+        return false;
       }
       if (statusCodes && code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         setStatus('error');
         setError('Google Play 서비스를 사용할 수 없습니다. 업데이트 후 다시 시도해주세요.');
-        return;
+        return false;
       }
 
       const googleModule = loadGoogleSigninModule();
@@ -831,6 +832,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
           ? err.message
           : 'Google 로그인 중 문제가 발생했어요.'
       );
+      return false;
     }
   }, [configureGoogleSignin]);
 
@@ -859,6 +861,12 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       }
 
       const AppleAuthentication = await import('expo-apple-authentication');
+
+      const isAvailable = await AppleAuthentication.isAvailableAsync().catch(() => false);
+      if (!isAvailable) {
+        throw new Error('이 기기에서는 Apple 로그인을 사용할 수 없습니다. 개발 빌드에서 실행 중인지 확인해주세요.');
+      }
+
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
           AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
@@ -881,18 +889,20 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (signInError) throw signInError;
+      return true;
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       if (code === 'ERR_REQUEST_CANCELED') {
         pendingAppleProfileRef.current = null;
         setStatus(previousStatus);
         setError(null);
-        return;
+        return false;
       }
       pendingAppleProfileRef.current = null;
       console.error('[SupabaseAuth] Apple sign-in failed', err);
       setStatus('error');
       setError(err instanceof Error ? err.message : 'Apple 로그인 중 문제가 발생했어요.');
+      return false;
     }
   }, []);
 

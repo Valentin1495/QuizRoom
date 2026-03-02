@@ -30,8 +30,8 @@ export type UnifiedAuthContextValue = {
   status: AuthStatus;
   user: UnifiedUser | null;
   guestKey: string | null;
-  signInWithGoogle: () => Promise<void>;
-  signInWithApple: () => Promise<void>;
+  signInWithGoogle: () => Promise<boolean>;
+  signInWithApple: () => Promise<boolean>;
   signInWithReviewerAccount: () => Promise<void>;
   signOut: () => Promise<void>;
   enterGuestMode: () => Promise<void>;

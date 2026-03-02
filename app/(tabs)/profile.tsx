@@ -26,6 +26,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge, XpProgressBar } from '@/components/common/level-badge';
 import { LevelInfoSheet } from '@/components/common/level-info-sheet';
+import { LoginSheet } from '@/components/common/login-sheet';
 import { PullRefreshCompleteStrip, PullRefreshHeader } from '@/components/common/pull-refresh-reveal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -53,7 +54,7 @@ const HISTORY_PREVIEW_LIMIT = 3;
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export default function ProfileScreen() {
-  const { status, user, signOut, deleteAccount, signInWithGoogle, signInWithApple, guestKey, ensureGuestKey, isReady, refreshUser, updateProfileHandle } = useAuth();
+  const { status, user, signOut, deleteAccount, guestKey, ensureGuestKey, isReady, refreshUser, updateProfileHandle } = useAuth();
   const [refreshKey, setRefreshKey] = useState(0);
   const { stats: supabaseStats } = useUserStats({ refreshKey });
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -65,8 +66,6 @@ export default function ProfileScreen() {
   const [profileHandleDraft, setProfileHandleDraft] = useState('');
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [isAppleLoading, setIsAppleLoading] = useState(false);
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const colorScheme = useColorScheme();
@@ -74,6 +73,7 @@ export default function ProfileScreen() {
   const mutedColor = useThemeColor({}, 'textMuted');
   const historySheetRef = useRef<BottomSheetModal>(null);
   const levelSheetRef = useRef<BottomSheetModal>(null);
+  const loginSheetRef = useRef<BottomSheetModal>(null);
   const scrollRef = useRef<ScrollView | null>(null);
   const profileHandleInputRef = useRef<TextInput | null>(null);
   const [historySheetSection, setHistorySheetSection] = useState<HistorySectionKey | null>(null);
@@ -215,33 +215,6 @@ export default function ProfileScreen() {
     }
   }, [profileHandleDraft, status, updateProfileHandle, user]);
 
-  const handleAppleLogin = useCallback(async () => {
-    setIsAppleLoading(true);
-    try {
-      await signInWithApple();
-    } catch (error) {
-      Alert.alert(
-        '로그인에 실패했어요',
-        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
-      );
-    } finally {
-      setIsAppleLoading(false);
-    }
-  }, [signInWithApple]);
-
-  const handleGoogleLogin = useCallback(async () => {
-    setIsGoogleLoading(true);
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      Alert.alert(
-        '로그인에 실패했어요',
-        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'
-      );
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  }, [signInWithGoogle]);
 
   useEffect(() => {
     if (status === 'guest' && !guestKey) {
@@ -420,10 +393,7 @@ export default function ProfileScreen() {
                   <GuestHeader
                     guestAvatarSeed={guestAvatarSeed}
                     guestNickname={guestNickname}
-                    onGoogleLogin={handleGoogleLogin}
-                    onAppleLogin={handleAppleLogin}
-                    isGoogleLoading={isGoogleLoading}
-                    isAppleLoading={isAppleLoading}
+                    onLogin={() => loginSheetRef.current?.present()}
                   />
                 )}
 
@@ -550,6 +520,7 @@ export default function ProfileScreen() {
           ]}
         />
       </ThemedView>
+      <LoginSheet ref={loginSheetRef} />
     </BottomSheetModalProvider>
   );
 }
@@ -628,17 +599,11 @@ function ProfileHeader({
 function GuestHeader({
   guestAvatarSeed,
   guestNickname,
-  onGoogleLogin,
-  onAppleLogin,
-  isGoogleLoading,
-  isAppleLoading,
+  onLogin,
 }: {
   guestAvatarSeed: string;
   guestNickname: string;
-  onGoogleLogin: () => void;
-  onAppleLogin: () => void;
-  isGoogleLoading: boolean;
-  isAppleLoading: boolean;
+  onLogin: () => void;
 }) {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
@@ -663,25 +628,12 @@ function GuestHeader({
       </View>
       <View style={styles.loginActions}>
         <Button
-          onPress={onGoogleLogin}
-          loading={isGoogleLoading}
-          disabled={isGoogleLoading || isAppleLoading}
+          onPress={onLogin}
           fullWidth
-          variant='secondary'
+          variant='outline'
         >
-          {isGoogleLoading ? '로그인 중...' : 'Google 로그인'}
+          로그인
         </Button>
-        {Platform.OS === 'ios' ? (
-          <Button
-            onPress={onAppleLogin}
-            loading={isAppleLoading}
-            disabled={isAppleLoading || isGoogleLoading}
-            fullWidth
-            variant='outline'
-          >
-            {isAppleLoading ? '로그인 중...' : 'Apple 로그인'}
-          </Button>
-        ) : null}
       </View>
     </Card>
   );

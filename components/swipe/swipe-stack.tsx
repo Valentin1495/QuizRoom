@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 
 import { ComboIndicator } from '@/components/common/combo-indicator';
+import { LoginSheet } from '@/components/common/login-sheet';
 import { hideResultToast, showResultToast } from '@/components/common/result-toast';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
@@ -81,6 +82,7 @@ export type SwipeStackProps = {
   challengeAdvanceLabel?: string;
   onChallengeComplete?: (summary: SwipeChallengeSummary) => void;
   onCompletionVisibilityChange?: (visible: boolean) => void;
+  onLoginSuccess?: () => void;
   challengeCompletionLabel?: string;
   challengeProgressLabel?: string;
   challengeSubjectLabel?: string;
@@ -253,6 +255,7 @@ export function SwipeStack({
   challengeLevelLabel,
   challengeLevelFailedLabel,
   completionTotals: completionTotalsOverride,
+  onLoginSuccess,
 }: SwipeStackProps) {
   const isChallenge = Boolean(challenge);
   const onboardingSlides = isChallenge ? CHALLENGE_ONBOARDING_SLIDES : ONBOARDING_SLIDES;
@@ -285,7 +288,7 @@ export function SwipeStack({
     excludeTag: isChallenge ? undefined : 'mode:fifth_grader',
     limit: sessionLimit,
   });
-  const { signInWithGoogle, status: authStatus, applyUserDelta, user } = useAuth();
+  const { status: authStatus, applyUserDelta, user } = useAuth();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   const palette = Colors[colorScheme ?? 'light'];
@@ -340,6 +343,7 @@ export function SwipeStack({
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const actionsSheetRef = useRef<BottomSheetModal>(null);
   const reportReasonSheetRef = useRef<BottomSheetModal>(null);
+  const loginSheetRef = useRef<BottomSheetModal>(null);
   const reportNotesInputRef = useRef<ComponentRef<typeof BottomSheetTextInput>>(null);
   const handleSheetChanges = useCallback((index: number) => {
     if (__DEV__) {
@@ -1049,7 +1053,7 @@ export function SwipeStack({
         message: '로그인 후 문항을 저장할 수 있어요.',
         ctaLabel: '로그인',
         onPressCta: () => {
-          void signInWithGoogle();
+          loginSheetRef.current?.present();
         },
       });
       return;
@@ -1289,7 +1293,7 @@ export function SwipeStack({
   const completionMetricSkeletonColor = colorScheme === 'dark' ? Palette.gray700 : Palette.gray200;
 
   const completionTitle = useMemo(() => {
-    const answered = effectiveAnswered ?? sessionStats.answered;
+    const answered = effectiveAnswered ?? 0;
     if (isChallenge) {
       const completed = totalQuestions > 0 && answered >= totalQuestions && !isChallengeFailed;
       if (isChallengeFailed) {
@@ -1323,7 +1327,6 @@ export function SwipeStack({
     effectiveAnswered,
     isChallenge,
     isChallengeFailed,
-    sessionStats.answered,
     totalQuestions,
   ]);
 
@@ -2384,48 +2387,48 @@ export function SwipeStack({
                         { backgroundColor: palette.cardElevated, borderColor: palette.border },
                       ]}
                     >
-                    <ThemedText
-                      style={styles.completionMetricLabel}
-                      lightColor={palette.textMuted}
-                      darkColor={Palette.gray200}
-                    >
-                      XP
-                    </ThemedText>
-                    {isCompletionMetricsLoading ? (
-                      <View
-                        style={[
-                          styles.completionMetricValueSkeleton,
-                          { backgroundColor: completionMetricSkeletonColor },
-                        ]}
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
                       >
-                        <Animated.View
-                          pointerEvents="none"
+                        XP
+                      </ThemedText>
+                      {isCompletionMetricsLoading ? (
+                        <View
                           style={[
-                            styles.completionMetricSkeletonShimmer,
-                            {
-                              width: completionMetricShimmerWidth,
-                              transform: [{ translateX: completionMetricShimmerTranslateX }],
-                            },
+                            styles.completionMetricValueSkeleton,
+                            { backgroundColor: completionMetricSkeletonColor },
                           ]}
                         >
-                          <LinearGradient
-                            colors={[
-                              skeletonShimmerTransparentColor,
-                              skeletonShimmerEdgeColor,
-                              skeletonShimmerCoreColor,
-                              skeletonShimmerEdgeColor,
-                              skeletonShimmerTransparentColor,
+                          <Animated.View
+                            pointerEvents="none"
+                            style={[
+                              styles.completionMetricSkeletonShimmer,
+                              {
+                                width: completionMetricShimmerWidth,
+                                transform: [{ translateX: completionMetricShimmerTranslateX }],
+                              },
                             ]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={styles.completionMetricSkeletonShimmerGradient}
-                          />
-                        </Animated.View>
-                      </View>
-                    ) : (
-                      <ThemedText style={styles.completionMetricValue}>{completionXpLabel}</ThemedText>
-                    )}
-                  </View>
+                          >
+                            <LinearGradient
+                              colors={[
+                                skeletonShimmerTransparentColor,
+                                skeletonShimmerEdgeColor,
+                                skeletonShimmerCoreColor,
+                                skeletonShimmerEdgeColor,
+                                skeletonShimmerTransparentColor,
+                              ]}
+                              start={{ x: 0, y: 0 }}
+                              end={{ x: 1, y: 0 }}
+                              style={styles.completionMetricSkeletonShimmerGradient}
+                            />
+                          </Animated.View>
+                        </View>
+                      ) : (
+                        <ThemedText style={styles.completionMetricValue}>{completionXpLabel}</ThemedText>
+                      )}
+                    </View>
                   </>
                 )}
               </View>
@@ -2442,12 +2445,11 @@ export function SwipeStack({
                 ) : null}
                 {isChallenge ? (
                   <>
-                    {!isChallengeFailed && isGuest ? (
+                    {isFinalStage && !isChallengeFailed && isGuest ? (
                       <Button
                         size="lg"
                         variant="default"
-                        fullWidth
-                        onPress={() => void signInWithGoogle()}
+                        onPress={() => loginSheetRef.current?.present()}
                         style={styles.completionActionButton}
                       >
                         로그인
@@ -2470,7 +2472,7 @@ export function SwipeStack({
                     size="lg"
                     variant="outline"
                     fullWidth
-                    onPress={() => void signInWithGoogle()}
+                    onPress={() => loginSheetRef.current?.present()}
                     style={styles.completionActionButton}
                   >
                     로그인
@@ -2964,6 +2966,7 @@ export function SwipeStack({
           </View>
         </Animated.View>
       ) : null}
+      <LoginSheet ref={loginSheetRef} onLoginSuccess={onLoginSuccess} />
     </BottomSheetModalProvider>
   );
 }

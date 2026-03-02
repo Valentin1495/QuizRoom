@@ -105,6 +105,7 @@ export default function SwipeScreen() {
           category={selectedCategory.slug}
           setSelectedCategory={setSelectedCategory}
           onCompletionVisibilityChange={setIsCompletionVisible}
+          onLoginSuccess={() => setSelectedCategory(null)}
         />
       </ThemedView>
       <Dialog
