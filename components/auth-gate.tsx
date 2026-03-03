@@ -1,3 +1,5 @@
+import * as Linking from 'expo-linking';
+import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Image, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,6 +22,7 @@ const REVIEWER_TAP_WINDOW_MS = 800;
 
 export function AuthGate({ children }: AuthGateProps) {
   const { status, user, guestKey, error, signInWithGoogle, signInWithApple, signInWithReviewerAccount, enterGuestMode } = useAuth();
+  const router = useRouter();
   const primaryColor = useThemeColor({}, 'primary');
   const iconBackground = useThemeColor(
     {
@@ -33,6 +36,12 @@ export function AuthGate({ children }: AuthGateProps) {
   const hasEnteredAppRef = useRef(false);
   const [reviewerTapCount, setReviewerTapCount] = useState(0);
   const lastReviewerTapRef = useRef(0);
+
+  // undefined = getInitialURL not resolved yet, null = no deep link, string = pending path
+  const [initialDeepLinkPath, setInitialDeepLinkPath] = useState<string | null | undefined>(undefined);
+  // True once the login screen has been rendered (meaning Expo Router won't auto-handle the URL)
+  const loginScreenWasShownRef = useRef(false);
+  const hasHandledInitialDeepLinkRef = useRef(false);
 
   const handleIconTap = () => {
     const now = Date.now();
@@ -60,6 +69,48 @@ export function AuthGate({ children }: AuthGateProps) {
       hasEnteredAppRef.current = true;
     }
   }, [status, user]);
+
+  // Capture the URL that cold-started the app (one-time, resolves almost instantly)
+  useEffect(() => {
+    void Linking.getInitialURL().then((url) => {
+      if (!url) {
+        setInitialDeepLinkPath(null);
+        return;
+      }
+      const parsed = Linking.parse(url);
+      // For custom scheme URLs (e.g. quizroom://room/7SJAK7), Linking.parse treats
+      // the first path segment as `hostname` and the rest as `path`.
+      // Recombine them so `/room/7SJAK7` is preserved correctly.
+      // For https:// URLs the hostname is a real domain, so only `path` is used.
+      const isCustomScheme = parsed.scheme !== 'https' && parsed.scheme !== 'http';
+      const segments = isCustomScheme
+        ? [parsed.hostname, parsed.path].filter(Boolean).join('/')
+        : (parsed.path ?? '');
+      setInitialDeepLinkPath(segments ? `/${segments}` : null);
+    });
+  }, []);
+
+  // Track whether the login screen was ever shown to the user.
+  // If it was, Expo Router could not auto-navigate to the initial URL (Stack wasn't mounted).
+  useEffect(() => {
+    if (status === 'unauthenticated' || status === 'error') {
+      loginScreenWasShownRef.current = true;
+    }
+  }, [status]);
+
+  // After auth resolves: if the login screen was shown AND a deep link path was captured,
+  // navigate there now (otherwise Expo Router would default to the (tabs) anchor).
+  useEffect(() => {
+    if (hasHandledInitialDeepLinkRef.current) return;
+    if (initialDeepLinkPath === undefined) return; // getInitialURL not yet resolved
+    if (status !== 'authenticated' && status !== 'guest') return;
+    if (!loginScreenWasShownRef.current) return; // Login bypassed → Expo Router handles URL itself
+
+    hasHandledInitialDeepLinkRef.current = true;
+    if (initialDeepLinkPath) {
+      router.replace(initialDeepLinkPath as never);
+    }
+  }, [status, initialDeepLinkPath, router]);
 
   const { isLoading, headline, helper } = useMemo(() => {
     if (status === 'authenticated' && user) {

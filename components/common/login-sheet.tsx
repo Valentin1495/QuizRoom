@@ -1,11 +1,11 @@
-import { forwardRef, useCallback, useState } from 'react';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetView,
   type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
+import { forwardRef, useCallback, useState } from 'react';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
@@ -110,7 +110,7 @@ export const LoginSheet = forwardRef<BottomSheetModal, LoginSheetProps>(
             </Button>
             {Platform.OS === 'ios' ? (
               <Button
-                variant="outline"
+                variant="ghost"
                 size="lg"
                 fullWidth
                 onPress={() => void handleAppleLogin()}
