@@ -1,50 +1,156 @@
-# Welcome to your Expo app 👋
+# QuizRoom
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+QuizRoom is an Expo/React Native quiz app built around three core play loops:
 
-## Get started
+- `Daily Quiz`: a short daily O/X-style quiz
+- `Swipe`: category-based rapid quiz sessions
+- `Live Match`: real-time room-based multiplayer quiz matches
+
+The current app uses `Expo Router` for navigation and `Supabase` for auth, data, realtime sync, and Edge Functions.
+
+## Current Stack
+
+- Client: `Expo`, `React Native`, `TypeScript`, `expo-router`
+- Auth: `Supabase Auth`, `Google Sign-In`, `Apple Sign-In`, guest mode
+- Backend: `Supabase Postgres`, `Supabase Realtime`, `Supabase Edge Functions`
+- UI: `react-native-reanimated`, `react-native-gesture-handler`, `@gorhom/bottom-sheet`
+
+## Main Product Areas
+
+- `Home`
+  - quick start shortcuts for recent swipe/live-match activity
+  - daily quiz entry and countdown
+  - skill assessment entry
+  - room-code join flow
+- `Swipe`
+  - category picker
+  - swipe-style question flow
+  - recent category persistence
+- `Live Match`
+  - create room from a deck
+  - join room by code
+  - room/lobby/game state driven by Supabase functions
+- `Profile`
+  - authenticated and guest variants
+  - XP, streak, level, history
+  - profile handle editing
+  - theme preference
+  - sign-out and account deletion
+
+## Repo Structure
+
+```text
+app/                     Expo Router screens
+components/              Reusable UI and feature components
+hooks/                   Auth, quiz, room, theme, and data hooks
+lib/                     Supabase client, API wrappers, helpers
+constants/               Theme, categories, decks, challenges
+supabase/
+  migrations/            Database schema changes
+  functions/             Edge Functions used by the app
+  seed/                  Local seed SQL
+assets/                  Images and local quiz data
+docs/                    Product and implementation notes
+```
+
+## Important Routes
+
+- `app/_layout.tsx`: app root, auth gate, theme provider, toast host
+- `app/(tabs)/home.tsx`: home dashboard
+- `app/(tabs)/swipe.tsx`: swipe quiz mode
+- `app/(tabs)/live-match.tsx`: live match lobby/create screen
+- `app/(tabs)/profile.tsx`: profile, history, settings
+- `app/daily/index.tsx`: daily quiz play screen
+- `app/room/[code].tsx`: live room experience
+- `app/skill-assessment/index.tsx`: skill assessment flow
+
+## Supabase Functions In Use
+
+The app currently relies on these Edge Functions:
+
+- `daily-quiz`
+- `deck-feed`
+- `live-match-decks`
+- `swipe-feed`
+- `room-create`
+- `room-join`
+- `room-lobby`
+- `room-state`
+- `room-action`
+- `quiz-history`
+- `log-daily-result`
+- `log-swipe-answer`
+- `log-swipe-result`
+- `account-delete`
+
+## Local Setup
 
 1. Install dependencies
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Configure environment variables
 
-## Learn more
+Create a local env file with the values used by the app:
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+EXPO_PUBLIC_SUPABASE_URL=
+EXPO_PUBLIC_SUPABASE_API_KEY=
+EXPO_PUBLIC_SUPABASE_ANON_KEY=
+EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=
+EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+3. Start the app
 
-## Join the community
+```bash
+npm run start
+```
 
-Join our community of developers creating universal apps.
+Useful alternatives:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npm run android
+npm run ios
+npm run web
+```
+
+## Supabase Development
+
+Start local Supabase services:
+
+```bash
+npm run supabase:start
+```
+
+Apply schema changes:
+
+```bash
+npm run supabase:db:push
+```
+
+Reset local database:
+
+```bash
+npm run supabase:db:reset
+```
+
+Generate TypeScript database types:
+
+```bash
+npm run supabase:gen:types
+```
+
+Stop local Supabase services:
+
+```bash
+npm run supabase:stop
+```
+
+## Notes
+
+- This repository is no longer a default Expo starter, even though older docs previously suggested that.
+- Older planning docs also referenced a `Convex + Gemini` backend direction. The implemented app in this repo is now centered on `Supabase`.
+- Some product and design notes in `docs/` are exploratory. For implementation truth, prefer the code under `app/`, `hooks/`, `lib/`, and `supabase/`.

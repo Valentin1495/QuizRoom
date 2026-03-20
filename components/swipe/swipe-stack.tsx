@@ -30,6 +30,7 @@ import { Colors, Elevation, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
+import type { AssessmentResult } from '@/lib/elo';
 import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { useSwipeFeed, type SwipeFeedQuestion } from '@/lib/feed';
 import { errorHaptic, lightHaptic, mediumHaptic, successHaptic } from '@/lib/haptics';
@@ -86,6 +87,7 @@ export type SwipeStackProps = {
   challengeCompletionLabel?: string;
   challengeProgressLabel?: string;
   challengeSubjectLabel?: string;
+  assessmentResult?: AssessmentResult | null;
   persistLifelines?: boolean;
   lifelinesDisabled?: boolean;
   onChallengeReset?: () => void;
@@ -248,6 +250,7 @@ export function SwipeStack({
   onCompletionVisibilityChange,
   challengeCompletionLabel,
   challengeSubjectLabel,
+  assessmentResult,
   persistLifelines,
   lifelinesDisabled,
   onChallengeReset,
@@ -1348,12 +1351,27 @@ export function SwipeStack({
     if (!effectiveAnswered) return null;
     return `${effectiveCorrect} / ${effectiveAnswered} 문항`;
   }, [effectiveAnswered, effectiveCorrect, isChallenge, showAccuracyCard]);
+  const completionPercentileLabel = useMemo(() => {
+    if (!isChallenge || !assessmentResult) return null;
+    if (!(isChallengeFailed || isFinalStage)) return null;
+    return `상위 ${assessmentResult.topPercent}%`;
+  }, [assessmentResult, isChallenge, isChallengeFailed, isFinalStage]);
   const completionLevelLabel = useMemo(() => {
     if (!isChallenge) return null;
+    if (assessmentResult && (isChallengeFailed || isFinalStage)) {
+      return `${assessmentResult.eduLevelLabel} 수준`;
+    }
     return isChallengeFailed
       ? (challengeLevelFailedLabel ?? challengeLevelLabel)
       : challengeLevelLabel;
-  }, [challengeLevelFailedLabel, challengeLevelLabel, isChallenge, isChallengeFailed]);
+  }, [
+    assessmentResult,
+    challengeLevelFailedLabel,
+    challengeLevelLabel,
+    isChallenge,
+    isChallengeFailed,
+    isFinalStage,
+  ]);
 
   useEffect(() => {
     if (completionTotalsOverride) {
@@ -2159,6 +2177,38 @@ export function SwipeStack({
                     <ThemedText style={styles.completionMetricValue}>{completionLevelLabel}</ThemedText>
                   </View>
                 ) : null}
+                {isChallenge && completionPercentileLabel && (isChallengeFailed || isFinalStage) ? (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      styles.completionMetricFull,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
+                  >
+                    <View style={styles.completionAccuracyHeader}>
+                      <View
+                        style={[
+                          styles.completionAccuracyIcon,
+                          { backgroundColor: palette.card, borderColor: palette.border },
+                        ]}
+                      >
+                        <IconSymbol name="medal" size={18} color={palette.text} />
+                      </View>
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        백분위
+                      </ThemedText>
+                    </View>
+                    <View style={styles.completionInfoRow}>
+                      <ThemedText style={styles.completionMetricValue}>
+                        {completionPercentileLabel}
+                      </ThemedText>
+                    </View>
+                  </View>
+                ) : null}
                 {showAccuracyCard ? (
                   <View
                     style={[
@@ -2222,6 +2272,38 @@ export function SwipeStack({
                           </ThemedText>
                         </View>
                       </View>
+                    </View>
+                  </View>
+                ) : null}
+                {false && isChallenge && completionPercentileLabel && (isChallengeFailed || isFinalStage) ? (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      styles.completionMetricFull,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
+                  >
+                    <View style={styles.completionAccuracyHeader}>
+                      <View
+                        style={[
+                          styles.completionAccuracyIcon,
+                          { backgroundColor: palette.card, borderColor: palette.border },
+                        ]}
+                      >
+                        <IconSymbol name="chart.bar" size={18} color={palette.text} />
+                      </View>
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        백분위
+                      </ThemedText>
+                    </View>
+                    <View style={styles.completionInfoRow}>
+                      <ThemedText style={styles.completionMetricValue}>
+                        {completionPercentileLabel}
+                      </ThemedText>
                     </View>
                   </View>
                 ) : null}

@@ -13,6 +13,11 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SKILL_ASSESSMENT_CHALLENGE } from '@/constants/challenges';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import {
+  calculateAssessmentResult,
+  type AssessmentStageResult,
+  type EducationLevelKey,
+} from '@/lib/elo';
 
 const SUBJECT_OPTIONS = [
   { key: 'korean', label: '국어' },
@@ -60,6 +65,7 @@ export default function SkillAssessmentScreen() {
   const [cumulativeAnswered, setCumulativeAnswered] = useState(0);
   const [cumulativeCorrect, setCumulativeCorrect] = useState(0);
   const [completionTotals, setCompletionTotals] = useState<{ answered: number; correct: number } | null>(null);
+  const [assessmentStageResults, setAssessmentStageResults] = useState<AssessmentStageResult[]>([]);
   const [stageBaseAnswered, setStageBaseAnswered] = useState(0);
   const [stageBaseCorrect, setStageBaseCorrect] = useState(0);
   const lastLevelIndexRef = useRef<number | null>(null);
@@ -91,12 +97,14 @@ export default function SkillAssessmentScreen() {
     : '과목을 고르면 단계별로 난이도가 올라갑니다';
 
   const isElemLevel = currentLevel.key === 'elem_low' || currentLevel.key === 'elem_high';
+  const assessmentResult = calculateAssessmentResult(assessmentStageResults);
 
   const handleStart = useCallback(() => {
     if (!selectedSubject) return;
     setCumulativeAnswered(0);
     setCumulativeCorrect(0);
     setCompletionTotals(null);
+    setAssessmentStageResults([]);
     completionTotalsRef.current = null;
     cumulativeAnsweredRef.current = 0;
     cumulativeCorrectRef.current = 0;
@@ -123,6 +131,7 @@ export default function SkillAssessmentScreen() {
     setCumulativeAnswered(0);
     setCumulativeCorrect(0);
     setCompletionTotals(null);
+    setAssessmentStageResults([]);
     completionTotalsRef.current = null;
     cumulativeAnsweredRef.current = 0;
     cumulativeCorrectRef.current = 0;
@@ -139,6 +148,7 @@ export default function SkillAssessmentScreen() {
     setIsRunning(false);
     setLevelIndex(0);
     setCompletionTotals(null);
+    setAssessmentStageResults([]);
     completionTotalsRef.current = null;
     cumulativeAnsweredRef.current = 0;
     cumulativeCorrectRef.current = 0;
@@ -201,6 +211,15 @@ export default function SkillAssessmentScreen() {
     setCumulativeAnswered(nextAnswered);
     setCumulativeCorrect(nextCorrect);
     setCompletionTotals({ answered: nextAnswered, correct: nextCorrect });
+    setAssessmentStageResults((prev) => {
+      const next = [...prev];
+      next[levelIndex] = {
+        eduLevel: currentLevel.key as EducationLevelKey,
+        answered: summary.answered,
+        correct: summary.correct,
+      };
+      return next;
+    });
     if (!summary.failed && summary.questionIds?.length) {
       setExcludedQuestionIds((prev) => {
         const merged = new Set(prev);
@@ -208,7 +227,7 @@ export default function SkillAssessmentScreen() {
         return Array.from(merged);
       });
     }
-  }, [levelIndex]);
+  }, [currentLevel.key, levelIndex]);
 
   const failedLevelLabel =
     levelIndex === 0 ? '기초 다지기 필요' : previousLevel.label;
@@ -353,6 +372,7 @@ export default function SkillAssessmentScreen() {
             challengeProgressLabel={`${currentLevel.label} · ${levelIndex + 1}/${EDU_LEVEL_STEPS.length}`}
             challengeSubjectLabel={selectedSubjectLabel}
             lifelinesDisabled={lifelinesDisabled}
+            assessmentResult={assessmentResult}
           />
         ) : (
           <ScrollView

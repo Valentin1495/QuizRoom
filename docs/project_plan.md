@@ -1,153 +1,277 @@
-“국내 위주” 실행 전략을 반영해, MZ 세대를 타깃으로 한 퀴즈 게임 앱 기획서를 한국어로 정리했습니다. (클라이언트: React Native/Expo + TS, 서버/DB: Convex, AI: Google Gemini)
+# QuizRoom Project Plan
 
-# 1) 한 줄 컨셉
+This document reflects the current repository state and the implementation direction visible in the codebase today.
 
-60초 안에 즐기는 스와이프 퀴즈. 크리에이터와 AI가 만드는 밈 한가득. 친구들과 실시간으로 붙고, 결과는 카톡으로 자랑!
+## 1. Product Summary
 
-# 2) 성공 모델 인사이트 → 한국형 적용
+QuizRoom is a mobile quiz app focused on short, repeatable sessions and lightweight social play.
 
-* **초단기 플레이**: 라운드 60~90초, 출퇴근/등하교 틈새 공략
-* **크리에이터 생태계**: 누구나 UGC 퀴즈 제작, AI가 질문/보기 초안 지원
-* **라이브+데일리**: HQ Trivia의 이벤트성 + Wordle의 일일 1회 결합
-* **소셜 증폭**: 스트릭·배지·공유 카드 → **카카오톡/인스타/틱톡**에 최적화
-* **취향 퍼스널라이즈**: K-팝/예능/OTT/게임/밈 태그 기반 추천
+Current gameplay pillars:
 
-# 3) 핵심 루프
+- `Daily Quiz`
+  - one daily quiz experience
+  - short session length
+  - category-aware copy and share-style reward framing
+- `Swipe`
+  - category-based question stream
+  - low-friction restart loop
+  - recent category shortcuts from home
+- `Live Match`
+  - room-based multiplayer sessions
+  - room code create/join flow
+  - deck selection and real-time room progression
+- `Profile`
+  - guest-to-auth upgrade path
+  - XP, streak, level, and history
+  - settings and account controls
 
-* **데일리 루프(솔로)**: 앱 진입 → ‘데일리 6문제(60초)’ → 스트릭·보상 → 공유 카드
-* **소셜 루프(파티)**: 호스트가 방 생성 → 초대링크(카톡 딥링크) → 실시간 랭킹·리액션
-* **크리에이터 루프**: 주제 입력 → Gemini가 초안 생성 → 편집/발행 → 플레이/좋아요에 따라 수익 쉐어
+## 2. Current Technical Direction
 
-# 4) 국내 특화 포인트
+The active implementation is:
 
-* **카카오 퍼스트(공유/초대)**: 카카오 링크 템플릿/채널 공지 중심 확산, 로그인은 구글/애플로 경량화
-* **트렌드 실시간 반영**: 컴백/결승/신작 공개 직후 3시간 내 ‘이슈 덱’ 발행
-* **마이크로 리액션**: 👏💀🔥 등 탭·홀드 이펙트 + 햅틱
-* **오프라인 연결**: 캠퍼스 대항전·PC방 라이브 퀴즈 데이
-* **안전한 수익화**: 가챠 회피(확률형 금지/공개 준수), 코스메틱 직판·시즌패스 중심
+- Client: `React Native + Expo + TypeScript`
+- Navigation: `Expo Router`
+- Backend: `Supabase`
+- Auth: `Supabase Auth`, `Google`, `Apple`, guest mode
+- Realtime: `Supabase Realtime` plus Edge Function-driven room state
+- Database: `Supabase Postgres`
 
-# 5) 게임 모드
+This replaces the older exploratory `Convex + Gemini` planning direction. That older plan is not the live architecture of this repository.
 
-* **데일리 블링크**: 하루 1회, 6문제/60초, 한 번만 도전
-* **스와이프 스택**: 끝없이 넘기는 짧은 퀴즈 피드, 난이도 ELO
-* **파티 라이브**: 2–50인 실시간, 랭킹·이모지 폭죽
-* **보스 퀴즈**: 적응형 난이도 3페이즈 클리어 시 희귀 배지
-* **바이브 체크**: 성향/취향 퀴즈(민감 주제 배제)
+## 3. Current App Surface
 
-# 6) 수익화(비(非)페이투윈)
+### Home
 
-* **코스메틱**: 프로필 프레임/승리 애니/이모지 팩
-* **크리에이터 플러스**: 고급 템플릿·분석·수익 배분 우대
-* **시즌 패스**: 과금은 꾸미기/미션 중심
-* **브랜드 덱**: 명확한 표시와 품질 기준 유지
+The home screen is the main launcher for the rest of the app.
 
-# 7) 콘텐츠 거버넌스/안전
+Current responsibilities:
 
-* AI 사전 필터(욕설·혐오·명예훼손·허위) + 트렌딩 휴먼 리뷰
-* 표절/중복 감지, 14+ 등급 목표(민감 주제 제한)
-* 신고→처리 SLA, 크리에이터 제재 정책
+- show quick start actions based on recent usage
+- load the daily quiz
+- link into skill assessment
+- allow room join by code
+- refresh core homepage data
 
-# 8) MVP 범위(6–8주)
+Primary file:
 
-* 모드: 데일리, 스와이프, 파티(최대 10인)
-* 크리에이터 툴 v1: Gemini 초안→편집→발행
-* 코스메틱 v1(프레임·이모지), 공유 카드, 기본 분석/A-B
+- `app/(tabs)/home.tsx`
 
-# 9) 기술 아키텍처
+### Swipe
 
-**클라이언트**: React Native (Expo), TypeScript
-**백엔드/DB**: Convex(함수·스토리지·실시간)
-**AI**: Google Gemini(문항/보기 생성, 설명, 공유카드 카피)
-**인증**: 구글/애플(로그인), 카카오(공유/초대)
-**실시간**: Convex live query(리더보드/룸)
-**푸시**: Expo Notifications(데일리, 초대, 이벤트)
-**분석**: PostHog/Amplitude + Convex 이벤트
+Swipe mode is the repeatable single-player session loop.
 
-### Convex 스키마(요약)
+Current responsibilities:
 
-```ts
-// convex/schema.ts
-// 주석은 한국어, 필드는 최소 집합
-users(handle, avatarUrl, interests[], streak, xp, cosmetics[], createdAt)
-decks(title, description, tags[], authorId, visibility, language, plays, likes, status, createdAt, updatedAt)
-questions(deckId, type, prompt, mediaUrl, choices[], answerIndex, explanation, difficulty)
-matches(mode, hostId, deckId, startedAt, endedAt?, code)
-matchPlayers(matchId, userId, score, correct, timeMs, reactions[])
-reports(deckId, questionId?, reporterId, reason, createdAt, resolved)
+- choose a category
+- persist the recent category
+- render the swipe stack flow
+- support completion/reset behavior
+
+Primary files:
+
+- `app/(tabs)/swipe.tsx`
+- `components/swipe/swipe-stack.tsx`
+- `components/swipe/swipe-card.tsx`
+- `components/swipe/answer-sheet.tsx`
+
+### Live Match
+
+Live Match is the synchronous multiplayer mode.
+
+Current responsibilities:
+
+- fetch available live-match decks
+- create room from a selected deck
+- join room by code
+- reconnect to room state
+- handle room actions through Edge Functions
+
+Primary files:
+
+- `app/(tabs)/live-match.tsx`
+- `app/room/[code].tsx`
+- `hooks/use-live-match-room.ts`
+- `hooks/use-live-game.ts`
+- `hooks/use-live-lobby.ts`
+- `lib/supabase-api.ts`
+
+### Profile
+
+Profile combines player identity, progress, settings, and account controls.
+
+Current responsibilities:
+
+- guest and authenticated views
+- profile handle editing
+- streak and XP display
+- quiz history browsing
+- theme preference
+- sign-out and account deletion
+
+Primary file:
+
+- `app/(tabs)/profile.tsx`
+
+## 4. Current Backend Responsibilities
+
+### Auth Layer
+
+The app currently supports:
+
+- guest mode with local guest key persistence
+- Google sign-in
+- Apple sign-in
+- profile creation/linking on first authenticated session
+- realtime user row syncing
+
+Primary files:
+
+- `hooks/use-supabase-auth.tsx`
+- `hooks/use-unified-auth.tsx`
+- `lib/supabase.ts`
+
+### Edge Functions
+
+Implemented function areas include:
+
+- quiz delivery
+  - `daily-quiz`
+  - `swipe-feed`
+  - `deck-feed`
+  - `live-match-decks`
+- room lifecycle
+  - `room-create`
+  - `room-join`
+  - `room-lobby`
+  - `room-state`
+  - `room-action`
+- result/history logging
+  - `quiz-history`
+  - `log-daily-result`
+  - `log-swipe-answer`
+  - `log-swipe-result`
+- account management
+  - `account-delete`
+
+Directory:
+
+- `supabase/functions/`
+
+### Database
+
+The repository contains:
+
+- initial schema migration
+- follow-up migrations for cron jobs, activity days, and display name source
+- seed SQL for local setup
+- generated database TypeScript types
+
+Primary paths:
+
+- `supabase/migrations/`
+- `supabase/seed/`
+- `lib/database.types.ts`
+
+## 5. Current User Flows
+
+### Guest to Authenticated Upgrade
+
+1. User enters as guest or unauthenticated.
+2. Guest key is created and persisted locally.
+3. User can still play core modes.
+4. On Google/Apple sign-in, the app loads or creates a `users` row.
+5. The profile and game loops then use the authenticated identity.
+
+### Daily Quiz Loop
+
+1. Home requests the current daily quiz.
+2. User opens the daily screen.
+3. Result is logged and reflected in XP/history.
+4. Home/profile refresh paths can surface the updated state.
+
+### Swipe Loop
+
+1. User chooses a category.
+2. Swipe stack serves questions for that category.
+3. Completion state is shown in-session.
+4. Recent category is persisted for quick start on home.
+
+### Live Match Loop
+
+1. User creates a room from a deck or joins by room code.
+2. Lobby and room state are fetched from Supabase functions.
+3. Room actions are submitted through `room-action`.
+4. Room state and reconnect behavior support live progression.
+5. Match results can flow into history/progress.
+
+## 6. Current Engineering Priorities
+
+These are the priorities implied by the current codebase:
+
+- stabilize auth across guest, Google, Apple, and upgrade paths
+- keep home/dashboard flows fast and restart-friendly
+- improve live-match resilience, reconnect behavior, and room state handling
+- maintain history/progress correctness for XP, streak, and recent activity
+- keep category/deck shortcuts lightweight and persistent
+
+## 7. Documentation Truth Sources
+
+When documentation and code disagree, prefer these as the source of truth:
+
+1. `app/` for screen behavior and navigation
+2. `hooks/` for state and auth flows
+3. `lib/supabase-api.ts` for backend integration shape
+4. `supabase/functions/` for server behavior
+5. `supabase/migrations/` for data model evolution
+
+## 8. Local Development Checklist
+
+### App
+
+```bash
+npm install
+npm run start
 ```
 
-### 서버 함수(스케치)
+### Native Targets
 
-* `decks.getFeed({tag, limit})`: 관심사·신규성·품질 기반 랭킹
-* `matches.createParty({deckId})`: 5자리 초대 코드 생성
-* `matches.joinByCode({code})`: 코드로 입장/참여자 등록
-* `matches.liveLeaderboard({matchId})`: 점수 실시간 조회
-
-### 클라이언트 구조(예)
-
-```
-/app
-  /(tabs)/home.tsx        // 데일리·추천·라이브
-  /room/[code].tsx        // 파티 룸
-  /create/index.tsx       // AI 초안→편집
-  /deck/[id].tsx
-  /profile/index.tsx
-/lib/api.ts               // Convex/AI 헬퍼
-/components/*.tsx         // Card, Timer, ReactionBar 등
+```bash
+npm run android
+npm run ios
 ```
 
-# 10) Gemini 프롬프트(예시)
+### Web
 
-* **문항 생성(주제→8문항)**
+```bash
+npm run web
+```
 
-  * 제약: 한국어, 80자 내, 4지선다, 정답 인덱스, 짧은 해설, 난이도 0..1, 국내 트렌드 2개 이상 반영
-* **오답 개선**: “그럴듯하지만 명백히 오답” 원칙
-* **공유 카드 카피**: 10자 내 밈톤 한국어 헤드라인(이모지 허용)
+### Supabase
 
-# 11) 안티치트/공정성
+```bash
+npm run supabase:start
+npm run supabase:db:push
+npm run supabase:gen:types
+```
 
-* 보기 순서 유저별 랜덤, 서버 타이머 기준 채점
-* 데일리 1회 제한, IP/디바이스 스로틀
-* 파티: 정답 인덱스만 전송, 지연 보정
+## 9. Environment Requirements
 
-# 12) 개인화/랭킹(v1)
+The current app expects these environment variables:
 
-* 사용자 벡터 = 관심 태그 + 태그별 정답률·속도
-* 덱 점수 = 관심 적합도·신규성·품질(좋아요율)·난이도 적합도
-* 탐색용 멀티암 밴딧 소규모 적용
+```bash
+EXPO_PUBLIC_SUPABASE_URL=
+EXPO_PUBLIC_SUPABASE_API_KEY=
+EXPO_PUBLIC_SUPABASE_ANON_KEY=
+EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=
+EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=
+```
 
-# 13) KPI 가설(국내 소프트런치)
+## 10. Near-Term Doc Maintenance Notes
 
-* **초대 전환(링크→설치)**: 12–20%
-* **D1 잔존**: 35–45%
-* **UGC 덱 생성 비율**: 8–12%/월
-  ※ 실제 수치는 크리에이티브/온보딩 품질에 크게 좌우
+The following stale assumptions were removed from this document:
 
-# 14) 그로스 플랜(한국형)
+- default Expo starter positioning
+- Convex as the active backend
+- Gemini as the active server-side generation path
 
-1. **카카오 퍼스트(공유/초대)**: 카카오톡 링크 템플릿·채널 공지 / 로그인은 구글·애플
-2. **네이버/숏폼 분산**: 검색 랜딩·틱톡/릴스 챌린지
-3. **캠퍼스·PC방**: 앰배서더(주 1회 학과 대항전), e스포츠 카페 라이브
-4. **크리에이터 협업**: “내 영상→퀴즈” 템플릿 + 수익 쉐어
-5. **콘텐츠 반응 체인**: 이슈 감지→AI 초안→에디터 승인→3시간 내 발행
-
-# 15) 규제·등급 체크
-
-* **확률형 아이템**: 도입 시 확률공개/보장정책 명시(권장: 미도입)
-* **GRAC 등급**: 14+ 목표, 선정·혐오·정치 성향 테스트 금지
-* **학교 시간대 제한 고려**: 라이브는 저녁/주말 편성, 방과후 푸시
-
-# 16) 4주 로드맵(애자일)
-
-* **Week 1**: 스키마·인증(구글/애플)·카카오 공유 템플릿 PoC·데일리·MCQ UI·Gemini 초안
-* **Week 2**: 파티 라이브(≤10)·리더보드·리액션·공유 카드
-* **Week 3**: 크리에이터 발행·모더레이션·코스메틱 v1·분석
-* **Week 4**: 개인화 v1·스트릭·시즌0 콘텐츠·소프트론치+A/B
-
-# 17) 실행 체크리스트(요약)
-
-* 구글/애플 로그인 + 카카오 딥링크/공유 카드 구현
-* `app://room/{code}` 딥링크 + 웹 폴백(네이버 인덱싱)
-* Convex 실시간 랭킹·파티 룸 안정화(지연 150ms 가정)
-* AI 안전 필터 → 트렌딩 휴먼 검수
-* 코스메틱 직판/시즌패스 온보딩, 가이드·정책 명시
+If those directions return later, they should be documented as future roadmap items, not current implementation facts.

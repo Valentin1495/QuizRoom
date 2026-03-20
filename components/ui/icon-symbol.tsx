@@ -12,6 +12,7 @@ import {
   BroadcastIcon,
   CardsThreeIcon,
   CaretRightIcon,
+  ChartBarIcon,
   CheckCircleIcon,
   CheckFatIcon,
   ConfettiIcon,
@@ -93,6 +94,7 @@ const ICON_MAP = {
   'questionmark.circle': { component: SealQuestionIcon },
   'person.crop.circle.dashed': { component: UserCircleDashedIcon, defaultWeight: 'fill' },
   'arrow.trianglehead.2.clockwise.rotate.90': { component: ArrowsClockwiseIcon, defaultWeight: 'fill' },
+  'chart.bar': {component: ChartBarIcon},
   // Navigation Icons
   'arrow.left': { component: ArrowLeftIcon },
   'arrow.up.forward': { component: ArrowUpRightIcon },
