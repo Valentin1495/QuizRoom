@@ -5,7 +5,7 @@ import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Animated, BackHandler, Easing, Platform, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LevelBadge } from '@/components/common/level-badge';
@@ -375,6 +375,15 @@ export default function MatchLobbyScreen() {
     Alert.alert('초대 코드 복사 완료', `코드 ${roomCode}가 클립보드에 복사되었어요.`);
   }, [roomCode]);
 
+  const handleShare = useCallback(async () => {
+    const url = `https://room-invitation.expo.app/room/${roomCode}`;
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await Share.share(
+      Platform.OS === 'android' ? { message: url } : { url },
+      { dialogTitle: 'QuizRoom 초대 링크 공유' },
+    );
+  }, [roomCode]);
+
   const handleToggleReady = useCallback(async () => {
     if (!roomId || !participantId || isSelfHost) return;
 
@@ -681,6 +690,10 @@ export default function MatchLobbyScreen() {
           flexDirection: 'row',
           alignItems: 'center',
           gap: Spacing.sm,
+          width: '100%',
+        },
+        codeBadgeRowSpacer: {
+          flex: 1,
         },
         codeBadge: {
           alignSelf: 'flex-start',
@@ -808,7 +821,6 @@ export default function MatchLobbyScreen() {
           flexDirection: 'row',
           alignItems: 'center',
           gap: Spacing.sm,
-          alignSelf: 'flex-start',
           marginTop: Spacing.sm,
         },
         codeBadgeHint: {
@@ -1034,8 +1046,13 @@ export default function MatchLobbyScreen() {
                       <ThemedText style={styles.codeBadgeText}>{roomCode}</ThemedText>
                     </View>
                     <Pressable style={styles.codeBadgeHintRow} onPress={handleCopyCode}>
-                      <IconSymbol name="document.on.document" size={16} color={mutedColor} />
+                      <IconSymbol name="document.on.document" size={17} color={mutedColor} />
                       <ThemedText style={styles.codeBadgeHint}>코드 복사</ThemedText>
+                    </Pressable>
+                    <View style={styles.codeBadgeRowSpacer} />
+                    <Pressable style={styles.codeBadgeHintRow} onPress={handleShare}>
+                      <IconSymbol name="envelope.badge" size={20} color={mutedColor} />
+                      <ThemedText style={styles.codeBadgeHint}>초대</ThemedText>
                     </Pressable>
                   </View>
                 </View>

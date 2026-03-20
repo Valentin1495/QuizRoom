@@ -22,21 +22,50 @@ export type AssessmentStageResult = {
   eduLevel: EducationLevelKey;
   answered: number;
   correct: number;
-};
-
-export type AssessmentEduBand = {
-  key: EducationLevelKey;
-  label: string;
+  failed?: boolean;
 };
 
 export type AssessmentResult = {
   finalElo: number;
   topPercent: number;
-  eduLevelKey: EducationLevelKey;
-  eduLevelLabel: string;
   accuracy: number;
   answered: number;
   correct: number;
+};
+
+export type EliteTier = 'candidate' | 'elite' | 'elite_plus' | 'none';
+
+export type EliteEligibilityResult = {
+  isEligible: boolean;
+  overallAccuracy: number;
+  collegeBasicAccuracy: number;
+  reachedCollegePlus: boolean;
+};
+
+export type EliteRoundResult = {
+  tier: EliteTier;
+  label: string | null;
+  description: string | null;
+  topPercent: number | null;
+  correct: number;
+  answered: number;
+};
+
+const EDUCATION_LEVEL_ORDER: EducationLevelKey[] = [
+  'elem_low',
+  'elem_high',
+  'middle',
+  'high',
+  'college_basic',
+  'college_plus',
+];
+
+const EDUCATION_LEVEL_PERCENTILE_FLOOR: Partial<Record<EducationLevelKey, number>> = {
+  elem_high: 80,
+  middle: 60,
+  high: 40,
+  college_basic: 25,
+  college_plus: 12,
 };
 
 export const clampElo = (value: number) => {
@@ -78,13 +107,105 @@ export const mapEloToPercentile = (elo: number) => {
   return Math.max(0, Math.min(100, Math.round((1 - probability) * 100)));
 };
 
-export const mapEloToEduBand = (elo: number): AssessmentEduBand => {
-  if (elo < 900) return { key: 'elem_low', label: '초등 저학년' };
-  if (elo < 1100) return { key: 'elem_high', label: '초등 고학년' };
-  if (elo < 1300) return { key: 'middle', label: '중등' };
-  if (elo < 1500) return { key: 'high', label: '고등' };
-  if (elo < 1700) return { key: 'college_basic', label: '대학' };
-  return { key: 'college_plus', label: '대학+' };
+const getPreviousEducationLevel = (levelKey: EducationLevelKey) => {
+  const levelIndex = EDUCATION_LEVEL_ORDER.indexOf(levelKey);
+  if (levelIndex <= 0) return null;
+  return EDUCATION_LEVEL_ORDER[levelIndex - 1] ?? null;
+};
+
+const getAssessmentPercentileFloor = (stageResults: AssessmentStageResult[]) => {
+  const failedStage = stageResults.find((stage) => stage.failed);
+  if (!failedStage) return null;
+
+  const floorLevel = getPreviousEducationLevel(failedStage.eduLevel);
+  if (!floorLevel) return null;
+
+  return EDUCATION_LEVEL_PERCENTILE_FLOOR[floorLevel] ?? null;
+};
+
+const getStageStats = (stageResults: AssessmentStageResult[], levelKey: EducationLevelKey) => {
+  const stage = stageResults.find((entry) => entry.eduLevel === levelKey);
+  const answered = Math.max(0, stage?.answered ?? 0);
+  const correct = Math.max(0, Math.min(stage?.correct ?? 0, answered));
+  const accuracy = answered > 0 ? correct / answered : 0;
+
+  return { answered, correct, accuracy };
+};
+
+export const calculateEliteRoundEligibility = (
+  stageResults: AssessmentStageResult[],
+  options?: { usedLifeline?: boolean }
+): EliteEligibilityResult => {
+  const totals = calculateAssessmentResult(stageResults);
+  const collegeBasicStats = getStageStats(stageResults, 'college_basic');
+  const collegePlusStats = getStageStats(stageResults, 'college_plus');
+  const reachedCollegePlus = collegePlusStats.answered > 0;
+  const usedLifeline = options?.usedLifeline ?? false;
+  const overallAccuracy = totals.answered > 0 ? totals.correct / totals.answered : 0;
+  const isEligible =
+    !usedLifeline &&
+    reachedCollegePlus &&
+    collegeBasicStats.correct >= 2 &&
+    overallAccuracy >= 0.75;
+
+  return {
+    isEligible,
+    overallAccuracy,
+    collegeBasicAccuracy: collegeBasicStats.accuracy,
+    reachedCollegePlus,
+  };
+};
+
+export const calculateEliteRoundResult = (
+  answered: number,
+  correct: number,
+  options?: { overallAccuracy?: number }
+): EliteRoundResult => {
+  const safeAnswered = Math.max(0, answered);
+  const safeCorrect = Math.max(0, Math.min(correct, safeAnswered));
+  const overallAccuracy = options?.overallAccuracy ?? 0;
+
+  if (safeCorrect >= 5 && overallAccuracy >= 0.85) {
+    return {
+      tier: 'elite_plus',
+      label: '최상위권',
+      description: '',
+      topPercent: 3,
+      answered: safeAnswered,
+      correct: safeCorrect,
+    };
+  }
+
+  if (safeCorrect >= 4) {
+    return {
+      tier: 'elite',
+      label: '상위권',
+      description: '',
+      topPercent: 8,
+      answered: safeAnswered,
+      correct: safeCorrect,
+    };
+  }
+
+  if (safeCorrect >= 3) {
+    return {
+      tier: 'candidate',
+      label: '상위권 후보',
+      description: '',
+      topPercent: 15,
+      answered: safeAnswered,
+      correct: safeCorrect,
+    };
+  }
+
+  return {
+    tier: 'none',
+    label: null,
+    description: null,
+    topPercent: null,
+    answered: safeAnswered,
+    correct: safeCorrect,
+  };
 };
 
 export const calculateAssessmentResult = (
@@ -116,14 +237,15 @@ export const calculateAssessmentResult = (
   });
 
   const finalElo = answered > 0 ? currentElo : BASE_ELO;
-  const eduBand = mapEloToEduBand(finalElo);
   const accuracy = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  const rawTopPercent = mapEloToPercentile(finalElo);
+  const percentileFloor = getAssessmentPercentileFloor(stageResults);
+  const topPercent =
+    percentileFloor === null ? rawTopPercent : Math.min(rawTopPercent, percentileFloor);
 
   return {
     finalElo,
-    topPercent: mapEloToPercentile(finalElo),
-    eduLevelKey: eduBand.key,
-    eduLevelLabel: eduBand.label,
+    topPercent,
     accuracy,
     answered,
     correct,

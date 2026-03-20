@@ -8,8 +8,10 @@ export type ChallengeConfig = {
   ctaLabel: string;
   route: LinkProps['href'];
   deckSlug: string;
+  eliteDeckSlug?: string;
   category: string;
   tags: string[];
+  eliteTags?: string[];
   totalQuestions: number;
   allowedMisses: number;
   scorePerCorrect: number;
@@ -23,8 +25,10 @@ export const SKILL_ASSESSMENT_CHALLENGE: ChallengeConfig = {
   ctaLabel: '측정 시작',
   route: '/skill-assessment',
   deckSlug: 'deck_skill_assessment_v1',
+  eliteDeckSlug: 'deck_skill_assessment_elite_v1',
   category: 'education',
   tags: ['mode:skill_assessment'],
+  eliteTags: ['mode:elite_round'],
   totalQuestions: 16,
   allowedMisses: 16,
   scorePerCorrect: 100,

@@ -1,6 +1,6 @@
 import { usePreventRemove } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -15,6 +15,8 @@ import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   calculateAssessmentResult,
+  calculateEliteRoundEligibility,
+  calculateEliteRoundResult,
   type AssessmentStageResult,
   type EducationLevelKey,
 } from '@/lib/elo';
@@ -54,6 +56,11 @@ const ALLOWED_MISSES_PER_LEVEL: Record<(typeof EDU_LEVEL_STEPS)[number]['key'], 
   college_plus: 0,
 };
 
+const ELITE_ROUND_CONFIG = {
+  totalQuestions: 5,
+  allowedMisses: 1,
+};
+
 export default function SkillAssessmentScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -62,10 +69,13 @@ export default function SkillAssessmentScreen() {
   const [levelIndex, setLevelIndex] = useState(0);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [assessmentMode, setAssessmentMode] = useState<'main' | 'elite'>('main');
   const [cumulativeAnswered, setCumulativeAnswered] = useState(0);
   const [cumulativeCorrect, setCumulativeCorrect] = useState(0);
   const [completionTotals, setCompletionTotals] = useState<{ answered: number; correct: number } | null>(null);
   const [assessmentStageResults, setAssessmentStageResults] = useState<AssessmentStageResult[]>([]);
+  const [usedAnyAssessmentLifeline, setUsedAnyAssessmentLifeline] = useState(false);
+  const [eliteRoundSummary, setEliteRoundSummary] = useState<SwipeChallengeSummary | null>(null);
   const [stageBaseAnswered, setStageBaseAnswered] = useState(0);
   const [stageBaseCorrect, setStageBaseCorrect] = useState(0);
   const lastLevelIndexRef = useRef<number | null>(null);
@@ -80,31 +90,76 @@ export default function SkillAssessmentScreen() {
   const [isBlockedBackDialogVisible, setIsBlockedBackDialogVisible] = useState(false);
   const [isExitConfirmDialogVisible, setIsExitConfirmDialogVisible] = useState(false);
 
-  const currentLevel = EDU_LEVEL_STEPS[Math.min(levelIndex, EDU_LEVEL_STEPS.length - 1)];
-  const isFinalLevel = levelIndex >= EDU_LEVEL_STEPS.length - 1;
+  const isEliteRound = assessmentMode === 'elite';
+  const currentLevel = isEliteRound
+    ? EDU_LEVEL_STEPS[EDU_LEVEL_STEPS.length - 1]
+    : EDU_LEVEL_STEPS[Math.min(levelIndex, EDU_LEVEL_STEPS.length - 1)];
+  const isFinalLevel = !isEliteRound && levelIndex >= EDU_LEVEL_STEPS.length - 1;
   const previousLevel =
     EDU_LEVEL_STEPS[Math.max(0, Math.min(levelIndex - 1, EDU_LEVEL_STEPS.length - 1))];
-  const totalQuestions = QUESTIONS_PER_LEVEL[currentLevel.key] ?? SKILL_ASSESSMENT_CHALLENGE.totalQuestions;
-  const allowedMisses = ALLOWED_MISSES_PER_LEVEL[currentLevel.key] ?? 1;
-  const levelProgressRatio = levelIndex / Math.max(1, EDU_LEVEL_STEPS.length - 1);
+  const totalQuestions = isEliteRound
+    ? ELITE_ROUND_CONFIG.totalQuestions
+    : QUESTIONS_PER_LEVEL[currentLevel.key] ?? SKILL_ASSESSMENT_CHALLENGE.totalQuestions;
+  const allowedMisses = isEliteRound
+    ? ELITE_ROUND_CONFIG.allowedMisses
+    : ALLOWED_MISSES_PER_LEVEL[currentLevel.key] ?? 1;
+  const levelProgressRatio = isEliteRound ? 1 : levelIndex / Math.max(1, EDU_LEVEL_STEPS.length - 1);
   const lifelinesDisabled =
-    currentLevel.key === 'college_basic' || currentLevel.key === 'college_plus';
+    isEliteRound || currentLevel.key === 'college_basic' || currentLevel.key === 'college_plus';
 
   const selectedSubjectLabel =
     SUBJECT_OPTIONS.find((subject) => subject.key === selectedSubject)?.label ?? '과목 선택';
   const stageSubtitle = selectedSubject
-    ? `${selectedSubjectLabel} · ${currentLevel.label}`
+    ? `${selectedSubjectLabel} · ${isEliteRound ? '상위 판별전' : currentLevel.label}`
     : '과목을 고르면 단계별로 난이도가 올라갑니다';
-
   const isElemLevel = currentLevel.key === 'elem_low' || currentLevel.key === 'elem_high';
+  const challengeDeckSlug = isEliteRound
+    ? SKILL_ASSESSMENT_CHALLENGE.eliteDeckSlug
+    : (isElemLevel ? undefined : SKILL_ASSESSMENT_CHALLENGE.deckSlug);
+  const challengeTags = isEliteRound
+    ? SKILL_ASSESSMENT_CHALLENGE.eliteTags
+    : SKILL_ASSESSMENT_CHALLENGE.tags;
+
   const assessmentResult = calculateAssessmentResult(assessmentStageResults);
+  const eliteEligibility = useMemo(
+    () =>
+      calculateEliteRoundEligibility(assessmentStageResults, {
+        usedLifeline: usedAnyAssessmentLifeline,
+      }),
+    [assessmentStageResults, usedAnyAssessmentLifeline]
+  );
+  const eliteOverallAccuracy = useMemo(() => {
+    if (!eliteRoundSummary) return eliteEligibility.overallAccuracy;
+    const totalAnswered = assessmentResult.answered + eliteRoundSummary.answered;
+    const totalCorrect = assessmentResult.correct + eliteRoundSummary.correct;
+    return totalAnswered > 0 ? totalCorrect / totalAnswered : 0;
+  }, [
+    assessmentResult.answered,
+    assessmentResult.correct,
+    eliteEligibility.overallAccuracy,
+    eliteRoundSummary,
+  ]);
+  const eliteRoundResult = useMemo(
+    () =>
+      eliteRoundSummary
+        ? calculateEliteRoundResult(eliteRoundSummary.answered, eliteRoundSummary.correct, {
+          overallAccuracy: eliteOverallAccuracy,
+        })
+        : null,
+    [eliteOverallAccuracy, eliteRoundSummary]
+  );
+  const canStartEliteRound =
+    !isEliteRound && isFinalLevel && eliteEligibility.isEligible && !eliteRoundSummary;
 
   const handleStart = useCallback(() => {
     if (!selectedSubject) return;
+    setAssessmentMode('main');
     setCumulativeAnswered(0);
     setCumulativeCorrect(0);
     setCompletionTotals(null);
     setAssessmentStageResults([]);
+    setUsedAnyAssessmentLifeline(false);
+    setEliteRoundSummary(null);
     completionTotalsRef.current = null;
     cumulativeAnsweredRef.current = 0;
     cumulativeCorrectRef.current = 0;
@@ -126,12 +181,32 @@ export default function SkillAssessmentScreen() {
     setIsRunning(true);
   }, [isFinalLevel, router]);
 
+  const handleStartEliteRound = useCallback(() => {
+    setAssessmentMode('elite');
+    setCompletionTotals(null);
+    setEliteRoundSummary(null);
+    lastCompletionSigRef.current = null;
+    lastCompletionSessionIdRef.current = null;
+    setIsRunning(true);
+  }, []);
+
   const handleChallengeReset = useCallback(() => {
+    if (assessmentMode === 'elite') {
+      setCompletionTotals(null);
+      setEliteRoundSummary(null);
+      lastCompletionSigRef.current = null;
+      lastCompletionSessionIdRef.current = null;
+      setIsRunning(true);
+      return;
+    }
+    setAssessmentMode('main');
     setLevelIndex(0);
     setCumulativeAnswered(0);
     setCumulativeCorrect(0);
     setCompletionTotals(null);
     setAssessmentStageResults([]);
+    setUsedAnyAssessmentLifeline(false);
+    setEliteRoundSummary(null);
     completionTotalsRef.current = null;
     cumulativeAnsweredRef.current = 0;
     cumulativeCorrectRef.current = 0;
@@ -142,13 +217,16 @@ export default function SkillAssessmentScreen() {
     lastCompletionSessionIdRef.current = null;
     setExcludedQuestionIds([]);
     setIsRunning(true);
-  }, []);
+  }, [assessmentMode]);
 
   const handleExitToSelection = useCallback(() => {
     setIsRunning(false);
+    setAssessmentMode('main');
     setLevelIndex(0);
     setCompletionTotals(null);
     setAssessmentStageResults([]);
+    setUsedAnyAssessmentLifeline(false);
+    setEliteRoundSummary(null);
     completionTotalsRef.current = null;
     cumulativeAnsweredRef.current = 0;
     cumulativeCorrectRef.current = 0;
@@ -183,6 +261,26 @@ export default function SkillAssessmentScreen() {
   }, [cumulativeCorrect]);
 
   const handleChallengeComplete = useCallback((summary: SwipeChallengeSummary) => {
+    if (assessmentMode === 'elite') {
+      const normalizedAnswered = Math.max(
+        summary.answered,
+        summary.totalAnswered,
+        summary.questionIds?.length ?? 0
+      );
+      const normalizedCorrect = Math.max(
+        summary.correct,
+        summary.totalCorrect,
+        Math.max(0, normalizedAnswered - summary.missCount)
+      );
+      setEliteRoundSummary({
+        ...summary,
+        answered: normalizedAnswered,
+        correct: normalizedCorrect,
+        totalAnswered: normalizedAnswered,
+        totalCorrect: normalizedCorrect,
+      });
+      return;
+    }
     if (summary.sessionId && lastCompletionSessionIdRef.current === summary.sessionId) {
       return;
     }
@@ -211,12 +309,16 @@ export default function SkillAssessmentScreen() {
     setCumulativeAnswered(nextAnswered);
     setCumulativeCorrect(nextCorrect);
     setCompletionTotals({ answered: nextAnswered, correct: nextCorrect });
+    if (summary.usedLifeline) {
+      setUsedAnyAssessmentLifeline(true);
+    }
     setAssessmentStageResults((prev) => {
       const next = [...prev];
       next[levelIndex] = {
         eduLevel: currentLevel.key as EducationLevelKey,
         answered: summary.answered,
         correct: summary.correct,
+        failed: summary.failed,
       };
       return next;
     });
@@ -227,13 +329,13 @@ export default function SkillAssessmentScreen() {
         return Array.from(merged);
       });
     }
-  }, [currentLevel.key, levelIndex]);
+  }, [assessmentMode, currentLevel.key, levelIndex]);
 
   const failedLevelLabel =
     levelIndex === 0 ? '기초 다지기 필요' : previousLevel.label;
 
   useEffect(() => {
-    if (!isRunning) return;
+    if (!isRunning || isEliteRound) return;
     if (lastLevelIndexRef.current === levelIndex) return;
     lastLevelIndexRef.current = levelIndex;
     const baseTotals = completionTotalsRef.current ?? {
@@ -252,7 +354,7 @@ export default function SkillAssessmentScreen() {
     setStageBaseAnswered(stageBaseAnsweredRef.current);
     setStageBaseCorrect(stageBaseCorrectRef.current);
     setCompletionTotals(null);
-  }, [cumulativeAnswered, cumulativeCorrect, isRunning, levelIndex]);
+  }, [cumulativeAnswered, cumulativeCorrect, isEliteRound, isRunning, levelIndex]);
 
   usePreventRemove(isRunning, () => {
     setIsBlockedBackDialogVisible(true);
@@ -295,7 +397,7 @@ export default function SkillAssessmentScreen() {
         </ThemedText>
         {lifelinesDisabled ? (
           <ThemedText style={[styles.headerNotice, { color: palette.danger }]}>
-            대학 단계는 치트 불가 · 오답 즉시 종료
+            {isEliteRound ? '상위 판별전은 치트 불가 · 오답 2회 시 종료' : '대학 단계는 치트 불가 · 오답 즉시 종료'}
           </ThemedText>
         ) : null}
         {isRunning ? (
@@ -348,31 +450,49 @@ export default function SkillAssessmentScreen() {
         {isRunning ? (
           <SwipeStack
             category={SKILL_ASSESSMENT_CHALLENGE.category}
-            deckSlug={isElemLevel ? undefined : SKILL_ASSESSMENT_CHALLENGE.deckSlug}
+            tags={challengeTags}
+            deckSlug={challengeDeckSlug}
             subject={selectedSubject ?? undefined}
             eduLevel={currentLevel.key}
-            challengeLevelLabel={currentLevel.label}
-            challengeLevelFailedLabel={failedLevelLabel}
+            challengeLevelLabel={isEliteRound ? '상위 판별전' : currentLevel.label}
+            challengeLevelFailedLabel={isEliteRound ? '상위 판별전' : failedLevelLabel}
             excludeIds={excludedQuestionIds}
-            completionTotals={completionTotals}
-            cumulativeAnswered={stageBaseAnswered}
-            cumulativeCorrect={stageBaseCorrect}
-            isFinalStage={isFinalLevel}
+            completionTotals={isEliteRound ? null : completionTotals}
+            cumulativeAnswered={isEliteRound ? 0 : stageBaseAnswered}
+            cumulativeCorrect={isEliteRound ? 0 : stageBaseCorrect}
+            isFinalStage={isEliteRound || isFinalLevel}
             challenge={{
               totalQuestions,
               allowedMisses,
               scorePerCorrect: SKILL_ASSESSMENT_CHALLENGE.scorePerCorrect,
             }}
             onExit={handleExitToSelection}
-            onChallengeAdvance={isFinalLevel ? undefined : handleAdvance}
+            onChallengeAdvance={
+              isEliteRound ? undefined : (isFinalLevel ? (canStartEliteRound ? handleStartEliteRound : undefined) : handleAdvance)
+            }
             onChallengeReset={handleChallengeReset}
             onChallengeComplete={handleChallengeComplete}
-            challengeAdvanceLabel={isFinalLevel ? '과목 선택으로' : '다음 단계로'}
-            challengeCompletionLabel={isFinalLevel ? '챌린지 성공!' : '단계 통과'}
-            challengeProgressLabel={`${currentLevel.label} · ${levelIndex + 1}/${EDU_LEVEL_STEPS.length}`}
+            challengeAdvanceLabel={
+              isEliteRound ? '과목 선택으로' : (isFinalLevel ? '상위 판별전 도전' : '다음 단계로')
+            }
+            challengeCompletionLabel={isEliteRound ? '상위 판별 완료' : (isFinalLevel ? '챌린지 성공!' : '단계 통과')}
+            challengeProgressLabel={
+              isEliteRound
+                ? `상위 판별전 · 1/1`
+                : `${currentLevel.label} · ${levelIndex + 1}/${EDU_LEVEL_STEPS.length}`
+            }
             challengeSubjectLabel={selectedSubjectLabel}
+            challengeSessionKey={assessmentMode}
             lifelinesDisabled={lifelinesDisabled}
             assessmentResult={assessmentResult}
+            challengeReachedLevelOverride={null}
+            challengeHighlightLabel={isEliteRound ? eliteRoundResult?.label ?? null : null}
+            challengeHighlightCaption={
+              isEliteRound && eliteRoundResult
+                ? `${eliteRoundResult.description}`
+                : null
+            }
+            challengePercentOverride={isEliteRound ? eliteRoundResult?.topPercent ?? null : null}
           />
         ) : (
           <ScrollView
@@ -442,7 +562,7 @@ export default function SkillAssessmentScreen() {
         visible={isBlockedBackDialogVisible}
         onClose={() => setIsBlockedBackDialogVisible(false)}
         title="실력 측정 진행 중"
-        description={`뒤로가기는 사용할 수 없어요.\n상단의 종료 버튼을 눌러 측정을 끝내주세요.`}
+        description="상단의 종료 버튼을 눌러 측정을 끝내주세요."
         actions={[
           {
             label: '확인',

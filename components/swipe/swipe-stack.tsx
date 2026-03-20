@@ -58,6 +58,7 @@ export type SwipeChallengeSummary = {
   totalScoreDelta: number;
   maxStreak: number;
   failed: boolean;
+  usedLifeline: boolean;
   questionIds: string[];
   sessionId: string;
 };
@@ -88,6 +89,11 @@ export type SwipeStackProps = {
   challengeProgressLabel?: string;
   challengeSubjectLabel?: string;
   assessmentResult?: AssessmentResult | null;
+  challengeSessionKey?: string;
+  challengeReachedLevelOverride?: string | null;
+  challengeHighlightLabel?: string | null;
+  challengeHighlightCaption?: string | null;
+  challengePercentOverride?: number | null;
   persistLifelines?: boolean;
   lifelinesDisabled?: boolean;
   onChallengeReset?: () => void;
@@ -249,8 +255,14 @@ export function SwipeStack({
   onChallengeComplete,
   onCompletionVisibilityChange,
   challengeCompletionLabel,
+  challengeProgressLabel,
   challengeSubjectLabel,
   assessmentResult,
+  challengeSessionKey,
+  challengeReachedLevelOverride,
+  challengeHighlightLabel,
+  challengeHighlightCaption,
+  challengePercentOverride,
   persistLifelines,
   lifelinesDisabled,
   onChallengeReset,
@@ -321,11 +333,10 @@ export function SwipeStack({
   const stageTransitionStartIdRef = useRef<string | null>(null);
   const stageTransitionStartedAtRef = useRef<number | null>(null);
   const stageTransitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const completedSessionIdRef = useRef<string | null>(null);
+  const completedChallengeSummaryRef = useRef<string | null>(null);
   const [hintText, setHintText] = useState<string | null>(null);
   const [eliminatedChoiceIds, setEliminatedChoiceIds] = useState<string[] | null>(null);
   const [lifelinesUsed, setLifelinesUsed] = useState({ fifty: false, hint: false });
-  const challengeCompletionNotifiedRef = useRef(false);
   const sheetBottomOffset = isChallenge ? insets.bottom + Spacing.lg : 0;
   const actionsSheetBottomPadding = Spacing.xl + sheetBottomOffset;
   const reportSheetDefaultBottomPadding =
@@ -376,10 +387,20 @@ export function SwipeStack({
   }, []);
   const reportReasonResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const excludeIdsSignature = useMemo(
+    () => (excludeIds && excludeIds.length > 0 ? [...excludeIds].sort().join(',') : ''),
+    [excludeIds]
+  );
+
   useEffect(() => {
     seenQuestionIdsRef.current.clear();
     setActiveExcludeIds(excludeIds ?? []);
-  }, [eduLevel]);
+  }, [eduLevel, excludeIdsSignature, excludeIds]);
+
+  const activeExcludeIdsSignature = useMemo(
+    () => (activeExcludeIds.length > 0 ? [...activeExcludeIds].sort().join(',') : ''),
+    [activeExcludeIds]
+  );
 
   const filterKey = useMemo(() => {
     const parts = [
@@ -388,11 +409,21 @@ export function SwipeStack({
       grade != null ? `grade:${grade}` : 'grade:any',
       eduLevel ? `edu:${eduLevel}` : 'edu:any',
       subject ? `subject:${subject}` : 'subject:any',
-      activeExcludeIds.length ? `exclude:${activeExcludeIds.length}` : 'exclude:none',
+      challengeSessionKey ? `session:${challengeSessionKey}` : 'session:default',
+      activeExcludeIdsSignature ? `exclude:${activeExcludeIdsSignature}` : 'exclude:none',
       ...(tags ?? []),
     ];
     return parts.join('|');
-  }, [activeExcludeIds.length, category, deckSlug, eduLevel, grade, subject, tags]);
+  }, [
+    activeExcludeIdsSignature,
+    category,
+    challengeSessionKey,
+    deckSlug,
+    eduLevel,
+    grade,
+    subject,
+    tags,
+  ]);
   const [sessionId, setSessionId] = useState<string>(() => createSwipeSessionId(filterKey));
   const sessionLoggedRef = useRef(false);
   const streakLoggedRef = useRef(false);
@@ -587,13 +618,12 @@ export function SwipeStack({
       setCompletionPending(false);
       setCompletionTotals(null);
       setIsCompletionMetricsLoading(false);
-      completedSessionIdRef.current = null;
+      completedChallengeSummaryRef.current = null;
       setSelectedIndex(null);
       setFeedback(null);
       setSheetFeedback(null);
       setCurrentStreak(0);
       currentStreakRef.current = 0;
-      challengeCompletionNotifiedRef.current = false;
       setActiveCardHeight(null);
       setCardOffset(0);
       hideResultToast();
@@ -950,9 +980,8 @@ export function SwipeStack({
     setCompletionPending(false);
     setCompletionTotals(null);
     setIsCompletionMetricsLoading(false);
-    completedSessionIdRef.current = null;
+    completedChallengeSummaryRef.current = null;
     lastAdvancedQuestionIdRef.current = null;
-    challengeCompletionNotifiedRef.current = false;
     currentQuestionIdRef.current = null;
     startTimeRef.current = Date.now();
     setSessionStats(INITIAL_SESSION_STATS);
@@ -1305,7 +1334,11 @@ export function SwipeStack({
       if (completed) {
         const completionLabel = challengeCompletionLabel ?? '';
         const completionIcon =
-          completionLabel === '단계 통과' ? 'checkmark.rectangle.stack' : 'party.popper';
+          completionLabel === '단계 통과'
+            ? 'checkmark.rectangle.stack'
+            : completionLabel === '상위 판별 완료'
+              ? 'medal'
+              : 'party.popper';
         return {
           icon: completionIcon,
           label: completionLabel,
@@ -1335,6 +1368,7 @@ export function SwipeStack({
 
   const completionIconName = useMemo<IconSymbolName>(() => {
     switch (completionTitle.icon) {
+      case 'medal':
       case 'xmark.seal':
       case 'party.popper':
       case 'checkmark.rectangle.stack':
@@ -1352,22 +1386,34 @@ export function SwipeStack({
     return `${effectiveCorrect} / ${effectiveAnswered} 문항`;
   }, [effectiveAnswered, effectiveCorrect, isChallenge, showAccuracyCard]);
   const completionPercentileLabel = useMemo(() => {
-    if (!isChallenge || !assessmentResult) return null;
-    if (!(isChallengeFailed || isFinalStage)) return null;
-    return `상위 ${assessmentResult.topPercent}%`;
-  }, [assessmentResult, isChallenge, isChallengeFailed, isFinalStage]);
-  const completionLevelLabel = useMemo(() => {
     if (!isChallenge) return null;
-    if (assessmentResult && (isChallengeFailed || isFinalStage)) {
-      return `${assessmentResult.eduLevelLabel} 수준`;
+    if (!(isChallengeFailed || isFinalStage)) return null;
+    const resolvedPercent = challengePercentOverride ?? assessmentResult?.topPercent ?? null;
+    if (resolvedPercent === null) return null;
+    return `상위 ${resolvedPercent}%`;
+  }, [assessmentResult?.topPercent, challengePercentOverride, isChallenge, isChallengeFailed, isFinalStage]);
+  const completionReachedLevelLabel = useMemo(() => {
+    if (!isChallenge) return null;
+    if (challengeReachedLevelOverride) {
+      return challengeReachedLevelOverride;
     }
-    return isChallengeFailed
-      ? (challengeLevelFailedLabel ?? challengeLevelLabel)
-      : challengeLevelLabel;
+    if (isChallengeFailed) {
+      if (challengeLevelFailedLabel && challengeLevelLabel) {
+        return `${challengeLevelFailedLabel}까지 통과 · ${challengeLevelLabel}에서 종료`;
+      }
+      if (challengeLevelLabel) {
+        return `${challengeLevelLabel}에서 종료`;
+      }
+      return challengeLevelFailedLabel ? `${challengeLevelFailedLabel}까지 통과` : null;
+    }
+    if (isFinalStage) {
+      return challengeLevelLabel ? `${challengeLevelLabel}까지 완료` : null;
+    }
+    return challengeLevelLabel ? `${challengeLevelLabel} 진행 중` : null;
   }, [
-    assessmentResult,
     challengeLevelFailedLabel,
     challengeLevelLabel,
+    challengeReachedLevelOverride,
     isChallenge,
     isChallengeFailed,
     isFinalStage,
@@ -1419,6 +1465,7 @@ export function SwipeStack({
       totalScoreDelta: sessionStats.totalScoreDelta,
       maxStreak: sessionStats.maxStreak,
       failed: isChallengeFailed,
+      usedLifeline: lifelinesUsed.fifty || lifelinesUsed.hint,
       sessionId,
     }),
     [
@@ -1427,6 +1474,8 @@ export function SwipeStack({
       computedAnswered,
       computedCorrect,
       isChallengeFailed,
+      lifelinesUsed.fifty,
+      lifelinesUsed.hint,
       missCount,
       sessionStats.maxStreak,
       sessionStats.totalScoreDelta,
@@ -1437,10 +1486,16 @@ export function SwipeStack({
 
   useEffect(() => {
     if (!isChallenge || !shouldShowCompletion) return;
-    if (challengeCompletionNotifiedRef.current) return;
-    if (completedSessionIdRef.current === sessionId) return;
-    challengeCompletionNotifiedRef.current = true;
-    completedSessionIdRef.current = sessionId;
+    const completionSignature = [
+      sessionId,
+      challengeSummary.answered,
+      challengeSummary.correct,
+      challengeSummary.totalAnswered,
+      challengeSummary.totalCorrect,
+      challengeSummary.failed,
+    ].join(':');
+    if (completedChallengeSummaryRef.current === completionSignature) return;
+    completedChallengeSummaryRef.current = completionSignature;
     const questionIds = Array.from(seenQuestionIdsRef.current);
     seenQuestionIdsRef.current.clear();
     if (__DEV__ && DEBUG_COMPLETION) {
@@ -2148,7 +2203,45 @@ export function SwipeStack({
                 ) : null}
               </View>
               <View style={styles.completionMetrics}>
-                {isChallenge && completionLevelLabel && (isChallengeFailed || isFinalStage) ? (
+                {isChallenge && challengeHighlightLabel && shouldShowCompletion ? (
+                  <View
+                    style={[
+                      styles.completionMetric,
+                      styles.completionMetricFull,
+                      styles.completionLevelCard,
+                      { backgroundColor: palette.cardElevated, borderColor: palette.border },
+                    ]}
+                  >
+                    <View style={styles.completionLevelHeader}>
+                      <View
+                        style={[
+                          styles.completionLevelIcon,
+                          { backgroundColor: palette.card, borderColor: palette.border },
+                        ]}
+                      >
+                        <IconSymbol name="sparkles" size={18} color={palette.text} />
+                      </View>
+                      <ThemedText
+                        style={styles.completionMetricLabel}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        판정 결과
+                      </ThemedText>
+                    </View>
+                    <ThemedText style={styles.completionMetricValue}>{challengeHighlightLabel}</ThemedText>
+                    {challengeHighlightCaption ? (
+                      <ThemedText
+                        style={styles.completionContext}
+                        lightColor={palette.textMuted}
+                        darkColor={Palette.gray200}
+                      >
+                        {challengeHighlightCaption}
+                      </ThemedText>
+                    ) : null}
+                  </View>
+                ) : null}
+                {isChallenge && completionReachedLevelLabel && (isChallengeFailed || isFinalStage) ? (
                   <View
                     style={[
                       styles.completionMetric,
@@ -2171,10 +2264,10 @@ export function SwipeStack({
                         lightColor={palette.textMuted}
                         darkColor={Palette.gray200}
                       >
-                        내 수준
+                        도달 단계
                       </ThemedText>
                     </View>
-                    <ThemedText style={styles.completionMetricValue}>{completionLevelLabel}</ThemedText>
+                    <ThemedText style={styles.completionMetricValue}>{completionReachedLevelLabel}</ThemedText>
                   </View>
                 ) : null}
                 {isChallenge && completionPercentileLabel && (isChallengeFailed || isFinalStage) ? (
@@ -2192,14 +2285,14 @@ export function SwipeStack({
                           { backgroundColor: palette.card, borderColor: palette.border },
                         ]}
                       >
-                        <IconSymbol name="medal" size={18} color={palette.text} />
+                        <IconSymbol name="chart.bar" size={18} color={palette.text} />
                       </View>
                       <ThemedText
                         style={styles.completionMetricLabel}
                         lightColor={palette.textMuted}
                         darkColor={Palette.gray200}
                       >
-                        백분위
+                        예상 백분위
                       </ThemedText>
                     </View>
                     <View style={styles.completionInfoRow}>
@@ -2708,8 +2801,8 @@ export function SwipeStack({
                   onSwipeNext={index === 0 ? () => handleNext(card.id, swipeEpoch) : () => undefined}
                   onOpenActions={handleActions}
                   onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
-                  swipeEnabled={index === 0 ? !completionReady : false}
-                  blockSwipeNext={index === 0 ? completionReady : false}
+                  swipeEnabled={index === 0}
+                  blockSwipeNext={false}
                   onCardLayout={index === 0 ? handleActiveCardLayout : undefined}
                 />
               ))}
