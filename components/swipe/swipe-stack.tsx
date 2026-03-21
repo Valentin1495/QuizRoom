@@ -277,7 +277,23 @@ export function SwipeStack({
   const onboardingKey = isChallenge ? '@swipe_onboarding_skill_assessment' : ONBOARDING_KEY;
   const sessionLimit = challenge?.totalQuestions;
   const seenQuestionIdsRef = useRef<Set<string>>(new Set());
+  // activeExcludeIds는 세션이 시작될 때 확정된 제외 ID 목록이다.
+  // excludeIds prop이 결과 카드 표시 중에 바뀌어도 filterKey가 변경되지 않도록
+  // 내부 상태로 버퍼링하며, eduLevel이 변경될 때(단계 이동)만 동기화한다.
   const [activeExcludeIds, setActiveExcludeIds] = useState<string[]>(excludeIds ?? []);
+  const activeExcludeIdsSignature = useMemo(
+    () => (activeExcludeIds.length > 0 ? [...activeExcludeIds].sort().join(',') : ''),
+    [activeExcludeIds]
+  );
+  const excludeIdsRef = useRef(excludeIds);
+  excludeIdsRef.current = excludeIds;
+
+  useEffect(() => {
+    seenQuestionIdsRef.current.clear();
+    setActiveExcludeIds(excludeIdsRef.current ?? []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eduLevel]);
+
   const {
     current,
     queue,
@@ -386,21 +402,6 @@ export function SwipeStack({
     reportReasonSheetRef.current?.dismiss();
   }, []);
   const reportReasonResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const excludeIdsSignature = useMemo(
-    () => (excludeIds && excludeIds.length > 0 ? [...excludeIds].sort().join(',') : ''),
-    [excludeIds]
-  );
-
-  useEffect(() => {
-    seenQuestionIdsRef.current.clear();
-    setActiveExcludeIds(excludeIds ?? []);
-  }, [eduLevel, excludeIdsSignature, excludeIds]);
-
-  const activeExcludeIdsSignature = useMemo(
-    () => (activeExcludeIds.length > 0 ? [...activeExcludeIds].sort().join(',') : ''),
-    [activeExcludeIds]
-  );
 
   const filterKey = useMemo(() => {
     const parts = [
@@ -986,7 +987,7 @@ export function SwipeStack({
     startTimeRef.current = Date.now();
     setSessionStats(INITIAL_SESSION_STATS);
     seenQuestionIdsRef.current.clear();
-    setActiveExcludeIds(excludeIds ?? []);
+    setActiveExcludeIds(excludeIdsRef.current ?? []);
     setSessionId(createSwipeSessionId(filterKey));
     sessionLoggedRef.current = false;
     if (isChallenge) {

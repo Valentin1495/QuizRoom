@@ -70,6 +70,7 @@ export default function SkillAssessmentScreen() {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [assessmentMode, setAssessmentMode] = useState<'main' | 'elite'>('main');
+  const [stageInstanceId, setStageInstanceId] = useState(0);
   const [cumulativeAnswered, setCumulativeAnswered] = useState(0);
   const [cumulativeCorrect, setCumulativeCorrect] = useState(0);
   const [completionTotals, setCompletionTotals] = useState<{ answered: number; correct: number } | null>(null);
@@ -118,7 +119,7 @@ export default function SkillAssessmentScreen() {
     : (isElemLevel ? undefined : SKILL_ASSESSMENT_CHALLENGE.deckSlug);
   const challengeTags = isEliteRound
     ? SKILL_ASSESSMENT_CHALLENGE.eliteTags
-    : SKILL_ASSESSMENT_CHALLENGE.tags;
+    : (isElemLevel ? undefined : SKILL_ASSESSMENT_CHALLENGE.tags);
 
   const assessmentResult = calculateAssessmentResult(assessmentStageResults);
   const eliteEligibility = useMemo(
@@ -154,6 +155,8 @@ export default function SkillAssessmentScreen() {
   const handleStart = useCallback(() => {
     if (!selectedSubject) return;
     setAssessmentMode('main');
+    setStageInstanceId(0);
+    setLevelIndex(0);
     setCumulativeAnswered(0);
     setCumulativeCorrect(0);
     setCompletionTotals(null);
@@ -177,12 +180,17 @@ export default function SkillAssessmentScreen() {
       setIsRunning(false);
       return;
     }
+    setCompletionTotals(null);
+    lastCompletionSigRef.current = null;
+    lastCompletionSessionIdRef.current = null;
+    setStageInstanceId((prev) => prev + 1);
     setLevelIndex((prev) => Math.min(prev + 1, EDU_LEVEL_STEPS.length - 1));
     setIsRunning(true);
-  }, [isFinalLevel, router]);
+  }, [isFinalLevel]);
 
   const handleStartEliteRound = useCallback(() => {
     setAssessmentMode('elite');
+    setStageInstanceId((prev) => prev + 1);
     setCompletionTotals(null);
     setEliteRoundSummary(null);
     lastCompletionSigRef.current = null;
@@ -192,6 +200,7 @@ export default function SkillAssessmentScreen() {
 
   const handleChallengeReset = useCallback(() => {
     if (assessmentMode === 'elite') {
+      setStageInstanceId((prev) => prev + 1);
       setCompletionTotals(null);
       setEliteRoundSummary(null);
       lastCompletionSigRef.current = null;
@@ -200,6 +209,7 @@ export default function SkillAssessmentScreen() {
       return;
     }
     setAssessmentMode('main');
+    setStageInstanceId(0);
     setLevelIndex(0);
     setCumulativeAnswered(0);
     setCumulativeCorrect(0);
@@ -222,6 +232,7 @@ export default function SkillAssessmentScreen() {
   const handleExitToSelection = useCallback(() => {
     setIsRunning(false);
     setAssessmentMode('main');
+    setStageInstanceId(0);
     setLevelIndex(0);
     setCompletionTotals(null);
     setAssessmentStageResults([]);
@@ -449,14 +460,15 @@ export default function SkillAssessmentScreen() {
       <View style={styles.stackContainer}>
         {isRunning ? (
           <SwipeStack
+            key={`${stageInstanceId}:${assessmentMode}:${selectedSubject ?? 'none'}:${currentLevel.key}`}
             category={SKILL_ASSESSMENT_CHALLENGE.category}
             tags={challengeTags}
             deckSlug={challengeDeckSlug}
             subject={selectedSubject ?? undefined}
             eduLevel={currentLevel.key}
-            challengeLevelLabel={isEliteRound ? '상위 판별전' : currentLevel.label}
-            challengeLevelFailedLabel={isEliteRound ? '상위 판별전' : failedLevelLabel}
-            excludeIds={excludedQuestionIds}
+            challengeLevelLabel={isEliteRound ? undefined : currentLevel.label}
+            challengeLevelFailedLabel={isEliteRound ? undefined : failedLevelLabel}
+            excludeIds={isEliteRound ? undefined : excludedQuestionIds}
             completionTotals={isEliteRound ? null : completionTotals}
             cumulativeAnswered={isEliteRound ? 0 : stageBaseAnswered}
             cumulativeCorrect={isEliteRound ? 0 : stageBaseCorrect}
@@ -482,7 +494,7 @@ export default function SkillAssessmentScreen() {
                 : `${currentLevel.label} · ${levelIndex + 1}/${EDU_LEVEL_STEPS.length}`
             }
             challengeSubjectLabel={selectedSubjectLabel}
-            challengeSessionKey={assessmentMode}
+            challengeSessionKey={`${assessmentMode}:${stageInstanceId}:${currentLevel.key}`}
             lifelinesDisabled={lifelinesDisabled}
             assessmentResult={assessmentResult}
             challengeReachedLevelOverride={null}

@@ -1,23 +1,23 @@
 [
   {
     "deckSlug": "deck_skill_assessment_elite_v1",
-    "prompt": "유전학에서 멘델의 독립의 법칙이 예외적으로 잘 성립하지 않는 대표적 상황은 무엇입니까?",
+    "prompt": "하디-바인베르크 평형이 성립하기 위한 조건으로 보기 어려운 것은 무엇입니까?",
     "choices": [
       {
         "id": "a",
-        "text": "형질을 결정하는 유전자들이 서로 다른 염색체에 있을 때"
+        "text": "무작위 교배가 이루어진다"
       },
       {
         "id": "b",
-        "text": "두 유전자가 같은 염색체 위에서 서로 가깝게 연관되어 있을 때"
+        "text": "집단의 크기가 매우 작다"
       },
       {
         "id": "c",
-        "text": "우열 관계가 완전 우성으로 나타날 때"
+        "text": "돌연변이가 거의 없다"
       },
       {
         "id": "d",
-        "text": "자가 수분을 여러 세대 반복할 때"
+        "text": "자연선택의 영향이 없다"
       }
     ],
     "answerIndex": 1,
@@ -28,32 +28,32 @@
       "subject:science",
       "edu:college_plus"
     ],
-    "explanation": "서로 가까운 위치에 있는 연관 유전자들은 감수 분열 동안 함께 전달될 가능성이 커서 독립의 법칙에서 벗어난 분포를 보일 수 있습니다.",
+    "explanation": "하디-바인베르크 평형은 매우 큰 집단을 전제로 하며, 집단이 너무 작으면 유전적 부동이 커져 평형 가정이 깨집니다.",
     "grade": null,
     "subject": "science",
     "eduLevel": "college_plus",
-    "hint": "염색체 위에서 서로 묶여 이동하는 경우를 떠올려 보세요.",
+    "hint": "유전적 부동을 최소화하려면 집단 규모가 커야 합니다.",
     "createdAt": 1706040240
   },
   {
     "deckSlug": "deck_skill_assessment_elite_v1",
-    "prompt": "전자기 유도 현상에서 유도 전류가 자기 선속의 변화를 방해하는 방향으로 생긴다는 내용을 설명하는 법칙은 무엇입니까?",
+    "prompt": "PCR 과정에서 DNA 이중 가닥을 분리하는 변성(denaturation) 단계의 직접적인 목적은 무엇입니까?",
     "choices": [
       {
         "id": "a",
-        "text": "페러데이 법칙"
+        "text": "DNA 중합효소를 비활성화하기 위해서"
       },
       {
         "id": "b",
-        "text": "렌츠의 법칙"
+        "text": "프라이머가 결합할 단일 가닥 주형을 만들기 위해서"
       },
       {
         "id": "c",
-        "text": "앙페르의 법칙"
+        "text": "RNA를 DNA로 역전사하기 위해서"
       },
       {
         "id": "d",
-        "text": "가우스의 법칙"
+        "text": "염기 서열의 돌연변이를 유도하기 위해서"
       }
     ],
     "answerIndex": 1,
@@ -64,32 +64,140 @@
       "subject:science",
       "edu:college_plus"
     ],
-    "explanation": "유도 전류의 방향이 원인이 된 자기 선속 변화를 방해하도록 정해진다는 점을 설명하는 법칙은 렌츠의 법칙입니다.",
+    "explanation": "변성 단계에서는 이중 가닥 DNA를 분리하여 다음 단계에서 프라이머가 각 단일 가닥에 결합할 수 있게 만듭니다.",
     "grade": null,
     "subject": "science",
     "eduLevel": "college_plus",
-    "hint": "변화를 그대로 돕지 않고 거스르는 방향입니다.",
+    "hint": "증폭을 시작하려면 먼저 복제의 바탕이 되는 단일 가닥이 필요합니다.",
     "createdAt": 1706040240
   },
   {
     "deckSlug": "deck_skill_assessment_elite_v1",
-    "prompt": "베게너의 대륙 이동설을 처음 뒷받침한 근거로 보기 어려운 것은 무엇입니까?",
+    "prompt": "르샤틀리에의 원리에 따르면 기체 반응이 평형에 있을 때 압력을 높이면 어떤 방향으로 평형이 이동합니까?",
     "choices": [
       {
         "id": "a",
-        "text": "대륙 해안선의 형태적 유사성"
+        "text": "기체 몰수가 더 많은 쪽"
       },
       {
         "id": "b",
-        "text": "서로 떨어진 대륙에서 발견되는 동일 화석 분포"
+        "text": "기체 몰수가 더 적은 쪽"
       },
       {
         "id": "c",
-        "text": "해저 확장과 자기적 역전 패턴"
+        "text": "반드시 정반응 방향"
       },
       {
         "id": "d",
-        "text": "빙하 흔적과 지질 구조의 연속성"
+        "text": "압력 변화와는 무관하다"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:science",
+      "edu:college_plus"
+    ],
+    "explanation": "압력을 높이면 계는 기체 몰수를 줄이는 방향으로 반응하여 압력 증가를 완화하려 합니다.",
+    "grade": null,
+    "subject": "science",
+    "eduLevel": "college_plus",
+    "hint": "기체 입자 수를 줄이는 쪽이 압력 증가를 덜 받습니다.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "카르노 기관의 최대 효율을 결정하는 요인으로 가장 직접적인 것은 무엇입니까?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "작동 물질의 질량"
+      },
+      {
+        "id": "b",
+        "text": "고온 열원과 저온 열원의 절대온도"
+      },
+      {
+        "id": "c",
+        "text": "기관 내부의 마찰 계수"
+      },
+      {
+        "id": "d",
+        "text": "한 번의 순환에 걸리는 시간"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:science",
+      "edu:college_plus"
+    ],
+    "explanation": "카르노 효율은 두 열저장고의 절대온도 차이에만 의존하며, 작동 물질의 종류에는 직접 좌우되지 않습니다.",
+    "grade": null,
+    "subject": "science",
+    "eduLevel": "college_plus",
+    "hint": "이상적 열기관의 효율 공식은 온도만으로 표현됩니다.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "SN1 반응의 속도 결정 단계(rate-determining step)로 가장 적절한 것은 무엇입니까?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "친핵체가 탄소를 동시에 공격하는 단계"
+      },
+      {
+        "id": "b",
+        "text": "이탈기가 먼저 떨어져 카보양이온이 생성되는 단계"
+      },
+      {
+        "id": "c",
+        "text": "생성물이 다시 반응물로 되돌아가는 단계"
+      },
+      {
+        "id": "d",
+        "text": "용매가 완전히 증발하는 단계"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:science",
+      "edu:college_plus"
+    ],
+    "explanation": "SN1 반응은 먼저 이탈기가 떨어져 카보양이온이 형성되는 단분자 해리 단계가 가장 느려 속도를 결정합니다.",
+    "grade": null,
+    "subject": "science",
+    "eduLevel": "college_plus",
+    "hint": "SN1의 '1'은 속도식에 한 분자만 관여한다는 뜻입니다.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "천문학에서 멀어지는 은하의 스펙트럼선이 장파장 쪽으로 이동하는 현상은 무엇을 가장 직접적으로 시사합니까?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "은하가 우리 쪽으로 접근하고 있다"
+      },
+      {
+        "id": "b",
+        "text": "빛의 속도가 감소했다"
+      },
+      {
+        "id": "c",
+        "text": "관측된 천체가 우리로부터 멀어지고 있다"
+      },
+      {
+        "id": "d",
+        "text": "항성 내부 핵융합이 정지했다"
       }
     ],
     "answerIndex": 2,
@@ -100,119 +208,11 @@
       "subject:science",
       "edu:college_plus"
     ],
-    "explanation": "해저 확장과 자기적 역전은 이후 판 구조론을 강하게 뒷받침한 증거이며, 베게너가 처음 제시한 핵심 근거는 아닙니다.",
+    "explanation": "스펙트럼선의 적색편이는 도플러 효과에 따라 광원이 관측자로부터 멀어지고 있음을 시사합니다.",
     "grade": null,
     "subject": "science",
     "eduLevel": "college_plus",
-    "hint": "베게너 이후에 축적된 해양 지구과학 증거입니다.",
-    "createdAt": 1706040240
-  },
-  {
-    "deckSlug": "deck_skill_assessment_elite_v1",
-    "prompt": "효소의 경쟁적 저해에 대한 설명으로 가장 적절한 것은 무엇입니까?",
-    "choices": [
-      {
-        "id": "a",
-        "text": "저해제가 활성 부위가 아닌 다른 부위에 결합해 입체 구조를 바꾼다"
-      },
-      {
-        "id": "b",
-        "text": "저해제가 기질과 유사한 구조로 활성 부위를 두고 경쟁한다"
-      },
-      {
-        "id": "c",
-        "text": "기질 농도를 높일수록 저해 효과가 더 강해진다"
-      },
-      {
-        "id": "d",
-        "text": "반응 최대 속도는 감소하지만 Km은 변하지 않는다"
-      }
-    ],
-    "answerIndex": 1,
-    "category": "education",
-    "type": "mcq",
-    "tags": [
-      "mode:elite_round",
-      "subject:science",
-      "edu:college_plus"
-    ],
-    "explanation": "경쟁적 저해제는 기질과 비슷한 구조로 활성 부위를 선점하려 하며, 기질 농도를 높이면 저해 효과를 어느 정도 극복할 수 있습니다.",
-    "grade": null,
-    "subject": "science",
-    "eduLevel": "college_plus",
-    "hint": "핵심은 활성 부위를 두고 누가 먼저 차지하느냐입니다.",
-    "createdAt": 1706040240
-  },
-  {
-    "deckSlug": "deck_skill_assessment_elite_v1",
-    "prompt": "VSEPR 이론에 따르면 중심 원자가 3개의 결합쌍과 1개의 비공유 전자쌍을 가질 때 분자 구조는 무엇입니까?",
-    "choices": [
-      {
-        "id": "a",
-        "text": "평면 삼각형"
-      },
-      {
-        "id": "b",
-        "text": "선형"
-      },
-      {
-        "id": "c",
-        "text": "정사면체형"
-      },
-      {
-        "id": "d",
-        "text": "삼각뿔형"
-      }
-    ],
-    "answerIndex": 3,
-    "category": "education",
-    "type": "mcq",
-    "tags": [
-      "mode:elite_round",
-      "subject:science",
-      "edu:college_plus"
-    ],
-    "explanation": "전자 영역은 4개라 전자쌍 배열은 정사면체형이지만, 비공유 전자쌍 하나 때문에 실제 분자 구조는 삼각뿔형이 됩니다.",
-    "grade": null,
-    "subject": "science",
-    "eduLevel": "college_plus",
-    "hint": "전자쌍 배열과 실제 분자 구조를 구분해야 합니다.",
-    "createdAt": 1706040240
-  },
-  {
-    "deckSlug": "deck_skill_assessment_elite_v1",
-    "prompt": "단백질의 알파-나선과 베타-병풍 같은 2차 구조를 직접 안정화하는 주된 상호작용은 무엇입니까?",
-    "choices": [
-      {
-        "id": "a",
-        "text": "이온 결합"
-      },
-      {
-        "id": "b",
-        "text": "수소 결합"
-      },
-      {
-        "id": "c",
-        "text": "소수성 상호작용"
-      },
-      {
-        "id": "d",
-        "text": "이황화 결합"
-      }
-    ],
-    "answerIndex": 1,
-    "category": "education",
-    "type": "mcq",
-    "tags": [
-      "mode:elite_round",
-      "subject:science",
-      "edu:college_plus"
-    ],
-    "explanation": "단백질 2차 구조는 주사슬 사이에서 형성되는 규칙적인 수소 결합에 의해 안정화됩니다.",
-    "grade": null,
-    "subject": "science",
-    "eduLevel": "college_plus",
-    "hint": "주사슬의 C=O와 N-H 사이에서 반복적으로 형성되는 결합입니다.",
+    "hint": "파장이 길어지는 쪽 이동은 후퇴 운동과 연결됩니다.",
     "createdAt": 1706040240
   },
   {

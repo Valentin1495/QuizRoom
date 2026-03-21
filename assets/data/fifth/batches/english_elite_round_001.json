@@ -1,0 +1,290 @@
+[
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "Choose the sentence in which the underlined expression would most naturally mean 'to slightly weaken the force of a claim' in academic writing.",
+    "choices": [
+      {
+        "id": "a",
+        "text": "The author hedged the conclusion by adding several qualifying phrases."
+      },
+      {
+        "id": "b",
+        "text": "The author hedged the garden before publishing the paper."
+      },
+      {
+        "id": "c",
+        "text": "The author hedged the citation by deleting the footnotes."
+      },
+      {
+        "id": "d",
+        "text": "The author hedged the paragraph by translating it literally."
+      }
+    ],
+    "answerIndex": 0,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:english",
+      "edu:college_plus"
+    ],
+    "explanation": "In academic writing, 'hedge' often means to qualify or soften a claim to avoid excessive certainty.",
+    "grade": null,
+    "subject": "english",
+    "eduLevel": "college_plus",
+    "hint": "Think about cautious, qualified language in research papers.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "Identify the sentence with the most appropriate parallel structure.",
+    "choices": [
+      {
+        "id": "a",
+        "text": "The policy aims to reduce waste, improving safety, and the promotion of efficiency."
+      },
+      {
+        "id": "b",
+        "text": "The policy aims to reduce waste, improve safety, and promote efficiency."
+      },
+      {
+        "id": "c",
+        "text": "The policy aims at reducing waste, to improve safety, and promoting efficiency."
+      },
+      {
+        "id": "d",
+        "text": "The policy aims for waste reduction, improve safety, and efficient promotion."
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:english",
+      "edu:college_plus"
+    ],
+    "explanation": "Effective parallel structure requires items in a series to share the same grammatical form: reduce, improve, promote.",
+    "grade": null,
+    "subject": "english",
+    "eduLevel": "college_plus",
+    "hint": "Check whether each verb in the list matches the others grammatically.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "Read the sentence:\n'What appears to be a contradiction dissolves once we distinguish explanation from justification.'\nWhat is the author's main rhetorical move?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "Rejecting both concepts as meaningless"
+      },
+      {
+        "id": "b",
+        "text": "Resolving confusion by separating two related concepts"
+      },
+      {
+        "id": "c",
+        "text": "Appealing to authority instead of reasoning"
+      },
+      {
+        "id": "d",
+        "text": "Arguing that contradiction is unavoidable"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:english",
+      "edu:college_plus"
+    ],
+    "explanation": "The writer clarifies the issue by distinguishing two similar but different concepts, which resolves the apparent contradiction.",
+    "grade": null,
+    "subject": "english",
+    "eduLevel": "college_plus",
+    "hint": "Focus on what the distinction is doing in the argument.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "Choose the best transition word:\nThe data set was limited in scope; ______, the findings should be interpreted with caution.",
+    "choices": [
+      {
+        "id": "a",
+        "text": "nevertheless"
+      },
+      {
+        "id": "b",
+        "text": "therefore"
+      },
+      {
+        "id": "c",
+        "text": "meanwhile"
+      },
+      {
+        "id": "d",
+        "text": "likewise"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:english",
+      "edu:college_plus"
+    ],
+    "explanation": "The second clause is a conclusion drawn from the limitation of the data, so 'therefore' is the best logical connector.",
+    "grade": null,
+    "subject": "english",
+    "eduLevel": "college_plus",
+    "hint": "The relationship is cause to conclusion, not contrast.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "Which revision best removes ambiguity from the sentence?\n'When the professor met the researcher, she was already skeptical.'",
+    "choices": [
+      {
+        "id": "a",
+        "text": "When the professor met the researcher, skepticism had existed."
+      },
+      {
+        "id": "b",
+        "text": "The professor met the researcher, and she was skeptical."
+      },
+      {
+        "id": "c",
+        "text": "When the professor met the researcher, the professor was already skeptical."
+      },
+      {
+        "id": "d",
+        "text": "The researcher was met by the professor, who was skeptical, maybe."
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:english",
+      "edu:college_plus"
+    ],
+    "explanation": "Replacing the ambiguous pronoun with the intended noun removes uncertainty about who was skeptical.",
+    "grade": null,
+    "subject": "english",
+    "eduLevel": "college_plus",
+    "hint": "The best revision explicitly identifies the person referred to by 'she'.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "Which sentence best demonstrates concessive reasoning?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "Because the sample was small, the study was abandoned."
+      },
+      {
+        "id": "b",
+        "text": "Although the sample was small, the pattern remained statistically meaningful."
+      },
+      {
+        "id": "c",
+        "text": "The sample was small, and the results were reported."
+      },
+      {
+        "id": "d",
+        "text": "The sample was small, so the hypothesis changed."
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:english",
+      "edu:college_plus"
+    ],
+    "explanation": "Concessive reasoning acknowledges a potential objection while maintaining the main claim, often signaled by 'although' or 'even though'.",
+    "grade": null,
+    "subject": "english",
+    "eduLevel": "college_plus",
+    "hint": "Look for a sentence that admits a limitation without surrendering the conclusion.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "Choose the word closest in meaning to 'tenuous' in this context:\n'The causal link proposed by the editorial was tenuous at best.'",
+    "choices": [
+      {
+        "id": "a",
+        "text": "well-established"
+      },
+      {
+        "id": "b",
+        "text": "fragile"
+      },
+      {
+        "id": "c",
+        "text": "inevitable"
+      },
+      {
+        "id": "d",
+        "text": "precise"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:english",
+      "edu:college_plus"
+    ],
+    "explanation": "'Tenuous' means weak, slight, or not strongly supported, which is closest to 'fragile' in this context.",
+    "grade": null,
+    "subject": "english",
+    "eduLevel": "college_plus",
+    "hint": "The editorial's causal link is being criticized as weak rather than solid.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "Which sentence best fits a formal academic register?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "This theory totally blows the old explanation out of the water."
+      },
+      {
+        "id": "b",
+        "text": "This theory kinda changes how we think about the issue."
+      },
+      {
+        "id": "c",
+        "text": "This theory substantially revises the prevailing account of the issue."
+      },
+      {
+        "id": "d",
+        "text": "This theory is super important for the debate."
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:english",
+      "edu:college_plus"
+    ],
+    "explanation": "Formal academic register favors precise, neutral, and non-colloquial wording.",
+    "grade": null,
+    "subject": "english",
+    "eduLevel": "college_plus",
+    "hint": "Avoid slang, vague intensifiers, and conversational phrasing.",
+    "createdAt": 1706040240
+  }
+]

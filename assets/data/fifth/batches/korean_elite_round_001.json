@@ -1,0 +1,290 @@
+[
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 중 피동 표현이 불필요하게\n겹쳐 어법상 가장 부자연스러운 문장은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "문이 저절로 닫혔다."
+      },
+      {
+        "id": "b",
+        "text": "규정이 새롭게 마련되었다."
+      },
+      {
+        "id": "c",
+        "text": "문제가 해결되어졌다."
+      },
+      {
+        "id": "d",
+        "text": "사실이 곧 밝혀졌다."
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:korean",
+      "edu:college_plus"
+    ],
+    "explanation": "'해결되다' 자체가 피동 표현인데 여기에 다시 '-어지다'를 겹쳐 쓰면 군더더기 피동이 됩니다.",
+    "grade": null,
+    "subject": "korean",
+    "eduLevel": "college_plus",
+    "hint": "이미 피동 의미가 포함된 말에 다시 피동 표현이 붙었는지 보세요.",
+    "createdAt": 1737640800
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 밑줄 친 표현 가운데 문맥상\n가장 적절한 것은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "그의 주장은 논리적 비약을 '함유'하고 있다."
+      },
+      {
+        "id": "b",
+        "text": "위원회는 심의 결과를 공식적으로 '공표'했다."
+      },
+      {
+        "id": "c",
+        "text": "그 보고서는 여러 오류를 '수렴'하고 있다."
+      },
+      {
+        "id": "d",
+        "text": "그는 비판을 듣고 자신의 입장을 '발효'했다."
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:korean",
+      "edu:college_plus"
+    ],
+    "explanation": "'공표하다'는 공식적으로 널리 알린다는 뜻으로 행정적·공적 맥락에 가장 적절합니다.",
+    "grade": null,
+    "subject": "korean",
+    "eduLevel": "college_plus",
+    "hint": "공적인 심의 결과를 알리는 데 가장 자연스러운 어휘를 고르세요.",
+    "createdAt": 1737640800
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 문장에 대한 해석으로 가장 적절한 것은?\n'이 글은 진보를 찬양하는 듯 보이지만,\n실은 그 이면의 비용을 집요하게\n추적한다.'",
+    "choices": [
+      {
+        "id": "a",
+        "text": "필자는 진보를 무조건 긍정한다."
+      },
+      {
+        "id": "b",
+        "text": "글의 표면과 실제 초점이 다르다."
+      },
+      {
+        "id": "c",
+        "text": "필자는 비용 문제를 부차적으로 본다."
+      },
+      {
+        "id": "d",
+        "text": "글은 진보의 개념을 정의하는 데만 집중한다."
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:korean",
+      "edu:college_plus"
+    ],
+    "explanation": "문장에는 '겉으로는 찬양처럼 보이지만 실제로는 비용을 추적한다'는 반전 구조가 드러납니다.",
+    "grade": null,
+    "subject": "korean",
+    "eduLevel": "college_plus",
+    "hint": "핵심은 '듯 보이지만, 실은'이라는 전환 표현입니다.",
+    "createdAt": 1737640800
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 중 관형어와 수식 대상의 연결이\n가장 자연스러운 문장은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "오래 연구한 학자의 주장"
+      },
+      {
+        "id": "b",
+        "text": "심오하게 제기된 철학자"
+      },
+      {
+        "id": "c",
+        "text": "치밀한 전개된 논문"
+      },
+      {
+        "id": "d",
+        "text": "정교하게 비판한 관점"
+      }
+    ],
+    "answerIndex": 0,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:korean",
+      "edu:college_plus"
+    ],
+    "explanation": "'오래 연구한'은 사람을 수식하는 표현으로 자연스럽고, 그 사람이 내놓은 '주장'도 무리 없이 이어집니다.",
+    "grade": null,
+    "subject": "korean",
+    "eduLevel": "college_plus",
+    "hint": "수식어가 뒤의 명사와 의미상 자연스럽게 연결되는지 보세요.",
+    "createdAt": 1737640800
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 중 의미가 가장 가까운 한자 성어의\n짝이 올바른 것은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "동상이몽 - 서로 뜻이 잘 통함"
+      },
+      {
+        "id": "b",
+        "text": "견물생심 - 욕심이 생김"
+      },
+      {
+        "id": "c",
+        "text": "감언이설 - 엄격한 충고"
+      },
+      {
+        "id": "d",
+        "text": "오리무중 - 길이 환히 보임"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:korean",
+      "edu:college_plus"
+    ],
+    "explanation": "'견물생심'은 물건을 보면 그것을 가지고 싶은 욕심이 생긴다는 뜻입니다.",
+    "grade": null,
+    "subject": "korean",
+    "eduLevel": "college_plus",
+    "hint": "사물을 보면 마음이 움직인다는 뜻을 떠올려 보세요.",
+    "createdAt": 1737640800
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 중 문장 성분의 호응이 가장 적절한 것은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "문제를 해결하려면 분석과 가설을 세워야 한다."
+      },
+      {
+        "id": "b",
+        "text": "그는 사실을 확인하고 결론을 신중했다."
+      },
+      {
+        "id": "c",
+        "text": "우리는 자료를 검토하며 정책이 필요했다."
+      },
+      {
+        "id": "d",
+        "text": "학생은 토론을 준비하고 발표가 설득했다."
+      }
+    ],
+    "answerIndex": 0,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:korean",
+      "edu:college_plus"
+    ],
+    "explanation": "나머지는 서술어와 목적어, 또는 절 사이의 연결이 어색하지만, 1번은 문장 구조와 의미 연결이 자연스럽습니다.",
+    "grade": null,
+    "subject": "korean",
+    "eduLevel": "college_plus",
+    "hint": "서술어가 앞말과 문법적으로 자연스럽게 이어지는지 확인하세요.",
+    "createdAt": 1737640800
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 글의 서술 방식으로 가장 적절한 것은?\n'필자는 먼저 통념을 제시한 뒤,\n그 한계를 지적하고, 마지막으로\n대안을 제안한다.'",
+    "choices": [
+      {
+        "id": "a",
+        "text": "단순 시간 순서 제시"
+      },
+      {
+        "id": "b",
+        "text": "문제 제기 후 비판과 대안 제시"
+      },
+      {
+        "id": "c",
+        "text": "인물 중심 서사 전개"
+      },
+      {
+        "id": "d",
+        "text": "감정 묘사 중심 전개"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:korean",
+      "edu:college_plus"
+    ],
+    "explanation": "제시된 문장은 통념 제시, 한계 비판, 대안 제안이라는 논증 구조를 설명합니다.",
+    "grade": null,
+    "subject": "korean",
+    "eduLevel": "college_plus",
+    "hint": "글의 내용이 아니라 전개 방식의 순서를 묻는 문제입니다.",
+    "createdAt": 1737640800
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 중 학술적 문체에 가장 가까운 문장은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "이 현상은 진짜 놀랍고 엄청 특이하다."
+      },
+      {
+        "id": "b",
+        "text": "이 현상은 여러 변수의 상호작용 속에서 이해될 필요가 있다."
+      },
+      {
+        "id": "c",
+        "text": "이 현상은 대충 봐도 이상하다."
+      },
+      {
+        "id": "d",
+        "text": "이 현상은 그냥 예외라고 보면 된다."
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:korean",
+      "edu:college_plus"
+    ],
+    "explanation": "학술적 문체는 감탄이나 구어체보다 객관적이고 분석적인 표현을 선호합니다.",
+    "grade": null,
+    "subject": "korean",
+    "eduLevel": "college_plus",
+    "hint": "구어체와 평가적 감탄을 피한 문장을 찾으세요.",
+    "createdAt": 1737640800
+  }
+]

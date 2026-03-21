@@ -1,0 +1,290 @@
+[
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 중 공공재의 특징을 가장 정확하게\n설명한 것은 무엇입니까?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "소비자가 돈을 내지 않으면 이용할 수 없다"
+      },
+      {
+        "id": "b",
+        "text": "한 사람의 소비가 다른 사람의 소비 가능성을 크게 줄인다"
+      },
+      {
+        "id": "c",
+        "text": "비배제성과 비경합성을 함께 가진다"
+      },
+      {
+        "id": "d",
+        "text": "항상 정부만 생산할 수 있다"
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:social",
+      "edu:college_plus"
+    ],
+    "explanation": "공공재는 대가를 내지 않은 사람을 배제하기 어렵고, 한 사람의 사용이 다른 사람의 사용을 크게 방해하지 않는 특징을 가집니다.",
+    "grade": null,
+    "subject": "social",
+    "eduLevel": "college_plus",
+    "hint": "배제하기 어렵고 함께 써도 줄지 않는다는 두 속성을 떠올리세요.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "존 스튜어트 밀의 자유론 관점에서\n국가가 개인의 자유를 정당하게 제한할\n수 있는 가장 대표적인 근거는?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "개인의 도덕적 완성을 위해서"
+      },
+      {
+        "id": "b",
+        "text": "다수의 취향을 따르게 하기 위해서"
+      },
+      {
+        "id": "c",
+        "text": "타인에게 해를 끼치는 행위를 막기 위해서"
+      },
+      {
+        "id": "d",
+        "text": "국가의 권위를 강화하기 위해서"
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:social",
+      "edu:college_plus"
+    ],
+    "explanation": "밀의 해악 원칙에 따르면 개인의 자유는 타인에게 해를 끼칠 때에만 정당하게 제한될 수 있습니다.",
+    "grade": null,
+    "subject": "social",
+    "eduLevel": "college_plus",
+    "hint": "자유 제한의 기준은 자기 자신이 아니라 '타인에게 주는 피해'입니다.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 중 기회비용의 개념을 가장 잘\n보여주는 사례는 무엇입니까?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "커피 가격이 올라 다른 음료도 비싸졌다"
+      },
+      {
+        "id": "b",
+        "text": "영화를 보기로 하면서 포기한 공부 시간의 가치"
+      },
+      {
+        "id": "c",
+        "text": "정부가 세금을 늘려 재정을 확보했다"
+      },
+      {
+        "id": "d",
+        "text": "기업이 광고비를 늘려 판매를 늘렸다"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:social",
+      "edu:college_plus"
+    ],
+    "explanation": "기회비용은 어떤 선택을 위해 포기한 대안 가운데 가장 가치 있는 것의 가치입니다.",
+    "grade": null,
+    "subject": "social",
+    "eduLevel": "college_plus",
+    "hint": "선택하지 않은 대안 중 가장 아쉬운 것을 떠올리세요.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 중 문화 상대주의의 태도로 가장\n적절한 것은 무엇입니까?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "모든 문화는 우열을 분명히 가릴 수 있다"
+      },
+      {
+        "id": "b",
+        "text": "자기 문화 기준으로 타 문화를 평가해야 한다"
+      },
+      {
+        "id": "c",
+        "text": "각 문화를 그 사회의 맥락 속에서 이해하려 한다"
+      },
+      {
+        "id": "d",
+        "text": "모든 문화 요소는 무조건 유지되어야 한다"
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:social",
+      "edu:college_plus"
+    ],
+    "explanation": "문화 상대주의는 각 문화를 그 자체의 역사적·사회적 맥락에서 이해하려는 태도입니다.",
+    "grade": null,
+    "subject": "social",
+    "eduLevel": "college_plus",
+    "hint": "평가보다 이해에 초점을 두는 입장입니다.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "사회학에서 '아노미' 상태에 대한 설명으로\n가장 적절한 것은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "사회 규범이 약화되어 개인이 혼란을 겪는 상태"
+      },
+      {
+        "id": "b",
+        "text": "강한 공동체 의식이 회복된 상태"
+      },
+      {
+        "id": "c",
+        "text": "정치 권력이 완전히 분산된 상태"
+      },
+      {
+        "id": "d",
+        "text": "경제 성장률이 급격히 높아진 상태"
+      }
+    ],
+    "answerIndex": 0,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:social",
+      "edu:college_plus"
+    ],
+    "explanation": "아노미는 급격한 사회 변화 등으로 규범의 통제력이 약해져 방향 상실과 혼란이 나타나는 상태를 뜻합니다.",
+    "grade": null,
+    "subject": "social",
+    "eduLevel": "college_plus",
+    "hint": "규범의 약화와 혼란을 연결해 보세요.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "중앙은행이 기준금리를 인상할 때 일반적으로\n기대되는 효과로 가장 적절한 것은?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "시중 대출이 쉬워지고 소비가 확대된다"
+      },
+      {
+        "id": "b",
+        "text": "통화량이 늘고 물가 상승 압력이 커진다"
+      },
+      {
+        "id": "c",
+        "text": "차입 비용이 높아져 총수요 억제 효과가 나타난다"
+      },
+      {
+        "id": "d",
+        "text": "정부 지출이 자동으로 증가한다"
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:social",
+      "edu:college_plus"
+    ],
+    "explanation": "금리 인상은 대출과 투자를 위축시켜 총수요를 줄이고 물가를 안정시키려는 긴축 정책 효과를 냅니다.",
+    "grade": null,
+    "subject": "social",
+    "eduLevel": "college_plus",
+    "hint": "돈을 빌리는 비용이 올라가면 소비와 투자가 어떻게 변하는지 생각하세요.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 중 법치주의의 핵심 원리로 보기\n어려운 것은 무엇입니까?",
+    "choices": [
+      {
+        "id": "a",
+        "text": "권력 행사는 법에 근거해야 한다"
+      },
+      {
+        "id": "b",
+        "text": "국가 권력도 법의 통제를 받는다"
+      },
+      {
+        "id": "c",
+        "text": "권력자의 의지가 법보다 우선한다"
+      },
+      {
+        "id": "d",
+        "text": "국민의 자유와 권리를 법으로 보장한다"
+      }
+    ],
+    "answerIndex": 2,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:social",
+      "edu:college_plus"
+    ],
+    "explanation": "법치주의는 자의적 지배가 아니라 법에 의한 지배를 의미하므로 권력자의 의지가 법보다 우선할 수 없습니다.",
+    "grade": null,
+    "subject": "social",
+    "eduLevel": "college_plus",
+    "hint": "핵심은 사람이 아니라 법이 기준이 된다는 점입니다.",
+    "createdAt": 1706040240
+  },
+  {
+    "deckSlug": "deck_skill_assessment_elite_v1",
+    "prompt": "다음 설명에 해당하는 정치 제도는?\n'국민이 선출한 대표가 입법을 담당하고,\n정부는 의회의 신임을 기반으로 성립한다.'",
+    "choices": [
+      {
+        "id": "a",
+        "text": "대통령제"
+      },
+      {
+        "id": "b",
+        "text": "의원내각제"
+      },
+      {
+        "id": "c",
+        "text": "전제군주제"
+      },
+      {
+        "id": "d",
+        "text": "직접민주제"
+      }
+    ],
+    "answerIndex": 1,
+    "category": "education",
+    "type": "mcq",
+    "tags": [
+      "mode:elite_round",
+      "subject:social",
+      "edu:college_plus"
+    ],
+    "explanation": "의원내각제는 행정부가 의회의 신임을 기반으로 성립하고 유지된다는 점이 핵심입니다.",
+    "grade": null,
+    "subject": "social",
+    "eduLevel": "college_plus",
+    "hint": "정부의 존립이 의회의 신임과 연결되는 제도를 고르세요.",
+    "createdAt": 1706040240
+  }
+]
