@@ -135,7 +135,7 @@ export function AuthGate({ children }: AuthGateProps) {
     }
     return {
       isLoading: false,
-      headline: 'QuizRoom',
+      headline: '퀴즈룸',
       helper: '지금 바로 실시간 지식 배틀에 합류하세요!',
     } as const;
   }, [status, user, error]);

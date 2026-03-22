@@ -380,7 +380,7 @@ export default function MatchLobbyScreen() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     await Share.share(
       Platform.OS === 'android' ? { message: url } : { url },
-      { dialogTitle: 'QuizRoom 초대 링크 공유' },
+      { dialogTitle: '퀴즈룸 초대 링크 공유' },
     );
   }, [roomCode]);
 
