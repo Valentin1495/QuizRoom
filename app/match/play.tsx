@@ -1,5 +1,6 @@
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 import type { RealtimeChannel } from '@supabase/supabase-js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -25,6 +26,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Elevation, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useConnectionStatus } from '@/hooks/use-connection-status';
+import { useInterstitialAd } from '@/hooks/use-interstitial-ad';
 import { computeTimeLeft, getComboMultiplier, useGameActions, useLiveGame } from '@/hooks/use-live-game';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
@@ -52,6 +54,7 @@ const REACTION_MAX_SPAWN_PER_BROADCAST = 30;
 const HOST_HEARTBEAT_GRACE_MS = 16000;
 const HOST_SNAPSHOT_STALE_THRESHOLD_MS = HOST_HEARTBEAT_GRACE_MS * 2;
 const HIDDEN_HEADER_OPTIONS = { headerShown: false } as const;
+const LIVE_MATCH_REMATCH_INTERSTITIAL_ELIGIBILITY_KEY = '@live_match_has_used_first_rematch';
 
 export default function MatchPlayScreen() {
     const router = useRouter();
@@ -73,6 +76,7 @@ export default function MatchPlayScreen() {
     const background = useThemeColor({}, 'background');
     const avatarFallbackColor = useThemeColor({}, 'primary');
     const skeletonBaseColor = colorScheme === 'dark' ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.06)';
+    const { showAd: showInterstitialAd } = useInterstitialAd();
 
     const [hasLeft, setHasLeft] = useState(false);
     const [isLeaveDialogVisible, setLeaveDialogVisible] = useState(false);
@@ -416,6 +420,8 @@ export default function MatchPlayScreen() {
     const [localNowMs, setLocalNowMs] = useState(() => Date.now());
     const [phaseCountdownMs, setPhaseCountdownMs] = useState<number | null>(null);
     const phaseExpiryKeyRef = useRef<string | null>(null);
+    const hasUsedAnyRematchRef = useRef(false);
+    const [isLiveMatchRematchInterstitialPolicyReady, setIsLiveMatchRematchInterstitialPolicyReady] = useState(false);
     const [isRematchPending, setIsRematchPending] = useState(false);
     const [isLobbyPending, setIsLobbyPending] = useState(false);
     const [isGameStalled, setIsGameStalled] = useState(false);
@@ -628,6 +634,22 @@ export default function MatchPlayScreen() {
     }, [rawRoomStatus]);
 
     const roomStatus = stableRoomStatus;
+
+    useEffect(() => {
+        const loadLiveMatchRematchInterstitialPolicy = async () => {
+            try {
+                const stored = await AsyncStorage.getItem(LIVE_MATCH_REMATCH_INTERSTITIAL_ELIGIBILITY_KEY);
+                hasUsedAnyRematchRef.current = stored === 'true';
+            } catch (error) {
+                console.warn('Failed to load live match rematch interstitial policy', error);
+                hasUsedAnyRematchRef.current = false;
+            } finally {
+                setIsLiveMatchRematchInterstitialPolicyReady(true);
+            }
+        };
+
+        void loadLiveMatchRematchInterstitialPolicy();
+    }, []);
 
     const currentRound = roomData?.currentRound ?? null;
     const participants = useMemo(() => roomData?.participants ?? [], [roomData]);
@@ -1563,6 +1585,28 @@ export default function MatchPlayScreen() {
         }
     }, [hasLeft, isLobbyPending, isRematchPending, roomStatus]);
 
+    const runResultsActionWithInterstitial = useCallback(
+        async (action: () => Promise<void>) => {
+            if (!isLiveMatchRematchInterstitialPolicyReady) {
+                await action();
+                return;
+            }
+            if (!hasUsedAnyRematchRef.current) {
+                hasUsedAnyRematchRef.current = true;
+                void AsyncStorage.setItem(LIVE_MATCH_REMATCH_INTERSTITIAL_ELIGIBILITY_KEY, 'true').catch((error) => {
+                    console.warn('Failed to persist live match rematch interstitial policy', error);
+                });
+                await action();
+                return;
+            }
+
+            showInterstitialAd(() => {
+                void action();
+            });
+        },
+        [isLiveMatchRematchInterstitialPolicyReady, showInterstitialAd]
+    );
+
     const handleRematch = useCallback(async () => {
         if (!roomId || !meParticipantId) return;
         if (!isHost) {
@@ -1578,13 +1622,20 @@ export default function MatchPlayScreen() {
         setIsRematchPending(true);
         try {
             const key = await resolveHostGuestKey();
-            await gameActions.rematch({ roomId, participantId: meParticipantId, delayMs: resolveDelay(), guestKey: key });
+            await runResultsActionWithInterstitial(async () => {
+                try {
+                    await gameActions.rematch({ roomId, participantId: meParticipantId, delayMs: resolveDelay(), guestKey: key });
+                } catch (err) {
+                    Alert.alert('리매치를 시작하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
+                } finally {
+                    setIsRematchPending(false);
+                }
+            });
         } catch (err) {
             Alert.alert('리매치를 시작하지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
-        } finally {
             setIsRematchPending(false);
         }
-    }, [gameActions, isHost, isLobbyPending, isRematchPending, meParticipantId, pendingAction, resolveHostGuestKey, roomId, roomStatus, showToast, resolveDelay]);
+    }, [gameActions, isHost, isLobbyPending, isRematchPending, meParticipantId, pendingAction, resolveHostGuestKey, roomId, roomStatus, runResultsActionWithInterstitial, showToast, resolveDelay]);
 
     const handleReturnToLobby = useCallback(async () => {
         if (!roomId || !participantArgs || !meParticipantId) return;
@@ -1609,13 +1660,20 @@ export default function MatchPlayScreen() {
         setIsLobbyPending(true);
         try {
             const key = await resolveHostGuestKey();
-            await gameActions.resetToLobby({ roomId, participantId: meParticipantId, guestKey: key });
+            await runResultsActionWithInterstitial(async () => {
+                try {
+                    await gameActions.resetToLobby({ roomId, participantId: meParticipantId, guestKey: key });
+                } catch (err) {
+                    Alert.alert('?湲곗떎濡??뚯븘媛吏 紐삵뻽?댁슂', err instanceof Error ? err.message : '?????녿뒗 ?ㅻ쪟媛 諛쒖깮?덉뒿?덈떎.');
+                } finally {
+                    setIsLobbyPending(false);
+                }
+            });
         } catch (err) {
             Alert.alert('대기실로 돌아가지 못했어요', err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
-        } finally {
             setIsLobbyPending(false);
         }
-    }, [gameActions, isHost, isLobbyPending, isRematchPending, meParticipantId, participantArgs, pendingAction, resolveHostGuestKey, roomId, roomStatus, resolveDelay]);
+    }, [gameActions, isHost, isLobbyPending, isRematchPending, meParticipantId, participantArgs, pendingAction, resolveHostGuestKey, roomId, roomStatus, runResultsActionWithInterstitial, resolveDelay]);
 
     useEffect(() => {
         if (roomStatus !== 'results') {

@@ -29,6 +29,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.eunho.quizroom",
+      "permissions": ["com.google.android.gms.permission.AD_ID"],
       "intentFilters": [
         {
           "action": "VIEW",
@@ -72,6 +73,13 @@
         "@react-native-google-signin/google-signin",
         {
           "iosUrlScheme": "com.googleusercontent.apps.726867887633-457jvvkt021sfulu3tr3gvch0utrpqsd"
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511"
         }
       ],
       "./plugins/with-android-local-properties",
