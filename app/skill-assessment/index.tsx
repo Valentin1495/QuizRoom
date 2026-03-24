@@ -1,6 +1,8 @@
 import { usePreventRemove } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useInterstitialAd } from '@/hooks/use-interstitial-ad';
+import { useRewardedAd } from '@/hooks/use-rewarded-ad';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -66,6 +68,8 @@ export default function SkillAssessmentScreen() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { showAd: showRewardedAd } = useRewardedAd();
+  const { showAd: showInterstitialAd } = useInterstitialAd();
   const [levelIndex, setLevelIndex] = useState(0);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -82,6 +86,7 @@ export default function SkillAssessmentScreen() {
   const lastLevelIndexRef = useRef<number | null>(null);
   const lastCompletionSigRef = useRef<string | null>(null);
   const lastCompletionSessionIdRef = useRef<string | null>(null);
+  const hasShownCompletionInterstitialRef = useRef(false);
   const cumulativeAnsweredRef = useRef(0);
   const cumulativeCorrectRef = useRef(0);
   const stageBaseAnsweredRef = useRef(0);
@@ -152,6 +157,18 @@ export default function SkillAssessmentScreen() {
   const canStartEliteRound =
     !isEliteRound && isFinalLevel && eliteEligibility.isEligible && !eliteRoundSummary;
 
+  const showCompletionInterstitial = useCallback((onAfterAd: () => void) => {
+    if (hasShownCompletionInterstitialRef.current) {
+      onAfterAd();
+      return;
+    }
+
+    hasShownCompletionInterstitialRef.current = true;
+    showInterstitialAd(() => {
+      onAfterAd();
+    });
+  }, [showInterstitialAd]);
+
   const handleStart = useCallback(() => {
     if (!selectedSubject) return;
     setAssessmentMode('main');
@@ -163,6 +180,7 @@ export default function SkillAssessmentScreen() {
     setAssessmentStageResults([]);
     setUsedAnyAssessmentLifeline(false);
     setEliteRoundSummary(null);
+    hasShownCompletionInterstitialRef.current = false;
     completionTotalsRef.current = null;
     cumulativeAnsweredRef.current = 0;
     cumulativeCorrectRef.current = 0;
@@ -189,23 +207,53 @@ export default function SkillAssessmentScreen() {
   }, [isFinalLevel]);
 
   const handleStartEliteRound = useCallback(() => {
-    setAssessmentMode('elite');
-    setStageInstanceId((prev) => prev + 1);
-    setCompletionTotals(null);
-    setEliteRoundSummary(null);
-    lastCompletionSigRef.current = null;
-    lastCompletionSessionIdRef.current = null;
-    setIsRunning(true);
-  }, []);
-
-  const handleChallengeReset = useCallback(() => {
-    if (assessmentMode === 'elite') {
+    showCompletionInterstitial(() => {
+      setAssessmentMode('elite');
       setStageInstanceId((prev) => prev + 1);
       setCompletionTotals(null);
       setEliteRoundSummary(null);
       lastCompletionSigRef.current = null;
       lastCompletionSessionIdRef.current = null;
       setIsRunning(true);
+    });
+  }, [showCompletionInterstitial]);
+
+  const handleChallengeReset = useCallback(() => {
+    if (assessmentMode === 'elite') {
+      showInterstitialAd(() => {
+        setStageInstanceId((prev) => prev + 1);
+        setCompletionTotals(null);
+        setEliteRoundSummary(null);
+        hasShownCompletionInterstitialRef.current = false;
+        lastCompletionSigRef.current = null;
+        lastCompletionSessionIdRef.current = null;
+        setIsRunning(true);
+      });
+      return;
+    }
+    if (currentLevel.key === 'college_plus') {
+      showInterstitialAd(() => {
+        setAssessmentMode('main');
+        setStageInstanceId(0);
+        setLevelIndex(0);
+        setCumulativeAnswered(0);
+        setCumulativeCorrect(0);
+        setCompletionTotals(null);
+        setAssessmentStageResults([]);
+        setUsedAnyAssessmentLifeline(false);
+        setEliteRoundSummary(null);
+        hasShownCompletionInterstitialRef.current = false;
+        completionTotalsRef.current = null;
+        cumulativeAnsweredRef.current = 0;
+        cumulativeCorrectRef.current = 0;
+        setStageBaseAnswered(0);
+        setStageBaseCorrect(0);
+        lastLevelIndexRef.current = null;
+        lastCompletionSigRef.current = null;
+        lastCompletionSessionIdRef.current = null;
+        setExcludedQuestionIds([]);
+        setIsRunning(true);
+      });
       return;
     }
     setAssessmentMode('main');
@@ -217,6 +265,7 @@ export default function SkillAssessmentScreen() {
     setAssessmentStageResults([]);
     setUsedAnyAssessmentLifeline(false);
     setEliteRoundSummary(null);
+    hasShownCompletionInterstitialRef.current = false;
     completionTotalsRef.current = null;
     cumulativeAnsweredRef.current = 0;
     cumulativeCorrectRef.current = 0;
@@ -227,7 +276,7 @@ export default function SkillAssessmentScreen() {
     lastCompletionSessionIdRef.current = null;
     setExcludedQuestionIds([]);
     setIsRunning(true);
-  }, [assessmentMode]);
+  }, [assessmentMode, currentLevel.key, showInterstitialAd]);
 
   const handleExitToSelection = useCallback(() => {
     setIsRunning(false);
@@ -238,6 +287,7 @@ export default function SkillAssessmentScreen() {
     setAssessmentStageResults([]);
     setUsedAnyAssessmentLifeline(false);
     setEliteRoundSummary(null);
+    hasShownCompletionInterstitialRef.current = false;
     completionTotalsRef.current = null;
     cumulativeAnsweredRef.current = 0;
     cumulativeCorrectRef.current = 0;
@@ -341,6 +391,14 @@ export default function SkillAssessmentScreen() {
       });
     }
   }, [assessmentMode, currentLevel.key, levelIndex]);
+
+  const handleReviveWithAd = useCallback((onRevived: () => void) => {
+    showRewardedAd({ onEarnedReward: onRevived });
+  }, [showRewardedAd]);
+
+  const handleRechargeLifelineWithAd = useCallback((onRecharged: () => void) => {
+    showRewardedAd({ onEarnedReward: onRecharged });
+  }, [showRewardedAd]);
 
   const failedLevelLabel =
     levelIndex === 0 ? '기초 다지기 필요' : previousLevel.label;
@@ -480,7 +538,7 @@ export default function SkillAssessmentScreen() {
             }}
             onExit={handleExitToSelection}
             onChallengeAdvance={
-              isEliteRound ? undefined : (isFinalLevel ? (canStartEliteRound ? handleStartEliteRound : undefined) : handleAdvance)
+              isEliteRound ? undefined : (isFinalLevel ? (canStartEliteRound ? handleStartEliteRound : handleExitToSelection) : handleAdvance)
             }
             onChallengeReset={handleChallengeReset}
             onChallengeComplete={handleChallengeComplete}
@@ -505,6 +563,8 @@ export default function SkillAssessmentScreen() {
                 : null
             }
             challengePercentOverride={isEliteRound ? eliteRoundResult?.topPercent ?? null : null}
+            onReviveWithAd={isEliteRound ? undefined : handleReviveWithAd}
+            onRechargeLifelineWithAd={lifelinesDisabled ? undefined : handleRechargeLifelineWithAd}
           />
         ) : (
           <ScrollView
@@ -725,3 +785,4 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
 });
+

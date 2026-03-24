@@ -11,6 +11,7 @@ export type ResultToastOptions = {
   message: string;
   kind?: ToastKind;
   scoreDelta?: number;
+  xpDelta?: number;
   streak?: number;
   ctaLabel?: string;
   onPressCta?: () => void;
@@ -19,6 +20,7 @@ export type ResultToastOptions = {
 type ResultToastComponentProps = ToastConfigParams<{
   kind: ToastKind;
   scoreDelta?: number;
+  xpDelta?: number;
   streak?: number;
   ctaLabel?: string;
   onPressCta?: () => void;
@@ -83,7 +85,6 @@ const TOAST_COLORS: Record<ToastKind, { light: ToastTone; dark: ToastTone }> = {
       ctaText: '#E5EBFF',
     },
   },
-  // 콤보용 색상 (3-4콤보: 주황)
   combo: {
     light: {
       background: 'rgba(255, 237, 219, 0.92)',
@@ -100,7 +101,6 @@ const TOAST_COLORS: Record<ToastKind, { light: ToastTone; dark: ToastTone }> = {
       ctaText: '#FFECD2',
     },
   },
-  // 콤보용 색상 (5-6콤보: 핫핑크)
   combo_hot: {
     light: {
       background: 'rgba(255, 224, 240, 0.92)',
@@ -117,7 +117,6 @@ const TOAST_COLORS: Record<ToastKind, { light: ToastTone; dark: ToastTone }> = {
       ctaText: '#FFE4F0',
     },
   },
-  // 콤보용 색상 (7+콤보: 레드/골드)
   combo_fire: {
     light: {
       background: 'rgba(255, 220, 200, 0.92)',
@@ -139,6 +138,7 @@ const TOAST_COLORS: Record<ToastKind, { light: ToastTone; dark: ToastTone }> = {
 function ResultToastContent({ text1, props }: ResultToastComponentProps) {
   const kind = props.kind ?? 'neutral';
   const scoreDelta = props.scoreDelta;
+  const xpDelta = props.xpDelta;
   const streak = props.streak;
   const ctaLabel = props.ctaLabel;
   const onPressCta = props.onPressCta;
@@ -162,9 +162,15 @@ function ResultToastContent({ text1, props }: ResultToastComponentProps) {
           {scoreDelta}점
         </ThemedText>
       ) : null}
+      {xpDelta !== undefined ? (
+        <ThemedText style={[styles.meta, { color: tone.meta }]}>
+          {xpDelta > 0 ? '+' : ''}
+          {xpDelta}XP
+        </ThemedText>
+      ) : null}
       {streak !== undefined ? (
         <ThemedText style={[styles.meta, { color: tone.meta }]}>
-          {streak}연속 정답! 🔥
+          {streak}연속 정답!
         </ThemedText>
       ) : null}
       {ctaLabel && onPressCta ? (
@@ -188,6 +194,7 @@ export function showResultToast({
   message,
   kind = 'neutral',
   scoreDelta,
+  xpDelta,
   streak,
   ctaLabel,
   onPressCta,
@@ -196,7 +203,7 @@ export function showResultToast({
     type: TOAST_TYPE,
     position: 'top',
     text1: message,
-    props: { kind, scoreDelta, streak, ctaLabel, onPressCta },
+    props: { kind, scoreDelta, xpDelta, streak, ctaLabel, onPressCta },
     autoHide: !ctaLabel || !onPressCta,
     visibilityTime: ctaLabel && onPressCta ? 5000 : 2500,
     topOffset: 80,

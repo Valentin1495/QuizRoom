@@ -28,6 +28,8 @@ import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import type { CategoryMeta } from '@/constants/categories';
 import { Colors, Elevation, Palette, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useInterstitialAd } from '@/hooks/use-interstitial-ad';
+import { useRewardedAd } from '@/hooks/use-rewarded-ad';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/hooks/use-unified-auth';
 import type { AssessmentResult } from '@/lib/elo';
@@ -97,6 +99,8 @@ export type SwipeStackProps = {
   persistLifelines?: boolean;
   lifelinesDisabled?: boolean;
   onChallengeReset?: () => void;
+  onReviveWithAd?: (onRevived: () => void) => void;
+  onRechargeLifelineWithAd?: (onRecharged: () => void) => void;
 };
 
 const REPORT_REASONS = [
@@ -132,6 +136,7 @@ const INITIAL_SESSION_STATS: SessionStats = {
 
 const MIN_STACK_HEIGHT = 420;
 const ONBOARDING_KEY = '@swipe_onboarding_completed';
+const SWIPE_INTERSTITIAL_ELIGIBILITY_KEY = '@swipe_has_completed_first_session';
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const ONBOARDING_SLIDE_WIDTH = Math.max(Math.min(WINDOW_WIDTH - Spacing.xl * 2, 400), 280);
 const SWIPE_COMPLETION_BONUS_XP = 30;
@@ -146,6 +151,14 @@ const getComboMultiplier = (streak: number) => {
   if (streak >= 5) return 2.0;
   if (streak >= 3) return 1.5;
   return 1.0;
+};
+
+const getStreakXpBonus = (streak: number) => {
+  if (streak >= 10) return 8;
+  if (streak >= 7) return 6;
+  if (streak >= 5) return 4;
+  if (streak >= 3) return 2;
+  return 0;
 };
 
 const supabaseAnonKey =
@@ -266,6 +279,8 @@ export function SwipeStack({
   persistLifelines,
   lifelinesDisabled,
   onChallengeReset,
+  onReviveWithAd,
+  onRechargeLifelineWithAd,
   excludeIds,
   challengeLevelLabel,
   challengeLevelFailedLabel,
@@ -338,8 +353,28 @@ export function SwipeStack({
   const onboardingIndicatorInactive = colorScheme === 'dark' ? Palette.gray700 : Palette.gray200;
   const dangerColor = palette.danger;
   const { logHistory, logStreakProgress } = useSwipeLoggers();
+  const { showAd: showInterstitialAd } = useInterstitialAd();
+  const { showAd: showRewardedAd } = useRewardedAd();
   const [sessionStats, setSessionStats] = useState<SessionStats>(INITIAL_SESSION_STATS);
   const [missCount, setMissCount] = useState(0);
+  const [hasUsedRevive, setHasUsedRevive] = useState(false);
+  const [hasUsedStreakProtect, setHasUsedStreakProtect] = useState(false);
+  const [hasPendingProtectedStreakXpBlock, setHasPendingProtectedStreakXpBlock] = useState(false);
+  const [isReviveLoading, setIsReviveLoading] = useState(false);
+  const [isStreakProtectLoading, setIsStreakProtectLoading] = useState(false);
+  const [isRechargeFiftyLoading, setIsRechargeFiftyLoading] = useState(false);
+  const [isRechargeHintLoading, setIsRechargeHintLoading] = useState(false);
+  const [hasRechargedFifty, setHasRechargedFifty] = useState(false);
+  const [hasRechargedHint, setHasRechargedHint] = useState(false);
+  const rechargedFiftyQuestionIdRef = useRef<string | null>(null);
+  const rechargedHintQuestionIdRef = useRef<string | null>(null);
+  const streakProtectQuestionIdRef = useRef<string | null>(null);
+  const streakProtectValueRef = useRef(0);
+  const hasShownSwipeCompletionInterstitialRef = useRef(false);
+  const hasCompletedAnySwipeSessionRef = useRef(false);
+  const skipSwipeInterstitialForCurrentSessionRef = useRef(false);
+  const hasRecordedSwipeSessionCompletionRef = useRef(false);
+  const [isSwipeInterstitialPolicyReady, setIsSwipeInterstitialPolicyReady] = useState(false);
   const [pendingAnswerCorrect, setPendingAnswerCorrect] = useState<boolean | null>(null);
   const [completionPending, setCompletionPending] = useState(false);
   const [completionTotals, setCompletionTotals] = useState<{ answered: number; correct: number } | null>(null);
@@ -590,6 +625,25 @@ export function SwipeStack({
   }, [indicatorAnims, onboardingFadeAnim, onboardingKey]);
 
   useEffect(() => {
+    const loadSwipeInterstitialPolicy = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(SWIPE_INTERSTITIAL_ELIGIBILITY_KEY);
+        const hasCompletedAnySwipeSession = stored === 'true';
+        hasCompletedAnySwipeSessionRef.current = hasCompletedAnySwipeSession;
+        skipSwipeInterstitialForCurrentSessionRef.current = !hasCompletedAnySwipeSession;
+      } catch (error) {
+        console.warn('Failed to load swipe interstitial policy', error);
+        hasCompletedAnySwipeSessionRef.current = false;
+        skipSwipeInterstitialForCurrentSessionRef.current = true;
+      } finally {
+        setIsSwipeInterstitialPolicyReady(true);
+      }
+    };
+
+    void loadSwipeInterstitialPolicy();
+  }, []);
+
+  useEffect(() => {
     return () => {
       if (reportSheetTimeoutRef.current) {
         clearTimeout(reportSheetTimeoutRef.current);
@@ -610,6 +664,16 @@ export function SwipeStack({
       sessionEpochRef.current += 1;
       setSessionStats(INITIAL_SESSION_STATS);
       setMissCount(0);
+      setHasUsedRevive(false);
+      setIsRechargeFiftyLoading(false);
+      setIsRechargeHintLoading(false);
+      setHasRechargedFifty(false);
+      setHasRechargedHint(false);
+      rechargedFiftyQuestionIdRef.current = null;
+      rechargedHintQuestionIdRef.current = null;
+      hasShownSwipeCompletionInterstitialRef.current = false;
+      hasRecordedSwipeSessionCompletionRef.current = false;
+      skipSwipeInterstitialForCurrentSessionRef.current = !hasCompletedAnySwipeSessionRef.current;
       if (!persistLifelines) {
         setLifelinesUsed({ fifty: false, hint: false });
       }
@@ -713,6 +777,31 @@ export function SwipeStack({
     sessionLoggedRef.current = false;
   }, [sessionId]);
 
+  const handleProtectStreakWithAd = useCallback(() => {
+    if (isChallenge || hasUsedStreakProtect || isStreakProtectLoading) return;
+    if (!streakProtectQuestionIdRef.current || streakProtectValueRef.current <= 0) return;
+
+    setIsStreakProtectLoading(true);
+    showRewardedAd({
+      onEarnedReward: () => {
+        const restoredStreak = streakProtectValueRef.current;
+        currentStreakRef.current = restoredStreak;
+        setCurrentStreak(restoredStreak);
+        setHasUsedStreakProtect(true);
+        setHasPendingProtectedStreakXpBlock(true);
+        hideResultToast();
+        showResultToast({
+          message: `연속 정답 ${restoredStreak}회를 유지했어요.`,
+          kind: 'success',
+          streak: restoredStreak,
+        });
+      },
+      onAdClosed: () => {
+        setIsStreakProtectLoading(false);
+      },
+    });
+  }, [hasUsedStreakProtect, isChallenge, isStreakProtectLoading, showRewardedAd]);
+
   const handleSelect = useCallback(
     async (choiceIndex: number) => {
       if (!current || feedback) {
@@ -788,6 +877,10 @@ export function SwipeStack({
         const measuredTimeMs = Math.max(0, response.timeMs ?? timeMs);
         const nextStreak = response.isCorrect ? prevStreakBeforeAnswer + 1 : 0;
         const comboMultiplier = response.isCorrect ? getComboMultiplier(nextStreak) : 1;
+        const streakXpBonus =
+          !isChallenge && response.isCorrect && !hasPendingProtectedStreakXpBlock
+            ? getStreakXpBonus(nextStreak)
+            : 0;
         const baseScoreDelta = response.scoreDelta ?? (response.isCorrect ? 15 : -5);
         const challengeScoreDelta = response.isCorrect ? scorePerCorrect : 0;
         const scoreDelta = isChallenge
@@ -808,6 +901,9 @@ export function SwipeStack({
           streak: nextStreak,
         };
         let answerXpGain = 0;
+        if (!isChallenge && response.isCorrect && hasPendingProtectedStreakXpBlock) {
+          setHasPendingProtectedStreakXpBlock(false);
+        }
         if (FEATURE_FLAGS.auth) {
           const safeSessionKey = sessionKey ?? `swipe-${Date.now().toString(36)}`;
           const payload = {
@@ -852,15 +948,15 @@ export function SwipeStack({
             }
             const payloadData = (data as { data?: { xpGain?: number; streak?: number; totalCorrect?: number; totalPlayed?: number } })?.data;
             if (payloadData && typeof payloadData.xpGain === 'number' && applyUserDelta) {
-              answerXpGain = payloadData.xpGain;
+              answerXpGain = payloadData.xpGain + streakXpBonus;
               applyUserDelta({
-                xp: (user?.xp ?? 0) + (payloadData.xpGain ?? 0),
+                xp: (user?.xp ?? 0) + (payloadData.xpGain ?? 0) + streakXpBonus,
                 streak: payloadData.streak ?? user?.streak,
                 totalCorrect: payloadData.totalCorrect ?? user?.totalCorrect,
                 totalPlayed: payloadData.totalPlayed ?? user?.totalPlayed,
               });
             } else if (payloadData && typeof payloadData.xpGain === 'number') {
-              answerXpGain = payloadData.xpGain;
+              answerXpGain = payloadData.xpGain + streakXpBonus;
             }
           } catch (err) {
             console.warn('Failed to log swipe answer to Supabase', err);
@@ -905,11 +1001,21 @@ export function SwipeStack({
             setSelectedIndex(choiceIndex);
           }
         }
-        if (response.isCorrect !== optimisticIsCorrect) {
+        if (!isChallenge && !response.isCorrect && prevStreakBeforeAnswer > 0 && !hasUsedStreakProtect) {
+          streakProtectQuestionIdRef.current = questionId ?? null;
+          streakProtectValueRef.current = prevStreakBeforeAnswer;
+          showResultToast({
+            message: '오답 ㅠ 광고를 보면 현재 스트릭을 유지할 수 있어요.',
+            kind: 'error',
+            ctaLabel: isStreakProtectLoading ? '광고 준비 중...' : '광고 시청',
+            onPressCta: handleProtectStreakWithAd,
+          });
+        } else if (response.isCorrect !== optimisticIsCorrect) {
           showResultToast({
             message: response.isCorrect ? '정답으로 정정했어요.' : '오답으로 정정했어요.',
             kind: response.isCorrect ? 'success' : 'error',
             scoreDelta,
+            xpDelta: answerXpGain > 0 ? answerXpGain : undefined,
             streak: nextStreak,
           });
         }
@@ -929,7 +1035,7 @@ export function SwipeStack({
         });
       }
     },
-    [current, feedback, submitAnswer, sessionKey, getFunctionAuthHeaders, applyUserDelta, isChallenge, scorePerCorrect, user]
+    [applyUserDelta, current, feedback, getFunctionAuthHeaders, handleProtectStreakWithAd, hasUsedStreakProtect, isChallenge, isStreakProtectLoading, scorePerCorrect, sessionKey, submitAnswer, user]
   );
 
   const handleSkip = useCallback(() => {
@@ -949,7 +1055,7 @@ export function SwipeStack({
     setCardOffset((prev) => prev + 1);
   }, [closeActionsSheet, closeReportReasonSheet, closeSheet, current, isChallenge, skip]);
 
-  const handleReset = useCallback(async () => {
+  const handleResetCore = useCallback(async () => {
     if (__DEV__) {
       console.log('[SwipeStack] handleReset', {
         sessionId,
@@ -974,6 +1080,18 @@ export function SwipeStack({
     setIsSubmittingReport(false);
     setCardOffset(0);
     setMissCount(0);
+    setHasUsedRevive(false);
+    setHasUsedStreakProtect(false);
+    setHasPendingProtectedStreakXpBlock(false);
+    setIsRechargeFiftyLoading(false);
+    setIsRechargeHintLoading(false);
+    setIsStreakProtectLoading(false);
+    setHasRechargedFifty(false);
+    setHasRechargedHint(false);
+    rechargedFiftyQuestionIdRef.current = null;
+    rechargedHintQuestionIdRef.current = null;
+    streakProtectQuestionIdRef.current = null;
+    streakProtectValueRef.current = 0;
     setHintText(null);
     setEliminatedChoiceIds(null);
     setLifelinesUsed({ fifty: false, hint: false });
@@ -989,6 +1107,9 @@ export function SwipeStack({
     seenQuestionIdsRef.current.clear();
     setActiveExcludeIds(excludeIdsRef.current ?? []);
     setSessionId(createSwipeSessionId(filterKey));
+    hasShownSwipeCompletionInterstitialRef.current = false;
+    hasRecordedSwipeSessionCompletionRef.current = false;
+    skipSwipeInterstitialForCurrentSessionRef.current = !hasCompletedAnySwipeSessionRef.current;
     sessionLoggedRef.current = false;
     if (isChallenge) {
       onChallengeReset?.();
@@ -1004,9 +1125,13 @@ export function SwipeStack({
     closeSheet,
     filterKey,
     isChallenge,
+    cardOffset,
+    challenge,
+    missCount,
     onChallengeReset,
     persistLifelines,
     reset,
+    sessionId,
   ]);
 
   const handleUseFifty = useCallback(() => {
@@ -1052,6 +1177,39 @@ export function SwipeStack({
     closeActionsSheet();
   }, [closeActionsSheet, current, feedback, isChallenge, lifelinesDisabled, lifelinesUsed.hint]);
 
+  const handleReviveWithAd = useCallback(() => {
+    if (!onReviveWithAd || hasUsedRevive || isReviveLoading) return;
+    setIsReviveLoading(true);
+    onReviveWithAd(() => {
+      setMissCount((prev) => Math.max(0, prev - 1));
+      setHasUsedRevive(true);
+      setIsReviveLoading(false);
+      setCompletionPending(false);
+    });
+  }, [hasUsedRevive, isReviveLoading, onReviveWithAd]);
+
+  const handleRechargeFiftyWithAd = useCallback(() => {
+    if (!onRechargeLifelineWithAd || isRechargeFiftyLoading || !lifelinesUsed.fifty || hasRechargedFifty) return;
+    setIsRechargeFiftyLoading(true);
+    onRechargeLifelineWithAd(() => {
+      rechargedFiftyQuestionIdRef.current = current?.id ?? null;
+      setLifelinesUsed((prev) => ({ ...prev, fifty: false }));
+      setHasRechargedFifty(true);
+      setIsRechargeFiftyLoading(false);
+    });
+  }, [current?.id, hasRechargedFifty, isRechargeFiftyLoading, lifelinesUsed.fifty, onRechargeLifelineWithAd]);
+
+  const handleRechargeHintWithAd = useCallback(() => {
+    if (!onRechargeLifelineWithAd || isRechargeHintLoading || !lifelinesUsed.hint || hasRechargedHint) return;
+    setIsRechargeHintLoading(true);
+    onRechargeLifelineWithAd(() => {
+      rechargedHintQuestionIdRef.current = current?.id ?? null;
+      setLifelinesUsed((prev) => ({ ...prev, hint: false }));
+      setHasRechargedHint(true);
+      setIsRechargeHintLoading(false);
+    });
+  }, [current?.id, hasRechargedHint, isRechargeHintLoading, lifelinesUsed.hint, onRechargeLifelineWithAd]);
+
   useEffect(() => {
     currentStreakRef.current = currentStreak;
   }, [currentStreak]);
@@ -1071,6 +1229,9 @@ export function SwipeStack({
     }
     lastAdvancedQuestionIdRef.current = current.id ?? null;
     closeSheet();
+    hideResultToast();
+    streakProtectQuestionIdRef.current = null;
+    streakProtectValueRef.current = 0;
     setSelectedIndex(null);
     setFeedback(null);
     setSheetFeedback(null);
@@ -1147,10 +1308,10 @@ export function SwipeStack({
   const completionProgressText = useMemo(() => {
     if (!isChallenge) return null;
     if (totalQuestions > 0) {
-      return `${Math.min(answeredForMetrics, totalQuestions)} / ${totalQuestions}`;
+      return `${Math.min(cardOffset + 1, totalQuestions)} / ${totalQuestions}`;
     }
-    return `${answeredForMetrics} 문항`;
-  }, [answeredForMetrics, isChallenge, totalQuestions]);
+    return `${cardOffset + 1} 문항`;
+  }, [cardOffset, isChallenge, totalQuestions]);
   const effectiveCardOffset = Math.min(cardOffset, answeredForCompletion);
   const hasSwipedLastAnswered =
     answeredForCompletion > 0 && effectiveCardOffset >= answeredForCompletion;
@@ -1165,6 +1326,35 @@ export function SwipeStack({
   useEffect(() => {
     onCompletionVisibilityChange?.(shouldShowCompletion);
   }, [onCompletionVisibilityChange, shouldShowCompletion]);
+
+  useEffect(() => {
+    if (
+      isChallenge ||
+      !isSwipeInterstitialPolicyReady ||
+      !shouldShowCompletion ||
+      hasShownSwipeCompletionInterstitialRef.current
+    ) {
+      return;
+    }
+
+    if (!hasRecordedSwipeSessionCompletionRef.current) {
+      hasRecordedSwipeSessionCompletionRef.current = true;
+      if (!hasCompletedAnySwipeSessionRef.current) {
+        hasCompletedAnySwipeSessionRef.current = true;
+        void AsyncStorage.setItem(SWIPE_INTERSTITIAL_ELIGIBILITY_KEY, 'true').catch((error) => {
+          console.warn('Failed to persist swipe interstitial policy', error);
+        });
+      }
+    }
+
+    if (skipSwipeInterstitialForCurrentSessionRef.current) {
+      return;
+    }
+
+    hasShownSwipeCompletionInterstitialRef.current = true;
+    showInterstitialAd();
+  }, [isChallenge, isSwipeInterstitialPolicyReady, shouldShowCompletion, showInterstitialAd]);
+
   const initialLives =
     eduLevel === 'college_basic' || eduLevel === 'college_plus' ? 1 : 2;
   const livesRemaining = Math.max(0, initialLives - missCount);
@@ -1570,6 +1760,22 @@ export function SwipeStack({
     }, 450);
     return () => clearTimeout(timeout);
   }, [shouldShowCompletion, totalScoreLabel, totalXpEarned]);
+
+  const handleReset = useCallback(async () => {
+    if (
+      !isChallenge &&
+      shouldShowCompletion &&
+      isSwipeInterstitialPolicyReady &&
+      !skipSwipeInterstitialForCurrentSessionRef.current
+    ) {
+      showInterstitialAd(() => {
+        void handleResetCore();
+      });
+      return;
+    }
+
+    await handleResetCore();
+  }, [handleResetCore, isChallenge, isSwipeInterstitialPolicyReady, shouldShowCompletion, showInterstitialAd]);
 
   const challengeSecondaryLabel = useMemo(() => {
     if (isChallengeFailed) {
@@ -2609,7 +2815,7 @@ export function SwipeStack({
                 )}
               </View>
               <View style={styles.completionActions}>
-                {!isChallenge || isChallengeFailed ? (
+              {!isChallenge || isChallengeFailed ? (
                   <Button
                     size="lg"
                     fullWidth
@@ -2619,18 +2825,20 @@ export function SwipeStack({
                     다시 도전
                   </Button>
                 ) : null}
+                {isChallenge && isChallengeFailed && onReviveWithAd && !hasUsedRevive ? (
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    fullWidth
+                    onPress={handleReviveWithAd}
+                    disabled={isReviveLoading}
+                    style={styles.completionActionButton}
+                  >
+                    {isReviveLoading ? '광고 로딩 중...' : '🎬 광고 보고 목숨 1개 회복'}
+                  </Button>
+                ) : null}
                 {isChallenge ? (
                   <>
-                    {isFinalStage && !isChallengeFailed && isGuest ? (
-                      <Button
-                        size="lg"
-                        variant="default"
-                        onPress={() => loginSheetRef.current?.present()}
-                        style={styles.completionActionButton}
-                      >
-                        로그인
-                      </Button>
-                    ) : null}
                     {challengeSecondaryLabel ? (
                       <Button
                         size="lg"
@@ -2640,6 +2848,17 @@ export function SwipeStack({
                         style={styles.completionActionButton}
                       >
                         {challengeSecondaryLabel}
+                      </Button>
+                    ) : null}
+                     {isFinalStage && !isChallengeFailed && isGuest ? (
+                      <Button
+                        size="lg"
+                        variant="ghost"
+                        fullWidth
+                        onPress={() => loginSheetRef.current?.present()}
+                        style={styles.completionActionButton}
+                      >
+                        로그인
                       </Button>
                     ) : null}
                   </>
@@ -2709,7 +2928,7 @@ export function SwipeStack({
                 >
                   <View style={styles.completionCtaContent}>
                     <ThemedText style={styles.completionCtaLabel}>
-                      {completionReady ? '단계 종료' : '단계 진행중'}
+                      {completionReady ? '단계 종료' : '단계 진행 중'}
                     </ThemedText>
                     <View style={styles.completionCtaAction}>
                       <ThemedText
@@ -2803,7 +3022,7 @@ export function SwipeStack({
                   onOpenActions={handleActions}
                   onSwipeBlocked={index === 0 ? handleSwipeBlocked : undefined}
                   swipeEnabled={index === 0}
-                  blockSwipeNext={false}
+                   blockSwipeNext={isChallenge && completionReady}
                   onCardLayout={index === 0 ? handleActiveCardLayout : undefined}
                 />
               ))}
@@ -2843,22 +3062,50 @@ export function SwipeStack({
                   </ThemedText>
                 </View>
                 <View style={styles.actionsList}>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onPress={handleUseFifty}
-                    disabled={!current || !!feedback || lifelinesDisabled || lifelinesUsed.fifty}
-                  >
-                    {lifelinesUsed.fifty ? '50:50 (사용 완료)' : '50:50'}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onPress={handleUseHint}
-                    disabled={!current || !!feedback || lifelinesDisabled || lifelinesUsed.hint}
-                  >
-                    {lifelinesUsed.hint ? '힌트 (사용 완료)' : '힌트'}
-                  </Button>
+                  <View style={styles.lifelineItem}>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      fullWidth
+                      onPress={handleUseFifty}
+                      disabled={!current || !!feedback || lifelinesDisabled || lifelinesUsed.fifty || (hasRechargedFifty && rechargedFiftyQuestionIdRef.current === current?.id)}
+                    >
+                      {lifelinesUsed.fifty ? '50:50 (사용 완료)' : '50:50'}
+                    </Button>
+                    {onRechargeLifelineWithAd && !lifelinesDisabled && lifelinesUsed.fifty && !hasRechargedFifty ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        fullWidth
+                        onPress={handleRechargeFiftyWithAd}
+                        disabled={isRechargeFiftyLoading}
+                      >
+                        {isRechargeFiftyLoading ? '광고 로딩 중...' : '🎬 광고 보고 50:50 충전'}
+                      </Button>
+                    ) : null}
+                  </View>
+                  <View style={styles.lifelineItem}>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      fullWidth
+                      onPress={handleUseHint}
+                      disabled={!current || !!feedback || lifelinesDisabled || lifelinesUsed.hint || (hasRechargedHint && rechargedHintQuestionIdRef.current === current?.id)}
+                    >
+                      {lifelinesUsed.hint ? '힌트 (사용 완료)' : '힌트'}
+                    </Button>
+                    {onRechargeLifelineWithAd && !lifelinesDisabled && lifelinesUsed.hint && !hasRechargedHint ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        fullWidth
+                        onPress={handleRechargeHintWithAd}
+                        disabled={isRechargeHintLoading}
+                      >
+                        {isRechargeHintLoading ? '광고 로딩 중...' : '🎬 광고 보고 힌트 충전'}
+                      </Button>
+                    ) : null}
+                  </View>
                 </View>
                 <Button
                   size="lg"
@@ -3231,6 +3478,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.xs,
   },
+  lifelineItem: {
+    flexDirection: 'column',
+    gap: Spacing.xs,
+  },
   lifelineGroup: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -3443,12 +3694,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   completionActions: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     gap: Spacing.sm,
   },
-  completionActionButton: {
-    flex: 1,
-  },
+  completionActionButton: {},
   emptyState: {
     flex: 1,
     alignItems: 'center',
