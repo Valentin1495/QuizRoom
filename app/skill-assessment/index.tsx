@@ -7,6 +7,7 @@ import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SwipeStack, type SwipeChallengeSummary } from '@/components/swipe/swipe-stack';
+import { REWARDED_AD_REWARDS } from '@/constants/ad-rewards';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
@@ -392,12 +393,20 @@ export default function SkillAssessmentScreen() {
     }
   }, [assessmentMode, currentLevel.key, levelIndex]);
 
-  const handleReviveWithAd = useCallback((onRevived: () => void) => {
-    showRewardedAd({ onEarnedReward: onRevived });
+  const handleReviveWithAd = useCallback((callbacks: { onRevived: () => void; onClosed: () => void }) => {
+    showRewardedAd({
+      expectedReward: REWARDED_AD_REWARDS.revive,
+      onEarnedReward: callbacks.onRevived,
+      onAdClosed: callbacks.onClosed,
+    });
   }, [showRewardedAd]);
 
-  const handleRechargeLifelineWithAd = useCallback((onRecharged: () => void) => {
-    showRewardedAd({ onEarnedReward: onRecharged });
+  const handleRechargeLifelineWithAd = useCallback((callbacks: { onRecharged: () => void; onClosed: () => void }) => {
+    showRewardedAd({
+      expectedReward: REWARDED_AD_REWARDS.lifelineRecharge,
+      onEarnedReward: callbacks.onRecharged,
+      onAdClosed: callbacks.onClosed,
+    });
   }, [showRewardedAd]);
 
   const failedLevelLabel =

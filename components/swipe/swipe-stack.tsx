@@ -22,6 +22,7 @@ import {
 import { ComboIndicator } from '@/components/common/combo-indicator';
 import { LoginSheet } from '@/components/common/login-sheet';
 import { hideResultToast, showResultToast } from '@/components/common/result-toast';
+import { REWARDED_AD_REWARDS } from '@/constants/ad-rewards';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
@@ -99,8 +100,8 @@ export type SwipeStackProps = {
   persistLifelines?: boolean;
   lifelinesDisabled?: boolean;
   onChallengeReset?: () => void;
-  onReviveWithAd?: (onRevived: () => void) => void;
-  onRechargeLifelineWithAd?: (onRecharged: () => void) => void;
+  onReviveWithAd?: (callbacks: { onRevived: () => void; onClosed: () => void }) => void;
+  onRechargeLifelineWithAd?: (callbacks: { onRecharged: () => void; onClosed: () => void }) => void;
 };
 
 const REPORT_REASONS = [
@@ -783,6 +784,7 @@ export function SwipeStack({
 
     setIsStreakProtectLoading(true);
     showRewardedAd({
+      expectedReward: REWARDED_AD_REWARDS.streakProtect,
       onEarnedReward: () => {
         const restoredStreak = streakProtectValueRef.current;
         currentStreakRef.current = restoredStreak;
@@ -1180,33 +1182,45 @@ export function SwipeStack({
   const handleReviveWithAd = useCallback(() => {
     if (!onReviveWithAd || hasUsedRevive || isReviveLoading) return;
     setIsReviveLoading(true);
-    onReviveWithAd(() => {
-      setMissCount((prev) => Math.max(0, prev - 1));
-      setHasUsedRevive(true);
-      setIsReviveLoading(false);
-      setCompletionPending(false);
+    onReviveWithAd({
+      onRevived: () => {
+        setMissCount((prev) => Math.max(0, prev - 1));
+        setHasUsedRevive(true);
+        setCompletionPending(false);
+      },
+      onClosed: () => {
+        setIsReviveLoading(false);
+      },
     });
   }, [hasUsedRevive, isReviveLoading, onReviveWithAd]);
 
   const handleRechargeFiftyWithAd = useCallback(() => {
     if (!onRechargeLifelineWithAd || isRechargeFiftyLoading || !lifelinesUsed.fifty || hasRechargedFifty) return;
     setIsRechargeFiftyLoading(true);
-    onRechargeLifelineWithAd(() => {
-      rechargedFiftyQuestionIdRef.current = current?.id ?? null;
-      setLifelinesUsed((prev) => ({ ...prev, fifty: false }));
-      setHasRechargedFifty(true);
-      setIsRechargeFiftyLoading(false);
+    onRechargeLifelineWithAd({
+      onRecharged: () => {
+        rechargedFiftyQuestionIdRef.current = current?.id ?? null;
+        setLifelinesUsed((prev) => ({ ...prev, fifty: false }));
+        setHasRechargedFifty(true);
+      },
+      onClosed: () => {
+        setIsRechargeFiftyLoading(false);
+      },
     });
   }, [current?.id, hasRechargedFifty, isRechargeFiftyLoading, lifelinesUsed.fifty, onRechargeLifelineWithAd]);
 
   const handleRechargeHintWithAd = useCallback(() => {
     if (!onRechargeLifelineWithAd || isRechargeHintLoading || !lifelinesUsed.hint || hasRechargedHint) return;
     setIsRechargeHintLoading(true);
-    onRechargeLifelineWithAd(() => {
-      rechargedHintQuestionIdRef.current = current?.id ?? null;
-      setLifelinesUsed((prev) => ({ ...prev, hint: false }));
-      setHasRechargedHint(true);
-      setIsRechargeHintLoading(false);
+    onRechargeLifelineWithAd({
+      onRecharged: () => {
+        rechargedHintQuestionIdRef.current = current?.id ?? null;
+        setLifelinesUsed((prev) => ({ ...prev, hint: false }));
+        setHasRechargedHint(true);
+      },
+      onClosed: () => {
+        setIsRechargeHintLoading(false);
+      },
     });
   }, [current?.id, hasRechargedHint, isRechargeHintLoading, lifelinesUsed.hint, onRechargeLifelineWithAd]);
 

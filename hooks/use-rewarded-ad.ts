@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { RewardedAd, RewardedAdEventType, AdEventType } from 'react-native-google-mobile-ads';
 
+import type { AdRewardSpec } from '@/constants/ad-rewards';
+import { isAdRewardMatch } from '@/constants/ad-rewards';
 import { ADMOB_AD_UNIT_IDS } from '@/lib/admob';
 
-export type AdReward = {
-  type: string;
-  amount: number;
-};
+export type AdReward = AdRewardSpec;
 
 export function useRewardedAd() {
   const adRef = useRef<RewardedAd | null>(null);
@@ -48,7 +47,12 @@ export function useRewardedAd() {
   }, [loadAd]);
 
   const showAd = useCallback(
-    (callbacks?: { onEarnedReward?: (reward: AdReward) => void; onAdClosed?: () => void }) => {
+    (callbacks?: {
+      expectedReward?: AdRewardSpec;
+      onEarnedReward?: (reward: AdReward) => void;
+      onRewardMismatch?: (reward: AdReward) => void;
+      onAdClosed?: () => void;
+    }) => {
       if (!adRef.current || !isLoaded) {
         // 광고가 준비되지 않았으면 보상 없이 콜백 실행
         callbacks?.onAdClosed?.();
@@ -59,7 +63,16 @@ export function useRewardedAd() {
         RewardedAdEventType.EARNED_REWARD,
         (reward) => {
           unsubReward();
-          callbacks?.onEarnedReward?.(reward);
+          const resolvedReward: AdReward = {
+            type: reward.type,
+            amount: reward.amount,
+          };
+          const expectedReward = callbacks?.expectedReward;
+          if (expectedReward && !isAdRewardMatch(resolvedReward, expectedReward)) {
+            callbacks?.onRewardMismatch?.(resolvedReward);
+            return;
+          }
+          callbacks?.onEarnedReward?.(resolvedReward);
         },
       );
 
