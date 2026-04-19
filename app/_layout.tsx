@@ -1,4 +1,5 @@
 import { AuthGate } from '@/components/auth-gate';
+import { AdConsentProvider } from '@/hooks/use-ad-consent';
 import { resultToastConfig } from '@/components/common/result-toast';
 import { ColorSchemeProvider, useColorScheme } from '@/hooks/use-color-scheme';
 import { SupabaseAuthProvider } from '@/hooks/use-supabase-auth';
@@ -30,18 +31,20 @@ function RootLayoutContent() {
 
   return (
     <SupabaseAuthProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <AuthGate>
-          <Stack screenOptions={HIDDEN_HEADER_OPTIONS}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="daily/index" options={{ headerBackButtonMenuEnabled: false }} />
-            <Stack.Screen name="skill-assessment/index" options={{ headerBackButtonMenuEnabled: false }} />
-            <Stack.Screen name="room" options={HIDDEN_HEADER_OPTIONS} />
-          </Stack>
-          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-          <Toast config={resultToastConfig} />
-        </AuthGate>
-      </ThemeProvider>
+      <AdConsentProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <AuthGate>
+            <Stack screenOptions={HIDDEN_HEADER_OPTIONS}>
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="daily/index" options={{ headerBackButtonMenuEnabled: false }} />
+              <Stack.Screen name="skill-assessment/index" options={{ headerBackButtonMenuEnabled: false }} />
+              <Stack.Screen name="room" options={HIDDEN_HEADER_OPTIONS} />
+            </Stack>
+            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+            <Toast config={resultToastConfig} />
+          </AuthGate>
+        </ThemeProvider>
+      </AdConsentProvider>
     </SupabaseAuthProvider>
   );
 }

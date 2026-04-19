@@ -37,6 +37,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { categories } from '@/constants/categories';
 import { resolveDailyCategoryCopy } from '@/constants/daily';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { useAdConsent } from '@/hooks/use-ad-consent';
 import { useColorScheme, useColorSchemeManager } from '@/hooks/use-color-scheme';
 import { usePullRefreshReveal } from '@/hooks/use-pull-refresh-reveal';
 import { useQuizHistory, type HistoryBuckets, type QuizHistoryDoc } from '@/hooks/use-quiz-history';
@@ -55,6 +56,7 @@ const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export default function ProfileScreen() {
   const { status, user, signOut, deleteAccount, guestKey, ensureGuestKey, isReady, refreshUser, updateProfileHandle } = useAuth();
+  const { isConsentGathering, isPrivacyOptionsRequired, openPrivacyOptions } = useAdConsent();
   const [refreshKey, setRefreshKey] = useState(0);
   const { stats: supabaseStats } = useUserStats({ refreshKey });
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -115,7 +117,6 @@ export default function ProfileScreen() {
   }, []);
 
   const isLoading = status === 'loading';
-  const isAuthorizing = status === 'authorizing' || status === 'upgrading';
   const isAuthenticated = status === 'authenticated' && !!user;
   const guestAvatarSeed = useMemo(() => deriveGuestAvatarSeed(guestKey) ?? 'guest', [guestKey]);
   const guestNickname = useMemo(() => deriveGuestNickname(guestKey) ?? '게스트 사용자', [guestKey]);
@@ -330,6 +331,22 @@ export default function ProfileScreen() {
     levelSheetRef.current?.dismiss();
   }, []);
 
+  const handleOpenPrivacyOptions = useCallback(async () => {
+    if (!isPrivacyOptionsRequired) {
+      Alert.alert('개인정보 설정', '현재 지역에서는 추가 개인정보 설정이 필요하지 않아요.');
+      return;
+    }
+
+    try {
+      await openPrivacyOptions();
+    } catch (error) {
+      Alert.alert(
+        '개인정보 설정을 열 수 없어요',
+        error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.',
+      );
+    }
+  }, [isPrivacyOptionsRequired, openPrivacyOptions]);
+
   if (isLoading) {
     return (
       <ThemedView style={styles.loadingContainer}>
@@ -405,6 +422,11 @@ export default function ProfileScreen() {
                 />
 
                 <ThemePreferencesCard />
+                <PrivacyPreferencesCard
+                  onOpenPrivacyOptions={handleOpenPrivacyOptions}
+                  isPrivacyOptionsRequired={isPrivacyOptionsRequired}
+                  isOpening={isConsentGathering}
+                />
 
                 <FooterSection
                   isAuthenticated={isAuthenticated}
@@ -1303,6 +1325,42 @@ function ThemePreferencesCard() {
           );
         })}
       </View>
+    </Card>
+  );
+}
+
+function PrivacyPreferencesCard({
+  onOpenPrivacyOptions,
+  isPrivacyOptionsRequired,
+  isOpening,
+}: {
+  onOpenPrivacyOptions: () => void;
+  isPrivacyOptionsRequired: boolean;
+  isOpening: boolean;
+}) {
+  const mutedColor = useThemeColor({}, 'textMuted');
+
+  return (
+    <Card>
+      <View style={styles.sectionStack}>
+        <ThemedText type="subtitle">개인정보 설정</ThemedText>
+        <ThemedText style={{ color: mutedColor, fontSize: 14, lineHeight: 20 }}>
+          광고 개인정보 동의 옵션을 다시 열 수 있어요.
+        </ThemedText>
+      </View>
+      <Button
+        variant="outline"
+        onPress={onOpenPrivacyOptions}
+        loading={isOpening}
+        disabled={isOpening}
+      >
+        개인정보 설정 열기
+      </Button>
+      {!isPrivacyOptionsRequired ? (
+        <ThemedText style={[styles.historyEmpty, { color: mutedColor }]}>
+          현재 지역에서는 추가 동의 옵션이 필요하지 않을 수 있어요.
+        </ThemedText>
+      ) : null}
     </Card>
   );
 }

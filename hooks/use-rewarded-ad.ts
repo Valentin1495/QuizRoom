@@ -3,17 +3,33 @@ import { RewardedAd, RewardedAdEventType, AdEventType } from 'react-native-googl
 
 import type { AdRewardSpec } from '@/constants/ad-rewards';
 import { isAdRewardMatch } from '@/constants/ad-rewards';
+import { useAdConsent } from '@/hooks/use-ad-consent';
 import { ADMOB_AD_UNIT_IDS } from '@/lib/admob';
 
 export type AdReward = AdRewardSpec;
 
 export function useRewardedAd() {
   const adRef = useRef<RewardedAd | null>(null);
+  const cleanupRef = useRef<(() => void)[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const { canRequestAds, requestNonPersonalizedAdsOnly } = useAdConsent();
+
+  const clearSubscriptions = useCallback(() => {
+    cleanupRef.current.forEach((unsubscribe) => unsubscribe());
+    cleanupRef.current = [];
+  }, []);
 
   const loadAd = useCallback(() => {
+    clearSubscriptions();
+
+    if (!canRequestAds) {
+      adRef.current = null;
+      setIsLoaded(false);
+      return;
+    }
+
     const ad = RewardedAd.createForAdRequest(ADMOB_AD_UNIT_IDS.rewarded, {
-      requestNonPersonalizedAdsOnly: false,
+      requestNonPersonalizedAdsOnly,
     });
 
     const unsubscribeLoaded = ad.addAdEventListener(RewardedAdEventType.LOADED, () => {
@@ -22,29 +38,26 @@ export function useRewardedAd() {
 
     const unsubscribeClosed = ad.addAdEventListener(AdEventType.CLOSED, () => {
       setIsLoaded(false);
-      unsubscribeLoaded();
-      unsubscribeClosed();
       // 광고가 닫히면 다음 표시를 위해 자동 재로드
       loadAd();
     });
 
     const unsubscribeError = ad.addAdEventListener(AdEventType.ERROR, () => {
       setIsLoaded(false);
-      unsubscribeLoaded();
-      unsubscribeClosed();
-      unsubscribeError();
     });
 
+    cleanupRef.current = [unsubscribeLoaded, unsubscribeClosed, unsubscribeError];
     adRef.current = ad;
     ad.load();
-  }, []);
+  }, [canRequestAds, clearSubscriptions, requestNonPersonalizedAdsOnly]);
 
   useEffect(() => {
     loadAd();
     return () => {
+      clearSubscriptions();
       adRef.current = null;
     };
-  }, [loadAd]);
+  }, [clearSubscriptions, loadAd]);
 
   const showAd = useCallback(
     (callbacks?: {
@@ -61,7 +74,7 @@ export function useRewardedAd() {
 
       const unsubReward = adRef.current.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
-        (reward) => {
+        (reward: { type: string; amount: number }) => {
           unsubReward();
           const resolvedReward: AdReward = {
             type: reward.type,
